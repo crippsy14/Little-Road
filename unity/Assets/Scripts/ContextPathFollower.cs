@@ -128,6 +128,15 @@ namespace LittleRoad
             }
             return time;
         }
+        // Lateral offset of the committed path "ahead" metres beyond the car,
+        // using the same geometry as BuildEnvelope's uncached points.
+        public float PlannedOffset(in ContextPathState path,float ahead)
+        {
+            ahead=Mathf.Max(0,ahead);float along=path.consumed+ahead,d=path.anchor+along;
+            float side=Lateral(in path,along,path.guide?profile.line.Offset(d):0);
+            if(path.rejoin)side=Mathf.Lerp(side,profile.line.Offset(d),Mathf.SmoothStep(0,1,ahead/65));
+            return side;
+        }
         public DriveCommand Follow(in DriverObservation o,in ContextPathState path,ForecastPathCache cache=null)
         {
             BuildEnvelope(in o,in path,cache);

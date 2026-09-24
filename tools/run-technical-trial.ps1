@@ -90,7 +90,9 @@ param(
     [ValidateRange(5,30)][float]$TrafficSpeed=18,
     [ValidateRange(5,35)][float]$TrafficRearSpeed=26,
     [string]$Opponents,
-    [switch]$PassProcess
+    [switch]$PassProcess,
+    # Pass-through experiment flags (e.g. --path-aware-leader); recorded in launch metadata.
+    [string[]]$ExtraArguments=@()
 )
 $ErrorActionPreference='Stop'
 if($ParallelContinuationForecast -and (-not $CompareContinuation -or $ParallelForecastWorkers -eq 0)){throw 'Parallel continuation requires continuation comparison and forecast workers.'}
@@ -191,6 +193,7 @@ if($Fullscreen){$trialArguments+='--start-fullscreen'}
 if($Windowed){$trialArguments+=@('--start-windowed','-screen-fullscreen','0')}
 if($DirectGraphics){$trialArguments+='-force-gfx-direct'}
 $trialArguments+=@('--driver-policy',$Policy,'--racing-line',$RacingLine)
+foreach($extra in $ExtraArguments){if($extra -notmatch '^--[a-z0-9-]+$' -and $extra -notmatch '^[A-Za-z0-9._-]+$'){throw "Unsafe extra argument: $extra"};$trialArguments+=$extra}
 $trialStyle=if($Visible){'Normal'}else{'Hidden'}
 $trialAssembly=Join-Path (Split-Path $trialExecutable) 'Little Road Unity_Data/Managed/Assembly-CSharp.dll'
 $trialAssemblyHash=if(Test-Path -LiteralPath $trialAssembly){(Get-FileHash -LiteralPath $trialAssembly -Algorithm SHA256).Hash}else{$null}

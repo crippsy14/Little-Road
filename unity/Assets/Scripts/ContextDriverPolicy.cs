@@ -25,6 +25,7 @@ namespace LittleRoad
         readonly bool dynamicTraffic=RaceTrial.Has("--dynamic-traffic");
         readonly bool dynamicTrafficFallback=RaceTrial.Has("--dynamic-traffic-fallback");
         readonly bool thirdCandidate=RaceTrial.Has("--third-dynamic-candidate");
+        readonly bool unresolvedHold=RaceTrial.Has("--unresolved-hold");
         public DynamicRejoinPlanner DynamicRejoin=>dynamicRejoin;
         readonly ReferenceDriverPolicy reference;
         readonly RecoverySensor scenery;
@@ -475,11 +476,23 @@ namespace LittleRoad
                 // No checked continuation: stop commanding the old crossing.
                 // Ordinary steering response/braking physics apply. This is an
                 // explicit emergency outcome, never labelled a safe accepted path.
+                if(unresolvedHold) {
+                    // Experiment (point 3): tuck in rather than emergency braking.
+                    // Hold the current lateral position and never add power; the
+                    // moving-leader limit and immediate guard below still brake.
+                    var hold=RoadPathFeasibility.FromMotion(in o,o.self.offset,false);
+                    var held=follower.Follow(in o,in hold);
+                    command=new DriveCommand(Mathf.Min(held.pedal,0),held.steering,Mathf.Min(held.targetSpeed,o.self.speed),command.predictedOffset,command.chosenLane);
+                    Reason="No viable crossing continuation; hold position without power";
+                } else {
                 command=new DriveCommand(-1,0,0,command.predictedOffset,command.chosenLane);
                 Reason="No viable crossing continuation; straighten and brake";
+                }
             }
             FollowerPedal=command.pedal;FollowerTarget=command.targetSpeed;
-            command=MovingLeaderControl.Apply(in o,command,out int leader,out float leaderLimit,out bool limited);
+            ContextPathState committedPath=default;
+            bool plannedLeader=MovingLeaderControl.PathAware&&roadCheck!=null&&!RoadUnresolved&&TryGetPath(out committedPath);
+            command=MovingLeaderControl.Apply(in o,command,plannedLeader?follower:null,in committedPath,out int leader,out float leaderLimit,out bool limited);
             Leader=leader;LeaderLimit=leaderLimit;
             if(limited){Reason="Moving leader stopping-distance limit";WaitingForTraffic=o.self.speed<2;}
             AfterLeaderPedal=command.pedal;StaticLimit=999;

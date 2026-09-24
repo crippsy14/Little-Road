@@ -149,6 +149,7 @@ public static class MigrationBuild
         evidence.checks.AddRange(TrafficPathChecks.Run());
         evidence.checks.AddRange(TrafficCoastChecks.Run());
         evidence.checks.AddRange(TrafficProgressChecks.Run());
+        evidence.checks.AddRange(PathAwareLeaderChecks.Run());
         if(RaceTrial.Has("--traffic-coast-input"))TrafficCoastReplay.Run();
         evidence.checks.AddRange(RacingLineChecks.Run());
         evidence.checks.AddRange(BayviewTransferBake.Run());

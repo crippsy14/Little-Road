@@ -133,3 +133,6 @@ review/**/*.jpeg
 !/review/unity-35/dynamic-rejoin-77/corner-trajectories.png
 !/review/unity-35/dynamic-traffic-78/corner-trajectories.png
 !/review/unity-35/dynamic-traffic-80/corner-trajectories.png
+
+# Claude job runner queue/logs (local only)
+/.claude-runner/

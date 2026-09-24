@@ -55,7 +55,7 @@ namespace LittleRoad
                 dragReduction=initial.drafting?DraftingModel.Reduction(in self,initial.traffic,out _,road.Length,i*dt):0;
                 var o=new DriverObservation(initial.timestamp+i*dt,dt,self,traffic==null?ReadOnlySpan<ObservedCar>.Empty:traffic.At(i/controlSteps),road,initial.tuning,1,0,false,model.steering,initial.drafting,dragReduction);
                 if(measure)stamp=Stamp();command=follower.Follow(in o,in path,preparedPath?cache:null);
-                if(traffic!=null)command=MovingLeaderControl.Apply(in o,command,out _,out _,out _);
+                if(traffic!=null)command=MovingLeaderControl.Apply(in o,command,MovingLeaderControl.PathAware?follower:null,in path,out _,out _,out _);
                 if(measure)cost.followerMs+=Ms(stamp);
                 }
                 if(measure)stamp=Stamp();
