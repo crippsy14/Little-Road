@@ -12,6 +12,8 @@ Solo, the AI is close to human pace (Cedar club best lap 64.98 s vs Richard's 62
 4. **Deliberate passing** — score candidates by progress minus personality-weighted risk; add an explicit pass set-up option instead of only lateral target offsets.
 5. **Clean-up** — group the ~96 CLI switches into named presets, move rejected/legacy policies out of the live path, keep diagnostics separate from driving logic.
 
+**Additional focus — opening straight (Cedar sector 1).** Seen watching 115 (and before): off the grid the pack plods down the first straight at about half throttle until it spreads out at T2/T3. Watch run `review/unity-35/frame-cost-115/watch-cedar-*`, samples before gate 1 (172 m): mean pedal 0.6, full throttle only 19%, no braking. Reasons: 59% "Checked local curve and speed to shared downstream gate" (path speed cap), 40% "Moving leader stopping-distance limit". Field reaches gate 1 at 9.0 s (first) / 10.9 s (mean) / 12.7 s (last); gate 2 mean 17.9 s. `summarize-pace-study.py` now prints field-mean gate 1/gate 2 times and their paired deltas for every study. Track these for each experiment, and look at the opening directly once steps 3–4 have landed. Opening times are identical across seeds (deterministic grid), so one seed is enough to screen opening changes.
+
 Also checked: using more road width for the racing line (currently about ±5 m on Cedar, ±4.3 m on Bayview, road ±8 m) gained only about 0.5 s in a rough model — not a priority.
 
 ## How to build and test
