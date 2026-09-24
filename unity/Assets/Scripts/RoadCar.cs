@@ -77,6 +77,8 @@ namespace LittleRoad
                     if(firstVertex){envelope=new Bounds(p,Vector3.zero);firstVertex=false;}else envelope.Encapsulate(p);
                 }
             }
+            // Generated bodies all race in one physical envelope, so shape is never a hidden stat.
+            if(GetComponent<StandardEnvelope>()!=null)envelope=CarBodies.Envelope;
             envelope.Expand(.015f);Vector3 size=envelope.size;size.x=Mathf.Max(size.x,2.32f);
             var collider=gameObject.AddComponent<BoxCollider>();collider.center=envelope.center;collider.size=size;
             CollisionHalf=size*.5f;CollisionCentre=envelope.center;

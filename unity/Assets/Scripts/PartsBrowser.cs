@@ -13,10 +13,10 @@ namespace LittleRoad
     // Selection is local presentation state; only explicit actions mutate saves.
     public sealed class PartsBrowser : MonoBehaviour
     {
-        Canvas canvas;Font font;AdventureStore store;PartPreviewStage stage;Outline cardFocus;
+        Canvas canvas;AdventureStore store;PartPreviewStage stage;ToyShape selectedShape;
         Action fitted,back;Action<string> category;
         EquipmentCatalog.Part[] parts;int index;string remembered="engine_stock",notice;
-        Text wallet,title,state,hint,comparison,comparisonHeading,explanation,status,leftLabel,rightLabel;
+        Text wallet,title,state,hint,comparisonHeading,explanation,status,leftLabel,rightLabel;readonly Text[] before=new Text[3],after=new Text[3];
         RawImage selectedImage,leftImage,rightImage,carImage;
         Button selectedCard,buy,fit,previous,next,exit;readonly List<Button> buttons=new();readonly List<Button> categories=new();
         public bool IsOpen=>canvas!=null&&canvas.gameObject.activeSelf;
@@ -24,7 +24,6 @@ namespace LittleRoad
         public string SelectedId=>parts[index].id;
         public float PreviewAngle=>stage.Angle;
         public int PreviewRenderCount=>stage.RenderCount;
-        static readonly Color Ink=new(.94f,.95f,.89f),Gold=new(.94f,.71f,.34f);
 
         public void Open(AdventureStore inventory,Action onFitted,Action onBack,Action<string> onCategory)
         {
@@ -32,80 +31,75 @@ namespace LittleRoad
             parts=EquipmentCatalog.All.parts.Where(p=>p.slot=="engine").OrderBy(p=>p.price).ToArray();
             index=Mathf.Max(0,Array.FindIndex(parts,p=>p.id==remembered));notice="";
             if(canvas==null)Build();
-            stage=new PartPreviewStage(store.Data.bodyId,AdventureGame.Paints[store.Data.paintIndex],parts);
+            stage=new PartPreviewStage(store.Data.bodyId,AdventureGame.Paints[store.Data.paintIndex],parts,Color.clear);
             carImage.texture=stage.Car;selectedImage.texture=stage.Selected;
-            canvas.gameObject.SetActive(true);canvas.worldCamera=Camera.main;
+            Toy.UseMenuCamera(canvas);canvas.gameObject.SetActive(true);
             Refresh(true);StartCoroutine(FocusNextFrame());
         }
         IEnumerator FocusNextFrame(){yield return null;if(IsOpen)EventSystem.current.SetSelectedGameObject(selectedCard.gameObject);}
+        // Harbour Garage in the toy style: category stickers, part carousel,
+        // your car, setup comparison and candy actions. Button names BUY / FIT
+        // are used by PartsBrowserReview and the adventure smoke test.
         void Build()
         {
-            font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            var root=new GameObject("Visual parts browser",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));root.transform.SetParent(transform,false);
+            var root=new GameObject("Visual parts browser",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));root.transform.SetParent(transform,false);root.layer=Toy.MenuLayer;
             canvas=root.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.planeDistance=.7f;canvas.sortingOrder=30;
             var scaler=root.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1920,1080);scaler.matchWidthOrHeight=.5f;
-            var background=Box(root.transform,"Workshop",new Vector2(1920,1080),Vector2.zero,new Color(.035f,.085f,.105f));
-            Label(background,"HARBOUR GARAGE",39,new Vector2(1000,64),new Vector2(-390,465),Gold);
-            wallet=Label(background,"",28,new Vector2(550,64),new Vector2(630,465),Ink);wallet.alignment=TextAnchor.MiddleRight;
-            Label(background,"PARTS CATALOGUE",19,new Vector2(260,35),new Vector2(-760,372),Gold);
+            var background=Toy.Rect(root.transform,"Workshop",new Vector2(1920,1080),Vector2.zero);background.gameObject.AddComponent<RectMask2D>();
+            Toy.Sunburst(background,new Vector2(2600,2600),new Vector2(0,40),Toy.Orange,Toy.OrangeLight,30,2);
+            Toy.Checker(background,1920,525);Toy.Checker(background,1920,-525);
+            Toy.Title(background,"Garage title","HARBOUR GARAGE",86,new Vector2(900,100),new Vector2(-470,430),Toy.White,TextAnchor.MiddleLeft,-2);
+            var purse=Toy.Card(background,"Wallet",new Vector2(360,70),new Vector2(700,440),Toy.Sun,35,6,6);
+            var coin=Toy.Card(purse.transform,"Coin",new Vector2(54,54),new Vector2(-138,0),Toy.Gold,27,4,0);Toy.Title(coin.transform,"C","C",34,new Vector2(54,54),Vector2.zero,Toy.White,TextAnchor.MiddleCenter);
+            coin.gameObject.AddComponent<ToyCoinFlip>();
+            wallet=Toy.Label(purse.transform,"Wallet text",string.Empty,30,new Vector2(280,70),new Vector2(30,0),Toy.Navy,TextAnchor.MiddleCenter,true);
+
+            Toy.Title(background,"Catalogue","PARTS",40,new Vector2(300,50),new Vector2(-770,345),Toy.Sun);
             for(int i=0;i<EquipmentCatalog.All.slots.Length;i++) {
                 string slot=EquipmentCatalog.All.slots[i];
-                var button=ActionButton(background,slot.ToUpperInvariant(),new Vector2(268,58),new Vector2(-760,310-i*69),()=>SwitchCategory(slot));
-                if(slot=="engine")button.GetComponentInChildren<Text>().text="ENGINE  /  SELECTED";
-                categories.Add(button);
+                var button=Toy.Candy(background,slot.ToUpperInvariant(),slot.ToUpperInvariant(),null,new Vector2(270,64),new Vector2(-770,280-i*76),slot=="engine"?Toy.Red:Toy.Blue,()=>SwitchCategory(slot));
+                categories.Add(button);buttons.Add(button);
             }
-            Label(background,"Choose a category\nL1 / R1 or [ / ]",20,new Vector2(268,70),new Vector2(-760,-184),Ink);
-            Label(background,"YOUR CAR",18,new Vector2(380,28),new Vector2(700,420),Gold);
-            carImage=Image(background,"Whole car",new Vector2(380,210),new Vector2(700,300));
-            var left=Box(background,"Previous part",new Vector2(300,340),new Vector2(-350,66),new Color(.13f,.23f,.25f));
-            leftImage=Image(left,"Model",new Vector2(298,250),new Vector2(0,28));
-            leftLabel=Label(left,"",20,new Vector2(205,77),new Vector2(-36,-125),Ink);leftLabel.alignment=TextAnchor.MiddleCenter;
-            var right=Box(background,"Next part",new Vector2(300,340),new Vector2(505,20),new Color(.13f,.23f,.25f));
-            rightImage=Image(right,"Model",new Vector2(298,250),new Vector2(0,28));
-            rightLabel=Label(right,"",21,new Vector2(275,77),new Vector2(0,-125),Ink);rightLabel.alignment=TextAnchor.MiddleCenter;
-            var selected=Box(background,"Selected part",new Vector2(660,464),new Vector2(55,83),new Color(.13f,.23f,.25f));
-            selectedCard=selected.gameObject.AddComponent<Button>();selectedCard.targetGraphic=selected.GetComponent<Image>();
-            cardFocus=selected.gameObject.AddComponent<Outline>();cardFocus.effectColor=Gold;cardFocus.effectDistance=new Vector2(3,3);
-            var colors=selectedCard.colors;colors.normalColor=Color.white;colors.highlightedColor=new Color(1.15f,1.15f,1.15f);colors.selectedColor=new Color(1.25f,1.25f,1.15f);selectedCard.colors=colors;
-            selected.gameObject.AddComponent<PartCarouselNavigation>().browser=this;
-            selectedImage=Image(selected,"Rotatable engine",new Vector2(656,370),new Vector2(0,28));
-            title=Label(selected,"",31,new Vector2(610,48),new Vector2(0,-159),Gold);title.alignment=TextAnchor.MiddleCenter;
-            state=Label(selected,"",21,new Vector2(610,40),new Vector2(0,-205),Ink);state.alignment=TextAnchor.MiddleCenter;
-            previous=ActionButton(background,"<  PREVIOUS",new Vector2(240,50),new Vector2(-345,-199),()=>Step(-1));
-            next=ActionButton(background,"NEXT  >",new Vector2(240,50),new Vector2(495,-199),()=>Step(1));
-            Label(background,"Left / right: preview\nQ / E or right stick: rotate",18,new Vector2(500,46),new Vector2(65,-195),Ink).alignment=TextAnchor.MiddleCenter;
-            var detail=Box(background,"Complete setup comparison",new Vector2(1790,218),new Vector2(0,-346),new Color(.07f,.15f,.17f));
-            hint=Label(detail,"",24,new Vector2(650,100),new Vector2(-535,47),Ink);
-            explanation=Label(detail,"",19,new Vector2(650,90),new Vector2(-535,-56),new Color(.70f,.81f,.80f));
-            comparisonHeading=Label(detail,"",19,new Vector2(960,30),new Vector2(365,77),Gold);
-            comparison=Label(detail,"",23,new Vector2(960,122),new Vector2(365,-8),Ink);
-            buy=ActionButton(background,"BUY",new Vector2(300,58),new Vector2(80,-496),Buy);
-            fit=ActionButton(background,"FIT",new Vector2(270,58),new Vector2(385,-496),Fit);
-            exit=ActionButton(background,"BACK TO GARAGE",new Vector2(330,58),new Vector2(730,-496),()=>Leave(back));
-            status=Label(background,"",21,new Vector2(760,62),new Vector2(-535,-496),Ink);
-        }
-        RectTransform Rect(Transform parent,string name,Vector2 size,Vector2 position)
-        {
-            var rect=new GameObject(name,typeof(RectTransform)).GetComponent<RectTransform>();rect.SetParent(parent,false);
-            rect.anchorMin=rect.anchorMax=rect.pivot=new Vector2(.5f,.5f);rect.sizeDelta=size;rect.anchoredPosition=position;return rect;
-        }
-        RectTransform Box(Transform parent,string name,Vector2 size,Vector2 pos,Color color)
-        {var rect=Rect(parent,name,size,pos);rect.gameObject.AddComponent<Image>().color=color;return rect;}
-        Text Label(Transform parent,string value,int size,Vector2 dimensions,Vector2 position,Color color)
-        {
-            var text=Rect(parent,"Label",dimensions,position).gameObject.AddComponent<Text>();text.font=font;text.fontSize=size;text.text=value;text.color=color;
-            text.alignment=TextAnchor.MiddleLeft;text.raycastTarget=false;return text;
+
+            var carCard=Toy.Card(background,"Your car",new Vector2(400,250),new Vector2(700,250),Toy.Cream,30,6,8);
+            Toy.Title(carCard.transform,"Your car heading","YOUR CAR",30,new Vector2(360,40),new Vector2(0,100),Toy.Orange,TextAnchor.MiddleCenter);
+            carImage=Image(carCard.transform,"Whole car",new Vector2(380,210),new Vector2(0,-16));
+
+            var left=Toy.Card(background,"Previous part",new Vector2(290,320),new Vector2(-355,60),Toy.White,30,6,8);
+            leftImage=Image(left.transform,"Model",new Vector2(286,240),new Vector2(0,24));
+            leftLabel=Toy.Label(left.transform,"Name",string.Empty,21,new Vector2(260,60),new Vector2(0,-122),Toy.Navy,TextAnchor.MiddleCenter,true);
+            var right=Toy.Card(background,"Next part",new Vector2(290,320),new Vector2(470,20),Toy.White,30,6,8);
+            rightImage=Image(right.transform,"Model",new Vector2(286,240),new Vector2(0,24));
+            rightLabel=Toy.Label(right.transform,"Name",string.Empty,21,new Vector2(260,60),new Vector2(0,-122),Toy.Navy,TextAnchor.MiddleCenter,true);
+            selectedShape=Toy.Card(background,"Selected part",new Vector2(620,450),new Vector2(55,70),Toy.Cream,40,8,12);selectedShape.raycastTarget=true;
+            var burst=Toy.Sunburst(selectedShape.transform,new Vector2(420,420),new Vector2(0,40),Toy.Sun,Toy.Hex(0xffe58a),16,5);burst.circular=true;
+            selectedCard=selectedShape.gameObject.AddComponent<Button>();selectedCard.targetGraphic=selectedShape;selectedCard.transition=Selectable.Transition.None;
+            selectedShape.gameObject.AddComponent<PartCarouselNavigation>().browser=this;
+            selectedImage=Image(selectedShape.transform,"Rotatable engine",new Vector2(600,340),new Vector2(0,40));
+            title=Toy.Title(selectedShape.transform,"Part name",string.Empty,46,new Vector2(580,60),new Vector2(0,-140),Toy.Sun,TextAnchor.MiddleCenter);
+            state=Toy.Label(selectedShape.transform,"Part state",string.Empty,22,new Vector2(580,36),new Vector2(0,-192),Toy.Navy,TextAnchor.MiddleCenter,true);
+            previous=Toy.Candy(background,"PREVIOUS","< PREV",null,new Vector2(220,70),new Vector2(-355,-160),Toy.Sky,()=>Step(-1));buttons.Add(previous);
+            next=Toy.Candy(background,"NEXT","NEXT >",null,new Vector2(220,70),new Vector2(470,-160),Toy.Sky,()=>Step(1));buttons.Add(next);
+            Toy.Label(background,"Rotate hint","Left / right: browse · Q / E: spin · L1 / R1: category",19,new Vector2(560,30),new Vector2(55,-172),Toy.Navy,TextAnchor.MiddleCenter,true);
+
+            var detail=Toy.Card(background,"Complete setup comparison",new Vector2(1560,210),new Vector2(110,-340),Toy.Cream,34,7,10);
+            hint=Toy.Label(detail.transform,"Hint",string.Empty,25,new Vector2(620,90),new Vector2(-430,44),Toy.Navy,TextAnchor.UpperLeft,true);
+            explanation=Toy.Label(detail.transform,"Explanation",string.Empty,18,new Vector2(620,80),new Vector2(-430,-50),Toy.Soft,TextAnchor.UpperLeft,false);
+            comparisonHeading=Toy.Label(detail.transform,"Comparison heading",string.Empty,20,new Vector2(820,30),new Vector2(330,76),Toy.Orange,TextAnchor.MiddleLeft,true);
+            string[] captions={"POWER INDEX","0-30 MPH","TOP SPEED"};
+            for(int i=0;i<3;i++){
+                float y=30-i*48;Toy.Label(detail.transform,"Stat "+i,captions[i],20,new Vector2(220,40),new Vector2(20,y),Toy.Navy,TextAnchor.MiddleLeft,true);
+                before[i]=Toy.Pill(detail.transform,"Before "+i,string.Empty,20,new Vector2(170,40),new Vector2(290,y),Toy.White,Toy.Navy).GetComponentInChildren<Text>();
+                Toy.Title(detail.transform,"Arrow "+i,">",30,new Vector2(40,40),new Vector2(400,y),Toy.Orange,TextAnchor.MiddleCenter);
+                after[i]=Toy.Pill(detail.transform,"After "+i,string.Empty,20,new Vector2(170,40),new Vector2(510,y),Toy.Mint,Toy.Navy).GetComponentInChildren<Text>();
+            }
+            buy=Toy.Candy(background,"BUY","BUY",null,new Vector2(360,82),new Vector2(40,-478),Toy.Gold,Buy,true);buttons.Add(buy);
+            fit=Toy.Candy(background,"FIT","FIT",null,new Vector2(330,82),new Vector2(410,-478),Toy.Mint,Fit);buttons.Add(fit);
+            exit=Toy.Candy(background,"BACK TO GARAGE","BACK","O",new Vector2(260,82),new Vector2(740,-478),Toy.Red,()=>Leave(back));buttons.Add(exit);
+            status=Toy.Label(background,"Status",string.Empty,21,new Vector2(760,62),new Vector2(-520,-478),Toy.Navy,TextAnchor.MiddleLeft,true);
         }
         RawImage Image(Transform parent,string name,Vector2 size,Vector2 pos)
-        {var image=Rect(parent,name,size,pos).gameObject.AddComponent<RawImage>();image.raycastTarget=false;return image;}
-        Button ActionButton(Transform parent,string label,Vector2 size,Vector2 pos,Action action)
-        {
-            var rect=Box(parent,label,size,pos,Color.white);var button=rect.gameObject.AddComponent<Button>();button.targetGraphic=rect.GetComponent<Image>();
-            var colors=button.colors;colors.normalColor=new Color(.16f,.34f,.35f);colors.highlightedColor=new Color(.28f,.47f,.45f);
-            colors.selectedColor=Gold;colors.pressedColor=new Color(.74f,.56f,.27f);colors.disabledColor=new Color(.09f,.17f,.19f);button.colors=colors;
-            Label(rect,label,22,size-new Vector2(20,0),Vector2.zero,Ink).alignment=TextAnchor.MiddleCenter;
-            button.onClick.AddListener(()=>action());buttons.Add(button);return button;
-        }
+        {var image=Toy.Rect(parent,name,size,pos).gameObject.AddComponent<RawImage>();image.raycastTarget=false;return image;}
         public void Step(int amount){index=(index+amount+parts.Length)%parts.Length;remembered=SelectedId;notice="";Refresh(true);}
         public void SelectPart(string id)
         {int found=Array.FindIndex(parts,p=>p.id==id);if(found<0)throw new ArgumentException(id);index=found;remembered=id;notice="";Refresh(true);}
@@ -117,14 +111,14 @@ namespace LittleRoad
             state.text=isFitted?"FITTED  /  OWNED":owned?"OWNED  /  FREE TO FIT":$"{part.price:N0} CREDITS  /  NOT OWNED";
             hint.text=part.hint;
             var actual=EquipmentCatalog.Stats(store.Data.Loadout());var preview=store.Data.Loadout();preview[part.slot]=part.id;var target=EquipmentCatalog.Stats(preview);
-            comparisonHeading.text=$"SETUP / {EquipmentCatalog.Get(store.Data.Loadout()[part.slot]).name} (fitted) > {part.name}";
-            comparison.text=$"Power index                 {actual.power/CarTuning.Stock.power*100:0}   >   {target.power/CarTuning.Stock.power*100:0}\n"+
-                $"0–30 mph estimate        {Sprint(actual):0.00}s   >   {Sprint(target):0.00}s\n"+
-                $"Top speed estimate       {actual.AttainableSpeed*2.237f:0.0}   >   {target.AttainableSpeed*2.237f:0.0} mph";
+            comparisonHeading.text=$"{EquipmentCatalog.Get(store.Data.Loadout()[part.slot]).name.ToUpperInvariant()} (FITTED)  >  {part.name.ToUpperInvariant()}";
+            before[0].text=$"{actual.power/CarTuning.Stock.power*100:0}";after[0].text=$"{target.power/CarTuning.Stock.power*100:0}";
+            before[1].text=$"{Sprint(actual):0.00} s";after[1].text=$"{Sprint(target):0.00} s";
+            before[2].text=$"{actual.AttainableSpeed*2.237f:0.0} mph";after[2].text=$"{target.AttainableSpeed*2.237f:0.0} mph";
             explanation.text="Estimates use your other fitted parts on level, dry tarmac. Power index: stock setup = 100.\n"+
                 (target.AttainableSpeed>=target.gearCeiling-.05f?"Your transmission limits the top speed of this setup.":"Power, gearing and tyre grip determine usable performance.");
-            buy.interactable=!owned&&store.Data.credits>=part.price;buy.GetComponentInChildren<Text>().text=owned?"OWNED":$"BUY  /  {part.price:N0} CR";
-            fit.interactable=owned&&!isFitted;fit.GetComponentInChildren<Text>().text=isFitted?"FITTED":owned?"FIT ENGINE":"BUY BEFORE FITTING";
+            buy.interactable=!owned&&store.Data.credits>=part.price;buy.GetComponentInChildren<Text>().text=owned?"OWNED":$"BUY  {part.price:N0} CR";
+            fit.interactable=owned&&!isFitted;fit.GetComponentInChildren<Text>().text=isFitted?"FITTED":owned?"FIT ENGINE":"BUY FIRST";
             status.text=!string.IsNullOrEmpty(notice)?notice:!owned&&store.Data.credits<part.price?$"Need {part.price-store.Data.credits:N0} more credits. Every race finish pays.":"Preview freely. Buy to own; fit separately for free.";
             var left=parts[(index+parts.Length-1)%parts.Length];var right=parts[(index+1)%parts.Length];
             leftImage.texture=stage.Card(left.id);rightImage.texture=stage.Card(right.id);leftLabel.text=left.name;rightLabel.text=right.name;
@@ -173,10 +167,8 @@ namespace LittleRoad
         }
         void LateUpdate()
         {
-            if(!IsOpen)return;canvas.worldCamera=Camera.main;
-            cardFocus.enabled=EventSystem.current.currentSelectedGameObject==selectedCard.gameObject;
-            foreach(var button in buttons)button.GetComponentInChildren<Text>().color=EventSystem.current.currentSelectedGameObject==button.gameObject&&button.interactable?
-                new Color(.035f,.085f,.105f):button.interactable?Ink:new Color(.58f,.67f,.66f);
+            if(!IsOpen)return;if(canvas.worldCamera==null)Toy.UseMenuCamera(canvas);
+            bool focus=EventSystem.current.currentSelectedGameObject==selectedCard.gameObject;selectedShape.SetBorder(focus?Toy.Orange:Toy.Navy);
         }
         void OnDestroy(){stage?.Dispose();}
     }

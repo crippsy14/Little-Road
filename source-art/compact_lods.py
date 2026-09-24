@@ -2,7 +2,7 @@
 import bpy, bmesh, json
 from pathlib import Path
 
-def export_lods(meshes, target):
+def export_lods(meshes, target, name='compact_v1'):
     sources={o:o.data for o in meshes}
     counts={}
     for level,ratio in [(1,.48),(2,.22)]:
@@ -31,7 +31,7 @@ def export_lods(meshes, target):
             if pane:
                 pane.select_set(True);bpy.ops.object.join()
         counts['LOD'+str(level)]=sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in meshes)
-        bpy.ops.export_scene.fbx(filepath=str(target/('compact_v1_lod'+str(level)+'.fbx')),
+        bpy.ops.export_scene.fbx(filepath=str(target/(name+'_lod'+str(level)+'.fbx')),
             use_selection=False,object_types={'MESH','EMPTY'},apply_unit_scale=True,bake_space_transform=True,
             axis_forward='-Z',axis_up='Y',add_leaf_bones=False,use_mesh_modifiers=True,bake_anim=False)
         for o,source in sources.items():o.data=source

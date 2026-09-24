@@ -46,6 +46,8 @@ namespace LittleRoad
         int seed=1709,field=24;
         readonly List<float> frameTimes=new();
         readonly List<RoadCar> finishOrder=new();
+        readonly List<Vector2> playerTrace=new(); // (race distance in laps, place) at each checkpoint
+        public int LivePlace(RoadCar car)=>car.finished?finishOrder.IndexOf(car)+1:1+cars.Count(c=>c!=car&&(c.finished||c.RankedProgress>car.RankedProgress));
         readonly List<MotionSample> motion=new();
         readonly List<DraftSample> draftingSamples=new();
         [Serializable] public class DraftSample {public int id,leader;public float time,reduction;}
@@ -175,7 +177,7 @@ namespace LittleRoad
             if(Keyboard.current?.escapeKey.wasPressedThisFrame==true || (career&&Gamepad.current?.startButton.wasPressedThisFrame==true)) {if(career){AdventureSession.Notice=cars[0].finished?"Back in Bayview. Your result and reward are saved.":"Race retired · no payout. Your equipment is unchanged.";AdventureSession.ReturnToTown();}else{WriteReport();Application.Quit();}}
             if(career) {
                 careerUI.SetHudVisible(Hud==null&&!careerUI.IsOpen);
-                int place=cars[0].finished?finishOrder.IndexOf(cars[0])+1:1+cars.Count(c=>c!=cars[0]&&(c.finished||c.RankedProgress>cars[0].RankedProgress));
+                int place=LivePlace(cars[0]);
                 careerUI.HUD($"BAYVIEW COAST / CLASS C   ·   {place}/24   ·   Lap {Mathf.Min(cars[0].laps+1,requiredLaps)}/3   ·   {Mathf.RoundToInt(Mathf.Abs(cars[0].speed)*2.237f)} mph\n{(elapsed<0?"START IN "+Mathf.CeilToInt(-elapsed):"Race time "+(cars[0].finished?cars[0].finishTime:elapsed).ToString("0.0")+"s")}   ·   {AdventureSession.Store.Data.credits} credits",
                     PlayerRecoveryPending?"RECOVERY REQUESTED — waiting for a clear space on the road":cars[0].CheckpointMissed?cars[0].CheckpointMessage:"WASD / arrows or stick + R2/L2: drive     Hold Q / Triangle: look behind     R / D-pad Down: recover     Esc / Options: return to town (unfinished races pay nothing)");
             }
@@ -183,12 +185,25 @@ namespace LittleRoad
                 WriteReport();
                 if(career&&AdventureSession.Smoke){
                     if(finishOrder.Count!=24)throw new Exception("Adventure race did not complete its field.");
-                    if(captureFolder!=null)careerUI.Capture(Path.Combine(captureFolder,"03-race-result.png"));
-                    if(Has("--adventure-retry-review")&&AdventureSession.RaceSerial==1)StartCoroutine(ReviewCareerRetry());
-                    else AdventureSession.ReturnToTown();
+                    StartCoroutine(FinishCareerSmoke());
                 }
                 else StartCoroutine(EndTrial());
             }
+        }
+        // Let the results screen settle (stamp, confetti, podium renders) before capturing,
+        // then continue the smoke sequence.
+        IEnumerator FinishCareerSmoke()
+        {
+            if(captureFolder!=null){
+                float until=Time.realtimeSinceStartup+1.5f;
+                while(Time.realtimeSinceStartup<until||careerUI.Result!=null&&!careerUI.Result.PodiumReady)yield return null;
+                careerUI.Capture(Path.Combine(captureFolder,"03-race-result.png"));
+                // A visible run also grabs the real back buffer, proving the menu camera stack draws on screen.
+                if(!Application.isBatchMode){yield return new WaitForEndOfFrame();var grab=new Texture2D(Screen.width,Screen.height,TextureFormat.RGB24,false);grab.ReadPixels(new Rect(0,0,Screen.width,Screen.height),0,0);File.WriteAllBytes(Path.Combine(captureFolder,"03-race-result-screen.png"),grab.EncodeToPNG());Destroy(grab);}
+                if(careerUI.Result!=null){careerUI.Result.OpenStory();yield return null;careerUI.Capture(Path.Combine(captureFolder,"03c-race-story.png"));careerUI.Result.CloseStory();}
+            }
+            if(Has("--adventure-retry-review")&&AdventureSession.RaceSerial==1)StartCoroutine(ReviewCareerRetry());
+            else AdventureSession.ReturnToTown();
         }
         void LateUpdate(){if(chase!=null&&cars.Count>0)UpdateCamera(false);}
         void ConfirmManualStart(bool requested)
@@ -237,8 +252,19 @@ namespace LittleRoad
         }
         void ShowCareerResult()
         {
-            int place=finishOrder.IndexOf(cars[0])+1;
-            careerUI.ShowRaceResult(place,cars.Count,cars[0].finishTime,careerReward,AdventureSession.Store.Data.credits,AdventureSession.ReturnToTown,PreviewNextCareerRace);
+            var me=cars[0];var entrant=Roster?.Entries[me.driverId];
+            var summary=new RaceResultSummary{place=finishOrder.IndexOf(me)+1,entrants=cars.Count,grid=entrant!=null?entrant.Slot+1:cars.Count,reward=careerReward,
+                wallet=AdventureSession.Store.Data.credits,laps=requiredLaps,finishTime=me.finishTime,bestLap=me.bestLap,standings=LiveStandings};
+            if(Roster!=null)summary.venue=Roster.Title.Split('/')[0].Trim()+" Cup";
+            summary.trace.Add(new Vector2(0,summary.grid));summary.trace.AddRange(playerTrace);summary.trace.Add(new Vector2(requiredLaps,summary.place));
+            careerUI.ShowRaceResult(summary,AdventureSession.ReturnToTown,PreviewNextCareerRace);
+        }
+        // Finishers in order, then cars still racing by progress. Read live by the results board.
+        List<RaceStanding> LiveStandings()
+        {
+            var ordered=finishOrder.Concat(cars.Where(c=>!finishOrder.Contains(c)).OrderByDescending(c=>c.RankedProgress)).ToList();
+            return ordered.Select((c,i)=>{var e=Roster!=null&&c.driverId<Roster.Entries.Count?Roster.Entries[c.driverId]:null;
+                return new RaceStanding{place=i+1,name=e?.Driver?.Name??"Driver "+c.driverId,paint=e?.Paint??Color.white,player=c==cars[0],finished=finishOrder.Contains(c),time=c.finishTime,entrant=e};}).ToList();
         }
         void PreviewNextCareerRace()
         {
@@ -270,7 +296,10 @@ namespace LittleRoad
             impacts.Add(new ImpactSample{id=car.driverId,other=other,otherName=otherName,time=elapsed,relativeSpeed=relativeSpeed,penetration=penetration,progress=car.progress,offset=car.offset});
         }
         public void RecordCheckpoint(RoadCar car,float requiredProgress)
-        {checkpointPassages.Add(new CheckpointSample{id=car.driverId,gate=car.nextGate,time=elapsed,requiredProgress=requiredProgress,actualProgress=car.progress});}
+        {
+            checkpointPassages.Add(new CheckpointSample{id=car.driverId,gate=car.nextGate,time=elapsed,requiredProgress=requiredProgress,actualProgress=car.progress});
+            if(cars.Count>0&&car==cars[0]&&track!=null)playerTrace.Add(new Vector2(Mathf.Max(0,car.progress)/track.length,LivePlace(car)));
+        }
         public void RecordRecovery(RoadCar car,Vector3 before,Vector3 after,float beforeProgress,int beforeGate,string reason,int rejected)
         {
             assistedRecoveries.Add(new RecoverySample{id=car.driverId,time=elapsed,positionBefore=before,positionAfter=after,progressBefore=beforeProgress,progressAfter=car.progress,gateBefore=beforeGate,gateAfter=car.nextGate,reason=reason,rejectedDestinations=rejected});
@@ -309,7 +338,7 @@ namespace LittleRoad
             small??=new GUIStyle(GUI.skin.label){fontSize=15,normal={textColor=new Color(.79f,.88f,.88f)}};
             GUI.color=new Color(.07f,.16f,.19f,.9f);GUI.DrawTexture(new Rect(20,20,480,148),Texture2D.whiteTexture);GUI.color=Color.white;
             GUI.Label(new Rect(36,29,450,38),technical==null?"LITTLE ROAD / Coastal Circuit":"LITTLE ROAD / Cedar Technical",title);
-            int place=cars[0].finished?finishOrder.IndexOf(cars[0])+1:1+cars.Count(c=>c!=cars[0]&&(c.finished||c.RankedProgress>cars[0].RankedProgress));
+            int place=LivePlace(cars[0]);
             GUI.Label(new Rect(36,69,450,30),$"{Mathf.RoundToInt(Mathf.Abs(cars[0].speed)*2.237f)} mph     {place}/{cars.Count}     Lap {Mathf.Min(cars[0].laps+1,requiredLaps)}/{requiredLaps}",label);
             GUI.Label(new Rect(36,103,450,24),$"{setup.ToUpperInvariant()}  ·  {(cars[0].autonomous?"AI driving":"You are driving")}  ·  {Mathf.Max(0,elapsed):0.0}s",small);
             GUI.Label(new Rect(36,130,450,24),technical==null?"Unity migration trial — prototype art":technical.Region(cars[0].pathDistance)+"  ·  C: overview",small);

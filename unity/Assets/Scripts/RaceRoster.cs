@@ -29,7 +29,7 @@ namespace LittleRoad
         public RaceEntrant(int id,int slot,string body,Color paint,string label,IReadOnlyDictionary<string,string> parts,DriverIdentity driver)
         {
             if(id<0||id>=24||slot<0||slot>=24)throw new ArgumentOutOfRangeException(nameof(id));
-            if(Array.IndexOf(new[]{"compact_v1","coupe_car","utility_car","formula_car"},body)<0)throw new ArgumentException("Unknown body: "+body);
+            if(!CarBodies.IsKnown(body))throw new ArgumentException("Unknown body: "+body);
             var owned=new Dictionary<string,string>();foreach(var item in parts)owned.Add(item.Key,item.Value);
             Tuning=EquipmentCatalog.Stats(owned);Id=id;Slot=slot;Body=body;Paint=paint;EquipmentLabel=label;Driver=driver;
             Parts=new ReadOnlyDictionary<string,string>(owned);Rating=CarPerformanceRating.Calculate(Tuning);
@@ -62,12 +62,21 @@ namespace LittleRoad
             }
             return new RaceRoster(seed,laps,track,track=="bayview"?"BAYVIEW COAST":"CEDAR TECHNICAL",driverMode!=null,entries);
         }
+        public static readonly Color FlagshipPaint=new(.05f,.22f,.62f);
         public static RaceRoster Adventure(AdventureProgress save,bool modern=true)
         {
             save.Validate();int seed=1709+(save.raceSerial+1)*11;
             var trial=Trial(24,3,seed,"bayview","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
-            var entries=new RaceEntrant[24];for(int i=0;i<24;i++)entries[i]=trial.Entries[i];
-            entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),entries[0].Driver);
+            // Bodies follow equipment tier: street cars are family cars, club cars
+            // are sporty, and the pole-sitter runs club kit in the liveried flagship.
+            var entries=new RaceEntrant[24];
+            var family=CarBodies.Deal(CarBodies.Family,24,seed);var sporty=CarBodies.Deal(CarBodies.Sporty,24,seed+1);int f=0,s=0;
+            for(int i=1;i<24;i++){
+                var e=trial.Entries[i];
+                if(e.Slot==0)entries[i]=new RaceEntrant(e.Id,e.Slot,CarBodies.Flagship,FlagshipPaint,"club",EquipmentCatalog.TestLoadout("club"),e.Driver);
+                else entries[i]=new RaceEntrant(e.Id,e.Slot,e.EquipmentLabel=="club"?sporty[s++]:family[f++],e.Paint,e.EquipmentLabel,e.Parts,e.Driver);
+            }
+            entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver);
             return new RaceRoster(seed,3,"bayview","BAYVIEW COAST / CLASS C",modern,entries);
         }
         public bool MatchesPlayer(AdventureProgress save)

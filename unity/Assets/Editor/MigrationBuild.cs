@@ -78,7 +78,10 @@ public static class MigrationBuild
         Check(corner<straight && yaw<1,"Turning and poor grip restrict usable power",evidence);
         var circuit=new Circuit();Check(circuit.length>600 && Circuit.Width==16,"Wide continuous circuit: "+circuit.length.ToString("0.0")+"m x16m",evidence);
         for(float d=0;d<circuit.length;d+=31) {float near=circuit.Nearest(circuit.At(d),out float offset);Check(Mathf.Abs(offset)<.01f&&Mathf.Abs(near-d)<.05f,"Track projection "+d,evidence);}
-        foreach(string name in new[]{"little_car","coupe_car","utility_car","formula_car","compact_v1","compact_v1_lod1","compact_v1_lod2"}) {
+        var imported=new List<string>{"little_car","coupe_car","utility_car","formula_car","compact_v1","compact_v1_lod1","compact_v1_lod2"};
+        var generated=new List<string>(CarBodies.Family);generated.AddRange(CarBodies.Sporty);generated.Add(CarBodies.Flagship);generated.Add(CarBodies.Starter);
+        foreach(string body in generated)imported.AddRange(new[]{body,body+"_lod1",body+"_lod2"});
+        foreach(string name in imported) {
             var model=Resources.Load<GameObject>("Cars/"+name);Check(model!=null,"Imported "+name,evidence);
             var instance=UnityEngine.Object.Instantiate(model);Bounds bounds=new Bounds();bool first=true;int verts=0;
             foreach(var r in instance.GetComponentsInChildren<Renderer>()){if(first){bounds=r.bounds;first=false;}else bounds.Encapsulate(r.bounds);}

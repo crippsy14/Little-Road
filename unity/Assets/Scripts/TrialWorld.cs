@@ -87,13 +87,15 @@ namespace LittleRoad
             var root=new GameObject(asset);
             var materials=new System.Collections.Generic.Dictionary<string,Material>();
             var visual=CarVisual(root,asset,paint,materials);
-            if(asset=="compact_v1") {
+            // Bodies exported with reduced meshes (compact master, family field) get LOD groups.
+            if(Resources.Load<GameObject>("Cars/"+asset+"_lod1")!=null) {
                 var lod1=CarVisual(root,asset+"_lod1",paint,materials);var lod2=CarVisual(root,asset+"_lod2",paint,materials);
                 var group=root.AddComponent<LODGroup>();group.SetLODs(new[]{
                     new LOD(.18f,visual.GetComponentsInChildren<Renderer>()),
                     new LOD(.045f,lod1.GetComponentsInChildren<Renderer>()),
                     new LOD(.008f,lod2.GetComponentsInChildren<Renderer>())});group.RecalculateBounds();
             }
+            if(CarBodies.UsesStandardEnvelope(asset))root.AddComponent<StandardEnvelope>();
             root.AddComponent<VehicleLights>().Initialize();return root;
         }
         static GameObject CarVisual(GameObject root,string asset,Color paint,System.Collections.Generic.Dictionary<string,Material> materials)
@@ -116,12 +118,14 @@ namespace LittleRoad
                         name.Contains("BumperInsert")?new Color(.22f,.25f,.26f):
                         name.Contains("Amber")?new Color(1,.38f,.02f):name.Contains("Plate")?new Color(.9f,.89f,.75f):
                         name.Contains("PanelSeam")?new Color(.024f,.054f,.051f):name.Contains("BrakeMetal")?new Color(.08f,.095f,.10f):
-                        name.Contains("Cloth")?new Color(.065f,.088f,.094f):new Color(.055f,.073f,.08f);
+                        name.Contains("Cloth")?new Color(.065f,.088f,.094f):name.Contains("Cream")?new Color(.93f,.90f,.80f):name.Contains("Livery")?new Color(.85f,.10f,.08f):
+                        name.Contains("Wood")?new Color(.45f,.27f,.13f):new Color(.055f,.073f,.08f);
                     // Plastic seals and trim should not inherit glossy metallic
                     // paint. Preserve readable material separation at race distance.
                     bool paintSurface=name.Contains("BodyPaint"),alloySurface=name.Contains("Alloy");
-                    float metal=alloySurface?.7f:name.Contains("BrakeMetal")?.55f:paintSurface?.05f:0;
-                    float smooth=alloySurface?.42f:paintSurface?.56f:name.Contains("Rubber")?.15f:
+                    bool chrome=name.Contains("Chrome");
+                    float metal=chrome?.9f:alloySurface?.7f:name.Contains("BrakeMetal")?.55f:paintSurface?.05f:0;
+                    float smooth=chrome?.8f:alloySurface?.42f:paintSurface?.56f:name.Contains("Rubber")?.15f:
                         name.Contains("Headlamp")||name.Contains("TailLight")||name.Contains("ReverseLight")||name.Contains("Amber")?.6f:.25f;
                     converted[i]=Material(name,c,metal,smooth);
                     if(name.Contains("TailLight")||name.Contains("ReverseLight")) {

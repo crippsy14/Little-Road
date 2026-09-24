@@ -78,7 +78,6 @@ namespace LittleRoad
             for(int i=0;i<7;i++){
                 int index=i;hotspots[i]=CoastMenu.Button(orbitRect,"Inspect "+EquipmentCatalog.All.slots[i],(i+1).ToString(),new Vector2(46,33),Vector2.zero,()=>SelectPart(index));
                 hotspots[i].GetComponentInChildren<Text>().rectTransform.sizeDelta=new Vector2(30,30);hotspots[i].GetComponentInChildren<Text>().rectTransform.anchoredPosition=Vector2.zero;
-                ((RectTransform)hotspots[i].transform.Find("Focus arrow")).anchoredPosition=new Vector2(-30,0);
                 hotspots[i].gameObject.AddComponent<PaddockHover>().entered=()=>SetAnimation(false);
             }
             for(int i=0;i<7;i++)hotspots[i].navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnRight=hotspots[(i+1)%7],selectOnLeft=hotspots[(i+6)%7]};

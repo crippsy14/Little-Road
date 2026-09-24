@@ -36,6 +36,28 @@ public static class RaceRosterChecks
         Require(upgraded.Entries[0].Rating>roster.Entries[0].Rating,"actual player upgrade absent in preview");
         checks.Add("Adventure preview starts player24th, does not spend a race serial/re-roll form, rejects stale equipment and fixes opponents across upgrades");
 
+        var fresh=AdventureProgress.New();Require(fresh.bodyId==CarBodies.Starter,"new save does not start in the starter car");
+        foreach(var serial in new[]{0,1,2,7}) {
+            fresh.raceSerial=serial;fresh.settledSerial=serial;var field=RaceRoster.Adventure(fresh);int flagships=0;var used=new HashSet<string>();
+            foreach(var e in field.Entries) {
+                if(e.Id==0)continue;used.Add(e.Body);
+                if(e.Slot==0){Require(e.Body==CarBodies.Flagship&&e.EquipmentLabel=="club","pole car is not the flagship on club equipment");flagships++;}
+                else if(e.EquipmentLabel=="club")Require(Array.IndexOf(CarBodies.Sporty,e.Body)>=0,"club entrant not in a sporty body: "+e.Body);
+                else Require(Array.IndexOf(CarBodies.Family,e.Body)>=0,"street entrant not in a family body: "+e.Body);
+                Require(e.Body!=CarBodies.Flagship||e.Slot==0,"flagship livery appears off pole");
+            }
+            Require(flagships==1,"expected exactly one flagship");
+            foreach(var body in CarBodies.Family)Require(used.Contains(body),"family model missing from field: "+body);
+            Require(field.Entries[1].Rating>=field.Entries[2].Rating,"pole car slower than its neighbour");
+        }
+        foreach(var body in CarBodies.Family)Require(CarBodies.UsesStandardEnvelope(body),"family body outside standard envelope: "+body);
+        foreach(var body in CarBodies.Sporty)Require(CarBodies.UsesStandardEnvelope(body),"sporty body outside standard envelope: "+body);
+        Require(CarBodies.UsesStandardEnvelope(CarBodies.Flagship)&&CarBodies.UsesStandardEnvelope(CarBodies.Starter)&&!CarBodies.UsesStandardEnvelope("coupe_car"),"envelope set wrong");
+        var probe=TrialWorld.Car(CarBodies.Flagship,Color.white);
+        try{Require(probe.GetComponent<StandardEnvelope>()!=null,"flagship car missing its standard envelope marker");}finally{UnityEngine.Object.DestroyImmediate(probe);}
+        checks.Add("Generated bodies share one physical envelope; body shape grants no collision advantage");
+        checks.Add("Adventure field matches bodies to tier: one liveried Zenith on pole with club kit, sporty club cars, every family model among street cars");
+
         var oldRoster=AdventureSession.EnteredRoster;bool oldRacing=AdventureSession.Racing;
         try {
             AdventureSession.EnteredRoster=roster;AdventureSession.Racing=true;

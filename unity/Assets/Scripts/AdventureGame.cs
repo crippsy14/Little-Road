@@ -16,7 +16,7 @@ namespace LittleRoad
         RaceTrial world;RoadCar player;Camera cameraView;AdventureUI ui;PartsBrowser browser;RacePreviewUI racePreview;
         readonly Dictionary<string,Vector3> residents=new();
         readonly Dictionary<string,GameObject> finds=new();
-        string nearest,message="Welcome to Bayview. Mara has a parcel for the lighthouse.";float messageUntil=9,interactionReadyTime;
+        string nearest;float interactionReadyTime;
         public static readonly Color[] Paints={new Color(.08f,.56f,.49f),new Color(.88f,.36f,.17f),new Color(.30f,.45f,.75f),new Color(.88f,.70f,.25f)};
         AdventureStore Store=>AdventureSession.Store;
         bool reviewing,wasLookingBehind;
@@ -35,6 +35,7 @@ namespace LittleRoad
             cameraView=new GameObject("Adventure camera").AddComponent<Camera>();cameraView.tag="MainCamera";cameraView.fieldOfView=55;cameraView.nearClipPlane=.15f;cameraView.farClipPlane=1500;
             cameraView.gameObject.AddComponent<AudioListener>();var cd=cameraView.GetUniversalAdditionalCameraData();cd.renderPostProcessing=true;cd.antialiasing=AntialiasingMode.SubpixelMorphologicalAntiAliasing;
             CameraPose(true);if(!string.IsNullOrEmpty(AdventureSession.Notice)){Notify(AdventureSession.Notice);AdventureSession.Notice=null;}
+            else if(Store.Data.questStage==0)Notify("Welcome to Bayview · Mara has a parcel for the lighthouse");
             Debug.Log("LITTLE_ROAD_ADVENTURE_READY save="+Store.path+" quest="+Store.Data.questStage+" credits="+Store.Data.credits);
             if(RaceTrial.Has("--geometry-audit-only")){Application.Quit();yield break;}
             if(RaceTrial.Has("--world-review")){RefreshHUD();reviewing=true;player.controlsBlocked=true;gameObject.AddComponent<VillageReview>();yield break;}
@@ -68,7 +69,7 @@ namespace LittleRoad
         {
             foreach(var pair in residents) {
                 Color color=pair.Key=="garage"?new Color(.85f,.38f,.19f):pair.Key=="post"?new Color(.9f,.7f,.23f):new Color(.38f,.48f,.68f);
-                var npc=TrialWorld.Car(pair.Key=="cafe"?"coupe_car":"utility_car",color);npc.name="Resident "+pair.Key;npc.transform.position=pair.Value+Vector3.up*.05f;
+                var npc=TrialWorld.Car(pair.Key=="cafe"?"otter":pair.Key=="garage"?"kipper":"pebble",color);npc.name="Resident "+pair.Key;npc.transform.position=pair.Value+Vector3.up*.05f;
                 var renderers=npc.GetComponentsInChildren<Renderer>();Bounds visualBounds=renderers[0].bounds;foreach(var renderer in renderers)visualBounds.Encapsulate(renderer.bounds);
                 var bounds=npc.AddComponent<BoxCollider>();bounds.center=visualBounds.center-npc.transform.position;bounds.size=visualBounds.size+Vector3.one*.02f;npc.tag="Respawn";
                 npc.transform.position+=Vector3.up*(.018f-visualBounds.min.y);
@@ -119,7 +120,7 @@ namespace LittleRoad
             string target=Store.Data.questStage==1?"post":Store.Data.questStage<3?"garage":"cafe";
             float distance=Vector3.Distance(player.transform.position,residents[target]);
             ui.HUD($"BAYVIEW   ·   {Store.Data.credits} credits   ·   {Store.Data.collected.Count}/5 postcards   ·   {Mathf.RoundToInt(Mathf.Abs(player.speed)*2.237f)} mph\n{objectives[Store.Data.questStage]}  ·  {distance:0} m",
-                ui.IsOpen?"Arrows / D-pad: choose     Enter / Cross: confirm     Esc / Circle: back to the road":Time.time<messageUntil?message:nearest!=null?"E / Cross: talk     Esc / Circle: pause":"WASD / arrows or stick + R2/L2: drive     Hold Q / Triangle: look behind     E / Cross: talk     R / D-pad Down: recover     Esc / Circle: pause");
+                ui.IsOpen?"Arrows / D-pad: choose     Enter / Cross: confirm     Esc / Circle: back to the road":nearest!=null?"E / Cross: talk     Esc / Circle: pause":"WASD / arrows or stick + R2/L2: drive     Hold Q / Triangle: look behind     E / Cross: talk     R / D-pad Down: recover     Esc / Circle: pause");
         }
         void LateUpdate(){if(!reviewing&&player!=null&&cameraView!=null)CameraPose(false);}
         void CameraPose(bool snap)
@@ -134,7 +135,7 @@ namespace LittleRoad
                 if(!hit.collider.transform.IsChildOf(player.transform)&&hit.distance>1)desired=target+delta.normalized*Mathf.Min(Vector3.Distance(target,desired),hit.distance-.25f);
             cameraView.transform.position=snap?desired:Vector3.Lerp(cameraView.transform.position,desired,1-Mathf.Exp(-Time.deltaTime*8));cameraView.transform.LookAt(target+viewingForward*1.7f);
         }
-        void Notify(string value){message=value;messageUntil=Time.time+7;}
+        void Notify(string value)=>ui.Toast(value);
         void Attempt(Action action){try{action();}catch(Exception e){Debug.LogError(e);Show("Could not save that change",e.Message+"\nYour previous progress is still loaded.",new(){new("Back to the road",Close)});}}
         void Show(string title,string description,List<AdventureUI.Choice> choices){player.controlsBlocked=true;ui.Show(title,description,choices);}
         void Close(){if(browser.IsOpen)browser.Hide();ui.SetVisible(true);ui.Close();player.controlsBlocked=false;interactionReadyTime=Time.unscaledTime+.25f;}

@@ -18,23 +18,12 @@ namespace LittleRoad
             for(int i=1;i<=n;i++)vh.AddTriangle(0,i,i==n?1:i+1);
         }
     }
-    public sealed class CoastArc:MaskableGraphic
-    {
-        public float value=1,thickness=7;
-        protected override void OnPopulateMesh(VertexHelper vh)
-        {
-            vh.Clear();float outer=Mathf.Min(rectTransform.rect.width,rectTransform.rect.height)*.5f,inner=outer-thickness;
-            for(int i=0;i<=64;i++){float a=(220-260*value*i/64)*Mathf.Deg2Rad;var d=new Vector2(Mathf.Cos(a),Mathf.Sin(a));vh.AddVert(d*outer,color,Vector2.zero);vh.AddVert(d*inner,color,Vector2.zero);if(i>0){int v=i*2;vh.AddTriangle(v-2,v-1,v);vh.AddTriangle(v-1,v+1,v);}}
-        }
-        public void Set(float v){v=Mathf.Clamp01(v);if(Mathf.Abs(value-v)>.0005f){value=v;SetVerticesDirty();}}
-    }
     public static class CoastUI
     {
         public static readonly Color Ink=new(.075f,.22f,.24f),Paper=new(.98f,.94f,.81f),Sea=new(.10f,.48f,.49f),Orange=new(.92f,.36f,.17f),Sun=new(1,.75f,.25f),Muted=new(.33f,.43f,.41f);
-        static Font font;
         public static RectTransform Rect(Transform parent,string name,Vector2 size,Vector2 position)
         {
-            var r=new GameObject(name,typeof(RectTransform)).GetComponent<RectTransform>();r.SetParent(parent,false);r.anchorMin=r.anchorMax=r.pivot=new Vector2(.5f,.5f);r.sizeDelta=size;r.anchoredPosition=position;return r;
+            var r=new GameObject(name,typeof(RectTransform)).GetComponent<RectTransform>();r.SetParent(parent,false);r.gameObject.layer=parent.gameObject.layer;r.anchorMin=r.anchorMax=r.pivot=new Vector2(.5f,.5f);r.sizeDelta=size;r.anchoredPosition=position;return r;
         }
         public static RectTransform Panel(Transform parent,string name,Vector2 size,Vector2 pos,Color color,float radius=18,bool shadow=false)
         {
@@ -44,7 +33,7 @@ namespace LittleRoad
         }
         public static Text Label(Transform parent,string name,string value,int size,Vector2 box,Vector2 pos,Color color,bool bold=false,TextAnchor anchor=TextAnchor.MiddleLeft)
         {
-            if(font==null)font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");var t=Rect(parent,name,box,pos).gameObject.AddComponent<Text>();t.font=font;t.fontSize=size;t.fontStyle=bold?FontStyle.Bold:FontStyle.Normal;t.text=value;t.color=color;t.alignment=anchor;t.raycastTarget=false;t.horizontalOverflow=HorizontalWrapMode.Wrap;return t;
+            var t=Rect(parent,name,box,pos).gameObject.AddComponent<Text>();t.font=bold?Toy.Heavy:Toy.Body;t.fontSize=size;t.text=value;t.color=color;t.alignment=anchor;t.raycastTarget=false;t.horizontalOverflow=HorizontalWrapMode.Wrap;return t;
         }
         public static Canvas Canvas(Transform parent,string name,int order)
         {

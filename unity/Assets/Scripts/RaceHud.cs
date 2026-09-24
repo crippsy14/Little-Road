@@ -23,6 +23,7 @@ namespace LittleRoad
         {
             race=owner;var slots=new int[race.cars.Count];for(int i=0;i<slots.Length;i++)slots[i]=race.Roster.Entries[i].Slot;
             timing=new RaceTiming(race.track.length,slots);Build();Sample();Refresh();
+            gameObject.AddComponent<ToyCountdown>().Setup(()=>race.elapsed,()=>race.WaitingForReady||race.PreviewOpen||race.ResultsOpen);
             if(RaceTrial.Has("--race-hud-review"))StartCoroutine(Review());
         }
         static void Anchor(RectTransform rect,float x,float y,Vector2 pos){rect.anchorMin=rect.anchorMax=new Vector2(x,y);rect.anchoredPosition=pos;}
@@ -98,7 +99,7 @@ namespace LittleRoad
             gasFill.sizeDelta=new Vector2(12,62*Mathf.Clamp01(player.throttle));brakeFill.sizeDelta=new Vector2(12,62*Mathf.Clamp01(-player.throttle));
             int rank=timing.Rank(0);position.text=rank+" / "+race.cars.Count;lap.text=$"{Mathf.Min(player.laps+1,race.requiredLaps)} / {race.requiredLaps}";
             float t=Mathf.Max(0,player.finished?player.finishTime:race.elapsed);totalTime.text=$"TOTAL  {(int)t/60:00}:{t%60:00.0}";float lapTime=player.CurrentLapTime;clock.text=player.nextGateProgress<=0?"—":$"{(int)lapTime/60:0}:{lapTime%60:00.000}";bestLap.text=player.bestLap==float.MaxValue?"":$"BEST  {(int)player.bestLap/60:0}:{player.bestLap%60:00.000}";
-            notice.text=race.WaitingForReady?"PRESS ENTER / OPTIONS TO START":race.elapsed<0?"GET READY   "+Mathf.CeilToInt(-race.elapsed):player.CheckpointMissed?"MISSED CHECKPOINT  ·  R / D-pad Down: recover":race.PlayerRecoveryPending?"WAITING FOR A CLEAR RECOVERY SPACE":player.finished?"FINISHED  ·  "+rank+" / "+race.cars.Count:race.elapsed<1?"LET'S GO!":"";
+            notice.text=race.WaitingForReady?"PRESS ENTER / OPTIONS TO START":race.elapsed<0?"":player.CheckpointMissed?"MISSED CHECKPOINT  ·  R / D-pad Down: recover":race.PlayerRecoveryPending?"WAITING FOR A CLEAR RECOVERY SPACE":player.finished?"FINISHED  ·  "+rank+" / "+race.cars.Count:race.elapsed<1?"LET'S GO!":"";
             if(notice.text.Length==0&&race.elapsed<finalLapUntil)notice.text="FINAL LAP";
             mapCars.Refresh();lapHistoryTitle.gameObject.SetActive(lapHistory.Count>0);
             for(int i=0;i<3;i++){recentLaps[i].gameObject.SetActive(i<lapHistory.Count);if(i<lapHistory.Count){float seconds=lapHistory.Seconds(i);recentLaps[i].text=$"L{lapHistory.Lap(i)}   {(int)seconds/60:0}:{seconds%60:00.000}";}}

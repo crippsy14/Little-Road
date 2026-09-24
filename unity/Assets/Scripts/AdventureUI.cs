@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -10,19 +9,23 @@ using UnityEngine.UI;
 
 namespace LittleRoad
 {
+    // Adventure-mode overlay: journey stickers (top), control hint (bottom),
+    // conversations as a name tag + speech bubble with candy choices, and the
+    // race results screen. All drawn with the Toy kit on the menu camera.
     public sealed class AdventureUI:MonoBehaviour
     {
         public sealed class Choice {public string text;public Action action;public bool enabled=true;public Choice(string text,Action action,bool enabled=true){this.text=text;this.action=action;this.enabled=enabled;}}
-        Canvas canvas;RectTransform panel;Text heading,description,hud,prompt;Font font;
-        RectTransform topBar,bottomBar;
-        RectTransform resultPanel;Text resultPlace,resultTime,resultReward,resultWallet;float presentedFinish;
+        Canvas canvas;RectTransform panel,choiceColumn,topBar,bottomBar;Text heading,place,description,prompt,objective;ToyShape promptPill,objectivePill,placePill;
+        readonly List<ToyShape> chips=new();readonly List<Text> chipTexts=new();string shownHud,shownControls;
+        RaceResultScreen result;ToyToaster toaster;
         readonly List<Button> buttons=new();
-        public bool IsOpen=>(panel!=null&&panel.gameObject.activeSelf)||(resultPanel!=null&&resultPanel.gameObject.activeSelf);
-        public string DisplayedFinishTime=>resultTime?.text;
+        static readonly Color[] ChoiceColours={Toy.Blue,Toy.Mint,Toy.Orange,Toy.Pink,Toy.Red,Toy.Sky};
+        public bool IsOpen=>(panel!=null&&panel.gameObject.activeSelf)||result!=null;
+        public string DisplayedFinishTime=>result?.TimeLabel?.text;
+        public RaceResultScreen Result=>result;
         void Awake()
         {
-            font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            var root=new GameObject("Adventure interface",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));root.transform.SetParent(transform);
+            var root=new GameObject("Adventure interface",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));root.transform.SetParent(transform);root.layer=Toy.MenuLayer;
             canvas=root.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.planeDistance=1;canvas.sortingOrder=10;
             var scaler=root.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1920,1080);scaler.matchWidthOrHeight=.5f;
             if(EventSystem.current==null){var events=new GameObject("Menu input",typeof(EventSystem),typeof(InputSystemUIInputModule));events.transform.SetParent(transform);events.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();}
@@ -31,53 +34,78 @@ namespace LittleRoad
             var move=EventSystem.current.GetComponent<InputSystemUIInputModule>()?.move?.action;
             if(move!=null)for(int i=0;i<move.bindings.Count;i++)
                 if(move.bindings[i].path?.StartsWith("<Gamepad>/rightStick")==true)move.ApplyBindingOverride(i,"");
-            var top=Box("Journey HUD",root.transform,new Vector2(1880,110),new Vector2(0,475));
-            topBar=top;
-            hud=Text("Journey",top,"",25,new Vector2(1840,95),Vector2.zero);hud.alignment=TextAnchor.MiddleLeft;
-            var bottom=Box("Journey controls",root.transform,new Vector2(1880,90),new Vector2(0,-475));
-            bottomBar=bottom;
-            prompt=Text("Controls",bottom,"",23,new Vector2(1840,80),Vector2.zero);prompt.alignment=TextAnchor.MiddleLeft;
-            panel=Box("Conversation",root.transform,new Vector2(820,790),Vector2.zero);
-            heading=Text("Heading",panel,"",33,new Vector2(744,60),new Vector2(0,332));heading.fontStyle=FontStyle.Bold;
-            description=Text("Description",panel,"",23,new Vector2(744,145),new Vector2(0,232));description.alignment=TextAnchor.UpperLeft;
+
+            topBar=Toy.Rect(root.transform,"Journey HUD",new Vector2(1880,150),new Vector2(0,450));
+            objectivePill=Toy.Card(topBar,"Objective",new Vector2(900,56),new Vector2(-470,-40),Toy.Sun,28,5,5);
+            var bang=Toy.Card(objectivePill.transform,"Objective mark",new Vector2(44,44),new Vector2(-424,0),Toy.Red,22,4,0);
+            Toy.Title(bang.transform,"Bang","!",32,new Vector2(44,44),new Vector2(0,1),Toy.White,TextAnchor.MiddleCenter);
+            objective=Toy.Label(objectivePill.transform,"Objective text",string.Empty,24,new Vector2(820,56),new Vector2(24,0),Toy.Navy,TextAnchor.MiddleLeft,true);
+            bottomBar=Toy.Rect(root.transform,"Journey controls",new Vector2(1880,80),new Vector2(0,-490));
+            promptPill=Toy.Card(bottomBar,"Controls pill",new Vector2(1200,58),Vector2.zero,Toy.Navy,29,4,4);promptPill.borderColor=Toy.White;
+            prompt=Toy.Label(promptPill.transform,"Controls",string.Empty,21,new Vector2(1160,58),Vector2.zero,Toy.White,TextAnchor.MiddleCenter,true);
+
+            toaster=Toy.Rect(root.transform,"Toasts",new Vector2(1920,1080),Vector2.zero).gameObject.AddComponent<ToyToaster>();
+            panel=Toy.Rect(root.transform,"Conversation",new Vector2(1920,1080),Vector2.zero);
+            var bubble=Toy.Card(panel,"Speech bubble",new Vector2(1060,330),new Vector2(-380,-300),Toy.White,44,7,11);
+            var tail=Toy.Card(bubble.transform,"Bubble tail",new Vector2(56,56),new Vector2(-380,168),Toy.White,6,7,0);tail.rectTransform.localRotation=Quaternion.Euler(0,0,45);tail.transform.SetAsFirstSibling();
+            var tag=Toy.Card(panel,"Name tag",new Vector2(560,86),new Vector2(-640,-96),Toy.Sun,24,6,7);tag.rectTransform.localRotation=Quaternion.Euler(0,0,-3);
+            heading=Toy.Title(tag.transform,"Heading",string.Empty,46,new Vector2(520,80),new Vector2(6,2),Toy.White,TextAnchor.MiddleCenter);
+            placePill=Toy.Pill(panel,"Place",string.Empty,22,new Vector2(320,46),new Vector2(-175,-80),Toy.Navy,Toy.White,-3);place=placePill.GetComponentInChildren<Text>();
+            description=Toy.Label(bubble.transform,"Description",string.Empty,31,new Vector2(960,250),new Vector2(0,-6),Toy.Navy,TextAnchor.UpperLeft,false);
+            description.lineSpacing=1.1f;
+            choiceColumn=Toy.Rect(panel,"Choices",new Vector2(600,700),new Vector2(590,-40));
             panel.gameObject.SetActive(false);
         }
-        RectTransform Rect(string name,Transform parent,Vector2 size,Vector2 position)
+        public void HUD(string value,string controls)
         {
-            var go=new GameObject(name,typeof(RectTransform));go.transform.SetParent(parent,false);var rect=go.GetComponent<RectTransform>();
-            rect.anchorMin=rect.anchorMax=rect.pivot=new Vector2(.5f,.5f);rect.sizeDelta=size;rect.anchoredPosition=position;return rect;
+            if(value==shownHud&&controls==shownControls)return;shownHud=value;shownControls=controls;
+            var lines=(value??string.Empty).Split('\n');var parts=lines[0].Split('·');
+            while(chips.Count<parts.Length){
+                int i=chips.Count;var chip=Toy.Card(topBar,"Chip "+i,new Vector2(200,56),Vector2.zero,i==0?Toy.Red:Toy.White,28,5,5);
+                chipTexts.Add(Toy.Label(chip.transform,"Chip text",string.Empty,i==0?26:24,new Vector2(400,56),Vector2.zero,i==0?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true));chips.Add(chip);
+            }
+            float x=-920;
+            for(int i=0;i<chips.Count;i++){
+                bool used=i<parts.Length&&parts[i].Trim().Length>0;chips[i].gameObject.SetActive(used);if(!used)continue;
+                var text=chipTexts[i];text.text=parts[i].Trim().ToUpperInvariant();float width=Mathf.Ceil(text.preferredWidth)+46;
+                chips[i].rectTransform.sizeDelta=new Vector2(width,56);text.rectTransform.sizeDelta=new Vector2(width,56);chips[i].rectTransform.anchoredPosition=new Vector2(x+width*.5f,30);chips[i].SetVerticesDirty();x+=width+14;
+            }
+            string goal=lines.Length>1?lines[1].Trim():string.Empty;objectivePill.gameObject.SetActive(goal.Length>0);objective.text=goal;
+            float goalWidth=Mathf.Clamp(Mathf.Ceil(objective.preferredWidth)+110,300,1400);objectivePill.rectTransform.sizeDelta=new Vector2(goalWidth,56);objectivePill.rectTransform.anchoredPosition=new Vector2(-920+goalWidth*.5f,-40);
+            objective.rectTransform.sizeDelta=new Vector2(goalWidth-80,56);objective.rectTransform.anchoredPosition=new Vector2(28,0);objectivePill.transform.Find("Objective mark").GetComponent<RectTransform>().anchoredPosition=new Vector2(-goalWidth*.5f+34,0);objectivePill.SetVerticesDirty();
+            prompt.text=controls;float promptWidth=Mathf.Clamp(Mathf.Ceil(prompt.preferredWidth)+60,300,1860);promptPill.rectTransform.sizeDelta=new Vector2(promptWidth,58);prompt.rectTransform.sizeDelta=new Vector2(promptWidth-30,58);promptPill.SetVerticesDirty();
+            promptPill.gameObject.SetActive(!string.IsNullOrEmpty(controls));
         }
-        RectTransform Box(string name,Transform parent,Vector2 size,Vector2 position)
+        // "Bayview postcard found · +50 credits" -> headline "BAYVIEW POSTCARD FOUND!" + detail pill.
+        public void Toast(string value)
         {
-            var rect=Rect(name,parent,size,position);rect.gameObject.AddComponent<Image>().color=new Color(.035f,.095f,.12f,.96f);return rect;
+            if(string.IsNullOrWhiteSpace(value))return;int split=value.IndexOf('·');
+            string headline=(split<0?value:value[..split]).Trim().TrimEnd('.').ToUpperInvariant(),detail=split<0?string.Empty:value[(split+1)..].Trim();
+            if(!headline.EndsWith("!")&&!headline.EndsWith("?"))headline+="!";
+            toaster.Show(headline,detail,value.Contains("postcard")?Toy.Pink:value.Contains("credit")?Toy.Gold:Toy.Sky);
         }
-        Text Text(string name,Transform parent,string value,int size,Vector2 dimensions,Vector2 position)
-        {
-            var rect=Rect(name,parent,dimensions,position);var text=rect.gameObject.AddComponent<Text>();text.font=font;text.text=value;text.fontSize=size;
-            text.color=new Color(.96f,.96f,.88f);text.alignment=TextAnchor.MiddleLeft;text.horizontalOverflow=HorizontalWrapMode.Wrap;text.raycastTarget=false;return text;
-        }
-        public void HUD(string value,string controls){hud.text=value;prompt.text=controls;}
         public void SetVisible(bool value){canvas.enabled=value;}
         public void SetHudVisible(bool value){topBar.gameObject.SetActive(value);bottomBar.gameObject.SetActive(value);}
         void LateUpdate()
         {
-            if(canvas.worldCamera==null)canvas.worldCamera=Camera.main;
+            if(canvas.worldCamera==null)Toy.UseMenuCamera(canvas);
         }
         public void Capture(string path)
         {
-            var camera=Camera.main;canvas.worldCamera=camera;CoastMenu.RefreshButtons(canvas.transform);Canvas.ForceUpdateCanvases();
-            var rt=new RenderTexture(1920,1080,24);var previousTarget=camera.targetTexture;var previousActive=RenderTexture.active;
-            camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;
-            var texture=new Texture2D(1920,1080,TextureFormat.RGB24,false);texture.ReadPixels(new Rect(0,0,1920,1080),0,0);texture.Apply();
-            File.WriteAllBytes(path,texture.EncodeToPNG());camera.targetTexture=previousTarget;RenderTexture.active=previousActive;rt.Release();Destroy(rt);Destroy(texture);
+            Toy.UseMenuCamera(canvas);result?.RefreshNow();Toy.RefreshButtons(canvas.transform);Toy.Capture(path);
         }
         public void Show(string title,string body,List<Choice> choices)
         {
-            ClearChoices();if(resultPanel!=null)resultPanel.gameObject.SetActive(false);
-            panel.gameObject.SetActive(true);heading.text=title;description.text=body;
-            float height=Mathf.Min(57,490f/Mathf.Max(1,choices.Count));
+            ClearChoices();CloseResult();
+            panel.gameObject.SetActive(true);
+            int split=title.IndexOf('/');heading.text=(split<0?title:title[..split]).Trim();place.text=split<0?string.Empty:title[(split+1)..].Trim().ToUpperInvariant();placePill.gameObject.SetActive(place.text.Length>0);
+            description.text=body;
+            float height=Mathf.Min(92,660f/Mathf.Max(1,choices.Count)),top=330-height*.5f;
             for(int i=0;i<choices.Count;i++) {
-                var choice=choices[i];var button=CoastMenu.Button(panel,"Choice "+choice.text,choice.text,new Vector2(744,height-6),new Vector2(0,122-i*height),choice.action);
+                var choice=choices[i];
+                var button=Toy.Candy(choiceColumn,"Choice "+choice.text,choice.text,null,new Vector2(580,height-16),new Vector2(0,top-i*height),ChoiceColours[i%ChoiceColours.Length],choice.action);
+                var caption=button.GetComponentInChildren<Text>();caption.fontSize=Mathf.RoundToInt(Mathf.Min(34,(height-16)*.42f));caption.horizontalOverflow=HorizontalWrapMode.Wrap;caption.resizeTextForBestFit=true;caption.resizeTextMinSize=18;caption.resizeTextMaxSize=caption.fontSize;
+                caption.rectTransform.sizeDelta=new Vector2(540,height-16);caption.rectTransform.anchoredPosition=new Vector2(0,2);
                 button.interactable=choice.enabled;buttons.Add(button);
             }
             FocusChoices();
@@ -93,40 +121,18 @@ namespace LittleRoad
             if(active.Count>0)StartCoroutine(SelectNextFrame(active[0]));
         }
         public static string FinishTimeLabel(float seconds)=>$"{(int)seconds/60:0}:{seconds%60:00.000}";
-        public void ShowRaceResult(int place,int entrants,float finishTime,int reward,int wallet,Action returnToTown,Action retry)
+        public void ShowRaceResult(RaceResultSummary summary,Action returnToTown,Action retry)
         {
-            ClearChoices();panel.gameObject.SetActive(false);SetHudVisible(false);presentedFinish=finishTime;
-            if(resultPanel==null){
-                resultPanel=CoastMenu.Paper(canvas.transform,"Race day result",new Vector2(1230,710),new Vector2(0,10));
-                var ribbon=CoastUI.Panel(resultPanel,"Finish ribbon",new Vector2(350,46),new Vector2(-380,293),CoastUI.Sun,12);
-                CoastUI.Label(ribbon,"Result heading","RACE COMPLETE",22,new Vector2(300,40),Vector2.zero,CoastMenu.Navy,true);
-                var venue=CoastUI.Label(resultPanel,"Venue","BAYVIEW COAST",35,new Vector2(1120,58),new Vector2(0,220),CoastMenu.Navy,true);venue.fontStyle=FontStyle.BoldAndItalic;
-                var postcard=CoastUI.Panel(resultPanel,"Finish postcard",new Vector2(210,120),new Vector2(435,238),Color.white,2,true);postcard.localRotation=Quaternion.Euler(0,0,-6);
-                CoastMenu.Illustration(postcard,new Vector2(198,108),Vector2.zero);
-                var badge=CoastUI.Panel(resultPanel,"Place badge",new Vector2(250,250),new Vector2(-386,25),CoastUI.Sea,125);
-                CoastUI.Label(badge,"Place caption","FINISH",18,new Vector2(180,30),new Vector2(0,68),CoastMenu.Cream,true,TextAnchor.MiddleCenter);
-                resultPlace=CoastUI.Label(badge,"Finishing position","",59,new Vector2(230,95),new Vector2(0,1),Color.white,true,TextAnchor.MiddleCenter);
-                CoastUI.Label(badge,"Event caption","COAST RUN",15,new Vector2(200,28),new Vector2(0,-67),CoastMenu.Cream,false,TextAnchor.MiddleCenter);
-                CoastUI.Label(resultPanel,"Time caption","YOUR FINISH TIME",16,new Vector2(670,27),new Vector2(189,124),CoastUI.Muted);
-                resultTime=CoastUI.Label(resultPanel,"Saved finishing time","",48,new Vector2(670,68),new Vector2(189,76),CoastMenu.Navy,true);
-                resultReward=CoastUI.Label(resultPanel,"Earned credits","",32,new Vector2(670,49),new Vector2(189,-13),CoastMenu.Navy,true);
-                resultWallet=CoastUI.Label(resultPanel,"Wallet and save","",20,new Vector2(670,40),new Vector2(189,-61),CoastUI.Muted);
-                CoastUI.Panel(resultPanel,"Result rule",new Vector2(1120,2),new Vector2(0,-150),CoastMenu.Pale,0);
-                CoastUI.Label(resultPanel,"Journey continues","A little further. A little faster.\nTake your earnings to the garage, or line up for another go.",22,new Vector2(1120,70),new Vector2(0,-207),CoastMenu.Navy);
-            }
-            resultPanel.gameObject.SetActive(true);resultPlace.text=$"{place}/{entrants}";resultTime.text=FinishTimeLabel(presentedFinish);
-            resultReward.text=$"+{reward} CREDITS";resultWallet.text=$"Wallet {wallet}  ·  Result saved";
-            buttons.Add(CoastMenu.Button(resultPanel,"Choice Return to Bayview","Return to Bayview",new Vector2(534,62),new Vector2(-291,-294),returnToTown));
-            buttons.Add(CoastMenu.Button(resultPanel,"Choice Race again","Race again",new Vector2(534,62),new Vector2(291,-294),retry,true));
-            buttons[0].navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnRight=buttons[1],selectOnDown=buttons[1]};
-            buttons[1].navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=buttons[0],selectOnUp=buttons[0]};
-            StartCoroutine(SelectNextFrame(buttons[0]));
+            ClearChoices();panel.gameObject.SetActive(false);SetHudVisible(false);CloseResult();
+            result=gameObject.AddComponent<RaceResultScreen>();result.Build(canvas.transform,summary,returnToTown,retry);
+            StartCoroutine(SelectNextFrame(result.Choices[0]));
         }
+        void CloseResult(){if(result!=null){result.Close();result=null;}}
         IEnumerator SelectNextFrame(Button button){yield return null;if(button!=null&&IsOpen)EventSystem.current.SetSelectedGameObject(button.gameObject);}
-        public void Close(){StopAllCoroutines();panel.gameObject.SetActive(false);if(resultPanel!=null)resultPanel.gameObject.SetActive(false);EventSystem.current.SetSelectedGameObject(null);}
+        public void Close(){StopAllCoroutines();panel.gameObject.SetActive(false);CloseResult();EventSystem.current.SetSelectedGameObject(null);}
         public bool InvokeChoice(string startsWith)
         {
-            var button=buttons.Find(b=>b.name.StartsWith("Choice "+startsWith)&&b.interactable);if(button==null)return false;button.onClick.Invoke();return true;
+            var button=buttons.Find(b=>b.name.StartsWith("Choice "+startsWith)&&b.interactable)??result?.Choices.Find(b=>b.name.StartsWith("Choice "+startsWith)&&b.interactable);if(button==null)return false;button.onClick.Invoke();return true;
         }
     }
 }

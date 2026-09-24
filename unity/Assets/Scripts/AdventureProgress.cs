@@ -14,7 +14,7 @@ namespace LittleRoad
         public string bodyId;
         public List<string> owned,collected;
         public List<FittedPart> fitted;
-        public static AdventureProgress New()=>new AdventureProgress {version=1,bodyId="compact_v1",
+        public static AdventureProgress New()=>new AdventureProgress {version=1,bodyId=CarBodies.Starter,
             owned=EquipmentCatalog.StockLoadout().Values.ToList(),collected=new List<string>(),
             fitted=EquipmentCatalog.StockLoadout().Select(p=>new FittedPart{slot=p.Key,id=p.Value}).ToList()};
         public Dictionary<string,string> Loadout()=>fitted.ToDictionary(p=>p.slot,p=>p.id);
@@ -23,7 +23,7 @@ namespace LittleRoad
             if(version!=1||credits<0||credits>10000000||questStage<0||questStage>3||paintIndex<0||paintIndex>3||
                 raceSerial<0||settledSerial<0||settledSerial>raceSerial||raceWins<0||raceWins>settledSerial||bestPlace<0||bestPlace>24)
                 throw new InvalidDataException("Save version or progression values are invalid.");
-            if(!new[]{"compact_v1","coupe_car","utility_car","formula_car"}.Contains(bodyId))throw new InvalidDataException("Unknown body.");
+            if(!CarBodies.Owned.Contains(bodyId))throw new InvalidDataException("Unknown body.");
             if(owned==null||collected==null||fitted==null||owned.Distinct().Count()!=owned.Count||collected.Distinct().Count()!=collected.Count)
                 throw new InvalidDataException("Missing or duplicate inventory entries.");
             foreach(string id in owned)EquipmentCatalog.Get(id);
@@ -44,6 +44,8 @@ namespace LittleRoad
         {
             path=Path.GetFullPath(file);
             Data=File.Exists(path)?JsonUtility.FromJson<AdventureProgress>(File.ReadAllText(path)):AdventureProgress.New();
+            // The Puddle replaced the compact as the starter car; older saves still on it move across.
+            if(Data!=null&&Data.bodyId=="compact_v1")Data.bodyId=CarBodies.Starter;
             if(Data==null)throw new InvalidDataException("Save is empty.");Data.Validate();
         }
         public bool Change(Func<AdventureProgress,bool> edit)
