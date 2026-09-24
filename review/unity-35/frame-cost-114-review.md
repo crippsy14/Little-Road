@@ -22,3 +22,5 @@ Mechanism (context samples while racing, off → c2): braking falls (Cedar 5.6�
 Scale: −18.7 s collective is about −0.8 s per car per lap, a small part of the ~15 s/lap traffic loss. c1 alone is not kept (Bayview screen worse).
 
 Decision: keep `--conditional-hold --path-aware-leader` together (passes keep/reject: 24/24 everywhere, no new assisted resets, collective improves on all six pairs). Both remain off by default until promoted.
+
+Promoted in 115 (checks=550): `--conditional-hold` and `--path-aware-leader` are now default on; `--no-conditional-hold` / `--no-path-aware-leader` restore the old behaviour. Verified on Bayview 1709 (`review/unity-35/frame-cost-115/`): default = 803.352 (matches 114 c2), both opt-outs = 806.436 (matches the 113/114 baseline). Note that in 115+ studies the pace-study `off` arm is the new default.

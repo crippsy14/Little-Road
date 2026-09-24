@@ -26,7 +26,8 @@ namespace LittleRoad
         readonly bool dynamicTrafficFallback=RaceTrial.Has("--dynamic-traffic-fallback");
         readonly bool thirdCandidate=RaceTrial.Has("--third-dynamic-candidate");
         readonly bool unresolvedHold=RaceTrial.Has("--unresolved-hold");
-        readonly bool conditionalHold=RaceTrial.Has("--conditional-hold");
+        // Kept in 114 (default on); --no-conditional-hold restores the full-brake response.
+        readonly bool conditionalHold=!RaceTrial.Has("--no-conditional-hold");
         public DynamicRejoinPlanner DynamicRejoin=>dynamicRejoin;
         readonly ReferenceDriverPolicy reference;
         readonly RecoverySensor scenery;

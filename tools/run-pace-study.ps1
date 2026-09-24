@@ -1,4 +1,5 @@
-# Usage (from project root): .\tools\run-pace-study.ps1 -Version 112 -Study 112 -Label p2 -Flags @('--path-aware-leader')
+# Usage (from project root): .\tools\run-pace-study.ps1 -Version 115 -Study 115 -Label x1 -Flags @('--my-flag')
+# Screen a variation first on one track/seed: add -Tracks @('cedar') -Seeds @(1709)
 param([int]$Version,[int]$Study,[string]$Label,[string[]]$Flags=@(),[string[]]$Tracks=@('cedar','bayview'),[int[]]$Seeds=@(1709,1710,1711),[switch]$SkipBaseline)
 $arms=@(); if(-not $SkipBaseline){$arms+=,@('off',@())}; $arms+=,@($Label,$Flags)
 foreach($track in $Tracks){foreach($seed in $Seeds){foreach($arm in $arms){

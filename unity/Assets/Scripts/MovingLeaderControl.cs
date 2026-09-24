@@ -7,8 +7,9 @@ namespace LittleRoad
     public static class MovingLeaderControl
     {
         // Experiment (ai-pace-experiments, point 2): judge a car ahead against the
-        // committed path, not only the current lateral offset. Off by default.
-        public static readonly bool PathAware=RaceTrial.Has("--path-aware-leader");
+        // committed path, not only the current lateral offset. Kept in 114 with
+        // --conditional-hold (default on); --no-path-aware-leader restores the old rule.
+        public static readonly bool PathAware=!RaceTrial.Has("--no-path-aware-leader");
         const float MaximumCatchSeconds=4,MinimumClosing=.5f,MaximumDrift=1.5f;
 
         public static DriveCommand Apply(in DriverObservation o,DriveCommand command,out int leader,out float limit,out bool limited)
