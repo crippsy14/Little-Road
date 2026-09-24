@@ -19,7 +19,7 @@ namespace LittleRoad
             float steering=Mathf.Clamp(curve*Mathf.Max(car.speed,3)*1.09f/tuning.yaw,-1,1);
             float preview=distance+2+Mathf.Max(car.speed,0)*.12f;
             float target=profile.Speed(preview);
-            target=Mathf.Min(target,Mathf.Sqrt(tuning.roadGrip*1.65f*.85f/Mathf.Max(.00001f,Mathf.Abs(curve))));
+            target=Mathf.Min(target,Mathf.Sqrt(tuning.roadGrip*1.65f*PaceMargins.Steering/Mathf.Max(.00001f,Mathf.Abs(curve))));
             if(Mathf.Abs(error)>3)target=Mathf.Min(target,12);
             if(Mathf.Abs(angle)>.9f){steering=Mathf.Sign(angle);target=Mathf.Min(target,8);}
             if(observation.finished)target=Mathf.Min(target,18);

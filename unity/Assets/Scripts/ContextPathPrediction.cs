@@ -28,7 +28,7 @@ namespace LittleRoad
         public void Predict(in DriverObservation initial,ContextPathState path,Vector3 centre,Vector3 half,float seconds,bool measure=false,int controlSteps=1,bool adaptiveEnvelope=false,float roadAllowance=0,bool preparedPath=false,ObservedTrafficRollout traffic=null)
         {
             if(controlSteps<1||controlSteps>6)throw new ArgumentOutOfRangeException(nameof(controlSteps));
-            if(roadAllowance<0||roadAllowance>=Circuit.Width*.5f)throw new ArgumentOutOfRangeException(nameof(roadAllowance));
+            if(roadAllowance< -RoadPathFeasibility.ShoulderOverhang||roadAllowance>=Circuit.Width*.5f)throw new ArgumentOutOfRangeException(nameof(roadAllowance));
             long total=measure?Stamp():0;var cost=new Cost();
             var road=initial.route as Circuit;if(road==null)throw new ArgumentException("Physical path forecast requires Circuit projection.");
             float dt=initial.stepSeconds;int steps=Mathf.RoundToInt(seconds/dt);

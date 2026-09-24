@@ -7,11 +7,11 @@ namespace LittleRoad
     public sealed class DynamicRejoinPlanner
     {
         [System.Serializable] public struct Summary {public int id,evaluated,geometricRejects,selections,trafficPlans,trafficSelections;public float minimumBlend,maximumBlend,lastEstimatedTime,minimumHorizon,maximumHorizon;}
-        public const int Capacity=6,PhysicalShortlist=2;
+        public const int Capacity=9,PhysicalShortlist=2,GapCandidates=3;
         const float RetentionAllowance=.05f;
         const float ScanStep=6,CornerThreshold=.004f,ExitStraight=24;
         readonly RacingSpeedProfile profile;
-        readonly bool routeLocalAdjacency,blockingTarget;
+        readonly bool routeLocalAdjacency,blockingTarget,gapSeeking;
         readonly ContextPathFollower evaluator;
         readonly ContextPathState[] paths=new ContextPathState[Capacity];
         readonly float[] times=new float[Capacity];
@@ -25,7 +25,7 @@ namespace LittleRoad
         public int Evaluated {get;private set;}
         public int GeometricRejects {get;private set;}
         public int Selections {get;private set;}
-        int trafficPlans,trafficSelections,freshHoldIndex=-1;bool trafficPlan,retained;
+        int trafficPlans,trafficSelections,freshHoldIndex=-1,gapStart=int.MaxValue;bool trafficPlan,retained;
         // Traffic plans only: the car the passing sides were built around.
         public bool TrafficPlan=>trafficPlan;
         public int Blocker {get;private set;}=-1;
@@ -36,7 +36,8 @@ namespace LittleRoad
         public float Horizon {get;private set;}
         public float CornerExit {get;private set;}
         public Summary Export(int id)=>new Summary{id=id,evaluated=Evaluated,geometricRejects=GeometricRejects,selections=Selections,trafficPlans=trafficPlans,trafficSelections=trafficSelections,minimumBlend=Selections>0?minimumBlend:0,maximumBlend=maximumBlend,lastEstimatedTime=LastEstimatedTime,minimumHorizon=Selections>0?minimumHorizon:0,maximumHorizon=maximumHorizon};
-        public DynamicRejoinPlanner(RacingSpeedProfile profile,bool routeLocalAdjacency=false,bool blockingTarget=false){this.profile=profile;this.routeLocalAdjacency=routeLocalAdjacency;this.blockingTarget=blockingTarget;evaluator=new ContextPathFollower(profile,false);}
+        // gapSeeking null reads --gap-seeking (ai-racing-review goal 4 experiment).
+        public DynamicRejoinPlanner(RacingSpeedProfile profile,bool routeLocalAdjacency=false,bool blockingTarget=false,bool? gapSeeking=null){this.profile=profile;this.routeLocalAdjacency=routeLocalAdjacency;this.blockingTarget=blockingTarget;this.gapSeeking=gapSeeking??RaceTrial.Has("--gap-seeking");evaluator=new ContextPathFollower(profile,false);}
         public ContextPathState Path(int rank)=>paths[order[rank]];
         public float EstimatedTime(int rank)=>times[order[rank]];
         public float Clearance(int rank)=>clearance[order[rank]];
@@ -63,7 +64,7 @@ namespace LittleRoad
         {
             if(source==null||ReferenceEquals(source,this)||!source.preparedValid)return false;
             source.preparedValid=false; // Single-use even on mismatch; never keep a stale proposal.
-            if(!ReferenceEquals(profile,source.profile)||routeLocalAdjacency!=source.routeLocalAdjacency||blockingTarget!=source.blockingTarget
+            if(!ReferenceEquals(profile,source.profile)||routeLocalAdjacency!=source.routeLocalAdjacency||blockingTarget!=source.blockingTarget||gapSeeking!=source.gapSeeking
                 ||hasPrevious!=source.preparedHasPrevious||traffic!=source.preparedTrafficMode||o.finished!=source.preparedFinished
                 ||o.dragReduction!=source.preparedDrag||o.pace!=source.preparedPace||o.preferredOffset!=source.preparedPreferred
                 ||o.traffic.Length!=source.preparedTrafficCount)return false;
@@ -71,7 +72,7 @@ namespace LittleRoad
             if(!source.preparedIdentity.Matches(in identity))return false;
             for(int i=0;i<o.traffic.Length;i++)if(!DraftingModel.Same(in o.traffic[i],in source.preparedTraffic[i]))return false;
             Count=source.Count;trafficPlan=source.trafficPlan;freshHoldIndex=source.freshHoldIndex;
-            retained=source.retained;Blocker=source.Blocker;BlockerCentre=source.BlockerCentre;
+            retained=source.retained;Blocker=source.Blocker;BlockerCentre=source.BlockerCentre;gapStart=source.gapStart;if(gapStart<Count)GapCandidatesAdded+=Count-gapStart;
             Horizon=source.Horizon;CornerExit=source.CornerExit;
             System.Array.Copy(source.paths,paths,Count);System.Array.Copy(source.times,times,Count);
             System.Array.Copy(source.clearance,clearance,Count);System.Array.Copy(source.order,order,Count);
@@ -110,7 +111,7 @@ namespace LittleRoad
         }
         public void Prepare(in DriverObservation o,in ContextPathState previous,bool hasPrevious)
         {
-            Count=0;trafficPlan=false;freshHoldIndex=-1;Blocker=-1;
+            Count=0;trafficPlan=false;freshHoldIndex=-1;Blocker=-1;gapStart=int.MaxValue;
             SetHorizon(in o);float exit=CornerExit;
             bool retain=hasPrevious&&previous.guide&&previous.localSpeed&&!previous.coast;
             if(retain)Add(in o,previous);
@@ -197,8 +198,49 @@ namespace LittleRoad
                 path.blend=Mathf.Clamp(Mathf.Clamp(18+Mathf.Max(0,o.self.speed)*.9f,22,60)*1.5f,16,100);
                 Add(in o,path,true);
             }
+            gapStart=int.MaxValue;if(gapSeeking){gapStart=Count;AddGapCandidates(in o);}
             Sort(retain);
         }
+        // Lateral gaps between every car ahead or alongside (within 60 m) and to
+        // both road edges, not only either side of the one blocking car. The
+        // widest gaps not already covered become extra ranked candidates; each
+        // still needs the ordinary physical check before it can be followed.
+        readonly float[] gapLeft=new float[25],gapRight=new float[25];
+        void AddGapCandidates(in DriverObservation o)
+        {
+            float edge=Circuit.Width*.5f-RoadPathFeasibility.Allowance-o.self.halfWidth-.1f;int blocked=0;
+            foreach(var other in o.traffic) {
+                if(other.id==o.self.id)continue;
+                float gap=Mathf.Repeat(other.route-o.self.route+o.route.Length*.5f,o.route.Length)-o.route.Length*.5f;
+                if(gap>60||gap<=-(o.self.halfLength+other.halfLength))continue;
+                float centre=other.offset+Mathf.Clamp(Vector3.Dot(other.velocity,o.route.Right(other.route))*.5f,-1,1);
+                float width=o.self.halfWidth+other.halfWidth+profile.planning.PassingClearance;
+                int k=blocked++;
+                while(k>0&&gapLeft[k-1]>centre-width){gapLeft[k]=gapLeft[k-1];gapRight[k]=gapRight[k-1];k--;}
+                gapLeft[k]=centre-width;gapRight[k]=centre+width;
+            }
+            if(blocked==0)return;
+            // Free intervals, widest first, skipping targets within 0.75 m of an existing candidate.
+            int added=0;float cursor=-edge;
+            System.Span<float> centres=stackalloc float[26];System.Span<float> widths=stackalloc float[26];int free=0;
+            for(int j=0;j<=blocked;j++) {
+                float next=j<blocked?Mathf.Min(edge,gapLeft[j]):edge;
+                if(next-cursor>0){centres[free]=(cursor+next)*.5f;widths[free]=next-cursor;free++;}
+                if(j<blocked)cursor=Mathf.Max(cursor,gapRight[j]);
+            }
+            while(added<GapCandidates&&Count<Capacity) {
+                int best=-1;for(int j=0;j<free;j++)if(widths[j]>0&&(best<0||widths[j]>widths[best]))best=j;
+                if(best<0)break;
+                float target=centres[best];widths[best]=0;bool covered=false;
+                for(int i=0;i<Count;i++)covered|=Mathf.Abs(paths[i].endOffset-target)<.75f;
+                if(covered)continue;
+                var path=RoadPathFeasibility.FromMotion(in o,target,false);
+                path.blend=Mathf.Clamp(path.blend*.8f,16,100);path.localSpeed=true;
+                Add(in o,path,true);added++;GapCandidatesAdded++;
+            }
+        }
+        public int GapCandidatesAdded {get;private set;}
+        public int GapSelections {get;private set;}
         void Sort(bool retain)
         {
             retained=retain;biasSide=0;
@@ -227,6 +269,6 @@ namespace LittleRoad
             if(!trafficPlan||side==0)return;
             biasSide=side;biasPenalty=penalty;biasCentre=centre;Resort();
         }
-        public void Selected(int rank){Selections++;if(trafficPlan)trafficSelections++;LastBlend=Path(rank).blend;LastEstimatedTime=EstimatedTime(rank);minimumBlend=Mathf.Min(minimumBlend,LastBlend);maximumBlend=Mathf.Max(maximumBlend,LastBlend);minimumHorizon=Mathf.Min(minimumHorizon,Horizon);maximumHorizon=Mathf.Max(maximumHorizon,Horizon);}
+        public void Selected(int rank){Selections++;if(order[rank]>=gapStart)GapSelections++;if(trafficPlan)trafficSelections++;LastBlend=Path(rank).blend;LastEstimatedTime=EstimatedTime(rank);minimumBlend=Mathf.Min(minimumBlend,LastBlend);maximumBlend=Mathf.Max(maximumBlend,LastBlend);minimumHorizon=Mathf.Min(minimumHorizon,Horizon);maximumHorizon=Mathf.Max(maximumHorizon,Horizon);}
     }
 }

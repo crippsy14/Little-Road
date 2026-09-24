@@ -6,7 +6,11 @@ namespace LittleRoad
     // traffic constraints and emergency braking remain in ContextDriverPolicy.
     public sealed class RoadPathFeasibility
     {
-        public const float Allowance=.10f;
+        // Body margin inside the painted road edge. Experiment --use-shoulder (goal 4):
+        // the body may overhang onto the drivable shoulder by up to 1 m; the car's
+        // centre, which sets grip, stays on the asphalt.
+        public const float ShoulderOverhang=1f;
+        public static readonly float Allowance=RaceTrial.Has("--use-shoulder")?-ShoulderOverhang:.10f;
         ContextPathPrediction forecast;readonly Vector3 centre,half;readonly RecoverySensor scenery;
         readonly DriverPlanningSettings planning;
         readonly RacingSpeedProfile profile;

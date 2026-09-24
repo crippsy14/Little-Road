@@ -63,7 +63,7 @@ namespace LittleRoad
                 var a=points[i]-points[i-1];var b=points[i+1]-points[i];
                 float curvature=2*Mathf.Abs(Vector3.Cross(a,b).y)/Mathf.Max(.001f,a.magnitude*b.magnitude*(a+b).magnitude);
                 curvatures[i]=curvature;
-                speeds[i]=Mathf.Min(speeds[i],Mathf.Sqrt(budget*.78f/Mathf.Max(.00001f,curvature)));
+                speeds[i]=Mathf.Min(speeds[i],Mathf.Sqrt(budget*PaceMargins.Corner/Mathf.Max(.00001f,curvature)));
             }
             // The first local point has no preceding sample. Use the first
             // measured segment curvature as its conservative one-sided limit.
@@ -72,9 +72,9 @@ namespace LittleRoad
             // feed-forward on every update even far below the corner limit.
             if(ownEnvelope&&localOriginCurvature) {
                 curvatures[0]=curvatures[1];
-                speeds[0]=Mathf.Min(speeds[0],Mathf.Sqrt(budget*.78f/Mathf.Max(.00001f,curvatures[0])));
+                speeds[0]=Mathf.Min(speeds[0],Mathf.Sqrt(budget*PaceMargins.Corner/Mathf.Max(.00001f,curvatures[0])));
             }
-            for(int i=count-2;i>=0;i--)speeds[i]=Mathf.Min(speeds[i],Mathf.Sqrt(speeds[i+1]*speeds[i+1]+2*Mathf.Min(o.tuning.braking,budget)*(BrakeFractionOverride>0?BrakeFractionOverride:profile.planning.BrakeFraction)*(distances[i+1]-distances[i])));
+            for(int i=count-2;i>=0;i--)speeds[i]=Mathf.Min(speeds[i],Mathf.Sqrt(speeds[i+1]*speeds[i+1]+2*Mathf.Min(o.tuning.braking,budget)*(BrakeFractionOverride>0?BrakeFractionOverride:System.Math.Min(.95f,profile.planning.BrakeFraction*PaceMargins.EnvelopeBrakeScale))*(distances[i+1]-distances[i])));
         }
         // Cheap common downstream-gate estimate (120-360m). This is a geometry/capability ranking,
         // not a promise of feasible actual motion or a substitute for rollouts.
@@ -103,7 +103,7 @@ namespace LittleRoad
                 float offset=Vector3.Dot(points[i]-o.route.At(d),right);
                 float extent=o.self.halfWidth*Mathf.Abs(Vector3.Dot(Vector3.Cross(Vector3.up,forward),right))
                     +o.self.halfLength*Mathf.Abs(Vector3.Dot(forward,right));
-                MinimumClearance=Mathf.Min(MinimumClearance,Circuit.Width*.5f-.1f-Mathf.Abs(offset)-extent);
+                MinimumClearance=Mathf.Min(MinimumClearance,Circuit.Width*.5f-RoadPathFeasibility.Allowance-Mathf.Abs(offset)-extent);
                 if(MinimumClearance<0)return float.PositiveInfinity;
                 float lateral=speed*speed*curvatures[Mathf.Max(1,i)];
                 float traction=Mathf.Sqrt(Mathf.Max(0,budget*budget-lateral*lateral));
@@ -154,7 +154,7 @@ namespace LittleRoad
             float angle=Vector3.SignedAngle(heading,delta,Vector3.up)*Mathf.Deg2Rad;
             float curve=2*Mathf.Sin(angle)/Mathf.Max(3,delta.magnitude);
             float steer=Mathf.Clamp(curve*Mathf.Max(3,o.self.speed)*1.09f/o.tuning.yaw,-1,1);
-            float target=Mathf.Min(speeds[1],Mathf.Sqrt(budget*.85f/Mathf.Max(.00001f,Mathf.Abs(curve))));
+            float target=Mathf.Min(speeds[1],Mathf.Sqrt(budget*PaceMargins.Steering/Mathf.Max(.00001f,Mathf.Abs(curve))));
             if(o.finished)target=Mathf.Min(target,18);
             float feed=(speeds[1]*speeds[1]-speeds[0]*speeds[0])/(2*Mathf.Max(.01f,distances[1]));
             float force=feed+(target-o.self.speed)*3+DraftingModel.Resistance(o.self.speed,o.tuning.mass,o.dragReduction);
@@ -162,7 +162,7 @@ namespace LittleRoad
             // Shared by live following and prospective rollouts. Only the
             // follower's braking can coast; leader/scenery/emergency limits
             // are applied afterwards by the policy and retain their authority.
-            float steeringLimit=Mathf.Sqrt(budget*.85f/Mathf.Max(.00001f,Mathf.Abs(curve)));
+            float steeringLimit=Mathf.Sqrt(budget*PaceMargins.Steering/Mathf.Max(.00001f,Mathf.Abs(curve)));
             if(coastWithinEnvelope&&pedal<0&&!o.finished&&CoastingEnvelope.Allows(o.self.speed,o.tuning.mass,steeringLimit,distances,speeds,Points,o.drafting?DraftingModel.MaximumReduction:0))pedal=0;
             // A coast-limited trajectory suppresses drive torque, never required
             // braking. The identical cap is used by live and forecast followers.

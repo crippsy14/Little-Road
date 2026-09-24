@@ -22,7 +22,7 @@ namespace LittleRoad
         float Progress(in DriverObservation o,in ContextPathState path,out bool contained)
         {
             prediction.Predict(in o,path,o.self.colliderCentre,new Vector3(o.self.halfWidth,.5f,o.self.halfLength),2,
-                controlSteps:3,adaptiveEnvelope:true,roadAllowance:.1f,preparedPath:true,traffic:traffic);
+                controlSteps:3,adaptiveEnvelope:true,roadAllowance:RoadPathFeasibility.Allowance,preparedPath:true,traffic:traffic);
             contained=prediction.envelope.Contained;
             var last=prediction.samples[prediction.Count-1];
             return Mathf.Repeat(last.route-o.self.route+o.route.Length*.5f,o.route.Length)-o.route.Length*.5f;

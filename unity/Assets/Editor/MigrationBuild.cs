@@ -151,6 +151,8 @@ public static class MigrationBuild
         evidence.checks.AddRange(UnresolvedHoldChecks.Run());
         evidence.checks.AddRange(PassCommitmentChecks.Run());
         evidence.checks.AddRange(CornerAwarePassChecks.Run());
+        evidence.checks.AddRange(GapSeekingChecks.Run());
+        evidence.checks.AddRange(PaceMarginChecks.Run());
         if(RaceTrial.Has("--traffic-coast-input"))TrafficCoastReplay.Run();
         evidence.checks.AddRange(RacingLineChecks.Run());
         evidence.checks.AddRange(BayviewTransferBake.Run());

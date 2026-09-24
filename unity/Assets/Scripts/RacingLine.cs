@@ -72,14 +72,14 @@ namespace LittleRoad
             this.planning=planning;
             this.line=line;int n=line.Count;speed=new float[n];acceleration=new float[n];
             float budget=tuning.roadGrip*1.65f;
-            for(int i=0;i<n;i++)speed[i]=Mathf.Min(tuning.AttainableSpeed,Mathf.Sqrt(budget*.78f/Mathf.Max(.00001f,Mathf.Abs(line.curvature[i]))));
+            for(int i=0;i<n;i++)speed[i]=Mathf.Min(tuning.AttainableSpeed,Mathf.Sqrt(budget*PaceMargins.Corner/Mathf.Max(.00001f,Mathf.Abs(line.curvature[i]))));
             int iteration=0;
             for(;iteration<64;iteration++) {
                 float change=0;
                 for(int i=n-1;i>=0;i--) {
                     int next=(i+1)%n;float lateral=speed[next]*speed[next]*Mathf.Max(Mathf.Abs(line.curvature[i]),Mathf.Abs(line.curvature[next]));
                     float traction=Mathf.Sqrt(Mathf.Max(0,budget*budget-lateral*lateral));
-                    float braking=Mathf.Min(tuning.braking,traction)*.85f*planning.ReferenceBrakeScale+DraftingModel.Resistance(speed[next],tuning.mass,drafting?DraftingModel.MaximumReduction:0);
+                    float braking=Mathf.Min(tuning.braking,traction)*PaceMargins.ProfileBrake*planning.ReferenceBrakeScale+DraftingModel.Resistance(speed[next],tuning.mass,drafting?DraftingModel.MaximumReduction:0);
                     float value=Mathf.Min(speed[i],Mathf.Sqrt(speed[next]*speed[next]+2*braking*line.segmentLength[i]));change=Mathf.Max(change,speed[i]-value);speed[i]=value;
                 }
                 for(int i=0;i<n;i++) {
