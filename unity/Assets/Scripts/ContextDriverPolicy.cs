@@ -26,6 +26,7 @@ namespace LittleRoad
         readonly bool dynamicTrafficFallback=RaceTrial.Has("--dynamic-traffic-fallback");
         readonly bool thirdCandidate=RaceTrial.Has("--third-dynamic-candidate");
         readonly bool unresolvedHold=RaceTrial.Has("--unresolved-hold");
+        readonly bool conditionalHold=RaceTrial.Has("--conditional-hold");
         public DynamicRejoinPlanner DynamicRejoin=>dynamicRejoin;
         readonly ReferenceDriverPolicy reference;
         readonly RecoverySensor scenery;
@@ -461,6 +462,40 @@ namespace LittleRoad
             DecisionCount++;DecisionTotalMs+=ms;DecisionMaxMs=System.Math.Max(DecisionMaxMs,ms);
             return applied;
         }
+        public static DriveCommand UnresolvedBrakeCommand(in DriveCommand planned)=>
+            new DriveCommand(-1,0,0,planned.predictedOffset,planned.chosenLane);
+        public static DriveCommand UnresolvedHoldCommand(in DriverObservation o,ContextPathFollower follower,in DriveCommand planned)
+        {
+            // Experiment --unresolved-hold: tuck in rather than emergency braking.
+            // Hold the current lateral position and never add power; the
+            // moving-leader limit and immediate guard applied afterwards still brake.
+            var hold=RoadPathFeasibility.FromMotion(in o,o.self.offset,false);
+            var held=follower.Follow(in o,in hold);
+            return new DriveCommand(Mathf.Min(held.pedal,0),held.steering,Mathf.Min(held.targetSpeed,o.self.speed),planned.predictedOffset,planned.chosenLane);
+        }
+        public const float HoldMinimumContactSeconds=3,HoldLateralMargin=.5f,HoldLookahead=80;
+        // Experiment --conditional-hold: holding is only allowed while no car
+        // ahead in our lateral corridor would be reached within
+        // HoldMinimumContactSeconds at the current closing speed, and no car
+        // overlaps us lengthwise in that corridor. Otherwise brake as before.
+        public static bool UnresolvedHoldSafe(in DriverObservation o)
+        {
+            float own=Mathf.Max(0,Vector3.Dot(o.self.velocity,o.route.Forward(o.self.route)));
+            foreach(var other in o.traffic) {
+                if(other.id==o.self.id)continue;
+                float gap=Mathf.Repeat(other.route-o.self.route+o.route.Length*.5f,o.route.Length)-o.route.Length*.5f;
+                float lengths=o.self.halfLength+other.halfLength;
+                if(gap<=-lengths||gap>HoldLookahead)continue;
+                float width=o.self.halfWidth+other.halfWidth+.35f+HoldLateralMargin;
+                if(Mathf.Abs(other.offset-o.self.offset)>width)continue;
+                float bumper=gap-lengths;
+                if(bumper<=0)return false;
+                float theirs=Mathf.Max(0,Vector3.Dot(other.velocity,o.route.Forward(other.route)));
+                float closing=own-theirs;
+                if(closing>0&&bumper<closing*HoldMinimumContactSeconds)return false;
+            }
+            return true;
+        }
         DriveCommand PlanCommand(in DriverObservation o)
         {
             // Explicit safety-component fixture only; never activated by races.
@@ -476,16 +511,11 @@ namespace LittleRoad
                 // No checked continuation: stop commanding the old crossing.
                 // Ordinary steering response/braking physics apply. This is an
                 // explicit emergency outcome, never labelled a safe accepted path.
-                if(unresolvedHold) {
-                    // Experiment (point 3): tuck in rather than emergency braking.
-                    // Hold the current lateral position and never add power; the
-                    // moving-leader limit and immediate guard below still brake.
-                    var hold=RoadPathFeasibility.FromMotion(in o,o.self.offset,false);
-                    var held=follower.Follow(in o,in hold);
-                    command=new DriveCommand(Mathf.Min(held.pedal,0),held.steering,Mathf.Min(held.targetSpeed,o.self.speed),command.predictedOffset,command.chosenLane);
+                if(unresolvedHold||conditionalHold&&UnresolvedHoldSafe(in o)) {
+                    command=UnresolvedHoldCommand(in o,follower,in command);
                     Reason="No viable crossing continuation; hold position without power";
                 } else {
-                command=new DriveCommand(-1,0,0,command.predictedOffset,command.chosenLane);
+                command=UnresolvedBrakeCommand(in command);
                 Reason="No viable crossing continuation; straighten and brake";
                 }
             }
