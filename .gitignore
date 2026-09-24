@@ -27,6 +27,10 @@ review/**/*.lnk
 review/**/*.png
 review/**/*.jpg
 review/**/*.jpeg
+# Per-race study output from 113 on (race.json is ~2 MB pretty-printed).
+# Results are kept in review/unity-35/frame-cost-<N>-review.md and -summary.txt.
+review/unity-35/frame-cost-11[3-9]/*/*.json
+review/unity-35/frame-cost-1[2-9][0-9]/*/*.json
 
 # Keep screenshots and plots linked from research/review documents.
 !/review/captures/evening-07-export/05-racing.png
