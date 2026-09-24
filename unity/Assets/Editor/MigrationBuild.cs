@@ -110,7 +110,6 @@ public static class MigrationBuild
         evidence.checks.AddRange(CheckpointChecks.Run());
         evidence.checks.AddRange(RaceGridChecks.Run());
         evidence.checks.AddRange(ManualRaceStartChecks.Run());
-        evidence.checks.AddRange(PassTrajectoryChecks.Run());
         evidence.checks.AddRange(OpeningCaptureChecks.Run());
         evidence.checks.AddRange(PassingTargetChecks.Run());
         evidence.checks.AddRange(FollowingFeasibilityChecks.Run());
@@ -140,7 +139,6 @@ public static class MigrationBuild
         evidence.checks.AddRange(DynamicTrafficChecks.Run());
         evidence.checks.AddRange(RouteAdjacencyChecks.Run());
         evidence.checks.AddRange(DynamicRejoinWitness.Run());
-        evidence.checks.AddRange(TimedCorridorChecks.Run());
         evidence.checks.AddRange(CoastingEnvelopeChecks.Run());
         evidence.checks.AddRange(DriverPlanningChecks.Run());
         evidence.checks.AddRange(DriverIdentityChecks.Run());
@@ -151,12 +149,10 @@ public static class MigrationBuild
         evidence.checks.AddRange(TrafficProgressChecks.Run());
         evidence.checks.AddRange(PathAwareLeaderChecks.Run());
         evidence.checks.AddRange(UnresolvedHoldChecks.Run());
-        evidence.checks.AddRange(PassingRankingChecks.Run());
         if(RaceTrial.Has("--traffic-coast-input"))TrafficCoastReplay.Run();
         evidence.checks.AddRange(RacingLineChecks.Run());
         evidence.checks.AddRange(BayviewTransferBake.Run());
         evidence.checks.AddRange(RecoverySensorChecks.Run());
-        evidence.checks.AddRange(RollingRecoveryChecks.Run());
         evidence.checks.AddRange(TrafficPolicyChecks.Run());
         evidence.checks.AddRange(SweptGeometryReuseChecks.Run());
         evidence.checks.AddRange(AdventureChecks.Run(Path.Combine(root,"review/unity-04")));

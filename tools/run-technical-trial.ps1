@@ -21,7 +21,6 @@ param(
     [switch]$Captures,
     [ValidateRange(.25,4)][float]$PlaybackRate=1,
     [switch]$PhysicalRecovery,
-    [switch]$RollingRecovery,
     [string]$RecoveryCase,
     [string]$TrafficCase,
     [switch]$TrafficDiagnostics,
@@ -31,8 +30,6 @@ param(
     [switch]$RearPressureFilter,
     [switch]$LightDrafting,
     [switch]$OpenSpacePriority,
-    [switch]$IntegratedPassingProgress,
-    [switch]$PathSpeedEnvelope,
     [switch]$DynamicRejoin,
     [switch]$DynamicTraffic,
     [switch]$DynamicFieldStudy,
@@ -49,7 +46,6 @@ param(
     [switch]$CleanView,
     [switch]$DynamicBlockingTarget,
     [switch]$DynamicTrafficFallback,
-    [switch]$ThirdDynamicCandidate,
     [switch]$LocalOriginCurvature,
     [string]$MotionAudit,
     [string]$PathProbe,
@@ -64,14 +60,12 @@ param(
     [switch]$ContinuationAudit,
     [switch]$OpeningDecisionAudit,
     [switch]$TrafficAwareProgress,
-    [switch]$RetainPassTrajectory,
     [switch]$ComparePassCompletion,
     [switch]$FollowingFeasibilityFallback,
     [ValidateSet("all","car0","rivals")][string]$FollowingFallbackScope="all",
     [switch]$FollowingFallbackAudit,
     [switch]$SharedObservedTraffic,
     [switch]$ParallelContinuationForecast,
-    [switch]$TimedRearCorridors,
     [switch]$CoastWithinEnvelope,
     [switch]$PedalStageAudit,
     [ValidateSet('neutral','earlier','early')][string]$DriverBraking='neutral',
@@ -79,7 +73,6 @@ param(
     [switch]$NoGapCentres,
     [switch]$TrafficPathCheck,
     [switch]$AnticipatePassingSpace,
-    [switch]$AnticipateBlockingCar,
     [switch]$TrafficCoastContinuation,
     [ValidateRange(0,24)][int]$ForecastWorkers=0,
     [ValidateRange(0,24)][int]$ParallelForecastWorkers=0,
@@ -99,7 +92,6 @@ if($ParallelContinuationForecast -and (-not $CompareContinuation -or $ParallelFo
 if($ComparePassCompletion -and (-not $TrafficAwareProgress -or -not $CompareContinuation)){throw 'Pass completion requires traffic-aware continuation.'}
 if(-not $FollowingFeasibilityFallback -and $FollowingFallbackScope -ne 'all'){throw 'Component scope requires following fallback enabled.'}
 if($FollowingFeasibilityFallback -and -not $RoadFeasibility){throw 'Following fallback requires physical road checks.'}
-if($RetainPassTrajectory -and -not $RoadFeasibility){throw 'Retained trajectories require physical road checks.'}
 if($TrafficAwareProgress -and -not $CompareContinuation){throw 'Traffic-aware progress requires continuation comparison.'}
 $trialExecutable=(Resolve-Path -LiteralPath $Executable).Path
 if($Manual -and -not $Visible){throw 'Recorded manual driving requires -Visible.'}
@@ -135,15 +127,11 @@ if($NoRearAnticipation){$trialArguments+='--no-rear-anticipation'}
 if($RearPressureFilter){$trialArguments+='--rear-pressure-filter'}
 if($LightDrafting){$trialArguments+='--light-drafting'}
 if($OpenSpacePriority){$trialArguments+='--open-space-priority'}
-if($IntegratedPassingProgress){$trialArguments+='--integrated-passing-progress'}
-if($PathSpeedEnvelope){$trialArguments+='--path-speed-envelope'}
 if($DynamicRejoin){$trialArguments+='--dynamic-rejoin'}
 if($DynamicTraffic){$trialArguments+='--dynamic-traffic'}
 if($DynamicFieldStudy){$trialArguments+='--dynamic-field-study'}
 if($BayviewTransferStudy){$trialArguments+='--bayview-transfer-study'}
 if($ParallelDynamicForecast){$trialArguments+='--parallel-dynamic-forecast'}
-if($ThirdDynamicCandidate){$trialArguments+='--third-dynamic-candidate'}
-if($RollingRecovery){$trialArguments+='--rolling-recovery'}
 if($StaggerContextPlans){$trialArguments+=@('--stagger-context-plans','--context-plan-groups',$ContextPlanGroups.ToString())}
 if($DriverRoster){$trialArguments+=@('--driver-roster',$DriverRoster)}
 if($DriverForm){$trialArguments+='--driver-form'}
@@ -167,21 +155,18 @@ if($CompareContinuation){$trialArguments+='--compare-continuation'}
 if($ContinuationAudit){$trialArguments+='--continuation-audit'}
 if($OpeningDecisionAudit){$trialArguments+='--opening-decision-audit'}
 if($TrafficAwareProgress){$trialArguments+='--traffic-aware-progress'}
-if($RetainPassTrajectory){$trialArguments+='--retain-pass-trajectory'}
 if($ComparePassCompletion){$trialArguments+='--compare-pass-completion'}
 if($FollowingFeasibilityFallback){$trialArguments+='--following-feasibility-fallback'}
 $trialArguments+=@('--following-fallback-scope',$FollowingFallbackScope)
 if($FollowingFallbackAudit){$trialArguments+='--following-fallback-audit'}
 if($SharedObservedTraffic){$trialArguments+='--shared-observed-traffic'}
 if($ParallelContinuationForecast){$trialArguments+='--parallel-continuation-forecast'}
-if($TimedRearCorridors){$trialArguments+='--timed-rear-corridors'}
 if($CoastWithinEnvelope){$trialArguments+='--coast-within-envelope'}
 if($PedalStageAudit){$trialArguments+='--pedal-stage-audit'}
 $trialArguments+=@('--driver-braking',$DriverBraking,'--driver-risk',$DriverRisk.ToString())
 if($NoGapCentres){$trialArguments+='--no-gap-centres'}
 if($TrafficPathCheck){$trialArguments+='--traffic-path-check'}
 if($AnticipatePassingSpace){$trialArguments+='--anticipate-passing-space'}
-if($AnticipateBlockingCar){$trialArguments+='--anticipate-blocking-car'}
 if($TrafficCoastContinuation){$trialArguments+='--traffic-coast-continuation'}
 if($ParallelForecastWorkers -gt 0){$trialArguments+=@('--parallel-road-forecasts','--parallel-forecast-workers',$ParallelForecastWorkers.ToString())}
 if($ForecastWorkers -gt 0){$trialArguments+=@('--forecast-batch-probe','--forecast-batch-workers',$ForecastWorkers.ToString())}
@@ -200,8 +185,6 @@ $trialAssemblyHash=if(Test-Path -LiteralPath $trialAssembly){(Get-FileHash -Lite
 $trialProcess=Start-Process -FilePath $trialExecutable -ArgumentList $trialArguments -WindowStyle $trialStyle -PassThru
 $trialLaunch=[pscustomobject]@{pid=$trialProcess.Id;executable=$trialExecutable;assemblyHash=$trialAssemblyHash;arguments=$trialArguments;output=$trialOutput;visible=[bool]$Visible;requestedWidth=$Width;requestedHeight=$Height;windowed=[bool]$Windowed;directGraphics=[bool]$DirectGraphics;trafficDiagnostics=[bool]$TrafficDiagnostics;sweepContacts=[bool]$SweepContacts;noImmediateSafety=[bool]$NoImmediateSafety;noRearAnticipation=[bool]$NoRearAnticipation;motionAudit=$MotionAudit;physicalRecovery=[bool]$PhysicalRecovery;trafficCase=$TrafficCase;trafficRearSpeed=$TrafficRearSpeed;recoveryCase=$RecoveryCase;opponents=$Opponents;duration=$trialDuration;track=$Track;loadout=$Loadout;grid=$Grid;cars=$Cars;laps=$Laps;seed=$Seed;policy=$Policy;racingLine=$RacingLine;playbackRate=$trialRate}
 $trialLaunch | Add-Member -NotePropertyName openSpacePriority -NotePropertyValue ([bool]$OpenSpacePriority)
-$trialLaunch | Add-Member -NotePropertyName integratedPassingProgress -NotePropertyValue ([bool]$IntegratedPassingProgress)
-$trialLaunch | Add-Member -NotePropertyName pathSpeedEnvelope -NotePropertyValue ([bool]$PathSpeedEnvelope)
 $trialLaunch | Add-Member -NotePropertyName dynamicRejoin -NotePropertyValue ([bool]$DynamicRejoin)
 $trialLaunch | Add-Member -NotePropertyName dynamicTraffic -NotePropertyValue ([bool]$DynamicTraffic)
 $trialLaunch | Add-Member -NotePropertyName dynamicFieldStudy -NotePropertyValue ([bool]$DynamicFieldStudy)
@@ -221,14 +204,12 @@ $trialLaunch | Add-Member -NotePropertyName compareContinuation -NotePropertyVal
 $trialLaunch | Add-Member -NotePropertyName continuationAudit -NotePropertyValue ([bool]$ContinuationAudit)
 $trialLaunch | Add-Member -NotePropertyName openingDecisionAudit -NotePropertyValue ([bool]$OpeningDecisionAudit)
 $trialLaunch | Add-Member -NotePropertyName trafficAwareProgress -NotePropertyValue ([bool]$TrafficAwareProgress)
-$trialLaunch | Add-Member -NotePropertyName retainPassTrajectory -NotePropertyValue ([bool]$RetainPassTrajectory)
 $trialLaunch | Add-Member -NotePropertyName comparePassCompletion -NotePropertyValue ([bool]$ComparePassCompletion)
 $trialLaunch | Add-Member -NotePropertyName followingFeasibilityFallback -NotePropertyValue ([bool]$FollowingFeasibilityFallback)
 $trialLaunch | Add-Member -NotePropertyName followingFallbackScope -NotePropertyValue $FollowingFallbackScope
 $trialLaunch | Add-Member -NotePropertyName followingFallbackAudit -NotePropertyValue ([bool]$FollowingFallbackAudit)
 $trialLaunch | Add-Member -NotePropertyName parallelContinuationForecast -NotePropertyValue ([bool]$ParallelContinuationForecast)
 $trialLaunch | Add-Member -NotePropertyName sharedObservedTraffic -NotePropertyValue ([bool]$SharedObservedTraffic)
-$trialLaunch | Add-Member -NotePropertyName timedRearCorridors -NotePropertyValue ([bool]$TimedRearCorridors)
 $trialLaunch | Add-Member -NotePropertyName coastWithinEnvelope -NotePropertyValue ([bool]$CoastWithinEnvelope)
 $trialLaunch | Add-Member -NotePropertyName pedalStageAudit -NotePropertyValue ([bool]$PedalStageAudit)
 $trialLaunch | Add-Member -NotePropertyName driverBraking -NotePropertyValue $DriverBraking
@@ -236,7 +217,6 @@ $trialLaunch | Add-Member -NotePropertyName driverRisk -NotePropertyValue $Drive
 $trialLaunch | Add-Member -NotePropertyName noGapCentres -NotePropertyValue ([bool]$NoGapCentres)
 $trialLaunch | Add-Member -NotePropertyName trafficPathCheck -NotePropertyValue ([bool]$TrafficPathCheck)
 $trialLaunch | Add-Member -NotePropertyName anticipatePassingSpace -NotePropertyValue ([bool]$AnticipatePassingSpace)
-$trialLaunch | Add-Member -NotePropertyName anticipateBlockingCar -NotePropertyValue ([bool]$AnticipateBlockingCar)
 $trialLaunch | Add-Member -NotePropertyName trafficCoastContinuation -NotePropertyValue ([bool]$TrafficCoastContinuation)
 if($PassProcess){[pscustomobject]@{metadata=$trialLaunch;process=$trialProcess}}else{$trialLaunch|ConvertTo-Json}
 

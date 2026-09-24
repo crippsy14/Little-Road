@@ -9,9 +9,6 @@ namespace LittleRoad
         [System.Serializable] public struct Summary {public int id,evaluated,geometricRejects,selections,trafficPlans,trafficSelections;public float minimumBlend,maximumBlend,lastEstimatedTime,minimumHorizon,maximumHorizon;}
         public const int Capacity=6,PhysicalShortlist=2;
         const float RetentionAllowance=.05f;
-        // Experiment (ai-pace-experiments step 4): keep a followed car in the ranking
-        // estimate for the whole horizon, not only 3 s. Off by default.
-        public static readonly bool SustainedLeaderRanking=RaceTrial.Has("--sustained-leader-ranking");
         const float ScanStep=6,CornerThreshold=.004f,ExitStraight=24;
         readonly RacingSpeedProfile profile;
         readonly bool routeLocalAdjacency,blockingTarget;
@@ -101,7 +98,7 @@ namespace LittleRoad
         }
         void Add(in DriverObservation o,ContextPathState path,bool trafficAware=false)
         {
-            paths[Count]=path;times[Count]=evaluator.EstimateGateTime(in o,in path,Horizon,trafficAware,SustainedLeaderRanking?float.PositiveInfinity:3);order[Count]=Count;
+            paths[Count]=path;times[Count]=evaluator.EstimateGateTime(in o,in path,Horizon,trafficAware);order[Count]=Count;
             clearance[Count]=evaluator.MinimumClearance;
             if(float.IsPositiveInfinity(times[Count]))GeometricRejects++;
             Count++;Evaluated++;

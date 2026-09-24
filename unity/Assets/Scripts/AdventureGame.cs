@@ -162,7 +162,7 @@ namespace LittleRoad
         void PreviewRace()
         {
             player.controlsBlocked=true;ui.Close();ui.SetVisible(false);
-            var roster=RaceRoster.Adventure(Store.Data,!RaceTrial.Has("--legacy-adventure-ai"));
+            var roster=RaceRoster.Adventure(Store.Data);
             racePreview.Open(roster,()=>Attempt(()=>AdventureSession.StartRace(roster)),()=>{ui.SetVisible(true);Rowan();});
         }
         void Garage()

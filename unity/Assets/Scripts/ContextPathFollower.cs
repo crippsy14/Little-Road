@@ -22,7 +22,7 @@ namespace LittleRoad
         readonly float[] speeds=new float[MaximumPoints],distances=new float[MaximumPoints],curvatures=new float[MaximumPoints];
         struct RankedTraffic {public float initial,longitudinal,sideVelocity,offset,halfWidth,halfLength;}
         readonly RankedTraffic[] rankedTraffic=new RankedTraffic[24];
-        public ContextPathFollower(RacingSpeedProfile profile,bool? pathSpeedEnvelope=null,bool? localOriginCurvature=null){this.profile=profile;this.pathSpeedEnvelope=pathSpeedEnvelope??RaceTrial.Has("--path-speed-envelope");this.localOriginCurvature=localOriginCurvature??RaceTrial.Has("--local-origin-curvature");}
+        public ContextPathFollower(RacingSpeedProfile profile,bool? pathSpeedEnvelope=null,bool? localOriginCurvature=null){this.profile=profile;this.pathSpeedEnvelope=pathSpeedEnvelope??false;this.localOriginCurvature=localOriginCurvature??RaceTrial.Has("--local-origin-curvature");}
         public static float Smooth(float start,float slope,float end,float distance,float length)
         {
             float t=Mathf.Clamp01(distance/length),a=slope*length,d=end-start;
@@ -76,7 +76,7 @@ namespace LittleRoad
         }
         // Cheap common downstream-gate estimate (120-360m). This is a geometry/capability ranking,
         // not a promise of feasible actual motion or a substitute for rollouts.
-        public float EstimateGateTime(in DriverObservation o,in ContextPathState path,float horizon=120,bool trafficAware=false,float trafficSeconds=3)
+        public float EstimateGateTime(in DriverObservation o,in ContextPathState path,float horizon=120,bool trafficAware=false)
         {
             MinimumClearance=float.PositiveInfinity;
             horizon=Mathf.Clamp(horizon,120,360);
@@ -109,12 +109,10 @@ namespace LittleRoad
                 float net=drive-DraftingModel.Resistance(speed,o.tuning.mass,o.dragReduction);
                 float distance=distances[i+1]-distances[i];
                 float next=Mathf.Min(speeds[i+1],Mathf.Sqrt(Mathf.Max(0,speed*speed+2*net*distance)));
-                // Observed-motion window (3 s by default). This ranks delay on the
+                // Short observed-motion window only. This ranks delay on the
                 // actual candidate curve; it is not collision certification or
                 // a prediction that rivals keep their inputs for a whole bend.
-                // --sustained-leader-ranking extends it over the whole horizon so
-                // a slower car being followed cannot vanish from the estimate.
-                if(trafficAware&&time<trafficSeconds) {
+                if(trafficAware&&time<3) {
                     float ahead=i*step;
                     for(int t=0;t<trafficCount;t++) {
                         var other=rankedTraffic[t];float initial=other.initial,longitudinal=other.longitudinal,sideVelocity=other.sideVelocity;

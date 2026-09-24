@@ -125,7 +125,7 @@ namespace LittleRoad
                 predictedEndSpeed=Vector3.Dot(last.state.velocity,last.state.forward),
                 position=item.state.position,velocity=item.state.velocity,forward=item.state.forward};
         }
-        public bool Check(in DriverObservation o,in ContextPathState path,float left,float right,ContextPreferenceMap timedCorridor=null,ObservedTrafficRollout following=null)
+        public bool Check(in DriverObservation o,in ContextPathState path,float left,float right,ObservedTrafficRollout following=null)
         {
             Calls++;followingForecast=following!=null;long started=Stamp();
             var request=new ForecastRequest(in o,in path,centre,half,allowance:Allowance,prepared:preparedPath,planning:planning);
@@ -155,9 +155,7 @@ namespace LittleRoad
             var road=(Circuit)o.route;
             for(int i=0;i<forecast.Count;i+=6) {
                 started=Stamp();road.Nearest(forecast.samples[i].state.position,out float offset);CorridorMs+=Ms(started);
-                float activeLeft=left,activeRight=right;
-                timedCorridor?.BoundsAt(forecast.samples[i].time,out activeLeft,out activeRight);
-                if(offset<activeLeft||offset>activeRight){CorridorFailures++;Audit(in o,in path,"corridor",i,offset);return false;}
+                if(offset<left||offset>right){CorridorFailures++;Audit(in o,in path,"corridor",i,offset);return false;}
                 if(i>0&&scenery!=null) {
                     var a=forecast.samples[i-6].state;var b=forecast.samples[i].state;
                     started=Stamp();bool clear=scenery.StaticSweepClear(a.position,b.position,a.forward,b.forward);SceneryMs+=Ms(started);

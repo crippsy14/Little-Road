@@ -242,7 +242,7 @@ namespace LittleRoad
         }
         void PreviewNextCareerRace()
         {
-            var roster=RaceRoster.Adventure(AdventureSession.Store.Data,!Has("--legacy-adventure-ai"));
+            var roster=RaceRoster.Adventure(AdventureSession.Store.Data);
             float resume=Time.timeScale;Time.timeScale=0;careerUI.Close();careerUI.SetVisible(false);
             if(racePreview==null)racePreview=gameObject.AddComponent<RacePreviewUI>();
             racePreview.Open(roster,()=>AdventureSession.StartRace(roster),()=>{Time.timeScale=resume;careerUI.SetVisible(true);ShowCareerResult();});

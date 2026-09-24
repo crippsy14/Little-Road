@@ -18,7 +18,6 @@ namespace LittleRoad
     {
         public string State {get;private set;}="Racing";
         public bool Active=>State!="Racing";
-        public bool CanRoll=>Active&&!returningToGate;
         public bool AssistedNeeded {get;private set;}
         public string AssistedReason {get;private set;}
         public int completed;
@@ -60,11 +59,6 @@ namespace LittleRoad
             return o.route.At(goal);
         }
         public bool NeedsPlan(double time)=>Active&&(!planned||time>=nextPlan);
-        public void PlanRolling(double time)
-        {
-            if(!Active||returningToGate)throw new InvalidOperationException("Rolling return requires an active recovery and earned gates.");
-            nextPlan=time+.1;planned=true;waitingForMovingTraffic=false;State="Rolling rejoin";
-        }
         public void Plan(in DriverObservation o,float progress,float gate,ReadOnlySpan<RecoveryOption> options)
         {
             nextPlan=o.timestamp+.1;planned=true;
@@ -141,32 +135,6 @@ namespace LittleRoad
                 if(count==hits.Length)return false;bool found=false;
                 for(int i=0;i<count;i++)if(hits[i].normal.y>.9f&&hits[i].collider.GetComponent<RoadSupport>()!=null)found=true;
                 if(!found)return false;
-            }
-            return true;
-        }
-        static Vector3 BodyCentre(Vector3 position,Vector3 forward,Vector3 local)=>position+Vector3.Cross(Vector3.up,forward)*local.x+forward*local.z;
-        public bool RollingClear(in DriverObservation o,ReadOnlySpan<RollingRecovery.Sample> samples)
-        {
-            if(samples.Length<2||!Supported(samples[0].state.position,samples[0].state.forward))return false;
-            // Dense physical integration above; swept body and actual surface
-            // checks every <=50ms, including the final partial interval.
-            int stride=Mathf.Max(1,Mathf.FloorToInt(.05f/o.stepSeconds));
-            for(int start=0;start<samples.Length-1;start+=stride) {
-                var a=samples[start];var b=samples[Mathf.Min(start+stride,samples.Length-1)];
-                if(!Supported(b.state.position,b.state.forward)||!StaticSweepClear(a.state.position,b.state.position,a.state.forward,b.state.forward))return false;
-                var ownA=BodyCentre(a.state.position,a.state.forward,centre);var ownB=BodyCentre(b.state.position,b.state.forward,centre);
-                float angular=(half.x+half.z)*Vector3.Angle(a.state.forward,b.state.forward)*Mathf.Deg2Rad;
-                foreach(var other in o.traffic) {
-                    if(other.id==o.self.id)continue;
-                    // All cars, including approaching rear traffic. Conservative
-                    // yaw uncertainty surrounds constant observed translation.
-                    var otherA=BodyCentre(other.position+other.velocity*a.time,other.forward,other.colliderCentre);
-                    var otherB=BodyCentre(other.position+other.velocity*b.time,other.forward,other.colliderCentre);
-                    float uncertainty=(other.halfWidth+other.halfLength)*Mathf.Min(1,Mathf.Abs(other.yawRate)*b.time)
-                        +other.velocity.magnitude*Mathf.Abs(other.yawRate)*b.time*b.time*.5f;
-                    if(ImmediateTrafficSafety.SweptConflict(ownA,a.state.forward,half.x,half.z,ownB-ownA,otherA,other.forward,
-                        other.halfWidth,other.halfLength,otherB-otherA,.2f+angular+uncertainty,out _))return false;
-                }
             }
             return true;
         }

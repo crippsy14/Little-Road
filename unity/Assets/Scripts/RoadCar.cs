@@ -45,7 +45,6 @@ namespace LittleRoad
         public Vector3 CollisionHalf {get;private set;}
         public Vector3 CollisionCentre {get;private set;}
         RecoverySensor recoverySensor;
-        RollingRecovery rollingRecovery;
         public RacingSpeedProfile referenceProfile {get;private set;}
         public DriverIdentity Driver {get;private set;}
         readonly ObservedCar[] legacyObserved=new ObservedCar[24];
@@ -83,7 +82,6 @@ namespace LittleRoad
             CollisionHalf=size*.5f;CollisionCentre=envelope.center;
             if(RaceTrial.Has("--physical-recovery")||owner.DriverPolicyId=="traffic-v1"||owner.DriverPolicyId=="context-v1")recoverySensor=new RecoverySensor(body,collider);
             if(RaceTrial.Has("--physical-recovery"))physicalRecovery=new PhysicalRecovery();
-            if(physicalRecovery!=null&&RaceTrial.Has("--rolling-recovery"))rollingRecovery=new RollingRecovery();
             if(owner.DriverPolicyId=="traffic-v1"){trafficPolicy=new TrafficDriverPolicy(referenceProfile,recoverySensor);driverPolicy=trafficPolicy;}
             if(owner.DriverPolicyId=="context-v1"){contextPolicy=new ContextDriverPolicy(referenceProfile,recoverySensor,collider.center,collider.size*.5f);driverPolicy=contextPolicy;}
             // Tyre/rolling resistance is already calculated by DriveModel.
@@ -206,10 +204,9 @@ namespace LittleRoad
                 bool blocked=((trafficPolicy==null&&contextPolicy==null)||physicalRecovery.Active)&&recoverySensor.FrontBlocked(in observation,physicalRecovery.Active,referenceProfile?.line);
                 physicalRecovery.Observe(in observation,progress,nextGateProgress,blocked,trafficPolicy?.WaitingForTraffic??contextPolicy?.WaitingForTraffic??false);
                 if(physicalRecovery.NeedsPlan(timestamp)) {
-                    if(rollingRecovery!=null&&physicalRecovery.CanRoll&&rollingRecovery.TryPlan(in observation,progress,nextGateProgress,recoverySensor))physicalRecovery.PlanRolling(timestamp);
-                    else physicalRecovery.Plan(in observation,progress,nextGateProgress,recoverySensor.Sample(in observation,steerState));
+                    physicalRecovery.Plan(in observation,progress,nextGateProgress,recoverySensor.Sample(in observation,steerState));
                 }
-                command=physicalRecovery.Active?(physicalRecovery.State=="Rolling rejoin"?rollingRecovery.Command(in observation):physicalRecovery.Command(in observation)):driverPolicy.Decide(in observation);
+                command=physicalRecovery.Active?physicalRecovery.Command(in observation):driverPolicy.Decide(in observation);
                 if(previous!=physicalRecovery.State)Debug.Log($"PHYSICAL_RECOVERY id={driverId} time={race.elapsed:0.000} state={physicalRecovery.State} progress={progress:0.00} gate={nextGateProgress:0.00}");
             }else command=driverPolicy.Decide(in observation);
             throttle=command.pedal;steering=command.steering;targetSpeed=command.targetSpeed;

@@ -91,7 +91,7 @@ namespace LittleRoad
         }
         public static void StartRace()
         {
-            StartRace(RaceRoster.Adventure(Store.Data,!RaceTrial.Has("--legacy-adventure-ai")));
+            StartRace(RaceRoster.Adventure(Store.Data));
         }
         public static void StartRace(RaceRoster roster)
         {

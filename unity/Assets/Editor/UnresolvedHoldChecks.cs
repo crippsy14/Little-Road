@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using LittleRoad;
 using UnityEngine;
 
-// ai-pace-experiments step 2: --unresolved-hold response to TrafficUnresolved.
+// ai-pace-experiments step 2: conditional hold response to TrafficUnresolved (default on since 115).
 public static class UnresolvedHoldChecks
 {
     public static List<string> Run()

@@ -14,7 +14,6 @@ namespace LittleRoad
         {
             public int id,preparedRankCalls,liveRankCalls,followCalls,reusedRankCalls;
             public int workerRankCalls,dynamicPreparedAttempts,dynamicForecasts;
-            public int thirdCandidateCalls,thirdCandidateAccepted;
             public double workerRankMs;
             public double preparedRankMs,liveRankMs,preparedPreferenceMs,livePreferenceMs,referenceSceneryMs,followMs;
         }
@@ -24,8 +23,6 @@ namespace LittleRoad
         static double PhaseMs(long start)=>(PhaseStamp()-start)*1000.0/System.Diagnostics.Stopwatch.Frequency;
         readonly bool dynamicTraffic=RaceTrial.Has("--dynamic-traffic");
         readonly bool dynamicTrafficFallback=RaceTrial.Has("--dynamic-traffic-fallback");
-        readonly bool thirdCandidate=RaceTrial.Has("--third-dynamic-candidate");
-        readonly bool unresolvedHold=RaceTrial.Has("--unresolved-hold");
         // Kept in 114 (default on); --no-conditional-hold restores the full-brake response.
         readonly bool conditionalHold=!RaceTrial.Has("--no-conditional-hold");
         public DynamicRejoinPlanner DynamicRejoin=>dynamicRejoin;
@@ -52,10 +49,6 @@ namespace LittleRoad
         public int FollowingFallbackAccepted {get;private set;}
         readonly bool comparePassCompletion=RaceTrial.Has("--compare-pass-completion");
         public int PassCompletionComparisons {get;private set;}
-        readonly bool retainPassTrajectory=RaceTrial.Has("--retain-pass-trajectory");
-        public int TrajectoryAttempts {get;private set;}
-        public int TrajectoryAccepted {get;private set;}
-        public int TrajectoryRejected {get;private set;}
         readonly TrafficProgressComparison trafficProgress;
         public TrafficProgressComparison ProgressDiagnostics=>trafficProgress;
         public int ContinuationAttempts {get;private set;}
@@ -82,7 +75,6 @@ namespace LittleRoad
         bool NeedsPlan(in DriverObservation o)=>PlanCount==0||(staggerPlans?planClock.Due(o.timestamp,o.stepSeconds):o.timestamp>=nextPlan);
         bool pathActive,commandProbe,pathRejoin,guidePath,localSpeedPath;
         readonly bool guideFallbackEnabled=RaceTrial.Has("--guide-path-fallback");
-        readonly bool timedCorridors=RaceTrial.Has("--timed-rear-corridors");
         bool PathRejoin=>guidePath||localSpeedPath?pathRejoin:RelevantCars==0;
         public int GuideAttempts {get;private set;}
         public int GuideAccepted {get;private set;}
@@ -137,9 +129,8 @@ namespace LittleRoad
             if(followingFallback==null&&followingScope!=FollowingFallbackScope.All)throw new System.ArgumentException("Component scope requires following fallback enabled.");
             if(followingFallback!=null&&!RaceTrial.Has("--road-feasibility"))throw new System.ArgumentException("Following fallback requires current physical road checks.");
             if(comparePassCompletion&&(!compareContinuation||trafficProgress==null))throw new System.ArgumentException("Pass completion comparison requires traffic-aware continuation.");
-            if(retainPassTrajectory&&!RaceTrial.Has("--road-feasibility"))throw new System.ArgumentException("Retaining a trajectory requires current physical road checks.");
             if(parallelContinuation&&(!compareContinuation||!RaceTrial.Has("--parallel-road-forecasts")))throw new System.ArgumentException("Parallel continuation requires joined road workers and continuation comparison.");
-            this.profile=profile;this.scenery=scenery;bool gapCentres=!RaceTrial.Has("--no-gap-centres"),blockingOnly=RaceTrial.Has("--anticipate-blocking-car"),anticipateSpace=RaceTrial.Has("--anticipate-passing-space")||blockingOnly;preferences=new ContextPreferenceMap(profile,gapCentres,anticipateSpace,blockingOnly,RaceTrial.Has("--rear-pressure-filter"),RaceTrial.Has("--open-space-priority"),RaceTrial.Has("--integrated-passing-progress"),dynamicTraffic);prospectivePreferences=new ContextPreferenceMap(profile,gapCentres,anticipateSpace,blockingOnly,RaceTrial.Has("--rear-pressure-filter"),RaceTrial.Has("--open-space-priority"),RaceTrial.Has("--integrated-passing-progress"),dynamicTraffic);reference=new ReferenceDriverPolicy(profile);follower=new ContextPathFollower(profile);
+            this.profile=profile;this.scenery=scenery;bool gapCentres=!RaceTrial.Has("--no-gap-centres"),blockingOnly=false,anticipateSpace=RaceTrial.Has("--anticipate-passing-space");preferences=new ContextPreferenceMap(profile,gapCentres,anticipateSpace,blockingOnly,RaceTrial.Has("--rear-pressure-filter"),RaceTrial.Has("--open-space-priority"),false,dynamicTraffic);prospectivePreferences=new ContextPreferenceMap(profile,gapCentres,anticipateSpace,blockingOnly,RaceTrial.Has("--rear-pressure-filter"),RaceTrial.Has("--open-space-priority"),false,dynamicTraffic);reference=new ReferenceDriverPolicy(profile);follower=new ContextPathFollower(profile);
             if(RaceTrial.Has("--road-feasibility")) {
                 if(!colliderCentre.HasValue||!colliderHalf.HasValue)throw new System.ArgumentException("Road feasibility needs actual collider geometry.");
                 roadCheck=new RoadPathFeasibility(profile,colliderCentre.Value,colliderHalf.Value,scenery,parallelContinuation);
@@ -157,7 +148,7 @@ namespace LittleRoad
                 // that arithmetic in a copy; recovery can still skip the decision.
                 bool hadPath=TryGetPath(out var prior);
                 if(hadPath)prior.consumed+=Mathf.Max(0,Gap(lastRoute,o.self.route,o.route.Length));
-                long phase=PhaseStamp();prospectivePreferences.Fill(in o,pathActive,endOffset,rearAnticipationEnabled,true,timedCorridors);phaseCost.preparedPreferenceMs+=PhaseMs(phase);
+                long phase=PhaseStamp();prospectivePreferences.Fill(in o,pathActive,endOffset,rearAnticipationEnabled,true);phaseCost.preparedPreferenceMs+=PhaseMs(phase);
                 int relevant=prospectivePreferences.RelevantCars;
                 if(relevant>0&&!dynamicTraffic)return null;
                 // Ranking and its primary physical forecast run together using
@@ -166,10 +157,10 @@ namespace LittleRoad
             }
             // Never advance the path/plan counters here: recovery may suppress
             // the subsequent decision. Use independent scratch preferences.
-            prospectivePreferences.Fill(in o,pathActive,endOffset,rearAnticipationEnabled,true,timedCorridors);
+            prospectivePreferences.Fill(in o,pathActive,endOffset,rearAnticipationEnabled,true);
             if(prospectivePreferences.Pick(out float selected)<0)return null;
-            ContextPathState previous=default;bool hadPrevious=(retainPassTrajectory||parallelContinuation)&&TryGetPath(out previous);
-            var path=CandidatePath(in o,selected,prospectivePreferences.RelevantCars,in previous,hadPrevious,out _);
+            ContextPathState previous=default;bool hadPrevious=parallelContinuation&&TryGetPath(out previous);
+            var path=RoadPathFeasibility.FromMotion(in o,selected,prospectivePreferences.RelevantCars==0);
             var primary=roadCheck.Prepare(in o,in path);
             // Speculate only the existing fresh continuation on a large proposed
             // switch. A different winning candidate still uses serial fallback.
@@ -180,13 +171,6 @@ namespace LittleRoad
                 PreparedContinuation=roadCheck.PrepareContinuation(in o,in continuation);
             }
             return primary;
-        }
-        ContextPathState CandidatePath(in DriverObservation o,float selected,int relevant,in ContextPathState previous,bool hadPrevious,out bool retained)
-        {
-            ContextPathState candidate=default;
-            retained=retainPassTrajectory&&hadPrevious&&PassTrajectory.TryRetain(in o,in previous,lastRoute,selected,relevant,out candidate);
-            if(retained)return candidate;
-            return RoadPathFeasibility.FromMotion(in o,selected,relevant==0);
         }
         static float Gap(float a,float b,float length)=>Mathf.Repeat(b-a+length*.5f,length)-length*.5f;
         // A sampled preference is interpolated, not used as a lane destination.
@@ -240,8 +224,8 @@ namespace LittleRoad
             OpeningAudit?.Begin();FollowingAudit?.Begin();
             PlanAudit?.Begin();
             ContinuationAudit?.Begin();
-            SwitchAudit?.Begin();ContextPathState priorPath=default;bool hadPriorPath=(SwitchAudit!=null||compareContinuation||retainPassTrajectory||dynamicRejoin!=null||openingWindow!=null||FollowingAudit!=null)&&TryGetPath(out priorPath);
-            long phase=PhaseStamp();preferences.Fill(in o,pathActive,endOffset,rearAnticipationEnabled,roadCheck!=null,timedCorridors);phaseCost.livePreferenceMs+=PhaseMs(phase);
+            SwitchAudit?.Begin();ContextPathState priorPath=default;bool hadPriorPath=(SwitchAudit!=null||compareContinuation||dynamicRejoin!=null||openingWindow!=null||FollowingAudit!=null)&&TryGetPath(out priorPath);
+            long phase=PhaseStamp();preferences.Fill(in o,pathActive,endOffset,rearAnticipationEnabled,roadCheck!=null);phaseCost.livePreferenceMs+=PhaseMs(phase);
             SwitchAudit?.CapturePreferences(preferences);
             ContinuationAudit?.CapturePreferences(preferences);
             OpeningAudit?.CapturePreferences(preferences);FollowingAudit?.CapturePreferences(preferences);
@@ -262,7 +246,7 @@ namespace LittleRoad
                 else dynamicRejoin.Prepare(in o,in priorPath,hadPriorPath);
                 phaseCost.liveRankMs+=PhaseMs(phase);phaseCost.liveRankCalls++;
                 int triedRanks=0;
-                for(int attempt=0;attempt<Mathf.Min(DynamicRejoinPlanner.PhysicalShortlist+(thirdCandidate?1:0),dynamicRejoin.Count);attempt++) {
+                for(int attempt=0;attempt<Mathf.Min(DynamicRejoinPlanner.PhysicalShortlist,dynamicRejoin.Count);attempt++) {
                     int rank=attempt==0?0:dynamicRejoin.FallbackRank(roadCheck.SceneryFailures>sceneryFailuresBefore,roadCheck.CorridorFailures>corridorFailuresBefore);
                     if(attempt==1&&dynamicTrafficFallback&&roadCheck.TrafficFailures>trafficFailuresBefore) {
                         int trafficRank=roadCheck.TrafficFallbackRank(in o,dynamicRejoin);
@@ -271,7 +255,7 @@ namespace LittleRoad
                     // One extra full check only after both ordinary choices fail.
                     // Reuse the existing ranked set; never retry an attempted rank.
                     if(attempt==2)rank=dynamicRejoin.NextUntriedRank(triedRanks);
-                    if(rank<0){if(thirdCandidate&&attempt==1)continue;break;}
+                    if(rank<0)break;
                     if(float.IsPositiveInfinity(dynamicRejoin.EstimatedTime(rank)))continue;
                     triedRanks|=1<<rank;
                     var candidate=dynamicRejoin.Path(rank);
@@ -279,8 +263,7 @@ namespace LittleRoad
                     if(!hasFirstPath){firstPath=candidate;hasFirstPath=true;}
                     float left=dynamicTraffic&&ReachableLeft>-edge?ReachableLeft:float.NegativeInfinity;
                     float right=dynamicTraffic&&ReachableRight<edge?ReachableRight:float.PositiveInfinity;
-                    bool accepted=roadCheck.Check(in o,in candidate,left,right,dynamicTraffic&&timedCorridors?preferences:null);
-                    if(attempt==2){phaseCost.thirdCandidateCalls++;if(accepted)phaseCost.thirdCandidateAccepted++;}
+                    bool accepted=roadCheck.Check(in o,in candidate,left,right);
                     if(PlanAudit!=null||OpeningAudit!=null){var audit=roadCheck.LastCandidate;PlanAudit?.Add(in audit);OpeningAudit?.Add(in audit);}
                     if(!accepted){RoadRejected++;continue;}
                     roadPath=candidate;roadAccepted=true;acceptedGuide=candidate.guide;selected=candidate.selectedOffset;best=Slots;
@@ -311,27 +294,13 @@ namespace LittleRoad
                 float sample=tryGuide||tryHold?selected:preferences.Sample(best);
                 if(roadCheck!=null||SceneryClear(in o,selected,false,out _)) {
                     if(roadCheck==null)break;
-                    bool retained=false;
-                    roadPath=tryGuide?RoadPathFeasibility.GuideFromMotion(in o,profile):tryHold?RoadPathFeasibility.FromMotion(in o,selected,RelevantCars==0):CandidatePath(in o,selected,RelevantCars,in priorPath,hadPriorPath,out retained);
+                    roadPath=tryGuide?RoadPathFeasibility.GuideFromMotion(in o,profile):RoadPathFeasibility.FromMotion(in o,selected,RelevantCars==0);
                     if(tryGuide){roadPath.endOffset=selected;roadPath.selectedOffset=selected;}
                     if(!hasFirstPath&&!tryGuide&&!tryHold){firstPath=roadPath;hasFirstPath=true;}
                     float corridorLeft=ReachableLeft<=-edge?float.NegativeInfinity:ReachableLeft;
                     float corridorRight=ReachableRight>=edge?float.PositiveInfinity:ReachableRight;
-                    bool accepted=roadCheck.Check(in o,in roadPath,corridorLeft,corridorRight,timedCorridors?preferences:null);
-                    if(retained) {
-                        TrajectoryAttempts++;
-                        if(accepted){TrajectoryAccepted++;selected=roadPath.selectedOffset;}
-                        else {
-                            TrajectoryRejected++;RoadRejected++;retained=false;
-                            if(PlanAudit!=null||SwitchAudit!=null||ContinuationAudit!=null||OpeningAudit!=null){var rejected=roadCheck.LastCandidate;PlanAudit?.Add(in rejected);SwitchAudit?.Add(in rejected);ContinuationAudit?.Add(in rejected);OpeningAudit?.Add(in rejected);}
-                            // The old shape may now be unsafe while a fresh route
-                            // to the same destination remains physically viable.
-                            roadPath=RoadPathFeasibility.FromMotion(in o,selected,RelevantCars==0);
-                            accepted=roadCheck.Check(in o,in roadPath,corridorLeft,corridorRight,timedCorridors?preferences:null);
-                        }
-                    }
+                    bool accepted=roadCheck.Check(in o,in roadPath,corridorLeft,corridorRight);
                     if(PlanAudit!=null||SwitchAudit!=null||ContinuationAudit!=null||OpeningAudit!=null){var candidate=roadCheck.LastCandidate;PlanAudit?.Add(in candidate);SwitchAudit?.Add(in candidate);ContinuationAudit?.Add(in candidate);OpeningAudit?.Add(in candidate);}
-                    if(retained&&accepted)ContinuationAudit?.Record(in o,ReachableLeft,ReachableRight,false,priorPath,roadPath,"retained-trajectory");
                     if(accepted){roadAccepted=true;acceptedGuide=tryGuide;break;}
                     RoadRejected++;
                     if(tryGuide||tryHold){best=-1;break;}
@@ -348,7 +317,7 @@ namespace LittleRoad
                 var capped=roadPath;capped.coast=true;CoastAttempts++;
                 float left=ReachableLeft<=-edge?float.NegativeInfinity:ReachableLeft;
                 float right=ReachableRight>=edge?float.PositiveInfinity:ReachableRight;
-                bool accepted=roadCheck.Check(in o,in capped,left,right,timedCorridors?preferences:null);
+                bool accepted=roadCheck.Check(in o,in capped,left,right);
                 if(PlanAudit!=null||SwitchAudit!=null||ContinuationAudit!=null||OpeningAudit!=null){var candidate=roadCheck.LastCandidate;PlanAudit?.Add(in candidate);SwitchAudit?.Add(in candidate);ContinuationAudit?.Add(in candidate);OpeningAudit?.Add(in candidate);}
                 if(accepted){roadPath=capped;roadAccepted=true;acceptedGuide=capped.guide;selected=capped.selectedOffset;best=Slots;CoastAccepted++;}
                 else RoadRejected++;
@@ -357,7 +326,7 @@ namespace LittleRoad
                 FollowingFallbackAttempts++;followingFallback.Prepare(in o);
                 float left=ReachableLeft<=-edge?float.NegativeInfinity:ReachableLeft;
                 float right=ReachableRight>=edge?float.PositiveInfinity:ReachableRight;
-                bool accepted=roadCheck.Check(in o,in firstPath,left,right,timedCorridors?preferences:null,followingFallback);
+                bool accepted=roadCheck.Check(in o,in firstPath,left,right,followingFallback);
                 // Only the model-tagged opening audit receives this alternative;
                 // legacy nominal-only replay buffers must not mislabel it.
                 if(OpeningAudit!=null){var candidate=roadCheck.LastCandidate;OpeningAudit.Add(in candidate);}
@@ -380,7 +349,7 @@ namespace LittleRoad
                 var continuation=RoadPathFeasibility.FromMotion(in o,priorPath.selectedOffset,RelevantCars==0);
                 float left=ReachableLeft<=-edge?float.NegativeInfinity:ReachableLeft;
                 float right=ReachableRight>=edge?float.PositiveInfinity:ReachableRight;
-                bool accepted=roadCheck.Check(in o,in continuation,left,right,timedCorridors?preferences:null);
+                bool accepted=roadCheck.Check(in o,in continuation,left,right);
                 if(PlanAudit!=null||SwitchAudit!=null||ContinuationAudit!=null||OpeningAudit!=null){var candidate=roadCheck.LastCandidate;PlanAudit?.Add(in candidate);SwitchAudit?.Add(in candidate);ContinuationAudit?.Add(in candidate);OpeningAudit?.Add(in candidate);}
                 bool prefer=accepted&&(trafficProgress!=null?trafficProgress.PreferContinuation(in o,in proposalPath,in continuation):roadCheck.PredictedRouteGain>chosenGain+o.self.halfLength*2);
                 if(prefer) {
@@ -467,7 +436,7 @@ namespace LittleRoad
             new DriveCommand(-1,0,0,planned.predictedOffset,planned.chosenLane);
         public static DriveCommand UnresolvedHoldCommand(in DriverObservation o,ContextPathFollower follower,in DriveCommand planned)
         {
-            // Experiment --unresolved-hold: tuck in rather than emergency braking.
+            // Conditional hold (see UnresolvedHoldSafe): tuck in rather than emergency braking.
             // Hold the current lateral position and never add power; the
             // moving-leader limit and immediate guard applied afterwards still brake.
             var hold=RoadPathFeasibility.FromMotion(in o,o.self.offset,false);
@@ -512,7 +481,7 @@ namespace LittleRoad
                 // No checked continuation: stop commanding the old crossing.
                 // Ordinary steering response/braking physics apply. This is an
                 // explicit emergency outcome, never labelled a safe accepted path.
-                if(unresolvedHold||conditionalHold&&UnresolvedHoldSafe(in o)) {
+                if(conditionalHold&&UnresolvedHoldSafe(in o)) {
                     command=UnresolvedHoldCommand(in o,follower,in command);
                     Reason="No viable crossing continuation; hold position without power";
                 } else {

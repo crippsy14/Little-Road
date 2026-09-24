@@ -21,9 +21,6 @@ namespace LittleRoad
         readonly float[] offsets=new float[Capacity],blockedLeft=new float[24],blockedRight=new float[24];
         public int Count {get;private set;}
         public float Sample(int index)=>offsets[index];
-        readonly float[] boundary=new float[24],startsAt=new float[24];
-        readonly bool[] fromLeft=new bool[24];
-        int constraints;
         public int RelevantCars,RearApproaches;
         public int AnticipatedLeader {get;private set;}=-1;
         public float ReachableLeft,ReachableRight,Edge,Spacing,Guide;
@@ -59,11 +56,11 @@ namespace LittleRoad
             }
             return danger;
         }
-        public void Fill(in DriverObservation o,bool pathActive,float endOffset,bool rearAnticipationEnabled,bool physicalRoad,bool timedCorridors=false)
+        public void Fill(in DriverObservation o,bool pathActive,float endOffset,bool rearAnticipationEnabled,bool physicalRoad)
         {
             float edge=Circuit.Width*.5f-o.self.halfWidth-.55f;
             float spacing=2*edge/(Slots-1),guide=profile.line.Offset(o.self.route+Mathf.Max(12,o.self.speed));
-            constraints=0;RelevantCars=0;RearApproaches=0;AnticipatedLeader=-1;ReachableLeft=-edge;ReachableRight=edge;
+            RelevantCars=0;RearApproaches=0;AnticipatedLeader=-1;ReachableLeft=-edge;ReachableRight=edge;
             foreach(var other in o.traffic) {
                 float gap=Gap(o.self.route,other.route,o.route.Length);
                 bool rearApproach=rearAnticipationEnabled&&ContextDriverPolicy.RearApproachDuringMerge(in o,in other,gap);
@@ -78,9 +75,6 @@ namespace LittleRoad
                     bool left=other.offset<o.self.offset;float limit=other.offset+(left?width:-width);
                     if(left)ReachableLeft=Mathf.Max(ReachableLeft,limit);
                     else ReachableRight=Mathf.Min(ReachableRight,limit);
-                    fromLeft[constraints]=left;boundary[constraints]=limit;
-                    startsAt[constraints]=timedCorridors&&rearApproach&&!adjacent?RearReservationStart(in o,in other,gap):0;
-                    constraints++;
                 }
             }
             if(anticipateSpace&&blockingOnly) {
@@ -155,27 +149,6 @@ namespace LittleRoad
             float sideways=Vector3.Dot(other.velocity,o.route.Right(other.route));
             float displacement=sideways*.75f*(1-Mathf.Exp(-time/.75f));
             return other.offset+Mathf.Clamp(displacement,-1.5f,1.5f);
-        }
-        public static float RearReservationStart(in DriverObservation o,in ObservedCar other,float gap)
-        {
-            // Same observed constant-closing model and 3m longitudinal space
-            // as RearApproachDuringMerge. Start one planning interval early.
-            // Candidate destinations remain reserved immediately; only the
-            // forecast's approach to that destination uses this arrival time.
-            var along=o.route.Forward(o.self.route);
-            float ownSpeed=Mathf.Max(0,Vector3.Dot(o.self.velocity,along));
-            float closing=Vector3.Dot(other.velocity,along)-ownSpeed;
-            if(gap>=0||closing<=.8f)return 0;
-            float clear=-gap-o.self.halfLength-other.halfLength-3;
-            return Mathf.Max(0,clear/closing-.1f);
-        }
-        public void BoundsAt(float seconds,out float left,out float right)
-        {
-            left=float.NegativeInfinity;right=float.PositiveInfinity;
-            for(int i=0;i<constraints;i++)if(seconds>=startsAt[i]) {
-                if(fromLeft[i])left=Mathf.Max(left,boundary[i]);
-                else right=Mathf.Min(right,boundary[i]);
-            }
         }
         public int Pick(out float selected)
         {

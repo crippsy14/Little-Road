@@ -1,6 +1,6 @@
 # -Version 0 (default) runs the reusable dev build (tools/build-dev.ps1); N>0 runs ../little-road-context-N-review.
 # Per-tick telemetry (~75 MB/race) is deleted after the run unless -KeepTelemetry; race.json etc. stay.
-param([int]$Version=0,[int]$Study=104,[ValidateSet('bayview','cedar')][string]$Track='bayview',[int]$Seed=1709,[switch]$Rendered,[switch]$StaggerContextPlans,[switch]$PaceAudit,[switch]$ThirdDynamicCandidate,[switch]$RollingRecovery,[ValidateRange(1,24)][int]$ContextPlanGroups=3,[ValidatePattern('^[a-z0-9-]+$')][string]$Name='baseline',[string[]]$Extra=@(),[ValidateRange(.25,4)][float]$PlaybackRate=1,[switch]$KeepTelemetry)
+param([int]$Version=0,[int]$Study=104,[ValidateSet('bayview','cedar')][string]$Track='bayview',[int]$Seed=1709,[switch]$Rendered,[switch]$StaggerContextPlans,[switch]$PaceAudit,[ValidateRange(1,24)][int]$ContextPlanGroups=3,[ValidatePattern('^[a-z0-9-]+$')][string]$Name='baseline',[string[]]$Extra=@(),[ValidateRange(.25,4)][float]$PlaybackRate=1,[switch]$KeepTelemetry)
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $exe=if($Version -gt 0){"../little-road-context-$Version-review/Little Road Unity.exe"}else{"../little-road-dev-build/Little Road Unity.exe"}
@@ -9,8 +9,6 @@ $exe=if($Version -gt 0){"../little-road-context-$Version-review/Little Road Unit
 $opts=@{Executable=(Join-Path $root $exe);Track=$Track;Loadout='club';Cars=24;Laps=1;Duration=180;Seed=$Seed;Policy='context';RacingLine='cedar-smooth-v2';TrafficCase='field';DriverRisk=5;PassProcess=$true;RaceHud=$true;Width=1920;Height=1080;CleanView=$true;PlaybackRate=$PlaybackRate}
 $opts.ExtraArguments=@('--ai-preset','field')+$Extra
 if($Track -eq 'bayview'){$opts.BayviewTransferStudy=$true;$opts.RacingLine='bayview-smooth-v1'}
-if($RollingRecovery){$opts.RollingRecovery=$true}
-if($ThirdDynamicCandidate){$opts.ThirdDynamicCandidate=$true}
 if($PaceAudit){$opts.PedalStageAudit=$true;$opts.ContextPlanAudit=$true;$opts.OpeningDecisionAudit=$true;$opts.ContinuationAudit=$true}
 # Staggered planning (3 groups) is part of the preset; -StaggerContextPlans is accepted for old commands.
 if($ContextPlanGroups -ne 3){$opts.ExtraArguments+=@('--context-plan-groups',$ContextPlanGroups.ToString())}
