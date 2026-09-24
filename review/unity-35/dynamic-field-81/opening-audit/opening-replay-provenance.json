@@ -1,0 +1,15 @@
+{
+  "source": "review\\unity-35\\dynamic-field-81\\opening-audit\\race.track.json",
+  "sourceArray": "openingPlanAudits[0].entries",
+  "purpose": "Reuse existing exact-check replay for three successful straight-line selections. Wrapper name failedPlanAudits is an input adapter, not a failure claim.",
+  "requestedRaceTimes": [
+    6,
+    8,
+    10
+  ],
+  "selectedTimestamps": [
+    8.891666666666666,
+    10.991666666666665,
+    13.091666666666667
+  ]
+}

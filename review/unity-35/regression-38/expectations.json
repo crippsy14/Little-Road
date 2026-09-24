@@ -1,0 +1,56 @@
+{
+  "cases": [
+    {
+      "gap": 24,
+      "loadout": "club",
+      "name": "no-room",
+      "cars": 2,
+      "opponents": "stock"
+    },
+    {
+      "gap": 24,
+      "loadout": "club",
+      "name": "field",
+      "cars": 24,
+      "opponents": ""
+    },
+    {
+      "gap": 24,
+      "loadout": "club",
+      "name": "queue",
+      "cars": 3,
+      "opponents": "street,stock"
+    },
+    {
+      "gap": 12,
+      "loadout": "street",
+      "name": "merge-left",
+      "cars": 2,
+      "opponents": "club"
+    },
+    {
+      "gap": 12,
+      "loadout": "street",
+      "name": "merge-right",
+      "cars": 2,
+      "opponents": "club"
+    },
+    {
+      "gap": 24,
+      "loadout": "club",
+      "name": "brake-leader",
+      "cars": 2,
+      "opponents": "stock"
+    },
+    {
+      "gap": 24,
+      "loadout": "club",
+      "name": "corner-three",
+      "cars": 3,
+      "opponents": "street,stock"
+    }
+  ],
+  "parallelForecastWorkers": 8,
+  "scope": "Scenery-triggered guide correction: corridor acceptance plus exact recorded parity with smoother35 in open-track field and five focused cases. One process at a time.",
+  "guidePathFallback": true
+}

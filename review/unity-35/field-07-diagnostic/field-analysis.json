@@ -1,0 +1,370 @@
+{
+  "scope": "Cedar first-lap mixed street/club field; not general AI or player acceptance.",
+  "soloEvidenceRoot": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34",
+  "soloStandingLapSeconds": {
+    "street": 86.4343032836914,
+    "club": 67.32230377197266
+  },
+  "cutoffSeconds": 117,
+  "firstMovementSeconds": 0.2000117301940918,
+  "firstMovementToLastLapSeconds": 102.02210283279419,
+  "firstLapTimes": {
+    "0": 90.42499542236328,
+    "1": 90.10840606689453,
+    "2": 91.81632232666016,
+    "3": 92.25788116455078,
+    "4": 82.22699737548828,
+    "5": 94.07410430908203,
+    "6": 94.42401885986328,
+    "7": 95.58206939697266,
+    "8": 77.42816925048828,
+    "9": 97.21500396728516,
+    "10": 97.55658721923828,
+    "11": 99.2645034790039,
+    "12": 82.71021270751953,
+    "13": 98.52301788330078,
+    "14": 98.93958282470703,
+    "15": 99.51444244384766,
+    "16": 87.79230499267578,
+    "17": 100.00598907470703,
+    "18": 101.01407623291016,
+    "19": 101.52228546142578,
+    "20": 87.7339859008789,
+    "21": 100.61417388916016,
+    "22": 98.1647720336914,
+    "23": 102.22211456298828
+  },
+  "totalCarSeconds": 2261.136016845703,
+  "meanCarSeconds": 94.2140007019043,
+  "lastCarSeconds": 102.22211456298828,
+  "completedCars": 24,
+  "expectedCars": 24,
+  "collectiveTimeBasis": "Valid first-lap completion after green: official one-lap finishes or ordered checkpoint events; historical fallback is sampled lap count, never route progress alone. Incomplete if any car is missing.",
+  "contacts": 12,
+  "physicalRecoveries": 0,
+  "slowCarSecondsAfterLaunch": 0.0,
+  "sustainedEquipmentPasses": [
+    {
+      "follower": 16,
+      "leader": 11,
+      "time": 20.008127212524414
+    },
+    {
+      "follower": 0,
+      "leader": 18,
+      "time": 25.108049392700195
+    },
+    {
+      "follower": 16,
+      "leader": 10,
+      "time": 26.508028030395508
+    },
+    {
+      "follower": 0,
+      "leader": 17,
+      "time": 28.607995986938477
+    },
+    {
+      "follower": 20,
+      "leader": 15,
+      "time": 29.20798683166504
+    },
+    {
+      "follower": 20,
+      "leader": 14,
+      "time": 34.00837326049805
+    },
+    {
+      "follower": 20,
+      "leader": 11,
+      "time": 35.200294494628906
+    },
+    {
+      "follower": 8,
+      "leader": 3,
+      "time": 35.50035858154297
+    },
+    {
+      "follower": 0,
+      "leader": 15,
+      "time": 36.20050811767578
+    },
+    {
+      "follower": 8,
+      "leader": 2,
+      "time": 37.200721740722656
+    },
+    {
+      "follower": 20,
+      "leader": 10,
+      "time": 37.600807189941406
+    },
+    {
+      "follower": 0,
+      "leader": 14,
+      "time": 38.500999450683594
+    },
+    {
+      "follower": 0,
+      "leader": 11,
+      "time": 39.301170349121094
+    },
+    {
+      "follower": 16,
+      "leader": 9,
+      "time": 41.50164031982422
+    },
+    {
+      "follower": 8,
+      "leader": 1,
+      "time": 42.101768493652344
+    },
+    {
+      "follower": 16,
+      "leader": 7,
+      "time": 43.302024841308594
+    },
+    {
+      "follower": 12,
+      "leader": 5,
+      "time": 44.802345275878906
+    },
+    {
+      "follower": 12,
+      "leader": 6,
+      "time": 45.202430725097656
+    },
+    {
+      "follower": 20,
+      "leader": 13,
+      "time": 51.00366973876953
+    },
+    {
+      "follower": 20,
+      "leader": 9,
+      "time": 53.00409698486328
+    },
+    {
+      "follower": 20,
+      "leader": 7,
+      "time": 57.50505828857422
+    },
+    {
+      "follower": 12,
+      "leader": 3,
+      "time": 58.805335998535156
+    },
+    {
+      "follower": 12,
+      "leader": 2,
+      "time": 59.50548553466797
+    },
+    {
+      "follower": 16,
+      "leader": 6,
+      "time": 61.50591278076172
+    },
+    {
+      "follower": 16,
+      "leader": 5,
+      "time": 61.705955505371094
+    },
+    {
+      "follower": 0,
+      "leader": 13,
+      "time": 63.80640411376953
+    },
+    {
+      "follower": 12,
+      "leader": 1,
+      "time": 64.6063003540039
+    },
+    {
+      "follower": 20,
+      "leader": 6,
+      "time": 65.4061050415039
+    },
+    {
+      "follower": 20,
+      "leader": 5,
+      "time": 65.5060806274414
+    },
+    {
+      "follower": 0,
+      "leader": 10,
+      "time": 66.3058853149414
+    },
+    {
+      "follower": 0,
+      "leader": 9,
+      "time": 67.1056900024414
+    },
+    {
+      "follower": 16,
+      "leader": 3,
+      "time": 67.7055435180664
+    },
+    {
+      "follower": 16,
+      "leader": 2,
+      "time": 68.3053970336914
+    },
+    {
+      "follower": 0,
+      "leader": 7,
+      "time": 71.9045181274414
+    },
+    {
+      "follower": 20,
+      "leader": 3,
+      "time": 72.4043960571289
+    },
+    {
+      "follower": 20,
+      "leader": 2,
+      "time": 73.1042251586914
+    },
+    {
+      "follower": 0,
+      "leader": 6,
+      "time": 77.0032730102539
+    },
+    {
+      "follower": 0,
+      "leader": 5,
+      "time": 77.8030776977539
+    },
+    {
+      "follower": 16,
+      "leader": 1,
+      "time": 83.1017837524414
+    },
+    {
+      "follower": 20,
+      "leader": 1,
+      "time": 83.3017349243164
+    },
+    {
+      "follower": 0,
+      "leader": 3,
+      "time": 84.1015396118164
+    },
+    {
+      "follower": 0,
+      "leader": 2,
+      "time": 85.3012466430664
+    }
+  ],
+  "passed": 10,
+  "total": 11,
+  "checks": [
+    {
+      "name": "At least 24 entrants",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Every car completes lap one",
+      "passed": true,
+      "detail": {
+        "0": 90.42499542236328,
+        "1": 90.10840606689453,
+        "2": 91.81632232666016,
+        "3": 92.25788116455078,
+        "4": 82.22699737548828,
+        "5": 94.07410430908203,
+        "6": 94.42401885986328,
+        "7": 95.58206939697266,
+        "8": 77.42816925048828,
+        "9": 97.21500396728516,
+        "10": 97.55658721923828,
+        "11": 99.2645034790039,
+        "12": 82.71021270751953,
+        "13": 98.52301788330078,
+        "14": 98.93958282470703,
+        "15": 99.51444244384766,
+        "16": 87.79230499267578,
+        "17": 100.00598907470703,
+        "18": 101.01407623291016,
+        "19": 101.52228546142578,
+        "20": 87.7339859008789,
+        "21": 100.61417388916016,
+        "22": 98.1647720336914,
+        "23": 102.22211456298828
+      }
+    },
+    {
+      "name": "First movement within two seconds of green",
+      "passed": true,
+      "detail": 0.2000117301940918
+    },
+    {
+      "name": "Every car starts within eight seconds",
+      "passed": true,
+      "detail": {
+        "0": 0.4000116288661957,
+        "1": 0.2000117301940918,
+        "2": 0.2000117301940918,
+        "3": 0.2000117301940918,
+        "4": 0.2000117301940918,
+        "5": 0.2000117301940918,
+        "6": 0.2000117301940918,
+        "7": 0.3000117242336273,
+        "8": 0.3000117242336273,
+        "9": 0.2000117301940918,
+        "10": 0.3000117242336273,
+        "11": 0.3000117242336273,
+        "12": 0.3000117242336273,
+        "13": 0.3000117242336273,
+        "14": 0.3000117242336273,
+        "15": 0.3000117242336273,
+        "16": 0.3000117242336273,
+        "17": 0.3000117242336273,
+        "18": 0.3000117242336273,
+        "19": 0.4000116288661957,
+        "20": 0.4000116288661957,
+        "21": 0.3000117242336273,
+        "22": 0.4000116288661957,
+        "23": 0.5000115633010864
+      }
+    },
+    {
+      "name": "First movement to last first-lap completion within cutoff",
+      "passed": true,
+      "detail": {
+        "seconds": 102.02210283279419,
+        "cutoff": 117
+      }
+    },
+    {
+      "name": "No recoveries",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "No missedGates",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "No sampled body departure",
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "No pose overlap above 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "No recovery episodes in the first 15 seconds",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Equipment advantage creates a sustained overtake",
+      "passed": true,
+      "detail": 42
+    }
+  ]
+}

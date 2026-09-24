@@ -1,0 +1,50 @@
+[
+  {
+    "sha256": "F94C991BBD68ACC8B9CD2727904D7EF789EE0EAD99448826E48EE1656C3C03AB",
+    "file": "unity/Assets/Scripts/ContextDriverPolicy.cs"
+  },
+  {
+    "sha256": "F3553B94305B7F8CF63ABD7123FCDC5CC454A794D1A7277E8B23391ECB69B6A7",
+    "file": "unity/Assets/Scripts/ContextPathFollower.cs"
+  },
+  {
+    "sha256": "FA7F025202AD89F5504E3606855B4316E255A95CEA958429A1D32AC49CA563B7",
+    "file": "unity/Assets/Scripts/ForecastPathCache.cs"
+  },
+  {
+    "sha256": "326A454633F208CF586FC22753B8F6B367DD58ED5049286B515B88BB66837B34",
+    "file": "unity/Assets/Scripts/ForecastWorkerPool.cs"
+  },
+  {
+    "sha256": "E0497CB94FCA89E53A3547C024006E61B44CD8223903DE1E68EED3439CAC76CB",
+    "file": "unity/Assets/Scripts/RoadPathFeasibility.cs"
+  },
+  {
+    "sha256": "6814FA8F03DAAC02C47F9AC97FAD21ABD52CE24FA6B38F8D540022D226514CD0",
+    "file": "unity/Assets/Scripts/TechnicalCircuitReview.cs"
+  },
+  {
+    "sha256": "022D009E7E8634C318DC97CD88D191035343A69E6795B8E12D08697E87F55EA6",
+    "file": "unity/Assets/Editor/ForecastPathCacheChecks.cs"
+  },
+  {
+    "sha256": "3CF7AF7C6CE2D8C633251DA981E70F703103C6F64A903AEF0226402861CF82AF",
+    "file": "unity/Assets/Editor/ForecastWorkerChecks.cs"
+  },
+  {
+    "sha256": "3BFD498FF90F100CF6CE58B6B745074BCA4B045BFBD03F427118FBB2EAC524E8",
+    "file": "unity/Assets/Editor/ForecastReuseChecks.cs"
+  },
+  {
+    "sha256": "58C9D8FE234A7DBD8F11D59B13680E637D189CF0B990B385328AB3C17EA93773",
+    "file": "tools/run-technical-trial.ps1"
+  },
+  {
+    "sha256": "F54C4A8653EAF747DA272ED35ED81B34E6E9644FDCDD247EF921BBF7D47F81D9",
+    "file": "tools/run-traffic-fixtures.ps1"
+  },
+  {
+    "sha256": "4F416758DB3BEFC37A97F0B5AB56E7D057B93D1B7C704C896C2E037E995E5A0D",
+    "file": "tools/analyze-corridor-race.py"
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "executable": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-94-review\\Little Road Unity.exe",
+  "arguments": [
+    "-batchmode",
+    "--adventure-smoke",
+    "--adventure-save",
+    "\"C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\race-preview-94\\adventure\\save.json\"",
+    "--adventure-report",
+    "\"C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\race-preview-94\\adventure/adventure.json\"",
+    "--trial-report",
+    "\"C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\race-preview-94\\adventure/race.json\"",
+    "--trial-captures",
+    "\"C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\race-preview-94\\adventure/captures\"",
+    "--trial-duration",
+    "420",
+    "--trial-timescale",
+    "4",
+    "-logFile",
+    "\"C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\race-preview-94\\adventure/player.log\"",
+    "--adventure-retry-review"
+  ]
+}

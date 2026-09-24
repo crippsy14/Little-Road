@@ -1,0 +1,172 @@
+using UnityEngine;
+
+namespace LittleRoad
+{
+    // Experimental F1-inspired track-width context selection. This class issues
+    // ordinary inputs only; it never invokes the legacy traffic path planner.
+    public sealed class ContextDriverPolicy : IDriverPolicy
+    {
+        const int Slots=25,Points=41;
+        const float Step=3;
+        readonly RacingSpeedProfile profile;
+        readonly ReferenceDriverPolicy reference;
+        readonly float[] value=new float[Slots];
+        readonly bool[] reachable=new bool[Slots];
+        readonly Vector3[] points=new Vector3[Points];
+        readonly float[] speeds=new float[Points],distances=new float[Points];
+        public readonly ImmediateTrafficSafety Safety=new();
+        readonly bool safetyEnabled=!RaceTrial.Has("--no-immediate-safety");
+        double nextPlan;
+        bool pathActive;
+        float anchor,startOffset,startSlope,endOffset,blend,consumed,lastRoute;
+        public string Intent {get;private set;}="Reference";
+        public string Reason {get;private set;}="Clear track";
+        public float SelectedOffset {get;private set;}
+        public float FollowingOffset=>endOffset;
+        public float ReachableLeft {get;private set;}
+        public float ReachableRight {get;private set;}
+        public float LeaderLimit {get;private set;}=999;
+        public int Leader {get;private set;}=-1;
+        public int RelevantCars {get;private set;}
+        public bool WaitingForTraffic {get;private set;}
+        public int PlanCount {get;private set;}
+        public double PlanTotalMs {get;private set;}
+        public double PlanMaxMs {get;private set;}
+
+        public ContextDriverPolicy(RacingSpeedProfile profile)
+        {this.profile=profile;reference=new ReferenceDriverPolicy(profile);}
+        static float Gap(float a,float b,float length)=>Mathf.Repeat(b-a+length*.5f,length)-length*.5f;
+        static float Smooth(float start,float slope,float end,float distance,float length)
+        {
+            float t=Mathf.Clamp01(distance/length),a=slope*length,d=end-start;
+            return start+a*t+(10*d-6*a)*t*t*t+(-15*d+8*a)*t*t*t*t+(6*d-3*a)*t*t*t*t*t;
+        }
+        // A sampled preference is interpolated, not used as a lane destination.
+        public static float PeakOffset(float left,float centre,float right,float spacing)
+        {
+            float curvature=left-2*centre+right;
+            return curvature<-.00001f?Mathf.Clamp(.5f*(left-right)/curvature,-.5f,.5f)*spacing:0;
+        }
+        bool Relevant(in DriverObservation o,in ObservedCar other)
+        {
+            if(other.id==o.self.id)return false;
+            float gap=Gap(o.self.route,other.route,o.route.Length);
+            float bodies=o.self.halfLength+other.halfLength;
+            if(gap<0)return -gap<bodies+3;
+            float closing=Mathf.Max(0,profile.Speed(o.self.route+10)-other.speed);
+            return gap<bodies+8+closing*3 && (closing>.8f||gap<bodies+4);
+        }
+        void Select(in DriverObservation o)
+        {
+            long started=System.Diagnostics.Stopwatch.GetTimestamp();
+            float edge=Circuit.Width*.5f-o.self.halfWidth-.55f;
+            float spacing=2*edge/(Slots-1),guide=profile.line.Offset(o.self.route+Mathf.Max(12,o.self.speed));
+            RelevantCars=0;ReachableLeft=-edge;ReachableRight=edge;
+            foreach(var other in o.traffic)if(Relevant(in o,in other)) {
+                RelevantCars++;
+                float gap=Gap(o.self.route,other.route,o.route.Length);
+                if(Mathf.Abs(gap)<o.self.halfLength+other.halfLength+3) {
+                    float width=o.self.halfWidth+other.halfWidth+.4f;
+                    if(other.offset<o.self.offset)ReachableLeft=Mathf.Max(ReachableLeft,other.offset+width);
+                    else ReachableRight=Mathf.Min(ReachableRight,other.offset-width);
+                }
+            }
+            int best=-1;float bestValue=float.NegativeInfinity;
+            for(int i=0;i<Slots;i++) {
+                float offset=-edge+i*spacing;
+                reachable[i]=offset>=ReachableLeft&&offset<=ReachableRight;
+                float danger=0;
+                foreach(var other in o.traffic)if(Relevant(in o,in other)) {
+                    float gap=Gap(o.self.route,other.route,o.route.Length);
+                    float width=o.self.halfWidth+other.halfWidth+.6f;
+                    float overlap=Mathf.Clamp01((width+.7f-Mathf.Abs(offset-other.offset))/.7f);
+                    danger=Mathf.Max(danger,overlap*(gap<0?1:Mathf.Clamp01(1-gap/100)));
+                }
+                value[i]=-.09f*Mathf.Abs(offset-guide)-.025f*Mathf.Abs(offset-o.self.offset)
+                    -(pathActive?.05f*Mathf.Abs(offset-endOffset):0)-4*danger;
+                if(reachable[i]&&value[i]>bestValue){best=i;bestValue=value[i];}
+            }
+            float selected=best<0?Mathf.Clamp(o.self.offset,-edge,edge):-edge+best*spacing;
+            if(best>0&&best<Slots-1&&reachable[best-1]&&reachable[best+1])selected+=PeakOffset(value[best-1],value[best],value[best+1],spacing);
+            SelectedOffset=selected;
+            bool needsPath=RelevantCars>0||pathActive;
+            if(needsPath&&(!pathActive||consumed>blend+20)) {
+                if(!pathActive)endOffset=selected;
+                anchor=o.self.route;startOffset=o.self.offset;consumed=0;lastRoute=o.self.route;
+                float forward=Vector3.Dot(o.self.velocity,o.route.Forward(o.self.route));
+                startSlope=Mathf.Clamp(Vector3.Dot(o.self.velocity,o.route.Right(o.self.route))/Mathf.Max(3,forward),-.35f,.35f);
+                blend=Mathf.Clamp(18+Mathf.Max(0,o.self.speed)*.9f,22,60);pathActive=true;
+            }
+            if(RelevantCars==0&&Mathf.Abs(o.self.offset-profile.line.Offset(o.self.route))<.6f)pathActive=false;
+            Intent=RelevantCars==0?(pathActive?"Rejoin":"Reference"):Mathf.Abs(selected-o.self.offset)>.6f?"Pass":"Follow";
+            Reason=RelevantCars==0?"Clear space; use reference guidance":"Reachable continuous track-width preference";
+            nextPlan=o.timestamp+.1;PlanCount++;
+            double ms=(System.Diagnostics.Stopwatch.GetTimestamp()-started)*1000.0/System.Diagnostics.Stopwatch.Frequency;
+            PlanTotalMs+=ms;PlanMaxMs=System.Math.Max(PlanMaxMs,ms);
+        }
+        DriveCommand Follow(in DriverObservation o)
+        {
+            if(!pathActive)return reference.Decide(in o);
+            float budget=o.tuning.roadGrip*1.65f;
+            for(int i=0;i<Points;i++) {
+                float along=consumed+i*Step,d=anchor+along;
+                float side=Smooth(startOffset,startSlope,endOffset,along,blend);
+                // When traffic has cleared, progressively reconnect to the guide.
+                if(RelevantCars==0)side=Mathf.Lerp(side,profile.line.Offset(d),Mathf.SmoothStep(0,1,i*Step/65));
+                points[i]=o.route.At(d)+o.route.Right(d)*side;
+                distances[i]=i==0?0:distances[i-1]+Vector3.Distance(points[i],points[i-1]);
+                speeds[i]=profile.Speed(d);
+            }
+            for(int i=1;i<Points-1;i++) {
+                var a=points[i]-points[i-1];var b=points[i+1]-points[i];
+                float curvature=2*Mathf.Abs(Vector3.Cross(a,b).y)/Mathf.Max(.001f,a.magnitude*b.magnitude*(a+b).magnitude);
+                speeds[i]=Mathf.Min(speeds[i],Mathf.Sqrt(budget*.78f/Mathf.Max(.00001f,curvature)));
+            }
+            for(int i=Points-2;i>=0;i--)speeds[i]=Mathf.Min(speeds[i],Mathf.Sqrt(speeds[i+1]*speeds[i+1]+2*Mathf.Min(o.tuning.braking,budget)*.75f*(distances[i+1]-distances[i])));
+            float look=Mathf.Clamp(5+Mathf.Max(0,o.self.speed)*.4f,6,19);int aim=0;
+            while(aim<Points-2&&distances[aim+1]<look)aim++;
+            var delta=Vector3.Lerp(points[aim],points[aim+1],Mathf.InverseLerp(distances[aim],distances[aim+1],look))-o.self.position;
+            // The tyre model permits measurable lateral velocity. Pure pursuit
+            // must turn the direction of travel toward the path, rather than
+            // assuming that body heading and actual travel are identical.
+            var travel=o.self.velocity;travel.y=0;
+            var heading=travel.sqrMagnitude>9?travel.normalized:o.self.forward;
+            float angle=Vector3.SignedAngle(heading,delta,Vector3.up)*Mathf.Deg2Rad;
+            float curve=2*Mathf.Sin(angle)/Mathf.Max(3,delta.magnitude);
+            float steer=Mathf.Clamp(curve*Mathf.Max(3,o.self.speed)*1.09f/o.tuning.yaw,-1,1);
+            float target=Mathf.Min(speeds[1],Mathf.Sqrt(budget*.85f/Mathf.Max(.00001f,Mathf.Abs(curve))));
+            if(o.finished)target=Mathf.Min(target,18);
+            float feed=(speeds[1]*speeds[1]-speeds[0]*speeds[0])/(2*Mathf.Max(.01f,distances[1]));
+            float force=feed+(target-o.self.speed)*3+DriveModel.Resistance(o.self.speed,o.tuning.mass);
+            float pedal=force>=0?force/Mathf.Max(.01f,DriveModel.EngineForce(o.tuning,o.self.speed)):force/o.tuning.braking;
+            return new DriveCommand(pedal,steer,target,o.self.offset,SelectedOffset);
+        }
+        public DriveCommand Decide(in DriverObservation o)
+        {
+            if(pathActive){consumed+=Mathf.Max(0,Gap(lastRoute,o.self.route,o.route.Length));lastRoute=o.self.route;}
+            if(PlanCount==0||o.timestamp>=nextPlan)Select(in o);
+            // Preference updates are continuous. The old 0.75 m retarget gate
+            // quantised actual approaches even though selection was continuous.
+            if(pathActive)endOffset=Mathf.MoveTowards(endOffset,SelectedOffset,2.5f*o.stepSeconds);
+            var command=Follow(in o);Leader=-1;LeaderLimit=999;WaitingForTraffic=false;
+            foreach(var other in o.traffic) {
+                if(other.id==o.self.id)continue;
+                float gap=Gap(o.self.route,other.route,o.route.Length);
+                if(gap<=0||gap>100)continue;
+                float width=o.self.halfWidth+other.halfWidth+.35f;
+                if(Mathf.Abs(other.offset-o.self.offset)>width)continue;
+                float clearance=gap-o.self.halfLength-other.halfLength-1.5f;
+                float brake=Mathf.Min(o.tuning.braking,o.tuning.roadGrip*1.65f)*.7f;
+                float limit=Mathf.Sqrt(Mathf.Max(0,other.speed*other.speed+2*brake*Mathf.Max(0,clearance-o.self.speed*.25f)));
+                if(limit<LeaderLimit){LeaderLimit=limit;Leader=other.id;}
+            }
+            if(LeaderLimit<command.targetSpeed) {
+                float force=(LeaderLimit-o.self.speed)*3+DriveModel.Resistance(o.self.speed,o.tuning.mass);
+                float pedal=force>=0?force/Mathf.Max(.01f,DriveModel.EngineForce(o.tuning,o.self.speed)):force/o.tuning.braking;
+                command=new DriveCommand(Mathf.Min(command.pedal,pedal),command.steering,LeaderLimit,command.predictedOffset,command.chosenLane);
+                Reason="Moving leader stopping-distance limit";WaitingForTraffic=o.self.speed<2;
+            }
+            return safetyEnabled?Safety.Apply(in o,in command):command;
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "body_id": "compact_v1",
+  "recipe_version": 3,
+  "master": "rounded_three_door",
+  "name": "Bayview Compact",
+  "wheel_radius": 0.425,
+  "wheel_half_track": 0.83,
+  "front_axle": 0.89,
+  "rear_axle": -0.89,
+  "paint": [0.055, 0.44, 0.39],
+  "note": "Original authored compact master study. Performance is defined by equipment, never by body shape. Not yet approved for mass variants."
+}

@@ -1,0 +1,1029 @@
+{
+  "passed": true,
+  "runs": 75,
+  "checks": [
+    {
+      "name": "Complete 75-run graded-road matrix",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Every attempted run is valid",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "One runtime assembly at 120 Hz",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "No contacts, recovery, missing gates or saturated support queries",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "All graded runs remain physically supported",
+      "passed": true,
+      "detail": "Local physical support clearance, not height above sea level; no unsupported completed physics step."
+    },
+    {
+      "name": "Chassis tracks road normal within five degrees",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Every car remains within the measured carriageway",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "coast-flat/stock: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "001-coast-flat-stock-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "001-coast-flat-stock-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00107 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "002-coast-flat-stock-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "002-coast-flat-stock-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00107 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "003-coast-flat-stock-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "003-coast-flat-stock-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00107 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-flat/engine_workshop: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "004-coast-flat-engine_workshop-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "004-coast-flat-engine_workshop-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00107 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "005-coast-flat-engine_workshop-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "005-coast-flat-engine_workshop-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00107 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "006-coast-flat-engine_workshop-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "006-coast-flat-engine_workshop-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00107 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-flat/transmission_long: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "007-coast-flat-transmission_long-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "007-coast-flat-transmission_long-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00107 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "008-coast-flat-transmission_long-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "008-coast-flat-transmission_long-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00107 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "009-coast-flat-transmission_long-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "009-coast-flat-transmission_long-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00107 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-flat/chassis_light: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "010-coast-flat-chassis_light-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "010-coast-flat-chassis_light-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00136 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "011-coast-flat-chassis_light-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "011-coast-flat-chassis_light-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00136 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "012-coast-flat-chassis_light-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "012-coast-flat-chassis_light-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00136 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-flat/club: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "013-coast-flat-club-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "013-coast-flat-club-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00136 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "014-coast-flat-club-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "014-coast-flat-club-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00136 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "015-coast-flat-club-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "015-coast-flat-club-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00136 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-up/stock: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "016-coast-up-stock-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "016-coast-up-stock-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00214 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "017-coast-up-stock-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "017-coast-up-stock-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00214 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "018-coast-up-stock-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "018-coast-up-stock-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00214 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-up/engine_workshop: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "019-coast-up-engine_workshop-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "019-coast-up-engine_workshop-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00214 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "020-coast-up-engine_workshop-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "020-coast-up-engine_workshop-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00214 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "021-coast-up-engine_workshop-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "021-coast-up-engine_workshop-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00214 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-up/transmission_long: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "022-coast-up-transmission_long-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "022-coast-up-transmission_long-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00214 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "023-coast-up-transmission_long-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "023-coast-up-transmission_long-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00214 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "024-coast-up-transmission_long-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "024-coast-up-transmission_long-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00214 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-up/chassis_light: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "025-coast-up-chassis_light-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "025-coast-up-chassis_light-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00254 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "026-coast-up-chassis_light-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "026-coast-up-chassis_light-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00254 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "027-coast-up-chassis_light-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "027-coast-up-chassis_light-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00254 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-up/club: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "028-coast-up-club-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "028-coast-up-club-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00254 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "029-coast-up-club-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "029-coast-up-club-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00254 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "030-coast-up-club-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "030-coast-up-club-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual -0.00254 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-down/stock: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "031-coast-down-stock-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "031-coast-down-stock-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00050 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "032-coast-down-stock-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "032-coast-down-stock-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00050 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "033-coast-down-stock-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "033-coast-down-stock-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00050 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-down/engine_workshop: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "034-coast-down-engine_workshop-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "034-coast-down-engine_workshop-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00050 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "035-coast-down-engine_workshop-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "035-coast-down-engine_workshop-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00050 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "036-coast-down-engine_workshop-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "036-coast-down-engine_workshop-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00050 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-down/transmission_long: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "037-coast-down-transmission_long-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "037-coast-down-transmission_long-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00050 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "038-coast-down-transmission_long-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "038-coast-down-transmission_long-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00050 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "039-coast-down-transmission_long-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "039-coast-down-transmission_long-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00050 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-down/chassis_light: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "040-coast-down-chassis_light-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "040-coast-down-chassis_light-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00031 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "041-coast-down-chassis_light-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "041-coast-down-chassis_light-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00031 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "042-coast-down-chassis_light-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "042-coast-down-chassis_light-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00031 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "coast-down/club: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "043-coast-down-club-r1: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "043-coast-down-club-r1: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00031 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "044-coast-down-club-r2: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "044-coast-down-club-r2: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00031 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "045-coast-down-club-r3: matched unpowered coasting",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "045-coast-down-club-r3: one gravity component plus measured drag",
+      "passed": true,
+      "detail": "Mean acceleration residual 0.00031 m/s\u00b2; tolerance 0.20, versus ~1.55 m/s\u00b2 for one 16% grade gravity component."
+    },
+    {
+      "name": "hill/stock: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill/stock: surveyed summit reached and descent completed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill/engine_workshop: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill/engine_workshop: surveyed summit reached and descent completed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill/transmission_long: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill/transmission_long: surveyed summit reached and descent completed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill/chassis_light: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill/chassis_light: surveyed summit reached and descent completed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill/club: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill/club: surveyed summit reached and descent completed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined/stock: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined/stock: surveyed summit reached and descent completed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined/engine_workshop: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined/engine_workshop: surveyed summit reached and descent completed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined/transmission_long: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined/transmission_long: surveyed summit reached and descent completed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined/chassis_light: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined/chassis_light: surveyed summit reached and descent completed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined/club: repeatability",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined/club: surveyed summit reached and descent completed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stock: downhill coast faster than flat, flat faster than uphill",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "engine_workshop: downhill coast faster than flat, flat faster than uphill",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "transmission_long: downhill coast faster than flat, flat faster than uphill",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "chassis_light: downhill coast faster than flat, flat faster than uphill",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "club: downhill coast faster than flat, flat faster than uphill",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "coast-flat: unfuelled engine upgrade cannot propel a coasting car",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "coast-up: unfuelled engine upgrade cannot propel a coasting car",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "coast-down: unfuelled engine upgrade cannot propel a coasting car",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill: workshop engine improves climb time",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill: lighter chassis improves powered climb time",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "hill: full club setup improves total time",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined: workshop engine improves climb time",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined: lighter chassis improves powered climb time",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "combined: full club setup improves total time",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Club car sheds downhill overspeed on the flat exit",
+      "passed": true,
+      "detail": "The engine must not cancel drag indefinitely above its gear ceiling after gravity has accelerated the car downhill."
+    }
+  ],
+  "rows": [
+    {
+      "course": "coast-flat",
+      "loadout": "stock",
+      "seconds": 1.808333396911621,
+      "timeRange": 0.0,
+      "peakMph": 26.844,
+      "finalMph": 22.849003308296204,
+      "maxClearance": 0.0,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": -0.001065504550933838
+    },
+    {
+      "course": "coast-flat",
+      "loadout": "engine_workshop",
+      "seconds": 1.808333396911621,
+      "timeRange": 0.0,
+      "peakMph": 26.844,
+      "finalMph": 22.849003308296204,
+      "maxClearance": 0.0,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": -0.001065504550933838
+    },
+    {
+      "course": "coast-flat",
+      "loadout": "transmission_long",
+      "seconds": 1.808333396911621,
+      "timeRange": 0.0,
+      "peakMph": 26.844,
+      "finalMph": 22.849003308296204,
+      "maxClearance": 0.0,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": -0.001065504550933838
+    },
+    {
+      "course": "coast-flat",
+      "loadout": "chassis_light",
+      "seconds": 1.8333333730697632,
+      "timeRange": 0.0,
+      "peakMph": 26.844,
+      "finalMph": 22.273115159988404,
+      "maxClearance": 0.0,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": -0.0013607422510782878
+    },
+    {
+      "course": "coast-flat",
+      "loadout": "club",
+      "seconds": 1.8333333730697632,
+      "timeRange": 0.0,
+      "peakMph": 26.844,
+      "finalMph": 22.273115159988404,
+      "maxClearance": 0.0,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": -0.0013607422510782878
+    },
+    {
+      "course": "coast-up",
+      "loadout": "stock",
+      "seconds": 2.133333444595337,
+      "timeRange": 0.0,
+      "peakMph": 26.844,
+      "finalMph": 15.659902415275575,
+      "maxClearance": 3.2186508178710938e-06,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": -0.00213619073232015
+    },
+    {
+      "course": "coast-up",
+      "loadout": "engine_workshop",
+      "seconds": 2.133333444595337,
+      "timeRange": 0.0,
+      "peakMph": 26.844,
+      "finalMph": 15.659902415275575,
+      "maxClearance": 3.2186508178710938e-06,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": -0.00213619073232015
+    },
+    {
+      "course": "coast-up",
+      "loadout": "transmission_long",
+      "seconds": 2.133333444595337,
+      "timeRange": 0.0,
+      "peakMph": 26.844,
+      "finalMph": 15.659902415275575,
+      "maxClearance": 3.2186508178710938e-06,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": -0.00213619073232015
+    },
+    {
+      "course": "coast-up",
+      "loadout": "chassis_light",
+      "seconds": 2.1750001907348633,
+      "timeRange": 0.0,
+      "peakMph": 26.844,
+      "finalMph": 14.966309874534607,
+      "maxClearance": 3.993511199951172e-06,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": -0.002537886301676432
+    },
+    {
+      "course": "coast-up",
+      "loadout": "club",
+      "seconds": 2.1750001907348633,
+      "timeRange": 0.0,
+      "peakMph": 26.844,
+      "finalMph": 14.966309874534607,
+      "maxClearance": 3.993511199951172e-06,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": -0.002537886301676432
+    },
+    {
+      "course": "coast-down",
+      "loadout": "stock",
+      "seconds": 1.6250001192092896,
+      "timeRange": 0.0,
+      "peakMph": 28.254645745277408,
+      "finalMph": 28.254645745277408,
+      "maxClearance": 0.00018870830535888672,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": 0.000504986597941472
+    },
+    {
+      "course": "coast-down",
+      "loadout": "engine_workshop",
+      "seconds": 1.6250001192092896,
+      "timeRange": 0.0,
+      "peakMph": 28.254645745277408,
+      "finalMph": 28.254645745277408,
+      "maxClearance": 0.00018870830535888672,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": 0.000504986597941472
+    },
+    {
+      "course": "coast-down",
+      "loadout": "transmission_long",
+      "seconds": 1.6250001192092896,
+      "timeRange": 0.0,
+      "peakMph": 28.254645745277408,
+      "finalMph": 28.254645745277408,
+      "maxClearance": 0.00018870830535888672,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": 0.000504986597941472
+    },
+    {
+      "course": "coast-down",
+      "loadout": "chassis_light",
+      "seconds": 1.6416667699813843,
+      "timeRange": 0.0,
+      "peakMph": 27.709667986869814,
+      "finalMph": 27.709667986869814,
+      "maxClearance": 0.00019055604934692383,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": 0.0003083176337755643
+    },
+    {
+      "course": "coast-down",
+      "loadout": "club",
+      "seconds": 1.6416667699813843,
+      "timeRange": 0.0,
+      "peakMph": 27.709667986869814,
+      "finalMph": 27.709667986869814,
+      "maxClearance": 0.00019055604934692383,
+      "maxAlignment": 0.0,
+      "meanAccelerationResidual": 0.0003083176337755643
+    },
+    {
+      "course": "hill",
+      "loadout": "stock",
+      "seconds": 41.6583366394043,
+      "timeRange": 0.0,
+      "peakMph": 55.945365144729614,
+      "finalMph": 53.82228280639649,
+      "maxClearance": 0.004001975059509277,
+      "maxAlignment": 0.5181329846382141,
+      "climbSeconds": 13.274988174438477,
+      "crestMph": 49.39822071838379
+    },
+    {
+      "course": "hill",
+      "loadout": "engine_workshop",
+      "seconds": 38.26667022705078,
+      "timeRange": 0.0,
+      "peakMph": 55.99383529853821,
+      "finalMph": 55.93247532653809,
+      "maxClearance": 0.004052221775054932,
+      "maxAlignment": 0.49614015221595764,
+      "climbSeconds": 11.312408447265625,
+      "crestMph": 55.92011458396912
+    },
+    {
+      "course": "hill",
+      "loadout": "transmission_long",
+      "seconds": 41.46666717529297,
+      "timeRange": 0.0,
+      "peakMph": 61.200954908370974,
+      "finalMph": 54.07262517738342,
+      "maxClearance": 0.004153311252593994,
+      "maxAlignment": 0.5162413120269775,
+      "climbSeconds": 13.308174133300781,
+      "crestMph": 49.40398508262634
+    },
+    {
+      "course": "hill",
+      "loadout": "chassis_light",
+      "seconds": 41.083335876464844,
+      "timeRange": 0.0,
+      "peakMph": 55.943436578750614,
+      "finalMph": 53.773629182815554,
+      "maxClearance": 0.003765285015106201,
+      "maxAlignment": 0.47765377163887024,
+      "climbSeconds": 13.056324005126953,
+      "crestMph": 50.192299226760866
+    },
+    {
+      "course": "hill",
+      "loadout": "club",
+      "seconds": 28.491668701171875,
+      "timeRange": 0.0,
+      "peakMph": 76.14082593536378,
+      "finalMph": 75.93849717712402,
+      "maxClearance": 0.004083752632141113,
+      "maxAlignment": 0.4780632555484772,
+      "climbSeconds": 8.319817543029785,
+      "crestMph": 75.94254204559327
+    },
+    {
+      "course": "combined",
+      "loadout": "stock",
+      "seconds": 66.15834045410156,
+      "timeRange": 0.0,
+      "peakMph": 54.03471520233155,
+      "finalMph": 52.68650678062439,
+      "maxClearance": 0.004474639892578125,
+      "maxAlignment": 0.4739525318145752,
+      "climbSeconds": 13.275449752807617,
+      "crestMph": 49.39630495262146
+    },
+    {
+      "course": "combined",
+      "loadout": "engine_workshop",
+      "seconds": 61.341670989990234,
+      "timeRange": 0.0,
+      "peakMph": 55.952051124572755,
+      "finalMph": 55.92497866630554,
+      "maxClearance": 0.004337489604949951,
+      "maxAlignment": 0.508988618850708,
+      "climbSeconds": 11.360130310058594,
+      "crestMph": 55.92145433998108
+    },
+    {
+      "course": "combined",
+      "loadout": "transmission_long",
+      "seconds": 66.79167175292969,
+      "timeRange": 0.0,
+      "peakMph": 54.03471520233155,
+      "finalMph": 52.58583734321594,
+      "maxClearance": 0.0038326382637023926,
+      "maxAlignment": 0.521520733833313,
+      "climbSeconds": 13.308183670043945,
+      "crestMph": 49.40747100830078
+    },
+    {
+      "course": "combined",
+      "loadout": "chassis_light",
+      "seconds": 65.45000457763672,
+      "timeRange": 0.0,
+      "peakMph": 54.03471520233155,
+      "finalMph": 53.022175395965576,
+      "maxClearance": 0.00411909818649292,
+      "maxAlignment": 0.47928959131240845,
+      "climbSeconds": 13.056385040283203,
+      "crestMph": 50.18979891777039
+    },
+    {
+      "course": "combined",
+      "loadout": "club",
+      "seconds": 45.85000228881836,
+      "timeRange": 0.0,
+      "peakMph": 76.08491458892823,
+      "finalMph": 76.05795733261108,
+      "maxClearance": 0.004201829433441162,
+      "maxAlignment": 0.4549950361251831,
+      "climbSeconds": 8.342111587524414,
+      "crestMph": 76.05219723510743
+    }
+  ],
+  "scope": "Actual car on dry surveyed hill/combined/coasting fixtures; not campaign track, fuel, wet/off-road, natural AI or human acceptance."
+}

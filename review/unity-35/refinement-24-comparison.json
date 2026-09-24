@@ -1,0 +1,145 @@
+{
+  "scope": "Geometry-only refinement; compare forecast and actual samples exactly, preserve physical error separately. Timing is hidden-probe evidence, not frame acceptance.",
+  "sets": {
+    "approaches-24-fast": {
+      "passed": 79,
+      "total": 79,
+      "cases": {
+        "start-1-current": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": 1.7848960161209106,
+          "previousFirstUncertain": 1.6500000953674316,
+          "actualDeparture": 1.758333444595337,
+          "predictedDeparture": 1.8000000715255737,
+          "queries": 760,
+          "maximumBoundUnderestimate": 0.0
+        },
+        "start-2-current": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": 1.1541666984558105,
+          "previousFirstUncertain": 1.0750000476837158,
+          "actualDeparture": 1.1416667699813843,
+          "predictedDeparture": 1.1666667461395264,
+          "queries": 848,
+          "maximumBoundUnderestimate": 0.0
+        },
+        "start-1-reanchor": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": 1.7848960161209106,
+          "previousFirstUncertain": 1.6500000953674316,
+          "actualDeparture": 1.7500001192092896,
+          "predictedDeparture": 1.8000000715255737,
+          "queries": 788,
+          "maximumBoundUnderestimate": 0.0
+        },
+        "start-2-reanchor": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": 1.2223957777023315,
+          "previousFirstUncertain": 1.1416667699813843,
+          "actualDeparture": 1.2083333730697632,
+          "predictedDeparture": 1.2333333492279053,
+          "queries": 784,
+          "maximumBoundUnderestimate": 0.0
+        },
+        "start-1-guide": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": -1.0,
+          "previousFirstUncertain": -1.0,
+          "actualDeparture": -1.0,
+          "predictedDeparture": -1.0,
+          "queries": 140,
+          "maximumBoundUnderestimate": 0.0
+        },
+        "start-2-guide": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": -1.0,
+          "previousFirstUncertain": -1.0,
+          "actualDeparture": -1.0,
+          "predictedDeparture": -1.0,
+          "queries": 120,
+          "maximumBoundUnderestimate": 0.0
+        }
+      },
+      "allSamplesExact": true,
+      "warmMeanMs": {
+        "totalMs": 4.098005555555556,
+        "projectionMs": 0.6521944444444443,
+        "followerMs": 1.7791388888888897,
+        "bodyMs": 1.524588888888889,
+        "physicsMs": 0.08639444444444434
+      },
+      "maximumPositionError": 0.05703696981072426,
+      "maximumBodyUnderestimate": 0.05021858215332031
+    },
+    "paths-24-adaptive": {
+      "passed": 72,
+      "total": 72,
+      "cases": {
+        "rejoin-left": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": -1.0,
+          "previousFirstUncertain": -1.0,
+          "actualDeparture": -1.0,
+          "predictedDeparture": -1.0,
+          "queries": 36,
+          "maximumBoundUnderestimate": 0.0
+        },
+        "rejoin-right": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": -1.0,
+          "previousFirstUncertain": -1.0,
+          "actualDeparture": -1.0,
+          "predictedDeparture": -1.0,
+          "queries": 36,
+          "maximumBoundUnderestimate": 0.0
+        },
+        "switchback-left": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": -1.0,
+          "previousFirstUncertain": -1.0,
+          "actualDeparture": -1.0,
+          "predictedDeparture": -1.0,
+          "queries": 132,
+          "maximumBoundUnderestimate": 0.0
+        },
+        "switchback-right": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": -1.0,
+          "previousFirstUncertain": -1.0,
+          "actualDeparture": -1.0,
+          "predictedDeparture": -1.0,
+          "queries": 132,
+          "maximumBoundUnderestimate": 0.0
+        },
+        "overspeed-left": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": 0.7750000357627869,
+          "previousFirstUncertain": 0.7750000357627869,
+          "actualDeparture": 0.7833333611488342,
+          "predictedDeparture": 0.7833333611488342,
+          "queries": 636,
+          "maximumBoundUnderestimate": 0.0
+        },
+        "overspeed-right": {
+          "comparisonSamplesExact": true,
+          "firstUncertain": 0.18333333730697632,
+          "previousFirstUncertain": 0.17500001192092896,
+          "actualDeparture": 0.19166667759418488,
+          "predictedDeparture": 0.19166667759418488,
+          "queries": 916,
+          "maximumBoundUnderestimate": 0.0
+        }
+      },
+      "allSamplesExact": true,
+      "warmMeanMs": {
+        "totalMs": 3.3609166666666668,
+        "projectionMs": 0.7032555555555553,
+        "followerMs": 1.6676222222222221,
+        "bodyMs": 0.8472611111111111,
+        "physicsMs": 0.0840388888888888
+      },
+      "maximumPositionError": 0.05122184008359909,
+      "maximumBodyUnderestimate": 0.041839599609375
+    }
+  }
+}

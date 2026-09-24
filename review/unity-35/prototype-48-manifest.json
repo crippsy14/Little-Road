@@ -1,0 +1,46 @@
+{
+  "buildChecks": 322,
+  "candidateArguments": "--driver-risk 5 --no-gap-centres --traffic-path-check --anticipate-blocking-car",
+  "acceptance": "NOT selected.322 build checks.24finish/2238.174957combined car-seconds/CP1 tied22-23/finish8/two light paircontacts. Misses pace/rank targets. Controlled80/82: no-room time and7unresolved samples fail. Disabled race-active motion/events/results preserve46; raw recording tail differs after all finish. Desktop43 unchanged.",
+  "version": 48,
+  "assemblyHash": "A266AC24CBF94D0AA50851EA79713134173A18777BB1E3D335E80165C20726E9",
+  "sourceFiles": [
+    {
+      "file": "34-driver-identity-prototype.md",
+      "sha256": "F9BB3B9897705B825FD21268B7220521ED5CB707735D21EFEABAAC2A3E8571B0"
+    },
+    {
+      "file": "analyze-coasting-regressions.py",
+      "sha256": "39AF7524BEDEBA0DED882A51740BF19679CA98F1B67E04D85AEDA423B1A260F3"
+    },
+    {
+      "file": "ContextDriverPolicy.cs",
+      "sha256": "EE519CE36D26F1B47CB3DD73E03A09683FA377FC5710245B6D84DD37F2149A4A"
+    },
+    {
+      "file": "ContextPreferenceMap.cs",
+      "sha256": "45BCA52DE1D32C7F8DC209AA69DB4770B9DA7F2E63FB7C927097336924184448"
+    },
+    {
+      "file": "run-coasting-regressions.ps1",
+      "sha256": "3B077A4F45ABA0703170C518C2493C632206869B655E9325EBB1D2D8A7131395"
+    },
+    {
+      "file": "run-passing-space-comparison.ps1",
+      "sha256": "4792B419108DDD562CF1AC2EEEBDA99FEB98E50E8765BC9D37C5A4EAD5B74924"
+    },
+    {
+      "file": "run-technical-trial.ps1",
+      "sha256": "A928C33CD65A259BDE6E0B52A458A3EF5F3BFCA279D273354426759E4E1AEADF"
+    },
+    {
+      "file": "summarize-passing-space.py",
+      "sha256": "4824A1AEF95FCE5B7832DBB70D7DF5BD10C115914BDDDC65C1298DCA398C1694"
+    },
+    {
+      "file": "TrafficPathChecks.cs",
+      "sha256": "1CCD9CA71F70C8B81E5A2DA8DA953DE714C6581EFAB4C89DA457A263294961DA"
+    }
+  ],
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-48-review\\Little Road Unity.exe"
+}

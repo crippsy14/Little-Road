@@ -1,0 +1,169 @@
+{
+  "scope": "Sequential fixed1080p normal-speed pair, same67 assembly and all-car following fallback. One pair, no statistical confidence claim. Original frame budgets remain failed.",
+  "serial": {
+    "scope": "All RoadCar.Plan calls plus shared snapshot on the main thread, summed per rendered frame. Includes recovery/sensing/follower/guard; excludes physics simulation, rendering, diagnostics and direct fixture commands. Snapshot cost includes forecast preparation, dispatch and joined wait. Forecast worker elapsed/allocations are reported separately; worker elapsed is not CPU utilization and must not be added to joined wall time. Allocation counters cover these same regions plus separately identified workers. First captured frame may include setup/loading; retained explicitly. Hidden/accelerated runs cannot establish real-time performance.",
+    "realTimeRenderingEvidence": true,
+    "omittedInitialLoadingFrames": 1,
+    "frames": 9521,
+    "observedFrameResolutions": [
+      [
+        1920,
+        1080
+      ]
+    ],
+    "settings": {
+      "cpu": "Intel(R) Core(TM) i7-14700KF",
+      "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "width": 1920,
+      "height": 1080,
+      "frameCap": 120,
+      "vsync": 0,
+      "playbackRate": 1.0,
+      "batchMode": false,
+      "developmentBuild": false,
+      "droppedFrames": 0
+    },
+    "allAiMsPerRenderedFrame": {
+      "mean": 4.426569929629241,
+      "p50": 1.0812,
+      "p95": 26.747100000000003,
+      "p99": 53.656699999999994,
+      "maximum": 94.2344
+    },
+    "observedFrameMs": {
+      "mean": 10.894295703386913,
+      "p50": 8.333602905273438,
+      "p95": 28.560699462890625,
+      "p99": 55.957801818847656,
+      "maximum": 573.7057495117188
+    },
+    "worstOneSecondWindow": {
+      "startRealTime": 24.30809783935547,
+      "endRealTime": 25.26624870300293,
+      "startSimTime": 18.108156204223633,
+      "meanFrameMs": 31.699536979198456,
+      "frames": 32
+    },
+    "totalDecisionCalls": 297120,
+    "totalSnapshotCalls": 12380,
+    "driverBytesAfter5s": 0,
+    "forecastWorkerBytesAfter5s": 0,
+    "forecastJobs": 24338,
+    "forecastBatches": 1017,
+    "forecastBatchWallMs": {
+      "mean": 0.5767963344186535,
+      "p50": 0.0,
+      "p95": 5.3377,
+      "p99": 6.0416,
+      "maximum": 9.3219
+    },
+    "summedForecastWorkerElapsedMs": 39416.1068,
+    "allocatingFramesAfter5s": 0,
+    "checks": {
+      "allFramesAt1920x1080": true,
+      "completeCapture": true,
+      "allAiP95Within3ms": false,
+      "frameP95Within16_7ms": false,
+      "frameP99Within33_3ms": false,
+      "noObservedDriverAllocationAfter5s": true
+    }
+  },
+  "shared": {
+    "scope": "All RoadCar.Plan calls plus shared snapshot on the main thread, summed per rendered frame. Includes recovery/sensing/follower/guard; excludes physics simulation, rendering, diagnostics and direct fixture commands. Snapshot cost includes forecast preparation, dispatch and joined wait. Forecast worker elapsed/allocations are reported separately; worker elapsed is not CPU utilization and must not be added to joined wall time. Allocation counters cover these same regions plus separately identified workers. First captured frame may include setup/loading; retained explicitly. Hidden/accelerated runs cannot establish real-time performance.",
+    "realTimeRenderingEvidence": true,
+    "omittedInitialLoadingFrames": 1,
+    "frames": 9755,
+    "observedFrameResolutions": [
+      [
+        1920,
+        1080
+      ]
+    ],
+    "settings": {
+      "cpu": "Intel(R) Core(TM) i7-14700KF",
+      "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "width": 1920,
+      "height": 1080,
+      "frameCap": 120,
+      "vsync": 0,
+      "playbackRate": 1.0,
+      "batchMode": false,
+      "developmentBuild": false,
+      "droppedFrames": 0
+    },
+    "allAiMsPerRenderedFrame": {
+      "mean": 4.146242767811379,
+      "p50": 1.0796000000000001,
+      "p95": 25.4733,
+      "p99": 47.602000000000004,
+      "maximum": 84.43049999999998
+    },
+    "observedFrameMs": {
+      "mean": 10.631746448705528,
+      "p50": 8.333595275878906,
+      "p95": 27.42110252380371,
+      "p99": 49.48969650268555,
+      "maximum": 562.86328125
+    },
+    "worstOneSecondWindow": {
+      "startRealTime": 24.295272827148438,
+      "endRealTime": 25.24530029296875,
+      "startSimTime": 18.108156204223633,
+      "meanFrameMs": 26.463426464482357,
+      "frames": 38
+    },
+    "totalDecisionCalls": 297120,
+    "totalSnapshotCalls": 12380,
+    "driverBytesAfter5s": 0,
+    "forecastWorkerBytesAfter5s": 0,
+    "forecastJobs": 24338,
+    "forecastBatches": 1017,
+    "forecastBatchWallMs": {
+      "mean": 0.5634068785238339,
+      "p50": 0.0,
+      "p95": 5.3264,
+      "p99": 6.0259,
+      "maximum": 8.963
+    },
+    "summedForecastWorkerElapsedMs": 39345.1791,
+    "allocatingFramesAfter5s": 0,
+    "checks": {
+      "allFramesAt1920x1080": true,
+      "completeCapture": true,
+      "allAiP95Within3ms": false,
+      "frameP95Within16_7ms": false,
+      "frameP99Within33_3ms": false,
+      "noObservedDriverAllocationAfter5s": true
+    }
+  },
+  "parity": {
+    "scope": "Exact equality of stored samples/events/results; terminal export positions and profiling costs are separate. Hidden timing is not rendered-frame acceptance.",
+    "baseline": "review\\unity-35\\rendered-67\\serial",
+    "candidate": "review\\unity-35\\rendered-67\\shared",
+    "checks": {
+      "motion": true,
+      "checkpointPassages": true,
+      "impacts": true,
+      "assistedRecoveries": true,
+      "overlapPeaks": true,
+      "samples": true,
+      "contextSamples": true,
+      "carRaceResults": true,
+      "normalExit": true,
+      "noRuntimeErrors": true
+    },
+    "passed": true,
+    "meanDecisionRegionMsPerPhysicsTick": {
+      "baseline": 2.876897407317681,
+      "candidate": 2.7388903238833895
+    },
+    "decisionRegionReductionPercent": 4.797080461863413,
+    "meanAllAiMsPerSnapshotTick": {
+      "baseline": 3.404311171243942,
+      "candidate": 3.2670919386106623
+    },
+    "allAiWallCostReductionPercent": 4.030748827908692
+  },
+  "frameP95ReductionPercent": 3.9900876397218843,
+  "frameP99ReductionPercent": 11.558898144536345
+}

@@ -1,0 +1,69 @@
+{
+  "compareContinuation": true,
+  "followingFeasibilityFallback": true,
+  "lightDrafting": true,
+  "trafficPathCheck": true,
+  "zeroContacts": true,
+  "referenceRoot": "review/unity-35/regression-38",
+  "sharedObservedTraffic": true,
+  "completionAllowance": 0.5,
+  "comparePassCompletion": false,
+  "cases": [
+    {
+      "loadout": "club",
+      "cars": 3,
+      "gap": 24,
+      "opponents": "street,stock",
+      "name": "queue"
+    },
+    {
+      "loadout": "club",
+      "cars": 2,
+      "gap": 24,
+      "opponents": "stock",
+      "name": "no-room"
+    },
+    {
+      "loadout": "street",
+      "cars": 2,
+      "gap": 12,
+      "opponents": "club",
+      "name": "merge-left"
+    },
+    {
+      "loadout": "street",
+      "cars": 2,
+      "gap": 12,
+      "opponents": "club",
+      "name": "merge-right"
+    },
+    {
+      "loadout": "club",
+      "cars": 2,
+      "gap": 24,
+      "opponents": "stock",
+      "name": "brake-leader"
+    },
+    {
+      "loadout": "club",
+      "cars": 3,
+      "gap": 24,
+      "opponents": "street,stock",
+      "name": "corner-three"
+    }
+  ],
+  "openSpacePriority": true,
+  "scope": "Controlled clean-opportunity regressions versus frozen38; same-build paired solo street/club. Existing corridor contract and rear-merge witness deadlines retained. No rendered or broad personality acceptance.",
+  "trafficAwareProgress": true,
+  "parallelContinuationForecast": true,
+  "anticipateBlockingCar": false,
+  "driverRisk": 5,
+  "retainPassTrajectory": false,
+  "anticipatePassingSpace": true,
+  "zeroDepartures": true,
+  "maximumCompletionRatio": 1.05,
+  "trafficCoastContinuation": true,
+  "rearPressureFilter": true,
+  "noGapCentres": true,
+  "zeroRecovery": true
+}

@@ -1,0 +1,23 @@
+{
+    "id": 15,
+    "time": 36.6255989074707,
+    "progress": 599.6359252929688,
+    "offset": 4.463257312774658,
+    "bottom": 0.1004256010055542,
+    "verticalSpeed": 9.052542686462402,
+    "position": {
+        "x": -119.89222717285156,
+        "y": 0.11013060808181763,
+        "z": -14.963418006896973
+    },
+    "contacts": [
+        "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-121.613, 0.025, -13.272) impulse=(0.00, 69.50, 0.00)",
+        "Bridge continuous deck normal=(0.000, 1.000, 0.000) point=(-121.613, -0.010, -13.272) impulse=(0.00, 0.00, 0.00)",
+        "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-121.562, 0.025, -13.465) impulse=(0.00, 69.50, 0.00)",
+        "Bridge continuous deck normal=(0.000, 1.000, 0.000) point=(-121.562, -0.010, -13.465) impulse=(0.00, 0.00, 0.00)",
+        "Continuous sculpted island collider normal=(0.000, 1.000, 0.000) point=(-120.000, -0.164, -16.312) impulse=(0.00, 0.00, 0.00)",
+        "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-121.511, 0.025, -13.657) impulse=(0.00, 0.00, 0.00)",
+        "Bridge continuous deck normal=(0.000, 1.000, 0.000) point=(-121.511, -0.010, -13.657) impulse=(0.00, 0.00, 0.00)",
+        "Continuous sculpted island collider normal=(-0.030, 0.732, 0.681) point=(-120.000, -0.019, -16.500) impulse=(-320.03, 7764.41, 7225.36)"
+    ]
+}

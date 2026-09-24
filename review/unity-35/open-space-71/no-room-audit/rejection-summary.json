@@ -1,0 +1,873 @@
+{
+  "scope": "Failed selection events, not 10 Hz unresolved samples. Clock includes countdown; race sample time does not. Raw evidence retained. No proof that an alternative path would pass all checks.",
+  "exactDiagnosticParity": true,
+  "dropped": 0,
+  "events": 15,
+  "candidateReasons": {
+    "corridor": 84,
+    "moving side entry: 0": 7
+  },
+  "observations": [
+    {
+      "clock": 21.3,
+      "id": 1,
+      "route": 1637.521240234375,
+      "offset": -3.516129732131958,
+      "left": -6.289999961853027,
+      "right": -3.4102907180786133,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -9.5845947265625,
+          "offset": -0.6902907490730286,
+          "speed": 26.055030822753906
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": -3.3187735080718994,
+          "target": -3.6691668033599854
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": -3.319221258163452,
+          "target": -4.193333625793457
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": -3.319221258163452,
+          "target": -4.71750020980835
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": -3.319221258163452,
+          "target": -5.241666793823242
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": -3.319221258163452,
+          "target": -5.765833377838135
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": -3.319221258163452,
+          "target": -6.289999961853027
+        }
+      ]
+    },
+    {
+      "clock": 21.40833333333333,
+      "id": 1,
+      "route": 1640.1431884765625,
+      "offset": -3.2977914810180664,
+      "left": -6.289999961853027,
+      "right": -3.2107808589935303,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -9.3260498046875,
+          "offset": -0.49078086018562317,
+          "speed": 26.68497657775879
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -3.1899561882019043,
+          "target": -3.6691668033599854
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -3.1899542808532715,
+          "target": -4.193333625793457
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -3.1899542808532715,
+          "target": -4.71750020980835
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -3.1899542808532715,
+          "target": -5.241666793823242
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -3.1899542808532715,
+          "target": -5.765833377838135
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -3.1899542808532715,
+          "target": -6.289999961853027
+        }
+      ]
+    },
+    {
+      "clock": 21.508333333333333,
+      "id": 1,
+      "route": 1642.623779296875,
+      "offset": -3.0806026458740234,
+      "left": -6.289999961853027,
+      "right": -3.022850751876831,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -9.0965576171875,
+          "offset": -0.3028506338596344,
+          "speed": 27.253826141357422
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.972715377807617,
+          "target": -3.1449999809265137
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.973064422607422,
+          "target": -3.6691668033599854
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.9730329513549805,
+          "target": -4.193333625793457
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.9730329513549805,
+          "target": -4.71750020980835
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.9730329513549805,
+          "target": -5.241666793823242
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.9730329513549805,
+          "target": -5.765833377838135
+        }
+      ]
+    },
+    {
+      "clock": 21.616666666666667,
+      "id": 1,
+      "route": 1645.23291015625,
+      "offset": -2.8384552001953125,
+      "left": -6.289999961853027,
+      "right": -2.7982795238494873,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -8.7718505859375,
+          "offset": -0.0782795250415802,
+          "speed": 26.925325393676758
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.726194143295288,
+          "target": -3.1449999809265137
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.726194143295288,
+          "target": -3.6691668033599854
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.726194143295288,
+          "target": -4.193333625793457
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.726194143295288,
+          "target": -4.71750020980835
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.726194143295288,
+          "target": -5.241666793823242
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.726194143295288,
+          "target": -5.765833377838135
+        }
+      ]
+    },
+    {
+      "clock": 21.724999999999998,
+      "id": 1,
+      "route": 1647.88671875,
+      "offset": -2.5939931869506836,
+      "left": -6.289999961853027,
+      "right": -2.5744752883911133,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -8.5272216796875,
+          "offset": 0.14552471041679382,
+          "speed": 26.643457412719727
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.480255603790283,
+          "target": -2.620833396911621
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.4807562828063965,
+          "target": -3.1449999809265137
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.480724811553955,
+          "target": -3.6691668033599854
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.480724811553955,
+          "target": -4.193333625793457
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.480724811553955,
+          "target": -4.71750020980835
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": -2.480724811553955,
+          "target": -5.241666793823242
+        }
+      ]
+    },
+    {
+      "clock": 24.425,
+      "id": 1,
+      "route": 1711.950927734375,
+      "offset": 3.2177670001983643,
+      "left": 3.0193843841552734,
+      "right": 6.289999961853027,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -8.6732177734375,
+          "offset": 0.2993844449520111,
+          "speed": 25.47520637512207
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 3.0065300464630127,
+          "target": 3.1449995040893555
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 3.0072929859161377,
+          "target": 3.669166326522827
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 3.0077202320098877,
+          "target": 4.193332672119141
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 3.0078423023223877,
+          "target": 4.717499732971191
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 3.0078423023223877,
+          "target": 5.241666316986084
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 3.0078423023223877,
+          "target": 5.765832901000977
+        }
+      ]
+    },
+    {
+      "clock": 24.53333333333333,
+      "id": 1,
+      "route": 1714.5126953125,
+      "offset": 3.1105597019195557,
+      "left": 2.899341106414795,
+      "right": 6.289999961853027,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -8.43798828125,
+          "offset": 0.17934095859527588,
+          "speed": 26.156471252441406
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 2.84830904006958,
+          "target": 3.1449995040893555
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 2.84922456741333,
+          "target": 3.669166326522827
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 2.84965181350708,
+          "target": 4.193332672119141
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 2.849804401397705,
+          "target": 4.717499732971191
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 2.84983491897583,
+          "target": 5.241666316986084
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 2.84983491897583,
+          "target": 5.765832901000977
+        }
+      ]
+    },
+    {
+      "clock": 24.633333333333333,
+      "id": 1,
+      "route": 1716.8817138671875,
+      "offset": 2.984466791152954,
+      "left": 2.7917823791503906,
+      "right": 6.289999961853027,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -8.160888671875,
+          "offset": 0.07178227603435516,
+          "speed": 26.762033462524414
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.15000000596046448,
+          "offset": 2.756932497024536,
+          "target": 3.1449995040893555
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.15000000596046448,
+          "offset": 2.757024049758911,
+          "target": 3.669166326522827
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.15000000596046448,
+          "offset": 2.757024049758911,
+          "target": 4.193332672119141
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.15000000596046448,
+          "offset": 2.757024049758911,
+          "target": 4.717499732971191
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.15000000596046448,
+          "offset": 2.757024049758911,
+          "target": 5.241666316986084
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.15000000596046448,
+          "offset": 2.757024049758911,
+          "target": 5.765832901000977
+        }
+      ]
+    },
+    {
+      "clock": 24.741666666666667,
+      "id": 1,
+      "route": 1719.447021484375,
+      "offset": 2.8219103813171387,
+      "left": 2.6759917736053467,
+      "right": 6.289999961853027,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -7.792236328125,
+          "offset": -0.044008348137140274,
+          "speed": 27.392913818359375
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 2.6518869400024414,
+          "target": 3.1449995040893555
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 2.6518869400024414,
+          "target": 3.669166326522827
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 2.6518869400024414,
+          "target": 4.193332672119141
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 2.6518869400024414,
+          "target": 4.717499732971191
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 2.6518869400024414,
+          "target": 5.241666316986084
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 2.6518869400024414,
+          "target": 5.765832901000977
+        }
+      ]
+    },
+    {
+      "clock": 24.849999999999998,
+      "id": 1,
+      "route": 1722.01025390625,
+      "offset": 2.6358015537261963,
+      "left": 2.55614972114563,
+      "right": 6.289999961853027,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -7.3541259765625,
+          "offset": -0.16385024785995483,
+          "speed": 27.997861862182617
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.545064687728882,
+          "target": 2.620832920074463
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.545064687728882,
+          "target": 3.1449995040893555
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.545064687728882,
+          "target": 3.669166326522827
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.545064687728882,
+          "target": 4.193332672119141
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.545064687728882,
+          "target": 4.717499732971191
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.545064687728882,
+          "target": 5.241666316986084
+        }
+      ]
+    },
+    {
+      "clock": 24.95,
+      "id": 1,
+      "route": 1724.361572265625,
+      "offset": 2.449897527694702,
+      "left": 2.4404895305633545,
+      "right": 6.289999961853027,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -6.8779296875,
+          "offset": -0.2795105576515198,
+          "speed": 28.533329010009766
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.3517656326293945,
+          "target": 2.620832920074463
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.3517656326293945,
+          "target": 3.1449995040893555
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.3517656326293945,
+          "target": 3.669166326522827
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.3517656326293945,
+          "target": 4.193332672119141
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.3517656326293945,
+          "target": 4.717499732971191
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 2.3517656326293945,
+          "target": 5.241666316986084
+        }
+      ]
+    },
+    {
+      "clock": 25.05,
+      "id": 1,
+      "route": 1726.7242431640625,
+      "offset": 2.252910852432251,
+      "left": -6.289999961853027,
+      "right": 6.289999961853027,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -6.3631591796875,
+          "offset": -0.40397074818611145,
+          "speed": 28.709341049194336
+        }
+      ],
+      "reasons": {
+        "moving side entry: 0": 7
+      },
+      "rejected": [
+        {
+          "reason": "moving side entry: 0",
+          "afterSeconds": 0.5583333373069763,
+          "offset": 0.0,
+          "target": -0.8533130884170532
+        },
+        {
+          "reason": "moving side entry: 0",
+          "afterSeconds": 0.5666667222976685,
+          "offset": 0.0,
+          "target": -0.5241668820381165
+        },
+        {
+          "reason": "moving side entry: 0",
+          "afterSeconds": 0.5666667222976685,
+          "offset": 0.0,
+          "target": -2.384185791015625e-07
+        },
+        {
+          "reason": "moving side entry: 0",
+          "afterSeconds": 0.5750000476837158,
+          "offset": 0.0,
+          "target": 0.5241664052009583
+        },
+        {
+          "reason": "moving side entry: 0",
+          "afterSeconds": 0.5833333730697632,
+          "offset": 0.0,
+          "target": 1.0483330488204956
+        },
+        {
+          "reason": "moving side entry: 0",
+          "afterSeconds": 0.7916666865348816,
+          "offset": 0.0,
+          "target": 2.252910852432251
+        },
+        {
+          "reason": "moving side entry: 0",
+          "afterSeconds": 0.8416666984558105,
+          "offset": 0.0,
+          "target": 2.252910852432251
+        }
+      ]
+    },
+    {
+      "clock": 25.78333333333333,
+      "id": 1,
+      "route": 1743.0604248046875,
+      "offset": 0.8201068043708801,
+      "left": 0.7887243032455444,
+      "right": 6.289999961853027,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -4.2513427734375,
+          "offset": -1.931275725364685,
+          "speed": 24.68753433227539
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 0.7260347604751587,
+          "target": 1.0483330488204956
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 0.7260655164718628,
+          "target": 1.5724997520446777
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 0.7260655164718628,
+          "target": 2.0966663360595703
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 0.7260655164718628,
+          "target": 2.620832920074463
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 0.7260655164718628,
+          "target": 3.1449995040893555
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.05000000447034836,
+          "offset": 0.7260655164718628,
+          "target": 3.669166326522827
+        }
+      ]
+    },
+    {
+      "clock": 25.883333333333333,
+      "id": 1,
+      "route": 1745.302978515625,
+      "offset": 0.6352688670158386,
+      "left": 0.5356202125549316,
+      "right": 6.289999961853027,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -3.98291015625,
+          "offset": -2.184379816055298,
+          "speed": 25.341449737548828
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 0.4768916368484497,
+          "target": 1.0483330488204956
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 0.4771071672439575,
+          "target": 1.5724997520446777
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 0.47741493582725525,
+          "target": 2.0966663360595703
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 0.47778400778770447,
+          "target": 2.620832920074463
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 0.4780610501766205,
+          "target": 3.1449995040893555
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.10000000894069672,
+          "offset": 0.4781840741634369,
+          "target": 3.669166326522827
+        }
+      ]
+    },
+    {
+      "clock": 25.991666666666667,
+      "id": 1,
+      "route": 1747.7520751953125,
+      "offset": 0.46553730964660645,
+      "left": 0.270291805267334,
+      "right": 6.289999961853027,
+      "traffic": [
+        {
+          "id": 0,
+          "routeGap": -3.61181640625,
+          "offset": -2.4497082233428955,
+          "speed": 26.022994995117188
+        }
+      ],
+      "reasons": {
+        "corridor": 6
+      },
+      "rejected": [
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 0.2638077735900879,
+          "target": 0.5241664052009583
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 0.26591119170188904,
+          "target": 1.0483330488204956
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.20000001788139343,
+          "offset": 0.26835572719573975,
+          "target": 1.5724997520446777
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.25,
+          "offset": 0.2493494302034378,
+          "target": 2.0966663360595703
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.25,
+          "offset": 0.2568229138851166,
+          "target": 2.620832920074463
+        },
+        {
+          "reason": "corridor",
+          "afterSeconds": 0.25,
+          "offset": 0.2645440995693207,
+          "target": 3.1449995040893555
+        }
+      ]
+    }
+  ]
+}

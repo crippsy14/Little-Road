@@ -1,0 +1,7 @@
+{
+  "scope": "Runtime source comparison: full-field opt-in only; planner remains frozen prototype 80.",
+  "changedRuntimeFiles": [
+    "RaceTrial.cs"
+  ],
+  "onlyFixtureGuardChanged": true
+}

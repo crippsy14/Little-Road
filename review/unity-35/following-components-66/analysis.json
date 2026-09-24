@@ -1,0 +1,344 @@
+{
+  "scope": "Single deterministic matched field, component intervention only. Own-car/rival effects need not sum to the all-car effect because each run changes subsequent interactions. Event timestamps are pre-controller snapshots; audit-enabled timing is not rendered acceptance.",
+  "passed": 30,
+  "total": 32,
+  "checks": {
+    "off: declared component": true,
+    "off: scope excludes other drivers": true,
+    "off: acceptance audit complete": true,
+    "off: model and path identity": true,
+    "off: normal exit without runtime errors": true,
+    "off: everyone finishes": true,
+    "off: bodies contained without recovery": true,
+    "off: same physical and policy configuration": true,
+    "all: declared component": true,
+    "all: scope excludes other drivers": true,
+    "all: acceptance audit complete": true,
+    "all: model and path identity": true,
+    "all: normal exit without runtime errors": true,
+    "all: everyone finishes": true,
+    "all: bodies contained without recovery": true,
+    "all: same physical and policy configuration": true,
+    "car0: declared component": true,
+    "car0: scope excludes other drivers": true,
+    "car0: acceptance audit complete": true,
+    "car0: model and path identity": true,
+    "car0: normal exit without runtime errors": true,
+    "car0: everyone finishes": true,
+    "car0: bodies contained without recovery": false,
+    "car0: same physical and policy configuration": true,
+    "rivals: declared component": true,
+    "rivals: scope excludes other drivers": true,
+    "rivals: acceptance audit complete": true,
+    "rivals: model and path identity": true,
+    "rivals: normal exit without runtime errors": true,
+    "rivals: everyone finishes": true,
+    "rivals: bodies contained without recovery": false,
+    "rivals: same physical and policy configuration": true
+  },
+  "arms": {
+    "off": {
+      "totalCarSeconds": 2215.597137451172,
+      "previewTime": 85.5011978149414,
+      "previewPlace": 4,
+      "impactRecords": 10,
+      "peakImpact": 8.087912559509277,
+      "unresolvedSamples": 375,
+      "attempts": 0,
+      "accepted": 0,
+      "meanAllAiMsPerSnapshot": 3.106847147892966,
+      "events": []
+    },
+    "all": {
+      "totalCarSeconds": 2207.1158752441406,
+      "previewTime": 87.65067291259766,
+      "previewPlace": 4,
+      "impactRecords": 16,
+      "peakImpact": 8.463667869567871,
+      "unresolvedSamples": 362,
+      "attempts": 233,
+      "accepted": 9,
+      "meanAllAiMsPerSnapshot": 3.3833131757301924,
+      "events": [
+        {
+          "id": 8,
+          "timestamp": 18.066666666666666,
+          "raceTime": 15.07501166947186,
+          "ownSpeed": 15.832280158996582,
+          "selectedOffset": 0.5544072985649109,
+          "gain": 31.4656982421875,
+          "endSpeed": 17.967912673950195
+        },
+        {
+          "id": 5,
+          "timestamp": 20.991666666666667,
+          "raceTime": 18.00001166947186,
+          "ownSpeed": 16.621545791625977,
+          "selectedOffset": -0.294778048992157,
+          "gain": 37.0133056640625,
+          "endSpeed": 18.09370994567871
+        },
+        {
+          "id": 0,
+          "timestamp": 21.925,
+          "raceTime": 18.933345002805194,
+          "ownSpeed": 14.619441032409668,
+          "selectedOffset": 2.620832920074463,
+          "gain": 29.8323974609375,
+          "endSpeed": 16.861629486083984
+        },
+        {
+          "id": 6,
+          "timestamp": 22.974999999999998,
+          "raceTime": 19.98334500280519,
+          "ownSpeed": 18.19931411743164,
+          "selectedOffset": -1.3173036575317383,
+          "gain": 36.031005859375,
+          "endSpeed": 16.816650390625
+        },
+        {
+          "id": 6,
+          "timestamp": 23.075,
+          "raceTime": 20.083345002805192,
+          "ownSpeed": 18.052400588989258,
+          "selectedOffset": -1.3195501565933228,
+          "gain": 35.4700927734375,
+          "endSpeed": 15.657488822937012
+        },
+        {
+          "id": 8,
+          "timestamp": 23.383333333333333,
+          "raceTime": 20.391678336138526,
+          "ownSpeed": 16.889917373657227,
+          "selectedOffset": -2.384185791015625e-07,
+          "gain": 35.6397705078125,
+          "endSpeed": 16.963890075683594
+        },
+        {
+          "id": 8,
+          "timestamp": 24.325,
+          "raceTime": 21.333345002805192,
+          "ownSpeed": 16.48651695251465,
+          "selectedOffset": -2.5037081241607666,
+          "gain": 34.7552490234375,
+          "endSpeed": 18.261804580688477
+        },
+        {
+          "id": 12,
+          "timestamp": 24.53333333333333,
+          "raceTime": 21.541678336138524,
+          "ownSpeed": 15.623786926269531,
+          "selectedOffset": 1.5724997520446777,
+          "gain": 28.7130126953125,
+          "endSpeed": 15.275761604309082
+        },
+        {
+          "id": 21,
+          "timestamp": 36.33333333333333,
+          "raceTime": 33.34167833613852,
+          "ownSpeed": 16.645593643188477,
+          "selectedOffset": 4.904844284057617,
+          "gain": 22.1768798828125,
+          "endSpeed": 9.897507667541504
+        }
+      ]
+    },
+    "car0": {
+      "totalCarSeconds": 2209.4403076171875,
+      "previewTime": 85.5011978149414,
+      "previewPlace": 4,
+      "impactRecords": 6,
+      "peakImpact": 3.650381088256836,
+      "unresolvedSamples": 381,
+      "attempts": 6,
+      "accepted": 4,
+      "meanAllAiMsPerSnapshot": 3.209315412504028,
+      "events": [
+        {
+          "id": 0,
+          "timestamp": 34.483333333333334,
+          "raceTime": 31.491678336138527,
+          "ownSpeed": 19.428298950195312,
+          "selectedOffset": 6.014015197753906,
+          "gain": 18.3897705078125,
+          "endSpeed": 8.266748428344727
+        },
+        {
+          "id": 0,
+          "timestamp": 34.59166666666667,
+          "raceTime": 31.60001166947186,
+          "ownSpeed": 17.452638626098633,
+          "selectedOffset": 6.014420986175537,
+          "gain": 17.6768798828125,
+          "endSpeed": 8.187908172607422
+        },
+        {
+          "id": 0,
+          "timestamp": 34.9,
+          "raceTime": 31.90834500280519,
+          "ownSpeed": 10.989030838012695,
+          "selectedOffset": 5.976235866546631,
+          "gain": 12.3148193359375,
+          "endSpeed": 7.167059898376465
+        },
+        {
+          "id": 0,
+          "timestamp": 35.0,
+          "raceTime": 32.00834500280519,
+          "ownSpeed": 10.066697120666504,
+          "selectedOffset": 6.007589340209961,
+          "gain": 13.1319580078125,
+          "endSpeed": 7.781811237335205
+        }
+      ]
+    },
+    "rivals": {
+      "totalCarSeconds": 2210.5400390625,
+      "previewTime": 90.71659088134766,
+      "previewPlace": 8,
+      "impactRecords": 12,
+      "peakImpact": 9.098506927490234,
+      "unresolvedSamples": 473,
+      "attempts": 188,
+      "accepted": 15,
+      "meanAllAiMsPerSnapshot": 3.374355384123432,
+      "events": [
+        {
+          "id": 8,
+          "timestamp": 18.066666666666666,
+          "raceTime": 15.07501166947186,
+          "ownSpeed": 15.832280158996582,
+          "selectedOffset": 0.5544072985649109,
+          "gain": 31.4656982421875,
+          "endSpeed": 17.967912673950195
+        },
+        {
+          "id": 5,
+          "timestamp": 20.991666666666667,
+          "raceTime": 18.00001166947186,
+          "ownSpeed": 16.621545791625977,
+          "selectedOffset": -0.294778048992157,
+          "gain": 37.0133056640625,
+          "endSpeed": 18.09370994567871
+        },
+        {
+          "id": 6,
+          "timestamp": 22.974999999999998,
+          "raceTime": 19.98334500280519,
+          "ownSpeed": 18.19931411743164,
+          "selectedOffset": -1.3173036575317383,
+          "gain": 36.031005859375,
+          "endSpeed": 16.816650390625
+        },
+        {
+          "id": 6,
+          "timestamp": 23.075,
+          "raceTime": 20.083345002805192,
+          "ownSpeed": 18.052400588989258,
+          "selectedOffset": -1.3195501565933228,
+          "gain": 35.4700927734375,
+          "endSpeed": 15.657488822937012
+        },
+        {
+          "id": 8,
+          "timestamp": 23.383333333333333,
+          "raceTime": 20.391678336138526,
+          "ownSpeed": 16.889917373657227,
+          "selectedOffset": -2.384185791015625e-07,
+          "gain": 35.6397705078125,
+          "endSpeed": 16.963890075683594
+        },
+        {
+          "id": 8,
+          "timestamp": 24.325,
+          "raceTime": 21.333345002805192,
+          "ownSpeed": 16.48651695251465,
+          "selectedOffset": -2.5037081241607666,
+          "gain": 34.7552490234375,
+          "endSpeed": 18.261804580688477
+        },
+        {
+          "id": 12,
+          "timestamp": 24.53333333333333,
+          "raceTime": 21.541678336138524,
+          "ownSpeed": 15.623786926269531,
+          "selectedOffset": 1.5724997520446777,
+          "gain": 28.7130126953125,
+          "endSpeed": 15.275761604309082
+        },
+        {
+          "id": 11,
+          "timestamp": 25.258333333333333,
+          "raceTime": 22.266678336138526,
+          "ownSpeed": 11.976606369018555,
+          "selectedOffset": 0.5241664052009583,
+          "gain": 24.2818603515625,
+          "endSpeed": 10.970930099487305
+        },
+        {
+          "id": 8,
+          "timestamp": 31.933333333333334,
+          "raceTime": 28.941678336138526,
+          "ownSpeed": 13.634649276733398,
+          "selectedOffset": 2.0966663360595703,
+          "gain": 31.7227783203125,
+          "endSpeed": 15.628597259521484
+        },
+        {
+          "id": 18,
+          "timestamp": 35.71666666666667,
+          "raceTime": 32.72501166947186,
+          "ownSpeed": 12.877999305725098,
+          "selectedOffset": 3.0617780685424805,
+          "gain": 22.7889404296875,
+          "endSpeed": 10.604538917541504
+        },
+        {
+          "id": 18,
+          "timestamp": 35.824999999999996,
+          "raceTime": 32.83334500280519,
+          "ownSpeed": 12.757039070129395,
+          "selectedOffset": 3.0664570331573486,
+          "gain": 22.3690185546875,
+          "endSpeed": 10.425312995910645
+        },
+        {
+          "id": 18,
+          "timestamp": 35.925,
+          "raceTime": 32.93334500280519,
+          "ownSpeed": 12.618318557739258,
+          "selectedOffset": 3.070826292037964,
+          "gain": 22.1119384765625,
+          "endSpeed": 10.264379501342773
+        },
+        {
+          "id": 23,
+          "timestamp": 43.18333333333333,
+          "raceTime": 40.19167833613852,
+          "ownSpeed": 24.82001495361328,
+          "selectedOffset": -5.498798370361328,
+          "gain": 32.043701171875,
+          "endSpeed": 16.280845642089844
+        },
+        {
+          "id": 23,
+          "timestamp": 43.28333333333333,
+          "raceTime": 40.291678336138524,
+          "ownSpeed": 24.817834854125977,
+          "selectedOffset": -5.495208263397217,
+          "gain": 29.8497314453125,
+          "endSpeed": 14.505904197692871
+        },
+        {
+          "id": 20,
+          "timestamp": 84.34166666666667,
+          "raceTime": 81.35001166947187,
+          "ownSpeed": 28.108097076416016,
+          "selectedOffset": -3.7325527667999268,
+          "gain": 46.1619873046875,
+          "endSpeed": 19.487102508544922
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "noGapCentres": true,
+  "zeroRecovery": true,
+  "maximumCompletionRatio": 1.05,
+  "driverRisk": 5,
+  "zeroDepartures": true,
+  "anticipateBlockingCar": false,
+  "completionAllowance": 0.5,
+  "cases": [
+    {
+      "name": "queue",
+      "gap": 24,
+      "opponents": "street,stock",
+      "loadout": "club",
+      "cars": 3
+    },
+    {
+      "name": "no-room",
+      "gap": 24,
+      "opponents": "stock",
+      "loadout": "club",
+      "cars": 2
+    },
+    {
+      "name": "merge-left",
+      "gap": 12,
+      "opponents": "club",
+      "loadout": "street",
+      "cars": 2
+    },
+    {
+      "name": "merge-right",
+      "gap": 12,
+      "opponents": "club",
+      "loadout": "street",
+      "cars": 2
+    },
+    {
+      "name": "brake-leader",
+      "gap": 24,
+      "opponents": "stock",
+      "loadout": "club",
+      "cars": 2
+    },
+    {
+      "name": "corner-three",
+      "gap": 24,
+      "opponents": "street,stock",
+      "loadout": "club",
+      "cars": 3
+    }
+  ],
+  "zeroContacts": true,
+  "trafficPathCheck": true,
+  "anticipatePassingSpace": true,
+  "trafficCoastContinuation": true,
+  "referenceRoot": "review/unity-35/regression-38",
+  "scope": "Controlled clean-opportunity regressions versus frozen38; same-build paired solo street/club. Existing corridor contract and rear-merge witness deadlines retained. No rendered or broad personality acceptance."
+}

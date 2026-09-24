@@ -1,0 +1,719 @@
+{
+  "scope": "Deterministic mid-lap fixtures, not general racecraft, full-lap pace, rendering performance or player acceptance.",
+  "assemblyHash": "0325853BBEEF6049CE2EAD0CF1310B916F0AA1EA7BCF739E8BD4351029F16510",
+  "passed": 105,
+  "total": 105,
+  "summaries": {
+    "follow": {
+      "times": [
+        39.25949478149414,
+        36.2755241394043
+      ],
+      "minimumStraightSpeed": 18.39852523803711,
+      "leaderBrakingSamples": 0,
+      "firstClearPass": -1.0,
+      "sustainedPassAt": -1.0
+    },
+    "pass": {
+      "times": [
+        26.816356658935547,
+        36.2755241394043
+      ],
+      "minimumStraightSpeed": 18.03563690185547,
+      "leaderBrakingSamples": 0,
+      "firstClearPass": 4.833357334136963,
+      "sustainedPassAt": 6.833326816558838
+    },
+    "no-room": {
+      "times": [
+        29.099655151367188,
+        37.300743103027344
+      ],
+      "minimumStraightSpeed": 18.52448081970215,
+      "leaderBrakingSamples": 0,
+      "firstClearPass": 11.724919319152832,
+      "sustainedPassAt": 13.724888801574707
+    },
+    "solo-stock-reference": {
+      "times": [
+        37.27573776245117
+      ],
+      "minimumStraightSpeed": 18.523916244506836,
+      "leaderBrakingSamples": 0,
+      "firstClearPass": -1.0,
+      "sustainedPassAt": -1.0
+    },
+    "solo-club-reference": {
+      "times": [
+        26.449695587158203
+      ],
+      "minimumStraightSpeed": 19.68583106994629,
+      "leaderBrakingSamples": 0,
+      "firstClearPass": -1.0,
+      "sustainedPassAt": -1.0
+    },
+    "solo-stock-traffic": {
+      "times": [
+        37.27573776245117
+      ],
+      "minimumStraightSpeed": 18.523916244506836,
+      "leaderBrakingSamples": 0,
+      "firstClearPass": -1.0,
+      "sustainedPassAt": -1.0
+    },
+    "solo-club-traffic": {
+      "times": [
+        26.449695587158203
+      ],
+      "minimumStraightSpeed": 19.68583106994629,
+      "leaderBrakingSamples": 0,
+      "firstClearPass": -1.0,
+      "sustainedPassAt": -1.0
+    },
+    "queue": {
+      "times": [
+        27.2996826171875,
+        36.267189025878906,
+        37.40909957885742
+      ],
+      "minimumStraightSpeed": 18.0356388092041,
+      "leaderBrakingSamples": 0,
+      "firstClearPass": 6.358334064483643,
+      "sustainedPassAt": 8.358304023742676,
+      "passes": [
+        {
+          "follower": 0,
+          "leader": 1,
+          "firstClear": 6.358334064483643,
+          "sustainedAt": 8.358304023742676,
+          "onStraight": true
+        },
+        {
+          "follower": 0,
+          "leader": 2,
+          "firstClear": 7.466650485992432,
+          "sustainedAt": 9.466620445251465,
+          "onStraight": true
+        },
+        {
+          "follower": 1,
+          "leader": 2,
+          "firstClear": 29.482982635498047,
+          "sustainedAt": 31.482952117919922,
+          "onStraight": false
+        }
+      ]
+    }
+  },
+  "checks": [
+    {
+      "name": "follow: process exits normally",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "follow: every car finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "follow: no contacts",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "follow: no recoveries",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "follow: no physicalRecoveries",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "follow: no missedGates",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "follow: no sampled body departure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "follow: overlap below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "follow: collision query not saturated",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "follow: keeps moving on initial straight",
+      "passed": true,
+      "detail": 18.39852523803711
+    },
+    {
+      "name": "follow: no unexplained stop on remaining course",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "follow: no unnecessary lead-car braking on initial straight",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "follow: equal equipment maintains order",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "follow: follows without excessive delay",
+      "passed": true,
+      "detail": 2.9839706420898438
+    },
+    {
+      "name": "pass: process exits normally",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "pass: every car finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "pass: no contacts",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "pass: no recoveries",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "pass: no physicalRecoveries",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "pass: no missedGates",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "pass: no sampled body departure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "pass: overlap below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "pass: collision query not saturated",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "pass: keeps moving on initial straight",
+      "passed": true,
+      "detail": 18.03563690185547
+    },
+    {
+      "name": "pass: no unexplained stop on remaining course",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "pass: no unnecessary lead-car braking on initial straight",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "pass: sustained complete pass on straight",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-room: process exits normally",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "no-room: every car finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-room: no contacts",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "no-room: no recoveries",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "no-room: no physicalRecoveries",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "no-room: no missedGates",
+      "passed": true,
+      "detail": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "no-room: no sampled body departure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-room: overlap below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-room: collision query not saturated",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-room: keeps moving on initial straight",
+      "passed": true,
+      "detail": 18.52448081970215
+    },
+    {
+      "name": "no-room: no unexplained stop on remaining course",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "no-room: no unnecessary lead-car braking on initial straight",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "no-room: no pass inside single-car corridor",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-stock-reference: process exits normally",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "solo-stock-reference: every car finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-stock-reference: no contacts",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-stock-reference: no recoveries",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-stock-reference: no physicalRecoveries",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-stock-reference: no missedGates",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-stock-reference: no sampled body departure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-stock-reference: overlap below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-stock-reference: collision query not saturated",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-stock-reference: keeps moving on initial straight",
+      "passed": true,
+      "detail": 18.523916244506836
+    },
+    {
+      "name": "solo-stock-reference: no unexplained stop on remaining course",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "solo-stock-reference: no unnecessary lead-car braking on initial straight",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "solo-club-reference: process exits normally",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "solo-club-reference: every car finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club-reference: no contacts",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-club-reference: no recoveries",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-club-reference: no physicalRecoveries",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-club-reference: no missedGates",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-club-reference: no sampled body departure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club-reference: overlap below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club-reference: collision query not saturated",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club-reference: keeps moving on initial straight",
+      "passed": true,
+      "detail": 19.68583106994629
+    },
+    {
+      "name": "solo-club-reference: no unexplained stop on remaining course",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "solo-club-reference: no unnecessary lead-car braking on initial straight",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "solo-stock-traffic: process exits normally",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "solo-stock-traffic: every car finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-stock-traffic: no contacts",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-stock-traffic: no recoveries",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-stock-traffic: no physicalRecoveries",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-stock-traffic: no missedGates",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-stock-traffic: no sampled body departure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-stock-traffic: overlap below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-stock-traffic: collision query not saturated",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-stock-traffic: keeps moving on initial straight",
+      "passed": true,
+      "detail": 18.523916244506836
+    },
+    {
+      "name": "solo-stock-traffic: no unexplained stop on remaining course",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "solo-stock-traffic: no unnecessary lead-car braking on initial straight",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "solo-club-traffic: process exits normally",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "solo-club-traffic: every car finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club-traffic: no contacts",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-club-traffic: no recoveries",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-club-traffic: no physicalRecoveries",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-club-traffic: no missedGates",
+      "passed": true,
+      "detail": [
+        0
+      ]
+    },
+    {
+      "name": "solo-club-traffic: no sampled body departure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club-traffic: overlap below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club-traffic: collision query not saturated",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club-traffic: keeps moving on initial straight",
+      "passed": true,
+      "detail": 19.68583106994629
+    },
+    {
+      "name": "solo-club-traffic: no unexplained stop on remaining course",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "solo-club-traffic: no unnecessary lead-car braking on initial straight",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "queue: process exits normally",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "queue: every car finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "queue: no contacts",
+      "passed": true,
+      "detail": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "queue: no recoveries",
+      "passed": true,
+      "detail": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "queue: no physicalRecoveries",
+      "passed": true,
+      "detail": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "queue: no missedGates",
+      "passed": true,
+      "detail": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "queue: no sampled body departure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "queue: overlap below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "queue: collision query not saturated",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "queue: keeps moving on initial straight",
+      "passed": true,
+      "detail": 18.0356388092041
+    },
+    {
+      "name": "queue: no unexplained stop on remaining course",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "queue: no unnecessary lead-car braking on initial straight",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "queue: faster rear car clears both opponents sustainably",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "stock: exact solo motion and inputs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "stock: exact solo result",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "club: exact solo motion and inputs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "club: exact solo result",
+      "passed": true,
+      "detail": null
+    }
+  ]
+}

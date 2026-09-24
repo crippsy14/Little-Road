@@ -1,0 +1,8 @@
+{
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-16-review\\Little Road Unity.exe",
+  "assemblyHash": "766737BA9ACB25A7CF360ECE13A1F585F899F8FB736CBFFC586F056BECCB617E",
+  "policyHash": "F5E0BE4DA4FCE81FE88E359D42E36EB2A88D1E1A4CE52B0FD5EC6DC8C657277C",
+  "change": "Observation-only planar physics calibration; no driving policy or force changes",
+  "acceptance": "Corrected actual-collider field calibration passes. Single-stock calibration has valid error results but selectedIds metadata incorrectly includes nonexistent cars; preserved failing report.",
+  "buildChecks": 273
+}

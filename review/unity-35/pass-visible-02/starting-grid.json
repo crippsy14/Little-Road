@@ -1,0 +1,57 @@
+{
+    "playerLast": true,
+    "entrants": 2,
+    "playerStartingPlace": 2,
+    "entries": [
+        {
+            "driver": 0,
+            "slot": 1,
+            "laps": 0,
+            "nextGate": 7,
+            "progress": 1184.245361328125,
+            "nextGateProgress": 1206.2115478515625,
+            "equipment": "club",
+            "position": {
+                "x": 85.00001525878906,
+                "y": 0.1499994993209839,
+                "z": 149.40675354003906
+            },
+            "tuning": {
+                "power": 418.95721435546875,
+                "acceleration": 11.163310050964355,
+                "mass": 0.8700000047683716,
+                "gearCeiling": 34.0,
+                "braking": 28.735631942749023,
+                "roadGrip": 12.0,
+                "dirtGrip": 3.0,
+                "response": 6.0,
+                "yaw": 1.1799999475479126
+            }
+        },
+        {
+            "driver": 1,
+            "slot": 0,
+            "laps": 0,
+            "nextGate": 8,
+            "progress": 1208.2452392578125,
+            "nextGateProgress": 1378.5274658203125,
+            "equipment": "stock",
+            "position": {
+                "x": 61.00019836425781,
+                "y": 0.15000000596046448,
+                "z": 149.48489379882813
+            },
+            "tuning": {
+                "power": 88.94400024414063,
+                "acceleration": 5.599999904632568,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 14.0,
+                "roadGrip": 7.0,
+                "dirtGrip": 3.5,
+                "response": 3.0,
+                "yaw": 0.8799999952316284
+            }
+        }
+    ]
+}

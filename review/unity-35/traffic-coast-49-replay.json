@@ -1,0 +1,4232 @@
+{
+    "scope": "Exact owned pre-controller observations, original final candidate versus coast-capped candidate. Flat Cedar body footprint uses recorded x/z dimensions; height is immaterial to the flat-road envelope. Static scenery is not replayed. Nominal predicted feasibility is not live race acceptance.",
+    "captured": 364,
+    "dropped": 22,
+    "trafficExhaustions": 201,
+    "originalMatches": 201,
+    "originalStateMatches": 201,
+    "coastFeasible": 86,
+    "rows": [
+        {
+            "id": 0,
+            "timestamp": 20.15833333333333,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.817826271057129,
+                "routeGain": 40.0853271484375,
+                "endSpeed": 20.79387664794922
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.893832206726074,
+                "routeGain": 29.0675048828125,
+                "endSpeed": 13.829357147216797
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 21.1,
+            "recorded": "moving side entry: 15",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.8955535888671875,
+                "routeGain": 31.6954345703125,
+                "endSpeed": 20.38552474975586
+            },
+            "coast": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.775968551635742,
+                "routeGain": 17.8087158203125,
+                "endSpeed": 8.885305404663086
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 22.55,
+            "recorded": "moving side entry: 15",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.890968322753906,
+                "routeGain": 37.171875,
+                "endSpeed": 24.652000427246094
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.899878025054932,
+                "routeGain": 28.2601318359375,
+                "endSpeed": 14.397396087646484
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 24.85,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.897979736328125,
+                "routeGain": 38.2413330078125,
+                "endSpeed": 24.699682235717773
+            },
+            "coast": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.896020412445068,
+                "routeGain": 32.9439697265625,
+                "endSpeed": 16.265869140625
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 34.9,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.700379371643066,
+                "routeGain": 34.9429931640625,
+                "endSpeed": 25.79460334777832
+            },
+            "coast": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.622015953063965,
+                "routeGain": 19.8875732421875,
+                "endSpeed": 9.926030158996582
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 35.0,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.853955268859863,
+                "routeGain": 32.1446533203125,
+                "endSpeed": 24.801847457885742
+            },
+            "coast": {
+                "reason": "corridor",
+                "feasible": false,
+                "bound": 7.568981170654297,
+                "routeGain": 16.3509521484375,
+                "endSpeed": 8.412968635559082
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 35.1,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.746736526489258,
+                "routeGain": 29.9949951171875,
+                "endSpeed": 24.01461410522461
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.0214691162109375,
+                "routeGain": 12.9854736328125,
+                "endSpeed": 6.8405680656433105
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 55.349999999999994,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.569040298461914,
+                "routeGain": 33.74755859375,
+                "endSpeed": 21.279752731323242
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.872427463531494,
+                "routeGain": 29.9473876953125,
+                "endSpeed": 14.580001831054688
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 55.45,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.862634658813477,
+                "routeGain": 32.469970703125,
+                "endSpeed": 21.349536895751953
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.734431266784668,
+                "routeGain": 26.921630859375,
+                "endSpeed": 13.345625877380371
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 58.61666666666667,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 6.810116767883301,
+                "routeGain": 44.788818359375,
+                "endSpeed": 25.73311996459961
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.443132400512695,
+                "routeGain": 33.599365234375,
+                "endSpeed": 15.101183891296387
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 58.925,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 6.299389839172363,
+                "routeGain": 46.412109375,
+                "endSpeed": 28.04107093811035
+            },
+            "coast": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.390559196472168,
+                "routeGain": 32.059814453125,
+                "endSpeed": 14.315704345703125
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 59.233333333333334,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.6702470779418945,
+                "routeGain": 48.01220703125,
+                "endSpeed": 29.52588653564453
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.958325386047363,
+                "routeGain": 31.7255859375,
+                "endSpeed": 14.098784446716309
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 93.54166666666666,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 6.288244247436523,
+                "routeGain": 62.8443603515625,
+                "endSpeed": 33.40519332885742
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.554363250732422,
+                "routeGain": 46.02099609375,
+                "endSpeed": 19.461027145385742
+            }
+        },
+        {
+            "id": 1,
+            "timestamp": 16.091666666666665,
+            "recorded": "moving side entry: 16",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 16",
+                "feasible": false,
+                "bound": 6.558447360992432,
+                "routeGain": 50.53466796875,
+                "endSpeed": 23.611101150512695
+            },
+            "coast": {
+                "reason": "moving side entry: 16",
+                "feasible": false,
+                "bound": 6.279134750366211,
+                "routeGain": 43.8267822265625,
+                "endSpeed": 18.6895809173584
+            }
+        },
+        {
+            "id": 1,
+            "timestamp": 16.191666666666666,
+            "recorded": "moving side entry: 16",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 16",
+                "feasible": false,
+                "bound": 6.522485256195068,
+                "routeGain": 49.8526611328125,
+                "endSpeed": 22.813199996948242
+            },
+            "coast": {
+                "reason": "moving side entry: 16",
+                "feasible": false,
+                "bound": 6.033251762390137,
+                "routeGain": 40.8809814453125,
+                "endSpeed": 17.584720611572266
+            }
+        },
+        {
+            "id": 1,
+            "timestamp": 16.3,
+            "recorded": "moving side entry: 16",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 16",
+                "feasible": false,
+                "bound": 6.506500244140625,
+                "routeGain": 48.578369140625,
+                "endSpeed": 22.25603675842285
+            },
+            "coast": {
+                "reason": "moving side entry: 16",
+                "feasible": false,
+                "bound": 7.754878044128418,
+                "routeGain": 37.7811279296875,
+                "endSpeed": 16.377277374267578
+            }
+        },
+        {
+            "id": 1,
+            "timestamp": 16.40833333333333,
+            "recorded": "moving side entry: 16",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 16",
+                "feasible": false,
+                "bound": 6.4630208015441895,
+                "routeGain": 46.9049072265625,
+                "endSpeed": 22.084327697753906
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.821051597595215,
+                "routeGain": 34.6446533203125,
+                "endSpeed": 15.154437065124512
+            }
+        },
+        {
+            "id": 3,
+            "timestamp": 17.65833333333333,
+            "recorded": "moving side entry: 1",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 1",
+                "feasible": false,
+                "bound": 7.475401878356934,
+                "routeGain": 40.0338134765625,
+                "endSpeed": 18.124361038208008
+            },
+            "coast": {
+                "reason": "moving side entry: 1",
+                "feasible": false,
+                "bound": 7.30768346786499,
+                "routeGain": 38.99169921875,
+                "endSpeed": 17.309494018554688
+            }
+        },
+        {
+            "id": 3,
+            "timestamp": 17.758333333333333,
+            "recorded": "moving side entry: 1",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 1",
+                "feasible": false,
+                "bound": 7.615459442138672,
+                "routeGain": 39.064697265625,
+                "endSpeed": 18.40032196044922
+            },
+            "coast": {
+                "reason": "moving side entry: 1",
+                "feasible": false,
+                "bound": 7.504533290863037,
+                "routeGain": 37.091796875,
+                "endSpeed": 16.92024803161621
+            }
+        },
+        {
+            "id": 3,
+            "timestamp": 17.858333333333334,
+            "recorded": "moving side entry: 1",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 1",
+                "feasible": false,
+                "bound": 7.261232376098633,
+                "routeGain": 38.0616455078125,
+                "endSpeed": 18.666505813598633
+            },
+            "coast": {
+                "reason": "moving side entry: 1",
+                "feasible": false,
+                "bound": 7.13983154296875,
+                "routeGain": 34.4429931640625,
+                "endSpeed": 15.908649444580078
+            }
+        },
+        {
+            "id": 3,
+            "timestamp": 17.966666666666665,
+            "recorded": "moving side entry: 1",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 1",
+                "feasible": false,
+                "bound": 7.005000591278076,
+                "routeGain": 36.8265380859375,
+                "endSpeed": 18.962472915649414
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.7981367111206055,
+                "routeGain": 31.6053466796875,
+                "endSpeed": 14.780120849609375
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 18.483333333333334,
+            "recorded": "moving side entry: 10",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 7.019125938415527,
+                "routeGain": 40.7965087890625,
+                "endSpeed": 18.090362548828125
+            },
+            "coast": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 5.9795403480529785,
+                "routeGain": 32.99560546875,
+                "endSpeed": 14.512030601501465
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 18.591666666666665,
+            "recorded": "moving side entry: 10",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 6.641798973083496,
+                "routeGain": 38.8272705078125,
+                "endSpeed": 17.870410919189453
+            },
+            "coast": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 5.4947919845581055,
+                "routeGain": 30.0252685546875,
+                "endSpeed": 13.331042289733887
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 18.8,
+            "recorded": "moving side entry: 10",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 6.382696151733398,
+                "routeGain": 36.8226318359375,
+                "endSpeed": 17.414690017700195
+            },
+            "coast": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 5.165064334869385,
+                "routeGain": 28.19482421875,
+                "endSpeed": 12.5634183883667
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 18.90833333333333,
+            "recorded": "moving side entry: 10",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 6.086426734924316,
+                "routeGain": 34.620361328125,
+                "endSpeed": 17.07948875427246
+            },
+            "coast": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 7.5222487449646,
+                "routeGain": 25.1717529296875,
+                "endSpeed": 11.328934669494629
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 19.733333333333334,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 6.146640300750732,
+                "routeGain": 34.3677978515625,
+                "endSpeed": 19.309066772460938
+            },
+            "coast": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 5.31336784362793,
+                "routeGain": 27.96044921875,
+                "endSpeed": 12.379420280456543
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 19.841666666666665,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 6.171778678894043,
+                "routeGain": 33.1019287109375,
+                "endSpeed": 19.365997314453125
+            },
+            "coast": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 7.574634075164795,
+                "routeGain": 24.994384765625,
+                "endSpeed": 11.200911521911621
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 19.941666666666663,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 6.198369026184082,
+                "routeGain": 31.668701171875,
+                "endSpeed": 19.321136474609375
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.585527420043945,
+                "routeGain": 22.20947265625,
+                "endSpeed": 10.061288833618164
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 21.3,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.746583461761475,
+                "routeGain": 35.9927978515625,
+                "endSpeed": 20.328903198242188
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.6682963371276855,
+                "routeGain": 22.7503662109375,
+                "endSpeed": 10.223271369934082
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 21.40833333333333,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.5790205001831055,
+                "routeGain": 33.5921630859375,
+                "endSpeed": 20.291927337646484
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.835484027862549,
+                "routeGain": 19.802734375,
+                "endSpeed": 8.957871437072754
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 21.508333333333333,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.430635452270508,
+                "routeGain": 31.1707763671875,
+                "endSpeed": 20.150989532470703
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.077282905578613,
+                "routeGain": 17.0045166015625,
+                "endSpeed": 7.7334699630737305
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 29.541666666666664,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.835762977600098,
+                "routeGain": 35.8277587890625,
+                "endSpeed": 16.273103713989258
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.6207098960876465,
+                "routeGain": 35.2750244140625,
+                "endSpeed": 14.441584587097168
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 29.641666666666666,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.403652191162109,
+                "routeGain": 34.6004638671875,
+                "endSpeed": 16.59255027770996
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.19500732421875,
+                "routeGain": 33.7513427734375,
+                "endSpeed": 14.149039268493652
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 29.95,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 5.987829208374023,
+                "routeGain": 33.152587890625,
+                "endSpeed": 18.011993408203125
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 5.974915504455566,
+                "routeGain": 31.93359375,
+                "endSpeed": 13.732282638549805
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 33.574999999999996,
+            "recorded": "moving side entry: 8",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 6.734748363494873,
+                "routeGain": 30.3526611328125,
+                "endSpeed": 19.31757926940918
+            },
+            "coast": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 7.743128299713135,
+                "routeGain": 27.7926025390625,
+                "endSpeed": 13.252171516418457
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 33.675,
+            "recorded": "moving side entry: 8",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 6.691650390625,
+                "routeGain": 29.1761474609375,
+                "endSpeed": 19.19225311279297
+            },
+            "coast": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 7.760542392730713,
+                "routeGain": 26.1812744140625,
+                "endSpeed": 12.688846588134766
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 33.775,
+            "recorded": "moving side entry: 8",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 6.566123962402344,
+                "routeGain": 26.8692626953125,
+                "endSpeed": 18.397411346435547
+            },
+            "coast": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 7.538869857788086,
+                "routeGain": 23.4749755859375,
+                "endSpeed": 11.573831558227539
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 53.099999999999994,
+            "recorded": "moving side entry: 0",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 7.640614986419678,
+                "routeGain": 49.014404296875,
+                "endSpeed": 24.856372833251953
+            },
+            "coast": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 7.2775750160217285,
+                "routeGain": 42.33349609375,
+                "endSpeed": 18.7270450592041
+            }
+        },
+        {
+            "id": 5,
+            "timestamp": 53.2,
+            "recorded": "moving side entry: 0",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 7.424019813537598,
+                "routeGain": 48.5142822265625,
+                "endSpeed": 24.24786376953125
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.849348068237305,
+                "routeGain": 39.5435791015625,
+                "endSpeed": 17.621660232543945
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 19.108333333333334,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.669435024261475,
+                "routeGain": 31.44677734375,
+                "endSpeed": 20.05001449584961
+            },
+            "coast": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.53656005859375,
+                "routeGain": 26.45458984375,
+                "endSpeed": 13.404128074645996
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 19.216666666666665,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.8452959060668945,
+                "routeGain": 30.442138671875,
+                "endSpeed": 20.170787811279297
+            },
+            "coast": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.588608741760254,
+                "routeGain": 23.7906494140625,
+                "endSpeed": 12.241654396057129
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 19.316666666666663,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.888990879058838,
+                "routeGain": 29.1512451171875,
+                "endSpeed": 20.157655715942383
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.650330066680908,
+                "routeGain": 21.4105224609375,
+                "endSpeed": 11.114297866821289
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 19.53333333333333,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.817819595336914,
+                "routeGain": 27.96142578125,
+                "endSpeed": 20.456436157226563
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.862253189086914,
+                "routeGain": 19.4979248046875,
+                "endSpeed": 10.365447998046875
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 19.633333333333333,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.878321647644043,
+                "routeGain": 26.7454833984375,
+                "endSpeed": 20.367525100708008
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.891386032104492,
+                "routeGain": 17.17529296875,
+                "endSpeed": 9.23606014251709
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 19.733333333333334,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.89059591293335,
+                "routeGain": 25.455078125,
+                "endSpeed": 20.082246780395508
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.889079570770264,
+                "routeGain": 14.8848876953125,
+                "endSpeed": 8.044747352600098
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 22.241666666666667,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.844143867492676,
+                "routeGain": 34.5224609375,
+                "endSpeed": 19.346763610839844
+            },
+            "coast": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.829775333404541,
+                "routeGain": 32.2440185546875,
+                "endSpeed": 15.888260841369629
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 22.35,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.685515880584717,
+                "routeGain": 33.8182373046875,
+                "endSpeed": 19.574989318847656
+            },
+            "coast": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.898097038269043,
+                "routeGain": 29.5535888671875,
+                "endSpeed": 14.790794372558594
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 22.45,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.6805830001831055,
+                "routeGain": 32.76611328125,
+                "endSpeed": 19.757667541503906
+            },
+            "coast": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.862916946411133,
+                "routeGain": 27.25634765625,
+                "endSpeed": 13.708426475524902
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 22.55,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.804248809814453,
+                "routeGain": 31.8690185546875,
+                "endSpeed": 19.869831085205078
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.854963302612305,
+                "routeGain": 24.64990234375,
+                "endSpeed": 12.593400955200195
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 22.65833333333333,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.882394790649414,
+                "routeGain": 30.4329833984375,
+                "endSpeed": 19.901578903198242
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.850041389465332,
+                "routeGain": 21.8746337890625,
+                "endSpeed": 11.3570556640625
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 22.866666666666667,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.888612747192383,
+                "routeGain": 29.7509765625,
+                "endSpeed": 20.29826545715332
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.891697883605957,
+                "routeGain": 20.613037109375,
+                "endSpeed": 10.69415283203125
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 23.075,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.899043083190918,
+                "routeGain": 28.7740478515625,
+                "endSpeed": 20.59938621520996
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.894737243652344,
+                "routeGain": 18.739013671875,
+                "endSpeed": 9.947762489318848
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 23.175,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.8999762535095215,
+                "routeGain": 27.1275634765625,
+                "endSpeed": 20.495878219604492
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.895111083984375,
+                "routeGain": 16.3275146484375,
+                "endSpeed": 8.788288116455078
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 23.491666666666667,
+            "recorded": "road",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "road",
+                "feasible": false,
+                "bound": 8.087507247924805,
+                "routeGain": 27.1058349609375,
+                "endSpeed": 20.936540603637695
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.899878025054932,
+                "routeGain": 15.7681884765625,
+                "endSpeed": 8.49031925201416
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 30.266666666666666,
+            "recorded": "moving side entry: 0",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 7.2613606452941895,
+                "routeGain": 37.8314208984375,
+                "endSpeed": 16.432476043701172
+            },
+            "coast": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 7.535951614379883,
+                "routeGain": 33.0367431640625,
+                "endSpeed": 14.671880722045898
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 30.366666666666667,
+            "recorded": "moving side entry: 0",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 7.692795276641846,
+                "routeGain": 36.087890625,
+                "endSpeed": 16.34745979309082
+            },
+            "coast": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 7.355393409729004,
+                "routeGain": 30.2113037109375,
+                "endSpeed": 13.590625762939453
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 31.825,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.872558116912842,
+                "routeGain": 25.4793701171875,
+                "endSpeed": 18.919286727905273
+            },
+            "coast": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.839566230773926,
+                "routeGain": 20.9749755859375,
+                "endSpeed": 10.921828269958496
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 31.933333333333337,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.827340602874756,
+                "routeGain": 24.434326171875,
+                "endSpeed": 18.79735565185547
+            },
+            "coast": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.895295143127441,
+                "routeGain": 18.3446044921875,
+                "endSpeed": 9.74453353881836
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 32.03333333333333,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.895566940307617,
+                "routeGain": 22.9388427734375,
+                "endSpeed": 18.393753051757813
+            },
+            "coast": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.898326873779297,
+                "routeGain": 15.7386474609375,
+                "endSpeed": 8.588995933532715
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 32.13333333333333,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.709249496459961,
+                "routeGain": 21.7823486328125,
+                "endSpeed": 18.022340774536133
+            },
+            "coast": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.823850154876709,
+                "routeGain": 13.5758056640625,
+                "endSpeed": 7.403830051422119
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 32.233333333333334,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.894143104553223,
+                "routeGain": 20.3392333984375,
+                "endSpeed": 17.41095733642578
+            },
+            "coast": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.787596225738525,
+                "routeGain": 11.2047119140625,
+                "endSpeed": 6.189436912536621
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 32.34166666666667,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.871803283691406,
+                "routeGain": 18.5433349609375,
+                "endSpeed": 16.71539306640625
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.67728328704834,
+                "routeGain": 8.4886474609375,
+                "endSpeed": 4.825496673583984
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 44.71666666666666,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 6.649557590484619,
+                "routeGain": 35.7457275390625,
+                "endSpeed": 17.736984252929688
+            },
+            "coast": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.7264204025268555,
+                "routeGain": 30.967041015625,
+                "endSpeed": 11.803786277770996
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 44.81666666666666,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 6.72468376159668,
+                "routeGain": 35.2889404296875,
+                "endSpeed": 17.895048141479492
+            },
+            "coast": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.713298797607422,
+                "routeGain": 28.1190185546875,
+                "endSpeed": 10.873176574707031
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 44.916666666666664,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 6.764703273773193,
+                "routeGain": 34.5994873046875,
+                "endSpeed": 18.097583770751953
+            },
+            "coast": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.5809478759765625,
+                "routeGain": 24.9161376953125,
+                "endSpeed": 9.79288387298584
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 45.016666666666666,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.806886672973633,
+                "routeGain": 33.399658203125,
+                "endSpeed": 18.103073120117188
+            },
+            "coast": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.065629482269287,
+                "routeGain": 21.94287109375,
+                "endSpeed": 8.68093490600586
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 45.11666666666667,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.313180923461914,
+                "routeGain": 31.0174560546875,
+                "endSpeed": 18.0350399017334
+            },
+            "coast": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 6.600973129272461,
+                "routeGain": 18.7708740234375,
+                "endSpeed": 7.535085201263428
+            }
+        },
+        {
+            "id": 6,
+            "timestamp": 45.225,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.521786212921143,
+                "routeGain": 27.3675537109375,
+                "endSpeed": 17.45366859436035
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.476280212402344,
+                "routeGain": 15.37255859375,
+                "endSpeed": 6.2507004737854
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 17.65833333333333,
+            "recorded": "moving side entry: 10",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 7.145045280456543,
+                "routeGain": 47.8450927734375,
+                "endSpeed": 25.706235885620117
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.453468322753906,
+                "routeGain": 30.437255859375,
+                "endSpeed": 13.521141052246094
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 18.90833333333333,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 7.489984035491943,
+                "routeGain": 42.187744140625,
+                "endSpeed": 19.66297721862793
+            },
+            "coast": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 5.905130386352539,
+                "routeGain": 30.3848876953125,
+                "endSpeed": 13.383527755737305
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 19.008333333333333,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 7.257913589477539,
+                "routeGain": 39.8299560546875,
+                "endSpeed": 19.1986026763916
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 5.342233180999756,
+                "routeGain": 26.868896484375,
+                "endSpeed": 11.969513893127441
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 20.466666666666665,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.8955078125,
+                "routeGain": 36.7333984375,
+                "endSpeed": 22.09650230407715
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.569362640380859,
+                "routeGain": 23.5667724609375,
+                "endSpeed": 10.315469741821289
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 20.566666666666663,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.779439926147461,
+                "routeGain": 34.3785400390625,
+                "endSpeed": 21.460494995117188
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.105647087097168,
+                "routeGain": 19.9664306640625,
+                "endSpeed": 8.832491874694824
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 20.675,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.640567779541016,
+                "routeGain": 31.6683349609375,
+                "endSpeed": 20.75594139099121
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.033652305603027,
+                "routeGain": 15.9727783203125,
+                "endSpeed": 7.128364086151123
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 29.641666666666666,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.7162322998046875,
+                "routeGain": 43.5960693359375,
+                "endSpeed": 19.95695686340332
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.71476936340332,
+                "routeGain": 43.126220703125,
+                "endSpeed": 17.15829086303711
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 29.741666666666667,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.504286766052246,
+                "routeGain": 42.0308837890625,
+                "endSpeed": 20.641572952270508
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.503203392028809,
+                "routeGain": 41.327392578125,
+                "endSpeed": 17.008647918701172
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 29.85,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.7440338134765625,
+                "routeGain": 40.5526123046875,
+                "endSpeed": 21.243803024291992
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.738170623779297,
+                "routeGain": 39.6146240234375,
+                "endSpeed": 16.802547454833984
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 29.95,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.658932685852051,
+                "routeGain": 39.3687744140625,
+                "endSpeed": 21.759716033935547
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.622123718261719,
+                "routeGain": 37.8958740234375,
+                "endSpeed": 16.577442169189453
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 30.058333333333337,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.408158302307129,
+                "routeGain": 37.91650390625,
+                "endSpeed": 22.050748825073242
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.3086957931518555,
+                "routeGain": 35.2364501953125,
+                "endSpeed": 15.858911514282227
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 30.166666666666664,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.337701797485352,
+                "routeGain": 35.4471435546875,
+                "endSpeed": 21.636070251464844
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.002254009246826,
+                "routeGain": 31.5772705078125,
+                "endSpeed": 14.50289249420166
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 30.575,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.50056266784668,
+                "routeGain": 35.1318359375,
+                "endSpeed": 23.957489013671875
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.826939582824707,
+                "routeGain": 29.2650146484375,
+                "endSpeed": 13.810628890991211
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 41.641666666666666,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.824807167053223,
+                "routeGain": 33.2777099609375,
+                "endSpeed": 17.506837844848633
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.612035274505615,
+                "routeGain": 25.0396728515625,
+                "endSpeed": 11.478940963745117
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 41.74166666666667,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.8812456130981445,
+                "routeGain": 31.853271484375,
+                "endSpeed": 17.502880096435547
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.223441123962402,
+                "routeGain": 21.7369384765625,
+                "endSpeed": 10.112222671508789
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 44.40833333333333,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 5.604039192199707,
+                "routeGain": 44.2957763671875,
+                "endSpeed": 24.295276641845703
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.4175333976745605,
+                "routeGain": 32.4578857421875,
+                "endSpeed": 14.367411613464355
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 54.224999999999994,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.1058030128479,
+                "routeGain": 38.813232421875,
+                "endSpeed": 20.14699935913086
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.889950275421143,
+                "routeGain": 36.87158203125,
+                "endSpeed": 16.168533325195313
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 54.525,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.252048015594482,
+                "routeGain": 36.00927734375,
+                "endSpeed": 21.234655380249023
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.233034133911133,
+                "routeGain": 34.0572509765625,
+                "endSpeed": 15.46329402923584
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 55.349999999999994,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.58277702331543,
+                "routeGain": 34.820068359375,
+                "endSpeed": 21.375354766845703
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.003188610076904,
+                "routeGain": 27.0653076171875,
+                "endSpeed": 13.04443645477295
+            }
+        },
+        {
+            "id": 8,
+            "timestamp": 57.19166666666666,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.679232597351074,
+                "routeGain": 41.5074462890625,
+                "endSpeed": 20.712724685668945
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.664821147918701,
+                "routeGain": 34.861572265625,
+                "endSpeed": 15.160421371459961
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 18.483333333333334,
+            "recorded": "moving side entry: 2",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 2",
+                "feasible": false,
+                "bound": 7.38018798828125,
+                "routeGain": 41.598876953125,
+                "endSpeed": 18.97486114501953
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.237308025360107,
+                "routeGain": 36.0189208984375,
+                "endSpeed": 16.74212074279785
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 19.633333333333333,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.8629841804504395,
+                "routeGain": 32.07421875,
+                "endSpeed": 19.228872299194336
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.738847732543945,
+                "routeGain": 24.9547119140625,
+                "endSpeed": 12.387819290161133
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 19.733333333333334,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.786368370056152,
+                "routeGain": 30.9576416015625,
+                "endSpeed": 19.2711124420166
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.487712383270264,
+                "routeGain": 22.56494140625,
+                "endSpeed": 11.272518157958984
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 19.841666666666665,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.856546401977539,
+                "routeGain": 29.3758544921875,
+                "endSpeed": 19.214771270751953
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.234614849090576,
+                "routeGain": 19.7630615234375,
+                "endSpeed": 10.016637802124023
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 19.941666666666663,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.747321128845215,
+                "routeGain": 28.0008544921875,
+                "endSpeed": 19.053020477294922
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.066127777099609,
+                "routeGain": 17.326904296875,
+                "endSpeed": 8.8239107131958
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 20.05,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.859532356262207,
+                "routeGain": 26.118896484375,
+                "endSpeed": 18.741924285888672
+            },
+            "coast": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.880712985992432,
+                "routeGain": 14.652099609375,
+                "endSpeed": 7.494266033172607
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 24.633333333333333,
+            "recorded": "moving side entry: 8",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 7.896639347076416,
+                "routeGain": 34.6107177734375,
+                "endSpeed": 18.8895320892334
+            },
+            "coast": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 7.621829986572266,
+                "routeGain": 28.3851318359375,
+                "endSpeed": 13.231011390686035
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 24.741666666666667,
+            "recorded": "moving side entry: 8",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 7.574888229370117,
+                "routeGain": 34.415771484375,
+                "endSpeed": 19.265567779541016
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.086742401123047,
+                "routeGain": 25.71875,
+                "endSpeed": 12.105722427368164
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 25.675,
+            "recorded": "moving side entry: 8",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 7.711992263793945,
+                "routeGain": 40.4620361328125,
+                "endSpeed": 24.318708419799805
+            },
+            "coast": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 6.242114067077637,
+                "routeGain": 27.6578369140625,
+                "endSpeed": 12.64236068725586
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 32.13333333333333,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.5707221031188965,
+                "routeGain": 25.5772705078125,
+                "endSpeed": 18.669034957885742
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.827991485595703,
+                "routeGain": 19.014404296875,
+                "endSpeed": 10.0526123046875
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 32.233333333333334,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.774696350097656,
+                "routeGain": 25.2696533203125,
+                "endSpeed": 18.913677215576172
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.660195350646973,
+                "routeGain": 16.4095458984375,
+                "endSpeed": 8.904313087463379
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 32.85,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.7661237716674805,
+                "routeGain": 22.3543701171875,
+                "endSpeed": 18.831069946289063
+            },
+            "coast": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.881997585296631,
+                "routeGain": 9.9324951171875,
+                "endSpeed": 5.489621162414551
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 32.95833333333333,
+            "recorded": "moving side entry: 15",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.851168632507324,
+                "routeGain": 20.0235595703125,
+                "endSpeed": 17.973485946655273
+            },
+            "coast": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.533664226531982,
+                "routeGain": 7.3724365234375,
+                "endSpeed": 4.056791305541992
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 33.05833333333333,
+            "recorded": "moving side entry: 15",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.680975914001465,
+                "routeGain": 17.5010986328125,
+                "endSpeed": 16.865880966186523
+            },
+            "coast": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.777599334716797,
+                "routeGain": 4.9876708984375,
+                "endSpeed": 2.6826107501983643
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 33.15833333333333,
+            "recorded": "moving side entry: 15",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.768539905548096,
+                "routeGain": 15.1932373046875,
+                "endSpeed": 15.72262954711914
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.876645088195801,
+                "routeGain": 2.37646484375,
+                "endSpeed": 1.2544821500778198
+            }
+        },
+        {
+            "id": 9,
+            "timestamp": 33.25833333333333,
+            "recorded": "moving side entry: 15",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.831626892089844,
+                "routeGain": 12.6661376953125,
+                "endSpeed": 14.543302536010742
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.332146167755127,
+                "routeGain": 0.1483154296875,
+                "endSpeed": 0.00169830908998847
+            }
+        },
+        {
+            "id": 10,
+            "timestamp": 22.35,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 7.025424003601074,
+                "routeGain": 35.5084228515625,
+                "endSpeed": 18.733102798461914
+            },
+            "coast": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 6.350209712982178,
+                "routeGain": 31.3260498046875,
+                "endSpeed": 13.43656063079834
+            }
+        },
+        {
+            "id": 10,
+            "timestamp": 22.45,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 6.7873921394348145,
+                "routeGain": 34.3270263671875,
+                "endSpeed": 18.65776824951172
+            },
+            "coast": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 5.98625373840332,
+                "routeGain": 29.8631591796875,
+                "endSpeed": 12.99881649017334
+            }
+        },
+        {
+            "id": 10,
+            "timestamp": 22.55,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 6.436270236968994,
+                "routeGain": 31.879638671875,
+                "endSpeed": 18.439821243286133
+            },
+            "coast": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 5.669122695922852,
+                "routeGain": 26.9368896484375,
+                "endSpeed": 11.921319961547852
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 19.841666666666665,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.689067840576172,
+                "routeGain": 37.5880126953125,
+                "endSpeed": 17.375680923461914
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 5.324768543243408,
+                "routeGain": 28.4327392578125,
+                "endSpeed": 12.652456283569336
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 19.941666666666663,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.438794136047363,
+                "routeGain": 35.384765625,
+                "endSpeed": 16.796741485595703
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.848994255065918,
+                "routeGain": 25.665283203125,
+                "endSpeed": 11.5114107131958
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 20.05,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 6.286626815795898,
+                "routeGain": 33.2557373046875,
+                "endSpeed": 16.368236541748047
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.524994373321533,
+                "routeGain": 22.6444091796875,
+                "endSpeed": 10.238286972045898
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 32.85,
+            "recorded": "moving side entry: 15",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.827627182006836,
+                "routeGain": 22.0267333984375,
+                "endSpeed": 16.90946388244629
+            },
+            "coast": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.705441474914551,
+                "routeGain": 11.122314453125,
+                "endSpeed": 5.977887153625488
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 32.95833333333333,
+            "recorded": "moving side entry: 15",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.8968329429626465,
+                "routeGain": 20.076904296875,
+                "endSpeed": 16.304275512695313
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.277266979217529,
+                "routeGain": 8.612060546875,
+                "endSpeed": 4.553608417510986
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 33.05833333333333,
+            "recorded": "moving side entry: 15",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.816124439239502,
+                "routeGain": 18.1097412109375,
+                "endSpeed": 15.663779258728027
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.789647102355957,
+                "routeGain": 6.021484375,
+                "endSpeed": 3.1898272037506104
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 34.38333333333333,
+            "recorded": "moving side entry: 21",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 21",
+                "feasible": false,
+                "bound": 7.838992118835449,
+                "routeGain": 20.1380615234375,
+                "endSpeed": 17.24132537841797
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.068058490753174,
+                "routeGain": 7.6500244140625,
+                "endSpeed": 4.160475730895996
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 34.483333333333334,
+            "recorded": "moving side entry: 21",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 21",
+                "feasible": false,
+                "bound": 7.758977890014648,
+                "routeGain": 17.9212646484375,
+                "endSpeed": 16.654634475708008
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.4724578857421875,
+                "routeGain": 5.3175048828125,
+                "endSpeed": 2.7860827445983887
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 34.8,
+            "recorded": "moving side entry: 21",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 21",
+                "feasible": false,
+                "bound": 7.740670680999756,
+                "routeGain": 18.1444091796875,
+                "endSpeed": 16.850902557373047
+            },
+            "coast": {
+                "reason": "moving side entry: 23",
+                "feasible": false,
+                "bound": 7.432559490203857,
+                "routeGain": 5.1480712890625,
+                "endSpeed": 2.7440292835235596
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 52.99166666666667,
+            "recorded": "moving side entry: 20",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 20",
+                "feasible": false,
+                "bound": 6.656123161315918,
+                "routeGain": 48.4661865234375,
+                "endSpeed": 24.963762283325195
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.206087112426758,
+                "routeGain": 39.0826416015625,
+                "endSpeed": 17.318893432617188
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 62.916666666666664,
+            "recorded": "moving side entry: 22",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 22",
+                "feasible": false,
+                "bound": 7.438226699829102,
+                "routeGain": 35.2120361328125,
+                "endSpeed": 16.140779495239258
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.436666488647461,
+                "routeGain": 28.52734375,
+                "endSpeed": 11.353515625
+            }
+        },
+        {
+            "id": 11,
+            "timestamp": 63.016666666666666,
+            "recorded": "moving side entry: 22",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 22",
+                "feasible": false,
+                "bound": 7.451169967651367,
+                "routeGain": 34.4912109375,
+                "endSpeed": 16.032608032226563
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.538578510284424,
+                "routeGain": 25.9449462890625,
+                "endSpeed": 10.322179794311523
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 19.841666666666665,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.5973801612854,
+                "routeGain": 35.98876953125,
+                "endSpeed": 21.627779006958008
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.416347980499268,
+                "routeGain": 25.5291748046875,
+                "endSpeed": 12.296442985534668
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 19.941666666666663,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.751272678375244,
+                "routeGain": 34.3414306640625,
+                "endSpeed": 21.531394958496094
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.189173698425293,
+                "routeGain": 22.2677001953125,
+                "endSpeed": 10.87772274017334
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 20.05,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.54420804977417,
+                "routeGain": 32.350341796875,
+                "endSpeed": 21.253284454345703
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.997705936431885,
+                "routeGain": 18.7529296875,
+                "endSpeed": 9.266993522644043
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 21.508333333333333,
+            "recorded": "moving side entry: 5",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 5",
+                "feasible": false,
+                "bound": 7.740200996398926,
+                "routeGain": 36.5908203125,
+                "endSpeed": 24.569143295288086
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.13853645324707,
+                "routeGain": 21.6458740234375,
+                "endSpeed": 10.770347595214844
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 24.741666666666667,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 7.601254463195801,
+                "routeGain": 37.330810546875,
+                "endSpeed": 21.027793884277344
+            },
+            "coast": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 6.936557292938232,
+                "routeGain": 26.2667236328125,
+                "endSpeed": 12.040308952331543
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 24.85,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 7.032125949859619,
+                "routeGain": 35.904541015625,
+                "endSpeed": 20.96624183654785
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.321568489074707,
+                "routeGain": 22.6083984375,
+                "endSpeed": 10.516321182250977
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 25.366666666666667,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 6.97428560256958,
+                "routeGain": 37.210205078125,
+                "endSpeed": 22.538211822509766
+            },
+            "coast": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.2693281173706055,
+                "routeGain": 23.98583984375,
+                "endSpeed": 11.004465103149414
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 31.933333333333337,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 7.213266372680664,
+                "routeGain": 39.2591552734375,
+                "endSpeed": 22.16549301147461
+            },
+            "coast": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 7.2123565673828125,
+                "routeGain": 36.955078125,
+                "endSpeed": 15.529315948486328
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 32.03333333333333,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 7.076352596282959,
+                "routeGain": 37.2191162109375,
+                "endSpeed": 21.928518295288086
+            },
+            "coast": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.711965560913086,
+                "routeGain": 34.1168212890625,
+                "endSpeed": 14.602742195129395
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 32.13333333333333,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.97313928604126,
+                "routeGain": 35.0196533203125,
+                "endSpeed": 21.58968734741211
+            },
+            "coast": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.2102484703063965,
+                "routeGain": 30.65380859375,
+                "endSpeed": 13.315624237060547
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 33.675,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 7.663037300109863,
+                "routeGain": 43.0333251953125,
+                "endSpeed": 18.013599395751953
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 5.6527862548828125,
+                "routeGain": 28.6793212890625,
+                "endSpeed": 12.672955513000488
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 33.775,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 7.362645149230957,
+                "routeGain": 40.6959228515625,
+                "endSpeed": 18.453758239746094
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.440435886383057,
+                "routeGain": 25.1014404296875,
+                "endSpeed": 11.197800636291504
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 35.71666666666667,
+            "recorded": "moving side entry: 6",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 6",
+                "feasible": false,
+                "bound": 7.7474141120910645,
+                "routeGain": 34.6954345703125,
+                "endSpeed": 20.90540885925293
+            },
+            "coast": {
+                "reason": "moving side entry: 6",
+                "feasible": false,
+                "bound": 7.488292217254639,
+                "routeGain": 29.3160400390625,
+                "endSpeed": 11.733469009399414
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 35.824999999999996,
+            "recorded": "moving side entry: 6",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 6",
+                "feasible": false,
+                "bound": 7.6918134689331055,
+                "routeGain": 30.978759765625,
+                "endSpeed": 19.47277069091797
+            },
+            "coast": {
+                "reason": "moving side entry: 6",
+                "feasible": false,
+                "bound": 6.899860858917236,
+                "routeGain": 25.5404052734375,
+                "endSpeed": 10.268563270568848
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 35.925,
+            "recorded": "moving side entry: 6",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 6",
+                "feasible": false,
+                "bound": 7.3195013999938965,
+                "routeGain": 27.6602783203125,
+                "endSpeed": 18.202375411987305
+            },
+            "coast": {
+                "reason": "moving side entry: 6",
+                "feasible": false,
+                "bound": 6.329905033111572,
+                "routeGain": 21.906494140625,
+                "endSpeed": 8.841257095336914
+            }
+        },
+        {
+            "id": 12,
+            "timestamp": 36.025,
+            "recorded": "moving side entry: 6",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 6",
+                "feasible": false,
+                "bound": 7.111674785614014,
+                "routeGain": 25.6859130859375,
+                "endSpeed": 17.713041305541992
+            },
+            "coast": {
+                "reason": "moving side entry: 6",
+                "feasible": false,
+                "bound": 7.416524887084961,
+                "routeGain": 18.1854248046875,
+                "endSpeed": 7.370785236358643
+            }
+        },
+        {
+            "id": 13,
+            "timestamp": 82.24166666666666,
+            "recorded": "moving side entry: 0",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 7.6570820808410645,
+                "routeGain": 49.7158203125,
+                "endSpeed": 24.876577377319336
+            },
+            "coast": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 7.381653308868408,
+                "routeGain": 42.7132568359375,
+                "endSpeed": 18.52076530456543
+            }
+        },
+        {
+            "id": 13,
+            "timestamp": 82.34166666666667,
+            "recorded": "moving side entry: 0",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 7.547647476196289,
+                "routeGain": 48.9989013671875,
+                "endSpeed": 24.952627182006836
+            },
+            "coast": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 6.897525310516357,
+                "routeGain": 39.9105224609375,
+                "endSpeed": 17.440698623657227
+            }
+        },
+        {
+            "id": 13,
+            "timestamp": 82.44166666666666,
+            "recorded": "moving side entry: 0",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 0",
+                "feasible": false,
+                "bound": 7.509631156921387,
+                "routeGain": 47.917236328125,
+                "endSpeed": 24.83944320678711
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.436391830444336,
+                "routeGain": 37.0504150390625,
+                "endSpeed": 16.319114685058594
+            }
+        },
+        {
+            "id": 14,
+            "timestamp": 8.591666666666667,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 5.342068672180176,
+                "routeGain": 49.6644287109375,
+                "endSpeed": 24.835201263427734
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.635865688323975,
+                "routeGain": 42.756591796875,
+                "endSpeed": 18.632110595703125
+            }
+        },
+        {
+            "id": 14,
+            "timestamp": 8.691666666666666,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 5.300026893615723,
+                "routeGain": 48.997314453125,
+                "endSpeed": 24.789325714111328
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.6501569747924805,
+                "routeGain": 39.87646484375,
+                "endSpeed": 17.506521224975586
+            }
+        },
+        {
+            "id": 14,
+            "timestamp": 19.108333333333334,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.829254150390625,
+                "routeGain": 45.0496826171875,
+                "endSpeed": 21.75554656982422
+            },
+            "coast": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 5.957064151763916,
+                "routeGain": 32.7332763671875,
+                "endSpeed": 14.5497407913208
+            }
+        },
+        {
+            "id": 14,
+            "timestamp": 19.216666666666665,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.708324432373047,
+                "routeGain": 42.7686767578125,
+                "endSpeed": 21.682048797607422
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 5.459901809692383,
+                "routeGain": 29.6793212890625,
+                "endSpeed": 13.30513858795166
+            }
+        },
+        {
+            "id": 14,
+            "timestamp": 19.316666666666663,
+            "recorded": "moving side entry: 19",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 19",
+                "feasible": false,
+                "bound": 7.546929359436035,
+                "routeGain": 40.4532470703125,
+                "endSpeed": 21.89726448059082
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.864096164703369,
+                "routeGain": 26.878662109375,
+                "endSpeed": 12.13593578338623
+            }
+        },
+        {
+            "id": 15,
+            "timestamp": 24.633333333333333,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.338552474975586,
+                "routeGain": 34.123779296875,
+                "endSpeed": 17.668182373046875
+            },
+            "coast": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 7.836852550506592,
+                "routeGain": 25.5870361328125,
+                "endSpeed": 11.514238357543945
+            }
+        },
+        {
+            "id": 15,
+            "timestamp": 24.741666666666667,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.209530830383301,
+                "routeGain": 32.6485595703125,
+                "endSpeed": 17.561695098876953
+            },
+            "coast": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 7.638996601104736,
+                "routeGain": 22.657958984375,
+                "endSpeed": 10.2789306640625
+            }
+        },
+        {
+            "id": 15,
+            "timestamp": 24.85,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.130682945251465,
+                "routeGain": 31.06396484375,
+                "endSpeed": 17.522974014282227
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.755170822143555,
+                "routeGain": 19.677490234375,
+                "endSpeed": 8.992592811584473
+            }
+        },
+        {
+            "id": 15,
+            "timestamp": 24.95,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.138808727264404,
+                "routeGain": 29.5374755859375,
+                "endSpeed": 17.66257095336914
+            },
+            "coast": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 5.985099792480469,
+                "routeGain": 16.8890380859375,
+                "endSpeed": 7.766310691833496
+            }
+        },
+        {
+            "id": 15,
+            "timestamp": 32.233333333333334,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.149031162261963,
+                "routeGain": 38.9002685546875,
+                "endSpeed": 15.939874649047852
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.739408493041992,
+                "routeGain": 37.4825439453125,
+                "endSpeed": 16.073566436767578
+            }
+        },
+        {
+            "id": 15,
+            "timestamp": 32.34166666666667,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.110311985015869,
+                "routeGain": 37.0826416015625,
+                "endSpeed": 15.799505233764648
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.531764984130859,
+                "routeGain": 34.7591552734375,
+                "endSpeed": 15.297172546386719
+            }
+        },
+        {
+            "id": 15,
+            "timestamp": 32.449999999999996,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.6798930168151855,
+                "routeGain": 35.431640625,
+                "endSpeed": 15.809296607971191
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.12252950668335,
+                "routeGain": 31.792724609375,
+                "endSpeed": 14.159708023071289
+            }
+        },
+        {
+            "id": 15,
+            "timestamp": 32.95833333333333,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.330298900604248,
+                "routeGain": 32.9979248046875,
+                "endSpeed": 17.784988403320313
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.1598310470581055,
+                "routeGain": 31.0626220703125,
+                "endSpeed": 13.922588348388672
+            }
+        },
+        {
+            "id": 15,
+            "timestamp": 33.15833333333333,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.07075309753418,
+                "routeGain": 31.2716064453125,
+                "endSpeed": 17.937297821044922
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.7769880294799805,
+                "routeGain": 28.69482421875,
+                "endSpeed": 13.018867492675781
+            }
+        },
+        {
+            "id": 15,
+            "timestamp": 36.125,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 6.416799545288086,
+                "routeGain": 33.4561767578125,
+                "endSpeed": 15.140844345092773
+            },
+            "coast": {
+                "reason": "moving side entry: 22",
+                "feasible": false,
+                "bound": 5.9691338539123535,
+                "routeGain": 30.9119873046875,
+                "endSpeed": 13.09107494354248
+            }
+        },
+        {
+            "id": 15,
+            "timestamp": 103.24166666666666,
+            "recorded": "moving side entry: 6",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 6",
+                "feasible": false,
+                "bound": 7.8307623863220215,
+                "routeGain": 44.8009033203125,
+                "endSpeed": 24.881732940673828
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.827479362487793,
+                "routeGain": 31.917236328125,
+                "endSpeed": 14.293543815612793
+            }
+        },
+        {
+            "id": 17,
+            "timestamp": 7.683333333333333,
+            "recorded": "moving side entry: 16",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 16",
+                "feasible": false,
+                "bound": 5.5889081954956055,
+                "routeGain": 48.1898193359375,
+                "endSpeed": 24.835174560546875
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.676262855529785,
+                "routeGain": 37.6754150390625,
+                "endSpeed": 16.63311195373535
+            }
+        },
+        {
+            "id": 17,
+            "timestamp": 7.783333333333333,
+            "recorded": "moving side entry: 16",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 16",
+                "feasible": false,
+                "bound": 7.7571258544921875,
+                "routeGain": 46.72412109375,
+                "endSpeed": 24.875675201416016
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.270015716552734,
+                "routeGain": 34.84228515625,
+                "endSpeed": 15.491786003112793
+            }
+        },
+        {
+            "id": 17,
+            "timestamp": 19.425,
+            "recorded": "moving side entry: 21",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 21",
+                "feasible": false,
+                "bound": 7.79633903503418,
+                "routeGain": 40.6219482421875,
+                "endSpeed": 24.153905868530273
+            },
+            "coast": {
+                "reason": "moving side entry: 21",
+                "feasible": false,
+                "bound": 5.241247177124023,
+                "routeGain": 26.703125,
+                "endSpeed": 12.056729316711426
+            }
+        },
+        {
+            "id": 17,
+            "timestamp": 31.416666666666664,
+            "recorded": "moving side entry: 15",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 15",
+                "feasible": false,
+                "bound": 7.112096786499023,
+                "routeGain": 45.21142578125,
+                "endSpeed": 19.271902084350586
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.824653148651123,
+                "routeGain": 34.5347900390625,
+                "endSpeed": 15.35367202758789
+            }
+        },
+        {
+            "id": 17,
+            "timestamp": 34.699999999999996,
+            "recorded": "moving side entry: 23",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 23",
+                "feasible": false,
+                "bound": 7.360433101654053,
+                "routeGain": 18.5599365234375,
+                "endSpeed": 14.11563491821289
+            },
+            "coast": {
+                "reason": "moving side entry: 23",
+                "feasible": false,
+                "bound": 7.155859470367432,
+                "routeGain": 6.7777099609375,
+                "endSpeed": 3.353628635406494
+            }
+        },
+        {
+            "id": 17,
+            "timestamp": 34.8,
+            "recorded": "moving side entry: 23",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 23",
+                "feasible": false,
+                "bound": 7.86505126953125,
+                "routeGain": 16.6956787109375,
+                "endSpeed": 13.752289772033691
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.399347305297852,
+                "routeGain": 4.0826416015625,
+                "endSpeed": 1.9414341449737549
+            }
+        },
+        {
+            "id": 17,
+            "timestamp": 34.9,
+            "recorded": "moving side entry: 23",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 23",
+                "feasible": false,
+                "bound": 7.609210014343262,
+                "routeGain": 14.5628662109375,
+                "endSpeed": 13.766836166381836
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.056654930114746,
+                "routeGain": 1.4564208984375,
+                "endSpeed": 0.48208388686180115
+            }
+        },
+        {
+            "id": 17,
+            "timestamp": 35.30833333333333,
+            "recorded": "moving side entry: 23",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 23",
+                "feasible": false,
+                "bound": 7.777820110321045,
+                "routeGain": 16.1761474609375,
+                "endSpeed": 13.837798118591309
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.010168075561523,
+                "routeGain": 3.3363037109375,
+                "endSpeed": 1.5797009468078613
+            }
+        },
+        {
+            "id": 18,
+            "timestamp": 17.858333333333334,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.927779197692871,
+                "routeGain": 47.82958984375,
+                "endSpeed": 24.947330474853516
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.424659729003906,
+                "routeGain": 37.398681640625,
+                "endSpeed": 16.56011199951172
+            }
+        },
+        {
+            "id": 18,
+            "timestamp": 19.216666666666665,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 7.518482685089111,
+                "routeGain": 46.7938232421875,
+                "endSpeed": 23.707630157470703
+            },
+            "coast": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.9697771072387695,
+                "routeGain": 36.99609375,
+                "endSpeed": 16.652616500854492
+            }
+        },
+        {
+            "id": 18,
+            "timestamp": 23.90833333333333,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.703451633453369,
+                "routeGain": 38.3861083984375,
+                "endSpeed": 18.367456436157227
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 5.501501083374023,
+                "routeGain": 28.162353515625,
+                "endSpeed": 12.569236755371094
+            }
+        },
+        {
+            "id": 18,
+            "timestamp": 24.008333333333333,
+            "recorded": "moving side entry: 14",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 14",
+                "feasible": false,
+                "bound": 6.515396595001221,
+                "routeGain": 36.6705322265625,
+                "endSpeed": 18.303062438964844
+            },
+            "coast": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 7.536641597747803,
+                "routeGain": 25.455322265625,
+                "endSpeed": 11.451043128967285
+            }
+        },
+        {
+            "id": 18,
+            "timestamp": 38.475,
+            "recorded": "moving side entry: 12",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 12",
+                "feasible": false,
+                "bound": 7.847660064697266,
+                "routeGain": 44.6541748046875,
+                "endSpeed": 24.7602596282959
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.199550628662109,
+                "routeGain": 32.6429443359375,
+                "endSpeed": 15.003211975097656
+            }
+        },
+        {
+            "id": 19,
+            "timestamp": 32.65,
+            "recorded": "moving side entry: 8",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 7.081774711608887,
+                "routeGain": 32.1607666015625,
+                "endSpeed": 13.192757606506348
+            },
+            "coast": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 7.137634754180908,
+                "routeGain": 31.506103515625,
+                "endSpeed": 11.127542495727539
+            }
+        },
+        {
+            "id": 19,
+            "timestamp": 32.75,
+            "recorded": "moving side entry: 8",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 7.48402738571167,
+                "routeGain": 31.6871337890625,
+                "endSpeed": 13.70987606048584
+            },
+            "coast": {
+                "reason": "moving side entry: 8",
+                "feasible": false,
+                "bound": 7.543787956237793,
+                "routeGain": 30.6483154296875,
+                "endSpeed": 11.072484016418457
+            }
+        },
+        {
+            "id": 19,
+            "timestamp": 96.14166666666668,
+            "recorded": "moving side entry: 10",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 6.446307182312012,
+                "routeGain": 49.4727783203125,
+                "endSpeed": 24.795381546020508
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.1589202880859375,
+                "routeGain": 41.7479248046875,
+                "endSpeed": 18.239761352539063
+            }
+        },
+        {
+            "id": 19,
+            "timestamp": 96.24166666666666,
+            "recorded": "moving side entry: 10",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 6.298434257507324,
+                "routeGain": 48.6517333984375,
+                "endSpeed": 24.808691024780273
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.758523464202881,
+                "routeGain": 38.8836669921875,
+                "endSpeed": 17.114004135131836
+            }
+        },
+        {
+            "id": 19,
+            "timestamp": 96.34166666666668,
+            "recorded": "moving side entry: 10",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 6.163317680358887,
+                "routeGain": 47.397705078125,
+                "endSpeed": 24.880159378051758
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.817745208740234,
+                "routeGain": 36.046142578125,
+                "endSpeed": 15.979578018188477
+            }
+        },
+        {
+            "id": 19,
+            "timestamp": 96.44166666666666,
+            "recorded": "moving side entry: 10",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 10",
+                "feasible": false,
+                "bound": 7.77678108215332,
+                "routeGain": 45.7025146484375,
+                "endSpeed": 24.862735748291016
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.302546977996826,
+                "routeGain": 33.2294921875,
+                "endSpeed": 14.834305763244629
+            }
+        },
+        {
+            "id": 20,
+            "timestamp": 19.108333333333334,
+            "recorded": "moving side entry: 21",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 21",
+                "feasible": false,
+                "bound": 6.735565662384033,
+                "routeGain": 52.0238037109375,
+                "endSpeed": 30.54596710205078
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.85368537902832,
+                "routeGain": 33.8905029296875,
+                "endSpeed": 14.910995483398438
+            }
+        },
+        {
+            "id": 20,
+            "timestamp": 19.316666666666663,
+            "recorded": "moving side entry: 17",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 6.8441362380981445,
+                "routeGain": 48.234130859375,
+                "endSpeed": 29.679805755615234
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.42724084854126,
+                "routeGain": 29.7733154296875,
+                "endSpeed": 13.266584396362305
+            }
+        },
+        {
+            "id": 20,
+            "timestamp": 50.541666666666664,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 6.993194103240967,
+                "routeGain": 32.4940185546875,
+                "endSpeed": 23.010534286499023
+            },
+            "coast": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 7.193767547607422,
+                "routeGain": 23.0850830078125,
+                "endSpeed": 10.297100067138672
+            }
+        },
+        {
+            "id": 20,
+            "timestamp": 102.54166666666666,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 7.662903785705566,
+                "routeGain": 50.4794921875,
+                "endSpeed": 30.8861083984375
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.786632537841797,
+                "routeGain": 31.7578125,
+                "endSpeed": 13.997146606445313
+            }
+        },
+        {
+            "id": 20,
+            "timestamp": 102.74166666666666,
+            "recorded": "moving side entry: 13",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 13",
+                "feasible": false,
+                "bound": 7.454806327819824,
+                "routeGain": 47.8223876953125,
+                "endSpeed": 29.983905792236328
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 7.665189266204834,
+                "routeGain": 28.883544921875,
+                "endSpeed": 12.829052925109863
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 25.258333333333333,
+            "recorded": "moving side entry: 18",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 18",
+                "feasible": false,
+                "bound": 7.779331207275391,
+                "routeGain": 30.5394287109375,
+                "endSpeed": 18.015687942504883
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.610531806945801,
+                "routeGain": 21.4764404296875,
+                "endSpeed": 10.187346458435059
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 34.483333333333334,
+            "recorded": "moving side entry: 20",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 20",
+                "feasible": false,
+                "bound": 7.892733573913574,
+                "routeGain": 34.439208984375,
+                "endSpeed": 17.307533264160156
+            },
+            "coast": {
+                "reason": "moving side entry: 20",
+                "feasible": false,
+                "bound": 7.712867259979248,
+                "routeGain": 33.1129150390625,
+                "endSpeed": 13.119552612304688
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 34.59166666666667,
+            "recorded": "moving side entry: 20",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 20",
+                "feasible": false,
+                "bound": 7.8492255210876465,
+                "routeGain": 33.3770751953125,
+                "endSpeed": 17.64446258544922
+            },
+            "coast": {
+                "reason": "moving side entry: 20",
+                "feasible": false,
+                "bound": 7.737964630126953,
+                "routeGain": 31.6053466796875,
+                "endSpeed": 12.766331672668457
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 34.699999999999996,
+            "recorded": "moving side entry: 20",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 20",
+                "feasible": false,
+                "bound": 7.725406646728516,
+                "routeGain": 31.7933349609375,
+                "endSpeed": 17.624488830566406
+            },
+            "coast": {
+                "reason": "moving side entry: 20",
+                "feasible": false,
+                "bound": 7.546483993530273,
+                "routeGain": 29.4381103515625,
+                "endSpeed": 12.074101448059082
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 37.96666666666667,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 7.03540563583374,
+                "routeGain": 32.4781494140625,
+                "endSpeed": 15.575117111206055
+            },
+            "coast": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 6.901948928833008,
+                "routeGain": 31.0374755859375,
+                "endSpeed": 12.221136093139648
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 38.275,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 6.530966758728027,
+                "routeGain": 31.3240966796875,
+                "endSpeed": 17.32195281982422
+            },
+            "coast": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 6.390427589416504,
+                "routeGain": 29.1322021484375,
+                "endSpeed": 12.240984916687012
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 38.475,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 5.985589027404785,
+                "routeGain": 28.164306640625,
+                "endSpeed": 16.699691772460938
+            },
+            "coast": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 5.861051559448242,
+                "routeGain": 25.65625,
+                "endSpeed": 10.96753978729248
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 38.58333333333333,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 5.563098907470703,
+                "routeGain": 25.1522216796875,
+                "endSpeed": 15.590506553649902
+            },
+            "coast": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 7.3502516746521,
+                "routeGain": 22.5657958984375,
+                "endSpeed": 9.768640518188477
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 38.68333333333333,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 7.86489725112915,
+                "routeGain": 22.7203369140625,
+                "endSpeed": 14.776424407958984
+            },
+            "coast": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 7.674966812133789,
+                "routeGain": 19.7166748046875,
+                "endSpeed": 8.648508071899414
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 38.78333333333333,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 7.495211601257324,
+                "routeGain": 20.8499755859375,
+                "endSpeed": 14.275771141052246
+            },
+            "coast": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 6.7721147537231445,
+                "routeGain": 16.8919677734375,
+                "endSpeed": 7.5152363777160645
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 38.88333333333333,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 7.3305840492248535,
+                "routeGain": 19.4483642578125,
+                "endSpeed": 13.932732582092285
+            },
+            "coast": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 6.001199722290039,
+                "routeGain": 14.1239013671875,
+                "endSpeed": 6.361581802368164
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 38.983333333333334,
+            "recorded": "moving side entry: 11",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 11",
+                "feasible": false,
+                "bound": 7.21238374710083,
+                "routeGain": 18.3365478515625,
+                "endSpeed": 13.70936393737793
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 5.1675286293029785,
+                "routeGain": 11.34326171875,
+                "endSpeed": 5.17295503616333
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 66.24166666666666,
+            "recorded": "corridor",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "corridor",
+                "feasible": false,
+                "bound": 7.743949890136719,
+                "routeGain": 33.2200927734375,
+                "endSpeed": 18.581340789794922
+            },
+            "coast": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 7.018825531005859,
+                "routeGain": 23.057373046875,
+                "endSpeed": 9.653968811035156
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 66.34166666666667,
+            "recorded": "moving side entry: 17",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 7.728896617889404,
+                "routeGain": 31.1380615234375,
+                "endSpeed": 17.85527801513672
+            },
+            "coast": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 6.7343549728393555,
+                "routeGain": 20.1685791015625,
+                "endSpeed": 8.491443634033203
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 66.44166666666666,
+            "recorded": "moving side entry: 17",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 7.856109619140625,
+                "routeGain": 29.2000732421875,
+                "endSpeed": 17.22814178466797
+            },
+            "coast": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 6.38693904876709,
+                "routeGain": 17.2587890625,
+                "endSpeed": 7.254291534423828
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 66.54166666666666,
+            "recorded": "moving side entry: 17",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 7.792966365814209,
+                "routeGain": 27.0804443359375,
+                "endSpeed": 16.580202102661133
+            },
+            "coast": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 7.637116432189941,
+                "routeGain": 14.1724853515625,
+                "endSpeed": 5.972587585449219
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 66.64166666666667,
+            "recorded": "moving side entry: 17",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 7.6856513023376465,
+                "routeGain": 25.1279296875,
+                "endSpeed": 16.095165252685547
+            },
+            "coast": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 6.901845932006836,
+                "routeGain": 11.1693115234375,
+                "endSpeed": 4.647340297698975
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 66.74166666666666,
+            "recorded": "moving side entry: 17",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 7.636043548583984,
+                "routeGain": 22.94677734375,
+                "endSpeed": 15.447388648986816
+            },
+            "coast": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 6.145688056945801,
+                "routeGain": 7.9627685546875,
+                "endSpeed": 3.279134511947632
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 66.84166666666667,
+            "recorded": "moving side entry: 17",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 7.4624176025390625,
+                "routeGain": 20.3902587890625,
+                "endSpeed": 14.620882987976074
+            },
+            "coast": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 6.380899429321289,
+                "routeGain": 4.5760498046875,
+                "endSpeed": 1.8667269945144653
+            }
+        },
+        {
+            "id": 21,
+            "timestamp": 67.04166666666666,
+            "recorded": "moving side entry: 17",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 17",
+                "feasible": false,
+                "bound": 7.618430137634277,
+                "routeGain": 18.549560546875,
+                "endSpeed": 14.798605918884277
+            },
+            "coast": {
+                "reason": "corridor",
+                "feasible": false,
+                "bound": 5.091217994689941,
+                "routeGain": 1.98486328125,
+                "endSpeed": 0.6678134202957153
+            }
+        },
+        {
+            "id": 22,
+            "timestamp": 37.858333333333334,
+            "recorded": "moving side entry: 9",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 9",
+                "feasible": false,
+                "bound": 6.783512115478516,
+                "routeGain": 29.7125244140625,
+                "endSpeed": 19.8542537689209
+            },
+            "coast": {
+                "reason": "moving side entry: 9",
+                "feasible": false,
+                "bound": 7.898155689239502,
+                "routeGain": 24.08154296875,
+                "endSpeed": 11.059109687805176
+            }
+        },
+        {
+            "id": 22,
+            "timestamp": 39.80833333333333,
+            "recorded": "moving side entry: 9",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 9",
+                "feasible": false,
+                "bound": 7.361043930053711,
+                "routeGain": 44.6141357421875,
+                "endSpeed": 24.70618438720703
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 6.353974342346191,
+                "routeGain": 31.8773193359375,
+                "endSpeed": 14.32182502746582
+            }
+        },
+        {
+            "id": 22,
+            "timestamp": 39.90833333333333,
+            "recorded": "moving side entry: 9",
+            "originalReasonMatches": true,
+            "recordedStateMatches": true,
+            "original": {
+                "reason": "moving side entry: 9",
+                "feasible": false,
+                "bound": 7.725069522857666,
+                "routeGain": 42.4937744140625,
+                "endSpeed": 24.61703872680664
+            },
+            "coast": {
+                "reason": "clear excluding static scenery",
+                "feasible": true,
+                "bound": 5.915694713592529,
+                "routeGain": 29.10400390625,
+                "endSpeed": 13.166377067565918
+            }
+        }
+    ]
+}

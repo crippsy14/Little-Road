@@ -1,0 +1,28 @@
+{
+  "scope": "Exact equality of stored samples/events/results; terminal export positions and profiling costs are separate. Hidden timing is not rendered-frame acceptance.",
+  "baseline": "review\\unity-35\\race-hud-94\\cedar-hud",
+  "candidate": "review\\unity-35\\race-hud-95\\cedar-hud",
+  "checks": {
+    "motion": true,
+    "checkpointPassages": true,
+    "impacts": true,
+    "assistedRecoveries": true,
+    "overlapPeaks": true,
+    "samples": true,
+    "contextSamples": true,
+    "carRaceResults": true,
+    "normalExit": true,
+    "noRuntimeErrors": true
+  },
+  "passed": true,
+  "meanDecisionRegionMsPerPhysicsTick": {
+    "baseline": 2.7375489015925485,
+    "candidate": 2.7261904777460755
+  },
+  "decisionRegionReductionPercent": 0.41491218074187763,
+  "meanAllAiMsPerSnapshotTick": {
+    "baseline": 4.376227303168899,
+    "candidate": 4.354695442665795
+  },
+  "allAiWallCostReductionPercent": 0.49201878722141545
+}

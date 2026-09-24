@@ -1,0 +1,51 @@
+{
+  "passed": false,
+  "checks": {
+    "race1ConnectedModern": true,
+    "race1FullField": true,
+    "race1RearSlotAndOwnedEngine": true,
+    "race1OrderedPhysicalGates": true,
+    "race1NoTeleportRecovery": true,
+    "race2ConnectedModern": true,
+    "race2FullField": true,
+    "race2RearSlotAndOwnedEngine": true,
+    "race2OrderedPhysicalGates": true,
+    "race2NoTeleportRecovery": false,
+    "adventureNormalCleanExit": true,
+    "adventureSmokePassed": true,
+    "RetryCancelAndCommitPassed": true,
+    "reloadNormalCleanExit": true,
+    "reloadSmokePassed": true,
+    "TwoRewardsPersistExactly": true,
+    "ReloadMatchesCompletedSession": true,
+    "QuestAndFittedUpgradePersist": true
+  },
+  "races": [
+    {
+      "serial": 1,
+      "seed": 1720,
+      "finished": 24,
+      "playerPlace": 17,
+      "playerSeconds": 93.09101104736328,
+      "reward": 130,
+      "combinedSeconds": 2119.903839111328,
+      "participantContactRecords": 2,
+      "physicalRecoveries": 1,
+      "maxImpact": 2.3600423336029053
+    },
+    {
+      "serial": 2,
+      "seed": 1731,
+      "finished": 24,
+      "playerPlace": 16,
+      "playerSeconds": 92.78275299072266,
+      "reward": 130,
+      "combinedSeconds": 2312.13191986084,
+      "participantContactRecords": 0,
+      "physicalRecoveries": 4,
+      "maxImpact": 0.0
+    }
+  ],
+  "savedCredits": 260,
+  "limitation": "Accelerated unattended integration, not rendered performance, physical DualSense or player acceptance. Physical recovery events remain diagnostic; no zero-contact requirement."
+}

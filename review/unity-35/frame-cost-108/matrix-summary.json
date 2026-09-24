@@ -1,0 +1,341 @@
+{
+  "pairs": [
+    {
+      "name": "bayview-after",
+      "track": "bayview",
+      "passed": false,
+      "failedChecks": [
+        "boundedImpactSeverity"
+      ],
+      "collectiveGain": 6.318511962890625,
+      "playerGain": 1.3252830505371094,
+      "before": {
+        "collectiveSeconds": 812.754768371582,
+        "playerSeconds": 37.80918502807617,
+        "playerPlace": 21,
+        "impactEvents": 2,
+        "maxImpactSpeed": 2.5530900955200195,
+        "physicalRecoveries": 0,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 0.0,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 3.1164446061311604
+      },
+      "after": {
+        "collectiveSeconds": 806.4362564086914,
+        "playerSeconds": 36.48390197753906,
+        "playerPlace": 19,
+        "impactEvents": 2,
+        "maxImpactSpeed": 10.708657264709473,
+        "physicalRecoveries": 0,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 0.0,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 3.3892275655131026
+      },
+      "frameBefore": {
+        "mean": 10.892487062434457,
+        "p50": 8.333595275878906,
+        "p95": 26.795400619506836,
+        "p99": 38.06660461425781,
+        "maximum": 2255.974365234375
+      },
+      "frameAfter": {
+        "mean": 10.047189489017237,
+        "p50": 8.333602905273438,
+        "p95": 16.50189971923828,
+        "p99": 22.136600494384766,
+        "maximum": 2214.438232421875
+      }
+    },
+    {
+      "name": "bayview-seed1710-after",
+      "track": "bayview",
+      "passed": false,
+      "failedChecks": [
+        "frameP95Within16_7ms",
+        "boundedImpactSeverity"
+      ],
+      "collectiveGain": 17.74540138244629,
+      "playerGain": 1.0252189636230469,
+      "before": {
+        "collectiveSeconds": 825.2736587524414,
+        "playerSeconds": 37.709163665771484,
+        "playerPlace": 18,
+        "impactEvents": 2,
+        "maxImpactSpeed": 1.5858064889907837,
+        "physicalRecoveries": 0,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 3.0517578125e-05,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 3.2008158137745286
+      },
+      "after": {
+        "collectiveSeconds": 807.5282573699951,
+        "playerSeconds": 36.68394470214844,
+        "playerPlace": 20,
+        "impactEvents": 2,
+        "maxImpactSpeed": 10.707998275756836,
+        "physicalRecoveries": 0,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 0.0,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 3.3932177461399644
+      },
+      "frameBefore": {
+        "mean": 11.037127092686667,
+        "p50": 8.333602905273438,
+        "p95": 28.788400650024414,
+        "p99": 38.49230194091797,
+        "maximum": 2202.105224609375
+      },
+      "frameAfter": {
+        "mean": 10.05321815193576,
+        "p50": 8.333695411682129,
+        "p95": 16.818098068237305,
+        "p99": 21.746200561523438,
+        "maximum": 2207.451416015625
+      }
+    },
+    {
+      "name": "bayview-seed1711-after",
+      "track": "bayview",
+      "passed": false,
+      "failedChecks": [
+        "frameP95Within16_7ms",
+        "noAdditionalPhysicalRecovery"
+      ],
+      "collectiveGain": -23.82127571105957,
+      "playerGain": 2.158794403076172,
+      "before": {
+        "collectiveSeconds": 812.2543048858643,
+        "playerSeconds": 37.63414764404297,
+        "playerPlace": 21,
+        "impactEvents": 1,
+        "maxImpactSpeed": 18.420413970947266,
+        "physicalRecoveries": 0,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 0.0,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 3.2906871769184534
+      },
+      "after": {
+        "collectiveSeconds": 836.0755805969238,
+        "playerSeconds": 35.4753532409668,
+        "playerPlace": 13,
+        "impactEvents": 2,
+        "maxImpactSpeed": 10.708949089050293,
+        "physicalRecoveries": 1,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 0.0,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 3.5711890606420926
+      },
+      "frameBefore": {
+        "mean": 11.111071914600757,
+        "p50": 8.333595275878906,
+        "p95": 28.978296279907227,
+        "p99": 39.142799377441406,
+        "maximum": 2222.328369140625
+      },
+      "frameAfter": {
+        "mean": 10.275124719297335,
+        "p50": 8.333695411682129,
+        "p95": 18.150602340698242,
+        "p99": 24.360698699951172,
+        "maximum": 2201.187255859375
+      }
+    },
+    {
+      "name": "cedar-after",
+      "track": "cedar",
+      "passed": false,
+      "failedChecks": [
+        "boundedImpactSeverity"
+      ],
+      "collectiveGain": 1.224700927734375,
+      "playerGain": 3.8323974609375,
+      "before": {
+        "collectiveSeconds": 2145.35595703125,
+        "playerSeconds": 85.27625274658203,
+        "playerPlace": 6,
+        "impactEvents": 0,
+        "maxImpactSpeed": 0,
+        "physicalRecoveries": 0,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 0.0,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 2.534699950799508
+      },
+      "after": {
+        "collectiveSeconds": 2144.1312561035156,
+        "playerSeconds": 81.44385528564453,
+        "playerPlace": 5,
+        "impactEvents": 4,
+        "maxImpactSpeed": 8.806233406066895,
+        "physicalRecoveries": 0,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 1.9073486328125e-06,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 2.7262401143520054
+      },
+      "frameBefore": {
+        "mean": 9.53000715402176,
+        "p50": 8.333503723144531,
+        "p95": 16.138500213623047,
+        "p99": 33.088600158691406,
+        "maximum": 608.7463989257812
+      },
+      "frameAfter": {
+        "mean": 8.868302732538876,
+        "p50": 8.333595275878906,
+        "p95": 11.600496292114258,
+        "p99": 18.877098083496094,
+        "maximum": 618.9140625
+      }
+    },
+    {
+      "name": "cedar-seed1710-after",
+      "track": "cedar",
+      "passed": false,
+      "failedChecks": [
+        "boundedImpactSeverity"
+      ],
+      "collectiveGain": 1.324676513671875,
+      "playerGain": 4.207305908203125,
+      "before": {
+        "collectiveSeconds": 2136.8080444335938,
+        "playerSeconds": 84.15152740478516,
+        "playerPlace": 6,
+        "impactEvents": 4,
+        "maxImpactSpeed": 0.9009842872619629,
+        "physicalRecoveries": 0,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 0.0,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 2.6792756414500913
+      },
+      "after": {
+        "collectiveSeconds": 2135.483367919922,
+        "playerSeconds": 79.94422149658203,
+        "playerPlace": 5,
+        "impactEvents": 2,
+        "maxImpactSpeed": 13.668501853942871,
+        "physicalRecoveries": 0,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 0.0,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 2.8433719341974077
+      },
+      "frameBefore": {
+        "mean": 9.697918191672011,
+        "p50": 8.333595275878906,
+        "p95": 18.059099197387695,
+        "p99": 34.9005012512207,
+        "maximum": 620.1365966796875
+      },
+      "frameAfter": {
+        "mean": 8.983303093500577,
+        "p50": 8.333595275878906,
+        "p95": 13.426800727844238,
+        "p99": 19.141298294067383,
+        "maximum": 623.0701293945312
+      }
+    },
+    {
+      "name": "cedar-seed1711-after",
+      "track": "cedar",
+      "passed": true,
+      "failedChecks": [],
+      "collectiveGain": 1.2330322265625,
+      "playerGain": 1.6995849609375,
+      "before": {
+        "collectiveSeconds": 2133.2505798339844,
+        "playerSeconds": 83.34339141845703,
+        "playerPlace": 5,
+        "impactEvents": 2,
+        "maxImpactSpeed": 0.9802017211914062,
+        "physicalRecoveries": 0,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 0.0,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 2.6454036775106085
+      },
+      "after": {
+        "collectiveSeconds": 2132.017547607422,
+        "playerSeconds": 81.64380645751953,
+        "playerPlace": 6,
+        "impactEvents": 0,
+        "maxImpactSpeed": 0,
+        "physicalRecoveries": 0,
+        "assistedRecoveries": 0,
+        "maxCarPoseOverlap": 0.0,
+        "maxEnvironmentPoseOverlap": 0.0,
+        "wholeAiMsPerTick": 2.8695574322062267
+      },
+      "frameBefore": {
+        "mean": 9.649384831176638,
+        "p50": 8.333595275878906,
+        "p95": 18.391603469848633,
+        "p99": 33.447200775146484,
+        "maximum": 613.5703735351562
+      },
+      "frameAfter": {
+        "mean": 8.982509276424794,
+        "p50": 8.333595275878906,
+        "p95": 13.84469985961914,
+        "p99": 19.146400451660156,
+        "maximum": 623.3914794921875
+      }
+    }
+  ],
+  "tracks": {
+    "bayview": {
+      "pairs": 3,
+      "passed": 0,
+      "collectiveGainMedian": 6.318511962890625,
+      "collectiveGainMean": 0.08087921142578125,
+      "playerGainMedian": 1.3252830505371094,
+      "p95BeforeRange": [
+        26.795400619506836,
+        28.978296279907227
+      ],
+      "p95AfterRange": [
+        16.50189971923828,
+        18.150602340698242
+      ],
+      "p99AfterRange": [
+        21.746200561523438,
+        24.360698699951172
+      ],
+      "wholeAiWallIncreasePercentRange": [
+        6.011027924113743,
+        8.753018065691931
+      ]
+    },
+    "cedar": {
+      "pairs": 3,
+      "passed": 1,
+      "collectiveGainMedian": 1.2330322265625,
+      "collectiveGainMean": 1.26080322265625,
+      "playerGainMedian": 3.8323974609375,
+      "p95BeforeRange": [
+        16.138500213623047,
+        18.391603469848633
+      ],
+      "p95AfterRange": [
+        11.600496292114258,
+        13.84469985961914
+      ],
+      "p99AfterRange": [
+        18.877098083496094,
+        19.146400451660156
+      ],
+      "wholeAiWallIncreasePercentRange": [
+        6.1246513874363195,
+        8.4733289138901
+      ]
+    }
+  },
+  "interpretation": "Three paired seeds on one machine, not a confidence interval or moving/player acceptance. Keep failed gates and per-seed regressions visible. Whole AI is joined main-thread wall cost, not summed worker CPU utilisation."
+}

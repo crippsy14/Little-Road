@@ -1,0 +1,11 @@
+{
+    "scope": "Physical garage entry and reverse exit using synthetic trigger input; not a manual route playtest",
+    "entered": true,
+    "exited": false,
+    "passed": false,
+    "contacts": 0,
+    "recoveries": 0,
+    "entryZ": -107.00169372558594,
+    "exitZ": -98.55775451660156,
+    "maxLateralError": 0.0373382568359375
+}

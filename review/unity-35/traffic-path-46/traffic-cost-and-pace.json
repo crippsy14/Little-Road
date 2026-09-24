@@ -1,0 +1,20 @@
+[
+  {
+    "name": "field-risk5-control",
+    "car0Seconds": 89.4335708618164,
+    "lastFinisher": 100.14762115478516,
+    "trafficCandidateRejections": 0,
+    "trafficCheckMs": 0.0,
+    "forecastCalls": 25679,
+    "combinedCarSeconds": 2195.0354919433594
+  },
+  {
+    "name": "field-risk5",
+    "car0Seconds": 91.1664810180664,
+    "lastFinisher": 103.68842315673828,
+    "trafficCandidateRejections": 2702,
+    "trafficCheckMs": 1571.3980999999985,
+    "forecastCalls": 28464,
+    "combinedCarSeconds": 2235.475616455078
+  }
+]

@@ -1,0 +1,2361 @@
+{
+  "assemblyHash": "F5DCA77CB17EAF91477ED9DB7A5E801EB527550168605FC1F49161AFE7EC114F",
+  "status": "candidate comparison; reference acceptance pending held-out validation",
+  "measurement": "Lap/sector splits interpolated from 10 Hz route progress; exact bestLap comes from the race finish/gate controller. Boundary checks are sampled. Human laps excluded.",
+  "passed": 30,
+  "total": 30,
+  "checks": [
+    {
+      "name": "stock-mincurve-r1: clean complete physical run",
+      "passed": true
+    },
+    {
+      "name": "stock-mincurve-r1: expected flying lap count",
+      "passed": true
+    },
+    {
+      "name": "stock-mincurve-r1: finite speed and timing",
+      "passed": true
+    },
+    {
+      "name": "stock-centre-r1: clean complete physical run",
+      "passed": true
+    },
+    {
+      "name": "stock-centre-r1: expected flying lap count",
+      "passed": true
+    },
+    {
+      "name": "stock-centre-r1: finite speed and timing",
+      "passed": true
+    },
+    {
+      "name": "stock-half-r1: clean complete physical run",
+      "passed": true
+    },
+    {
+      "name": "stock-half-r1: expected flying lap count",
+      "passed": true
+    },
+    {
+      "name": "stock-half-r1: finite speed and timing",
+      "passed": true
+    },
+    {
+      "name": "stock-early-r1: clean complete physical run",
+      "passed": true
+    },
+    {
+      "name": "stock-early-r1: expected flying lap count",
+      "passed": true
+    },
+    {
+      "name": "stock-early-r1: finite speed and timing",
+      "passed": true
+    },
+    {
+      "name": "club-centre-r1: clean complete physical run",
+      "passed": true
+    },
+    {
+      "name": "club-centre-r1: expected flying lap count",
+      "passed": true
+    },
+    {
+      "name": "club-centre-r1: finite speed and timing",
+      "passed": true
+    },
+    {
+      "name": "stock-late-r1: clean complete physical run",
+      "passed": true
+    },
+    {
+      "name": "stock-late-r1: expected flying lap count",
+      "passed": true
+    },
+    {
+      "name": "stock-late-r1: finite speed and timing",
+      "passed": true
+    },
+    {
+      "name": "club-mincurve-r1: clean complete physical run",
+      "passed": true
+    },
+    {
+      "name": "club-mincurve-r1: expected flying lap count",
+      "passed": true
+    },
+    {
+      "name": "club-mincurve-r1: finite speed and timing",
+      "passed": true
+    },
+    {
+      "name": "club-half-r1: clean complete physical run",
+      "passed": true
+    },
+    {
+      "name": "club-half-r1: expected flying lap count",
+      "passed": true
+    },
+    {
+      "name": "club-half-r1: finite speed and timing",
+      "passed": true
+    },
+    {
+      "name": "club-early-r1: clean complete physical run",
+      "passed": true
+    },
+    {
+      "name": "club-early-r1: expected flying lap count",
+      "passed": true
+    },
+    {
+      "name": "club-early-r1: finite speed and timing",
+      "passed": true
+    },
+    {
+      "name": "club-late-r1: clean complete physical run",
+      "passed": true
+    },
+    {
+      "name": "club-late-r1: expected flying lap count",
+      "passed": true
+    },
+    {
+      "name": "club-late-r1: finite speed and timing",
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "name": "stock-mincurve-r1",
+      "loadout": "stock",
+      "variant": "mincurve",
+      "repeat": 1,
+      "finished": true,
+      "bestLap": 92.69403839111328,
+      "meanFlying": 92.69905222219019,
+      "lapSpread": 0.0017218443842637043,
+      "predicted": 91.75762176513672,
+      "contacts": 0,
+      "recoveries": 0,
+      "missed": 0,
+      "outsideBodySamples": 0,
+      "maxBodyOffset": 6.3047943115234375,
+      "adherenceTime": 99.8141098022461,
+      "adherenceDistance": 99.909912109375,
+      "flyingMeanAbsoluteError": 0.2139112735125939,
+      "flyingMaxAbsoluteError": 0.7256301641464233,
+      "flyingTopSpeed": 23.998477935791016,
+      "monotonicProgress": true,
+      "laps": [
+        92.69991314438232,
+        92.69819129999806
+      ],
+      "sectors": [
+        {
+          "lap": 2,
+          "sector": 1,
+          "seconds": 7.185937632537602,
+          "entrySpeed": 23.971777300254523,
+          "exitSpeed": 23.997479532746897,
+          "minSpeed": 23.972885131835938
+        },
+        {
+          "lap": 2,
+          "sector": 2,
+          "seconds": 7.452621040304848,
+          "entrySpeed": 23.997479532746897,
+          "exitSpeed": 14.9949441918927,
+          "minSpeed": 15.119924545288086
+        },
+        {
+          "lap": 2,
+          "sector": 3,
+          "seconds": 8.476011425039715,
+          "entrySpeed": 14.9949441918927,
+          "exitSpeed": 18.18376314488396,
+          "minSpeed": 14.87866497039795
+        },
+        {
+          "lap": 2,
+          "sector": 4,
+          "seconds": 9.127461332875754,
+          "entrySpeed": 18.18376314488396,
+          "exitSpeed": 22.627710700824174,
+          "minSpeed": 12.527082443237305
+        },
+        {
+          "lap": 2,
+          "sector": 5,
+          "seconds": 8.773197216461938,
+          "entrySpeed": 22.627710700824174,
+          "exitSpeed": 22.056739178111158,
+          "minSpeed": 12.898077011108398
+        },
+        {
+          "lap": 2,
+          "sector": 6,
+          "seconds": 7.251045479304167,
+          "entrySpeed": 22.056739178111158,
+          "exitSpeed": 23.906389378383082,
+          "minSpeed": 22.119548797607422
+        },
+        {
+          "lap": 2,
+          "sector": 7,
+          "seconds": 8.566614653062203,
+          "entrySpeed": 23.906389378383082,
+          "exitSpeed": 22.877271985919503,
+          "minSpeed": 12.439943313598633
+        },
+        {
+          "lap": 2,
+          "sector": 8,
+          "seconds": 7.284622400244217,
+          "entrySpeed": 22.877271985919503,
+          "exitSpeed": 23.952992922688043,
+          "minSpeed": 22.902952194213867
+        },
+        {
+          "lap": 2,
+          "sector": 9,
+          "seconds": 7.1922222475105,
+          "entrySpeed": 23.952992922688043,
+          "exitSpeed": 23.93330762397089,
+          "minSpeed": 23.93444061279297
+        },
+        {
+          "lap": 2,
+          "sector": 10,
+          "seconds": 7.076101818189358,
+          "entrySpeed": 23.93330762397089,
+          "exitSpeed": 23.83106574736894,
+          "minSpeed": 23.645864486694336
+        },
+        {
+          "lap": 2,
+          "sector": 11,
+          "seconds": 7.201868621052313,
+          "entrySpeed": 23.83106574736894,
+          "exitSpeed": 23.90369514539732,
+          "minSpeed": 23.831130981445312
+        },
+        {
+          "lap": 2,
+          "sector": 12,
+          "seconds": 7.112209277799707,
+          "entrySpeed": 23.90369514539732,
+          "exitSpeed": 23.971806705726678,
+          "minSpeed": 23.832075119018555
+        },
+        {
+          "lap": 3,
+          "sector": 1,
+          "seconds": 7.183413731731264,
+          "entrySpeed": 23.971806705726678,
+          "exitSpeed": 23.997483116878954,
+          "minSpeed": 23.972949981689453
+        },
+        {
+          "lap": 3,
+          "sector": 2,
+          "seconds": 7.452322571858758,
+          "entrySpeed": 23.997483116878954,
+          "exitSpeed": 15.000641308347523,
+          "minSpeed": 15.104742050170898
+        },
+        {
+          "lap": 3,
+          "sector": 3,
+          "seconds": 8.474674591833775,
+          "entrySpeed": 15.000641308347523,
+          "exitSpeed": 18.216789310821916,
+          "minSpeed": 14.880980491638184
+        },
+        {
+          "lap": 3,
+          "sector": 4,
+          "seconds": 9.127420834028158,
+          "entrySpeed": 18.216789310821916,
+          "exitSpeed": 22.62596576456221,
+          "minSpeed": 12.526748657226562
+        },
+        {
+          "lap": 3,
+          "sector": 5,
+          "seconds": 8.774007635801183,
+          "entrySpeed": 22.62596576456221,
+          "exitSpeed": 22.05456890877708,
+          "minSpeed": 12.890913963317871
+        },
+        {
+          "lap": 3,
+          "sector": 6,
+          "seconds": 7.251162484854717,
+          "entrySpeed": 22.05456890877708,
+          "exitSpeed": 23.906297747179416,
+          "minSpeed": 22.122272491455078
+        },
+        {
+          "lap": 3,
+          "sector": 7,
+          "seconds": 8.566518645702217,
+          "entrySpeed": 23.906297747179416,
+          "exitSpeed": 22.876478113529323,
+          "minSpeed": 12.46129035949707
+        },
+        {
+          "lap": 3,
+          "sector": 8,
+          "seconds": 7.285233075203706,
+          "entrySpeed": 22.876478113529323,
+          "exitSpeed": 23.952980466482067,
+          "minSpeed": 22.908981323242188
+        },
+        {
+          "lap": 3,
+          "sector": 9,
+          "seconds": 7.192389306486177,
+          "entrySpeed": 23.952980466482067,
+          "exitSpeed": 23.93353162428824,
+          "minSpeed": 23.934383392333984
+        },
+        {
+          "lap": 3,
+          "sector": 10,
+          "seconds": 7.075980280871818,
+          "entrySpeed": 23.93353162428824,
+          "exitSpeed": 23.83101866419594,
+          "minSpeed": 23.645862579345703
+        },
+        {
+          "lap": 3,
+          "sector": 11,
+          "seconds": 7.202552588327649,
+          "entrySpeed": 23.83101866419594,
+          "exitSpeed": 23.903684678356427,
+          "minSpeed": 23.83151626586914
+        },
+        {
+          "lap": 3,
+          "sector": 12,
+          "seconds": 7.1125155532986355,
+          "entrySpeed": 23.903684678356427,
+          "exitSpeed": 23.97176742553711,
+          "minSpeed": 23.83203887939453
+        }
+      ],
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-29\\candidate-matrix-03\\stock-mincurve-r1\\race.json",
+      "exitCode": null,
+      "clean": true
+    },
+    {
+      "name": "stock-centre-r1",
+      "loadout": "stock",
+      "variant": "centre",
+      "repeat": 1,
+      "finished": true,
+      "bestLap": 95.70997619628906,
+      "meanFlying": 95.71706439223834,
+      "lapSpread": 0.01408486505046369,
+      "predicted": 94.70292663574219,
+      "contacts": 0,
+      "recoveries": 0,
+      "missed": 0,
+      "outsideBodySamples": 0,
+      "maxBodyOffset": 4.8071746826171875,
+      "adherenceTime": 99.41153717041016,
+      "adherenceDistance": 99.56596374511719,
+      "flyingMeanAbsoluteError": 0.2643665773347239,
+      "flyingMaxAbsoluteError": 1.0481971502304077,
+      "flyingTopSpeed": 23.999576568603516,
+      "monotonicProgress": true,
+      "laps": [
+        95.72410682476358,
+        95.71002195971312
+      ],
+      "sectors": [
+        {
+          "lap": 2,
+          "sector": 1,
+          "seconds": 7.183919377856128,
+          "entrySpeed": 23.943178517852978,
+          "exitSpeed": 23.99765424394588,
+          "minSpeed": 23.943403244018555
+        },
+        {
+          "lap": 2,
+          "sector": 2,
+          "seconds": 7.601603460644625,
+          "entrySpeed": 23.99765424394588,
+          "exitSpeed": 16.199224523859687,
+          "minSpeed": 16.03920555114746
+        },
+        {
+          "lap": 2,
+          "sector": 3,
+          "seconds": 8.88724953561372,
+          "entrySpeed": 16.199224523859687,
+          "exitSpeed": 18.20471163971002,
+          "minSpeed": 16.148195266723633
+        },
+        {
+          "lap": 2,
+          "sector": 4,
+          "seconds": 9.645452272244881,
+          "entrySpeed": 18.20471163971002,
+          "exitSpeed": 22.667408753263533,
+          "minSpeed": 12.740531921386719
+        },
+        {
+          "lap": 2,
+          "sector": 5,
+          "seconds": 9.429568780990252,
+          "entrySpeed": 22.667408753263533,
+          "exitSpeed": 21.721008951775882,
+          "minSpeed": 14.57476806640625
+        },
+        {
+          "lap": 2,
+          "sector": 6,
+          "seconds": 7.409921411294505,
+          "entrySpeed": 21.721008951775882,
+          "exitSpeed": 23.735833338916553,
+          "minSpeed": 21.777782440185547
+        },
+        {
+          "lap": 2,
+          "sector": 7,
+          "seconds": 9.281823428039672,
+          "entrySpeed": 23.735833338916553,
+          "exitSpeed": 22.693774826415556,
+          "minSpeed": 13.32981014251709
+        },
+        {
+          "lap": 2,
+          "sector": 8,
+          "seconds": 7.2958032496615886,
+          "entrySpeed": 22.693774826415556,
+          "exitSpeed": 23.948651756316163,
+          "minSpeed": 22.734800338745117
+        },
+        {
+          "lap": 2,
+          "sector": 9,
+          "seconds": 7.184190634537487,
+          "entrySpeed": 23.948651756316163,
+          "exitSpeed": 23.915733173440714,
+          "minSpeed": 23.917543411254883
+        },
+        {
+          "lap": 2,
+          "sector": 10,
+          "seconds": 7.299127156540408,
+          "entrySpeed": 23.915733173440714,
+          "exitSpeed": 23.853258579023784,
+          "minSpeed": 23.537677764892578
+        },
+        {
+          "lap": 2,
+          "sector": 11,
+          "seconds": 7.239752524913996,
+          "entrySpeed": 23.853258579023784,
+          "exitSpeed": 23.881460592271587,
+          "minSpeed": 23.72464942932129
+        },
+        {
+          "lap": 2,
+          "sector": 12,
+          "seconds": 7.265694992426319,
+          "entrySpeed": 23.881460592271587,
+          "exitSpeed": 23.9437758945413,
+          "minSpeed": 23.50994300842285
+        },
+        {
+          "lap": 3,
+          "sector": 1,
+          "seconds": 7.1793293000064295,
+          "entrySpeed": 23.9437758945413,
+          "exitSpeed": 23.99767471038229,
+          "minSpeed": 23.945892333984375
+        },
+        {
+          "lap": 3,
+          "sector": 2,
+          "seconds": 7.592404836921958,
+          "entrySpeed": 23.99767471038229,
+          "exitSpeed": 16.19610794235881,
+          "minSpeed": 15.999842643737793
+        },
+        {
+          "lap": 3,
+          "sector": 3,
+          "seconds": 8.88745373829417,
+          "entrySpeed": 16.19610794235881,
+          "exitSpeed": 18.290462829007044,
+          "minSpeed": 16.16694450378418
+        },
+        {
+          "lap": 3,
+          "sector": 4,
+          "seconds": 9.646727115093228,
+          "entrySpeed": 18.290462829007044,
+          "exitSpeed": 22.66428927003062,
+          "minSpeed": 12.730522155761719
+        },
+        {
+          "lap": 3,
+          "sector": 5,
+          "seconds": 9.429240029346857,
+          "entrySpeed": 22.66428927003062,
+          "exitSpeed": 21.714014199909684,
+          "minSpeed": 14.541929244995117
+        },
+        {
+          "lap": 3,
+          "sector": 6,
+          "seconds": 7.410144782336715,
+          "entrySpeed": 21.714014199909684,
+          "exitSpeed": 23.735808759946188,
+          "minSpeed": 21.761608123779297
+        },
+        {
+          "lap": 3,
+          "sector": 7,
+          "seconds": 9.28162736126447,
+          "entrySpeed": 23.735808759946188,
+          "exitSpeed": 22.689549980671643,
+          "minSpeed": 13.321381568908691
+        },
+        {
+          "lap": 3,
+          "sector": 8,
+          "seconds": 7.29641451328223,
+          "entrySpeed": 22.689549980671643,
+          "exitSpeed": 23.948503476900783,
+          "minSpeed": 22.725175857543945
+        },
+        {
+          "lap": 3,
+          "sector": 9,
+          "seconds": 7.182625837812509,
+          "entrySpeed": 23.948503476900783,
+          "exitSpeed": 23.91685581686165,
+          "minSpeed": 23.918743133544922
+        },
+        {
+          "lap": 3,
+          "sector": 10,
+          "seconds": 7.299290523475463,
+          "entrySpeed": 23.91685581686165,
+          "exitSpeed": 23.852845432164077,
+          "minSpeed": 23.53767967224121
+        },
+        {
+          "lap": 3,
+          "sector": 11,
+          "seconds": 7.239513574796376,
+          "entrySpeed": 23.852845432164077,
+          "exitSpeed": 23.88217221773338,
+          "minSpeed": 23.724626541137695
+        },
+        {
+          "lap": 3,
+          "sector": 12,
+          "seconds": 7.265250347082713,
+          "entrySpeed": 23.88217221773338,
+          "exitSpeed": 23.942995071411133,
+          "minSpeed": 23.509912490844727
+        }
+      ],
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-29\\candidate-matrix-03\\stock-centre-r1\\race.json",
+      "exitCode": null,
+      "clean": true
+    },
+    {
+      "name": "stock-half-r1",
+      "loadout": "stock",
+      "variant": "half",
+      "repeat": 1,
+      "finished": true,
+      "bestLap": 93.90208435058594,
+      "meanFlying": 93.9107426052334,
+      "lapSpread": 0.00984074726581241,
+      "predicted": 92.92085266113281,
+      "contacts": 0,
+      "recoveries": 0,
+      "missed": 0,
+      "outsideBodySamples": 0,
+      "maxBodyOffset": 4.8229522705078125,
+      "adherenceTime": 99.86517333984375,
+      "adherenceDistance": 99.9365234375,
+      "flyingMeanAbsoluteError": 0.2289053619332061,
+      "flyingMaxAbsoluteError": 0.8395113348960876,
+      "flyingTopSpeed": 23.999099731445312,
+      "monotonicProgress": true,
+      "laps": [
+        93.91566297886631,
+        93.9058222316005
+      ],
+      "sectors": [
+        {
+          "lap": 2,
+          "sector": 1,
+          "seconds": 7.182988166949428,
+          "entrySpeed": 23.96374848395419,
+          "exitSpeed": 23.9981755675818,
+          "minSpeed": 23.965238571166992
+        },
+        {
+          "lap": 2,
+          "sector": 2,
+          "seconds": 7.516064960754022,
+          "entrySpeed": 23.9981755675818,
+          "exitSpeed": 15.594578343325976,
+          "minSpeed": 15.592231750488281
+        },
+        {
+          "lap": 2,
+          "sector": 3,
+          "seconds": 8.665543614942678,
+          "entrySpeed": 15.594578343325976,
+          "exitSpeed": 18.259803899276793,
+          "minSpeed": 15.62407112121582
+        },
+        {
+          "lap": 2,
+          "sector": 4,
+          "seconds": 9.325584422277075,
+          "entrySpeed": 18.259803899276793,
+          "exitSpeed": 22.661502025244516,
+          "minSpeed": 12.609302520751953
+        },
+        {
+          "lap": 2,
+          "sector": 5,
+          "seconds": 9.011750210562042,
+          "entrySpeed": 22.661502025244516,
+          "exitSpeed": 22.154173255486857,
+          "minSpeed": 13.723058700561523
+        },
+        {
+          "lap": 2,
+          "sector": 6,
+          "seconds": 7.295137681114625,
+          "entrySpeed": 22.154173255486857,
+          "exitSpeed": 23.875910725251515,
+          "minSpeed": 22.226497650146484
+        },
+        {
+          "lap": 2,
+          "sector": 7,
+          "seconds": 8.891053208229465,
+          "entrySpeed": 23.875910725251515,
+          "exitSpeed": 22.80349397451463,
+          "minSpeed": 12.949153900146484
+        },
+        {
+          "lap": 2,
+          "sector": 8,
+          "seconds": 7.287222715170543,
+          "entrySpeed": 22.80349397451463,
+          "exitSpeed": 23.952169363793015,
+          "minSpeed": 22.804227828979492
+        },
+        {
+          "lap": 2,
+          "sector": 9,
+          "seconds": 7.1825088996629916,
+          "entrySpeed": 23.952169363793015,
+          "exitSpeed": 23.92985090939413,
+          "minSpeed": 23.936038970947266
+        },
+        {
+          "lap": 2,
+          "sector": 10,
+          "seconds": 7.179281436954113,
+          "entrySpeed": 23.92985090939413,
+          "exitSpeed": 23.858086308748664,
+          "minSpeed": 23.593021392822266
+        },
+        {
+          "lap": 2,
+          "sector": 11,
+          "seconds": 7.203719983405335,
+          "entrySpeed": 23.858086308748664,
+          "exitSpeed": 23.91009775002959,
+          "minSpeed": 23.81466293334961
+        },
+        {
+          "lap": 2,
+          "sector": 12,
+          "seconds": 7.17480767884399,
+          "entrySpeed": 23.91009775002959,
+          "exitSpeed": 23.963803794972762,
+          "minSpeed": 23.70383644104004
+        },
+        {
+          "lap": 3,
+          "sector": 1,
+          "seconds": 7.177370122322316,
+          "entrySpeed": 23.963803794972762,
+          "exitSpeed": 23.99817457265324,
+          "minSpeed": 23.965103149414062
+        },
+        {
+          "lap": 3,
+          "sector": 2,
+          "seconds": 7.508403238548169,
+          "entrySpeed": 23.99817457265324,
+          "exitSpeed": 15.625046593738903,
+          "minSpeed": 15.627643585205078
+        },
+        {
+          "lap": 3,
+          "sector": 3,
+          "seconds": 8.666596575997517,
+          "entrySpeed": 15.625046593738903,
+          "exitSpeed": 18.362298853413158,
+          "minSpeed": 15.5938138961792
+        },
+        {
+          "lap": 3,
+          "sector": 4,
+          "seconds": 9.32745154016311,
+          "entrySpeed": 18.362298853413158,
+          "exitSpeed": 22.657641254085274,
+          "minSpeed": 12.605474472045898
+        },
+        {
+          "lap": 3,
+          "sector": 5,
+          "seconds": 9.011061658392947,
+          "entrySpeed": 22.657641254085274,
+          "exitSpeed": 22.14751721944381,
+          "minSpeed": 13.734511375427246
+        },
+        {
+          "lap": 3,
+          "sector": 6,
+          "seconds": 7.2958138308285925,
+          "entrySpeed": 22.14751721944381,
+          "exitSpeed": 23.87557798089886,
+          "minSpeed": 22.218168258666992
+        },
+        {
+          "lap": 3,
+          "sector": 7,
+          "seconds": 8.890941444109671,
+          "entrySpeed": 23.87557798089886,
+          "exitSpeed": 22.799073834272352,
+          "minSpeed": 12.944733619689941
+        },
+        {
+          "lap": 3,
+          "sector": 8,
+          "seconds": 7.287786449540334,
+          "entrySpeed": 22.799073834272352,
+          "exitSpeed": 23.951998982148403,
+          "minSpeed": 22.802640914916992
+        },
+        {
+          "lap": 3,
+          "sector": 9,
+          "seconds": 7.183166829821118,
+          "entrySpeed": 23.951998982148403,
+          "exitSpeed": 23.93060272436653,
+          "minSpeed": 23.937124252319336
+        },
+        {
+          "lap": 3,
+          "sector": 10,
+          "seconds": 7.179018663608019,
+          "entrySpeed": 23.93060272436653,
+          "exitSpeed": 23.85783021164149,
+          "minSpeed": 23.593013763427734
+        },
+        {
+          "lap": 3,
+          "sector": 11,
+          "seconds": 7.203445901654106,
+          "entrySpeed": 23.85783021164149,
+          "exitSpeed": 23.910474270162222,
+          "minSpeed": 23.81464385986328
+        },
+        {
+          "lap": 3,
+          "sector": 12,
+          "seconds": 7.174765976614594,
+          "entrySpeed": 23.910474270162222,
+          "exitSpeed": 23.963335037231445,
+          "minSpeed": 23.703826904296875
+        }
+      ],
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-29\\candidate-matrix-03\\stock-half-r1\\race.json",
+      "exitCode": null,
+      "clean": true
+    },
+    {
+      "name": "stock-early-r1",
+      "loadout": "stock",
+      "variant": "early",
+      "repeat": 1,
+      "finished": true,
+      "bestLap": 94.01038360595703,
+      "meanFlying": 94.00419854138786,
+      "lapSpread": 0.012246075055841743,
+      "predicted": 93.19131469726562,
+      "contacts": 0,
+      "recoveries": 0,
+      "missed": 0,
+      "outsideBodySamples": 0,
+      "maxBodyOffset": 6.2733259201049805,
+      "adherenceTime": 99.82736206054688,
+      "adherenceDistance": 99.91577911376953,
+      "flyingMeanAbsoluteError": 0.21732320968427166,
+      "flyingMaxAbsoluteError": 0.8341303467750549,
+      "flyingTopSpeed": 23.997011184692383,
+      "monotonicProgress": true,
+      "laps": [
+        94.01032157891579,
+        93.99807550385995
+      ],
+      "sectors": [
+        {
+          "lap": 2,
+          "sector": 1,
+          "seconds": 7.191939774395621,
+          "entrySpeed": 23.908482993492832,
+          "exitSpeed": 23.99500915285881,
+          "minSpeed": 23.912160873413086
+        },
+        {
+          "lap": 2,
+          "sector": 2,
+          "seconds": 7.454587381839147,
+          "entrySpeed": 23.99500915285881,
+          "exitSpeed": 15.024681788305289,
+          "minSpeed": 14.669088363647461
+        },
+        {
+          "lap": 2,
+          "sector": 3,
+          "seconds": 8.593546002485283,
+          "entrySpeed": 15.024681788305289,
+          "exitSpeed": 19.866752242146244,
+          "minSpeed": 14.965930938720703
+        },
+        {
+          "lap": 2,
+          "sector": 4,
+          "seconds": 9.200945655055392,
+          "entrySpeed": 19.866752242146244,
+          "exitSpeed": 22.497718328206833,
+          "minSpeed": 11.037989616394043
+        },
+        {
+          "lap": 2,
+          "sector": 5,
+          "seconds": 9.128047967235602,
+          "entrySpeed": 22.497718328206833,
+          "exitSpeed": 20.766641272521444,
+          "minSpeed": 12.931196212768555
+        },
+        {
+          "lap": 2,
+          "sector": 6,
+          "seconds": 7.382060703341267,
+          "entrySpeed": 20.766641272521444,
+          "exitSpeed": 23.847709101318024,
+          "minSpeed": 20.798189163208008
+        },
+        {
+          "lap": 2,
+          "sector": 7,
+          "seconds": 9.064431322247003,
+          "entrySpeed": 23.847709101318024,
+          "exitSpeed": 22.230588112007926,
+          "minSpeed": 11.687570571899414
+        },
+        {
+          "lap": 2,
+          "sector": 8,
+          "seconds": 7.342871363134378,
+          "entrySpeed": 22.230588112007926,
+          "exitSpeed": 23.929403219347687,
+          "minSpeed": 22.285852432250977
+        },
+        {
+          "lap": 2,
+          "sector": 9,
+          "seconds": 7.189329959161938,
+          "entrySpeed": 23.929403219347687,
+          "exitSpeed": 23.94858505954611,
+          "minSpeed": 23.930469512939453
+        },
+        {
+          "lap": 2,
+          "sector": 10,
+          "seconds": 7.0914095760435885,
+          "entrySpeed": 23.94858505954611,
+          "exitSpeed": 23.8248528535901,
+          "minSpeed": 23.651958465576172
+        },
+        {
+          "lap": 2,
+          "sector": 11,
+          "seconds": 7.202035394119122,
+          "entrySpeed": 23.8248528535901,
+          "exitSpeed": 23.919353033212662,
+          "minSpeed": 23.827451705932617
+        },
+        {
+          "lap": 2,
+          "sector": 12,
+          "seconds": 7.1691164798574505,
+          "entrySpeed": 23.919353033212662,
+          "exitSpeed": 23.908263012864232,
+          "minSpeed": 23.310157775878906
+        },
+        {
+          "lap": 3,
+          "sector": 1,
+          "seconds": 7.192521234493427,
+          "entrySpeed": 23.908263012864232,
+          "exitSpeed": 23.99501070654674,
+          "minSpeed": 23.91163444519043
+        },
+        {
+          "lap": 3,
+          "sector": 2,
+          "seconds": 7.462295723901406,
+          "entrySpeed": 23.99501070654674,
+          "exitSpeed": 14.999812301856633,
+          "minSpeed": 14.656134605407715
+        },
+        {
+          "lap": 3,
+          "sector": 3,
+          "seconds": 8.586395793059523,
+          "entrySpeed": 14.999812301856633,
+          "exitSpeed": 19.83767901295941,
+          "minSpeed": 14.961221694946289
+        },
+        {
+          "lap": 3,
+          "sector": 4,
+          "seconds": 9.200229716913242,
+          "entrySpeed": 19.83767901295941,
+          "exitSpeed": 22.49911509883857,
+          "minSpeed": 11.038308143615723
+        },
+        {
+          "lap": 3,
+          "sector": 5,
+          "seconds": 9.12789348907043,
+          "entrySpeed": 22.49911509883857,
+          "exitSpeed": 20.770254986003113,
+          "minSpeed": 12.953349113464355
+        },
+        {
+          "lap": 3,
+          "sector": 6,
+          "seconds": 7.381682930285791,
+          "entrySpeed": 20.770254986003113,
+          "exitSpeed": 23.847837647280627,
+          "minSpeed": 20.78937530517578
+        },
+        {
+          "lap": 3,
+          "sector": 7,
+          "seconds": 9.064495569784583,
+          "entrySpeed": 23.847837647280627,
+          "exitSpeed": 22.23240896315475,
+          "minSpeed": 11.68197250366211
+        },
+        {
+          "lap": 3,
+          "sector": 8,
+          "seconds": 7.342648441134912,
+          "entrySpeed": 22.23240896315475,
+          "exitSpeed": 23.929465737997315,
+          "minSpeed": 22.28769302368164
+        },
+        {
+          "lap": 3,
+          "sector": 9,
+          "seconds": 7.190081563907427,
+          "entrySpeed": 23.929465737997315,
+          "exitSpeed": 23.94855947052815,
+          "minSpeed": 23.930288314819336
+        },
+        {
+          "lap": 3,
+          "sector": 10,
+          "seconds": 7.09178085636961,
+          "entrySpeed": 23.94855947052815,
+          "exitSpeed": 23.82553220323073,
+          "minSpeed": 23.65192222595215
+        },
+        {
+          "lap": 3,
+          "sector": 11,
+          "seconds": 7.20126892908246,
+          "entrySpeed": 23.82553220323073,
+          "exitSpeed": 23.919360335837702,
+          "minSpeed": 23.828083038330078
+        },
+        {
+          "lap": 3,
+          "sector": 12,
+          "seconds": 7.15678125585714,
+          "entrySpeed": 23.919360335837702,
+          "exitSpeed": 23.90761375427246,
+          "minSpeed": 23.317243576049805
+        }
+      ],
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-29\\candidate-matrix-03\\stock-early-r1\\race.json",
+      "exitCode": null,
+      "clean": true
+    },
+    {
+      "name": "club-centre-r1",
+      "loadout": "club",
+      "variant": "centre",
+      "repeat": 1,
+      "finished": true,
+      "bestLap": 68.7498779296875,
+      "meanFlying": 68.74507195458798,
+      "lapSpread": 0.0037816666555414713,
+      "predicted": 68.0006103515625,
+      "contacts": 0,
+      "recoveries": 0,
+      "missed": 0,
+      "outsideBodySamples": 0,
+      "maxBodyOffset": 4.799224853515625,
+      "adherenceTime": 84.5569076538086,
+      "adherenceDistance": 87.37126159667969,
+      "flyingMeanAbsoluteError": 0.4583025783682242,
+      "flyingMaxAbsoluteError": 1.534603238105774,
+      "flyingTopSpeed": 34.016727447509766,
+      "monotonicProgress": true,
+      "laps": [
+        68.74696278791576,
+        68.74318112126022
+      ],
+      "sectors": [
+        {
+          "lap": 2,
+          "sector": 1,
+          "seconds": 5.077573506724164,
+          "entrySpeed": 33.98559679386129,
+          "exitSpeed": 33.87919339036842,
+          "minSpeed": 33.83182144165039
+        },
+        {
+          "lap": 2,
+          "sector": 2,
+          "seconds": 5.506586535451987,
+          "entrySpeed": 33.87919339036842,
+          "exitSpeed": 21.06535024872931,
+          "minSpeed": 20.828027725219727
+        },
+        {
+          "lap": 2,
+          "sector": 3,
+          "seconds": 6.4829961263016145,
+          "entrySpeed": 21.06535024872931,
+          "exitSpeed": 23.268573221000597,
+          "minSpeed": 21.2071533203125
+        },
+        {
+          "lap": 2,
+          "sector": 4,
+          "seconds": 7.049152116806468,
+          "entrySpeed": 23.268573221000597,
+          "exitSpeed": 33.92724081186149,
+          "minSpeed": 16.461772918701172
+        },
+        {
+          "lap": 2,
+          "sector": 5,
+          "seconds": 7.086067433663629,
+          "entrySpeed": 33.92724081186149,
+          "exitSpeed": 31.829336972036998,
+          "minSpeed": 18.882884979248047
+        },
+        {
+          "lap": 2,
+          "sector": 6,
+          "seconds": 5.104275483107301,
+          "entrySpeed": 31.829336972036998,
+          "exitSpeed": 33.94912451534518,
+          "minSpeed": 32.10102462768555
+        },
+        {
+          "lap": 2,
+          "sector": 7,
+          "seconds": 6.896271289318705,
+          "entrySpeed": 33.94912451534518,
+          "exitSpeed": 33.91984516260295,
+          "minSpeed": 17.34476089477539
+        },
+        {
+          "lap": 2,
+          "sector": 8,
+          "seconds": 5.077217900276082,
+          "entrySpeed": 33.91984516260295,
+          "exitSpeed": 34.01042749439962,
+          "minSpeed": 33.83062744140625
+        },
+        {
+          "lap": 2,
+          "sector": 9,
+          "seconds": 5.0769020187686635,
+          "entrySpeed": 34.01042749439962,
+          "exitSpeed": 33.82323102832735,
+          "minSpeed": 33.83241271972656
+        },
+        {
+          "lap": 2,
+          "sector": 10,
+          "seconds": 5.136308202861656,
+          "entrySpeed": 33.82323102832735,
+          "exitSpeed": 33.912717049565096,
+          "minSpeed": 32.595909118652344
+        },
+        {
+          "lap": 2,
+          "sector": 11,
+          "seconds": 5.089239138606757,
+          "entrySpeed": 33.912717049565096,
+          "exitSpeed": 33.902543524472016,
+          "minSpeed": 33.760894775390625
+        },
+        {
+          "lap": 2,
+          "sector": 12,
+          "seconds": 5.164373036028735,
+          "entrySpeed": 33.902543524472016,
+          "exitSpeed": 33.945016551662135,
+          "minSpeed": 31.078886032104492
+        },
+        {
+          "lap": 3,
+          "sector": 1,
+          "seconds": 5.077130621504438,
+          "entrySpeed": 33.945016551662135,
+          "exitSpeed": 33.94153968611044,
+          "minSpeed": 33.83575439453125
+        },
+        {
+          "lap": 3,
+          "sector": 2,
+          "seconds": 5.506601127270699,
+          "entrySpeed": 33.94153968611044,
+          "exitSpeed": 21.194688088379873,
+          "minSpeed": 20.813373565673828
+        },
+        {
+          "lap": 3,
+          "sector": 3,
+          "seconds": 6.483269984992546,
+          "entrySpeed": 21.194688088379873,
+          "exitSpeed": 23.24115221058169,
+          "minSpeed": 21.131378173828125
+        },
+        {
+          "lap": 3,
+          "sector": 4,
+          "seconds": 7.0472564192603215,
+          "entrySpeed": 23.24115221058169,
+          "exitSpeed": 33.85642710925406,
+          "minSpeed": 16.536237716674805
+        },
+        {
+          "lap": 3,
+          "sector": 5,
+          "seconds": 7.086589707709209,
+          "entrySpeed": 33.85642710925406,
+          "exitSpeed": 31.836380644963768,
+          "minSpeed": 18.857677459716797
+        },
+        {
+          "lap": 3,
+          "sector": 6,
+          "seconds": 5.104140326043023,
+          "entrySpeed": 31.836380644963768,
+          "exitSpeed": 33.93586814104566,
+          "minSpeed": 31.94366455078125
+        },
+        {
+          "lap": 3,
+          "sector": 7,
+          "seconds": 6.8970656235571255,
+          "entrySpeed": 33.93586814104566,
+          "exitSpeed": 33.860021660723824,
+          "minSpeed": 17.333436965942383
+        },
+        {
+          "lap": 3,
+          "sector": 8,
+          "seconds": 5.07736776731366,
+          "entrySpeed": 33.860021660723824,
+          "exitSpeed": 33.92940404430212,
+          "minSpeed": 33.82736587524414
+        },
+        {
+          "lap": 3,
+          "sector": 9,
+          "seconds": 5.077297809527522,
+          "entrySpeed": 33.92940404430212,
+          "exitSpeed": 33.92969444263861,
+          "minSpeed": 33.80223846435547
+        },
+        {
+          "lap": 3,
+          "sector": 10,
+          "seconds": 5.136727234927434,
+          "entrySpeed": 33.92969444263861,
+          "exitSpeed": 33.92500915064855,
+          "minSpeed": 32.72371292114258
+        },
+        {
+          "lap": 3,
+          "sector": 11,
+          "seconds": 5.089849229717203,
+          "entrySpeed": 33.92500915064855,
+          "exitSpeed": 33.88085293869619,
+          "minSpeed": 33.77125930786133
+        },
+        {
+          "lap": 3,
+          "sector": 12,
+          "seconds": 5.159885269437041,
+          "entrySpeed": 33.88085293869619,
+          "exitSpeed": 33.94480895996094,
+          "minSpeed": 31.063323974609375
+        }
+      ],
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-29\\candidate-matrix-03\\club-centre-r1\\race.json",
+      "exitCode": null,
+      "clean": true
+    },
+    {
+      "name": "stock-late-r1",
+      "loadout": "stock",
+      "variant": "late",
+      "repeat": 1,
+      "finished": true,
+      "bestLap": 93.46052551269531,
+      "meanFlying": 93.46251061247813,
+      "lapSpread": 0.0061983699145713445,
+      "predicted": 92.53060150146484,
+      "contacts": 0,
+      "recoveries": 0,
+      "missed": 0,
+      "outsideBodySamples": 0,
+      "maxBodyOffset": 6.3507080078125,
+      "adherenceTime": 99.80534362792969,
+      "adherenceDistance": 99.90435791015625,
+      "flyingMeanAbsoluteError": 0.2090015970467747,
+      "flyingMaxAbsoluteError": 0.7674297094345093,
+      "flyingTopSpeed": 23.99852752685547,
+      "monotonicProgress": true,
+      "laps": [
+        93.46560979743542,
+        93.45941142752085
+      ],
+      "sectors": [
+        {
+          "lap": 2,
+          "sector": 1,
+          "seconds": 7.185827000888111,
+          "entrySpeed": 23.97098102925349,
+          "exitSpeed": 23.997289358128416,
+          "minSpeed": 23.971223831176758
+        },
+        {
+          "lap": 2,
+          "sector": 2,
+          "seconds": 7.464976733374499,
+          "entrySpeed": 23.997289358128416,
+          "exitSpeed": 15.86274977149053,
+          "minSpeed": 15.945068359375
+        },
+        {
+          "lap": 2,
+          "sector": 3,
+          "seconds": 8.593525358249849,
+          "entrySpeed": 15.86274977149053,
+          "exitSpeed": 15.420614444325183,
+          "minSpeed": 14.879749298095703
+        },
+        {
+          "lap": 2,
+          "sector": 4,
+          "seconds": 9.34394528803206,
+          "entrySpeed": 15.420614444325183,
+          "exitSpeed": 22.667620362521337,
+          "minSpeed": 11.590688705444336
+        },
+        {
+          "lap": 2,
+          "sector": 5,
+          "seconds": 9.025109207538549,
+          "entrySpeed": 22.667620362521337,
+          "exitSpeed": 21.816382778740568,
+          "minSpeed": 12.925493240356445
+        },
+        {
+          "lap": 2,
+          "sector": 6,
+          "seconds": 7.269403178670842,
+          "entrySpeed": 21.816382778740568,
+          "exitSpeed": 23.896527366501783,
+          "minSpeed": 21.82002067565918
+        },
+        {
+          "lap": 2,
+          "sector": 7,
+          "seconds": 8.693648384726771,
+          "entrySpeed": 23.896527366501783,
+          "exitSpeed": 22.77916367550521,
+          "minSpeed": 13.02039909362793
+        },
+        {
+          "lap": 2,
+          "sector": 8,
+          "seconds": 7.293317197138549,
+          "entrySpeed": 22.77916367550521,
+          "exitSpeed": 23.94925663014486,
+          "minSpeed": 22.799001693725586
+        },
+        {
+          "lap": 2,
+          "sector": 9,
+          "seconds": 7.197265730070882,
+          "entrySpeed": 23.94925663014486,
+          "exitSpeed": 23.90777759086465,
+          "minSpeed": 23.910541534423828
+        },
+        {
+          "lap": 2,
+          "sector": 10,
+          "seconds": 7.070126180373279,
+          "entrySpeed": 23.90777759086465,
+          "exitSpeed": 23.829592228297404,
+          "minSpeed": 23.638534545898438
+        },
+        {
+          "lap": 2,
+          "sector": 11,
+          "seconds": 7.210622793682745,
+          "entrySpeed": 23.829592228297404,
+          "exitSpeed": 23.87583253236357,
+          "minSpeed": 23.83043098449707
+        },
+        {
+          "lap": 2,
+          "sector": 12,
+          "seconds": 7.117842744689284,
+          "entrySpeed": 23.87583253236357,
+          "exitSpeed": 23.971009300312765,
+          "minSpeed": 23.802438735961914
+        },
+        {
+          "lap": 3,
+          "sector": 1,
+          "seconds": 7.183128552798252,
+          "entrySpeed": 23.971009300312765,
+          "exitSpeed": 23.997288996355262,
+          "minSpeed": 23.971715927124023
+        },
+        {
+          "lap": 3,
+          "sector": 2,
+          "seconds": 7.468055911012243,
+          "entrySpeed": 23.997288996355262,
+          "exitSpeed": 15.752408667456981,
+          "minSpeed": 15.914423942565918
+        },
+        {
+          "lap": 3,
+          "sector": 3,
+          "seconds": 8.588080889276227,
+          "entrySpeed": 15.752408667456981,
+          "exitSpeed": 15.449341920514126,
+          "minSpeed": 14.903997421264648
+        },
+        {
+          "lap": 3,
+          "sector": 4,
+          "seconds": 9.343690629248158,
+          "entrySpeed": 15.449341920514126,
+          "exitSpeed": 22.66579233279434,
+          "minSpeed": 11.656859397888184
+        },
+        {
+          "lap": 3,
+          "sector": 5,
+          "seconds": 9.025498599251904,
+          "entrySpeed": 22.66579233279434,
+          "exitSpeed": 21.813295454365363,
+          "minSpeed": 12.888864517211914
+        },
+        {
+          "lap": 3,
+          "sector": 6,
+          "seconds": 7.2681320462895656,
+          "entrySpeed": 21.813295454365363,
+          "exitSpeed": 23.896444516064715,
+          "minSpeed": 21.8571720123291
+        },
+        {
+          "lap": 3,
+          "sector": 7,
+          "seconds": 8.695559161964269,
+          "entrySpeed": 23.896444516064715,
+          "exitSpeed": 22.777874784022977,
+          "minSpeed": 13.062952995300293
+        },
+        {
+          "lap": 3,
+          "sector": 8,
+          "seconds": 7.293990897433474,
+          "entrySpeed": 22.777874784022977,
+          "exitSpeed": 23.949225512724126,
+          "minSpeed": 22.823373794555664
+        },
+        {
+          "lap": 3,
+          "sector": 9,
+          "seconds": 7.197792017690148,
+          "entrySpeed": 23.949225512724126,
+          "exitSpeed": 23.90802694591611,
+          "minSpeed": 23.908554077148438
+        },
+        {
+          "lap": 3,
+          "sector": 10,
+          "seconds": 7.069483306642155,
+          "entrySpeed": 23.90802694591611,
+          "exitSpeed": 23.829577208451987,
+          "minSpeed": 23.63844871520996
+        },
+        {
+          "lap": 3,
+          "sector": 11,
+          "seconds": 7.211062037697104,
+          "entrySpeed": 23.829577208451987,
+          "exitSpeed": 23.87589889165624,
+          "minSpeed": 23.829864501953125
+        },
+        {
+          "lap": 3,
+          "sector": 12,
+          "seconds": 7.114937378217348,
+          "entrySpeed": 23.87589889165624,
+          "exitSpeed": 23.97093963623047,
+          "minSpeed": 23.802522659301758
+        }
+      ],
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-29\\candidate-matrix-03\\stock-late-r1\\race.json",
+      "exitCode": null,
+      "clean": true
+    },
+    {
+      "name": "club-mincurve-r1",
+      "loadout": "club",
+      "variant": "mincurve",
+      "repeat": 1,
+      "finished": true,
+      "bestLap": 66.33380126953125,
+      "meanFlying": 66.33012676927447,
+      "lapSpread": 0.011055778608223932,
+      "predicted": 65.62784576416016,
+      "contacts": 0,
+      "recoveries": 0,
+      "missed": 0,
+      "outsideBodySamples": 0,
+      "maxBodyOffset": 6.438812255859375,
+      "adherenceTime": 94.07781982421875,
+      "adherenceDistance": 95.42097473144531,
+      "flyingMeanAbsoluteError": 0.37156482255612233,
+      "flyingMaxAbsoluteError": 1.1388401985168457,
+      "flyingTopSpeed": 34.015419006347656,
+      "monotonicProgress": true,
+      "laps": [
+        66.33565465857858,
+        66.32459887997035
+      ],
+      "sectors": [
+        {
+          "lap": 2,
+          "sector": 1,
+          "seconds": 5.080499964416404,
+          "entrySpeed": 33.94447292956665,
+          "exitSpeed": 33.936973381212276,
+          "minSpeed": 33.834129333496094
+        },
+        {
+          "lap": 2,
+          "sector": 2,
+          "seconds": 5.393200141849945,
+          "entrySpeed": 33.936973381212276,
+          "exitSpeed": 19.49455749757892,
+          "minSpeed": 19.477766036987305
+        },
+        {
+          "lap": 2,
+          "sector": 3,
+          "seconds": 6.213231660211875,
+          "entrySpeed": 19.49455749757892,
+          "exitSpeed": 23.24259574883065,
+          "minSpeed": 19.514484405517578
+        },
+        {
+          "lap": 2,
+          "sector": 4,
+          "seconds": 6.649803525247847,
+          "entrySpeed": 23.24259574883065,
+          "exitSpeed": 33.910559741658204,
+          "minSpeed": 16.12411880493164
+        },
+        {
+          "lap": 2,
+          "sector": 5,
+          "seconds": 6.471041529887117,
+          "entrySpeed": 33.910559741658204,
+          "exitSpeed": 33.20472641156963,
+          "minSpeed": 16.612207412719727
+        },
+        {
+          "lap": 2,
+          "sector": 6,
+          "seconds": 5.005989852426353,
+          "entrySpeed": 33.20472641156963,
+          "exitSpeed": 33.90835054383393,
+          "minSpeed": 33.283634185791016
+        },
+        {
+          "lap": 2,
+          "sector": 7,
+          "seconds": 6.292313864966715,
+          "entrySpeed": 33.90835054383393,
+          "exitSpeed": 33.90495096854351,
+          "minSpeed": 16.034748077392578
+        },
+        {
+          "lap": 2,
+          "sector": 8,
+          "seconds": 5.081233647219349,
+          "entrySpeed": 33.90495096854351,
+          "exitSpeed": 33.881479690825905,
+          "minSpeed": 33.83249282836914
+        },
+        {
+          "lap": 2,
+          "sector": 9,
+          "seconds": 5.081878957983903,
+          "entrySpeed": 33.881479690825905,
+          "exitSpeed": 33.914974448523715,
+          "minSpeed": 33.827056884765625
+        },
+        {
+          "lap": 2,
+          "sector": 10,
+          "seconds": 4.977788987113854,
+          "entrySpeed": 33.914974448523715,
+          "exitSpeed": 33.871124674906916,
+          "minSpeed": 32.81604766845703
+        },
+        {
+          "lap": 2,
+          "sector": 11,
+          "seconds": 5.073995420218452,
+          "entrySpeed": 33.871124674906916,
+          "exitSpeed": 34.00561187704891,
+          "minSpeed": 33.80817413330078
+        },
+        {
+          "lap": 2,
+          "sector": 12,
+          "seconds": 5.014677107036761,
+          "entrySpeed": 34.00561187704891,
+          "exitSpeed": 33.99895652947913,
+          "minSpeed": 33.77855682373047
+        },
+        {
+          "lap": 3,
+          "sector": 1,
+          "seconds": 5.080310735847803,
+          "entrySpeed": 33.99895652947913,
+          "exitSpeed": 33.898379952267426,
+          "minSpeed": 33.82106399536133
+        },
+        {
+          "lap": 3,
+          "sector": 2,
+          "seconds": 5.395252719731502,
+          "entrySpeed": 33.898379952267426,
+          "exitSpeed": 19.389446491627087,
+          "minSpeed": 19.707170486450195
+        },
+        {
+          "lap": 3,
+          "sector": 3,
+          "seconds": 6.210951178747905,
+          "entrySpeed": 19.389446491627087,
+          "exitSpeed": 23.227173459991775,
+          "minSpeed": 19.32332420349121
+        },
+        {
+          "lap": 3,
+          "sector": 4,
+          "seconds": 6.650876047071932,
+          "entrySpeed": 23.227173459991775,
+          "exitSpeed": 33.92133445941804,
+          "minSpeed": 16.078941345214844
+        },
+        {
+          "lap": 3,
+          "sector": 5,
+          "seconds": 6.47164085487276,
+          "entrySpeed": 33.92133445941804,
+          "exitSpeed": 33.21073941939701,
+          "minSpeed": 16.72275733947754
+        },
+        {
+          "lap": 3,
+          "sector": 6,
+          "seconds": 5.004850607069557,
+          "entrySpeed": 33.21073941939701,
+          "exitSpeed": 33.8652885177105,
+          "minSpeed": 33.4915771484375
+        },
+        {
+          "lap": 3,
+          "sector": 7,
+          "seconds": 6.294044202254952,
+          "entrySpeed": 33.8652885177105,
+          "exitSpeed": 33.96823673490115,
+          "minSpeed": 16.24810028076172
+        },
+        {
+          "lap": 3,
+          "sector": 8,
+          "seconds": 5.081098950028519,
+          "entrySpeed": 33.96823673490115,
+          "exitSpeed": 33.885131708232066,
+          "minSpeed": 33.83222579956055
+        },
+        {
+          "lap": 3,
+          "sector": 9,
+          "seconds": 5.082738316772804,
+          "entrySpeed": 33.885131708232066,
+          "exitSpeed": 33.946166870999775,
+          "minSpeed": 33.81386947631836
+        },
+        {
+          "lap": 3,
+          "sector": 10,
+          "seconds": 4.976171446969829,
+          "entrySpeed": 33.946166870999775,
+          "exitSpeed": 33.89496716356925,
+          "minSpeed": 32.912933349609375
+        },
+        {
+          "lap": 3,
+          "sector": 11,
+          "seconds": 5.074011525256708,
+          "entrySpeed": 33.89496716356925,
+          "exitSpeed": 33.95248872533604,
+          "minSpeed": 33.82134246826172
+        },
+        {
+          "lap": 3,
+          "sector": 12,
+          "seconds": 5.002652295346081,
+          "entrySpeed": 33.95248872533604,
+          "exitSpeed": 33.987205505371094,
+          "minSpeed": 33.7932014465332
+        }
+      ],
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-29\\candidate-matrix-03\\club-mincurve-r1\\race.json",
+      "exitCode": null,
+      "clean": true
+    },
+    {
+      "name": "club-half-r1",
+      "loadout": "club",
+      "variant": "half",
+      "repeat": 1,
+      "finished": true,
+      "bestLap": 67.22525024414062,
+      "meanFlying": 67.22131338804707,
+      "lapSpread": 0.018662255557060803,
+      "predicted": 66.54158020019531,
+      "contacts": 0,
+      "recoveries": 0,
+      "missed": 0,
+      "outsideBodySamples": 0,
+      "maxBodyOffset": 4.8155975341796875,
+      "adherenceTime": 88.18766021728516,
+      "adherenceDistance": 90.47553253173828,
+      "flyingMeanAbsoluteError": 0.3961381597631805,
+      "flyingMaxAbsoluteError": 1.2749547958374023,
+      "flyingTopSpeed": 34.01913833618164,
+      "monotonicProgress": true,
+      "laps": [
+        67.2306445158256,
+        67.21198226026854
+      ],
+      "sectors": [
+        {
+          "lap": 2,
+          "sector": 1,
+          "seconds": 5.077943023307483,
+          "entrySpeed": 33.93218778570279,
+          "exitSpeed": 33.950081893259785,
+          "minSpeed": 33.83095169067383
+        },
+        {
+          "lap": 2,
+          "sector": 2,
+          "seconds": 5.44310924929394,
+          "entrySpeed": 33.950081893259785,
+          "exitSpeed": 20.267685346187168,
+          "minSpeed": 20.205537796020508
+        },
+        {
+          "lap": 2,
+          "sector": 3,
+          "seconds": 6.32323126226548,
+          "entrySpeed": 20.267685346187168,
+          "exitSpeed": 23.317100403257104,
+          "minSpeed": 20.63197135925293
+        },
+        {
+          "lap": 2,
+          "sector": 4,
+          "seconds": 6.787757752269087,
+          "entrySpeed": 23.317100403257104,
+          "exitSpeed": 33.92440326268756,
+          "minSpeed": 16.228796005249023
+        },
+        {
+          "lap": 2,
+          "sector": 5,
+          "seconds": 6.681560655492291,
+          "entrySpeed": 33.92440326268756,
+          "exitSpeed": 33.24727762143451,
+          "minSpeed": 17.768404006958008
+        },
+        {
+          "lap": 2,
+          "sector": 6,
+          "seconds": 5.040431424368279,
+          "entrySpeed": 33.24727762143451,
+          "exitSpeed": 33.94752886656888,
+          "minSpeed": 33.49315643310547
+        },
+        {
+          "lap": 2,
+          "sector": 7,
+          "seconds": 6.549949902996673,
+          "entrySpeed": 33.94752886656888,
+          "exitSpeed": 33.943009624858576,
+          "minSpeed": 16.781410217285156
+        },
+        {
+          "lap": 2,
+          "sector": 8,
+          "seconds": 5.078331961253312,
+          "entrySpeed": 33.943009624858576,
+          "exitSpeed": 33.9499553895152,
+          "minSpeed": 33.83552169799805
+        },
+        {
+          "lap": 2,
+          "sector": 9,
+          "seconds": 5.076473796450742,
+          "entrySpeed": 33.9499553895152,
+          "exitSpeed": 33.9106671294134,
+          "minSpeed": 33.81618881225586
+        },
+        {
+          "lap": 2,
+          "sector": 10,
+          "seconds": 5.045107966086675,
+          "entrySpeed": 33.9106671294134,
+          "exitSpeed": 33.91658637185512,
+          "minSpeed": 32.95680618286133
+        },
+        {
+          "lap": 2,
+          "sector": 11,
+          "seconds": 5.072605500544668,
+          "entrySpeed": 33.91658637185512,
+          "exitSpeed": 33.8914298553209,
+          "minSpeed": 33.77438735961914
+        },
+        {
+          "lap": 2,
+          "sector": 12,
+          "seconds": 5.054142021496972,
+          "entrySpeed": 33.8914298553209,
+          "exitSpeed": 33.92281362617499,
+          "minSpeed": 33.25777053833008
+        },
+        {
+          "lap": 3,
+          "sector": 1,
+          "seconds": 5.0778518813378355,
+          "entrySpeed": 33.92281362617499,
+          "exitSpeed": 33.86888217354445,
+          "minSpeed": 33.829139709472656
+        },
+        {
+          "lap": 3,
+          "sector": 2,
+          "seconds": 5.444193927725365,
+          "entrySpeed": 33.86888217354445,
+          "exitSpeed": 20.375436126936073,
+          "minSpeed": 20.32617950439453
+        },
+        {
+          "lap": 3,
+          "sector": 3,
+          "seconds": 6.3219326589430125,
+          "entrySpeed": 20.375436126936073,
+          "exitSpeed": 23.287359778705312,
+          "minSpeed": 20.431032180786133
+        },
+        {
+          "lap": 3,
+          "sector": 4,
+          "seconds": 6.787649536236728,
+          "entrySpeed": 23.287359778705312,
+          "exitSpeed": 33.90122474018878,
+          "minSpeed": 16.206619262695312
+        },
+        {
+          "lap": 3,
+          "sector": 5,
+          "seconds": 6.681682644360848,
+          "entrySpeed": 33.90122474018878,
+          "exitSpeed": 33.251413475286505,
+          "minSpeed": 17.928089141845703
+        },
+        {
+          "lap": 3,
+          "sector": 6,
+          "seconds": 5.040741034769525,
+          "entrySpeed": 33.251413475286505,
+          "exitSpeed": 33.90857252716266,
+          "minSpeed": 33.45988082885742
+        },
+        {
+          "lap": 3,
+          "sector": 7,
+          "seconds": 6.547911244885967,
+          "entrySpeed": 33.90857252716266,
+          "exitSpeed": 33.94522671078258,
+          "minSpeed": 16.921146392822266
+        },
+        {
+          "lap": 3,
+          "sector": 8,
+          "seconds": 5.078178448963456,
+          "entrySpeed": 33.94522671078258,
+          "exitSpeed": 34.00034371954679,
+          "minSpeed": 33.82849884033203
+        },
+        {
+          "lap": 3,
+          "sector": 9,
+          "seconds": 5.076621193642211,
+          "entrySpeed": 34.00034371954679,
+          "exitSpeed": 33.86168085007932,
+          "minSpeed": 33.82289123535156
+        },
+        {
+          "lap": 3,
+          "sector": 10,
+          "seconds": 5.045494932086086,
+          "entrySpeed": 33.86168085007932,
+          "exitSpeed": 33.90227934149405,
+          "minSpeed": 32.896053314208984
+        },
+        {
+          "lap": 3,
+          "sector": 11,
+          "seconds": 5.071885963083844,
+          "entrySpeed": 33.90227934149405,
+          "exitSpeed": 33.964447942095084,
+          "minSpeed": 33.80959701538086
+        },
+        {
+          "lap": 3,
+          "sector": 12,
+          "seconds": 5.037838794233664,
+          "entrySpeed": 33.964447942095084,
+          "exitSpeed": 33.917232513427734,
+          "minSpeed": 33.21845245361328
+        }
+      ],
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-29\\candidate-matrix-03\\club-half-r1\\race.json",
+      "exitCode": null,
+      "clean": true
+    },
+    {
+      "name": "club-early-r1",
+      "loadout": "club",
+      "variant": "early",
+      "repeat": 1,
+      "finished": true,
+      "bestLap": 67.45020294189453,
+      "meanFlying": 67.45126831879207,
+      "lapSpread": 0.004306219468546146,
+      "predicted": 66.74732208251953,
+      "contacts": 0,
+      "recoveries": 0,
+      "missed": 0,
+      "outsideBodySamples": 0,
+      "maxBodyOffset": 6.4428510665893555,
+      "adherenceTime": 93.21842193603516,
+      "adherenceDistance": 94.82191467285156,
+      "flyingMeanAbsoluteError": 0.37584346597333346,
+      "flyingMaxAbsoluteError": 1.2129639387130737,
+      "flyingTopSpeed": 34.016685485839844,
+      "monotonicProgress": true,
+      "laps": [
+        67.45342142852634,
+        67.4491152090578
+      ],
+      "sectors": [
+        {
+          "lap": 2,
+          "sector": 1,
+          "seconds": 5.080379531020483,
+          "entrySpeed": 33.93932727072515,
+          "exitSpeed": 33.93633786855608,
+          "minSpeed": 33.8359375
+        },
+        {
+          "lap": 2,
+          "sector": 2,
+          "seconds": 5.395396704295166,
+          "entrySpeed": 33.93633786855608,
+          "exitSpeed": 19.6708102791261,
+          "minSpeed": 18.92003631591797
+        },
+        {
+          "lap": 2,
+          "sector": 3,
+          "seconds": 6.293646821408103,
+          "entrySpeed": 19.6708102791261,
+          "exitSpeed": 25.66444854792262,
+          "minSpeed": 19.699501037597656
+        },
+        {
+          "lap": 2,
+          "sector": 4,
+          "seconds": 6.701116610819312,
+          "entrySpeed": 25.66444854792262,
+          "exitSpeed": 33.947196551384415,
+          "minSpeed": 14.401025772094727
+        },
+        {
+          "lap": 2,
+          "sector": 5,
+          "seconds": 6.869109062139728,
+          "entrySpeed": 33.947196551384415,
+          "exitSpeed": 30.13050523991753,
+          "minSpeed": 16.679759979248047
+        },
+        {
+          "lap": 2,
+          "sector": 6,
+          "seconds": 5.064729612677866,
+          "entrySpeed": 30.13050523991753,
+          "exitSpeed": 33.914103402230715,
+          "minSpeed": 30.555906295776367
+        },
+        {
+          "lap": 2,
+          "sector": 7,
+          "seconds": 6.717989216927123,
+          "entrySpeed": 33.914103402230715,
+          "exitSpeed": 33.56342298551421,
+          "minSpeed": 15.25547981262207
+        },
+        {
+          "lap": 2,
+          "sector": 8,
+          "seconds": 5.081800090141741,
+          "entrySpeed": 33.56342298551421,
+          "exitSpeed": 33.86063643644483,
+          "minSpeed": 33.59089279174805
+        },
+        {
+          "lap": 2,
+          "sector": 9,
+          "seconds": 5.0799145072762,
+          "entrySpeed": 33.86063643644483,
+          "exitSpeed": 33.945151641617166,
+          "minSpeed": 33.816707611083984
+        },
+        {
+          "lap": 2,
+          "sector": 10,
+          "seconds": 5.017894538923571,
+          "entrySpeed": 33.945151641617166,
+          "exitSpeed": 34.00152108400134,
+          "minSpeed": 31.429643630981445
+        },
+        {
+          "lap": 2,
+          "sector": 11,
+          "seconds": 5.072773499294911,
+          "entrySpeed": 34.00152108400134,
+          "exitSpeed": 33.91813132994588,
+          "minSpeed": 33.794891357421875
+        },
+        {
+          "lap": 2,
+          "sector": 12,
+          "seconds": 5.078671233602137,
+          "entrySpeed": 33.91813132994588,
+          "exitSpeed": 33.92732532613224,
+          "minSpeed": 30.537899017333984
+        },
+        {
+          "lap": 3,
+          "sector": 1,
+          "seconds": 5.0802667107352875,
+          "entrySpeed": 33.92732532613224,
+          "exitSpeed": 33.86226157104126,
+          "minSpeed": 33.83299255371094
+        },
+        {
+          "lap": 3,
+          "sector": 2,
+          "seconds": 5.395634784648905,
+          "entrySpeed": 33.86226157104126,
+          "exitSpeed": 19.474596073280637,
+          "minSpeed": 19.156612396240234
+        },
+        {
+          "lap": 3,
+          "sector": 3,
+          "seconds": 6.29303334155361,
+          "entrySpeed": 19.474596073280637,
+          "exitSpeed": 25.67203242365603,
+          "minSpeed": 19.47025489807129
+        },
+        {
+          "lap": 3,
+          "sector": 4,
+          "seconds": 6.701610125864846,
+          "entrySpeed": 25.67203242365603,
+          "exitSpeed": 33.82978848570403,
+          "minSpeed": 14.195594787597656
+        },
+        {
+          "lap": 3,
+          "sector": 5,
+          "seconds": 6.868168852838323,
+          "entrySpeed": 33.82978848570403,
+          "exitSpeed": 30.13380654084167,
+          "minSpeed": 16.652040481567383
+        },
+        {
+          "lap": 3,
+          "sector": 6,
+          "seconds": 5.064383706974638,
+          "entrySpeed": 30.13380654084167,
+          "exitSpeed": 33.92061042619451,
+          "minSpeed": 30.327518463134766
+        },
+        {
+          "lap": 3,
+          "sector": 7,
+          "seconds": 6.721227708706579,
+          "entrySpeed": 33.92061042619451,
+          "exitSpeed": 33.565788158233964,
+          "minSpeed": 15.060262680053711
+        },
+        {
+          "lap": 3,
+          "sector": 8,
+          "seconds": 5.081942660449329,
+          "entrySpeed": 33.565788158233964,
+          "exitSpeed": 33.97410931026933,
+          "minSpeed": 33.73160934448242
+        },
+        {
+          "lap": 3,
+          "sector": 9,
+          "seconds": 5.079832071232943,
+          "entrySpeed": 33.97410931026933,
+          "exitSpeed": 33.99613722845738,
+          "minSpeed": 33.81539535522461
+        },
+        {
+          "lap": 3,
+          "sector": 10,
+          "seconds": 5.018079460826868,
+          "entrySpeed": 33.99613722845738,
+          "exitSpeed": 33.90983938355729,
+          "minSpeed": 31.444976806640625
+        },
+        {
+          "lap": 3,
+          "sector": 11,
+          "seconds": 5.072509030284408,
+          "entrySpeed": 33.90983938355729,
+          "exitSpeed": 33.94165006418204,
+          "minSpeed": 33.820045471191406
+        },
+        {
+          "lap": 3,
+          "sector": 12,
+          "seconds": 5.072426754942057,
+          "entrySpeed": 33.94165006418204,
+          "exitSpeed": 33.85157775878906,
+          "minSpeed": 30.631851196289062
+        }
+      ],
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-29\\candidate-matrix-03\\club-early-r1\\race.json",
+      "exitCode": null,
+      "clean": true
+    },
+    {
+      "name": "club-late-r1",
+      "loadout": "club",
+      "variant": "late",
+      "repeat": 1,
+      "finished": true,
+      "bestLap": 66.9169921875,
+      "meanFlying": 66.91645559163882,
+      "lapSpread": 0.00046159937210177304,
+      "predicted": 66.22268676757812,
+      "contacts": 0,
+      "recoveries": 0,
+      "missed": 0,
+      "outsideBodySamples": 0,
+      "maxBodyOffset": 6.516326904296875,
+      "adherenceTime": 95.34078979492188,
+      "adherenceDistance": 96.21116638183594,
+      "flyingMeanAbsoluteError": 0.3615433284947586,
+      "flyingMaxAbsoluteError": 1.1620739698410034,
+      "flyingTopSpeed": 34.01639938354492,
+      "monotonicProgress": true,
+      "laps": [
+        66.91622479195277,
+        66.91668639132487
+      ],
+      "sectors": [
+        {
+          "lap": 2,
+          "sector": 1,
+          "seconds": 5.080301950995917,
+          "entrySpeed": 33.950712738739874,
+          "exitSpeed": 33.87237617665645,
+          "minSpeed": 33.83424758911133
+        },
+        {
+          "lap": 2,
+          "sector": 2,
+          "seconds": 5.404441817161953,
+          "entrySpeed": 33.87237617665645,
+          "exitSpeed": 20.55247391819228,
+          "minSpeed": 20.523195266723633
+        },
+        {
+          "lap": 2,
+          "sector": 3,
+          "seconds": 6.270773286138734,
+          "entrySpeed": 20.55247391819228,
+          "exitSpeed": 19.618995747479776,
+          "minSpeed": 19.312719345092773
+        },
+        {
+          "lap": 2,
+          "sector": 4,
+          "seconds": 6.7546203299979055,
+          "entrySpeed": 19.618995747479776,
+          "exitSpeed": 33.90908029121266,
+          "minSpeed": 14.901363372802734
+        },
+        {
+          "lap": 2,
+          "sector": 5,
+          "seconds": 6.773963721166936,
+          "entrySpeed": 33.90908029121266,
+          "exitSpeed": 31.762835018757702,
+          "minSpeed": 16.729534149169922
+        },
+        {
+          "lap": 2,
+          "sector": 6,
+          "seconds": 5.01884754563568,
+          "entrySpeed": 31.762835018757702,
+          "exitSpeed": 33.89113710681145,
+          "minSpeed": 32.030887603759766
+        },
+        {
+          "lap": 2,
+          "sector": 7,
+          "seconds": 6.384882045235173,
+          "entrySpeed": 33.89113710681145,
+          "exitSpeed": 33.91121096057552,
+          "minSpeed": 16.88743019104004
+        },
+        {
+          "lap": 2,
+          "sector": 8,
+          "seconds": 5.081066836734536,
+          "entrySpeed": 33.91121096057552,
+          "exitSpeed": 33.967923671314004,
+          "minSpeed": 33.83158493041992
+        },
+        {
+          "lap": 2,
+          "sector": 9,
+          "seconds": 5.086302192596619,
+          "entrySpeed": 33.967923671314004,
+          "exitSpeed": 33.87109672714182,
+          "minSpeed": 33.81493377685547
+        },
+        {
+          "lap": 2,
+          "sector": 10,
+          "seconds": 4.964500730760989,
+          "entrySpeed": 33.87109672714182,
+          "exitSpeed": 33.87566375968428,
+          "minSpeed": 33.56619644165039
+        },
+        {
+          "lap": 2,
+          "sector": 11,
+          "seconds": 5.07846088243673,
+          "entrySpeed": 33.87566375968428,
+          "exitSpeed": 33.93887250659572,
+          "minSpeed": 33.773433685302734
+        },
+        {
+          "lap": 2,
+          "sector": 12,
+          "seconds": 5.0180634530915995,
+          "entrySpeed": 33.93887250659572,
+          "exitSpeed": 33.93771812798086,
+          "minSpeed": 33.7631721496582
+        },
+        {
+          "lap": 3,
+          "sector": 1,
+          "seconds": 5.080200822933563,
+          "entrySpeed": 33.93771812798086,
+          "exitSpeed": 33.92754384197257,
+          "minSpeed": 33.82339859008789
+        },
+        {
+          "lap": 3,
+          "sector": 2,
+          "seconds": 5.402036595225752,
+          "entrySpeed": 33.92754384197257,
+          "exitSpeed": 20.600792305367413,
+          "minSpeed": 20.578922271728516
+        },
+        {
+          "lap": 3,
+          "sector": 3,
+          "seconds": 6.274244226304319,
+          "entrySpeed": 20.600792305367413,
+          "exitSpeed": 19.60345822597262,
+          "minSpeed": 19.261327743530273
+        },
+        {
+          "lap": 3,
+          "sector": 4,
+          "seconds": 6.7535832717805135,
+          "entrySpeed": 19.60345822597262,
+          "exitSpeed": 33.855805086106294,
+          "minSpeed": 14.985877990722656
+        },
+        {
+          "lap": 3,
+          "sector": 5,
+          "seconds": 6.77534413106261,
+          "entrySpeed": 33.855805086106294,
+          "exitSpeed": 31.76876903991354,
+          "minSpeed": 16.84902000427246
+        },
+        {
+          "lap": 3,
+          "sector": 6,
+          "seconds": 5.018082369223663,
+          "entrySpeed": 31.76876903991354,
+          "exitSpeed": 33.86072634141489,
+          "minSpeed": 31.971303939819336
+        },
+        {
+          "lap": 3,
+          "sector": 7,
+          "seconds": 6.385801293993467,
+          "entrySpeed": 33.86072634141489,
+          "exitSpeed": 33.958017390702295,
+          "minSpeed": 16.795753479003906
+        },
+        {
+          "lap": 3,
+          "sector": 8,
+          "seconds": 5.080900597117278,
+          "entrySpeed": 33.958017390702295,
+          "exitSpeed": 33.94082887463221,
+          "minSpeed": 33.82825469970703
+        },
+        {
+          "lap": 3,
+          "sector": 9,
+          "seconds": 5.086301773542175,
+          "entrySpeed": 33.94082887463221,
+          "exitSpeed": 33.86592337617528,
+          "minSpeed": 33.809513092041016
+        },
+        {
+          "lap": 3,
+          "sector": 10,
+          "seconds": 4.96462061129742,
+          "entrySpeed": 33.86592337617528,
+          "exitSpeed": 33.86072238562762,
+          "minSpeed": 33.553550720214844
+        },
+        {
+          "lap": 3,
+          "sector": 11,
+          "seconds": 5.078409931963961,
+          "entrySpeed": 33.86072238562762,
+          "exitSpeed": 33.955572903774296,
+          "minSpeed": 33.78184127807617
+        },
+        {
+          "lap": 3,
+          "sector": 12,
+          "seconds": 5.017160766880153,
+          "entrySpeed": 33.955572903774296,
+          "exitSpeed": 33.8553581237793,
+          "minSpeed": 33.80457305908203
+        }
+      ],
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-29\\candidate-matrix-03\\club-late-r1\\race.json",
+      "exitCode": null,
+      "clean": true
+    }
+  ]
+}

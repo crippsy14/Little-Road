@@ -1,0 +1,23 @@
+{
+  "scope": "Cedar first-lap mixed street/club field; not general AI or player acceptance.",
+  "soloEvidenceRoot": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34",
+  "soloStandingLapSeconds": {
+    "street": 86.4343032836914,
+    "club": 67.32230377197266
+  },
+  "cutoffSeconds": 117,
+  "firstMovementSeconds": 0.2000117301940918,
+  "firstMovementToLastLapSeconds": 100.55579423904419,
+  "totalCarSeconds": 2223.4535522460938,
+  "meanCarSeconds": 92.6438980102539,
+  "lastCarSeconds": 100.75580596923828,
+  "completedCars": 24,
+  "expectedCars": 24,
+  "collectiveTimeBasis": "Valid first-lap completion after green: official one-lap finishes or ordered checkpoint events; historical fallback is sampled lap count, never route progress alone. Incomplete if any car is missing.",
+  "contacts": 16,
+  "physicalRecoveries": 0,
+  "slowCarSecondsAfterLaunch": 1.0,
+  "passed": 12,
+  "total": 12
+}
+Failures: []

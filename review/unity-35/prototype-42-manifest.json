@@ -1,0 +1,8 @@
+{
+  "version": 42,
+  "flag": "--pedal-stage-audit",
+  "acceptance": "Observation only: exact recorded41 control/coast parity,44600valid same-tick pedal stage samples. Diagnostic allocations exclude rendered performance. Baseline acceptance/player review still open; no production change.",
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-42-review\\Little Road Unity.exe",
+  "assemblyHash": "8F26455EC9065AE62E2D9DE7B93AF90A5F7B6A4A3F3A9ED07D0C3AB4DB2AC31D",
+  "buildChecks": 303
+}

@@ -1,0 +1,17 @@
+{
+  "utc": "2026-09-21T21:06:28.7367259Z",
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-14-review\\Little Road Unity.exe",
+  "assemblyHash": "AB81BAB817CE21CA87DB9C501C51E194B425DFAFA21960500438D983FE040134",
+  "policyHash": "F5E0BE4DA4FCE81FE88E359D42E36EB2A88D1E1A4CE52B0FD5EC6DC8C657277C",
+  "change": "13 rear-approach behaviour plus corrected front-on-reference controls and explicit anticipation-disabled component comparison",
+  "acceptance": "Not accepted for field integration or production: 273 build checks; merge witnesses 29/29 in default-equivalent 13; corrected harmless controls 55/55; ordinary traffic 106/106. Field 24 finish/all checkpoints/performance pass, but 10/11 main checks due car 16 body departure and increased contacts. Preserve 12 as prior passing comparison baseline.",
+  "evidence": [
+    "merges-13/analysis.json",
+    "rear-controls-13/analysis.json",
+    "rear-controls-14/analysis.json",
+    "traffic-14/analysis.json",
+    "field-14-visible/incident-review.json",
+    "field-14-visible/driver-frame-analysis.json",
+    "field-14-comparison/comparison.md"
+  ]
+}

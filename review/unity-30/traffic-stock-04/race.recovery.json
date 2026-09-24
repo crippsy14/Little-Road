@@ -1,0 +1,26 @@
+{
+    "fixture": "traffic",
+    "scope": "Synthetic recovery start; ordinary physics thereafter. Reset counts remain assisted recovery.",
+    "complete": false,
+    "returnedBehindMissedGate": true,
+    "unearnedGateAdvance": false,
+    "trafficPassed": true,
+    "maxStepMetres": 0.00008530755440006033,
+    "waitingSeconds": 300.00714111328125,
+    "reverseSeconds": 0.0,
+    "activeSeconds": 300.0154724121094,
+    "physicalRecoveries": 0,
+    "assistedResets": 0,
+    "contacts": 0,
+    "events": [
+        {
+            "time": 0.000011669471859931946,
+            "progress": -24.0,
+            "offset": 10.5,
+            "speed": -0.0005669935490004718,
+            "gate": 0,
+            "resets": 0,
+            "state": "Wait for clearance"
+        }
+    ]
+}

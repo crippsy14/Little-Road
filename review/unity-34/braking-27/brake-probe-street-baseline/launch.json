@@ -1,0 +1,19 @@
+{
+  "pid": 25552,
+  "output": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\braking-27\\brake-probe-street-baseline",
+  "visible": false,
+  "windowed": false,
+  "directGraphics": false,
+  "trafficDiagnostics": false,
+  "sweepContacts": false,
+  "noImmediateSafety": true,
+  "track": "cedar",
+  "loadout": "street",
+  "grid": "pack",
+  "cars": 2,
+  "laps": 1,
+  "seed": 1709,
+  "policy": "traffic",
+  "racingLine": "cedar-smooth-v2",
+  "playbackRate": 4
+}

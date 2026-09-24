@@ -1,0 +1,136 @@
+{
+  "baselineBuild": 105,
+  "candidateBuild": 106,
+  "comparisons": {
+    "bayview": {
+      "recordedParity": true,
+      "wholeAiMsPerTick": {
+        "baseline": 3.817183236321304,
+        "candidate": 3.115384264648817
+      },
+      "wholeAiReductionPercent": 18.385257616001294,
+      "frameMs": {
+        "before": {
+          "mean": 12.30823030211945,
+          "p50": 8.333602905273438,
+          "p95": 37.28319549560547,
+          "p99": 48.75279998779297,
+          "maximum": 2235.491455078125
+        },
+        "after": {
+          "mean": 10.875306879558421,
+          "p50": 8.333595275878906,
+          "p95": 26.836301803588867,
+          "p99": 38.05470275878906,
+          "maximum": 2228.285400390625
+        }
+      },
+      "worstOneSecondWindow": {
+        "before": {
+          "startRealTime": 4.824075222015381,
+          "endRealTime": 5.7793049812316895,
+          "startSimTime": -2.9749996662139893,
+          "meanFrameMs": 38.91805070784034,
+          "frames": 82
+        },
+        "after": {
+          "startRealTime": 4.817024230957031,
+          "endRealTime": 5.768698692321777,
+          "startSimTime": -2.9749996662139893,
+          "meanFrameMs": 36.14301825111563,
+          "frames": 88
+        }
+      },
+      "aiPerFrameMs": {
+        "before": {
+          "mean": 5.360698201634877,
+          "p50": 1.1914999999999998,
+          "p95": 34.835699999999996,
+          "p99": 46.157399999999996,
+          "maximum": 60.133500000000005
+        },
+        "after": {
+          "mean": 3.866287141825187,
+          "p50": 1.2020000000000002,
+          "p95": 24.489800000000002,
+          "p99": 35.6222,
+          "maximum": 59.562000000000005
+        }
+      },
+      "candidateChecks": {
+        "allFramesAt1920x1080": true,
+        "completeCapture": true,
+        "allAiP95Within3ms": false,
+        "frameP95Within16_7ms": false,
+        "frameP99Within33_3ms": false,
+        "noObservedDriverAllocationAfter5s": true
+      }
+    },
+    "cedar": {
+      "recordedParity": true,
+      "wholeAiMsPerTick": {
+        "baseline": 3.0548842312423123,
+        "candidate": 2.529773029930299
+      },
+      "wholeAiReductionPercent": 17.189234077733584,
+      "frameMs": {
+        "before": {
+          "mean": 10.299001189031301,
+          "p50": 8.333595275878906,
+          "p95": 23.80350112915039,
+          "p99": 41.278202056884766,
+          "maximum": 635.4473876953125
+        },
+        "after": {
+          "mean": 9.531638216510007,
+          "p50": 8.333503723144531,
+          "p95": 16.021102905273438,
+          "p99": 33.296302795410156,
+          "maximum": 623.3963012695312
+        }
+      },
+      "worstOneSecondWindow": {
+        "before": {
+          "startRealTime": 19.860090255737305,
+          "endRealTime": 20.81897735595703,
+          "startSimTime": 13.616557121276855,
+          "meanFrameMs": 17.308144931135505,
+          "frames": 58
+        },
+        "after": {
+          "startRealTime": 3.210458517074585,
+          "endRealTime": 4.164949893951416,
+          "startSimTime": -2.9749996662139893,
+          "meanFrameMs": 15.325891348922138,
+          "frames": 103
+        }
+      },
+      "aiPerFrameMs": {
+        "before": {
+          "mean": 3.752448952457695,
+          "p50": 1.0606000000000002,
+          "p95": 22.1699,
+          "p99": 39.1794,
+          "maximum": 60.8498
+        },
+        "after": {
+          "mean": 2.876242970352415,
+          "p50": 1.0543,
+          "p95": 14.218300000000003,
+          "p99": 31.3748,
+          "maximum": 50.580799999999996
+        }
+      },
+      "candidateChecks": {
+        "allFramesAt1920x1080": true,
+        "completeCapture": true,
+        "allAiP95Within3ms": false,
+        "frameP95Within16_7ms": true,
+        "frameP99Within33_3ms": true,
+        "noObservedDriverAllocationAfter5s": true
+      }
+    }
+  },
+  "performanceAccepted": false,
+  "scope": "One sequential normal-speed 1080p rendered pair per track; no project editor, competing race, or screenshot capture during measurement. Recorded parity is fixture-scoped; no subjective smoothness claim."
+}

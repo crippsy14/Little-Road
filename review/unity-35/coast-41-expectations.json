@@ -1,0 +1,13 @@
+{
+  "scope": "Coasting-only comparison; timed rear corridors OFF. Same field, physics, seed, guide and worker settings. Require no worse combined pace and lower moving brake duty, original field/checkpoint/road-bound gates; inspect every changed contact and unresolved count. Occasional contact permitted; no blanket zero-contact full-field gate. Regressions must retain clean-opportunity fixtures.",
+  "build": 41,
+  "controlledNoContactFixtures": [
+    "queue",
+    "no-room",
+    "merge-left",
+    "merge-right",
+    "brake-leader",
+    "corner-three"
+  ],
+  "baseline": "field-40-control"
+}

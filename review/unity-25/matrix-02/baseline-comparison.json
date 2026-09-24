@@ -1,0 +1,1087 @@
+{
+  "passed": true,
+  "current": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-25\\matrix-02",
+  "baselines": [
+    "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-24\\matrix-01",
+    "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-25\\baseline-fast"
+  ],
+  "matchedRuns": 96,
+  "newCasesWithoutBaseline": [
+    [
+      "straight",
+      "engine_club+transmission_long+tyres_sport",
+      1
+    ],
+    [
+      "straight",
+      "engine_club+transmission_long+tyres_sport",
+      2
+    ],
+    [
+      "straight",
+      "engine_club+transmission_long+tyres_sport",
+      3
+    ],
+    [
+      "straight",
+      "engine_club+transmission_long+tyres_sport+brakes_sport",
+      1
+    ],
+    [
+      "straight",
+      "engine_club+transmission_long+tyres_sport+brakes_sport",
+      2
+    ],
+    [
+      "straight",
+      "engine_club+transmission_long+tyres_sport+brakes_sport",
+      3
+    ],
+    [
+      "brake",
+      "engine_club+transmission_long+tyres_sport",
+      1
+    ],
+    [
+      "brake",
+      "engine_club+transmission_long+tyres_sport",
+      2
+    ],
+    [
+      "brake",
+      "engine_club+transmission_long+tyres_sport",
+      3
+    ],
+    [
+      "brake",
+      "engine_club+transmission_long+tyres_sport+brakes_sport",
+      1
+    ],
+    [
+      "brake",
+      "engine_club+transmission_long+tyres_sport+brakes_sport",
+      2
+    ],
+    [
+      "brake",
+      "engine_club+transmission_long+tyres_sport+brakes_sport",
+      3
+    ]
+  ],
+  "checks": [
+    {
+      "name": "Every supplied baseline run is retained in the current batch",
+      "passed": true
+    },
+    {
+      "name": "straight/stock/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/stock/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/stock/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/stock/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/stock/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/stock/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_workshop/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_workshop/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_workshop/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_workshop/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_workshop/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_workshop/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_long/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_long/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_long/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_long/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_long/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_long/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_close/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_close/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_close/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_close/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_close/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/transmission_close/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/tyres_sport/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/tyres_sport/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/tyres_sport/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/tyres_sport/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/tyres_sport/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/tyres_sport/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport+tyres_sport/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport+tyres_sport/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport+tyres_sport/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport+tyres_sport/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport+tyres_sport/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/brakes_sport+tyres_sport/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club+transmission_long/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club+transmission_long/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club+transmission_long/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club+transmission_long/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club+transmission_long/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/engine_club+transmission_long/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/club/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/club/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/club/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/club/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "straight/club/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "straight/club/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/stock/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/stock/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/stock/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/stock/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/stock/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/stock/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_workshop/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_workshop/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_workshop/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_workshop/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_workshop/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_workshop/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_long/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_long/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_long/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_long/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_long/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_long/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_close/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_close/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_close/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_close/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_close/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/transmission_close/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/tyres_sport/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/tyres_sport/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/tyres_sport/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/tyres_sport/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/tyres_sport/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/tyres_sport/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport+tyres_sport/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport+tyres_sport/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport+tyres_sport/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport+tyres_sport/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport+tyres_sport/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/brakes_sport+tyres_sport/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club+transmission_long/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club+transmission_long/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club+transmission_long/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club+transmission_long/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club+transmission_long/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/engine_club+transmission_long/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/club/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/club/1: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/club/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/club/2: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "brake/club/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "brake/club/3: unchanged control measurement",
+      "passed": true
+    },
+    {
+      "name": "uturn/stock/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/stock/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/stock/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_workshop/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_workshop/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_workshop/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/transmission_long/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/transmission_long/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/transmission_long/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/transmission_close/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/transmission_close/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/transmission_close/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/tyres_sport/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/tyres_sport/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/tyres_sport/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/brakes_sport/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/brakes_sport/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/brakes_sport/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/brakes_sport+tyres_sport/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/brakes_sport+tyres_sport/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/brakes_sport+tyres_sport/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club+transmission_long/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club+transmission_long/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club+transmission_long/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/club/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/club/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/club/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club+transmission_long+tyres_sport/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club+transmission_long+tyres_sport/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club+transmission_long+tyres_sport/3: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club+transmission_long+tyres_sport+brakes_sport/1: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club+transmission_long+tyres_sport+brakes_sport/2: matched valid physical configuration",
+      "passed": true
+    },
+    {
+      "name": "uturn/engine_club+transmission_long+tyres_sport+brakes_sport/3: matched valid physical configuration",
+      "passed": true
+    }
+  ],
+  "rows": [
+    {
+      "course": "straight",
+      "loadout": "stock",
+      "repeats": 3,
+      "beforeSeconds": 40.400001525878906,
+      "afterSeconds": 40.400001525878906,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.004437060561031103,
+      "afterMaxOffset": 0.004437060561031103,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "straight",
+      "loadout": "engine_workshop",
+      "repeats": 3,
+      "beforeSeconds": 38.05000305175781,
+      "afterSeconds": 38.05000305175781,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.004091410432010889,
+      "afterMaxOffset": 0.004091410432010889,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "straight",
+      "loadout": "engine_club",
+      "repeats": 3,
+      "beforeSeconds": 37.43333435058594,
+      "afterSeconds": 37.43333435058594,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.0038068676367402077,
+      "afterMaxOffset": 0.0038068676367402077,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "straight",
+      "loadout": "transmission_long",
+      "repeats": 3,
+      "beforeSeconds": 40.92500305175781,
+      "afterSeconds": 40.92500305175781,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.004719460848718882,
+      "afterMaxOffset": 0.004719460848718882,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "straight",
+      "loadout": "transmission_close",
+      "repeats": 3,
+      "beforeSeconds": 41.34166717529297,
+      "afterSeconds": 41.34166717529297,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.004121063277125359,
+      "afterMaxOffset": 0.004121063277125359,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "straight",
+      "loadout": "tyres_sport",
+      "repeats": 3,
+      "beforeSeconds": 40.400001525878906,
+      "afterSeconds": 40.400001525878906,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.004437060561031103,
+      "afterMaxOffset": 0.004437060561031103,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "straight",
+      "loadout": "brakes_sport",
+      "repeats": 3,
+      "beforeSeconds": 40.400001525878906,
+      "afterSeconds": 40.400001525878906,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.004437060561031103,
+      "afterMaxOffset": 0.004437060561031103,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "straight",
+      "loadout": "brakes_sport+tyres_sport",
+      "repeats": 3,
+      "beforeSeconds": 40.400001525878906,
+      "afterSeconds": 40.400001525878906,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.004437060561031103,
+      "afterMaxOffset": 0.004437060561031103,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "straight",
+      "loadout": "engine_club+transmission_long",
+      "repeats": 3,
+      "beforeSeconds": 29.308334350585938,
+      "afterSeconds": 29.308334350585938,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.004055957775563002,
+      "afterMaxOffset": 0.004055957775563002,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "straight",
+      "loadout": "club",
+      "repeats": 3,
+      "beforeSeconds": 28.316667556762695,
+      "afterSeconds": 28.316667556762695,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.003832475049421191,
+      "afterMaxOffset": 0.003832475049421191,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "brake",
+      "loadout": "stock",
+      "repeats": 3,
+      "beforeSeconds": 1.5833333730697632,
+      "afterSeconds": 1.5833333730697632,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.0023211082443594933,
+      "afterMaxOffset": 0.0023211082443594933,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "brake",
+      "loadout": "engine_workshop",
+      "repeats": 3,
+      "beforeSeconds": 1.5833333730697632,
+      "afterSeconds": 1.5833333730697632,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.0023211082443594933,
+      "afterMaxOffset": 0.0023211082443594933,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "brake",
+      "loadout": "engine_club",
+      "repeats": 3,
+      "beforeSeconds": 1.5833333730697632,
+      "afterSeconds": 1.5833333730697632,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.0023211082443594933,
+      "afterMaxOffset": 0.0023211082443594933,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "brake",
+      "loadout": "transmission_long",
+      "repeats": 3,
+      "beforeSeconds": 1.5833333730697632,
+      "afterSeconds": 1.5833333730697632,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.0023211082443594933,
+      "afterMaxOffset": 0.0023211082443594933,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "brake",
+      "loadout": "transmission_close",
+      "repeats": 3,
+      "beforeSeconds": 1.5833333730697632,
+      "afterSeconds": 1.5833333730697632,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.0023211082443594933,
+      "afterMaxOffset": 0.0023211082443594933,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "brake",
+      "loadout": "tyres_sport",
+      "repeats": 3,
+      "beforeSeconds": 1.3250000476837158,
+      "afterSeconds": 1.3250000476837158,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.0017612527590245008,
+      "afterMaxOffset": 0.0017612527590245008,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "brake",
+      "loadout": "brakes_sport",
+      "repeats": 3,
+      "beforeSeconds": 1.5833333730697632,
+      "afterSeconds": 1.5833333730697632,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.0023211082443594933,
+      "afterMaxOffset": 0.0023211082443594933,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "brake",
+      "loadout": "brakes_sport+tyres_sport",
+      "repeats": 3,
+      "beforeSeconds": 0.9916667342185974,
+      "afterSeconds": 0.9916667342185974,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.0010635361541062593,
+      "afterMaxOffset": 0.0010635361541062593,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "brake",
+      "loadout": "engine_club+transmission_long",
+      "repeats": 3,
+      "beforeSeconds": 1.5833333730697632,
+      "afterSeconds": 1.5833333730697632,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.0023211082443594933,
+      "afterMaxOffset": 0.0023211082443594933,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "brake",
+      "loadout": "club",
+      "repeats": 3,
+      "beforeSeconds": 0.9500000476837158,
+      "afterSeconds": 0.9500000476837158,
+      "savedSeconds": 0.0,
+      "beforeMaxOffset": 0.0009659134084358811,
+      "afterMaxOffset": 0.0009659134084358811,
+      "beforeDriver": "scripted maneuver v1",
+      "afterDriver": "scripted maneuver v1"
+    },
+    {
+      "course": "uturn",
+      "loadout": "stock",
+      "repeats": 3,
+      "beforeSeconds": 24.158334732055664,
+      "afterSeconds": 23.616668701171875,
+      "savedSeconds": 0.5416660308837891,
+      "beforeMaxOffset": 0.8672828674316406,
+      "afterMaxOffset": 1.0210838317871094,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    },
+    {
+      "course": "uturn",
+      "loadout": "engine_workshop",
+      "repeats": 3,
+      "beforeSeconds": 22.683334350585938,
+      "afterSeconds": 21.875001907348633,
+      "savedSeconds": 0.8083324432373047,
+      "beforeMaxOffset": 0.8674163818359375,
+      "afterMaxOffset": 1.0375556945800781,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    },
+    {
+      "course": "uturn",
+      "loadout": "engine_club",
+      "repeats": 3,
+      "beforeSeconds": 22.13333511352539,
+      "afterSeconds": 21.14166831970215,
+      "savedSeconds": 0.9916667938232422,
+      "beforeMaxOffset": 0.8672218322753906,
+      "afterMaxOffset": 1.0513420104980469,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    },
+    {
+      "course": "uturn",
+      "loadout": "transmission_long",
+      "repeats": 3,
+      "beforeSeconds": 24.791667938232422,
+      "afterSeconds": 24.241668701171875,
+      "savedSeconds": 0.5499992370605469,
+      "beforeMaxOffset": 0.8664627075195312,
+      "afterMaxOffset": 1.0073356628417969,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    },
+    {
+      "course": "uturn",
+      "loadout": "transmission_close",
+      "repeats": 3,
+      "beforeSeconds": 23.850000381469727,
+      "afterSeconds": 23.30000114440918,
+      "savedSeconds": 0.5499992370605469,
+      "beforeMaxOffset": 0.867462158203125,
+      "afterMaxOffset": 1.02789306640625,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    },
+    {
+      "course": "uturn",
+      "loadout": "tyres_sport",
+      "repeats": 3,
+      "beforeSeconds": 22.33333396911621,
+      "afterSeconds": 21.950000762939453,
+      "savedSeconds": 0.3833332061767578,
+      "beforeMaxOffset": 1.1748695373535156,
+      "afterMaxOffset": 1.3484039306640625,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    },
+    {
+      "course": "uturn",
+      "loadout": "brakes_sport",
+      "repeats": 3,
+      "beforeSeconds": 24.158334732055664,
+      "afterSeconds": 23.616668701171875,
+      "savedSeconds": 0.5416660308837891,
+      "beforeMaxOffset": 0.8672828674316406,
+      "afterMaxOffset": 1.0210838317871094,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    },
+    {
+      "course": "uturn",
+      "loadout": "brakes_sport+tyres_sport",
+      "repeats": 3,
+      "beforeSeconds": 22.33333396911621,
+      "afterSeconds": 21.950000762939453,
+      "savedSeconds": 0.3833332061767578,
+      "beforeMaxOffset": 1.1748237609863281,
+      "afterMaxOffset": 1.3482627868652344,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    },
+    {
+      "course": "uturn",
+      "loadout": "engine_club+transmission_long",
+      "repeats": 3,
+      "beforeSeconds": 21.00833511352539,
+      "afterSeconds": 20.14166831970215,
+      "savedSeconds": 0.8666667938232422,
+      "beforeMaxOffset": 0.8673439025878906,
+      "afterMaxOffset": 1.0440521240234375,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    },
+    {
+      "course": "uturn",
+      "loadout": "club",
+      "repeats": 3,
+      "beforeSeconds": 17.666667938232422,
+      "afterSeconds": 16.83333396911621,
+      "savedSeconds": 0.8333339691162109,
+      "beforeMaxOffset": 1.1771430969238281,
+      "afterMaxOffset": 1.472991943359375,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    },
+    {
+      "course": "uturn",
+      "loadout": "engine_club+transmission_long+tyres_sport",
+      "repeats": 3,
+      "beforeSeconds": 18.89166831970215,
+      "afterSeconds": 18.30000114440918,
+      "savedSeconds": 0.5916671752929688,
+      "beforeMaxOffset": 1.1772003173828125,
+      "afterMaxOffset": 1.4311866760253906,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    },
+    {
+      "course": "uturn",
+      "loadout": "engine_club+transmission_long+tyres_sport+brakes_sport",
+      "repeats": 3,
+      "beforeSeconds": 18.89166831970215,
+      "afterSeconds": 18.25833511352539,
+      "savedSeconds": 0.6333332061767578,
+      "beforeMaxOffset": 1.1773033142089844,
+      "afterMaxOffset": 1.4310989379882812,
+      "beforeDriver": "fixed reference policy v1",
+      "afterDriver": "fixed reference policy v2"
+    }
+  ]
+}

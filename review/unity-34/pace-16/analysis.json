@@ -1,0 +1,253 @@
+{
+  "scope": "Matched clear-road and merge controls; not general racecraft acceptance.",
+  "assemblyHash": "74A3A52FB2792E2FCD1AFD8DB7D7E9DD269A429A53D4E61916467F7B1FC69899",
+  "passed": 37,
+  "total": 39,
+  "summaries": {
+    "solo-street": {
+      "time": 35.34199142456055,
+      "firstWithin07": 1.1669471859931946e-05,
+      "minimumSpeed": 18.0000057220459,
+      "plannedRejoinSamples": 0
+    },
+    "solo-club": {
+      "time": 26.524694442749023,
+      "firstWithin07": 1.1669471859931946e-05,
+      "minimumSpeed": 18.000003814697266,
+      "plannedRejoinSamples": 16
+    },
+    "rear-control-street": {
+      "time": 35.34199142456055,
+      "firstWithin07": 1.1669471859931946e-05,
+      "minimumSpeed": 18.00000762939453,
+      "plannedRejoinSamples": 0
+    },
+    "rear-control-club": {
+      "time": 26.524694442749023,
+      "firstWithin07": 1.1669471859931946e-05,
+      "minimumSpeed": 18.0000057220459,
+      "plannedRejoinSamples": 16
+    },
+    "rejoin-left-street": {
+      "time": 36.508907318115234,
+      "firstWithin07": 1.9000102281570435,
+      "minimumSpeed": 11.213703155517578,
+      "plannedRejoinSamples": 27
+    },
+    "rejoin-left-club": {
+      "time": 27.899673461914062,
+      "firstWithin07": 1.7000104188919067,
+      "minimumSpeed": 12.700798988342285,
+      "plannedRejoinSamples": 38
+    },
+    "rejoin-right-street": {
+      "time": 35.34199142456055,
+      "firstWithin07": 1.1669471859931946e-05,
+      "minimumSpeed": 18.00000762939453,
+      "plannedRejoinSamples": 0
+    },
+    "rejoin-right-club": {
+      "time": 26.524694442749023,
+      "firstWithin07": 1.1669471859931946e-05,
+      "minimumSpeed": 18.0,
+      "plannedRejoinSamples": 16
+    }
+  },
+  "checks": [
+    {
+      "name": "All eight declared cases",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-street: normal exit and every car completes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-street: no incident or recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-street: all bodies remain on road",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-street: stable line after initial transition",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club: normal exit and every car completes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club: no incident or recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club: all bodies remain on road",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "solo-club: stable line after initial transition",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rear-control-street: normal exit and every car completes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rear-control-street: no incident or recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rear-control-street: all bodies remain on road",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rear-control-street: stable line after initial transition",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rear-control-club: normal exit and every car completes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rear-control-club: no incident or recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rear-control-club: all bodies remain on road",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rear-control-club: stable line after initial transition",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-left-street: normal exit and every car completes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-left-street: no incident or recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-left-street: all bodies remain on road",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-left-street: stable line after initial transition",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-left-club: normal exit and every car completes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-left-club: no incident or recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-left-club: all bodies remain on road",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-left-club: stable line after initial transition",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-right-street: normal exit and every car completes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-right-street: no incident or recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-right-street: all bodies remain on road",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-right-street: stable line after initial transition",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-right-club: normal exit and every car completes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-right-club: no incident or recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-right-club: all bodies remain on road",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rejoin-right-club: stable line after initial transition",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "street: harmless rear car preserves exact leading-car motion",
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "rejoin-left-street: rejoins without excessive pace loss",
+      "passed": true,
+      "detail": 1.1669158935546875
+    },
+    {
+      "name": "rejoin-right-street: rejoins without excessive pace loss",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "club: harmless rear car preserves exact leading-car motion",
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "rejoin-left-club: rejoins without excessive pace loss",
+      "passed": true,
+      "detail": 1.374979019165039
+    },
+    {
+      "name": "rejoin-right-club: rejoins without excessive pace loss",
+      "passed": true,
+      "detail": 0.0
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "export": "outputs/little-road-context-27-review/Little Road Unity.exe",
+  "assemblyHash": "BE6D6E5BAFEB6DEE5E392C1D4E49AFE4C55A2CB4A18E08D18B07BE5A865B25EF",
+  "buildChecks": 286,
+  "change": "Exact segment lookup table and cached projection segment geometry; no driver-policy changes.",
+  "acceptance": "Full-field recorded motion, controls, events and race results identical to 26. Mean driver cost 7.097359ms per physics tick vs 7.171889ms (1.04 percent lower; not significant performance acceptance). Same 31 unresolved samples and one contact pair. No production promotion."
+}

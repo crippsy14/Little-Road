@@ -1,0 +1,607 @@
+{
+    "playerLast": true,
+    "entrants": 24,
+    "playerStartingPlace": 24,
+    "entries": [
+        {
+            "driver": 0,
+            "slot": 23,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -47.70001220703125,
+            "nextGateProgress": 0.0,
+            "equipment": "stock",
+            "position": {
+                "x": -103.709228515625,
+                "y": 0.11999976634979248,
+                "z": -47.89362335205078
+            },
+            "tuning": {
+                "power": 88.94400024414063,
+                "acceleration": 5.599999904632568,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 14.0,
+                "roadGrip": 7.0,
+                "dirtGrip": 3.5,
+                "response": 3.0,
+                "yaw": 0.8799999952316284
+            }
+        },
+        {
+            "driver": 1,
+            "slot": 0,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -7.9774169921875,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -74.40568542480469,
+                "y": 0.12000000476837158,
+                "z": -74.7842788696289
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 2,
+            "slot": 1,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -8.5999755859375,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -77.0746078491211,
+                "y": 0.12000000476837158,
+                "z": -77.1324462890625
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 3,
+            "slot": 2,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -9.16485595703125,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -79.79674530029297,
+                "y": 0.1199994683265686,
+                "z": -79.40902709960938
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 4,
+            "slot": 3,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -13.54876708984375,
+            "nextGateProgress": 0.0,
+            "equipment": "club",
+            "position": {
+                "x": -78.26374053955078,
+                "y": 0.12000000476837158,
+                "z": -71.34412384033203
+            },
+            "tuning": {
+                "power": 418.95721435546875,
+                "acceleration": 11.163310050964355,
+                "mass": 0.8700000047683716,
+                "gearCeiling": 34.0,
+                "braking": 28.735631942749023,
+                "roadGrip": 12.0,
+                "dirtGrip": 3.0,
+                "response": 6.0,
+                "yaw": 1.1799999475479126
+            }
+        },
+        {
+            "driver": 5,
+            "slot": 4,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -14.0999755859375,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -81.13251495361328,
+                "y": 0.12000003457069397,
+                "z": -73.4229507446289
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 6,
+            "slot": 5,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -14.7020263671875,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -84.03739929199219,
+                "y": 0.12000018358230591,
+                "z": -75.46601104736328
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 7,
+            "slot": 6,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -19.00396728515625,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -81.86600494384766,
+                "y": 0.12000000476837158,
+                "z": -67.54367065429688
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 8,
+            "slot": 7,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -19.5999755859375,
+            "nextGateProgress": 0.0,
+            "equipment": "club",
+            "position": {
+                "x": -84.88819122314453,
+                "y": 0.12000003457069397,
+                "z": -69.40689086914063
+            },
+            "tuning": {
+                "power": 418.95721435546875,
+                "acceleration": 11.163310050964355,
+                "mass": 0.8700000047683716,
+                "gearCeiling": 34.0,
+                "braking": 28.735631942749023,
+                "roadGrip": 12.0,
+                "dirtGrip": 3.0,
+                "response": 6.0,
+                "yaw": 1.1799999475479126
+            }
+        },
+        {
+            "driver": 9,
+            "slot": 8,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -20.2325439453125,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -87.93440246582031,
+                "y": 0.11999961733818054,
+                "z": -71.24256134033203
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 10,
+            "slot": 9,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -24.5,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -85.26287078857422,
+                "y": 0.1199999749660492,
+                "z": -63.46360778808594
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 11,
+            "slot": 10,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -25.0999755859375,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -88.38223266601563,
+                "y": 0.12000000476837158,
+                "z": -65.16053771972656
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 12,
+            "slot": 11,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -25.66534423828125,
+            "nextGateProgress": 0.0,
+            "equipment": "club",
+            "position": {
+                "x": -91.52818298339844,
+                "y": 0.11999943852424622,
+                "z": -66.81693267822266
+            },
+            "tuning": {
+                "power": 418.95721435546875,
+                "acceleration": 11.163310050964355,
+                "mass": 0.8700000047683716,
+                "gearCeiling": 34.0,
+                "braking": 28.735631942749023,
+                "roadGrip": 12.0,
+                "dirtGrip": 3.0,
+                "response": 6.0,
+                "yaw": 1.1799999475479126
+            }
+        },
+        {
+            "driver": 13,
+            "slot": 12,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -29.98809814453125,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -88.44873046875,
+                "y": 0.12000000476837158,
+                "z": -59.193843841552734
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 14,
+            "slot": 13,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -30.5999755859375,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -91.6493148803711,
+                "y": 0.12000000476837158,
+                "z": -60.736732482910156
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 15,
+            "slot": 14,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -31.1832275390625,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -94.86576080322266,
+                "y": 0.11999928951263428,
+                "z": -62.238101959228516
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 16,
+            "slot": 15,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -35.48114013671875,
+            "nextGateProgress": 0.0,
+            "equipment": "club",
+            "position": {
+                "x": -91.45621490478516,
+                "y": 0.1199999749660492,
+                "z": -54.76448059082031
+            },
+            "tuning": {
+                "power": 418.95721435546875,
+                "acceleration": 11.163310050964355,
+                "mass": 0.8700000047683716,
+                "gearCeiling": 34.0,
+                "braking": 28.735631942749023,
+                "roadGrip": 12.0,
+                "dirtGrip": 3.0,
+                "response": 6.0,
+                "yaw": 1.1799999475479126
+            }
+        },
+        {
+            "driver": 17,
+            "slot": 16,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -36.0999755859375,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -94.71612548828125,
+                "y": 0.12000000476837158,
+                "z": -56.171592712402344
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 18,
+            "slot": 17,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -36.69390869140625,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -97.99044036865234,
+                "y": 0.1199999749660492,
+                "z": -57.543296813964844
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 19,
+            "slot": 18,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -40.9776611328125,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -94.30513000488281,
+                "y": 0.12000000476837158,
+                "z": -50.206146240234375
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 20,
+            "slot": 19,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -41.5999755859375,
+            "nextGateProgress": 0.0,
+            "equipment": "club",
+            "position": {
+                "x": -97.61103820800781,
+                "y": 0.1199999749660492,
+                "z": -51.49544143676758
+            },
+            "tuning": {
+                "power": 418.95721435546875,
+                "acceleration": 11.163310050964355,
+                "mass": 0.8700000047683716,
+                "gearCeiling": 34.0,
+                "braking": 28.735631942749023,
+                "roadGrip": 12.0,
+                "dirtGrip": 3.0,
+                "response": 6.0,
+                "yaw": 1.1799999475479126
+            }
+        },
+        {
+            "driver": 21,
+            "slot": 20,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -42.20001220703125,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -100.93110656738281,
+                "y": 0.11999949812889099,
+                "z": -52.75528335571289
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 22,
+            "slot": 21,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -46.4759521484375,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -97.01177978515625,
+                "y": 0.12000003457069397,
+                "z": -45.54283905029297
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        },
+        {
+            "driver": 23,
+            "slot": 22,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -47.0999755859375,
+            "nextGateProgress": 0.0,
+            "equipment": "street",
+            "position": {
+                "x": -100.3546142578125,
+                "y": 0.1199999749660492,
+                "z": -46.728878021240234
+            },
+            "tuning": {
+                "power": 187.3724822998047,
+                "acceleration": 7.952000141143799,
+                "mass": 1.0,
+                "gearCeiling": 25.0,
+                "braking": 19.0,
+                "roadGrip": 9.0,
+                "dirtGrip": 5.0,
+                "response": 4.5,
+                "yaw": 1.0499999523162842
+            }
+        }
+    ]
+}

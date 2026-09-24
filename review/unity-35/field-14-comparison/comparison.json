@@ -1,0 +1,532 @@
+{
+  "scope": "Settings equality is necessary but cannot prove unchanged physics source. Verify build provenance and source changes. Lower braking and higher line adherence alone do not establish better racing. Review contacts, sector pace and moving behaviour together.",
+  "runs": [
+    {
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\field-12-fixed1080",
+      "launch": {
+        "pid": 23772,
+        "executable": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-12-review\\Little Road Unity.exe",
+        "assemblyHash": "7BD978630D18111AAA794018AE9729087F8E40A76127F58E4264B9AFACAC551D",
+        "arguments": [
+          "--trial-auto",
+          "--trial-track",
+          "cedar",
+          "--trial-setup",
+          "club",
+          "--trial-cars",
+          "24",
+          "--trial-laps",
+          "1",
+          "--trial-seed",
+          "1709",
+          "--trial-grid",
+          "pack",
+          "--trial-duration",
+          "145",
+          "--trial-report",
+          "\"C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\field-12-fixed1080\\race.json\"",
+          "-logFile",
+          "\"C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\field-12-fixed1080\\run.log\"",
+          "-screen-width",
+          "1920",
+          "-screen-height",
+          "1080",
+          "--trial-timescale",
+          "1",
+          "--physical-recovery",
+          "--traffic-case",
+          "field",
+          "--traffic-gap",
+          "24",
+          "--traffic-speed",
+          "18",
+          "--traffic-diagnostics",
+          "--start-windowed",
+          "-screen-fullscreen",
+          "0",
+          "-force-gfx-direct",
+          "--driver-policy",
+          "context",
+          "--racing-line",
+          "cedar-smooth-v2"
+        ],
+        "output": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\field-12-fixed1080",
+        "visible": true,
+        "requestedWidth": 1920,
+        "requestedHeight": 1080,
+        "windowed": true,
+        "directGraphics": true,
+        "trafficDiagnostics": true,
+        "sweepContacts": false,
+        "noImmediateSafety": false,
+        "physicalRecovery": true,
+        "trafficCase": "field",
+        "trafficRearSpeed": 26.0,
+        "recoveryCase": "",
+        "opponents": "",
+        "duration": 145,
+        "track": "cedar",
+        "loadout": "club",
+        "grid": "pack",
+        "cars": 24,
+        "laps": 1,
+        "seed": 1709,
+        "policy": "context",
+        "racingLine": "cedar-smooth-v2",
+        "playbackRate": 1
+      },
+      "comparisonSignature": {
+        "trackId": "cedar-technical",
+        "trackVersion": "cedar-v1",
+        "trackLength": 2067.791259765625,
+        "trackWidth": 16.0,
+        "carCount": 24,
+        "requiredLaps": 1,
+        "gridMode": "pack",
+        "seed": 1709,
+        "collisionMode": "ContinuousSpeculative",
+        "physicsStepSeconds": 0.008333333767950535,
+        "equipmentById": [
+          [
+            0,
+            "club"
+          ],
+          [
+            1,
+            "street"
+          ],
+          [
+            2,
+            "street"
+          ],
+          [
+            3,
+            "street"
+          ],
+          [
+            4,
+            "club"
+          ],
+          [
+            5,
+            "street"
+          ],
+          [
+            6,
+            "street"
+          ],
+          [
+            7,
+            "street"
+          ],
+          [
+            8,
+            "club"
+          ],
+          [
+            9,
+            "street"
+          ],
+          [
+            10,
+            "street"
+          ],
+          [
+            11,
+            "street"
+          ],
+          [
+            12,
+            "club"
+          ],
+          [
+            13,
+            "street"
+          ],
+          [
+            14,
+            "street"
+          ],
+          [
+            15,
+            "street"
+          ],
+          [
+            16,
+            "club"
+          ],
+          [
+            17,
+            "street"
+          ],
+          [
+            18,
+            "street"
+          ],
+          [
+            19,
+            "street"
+          ],
+          [
+            20,
+            "club"
+          ],
+          [
+            21,
+            "street"
+          ],
+          [
+            22,
+            "street"
+          ],
+          [
+            23,
+            "street"
+          ]
+        ],
+        "reference": "cedar-smooth-v2"
+      },
+      "driver": "context-v1",
+      "finished": 24,
+      "lastFinish": 99.97266387939453,
+      "totalCarSeconds": 2255.6290283203125,
+      "meanCarSeconds": 93.98454284667969,
+      "perCarContactRecords": 2,
+      "maxImpact": 0.8681021332740784,
+      "physicalRecoveries": 0,
+      "departingCars": 0,
+      "brakePercent": 9.274464644849836,
+      "linePercent": 36.951974185888254,
+      "fullThrottlePercent": 14.86191615509416,
+      "sectors": [
+        {
+          "gate": 1,
+          "completeCars": 24,
+          "meanSeconds": 7.293660720189412
+        },
+        {
+          "gate": 2,
+          "completeCars": 24,
+          "meanSeconds": 7.3634302616119385
+        },
+        {
+          "gate": 3,
+          "completeCars": 24,
+          "meanSeconds": 8.630423863728842
+        },
+        {
+          "gate": 4,
+          "completeCars": 24,
+          "meanSeconds": 9.308452606201172
+        },
+        {
+          "gate": 5,
+          "completeCars": 24,
+          "meanSeconds": 8.963720003763834
+        },
+        {
+          "gate": 6,
+          "completeCars": 24,
+          "meanSeconds": 6.772627035776774
+        },
+        {
+          "gate": 7,
+          "completeCars": 24,
+          "meanSeconds": 8.844597339630127
+        },
+        {
+          "gate": 8,
+          "completeCars": 24,
+          "meanSeconds": 6.616398175557454
+        },
+        {
+          "gate": 9,
+          "completeCars": 24,
+          "meanSeconds": 6.654045581817627
+        },
+        {
+          "gate": 10,
+          "completeCars": 24,
+          "meanSeconds": 6.655344486236572
+        },
+        {
+          "gate": 11,
+          "completeCars": 24,
+          "meanSeconds": 6.582767486572266
+        },
+        {
+          "gate": 12,
+          "completeCars": 24,
+          "meanSeconds": 6.718845367431641
+        }
+      ],
+      "passagePrecision": "validated physics-tick checkpoint events",
+      "frameP95Ms": 8.342304229736328,
+      "performanceScope": "Visible 1x run; check resolution, graphics mode and concurrent load before comparison."
+    },
+    {
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\field-14-visible",
+      "launch": {
+        "pid": 29664,
+        "executable": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-14-review\\Little Road Unity.exe",
+        "assemblyHash": "AB81BAB817CE21CA87DB9C501C51E194B425DFAFA21960500438D983FE040134",
+        "arguments": [
+          "--trial-auto",
+          "--trial-track",
+          "cedar",
+          "--trial-setup",
+          "club",
+          "--trial-cars",
+          "24",
+          "--trial-laps",
+          "1",
+          "--trial-seed",
+          "1709",
+          "--trial-grid",
+          "pack",
+          "--trial-duration",
+          "145",
+          "--trial-report",
+          "\"C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\field-14-visible\\race.json\"",
+          "-logFile",
+          "\"C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\field-14-visible\\run.log\"",
+          "-screen-width",
+          "1920",
+          "-screen-height",
+          "1080",
+          "--trial-timescale",
+          "1",
+          "--physical-recovery",
+          "--traffic-case",
+          "field",
+          "--traffic-gap",
+          "24",
+          "--traffic-speed",
+          "18",
+          "--traffic-diagnostics",
+          "--start-windowed",
+          "-screen-fullscreen",
+          "0",
+          "-force-gfx-direct",
+          "--driver-policy",
+          "context",
+          "--racing-line",
+          "cedar-smooth-v2"
+        ],
+        "output": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\field-14-visible",
+        "visible": true,
+        "requestedWidth": 1920,
+        "requestedHeight": 1080,
+        "windowed": true,
+        "directGraphics": true,
+        "trafficDiagnostics": true,
+        "sweepContacts": false,
+        "noImmediateSafety": false,
+        "noRearAnticipation": false,
+        "physicalRecovery": true,
+        "trafficCase": "field",
+        "trafficRearSpeed": 26.0,
+        "recoveryCase": "",
+        "opponents": "",
+        "duration": 145,
+        "track": "cedar",
+        "loadout": "club",
+        "grid": "pack",
+        "cars": 24,
+        "laps": 1,
+        "seed": 1709,
+        "policy": "context",
+        "racingLine": "cedar-smooth-v2",
+        "playbackRate": 1
+      },
+      "comparisonSignature": {
+        "trackId": "cedar-technical",
+        "trackVersion": "cedar-v1",
+        "trackLength": 2067.791259765625,
+        "trackWidth": 16.0,
+        "carCount": 24,
+        "requiredLaps": 1,
+        "gridMode": "pack",
+        "seed": 1709,
+        "collisionMode": "ContinuousSpeculative",
+        "physicsStepSeconds": 0.008333333767950535,
+        "equipmentById": [
+          [
+            0,
+            "club"
+          ],
+          [
+            1,
+            "street"
+          ],
+          [
+            2,
+            "street"
+          ],
+          [
+            3,
+            "street"
+          ],
+          [
+            4,
+            "club"
+          ],
+          [
+            5,
+            "street"
+          ],
+          [
+            6,
+            "street"
+          ],
+          [
+            7,
+            "street"
+          ],
+          [
+            8,
+            "club"
+          ],
+          [
+            9,
+            "street"
+          ],
+          [
+            10,
+            "street"
+          ],
+          [
+            11,
+            "street"
+          ],
+          [
+            12,
+            "club"
+          ],
+          [
+            13,
+            "street"
+          ],
+          [
+            14,
+            "street"
+          ],
+          [
+            15,
+            "street"
+          ],
+          [
+            16,
+            "club"
+          ],
+          [
+            17,
+            "street"
+          ],
+          [
+            18,
+            "street"
+          ],
+          [
+            19,
+            "street"
+          ],
+          [
+            20,
+            "club"
+          ],
+          [
+            21,
+            "street"
+          ],
+          [
+            22,
+            "street"
+          ],
+          [
+            23,
+            "street"
+          ]
+        ],
+        "reference": "cedar-smooth-v2"
+      },
+      "driver": "context-v1",
+      "finished": 24,
+      "lastFinish": 98.6646499633789,
+      "totalCarSeconds": 2241.524139404297,
+      "meanCarSeconds": 93.3968391418457,
+      "perCarContactRecords": 4,
+      "maxImpact": 4.837763786315918,
+      "physicalRecoveries": 0,
+      "departingCars": 1,
+      "brakePercent": 8.425398028745825,
+      "linePercent": 38.13751767639309,
+      "fullThrottlePercent": 13.658468025543025,
+      "sectors": [
+        {
+          "gate": 1,
+          "completeCars": 24,
+          "meanSeconds": 7.293313503265381
+        },
+        {
+          "gate": 2,
+          "completeCars": 24,
+          "meanSeconds": 7.355444272359212
+        },
+        {
+          "gate": 3,
+          "completeCars": 24,
+          "meanSeconds": 8.42973248163859
+        },
+        {
+          "gate": 4,
+          "completeCars": 24,
+          "meanSeconds": 9.311530431111654
+        },
+        {
+          "gate": 5,
+          "completeCars": 24,
+          "meanSeconds": 8.93524169921875
+        },
+        {
+          "gate": 6,
+          "completeCars": 24,
+          "meanSeconds": 6.750400066375732
+        },
+        {
+          "gate": 7,
+          "completeCars": 24,
+          "meanSeconds": 8.784515062967936
+        },
+        {
+          "gate": 8,
+          "completeCars": 24,
+          "meanSeconds": 6.637009143829346
+        },
+        {
+          "gate": 9,
+          "completeCars": 24,
+          "meanSeconds": 6.5908881823221845
+        },
+        {
+          "gate": 10,
+          "completeCars": 24,
+          "meanSeconds": 6.5682064692179365
+        },
+        {
+          "gate": 11,
+          "completeCars": 24,
+          "meanSeconds": 6.567840576171875
+        },
+        {
+          "gate": 12,
+          "completeCars": 24,
+          "meanSeconds": 6.592487335205078
+        }
+      ],
+      "passagePrecision": "validated physics-tick checkpoint events",
+      "frameP95Ms": 8.334601402282715,
+      "performanceScope": "Visible 1x run; check resolution, graphics mode and concurrent load before comparison."
+    }
+  ]
+}

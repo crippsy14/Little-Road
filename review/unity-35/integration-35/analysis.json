@@ -1,0 +1,124 @@
+{
+  "scope": "Same-build serial versus parallel forecasts; recorded motion, controls, decisions, race events/results must match exactly. Existing scenario defects remain defects. No scenario acceptance or rendered performance inferred from parity. One process at a time.",
+  "passed": 31,
+  "total": 31,
+  "checks": {
+    "all declared runs completed exactly once": true,
+    "queue: exact recorded decisions, motion and race events/results": true,
+    "queue: paired configuration and declared workers": true,
+    "queue: both processes exited normally": true,
+    "queue: traffic evidence unchanged": true,
+    "queue: joined results used and execution counters reconcile": true,
+    "no-room: exact recorded decisions, motion and race events/results": true,
+    "no-room: paired configuration and declared workers": true,
+    "no-room: both processes exited normally": true,
+    "no-room: traffic evidence unchanged": true,
+    "no-room: joined results used and execution counters reconcile": true,
+    "merge-left: exact recorded decisions, motion and race events/results": true,
+    "merge-left: paired configuration and declared workers": true,
+    "merge-left: both processes exited normally": true,
+    "merge-left: traffic evidence unchanged": true,
+    "merge-left: joined results used and execution counters reconcile": true,
+    "merge-right: exact recorded decisions, motion and race events/results": true,
+    "merge-right: paired configuration and declared workers": true,
+    "merge-right: both processes exited normally": true,
+    "merge-right: traffic evidence unchanged": true,
+    "merge-right: joined results used and execution counters reconcile": true,
+    "brake-leader: exact recorded decisions, motion and race events/results": true,
+    "brake-leader: paired configuration and declared workers": true,
+    "brake-leader: both processes exited normally": true,
+    "brake-leader: traffic evidence unchanged": true,
+    "brake-leader: joined results used and execution counters reconcile": true,
+    "corner-three: exact recorded decisions, motion and race events/results": true,
+    "corner-three: paired configuration and declared workers": true,
+    "corner-three: both processes exited normally": true,
+    "corner-three: traffic evidence unchanged": true,
+    "corner-three: joined results used and execution counters reconcile": true
+  },
+  "cases": {
+    "queue": {
+      "forecast": {
+        "calls": 1140,
+        "preparedRequests": 1140,
+        "prefetchedCalls": 1140,
+        "synchronousCalls": 0
+      },
+      "finished": 3,
+      "cars": 3,
+      "contacts": 0,
+      "recoveries": 0,
+      "physicalRecoveries": 0,
+      "outsideBodySamples": 0
+    },
+    "no-room": {
+      "forecast": {
+        "calls": 3893,
+        "preparedRequests": 1657,
+        "prefetchedCalls": 1657,
+        "synchronousCalls": 2236
+      },
+      "finished": 2,
+      "cars": 2,
+      "contacts": 5,
+      "recoveries": 1,
+      "physicalRecoveries": 1,
+      "outsideBodySamples": 41
+    },
+    "merge-left": {
+      "forecast": {
+        "calls": 636,
+        "preparedRequests": 636,
+        "prefetchedCalls": 636,
+        "synchronousCalls": 0
+      },
+      "finished": 2,
+      "cars": 2,
+      "contacts": 0,
+      "recoveries": 0,
+      "physicalRecoveries": 0,
+      "outsideBodySamples": 0
+    },
+    "merge-right": {
+      "forecast": {
+        "calls": 636,
+        "preparedRequests": 636,
+        "prefetchedCalls": 636,
+        "synchronousCalls": 0
+      },
+      "finished": 2,
+      "cars": 2,
+      "contacts": 0,
+      "recoveries": 0,
+      "physicalRecoveries": 0,
+      "outsideBodySamples": 0
+    },
+    "brake-leader": {
+      "forecast": {
+        "calls": 795,
+        "preparedRequests": 795,
+        "prefetchedCalls": 795,
+        "synchronousCalls": 0
+      },
+      "finished": 2,
+      "cars": 2,
+      "contacts": 0,
+      "recoveries": 0,
+      "physicalRecoveries": 0,
+      "outsideBodySamples": 0
+    },
+    "corner-three": {
+      "forecast": {
+        "calls": 2559,
+        "preparedRequests": 2559,
+        "prefetchedCalls": 2559,
+        "synchronousCalls": 0
+      },
+      "finished": 3,
+      "cars": 3,
+      "contacts": 0,
+      "recoveries": 0,
+      "physicalRecoveries": 0,
+      "outsideBodySamples": 0
+    }
+  }
+}

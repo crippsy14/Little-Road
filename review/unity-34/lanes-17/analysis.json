@@ -1,0 +1,248 @@
+{
+  "scope": "Fixed road corridors with street/club equipment; does not validate traffic choice or passing.",
+  "passed": 31,
+  "total": 31,
+  "results": [
+    {
+      "case": "left-street",
+      "finished": true,
+      "time": 94.49066925048828,
+      "progress": 2068.5712890625,
+      "meanError": 0.26603904924085064,
+      "p95Error": 0.7529191970825195,
+      "maxError": 1.0061931610107422,
+      "contacts": 0,
+      "physicalRecoveries": 0,
+      "resets": 0,
+      "missedGates": 0,
+      "outsideBodySamples": 0
+    },
+    {
+      "case": "left-club",
+      "finished": true,
+      "time": 78.49457550048828,
+      "progress": 2067.83837890625,
+      "meanError": 0.3436413518505393,
+      "p95Error": 0.8819670677185059,
+      "maxError": 1.2344672679901123,
+      "contacts": 0,
+      "physicalRecoveries": 0,
+      "resets": 0,
+      "missedGates": 0,
+      "outsideBodySamples": 0
+    },
+    {
+      "case": "middle-street",
+      "finished": true,
+      "time": 93.98246002197266,
+      "progress": 2068.40185546875,
+      "meanError": 0.27309275538194927,
+      "p95Error": 0.7918418645858765,
+      "maxError": 1.0420279502868652,
+      "contacts": 0,
+      "physicalRecoveries": 0,
+      "resets": 0,
+      "missedGates": 0,
+      "outsideBodySamples": 0
+    },
+    {
+      "case": "middle-club",
+      "finished": true,
+      "time": 78.04468536376953,
+      "progress": 2068.1591796875,
+      "meanError": 0.35270718355604913,
+      "p95Error": 0.9130027294158936,
+      "maxError": 1.1663306951522827,
+      "contacts": 0,
+      "physicalRecoveries": 0,
+      "resets": 0,
+      "missedGates": 0,
+      "outsideBodySamples": 0
+    },
+    {
+      "case": "right-street",
+      "finished": true,
+      "time": 94.59064483642578,
+      "progress": 2068.27978515625,
+      "meanError": 0.27575260714480754,
+      "p95Error": 0.8301849365234375,
+      "maxError": 1.1903386116027832,
+      "contacts": 0,
+      "physicalRecoveries": 0,
+      "resets": 0,
+      "missedGates": 0,
+      "outsideBodySamples": 0
+    },
+    {
+      "case": "right-club",
+      "finished": true,
+      "time": 77.99469757080078,
+      "progress": 2068.50634765625,
+      "meanError": 0.3588968582227923,
+      "p95Error": 0.8992428779602051,
+      "maxError": 1.1444270610809326,
+      "contacts": 0,
+      "physicalRecoveries": 0,
+      "resets": 0,
+      "missedGates": 0,
+      "outsideBodySamples": 0
+    }
+  ],
+  "checks": [
+    {
+      "case": "suite",
+      "name": "All six declared runs completed",
+      "passed": true
+    },
+    {
+      "case": "left-street",
+      "name": "Normal process exit",
+      "passed": true
+    },
+    {
+      "case": "left-street",
+      "name": "Full valid lap completed",
+      "passed": true
+    },
+    {
+      "case": "left-street",
+      "name": "No contacts, recovery or missed gates",
+      "passed": true
+    },
+    {
+      "case": "left-street",
+      "name": "Body remains on road",
+      "passed": true
+    },
+    {
+      "case": "left-street",
+      "name": "Stable corridor tracking",
+      "passed": true
+    },
+    {
+      "case": "left-club",
+      "name": "Normal process exit",
+      "passed": true
+    },
+    {
+      "case": "left-club",
+      "name": "Full valid lap completed",
+      "passed": true
+    },
+    {
+      "case": "left-club",
+      "name": "No contacts, recovery or missed gates",
+      "passed": true
+    },
+    {
+      "case": "left-club",
+      "name": "Body remains on road",
+      "passed": true
+    },
+    {
+      "case": "left-club",
+      "name": "Stable corridor tracking",
+      "passed": true
+    },
+    {
+      "case": "middle-street",
+      "name": "Normal process exit",
+      "passed": true
+    },
+    {
+      "case": "middle-street",
+      "name": "Full valid lap completed",
+      "passed": true
+    },
+    {
+      "case": "middle-street",
+      "name": "No contacts, recovery or missed gates",
+      "passed": true
+    },
+    {
+      "case": "middle-street",
+      "name": "Body remains on road",
+      "passed": true
+    },
+    {
+      "case": "middle-street",
+      "name": "Stable corridor tracking",
+      "passed": true
+    },
+    {
+      "case": "middle-club",
+      "name": "Normal process exit",
+      "passed": true
+    },
+    {
+      "case": "middle-club",
+      "name": "Full valid lap completed",
+      "passed": true
+    },
+    {
+      "case": "middle-club",
+      "name": "No contacts, recovery or missed gates",
+      "passed": true
+    },
+    {
+      "case": "middle-club",
+      "name": "Body remains on road",
+      "passed": true
+    },
+    {
+      "case": "middle-club",
+      "name": "Stable corridor tracking",
+      "passed": true
+    },
+    {
+      "case": "right-street",
+      "name": "Normal process exit",
+      "passed": true
+    },
+    {
+      "case": "right-street",
+      "name": "Full valid lap completed",
+      "passed": true
+    },
+    {
+      "case": "right-street",
+      "name": "No contacts, recovery or missed gates",
+      "passed": true
+    },
+    {
+      "case": "right-street",
+      "name": "Body remains on road",
+      "passed": true
+    },
+    {
+      "case": "right-street",
+      "name": "Stable corridor tracking",
+      "passed": true
+    },
+    {
+      "case": "right-club",
+      "name": "Normal process exit",
+      "passed": true
+    },
+    {
+      "case": "right-club",
+      "name": "Full valid lap completed",
+      "passed": true
+    },
+    {
+      "case": "right-club",
+      "name": "No contacts, recovery or missed gates",
+      "passed": true
+    },
+    {
+      "case": "right-club",
+      "name": "Body remains on road",
+      "passed": true
+    },
+    {
+      "case": "right-club",
+      "name": "Stable corridor tracking",
+      "passed": true
+    }
+  ]
+}

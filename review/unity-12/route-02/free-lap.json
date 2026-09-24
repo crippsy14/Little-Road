@@ -1,0 +1,9 @@
+{
+    "scope": "Continuous physical free-roam AI lap, capped at 18m/s by finished-car planning; one initial on-road placement, no route teleports",
+    "distance": 683.7426147460938,
+    "seconds": 42.63248825073242,
+    "maxOffset": 8.669195175170898,
+    "contacts": 0,
+    "recoveries": 0,
+    "completed": true
+}

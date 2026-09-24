@@ -1,0 +1,49 @@
+{
+  "scope": "10 Hz moving AI observations. Reason labels are diagnostics, not a causal attribution of the final pedal. No counterfactual coast trajectory is measured here.",
+  "counts": {
+    "movingSamples": 22312,
+    "powered": 19497,
+    "braking": 2421,
+    "mediumBrake": 876,
+    "lightBrake": 1381,
+    "heavyBrake": 164,
+    "lightBrakeWithin1mpsOfTargetWithoutSafety": 653,
+    "coasting": 394
+  },
+  "movingDutyPercent": {
+    "braking": 10.850663320186447,
+    "coasting": 1.765865901756902,
+    "powered": 87.38347077805665,
+    "lightBrake": 6.189494442452492,
+    "mediumBrake": 3.9261384008605233,
+    "heavyBrake": 0.7350304768734314
+  },
+  "brakingContextReasons": {
+    "Reachable continuous track-width preference": 423,
+    "Rear closing motion occupies the proposed merge corridor": 261,
+    "Moving leader stopping-distance limit": 1471,
+    "safety active": 155,
+    "No checked path among bounded candidates; prior path retained without safety claim": 6,
+    "Clear space; use reference guidance": 105
+  },
+  "brakingRegions": {
+    "First braking zone": 244,
+    "Tightening left": 159,
+    "First exit": 296,
+    "Esses entry": 433,
+    "Esses exit": 160,
+    "Short hairpin entry": 200,
+    "Esses crest": 10,
+    "Short hairpin": 91,
+    "Short hairpin exit": 2,
+    "Switchback approach": 369,
+    "Wide hairpin": 167,
+    "Rising arc": 29,
+    "Back straight": 51,
+    "Final sweep entry": 20,
+    "Final sweep": 8,
+    "Home exit": 71,
+    "Final tightening": 111
+  },
+  "nextTest": "Evaluate zero-pedal rollout against the same upcoming speed/road/traffic constraints before replacing mild braking. Preserve emergency and required corner braking. Compare time, exits, contacts, road bounds and brake/coast duty."
+}

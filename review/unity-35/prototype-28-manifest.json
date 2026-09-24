@@ -1,0 +1,7 @@
+{
+  "export": "outputs/little-road-context-28-review/Little Road Unity.exe",
+  "assemblyHash": "73EF143685D54051441A3A910A587AA21B7C827F94ECDF834ECF8BB3D0DF7E96",
+  "buildChecks": 286,
+  "change": "Live forecast, corridor, scenery timing and rejection counters; no driving changes.",
+  "acceptance": "Exact recorded race parity with 27. Forecasts consume 74.88 percent of driver time; mean 2.753595ms each. Mean all-driver cost 7.336883ms per physics tick including extra measurement overhead. No promotion."
+}

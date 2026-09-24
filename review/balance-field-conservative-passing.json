@@ -1,0 +1,4049 @@
+{
+  "protocol": "Same controller, track, last-slot start and physics for solo/field. Seeds 0/0 repeat controls; 11/22/33 matched bounded driver variation. Times are measured checkpoint crossings; no added time noise. First lap includes the grid approach.",
+  "runs": [
+    {
+      "complete": true,
+      "cost": 0,
+      "equipment": {
+        "brakes": "brakes_stock",
+        "chassis": "chassis_stock",
+        "engine": "engine_stock",
+        "steering": "steering_stock",
+        "transmission": "transmission_stock",
+        "tyres": "tyres_stock"
+      },
+      "field": [
+        {
+          "driver": 1,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.93333333333,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 2,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.6333333333301,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 3,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.1499999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 4,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.5499999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 5,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 82.6166666666633,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 6,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.1166666666634,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 7,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 97.6499999999957,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 8,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 94.6999999999959,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 9,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 103.666666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 10,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 100.183333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 11,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 99.6666666666623,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 12,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 99.2999999999956,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 13,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.799999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 14,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 101.899999999996,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 15,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 103.466666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 16,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 102.683333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 17,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 109.266666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 18,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 105.066666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 19,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 110.799999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 20,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.149999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 21,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 114.066666666661,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 22,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 117.249999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 23,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 109.199999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 24,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_stock",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 112.699999999995,
+          "player": true,
+          "recoveries": 0
+        }
+      ],
+      "lap_seconds": [
+        45.4666666666654,
+        33.8499999999981,
+        33.3833333333314
+      ],
+      "maximum_stall": 0.783333333333334,
+      "mode": "field",
+      "place": 22,
+      "player_seconds": 112.699999999995,
+      "player_wall_frames": 1,
+      "profile": "stock",
+      "recoveries": 0,
+      "run": 1,
+      "seed": 11,
+      "traits": {
+        "braking_margin": 0.960061609745026,
+        "line_bias": 0.0811850652098656,
+        "pace": 0.954097380936146
+      },
+      "wall_events": [
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.000325, 0.999989, 0.004584)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.000325, 0.999989, 0.004584)"
+            },
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(0.983947, 0.0, 0.178462)"
+            },
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(0.983947, 0.0, 0.178462)"
+            }
+          ],
+          "distance": 65.0323687569714,
+          "position": "(-29.01295, 7.890991, -13.95001)"
+        }
+      ]
+    },
+    {
+      "complete": true,
+      "cost": 0,
+      "equipment": {
+        "brakes": "brakes_stock",
+        "chassis": "chassis_stock",
+        "engine": "engine_stock",
+        "steering": "steering_stock",
+        "transmission": "transmission_stock",
+        "tyres": "tyres_stock"
+      },
+      "field": [
+        {
+          "driver": 1,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.6499999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 2,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.6166666666634,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 3,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 82.0166666666633,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 4,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.1999999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 5,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.5999999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 6,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.1499999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 7,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 100.449999999996,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 8,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 90.9333333333295,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 9,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 107.016666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 10,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 99.7499999999956,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 11,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 102.316666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 12,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 101.266666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 13,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 109.783333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 14,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 102.866666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 15,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 104.149999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 16,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 101.749999999996,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 17,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 112.433333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 18,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 105.716666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 19,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 111.816666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 20,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 110.299999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 21,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 117.999999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 22,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 110.783333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 23,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 112.916666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 24,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_stock",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 108.199999999995,
+          "player": true,
+          "recoveries": 0
+        }
+      ],
+      "lap_seconds": [
+        42.1166666666656,
+        32.7166666666648,
+        33.3666666666648
+      ],
+      "maximum_stall": 0.950000000000001,
+      "mode": "field",
+      "place": 17,
+      "player_seconds": 108.199999999995,
+      "player_wall_frames": 1,
+      "profile": "stock",
+      "recoveries": 0,
+      "run": 2,
+      "seed": 22,
+      "traits": {
+        "braking_margin": 1.0165855884552,
+        "line_bias": 0.102825693786144,
+        "pace": 0.972766175270081
+      },
+      "wall_events": [
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.00108, 0.999999, -0.000933)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.00108, 0.999999, -0.000933)"
+            },
+            {
+              "collider": "/root/Rival_17",
+              "normal": "(0.86299, 0.0, -0.505221)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.00108, 0.999999, -0.000933)"
+            }
+          ],
+          "distance": 588.808341274911,
+          "position": "(92.86522, 7.716374, 41.67498)"
+        }
+      ]
+    },
+    {
+      "complete": true,
+      "cost": 0,
+      "equipment": {
+        "brakes": "brakes_stock",
+        "chassis": "chassis_stock",
+        "engine": "engine_stock",
+        "steering": "steering_stock",
+        "transmission": "transmission_stock",
+        "tyres": "tyres_stock"
+      },
+      "field": [
+        {
+          "driver": 1,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 82.23333333333,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 2,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.1333333333301,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 3,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.68333333333,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 4,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.6666666666634,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 5,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 83.8666666666632,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 6,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 83.3333333333299,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 7,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 94.3999999999959,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 8,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 96.6166666666625,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 9,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 107.633333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 10,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 98.483333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 11,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 100.549999999996,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 12,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 99.3666666666623,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 13,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 108.399999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 14,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 104.183333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 15,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 104.366666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 16,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 108.966666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 17,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 108.933333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 18,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 110.133333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 19,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 104.916666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 20,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 109.566666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 21,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 113.349999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 22,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 113.599999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 23,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 110.783333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 24,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_stock",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 112.033333333328,
+          "player": true,
+          "recoveries": 0
+        }
+      ],
+      "lap_seconds": [
+        46.0999999999987,
+        32.9833333333315,
+        32.9499999999981
+      ],
+      "maximum_stall": 0.766666666666667,
+      "mode": "field",
+      "place": 22,
+      "player_seconds": 112.033333333328,
+      "player_wall_frames": 17,
+      "profile": "stock",
+      "recoveries": 0,
+      "run": 3,
+      "seed": 33,
+      "traits": {
+        "braking_margin": 0.948570370674133,
+        "line_bias": -0.106579832732677,
+        "pace": 0.977816561460495
+      },
+      "wall_events": [
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.002225, 0.999996, -0.001732)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.002225, 0.999996, -0.001732)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.502238, 0.0, -0.86473)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.002225, 0.999996, -0.001732)"
+            }
+          ],
+          "distance": 597.094412685739,
+          "position": "(85.44703, 7.733606, 45.89025)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.002225, 0.999996, -0.001732)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.002225, 0.999996, -0.001732)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.500399, 0.0, -0.865795)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.500399, 0.0, -0.865795)"
+            }
+          ],
+          "distance": 598.389098791343,
+          "position": "(84.39821, 7.737037, 46.51493)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.002225, 0.999996, -0.001732)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.002225, 0.999996, -0.001732)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.499087, 0.0, -0.866552)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            }
+          ],
+          "distance": 599.171108146578,
+          "position": "(83.75251, 7.739216, 46.89682)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.498249, 0.0, -0.867034)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.498249, 0.0, -0.867034)"
+            }
+          ],
+          "distance": 599.632469929732,
+          "position": "(83.36703, 7.741191, 47.12358)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.497412, 0.0, -0.867515)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.497412, 0.0, -0.867515)"
+            }
+          ],
+          "distance": 600.058977273119,
+          "position": "(83.00751, 7.742917, 47.33418)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.496981, 0.0, -0.867761)"
+            }
+          ],
+          "distance": 600.261857938851,
+          "position": "(82.83556, 7.743688, 47.435)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.496541, 0.0, -0.868013)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.496541, 0.0, -0.868013)"
+            }
+          ],
+          "distance": 600.459125047324,
+          "position": "(82.66743, 7.744546, 47.53259)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.496098, 0.0, -0.868267)"
+            }
+          ],
+          "distance": 600.651391207727,
+          "position": "(82.50331, 7.745277, 47.62875)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.495646, 0.0, -0.868525)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.495646, 0.0, -0.868525)"
+            }
+          ],
+          "distance": 600.886842196926,
+          "position": "(82.34161, 7.746103, 47.72194)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.49519, 0.0, -0.868784)"
+            }
+          ],
+          "distance": 601.072003782576,
+          "position": "(82.18313, 7.746808, 47.81472)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.49473, 0.0, -0.869046)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.49473, 0.0, -0.869046)"
+            }
+          ],
+          "distance": 601.254358890175,
+          "position": "(82.02598, 7.747609, 47.90478)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.494267, 0.0, -0.86931)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.494267, 0.0, -0.86931)"
+            }
+          ],
+          "distance": 601.434000204633,
+          "position": "(81.87093, 7.748347, 47.99435)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.493798, 0.0, -0.869576)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.493798, 0.0, -0.869576)"
+            }
+          ],
+          "distance": 601.611678929262,
+          "position": "(81.71726, 7.749078, 48.08298)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.493327, 0.0, -0.869844)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.493327, 0.0, -0.869844)"
+            }
+          ],
+          "distance": 601.787682054387,
+          "position": "(81.56467, 7.749804, 48.17087)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.492857, 0.0, -0.87011)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.492857, 0.0, -0.87011)"
+            }
+          ],
+          "distance": 601.96237830476,
+          "position": "(81.4129, 7.750526, 48.25816)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.003289, 0.999991, -0.00256)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.492383, 0.0, -0.870378)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.492383, 0.0, -0.870378)"
+            }
+          ],
+          "distance": 602.136068424517,
+          "position": "(81.2617, 7.751243, 48.34499)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.004746, 0.999984, -0.003117)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.004746, 0.999984, -0.003117)"
+            },
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(-0.470867, 0.0, -0.882204)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.004746, 0.999984, -0.003117)"
+            }
+          ],
+          "distance": 614.457857214736,
+          "position": "(71.7421, 7.81533, 56.09417)"
+        }
+      ]
+    },
+    {
+      "complete": true,
+      "cost": 1350,
+      "equipment": {
+        "brakes": "brakes_sport",
+        "chassis": "chassis_stock",
+        "engine": "engine_workshop",
+        "steering": "steering_quick",
+        "transmission": "transmission_stock",
+        "tyres": "tyres_touring"
+      },
+      "field": [
+        {
+          "driver": 1,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.7499999999966,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 2,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.5166666666634,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 3,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.9999999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 4,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.8666666666634,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 5,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.9666666666633,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 6,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.3499999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 7,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 97.6499999999957,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 8,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 94.6999999999959,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 9,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 103.066666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 10,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 100.133333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 11,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 100.216666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 12,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 99.2999999999956,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 13,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.799999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 14,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 101.499999999996,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 15,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 103.216666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 16,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 101.983333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 17,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 109.266666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 18,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 104.366666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 19,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 110.799999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 20,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.149999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 21,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 113.766666666661,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 22,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 116.433333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 23,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 112.266666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 24,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.999999999995,
+          "player": true,
+          "recoveries": 0
+        }
+      ],
+      "lap_seconds": [
+        44.7999999999987,
+        32.0333333333315,
+        31.1666666666649
+      ],
+      "maximum_stall": 0.766666666666667,
+      "mode": "field",
+      "place": 19,
+      "player_seconds": 107.999999999995,
+      "player_wall_frames": 0,
+      "profile": "balanced",
+      "recoveries": 0,
+      "run": 4,
+      "seed": 11,
+      "traits": {
+        "braking_margin": 0.960061609745026,
+        "line_bias": 0.0811850652098656,
+        "pace": 0.954097380936146
+      },
+      "wall_events": []
+    },
+    {
+      "complete": true,
+      "cost": 1350,
+      "equipment": {
+        "brakes": "brakes_sport",
+        "chassis": "chassis_stock",
+        "engine": "engine_workshop",
+        "steering": "steering_quick",
+        "transmission": "transmission_stock",
+        "tyres": "tyres_touring"
+      },
+      "field": [
+        {
+          "driver": 1,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.8166666666634,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 2,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.0333333333301,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 3,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.1166666666633,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 4,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 78.7666666666635,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 5,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.9666666666633,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 6,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.0166666666634,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 7,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 100.033333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 8,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 90.9333333333295,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 9,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 107.016666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 10,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 99.7499999999956,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 11,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 100.933333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 12,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 100.583333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 13,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 105.699999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 14,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 102.116666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 15,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 106.283333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 16,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 101.683333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 17,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 108.716666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 18,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 106.783333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 19,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 110.966666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 20,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.399999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 21,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 116.749999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 22,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 112.966666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 23,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 112.049999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 24,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.883333333328,
+          "player": true,
+          "recoveries": 0
+        }
+      ],
+      "lap_seconds": [
+        41.6499999999989,
+        32.8166666666648,
+        33.4166666666648
+      ],
+      "maximum_stall": 0.783333333333334,
+      "mode": "field",
+      "place": 19,
+      "player_seconds": 107.883333333328,
+      "player_wall_frames": 1,
+      "profile": "balanced",
+      "recoveries": 0,
+      "run": 5,
+      "seed": 22,
+      "traits": {
+        "braking_margin": 1.0165855884552,
+        "line_bias": 0.102825693786144,
+        "pace": 0.972766175270081
+      },
+      "wall_events": [
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.012807, 0.999268, 0.036052)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.012807, 0.999268, 0.036052)"
+            },
+            {
+              "collider": "/root/Rival_17",
+              "normal": "(-0.931719, 0.0, -0.363181)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.012807, 0.999268, 0.036052)"
+            }
+          ],
+          "distance": 484.488377988456,
+          "position": "(150.8444, 9.881029, -43.90188)"
+        }
+      ]
+    },
+    {
+      "complete": true,
+      "cost": 1350,
+      "equipment": {
+        "brakes": "brakes_sport",
+        "chassis": "chassis_stock",
+        "engine": "engine_workshop",
+        "steering": "steering_quick",
+        "transmission": "transmission_stock",
+        "tyres": "tyres_touring"
+      },
+      "field": [
+        {
+          "driver": 1,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.8499999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 2,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.2166666666635,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 3,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.6499999999968,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 4,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.1833333333301,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 5,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.1999999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 6,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 82.3666666666633,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 7,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 94.3999999999959,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 8,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 96.6166666666625,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 9,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 107.316666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 10,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 98.483333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 11,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 100.549999999996,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 12,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 99.3666666666623,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 13,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 109.433333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 14,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 104.183333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 15,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 110.749999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 16,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 111.249999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 17,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 110.216666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 18,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 113.916666666661,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 19,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.866666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 20,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 112.349999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 21,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 116.699999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 22,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 113.916666666661,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 23,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 109.899999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 24,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 110.449999999995,
+          "player": true,
+          "recoveries": 0
+        }
+      ],
+      "lap_seconds": [
+        45.533333333332,
+        33.2499999999981,
+        31.6666666666649
+      ],
+      "maximum_stall": 0.766666666666667,
+      "mode": "field",
+      "place": 18,
+      "player_seconds": 110.449999999995,
+      "player_wall_frames": 5,
+      "profile": "balanced",
+      "recoveries": 0,
+      "run": 6,
+      "seed": 33,
+      "traits": {
+        "braking_margin": 0.948570370674133,
+        "line_bias": -0.106579832732677,
+        "pace": 0.977816561460495
+      },
+      "wall_events": [
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.033316, 0.997827, 0.056852)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.033316, 0.997827, 0.056852)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(0.846725, 0.0, 0.532031)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.033316, 0.997827, 0.056852)"
+            }
+          ],
+          "distance": 176.936144258093,
+          "position": "(-5.548621, 11.54093, -121.6244)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.033316, 0.997827, 0.056852)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.033316, 0.997827, 0.056852)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(0.846015, 0.0, 0.533158)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.033316, 0.997827, 0.056852)"
+            }
+          ],
+          "distance": 177.638044188138,
+          "position": "(-5.203209, 11.58423, -122.1818)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.033316, 0.997827, 0.056852)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.033316, 0.997827, 0.056852)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(0.845311, 0.0, 0.534275)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(0.845311, 0.0, 0.534275)"
+            }
+          ],
+          "distance": 178.243571504249,
+          "position": "(-4.907604, 11.62121, -122.6581)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.03332, 0.997931, 0.054996)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.03332, 0.997931, 0.054996)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(0.84461, 0.0, 0.535382)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.03332, 0.997931, 0.054996)"
+            }
+          ],
+          "distance": 178.768265783538,
+          "position": "(-4.647784, 11.65286, -123.0764)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.03332, 0.997931, 0.054996)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.03332, 0.997931, 0.054996)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.449217, 0.0, 0.893423)"
+            },
+            {
+              "collider": "/root/Rival_21",
+              "normal": "(-0.449217, 0.0, 0.893423)"
+            }
+          ],
+          "distance": 179.235109746167,
+          "position": "(-4.445293, 11.67768, -123.4052)"
+        }
+      ]
+    },
+    {
+      "complete": true,
+      "cost": 4950,
+      "equipment": {
+        "brakes": "brakes_race",
+        "chassis": "chassis_light",
+        "engine": "engine_club",
+        "steering": "steering_precision",
+        "transmission": "transmission_long",
+        "tyres": "tyres_sport"
+      },
+      "field": [
+        {
+          "driver": 1,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.5166666666634,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 2,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.2833333333301,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 3,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.8999999999968,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 4,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.6166666666634,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 5,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.7166666666633,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 6,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.1499999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 7,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 97.6499999999957,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 8,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 94.6999999999959,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 9,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 103.166666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 10,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 100.133333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 11,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 100.216666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 12,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 99.2999999999956,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 13,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.799999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 14,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 101.499999999996,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 15,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 103.266666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 16,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 101.966666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 17,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 109.266666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 18,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 104.333333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 19,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 110.799999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 20,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.149999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 21,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 113.883333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 22,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 115.783333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 23,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 112.083333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 24,
+          "equipment": {
+            "brakes": "brakes_race",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_precision",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 103.699999999995,
+          "player": true,
+          "recoveries": 0
+        }
+      ],
+      "lap_seconds": [
+        44.7499999999987,
+        29.266666666665,
+        29.6833333333316
+      ],
+      "maximum_stall": 0.766666666666667,
+      "mode": "field",
+      "place": 16,
+      "player_seconds": 103.699999999995,
+      "player_wall_frames": 0,
+      "profile": "developed",
+      "recoveries": 0,
+      "run": 7,
+      "seed": 11,
+      "traits": {
+        "braking_margin": 0.960061609745026,
+        "line_bias": 0.0811850652098656,
+        "pace": 0.954097380936146
+      },
+      "wall_events": []
+    },
+    {
+      "complete": true,
+      "cost": 4950,
+      "equipment": {
+        "brakes": "brakes_race",
+        "chassis": "chassis_light",
+        "engine": "engine_club",
+        "steering": "steering_precision",
+        "transmission": "transmission_long",
+        "tyres": "tyres_sport"
+      },
+      "field": [
+        {
+          "driver": 1,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.0499999999968,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 2,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 77.6833333333302,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 3,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.3666666666633,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 4,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 78.1666666666635,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 5,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 82.3166666666633,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 6,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.1999999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 7,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 100.449999999996,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 8,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 90.9333333333295,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 9,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 107.016666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 10,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 99.7499999999956,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 11,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 101.183333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 12,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 100.616666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 13,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 105.916666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 14,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 103.799999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 15,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 106.449999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 16,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 102.333333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 17,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 108.966666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 18,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.583333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 19,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 111.516666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 20,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.566666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 21,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 115.649999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 22,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 109.799999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 23,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 111.466666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 24,
+          "equipment": {
+            "brakes": "brakes_race",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_precision",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 106.816666666662,
+          "player": true,
+          "recoveries": 0
+        }
+      ],
+      "lap_seconds": [
+        41.2999999999989,
+        32.3666666666648,
+        33.1499999999981
+      ],
+      "maximum_stall": 0.783333333333334,
+      "mode": "field",
+      "place": 16,
+      "player_seconds": 106.816666666662,
+      "player_wall_frames": 0,
+      "profile": "developed",
+      "recoveries": 0,
+      "run": 8,
+      "seed": 22,
+      "traits": {
+        "braking_margin": 1.0165855884552,
+        "line_bias": 0.102825693786144,
+        "pace": 0.972766175270081
+      },
+      "wall_events": []
+    },
+    {
+      "complete": true,
+      "cost": 4950,
+      "equipment": {
+        "brakes": "brakes_race",
+        "chassis": "chassis_light",
+        "engine": "engine_club",
+        "steering": "steering_precision",
+        "transmission": "transmission_long",
+        "tyres": "tyres_sport"
+      },
+      "field": [
+        {
+          "driver": 1,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.13333333333,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 2,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 79.8166666666634,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 3,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.0166666666634,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 4,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 80.0999999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 5,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 81.5999999999967,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 6,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 82.0499999999966,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 7,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 94.3999999999959,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 8,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 96.6166666666625,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 9,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_sport"
+          },
+          "finish": 107.316666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 10,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 98.483333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 11,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_club",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 100.549999999996,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 12,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 99.3666666666623,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 13,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 109.433333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 14,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 104.183333333329,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 15,
+          "equipment": {
+            "brakes": "brakes_sport",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 109.433333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 16,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 108.483333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 17,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 110.099999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 18,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_workshop",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 111.149999999995,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 19,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 107.866666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 20,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_touring"
+          },
+          "finish": 111.816666666662,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 21,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 117.983333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 22,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 113.783333333328,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 23,
+          "equipment": {
+            "brakes": "brakes_stock",
+            "chassis": "chassis_stock",
+            "engine": "engine_stock",
+            "steering": "steering_quick",
+            "transmission": "transmission_stock",
+            "tyres": "tyres_stock"
+          },
+          "finish": 113.916666666661,
+          "player": false,
+          "recoveries": 0
+        },
+        {
+          "driver": 24,
+          "equipment": {
+            "brakes": "brakes_race",
+            "chassis": "chassis_light",
+            "engine": "engine_club",
+            "steering": "steering_precision",
+            "transmission": "transmission_long",
+            "tyres": "tyres_sport"
+          },
+          "finish": 111.649999999995,
+          "player": true,
+          "recoveries": 0
+        }
+      ],
+      "lap_seconds": [
+        45.1666666666654,
+        35.3666666666647,
+        31.1166666666649
+      ],
+      "maximum_stall": 0.766666666666667,
+      "mode": "field",
+      "place": 20,
+      "player_seconds": 111.649999999995,
+      "player_wall_frames": 11,
+      "profile": "developed",
+      "recoveries": 0,
+      "run": 9,
+      "seed": 33,
+      "traits": {
+        "braking_margin": 0.948570370674133,
+        "line_bias": -0.106579832732677,
+        "pace": 0.977816561460495
+      },
+      "wall_events": [
+        {
+          "contacts": [
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(-0.243965, 0.0, -0.969784)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.03193, 0.994022, 0.104411)"
+            }
+          ],
+          "distance": 391.03684042074,
+          "position": "(153.2948, 17.35831, -136.6934)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/Rival_02",
+              "normal": "(-0.994461, 0.0, 0.105107)"
+            },
+            {
+              "collider": "/root/Rival_02",
+              "normal": "(-0.994461, 0.0, 0.105107)"
+            }
+          ],
+          "distance": 414.97708932679,
+          "position": "(157.1527, 14.71467, -112.7251)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.017408, 0.994616, 0.102152)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.017408, 0.994616, 0.102152)"
+            },
+            {
+              "collider": "/root/Rival_02",
+              "normal": "(-0.995798, 0.0, 0.091574)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(0.017408, 0.994616, 0.102152)"
+            }
+          ],
+          "distance": 416.402622028159,
+          "position": "(157.3175, 14.57984, -111.4571)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.00064, 0.999993, -0.003625)"
+            },
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(-0.971231, 0.0, 0.238139)"
+            }
+          ],
+          "distance": 17.8713551835672,
+          "position": "(-34.33972, 7.967045, 33.434)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.00064, 0.999993, -0.003625)"
+            },
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(-0.972511, 0.0, 0.232857)"
+            }
+          ],
+          "distance": 18.1979812771684,
+          "position": "(-34.41336, 7.96586, 33.1518)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.00075, 0.999991, -0.004247)"
+            },
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(-0.975092, 0.0, 0.2218)"
+            }
+          ],
+          "distance": 18.747222500634,
+          "position": "(-34.55399, 7.963884, 32.67258)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.00075, 0.999991, -0.004247)"
+            },
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(-0.977437, 0.0, 0.211228)"
+            }
+          ],
+          "distance": 19.1988508408004,
+          "position": "(-34.66742, 7.962022, 32.26756)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.000493, 0.999992, -0.003841)"
+            },
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(-0.978517, 0.0, 0.206166)"
+            }
+          ],
+          "distance": 19.4002398432358,
+          "position": "(-34.71896, 7.961201, 32.0843)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.000493, 0.999992, -0.003841)"
+            },
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(-0.979542, 0.0, 0.201241)"
+            }
+          ],
+          "distance": 19.5891368287941,
+          "position": "(-34.75863, 7.960411, 31.90828)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.000493, 0.999992, -0.003841)"
+            },
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(-0.980512, 0.0, 0.196459)"
+            }
+          ],
+          "distance": 19.7690987234649,
+          "position": "(-34.80435, 7.959723, 31.74098)"
+        },
+        {
+          "contacts": [
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.000493, 0.999992, -0.003841)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.000493, 0.999992, -0.003841)"
+            },
+            {
+              "collider": "/root/Rival_23",
+              "normal": "(0.078803, 0.0, 0.99689)"
+            },
+            {
+              "collider": "/root/@Node3D@2/@MeshInstance3D@8/_MeshInstance3D_8_col",
+              "normal": "(-0.000493, 0.999992, -0.003841)"
+            }
+          ],
+          "distance": 19.9413486283783,
+          "position": "(-34.81199, 7.958903, 31.69882)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+    "fixture": "missed-gate",
+    "scope": "Synthetic recovery start; ordinary physics thereafter. Reset counts remain assisted recovery.",
+    "complete": true,
+    "returnedBehindMissedGate": true,
+    "unearnedGateAdvance": false,
+    "trafficPassed": false,
+    "maxStepMetres": 0.2837772071361542,
+    "waitingSeconds": 0.0,
+    "reverseSeconds": 5.924995422363281,
+    "activeSeconds": 6.816648483276367,
+    "physicalRecoveries": 1,
+    "assistedResets": 0,
+    "contacts": 0,
+    "events": [
+        {
+            "time": 0.000011669471859931946,
+            "progress": 7.9998779296875,
+            "offset": 11.0,
+            "speed": 2.9162535497562203e-7,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 5.925007343292236,
+            "progress": -6.06591796875,
+            "offset": 2.8765869140625,
+            "speed": -2.9177377223968506,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 6.8083271980285645,
+            "progress": -5.1416015625,
+            "offset": 3.434295654296875,
+            "speed": 3.519775629043579,
+            "gate": 0,
+            "resets": 0,
+            "state": "Racing"
+        }
+    ]
+}

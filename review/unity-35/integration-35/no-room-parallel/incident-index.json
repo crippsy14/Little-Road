@@ -1,0 +1,177 @@
+{
+  "scope": "Diagnosis index only; earliest unresolved and impact timing do not prove causality.",
+  "impacts": [
+    {
+      "id": 0,
+      "other": -1,
+      "otherName": "Narrow passing control",
+      "time": 1.9750101566314697,
+      "relativeSpeed": 25.27256202697754,
+      "penetration": 0.0,
+      "progress": 1231.1136474609375,
+      "offset": 4.4046478271484375
+    },
+    {
+      "id": 0,
+      "other": -1,
+      "otherName": "Narrow passing control",
+      "time": 2.033344030380249,
+      "relativeSpeed": 25.214574813842773,
+      "penetration": 0.0,
+      "progress": 1232.5859375,
+      "offset": 4.40716552734375
+    },
+    {
+      "id": 0,
+      "other": -1,
+      "otherName": "Narrow passing control",
+      "time": 2.2000129222869873,
+      "relativeSpeed": 22.541133880615234,
+      "penetration": 0.0,
+      "progress": 1236.6273193359375,
+      "offset": 4.40765380859375
+    },
+    {
+      "id": 0,
+      "other": -1,
+      "otherName": "Narrow passing control",
+      "time": 2.225013256072998,
+      "relativeSpeed": 9.25813102722168,
+      "penetration": 0.0,
+      "progress": 1236.8238525390625,
+      "offset": 4.2473297119140625
+    },
+    {
+      "id": 0,
+      "other": -1,
+      "otherName": "Narrow passing control",
+      "time": 2.4500162601470947,
+      "relativeSpeed": 4.14015007019043,
+      "penetration": 0.0,
+      "progress": 1237.8519287109375,
+      "offset": 3.2098388671875
+    }
+  ],
+  "assistedRecoveries": [
+    {
+      "id": 0,
+      "gateBefore": 8,
+      "gateAfter": 8,
+      "rejectedDestinations": 0,
+      "reason": "Persistent geometry or stationary traffic",
+      "time": 65.58106231689453,
+      "progressBefore": 1237.13916015625,
+      "progressAfter": 1233.13916015625,
+      "positionBefore": {
+        "x": 32.106529235839844,
+        "y": 0.033988118171691895,
+        "z": 148.0175018310547
+      },
+      "positionAfter": {
+        "x": 36.10649490356445,
+        "y": 0.1599999964237213,
+        "z": 145.0
+      }
+    }
+  ],
+  "unresolvedSamples": 1107,
+  "firstUnresolved": [
+    {
+      "id": 0,
+      "leader": 1,
+      "relevant": 1,
+      "staticRejected": 0,
+      "rearApproaches": 0,
+      "roadRejected": 6,
+      "roadCalls": 180,
+      "roadEnabled": true,
+      "roadUnresolved": true,
+      "time": 1.1669471859931946e-05,
+      "offset": 4.4067535400390625,
+      "followingOffset": 4.4067535400390625,
+      "left": -6.289999961853027,
+      "right": 6.289999961853027,
+      "leaderLimit": 27.124958038330078,
+      "intent": "Unresolved road path",
+      "reason": "Moving leader stopping-distance limit",
+      "safetyActive": false,
+      "checkedReference": false,
+      "safetyLimit": 1.0,
+      "staticLimit": 999.0
+    },
+    {
+      "id": 0,
+      "leader": 1,
+      "relevant": 1,
+      "staticRejected": 0,
+      "rearApproaches": 0,
+      "roadRejected": 6,
+      "roadCalls": 186,
+      "roadEnabled": true,
+      "roadUnresolved": true,
+      "time": 0.1000116690993309,
+      "offset": 4.4067535400390625,
+      "followingOffset": 4.4067535400390625,
+      "left": -6.289999961853027,
+      "right": 6.289999961853027,
+      "leaderLimit": 27.179779052734375,
+      "intent": "Unresolved road path",
+      "reason": "Moving leader stopping-distance limit",
+      "safetyActive": false,
+      "checkedReference": false,
+      "safetyLimit": 1.0,
+      "staticLimit": 999.0
+    },
+    {
+      "id": 0,
+      "leader": 1,
+      "relevant": 1,
+      "staticRejected": 0,
+      "rearApproaches": 0,
+      "roadRejected": 6,
+      "roadCalls": 192,
+      "roadEnabled": true,
+      "roadUnresolved": true,
+      "time": 0.2000117301940918,
+      "offset": 4.4067535400390625,
+      "followingOffset": 4.4067535400390625,
+      "left": -6.289999961853027,
+      "right": 6.289999961853027,
+      "leaderLimit": 27.201488494873047,
+      "intent": "Unresolved road path",
+      "reason": "Moving leader stopping-distance limit",
+      "safetyActive": false,
+      "checkedReference": false,
+      "safetyLimit": 1.0,
+      "staticLimit": 999.0
+    }
+  ],
+  "roadCosts": [
+    {
+      "id": 0,
+      "calls": 873,
+      "roadFailures": 0,
+      "corridorFailures": 0,
+      "sceneryFailures": 660,
+      "preparedRequests": 322,
+      "prefetchedCalls": 322,
+      "synchronousCalls": 551,
+      "forecastMs": 911.3171000000018,
+      "corridorMs": 38.72049999999185,
+      "sceneryMs": 19.419599999994198
+    },
+    {
+      "id": 1,
+      "calls": 3020,
+      "roadFailures": 0,
+      "corridorFailures": 0,
+      "sceneryFailures": 2009,
+      "preparedRequests": 1335,
+      "prefetchedCalls": 1335,
+      "synchronousCalls": 1685,
+      "forecastMs": 2894.6581999999985,
+      "corridorMs": 230.26810000038313,
+      "sceneryMs": 93.1213999999552
+    }
+  ]
+}

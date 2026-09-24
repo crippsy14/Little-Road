@@ -1,0 +1,58 @@
+{
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-45-review\\Little Road Unity.exe",
+  "candidateArguments": "--driver-risk 5 --no-gap-centres",
+  "acceptance": "Experimental, NOT default: soft-preference-only risk5 finishes24cars in2195.035492 combined car-seconds, car0 CP1=19/finish=7, but22 paircontacts/8.5559m/s peak exceed declared review threshold. Controlled regressions49/52; all10 finish cleanly, three timing/passing failures retained. Risk0 exact43parity. Desktop43 unchanged. See risk-45-review.md.",
+  "buildChecks": 311,
+  "sourceFiles": [
+    {
+      "file": "analyze-coasting-regressions.py",
+      "sha256": "7ED8EE8E81750BBCB6C64EB84125E5F81CC39568447168270ECD61CA8F6A4E91"
+    },
+    {
+      "file": "analyze-preview-car.py",
+      "sha256": "E59326537992FB6B0E0E1396B292AB4566EBD05FEF5261D234FA211B8A0301CF"
+    },
+    {
+      "file": "ContextDriverPolicy.cs",
+      "sha256": "D83B9EFEB4C9D9CB98CB458D98E803F20BC804EE0E68317FA98C14AA83A3D860"
+    },
+    {
+      "file": "ContextPreferenceMap.cs",
+      "sha256": "8365104D7A56D8894C0CF207676732984D99C8A57C5AD3E64E85BF2BD72C317F"
+    },
+    {
+      "file": "DriverPlanningChecks.cs",
+      "sha256": "88E314A5FDB595DB9C7E2038BE1B609AD19D60094A0FC07465CF8EB2F04C6D45"
+    },
+    {
+      "file": "DriverPlanningSettings.cs",
+      "sha256": "99FCDF5FA1A861D0A6BA03DE7D6DF711027DFFFEE70B1D0164E99ECE6B2A661E"
+    },
+    {
+      "file": "RoadCar.cs",
+      "sha256": "A0A8B817A90437C43F17DFA47C68972CB4B870EA3336D8B29BF479E0DAC21BCA"
+    },
+    {
+      "file": "run-coasting-regressions.ps1",
+      "sha256": "11671B25DA25A0471E98007518E2116AFCDCB3D7CC8CCDB24F7D1ED0E82D73E2"
+    },
+    {
+      "file": "run-risk-field-comparison.ps1",
+      "sha256": "64C5EAC4A6529B3262AE245D379463F5739D9D89C107C32E61DE9ACEB44BD2E9"
+    },
+    {
+      "file": "run-technical-trial.ps1",
+      "sha256": "5C271DF524AD7FE32DB5B77DB7192BFD8B35621501F5415F21E8A0D5F40F26F2"
+    },
+    {
+      "file": "summarize-risk-field.py",
+      "sha256": "DA411FA1044B7A84C15BD4DC47A9A3A2CE7838D023D4A6ED711F397F41C9A215"
+    },
+    {
+      "file": "TechnicalCircuitReview.cs",
+      "sha256": "2C3A06760AC7CB00643F79109C79BC1BE128BE14C447C195DDBB4E70DD258C34"
+    }
+  ],
+  "assemblyHash": "57B8BB265FC245441F516254663C7A91ED23B6BBBBC87B05FF01FF0BF70A1F8B",
+  "version": 45
+}

@@ -1,0 +1,188 @@
+{
+    "fixture": "wrong-way",
+    "scope": "Synthetic recovery start; ordinary physics thereafter. Reset counts remain assisted recovery.",
+    "complete": true,
+    "returnedBehindMissedGate": true,
+    "unearnedGateAdvance": false,
+    "trafficPassed": false,
+    "maxStepMetres": 0.2838262915611267,
+    "waitingSeconds": 0.0,
+    "reverseSeconds": 6.024993896484375,
+    "activeSeconds": 13.20821762084961,
+    "physicalRecoveries": 1,
+    "assistedResets": 0,
+    "contacts": 0,
+    "events": [
+        {
+            "time": 0.000011669471859931946,
+            "progress": -24.0,
+            "offset": 0.0,
+            "speed": 4.889056937074088e-10,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 1.6250104904174805,
+            "progress": -20.732421875,
+            "offset": -2.13861083984375,
+            "speed": -2.952683448791504,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 2.325014591217041,
+            "progress": -20.720703125,
+            "offset": -1.6721649169921875,
+            "speed": 3.1405603885650635,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 2.925022602081299,
+            "progress": -20.508544921875,
+            "offset": -2.1116790771484375,
+            "speed": -2.9418790340423584,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 3.6250319480895996,
+            "progress": -20.480224609375,
+            "offset": -1.6435699462890625,
+            "speed": 3.148402214050293,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 4.225033283233643,
+            "progress": -20.3148193359375,
+            "offset": -2.095428466796875,
+            "speed": -2.9300005435943604,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 5.025021076202393,
+            "progress": -20.2362060546875,
+            "offset": -1.2958984375,
+            "speed": 3.395390510559082,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 5.625011920928955,
+            "progress": -20.107666015625,
+            "offset": -1.6624908447265625,
+            "speed": -2.9211714267730713,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 6.325001239776611,
+            "progress": -20.024658203125,
+            "offset": -1.1938323974609375,
+            "speed": 3.1408159732818604,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 6.924992084503174,
+            "progress": -19.879638671875,
+            "offset": -1.6630096435546875,
+            "speed": -2.944392204284668,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 7.724979877471924,
+            "progress": -19.762451171875,
+            "offset": -0.87908935546875,
+            "speed": 3.3742570877075195,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 8.424969673156738,
+            "progress": -19.579345703125,
+            "offset": -1.5519866943359375,
+            "speed": -2.9503817558288574,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 9.124958992004395,
+            "progress": -19.4248046875,
+            "offset": -1.1078948974609375,
+            "speed": 3.1550190448760986,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 9.624951362609863,
+            "progress": -19.451904296875,
+            "offset": -1.300018310546875,
+            "speed": -2.414201259613037,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 10.32494068145752,
+            "progress": -19.174560546875,
+            "offset": -0.6114349365234375,
+            "speed": 3.284980058670044,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 10.724934577941895,
+            "progress": -19.15380859375,
+            "offset": -0.5749053955078125,
+            "speed": -1.6990028619766235,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 11.224926948547363,
+            "progress": -18.96435546875,
+            "offset": -0.1617279052734375,
+            "speed": 2.8427062034606934,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 11.624920845031738,
+            "progress": -18.98046875,
+            "offset": -0.2129364013671875,
+            "speed": -1.813029170036316,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 13.199896812438965,
+            "progress": -15.919189453125,
+            "offset": 2.700042724609375,
+            "speed": 3.8545267581939697,
+            "gate": 0,
+            "resets": 0,
+            "state": "Racing"
+        }
+    ]
+}

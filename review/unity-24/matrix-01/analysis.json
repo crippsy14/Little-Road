@@ -1,0 +1,973 @@
+{
+  "scope": "Actual RoadCar/PhysX, dry straight/U-turn/braking; no hill, wet surface, AI variance or visible performance acceptance.",
+  "source": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-24\\matrix-01\\batch.json",
+  "runCount": 90,
+  "groups": [
+    {
+      "course": "straight",
+      "loadout": "stock",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 40.400001525878906,
+      "rangeSeconds": 0.0,
+      "averageMph": 49.84118928337097,
+      "zeroTo30": 2.69818115234375,
+      "sustainableMph": 53.687428256988525,
+      "brakingMetres": null,
+      "apexMph": null,
+      "maxOffset": 0.004437060561031103
+    },
+    {
+      "course": "straight",
+      "loadout": "engine_workshop",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 38.05000305175781,
+      "rangeSeconds": 0.0,
+      "averageMph": 52.915984798431396,
+      "zeroTo30": 2.0708401203155518,
+      "sustainableMph": 55.92651042556763,
+      "brakingMetres": null,
+      "apexMph": null,
+      "maxOffset": 0.004091410432010889
+    },
+    {
+      "course": "straight",
+      "loadout": "engine_club",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 37.43333435058594,
+      "rangeSeconds": 0.0,
+      "averageMph": 53.79509087944031,
+      "zeroTo30": 1.5272151231765747,
+      "sustainableMph": 56.00623017501831,
+      "brakingMetres": null,
+      "apexMph": null,
+      "maxOffset": 0.0038068676367402077
+    },
+    {
+      "course": "straight",
+      "loadout": "transmission_long",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 40.92500305175781,
+      "rangeSeconds": 0.0,
+      "averageMph": 49.20082857704163,
+      "zeroTo30": 3.2958741188049316,
+      "sustainableMph": 53.687428256988525,
+      "brakingMetres": null,
+      "apexMph": null,
+      "maxOffset": 0.004719460848718882
+    },
+    {
+      "course": "straight",
+      "loadout": "transmission_close",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 41.34166717529297,
+      "rangeSeconds": 0.0,
+      "averageMph": 48.70795623397827,
+      "zeroTo30": 2.2005603313446045,
+      "sustainableMph": 51.45917507171631,
+      "brakingMetres": null,
+      "apexMph": null,
+      "maxOffset": 0.004121063277125359
+    },
+    {
+      "course": "straight",
+      "loadout": "tyres_sport",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 40.400001525878906,
+      "rangeSeconds": 0.0,
+      "averageMph": 49.84118928337097,
+      "zeroTo30": 2.69818115234375,
+      "sustainableMph": 53.687428256988525,
+      "brakingMetres": null,
+      "apexMph": null,
+      "maxOffset": 0.004437060561031103
+    },
+    {
+      "course": "straight",
+      "loadout": "brakes_sport",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 40.400001525878906,
+      "rangeSeconds": 0.0,
+      "averageMph": 49.84118928337097,
+      "zeroTo30": 2.69818115234375,
+      "sustainableMph": 53.687428256988525,
+      "brakingMetres": null,
+      "apexMph": null,
+      "maxOffset": 0.004437060561031103
+    },
+    {
+      "course": "straight",
+      "loadout": "brakes_sport+tyres_sport",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 40.400001525878906,
+      "rangeSeconds": 0.0,
+      "averageMph": 49.84118928337097,
+      "zeroTo30": 2.69818115234375,
+      "sustainableMph": 53.687428256988525,
+      "brakingMetres": null,
+      "apexMph": null,
+      "maxOffset": 0.004437060561031103
+    },
+    {
+      "course": "straight",
+      "loadout": "engine_club+transmission_long",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 29.308334350585938,
+      "rangeSeconds": 0.0,
+      "averageMph": 68.69390734481811,
+      "zeroTo30": 1.8436269760131836,
+      "sustainableMph": 76.06536439132691,
+      "brakingMetres": null,
+      "apexMph": null,
+      "maxOffset": 0.004055957775563002
+    },
+    {
+      "course": "straight",
+      "loadout": "club",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 28.316667556762695,
+      "rangeSeconds": 0.0,
+      "averageMph": 71.10723459625244,
+      "zeroTo30": 1.282936692237854,
+      "sustainableMph": 76.07590323638917,
+      "brakingMetres": null,
+      "apexMph": null,
+      "maxOffset": 0.003832475049421191
+    },
+    {
+      "course": "brake",
+      "loadout": "stock",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 1.5833333730697632,
+      "rangeSeconds": 0.0,
+      "averageMph": 21.666099018096926,
+      "zeroTo30": -1.0,
+      "sustainableMph": null,
+      "brakingMetres": 15.33511734008789,
+      "apexMph": null,
+      "maxOffset": 0.0023211082443594933
+    },
+    {
+      "course": "brake",
+      "loadout": "engine_workshop",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 1.5833333730697632,
+      "rangeSeconds": 0.0,
+      "averageMph": 21.666099018096926,
+      "zeroTo30": -1.0,
+      "sustainableMph": null,
+      "brakingMetres": 15.33511734008789,
+      "apexMph": null,
+      "maxOffset": 0.0023211082443594933
+    },
+    {
+      "course": "brake",
+      "loadout": "engine_club",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 1.5833333730697632,
+      "rangeSeconds": 0.0,
+      "averageMph": 21.666099018096926,
+      "zeroTo30": -1.0,
+      "sustainableMph": null,
+      "brakingMetres": 15.33511734008789,
+      "apexMph": null,
+      "maxOffset": 0.0023211082443594933
+    },
+    {
+      "course": "brake",
+      "loadout": "transmission_long",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 1.5833333730697632,
+      "rangeSeconds": 0.0,
+      "averageMph": 21.666099018096926,
+      "zeroTo30": -1.0,
+      "sustainableMph": null,
+      "brakingMetres": 15.33511734008789,
+      "apexMph": null,
+      "maxOffset": 0.0023211082443594933
+    },
+    {
+      "course": "brake",
+      "loadout": "transmission_close",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 1.5833333730697632,
+      "rangeSeconds": 0.0,
+      "averageMph": 21.666099018096926,
+      "zeroTo30": -1.0,
+      "sustainableMph": null,
+      "brakingMetres": 15.33511734008789,
+      "apexMph": null,
+      "maxOffset": 0.0023211082443594933
+    },
+    {
+      "course": "brake",
+      "loadout": "tyres_sport",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 1.3250000476837158,
+      "rangeSeconds": 0.0,
+      "averageMph": 21.74425927448273,
+      "zeroTo30": -1.0,
+      "sustainableMph": null,
+      "brakingMetres": 12.87936782836914,
+      "apexMph": null,
+      "maxOffset": 0.0017612527590245008
+    },
+    {
+      "course": "brake",
+      "loadout": "brakes_sport",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 1.5833333730697632,
+      "rangeSeconds": 0.0,
+      "averageMph": 21.666099018096926,
+      "zeroTo30": -1.0,
+      "sustainableMph": null,
+      "brakingMetres": 15.33511734008789,
+      "apexMph": null,
+      "maxOffset": 0.0023211082443594933
+    },
+    {
+      "course": "brake",
+      "loadout": "brakes_sport+tyres_sport",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 0.9916667342185974,
+      "rangeSeconds": 0.0,
+      "averageMph": 21.88466911792755,
+      "zeroTo30": -1.0,
+      "sustainableMph": null,
+      "brakingMetres": 9.701519012451172,
+      "apexMph": null,
+      "maxOffset": 0.0010635361541062593
+    },
+    {
+      "course": "brake",
+      "loadout": "engine_club+transmission_long",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 1.5833333730697632,
+      "rangeSeconds": 0.0,
+      "averageMph": 21.666099018096926,
+      "zeroTo30": -1.0,
+      "sustainableMph": null,
+      "brakingMetres": 15.33511734008789,
+      "apexMph": null,
+      "maxOffset": 0.0023211082443594933
+    },
+    {
+      "course": "brake",
+      "loadout": "club",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 0.9500000476837158,
+      "rangeSeconds": 0.0,
+      "averageMph": 21.75633841228485,
+      "zeroTo30": -1.0,
+      "sustainableMph": null,
+      "brakingMetres": 9.23939323425293,
+      "apexMph": null,
+      "maxOffset": 0.0009659134084358811
+    },
+    {
+      "course": "uturn",
+      "loadout": "stock",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 24.158334732055664,
+      "rangeSeconds": 0.0,
+      "averageMph": 38.05691727256775,
+      "zeroTo30": 2.69818115234375,
+      "sustainableMph": null,
+      "brakingMetres": null,
+      "apexMph": 27.09929605484009,
+      "maxOffset": 0.8672828674316406
+    },
+    {
+      "course": "uturn",
+      "loadout": "engine_workshop",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 22.683334350585938,
+      "rangeSeconds": 0.0,
+      "averageMph": 40.52504225158692,
+      "zeroTo30": 2.070840358734131,
+      "sustainableMph": null,
+      "brakingMetres": null,
+      "apexMph": 27.099665127754214,
+      "maxOffset": 0.8674163818359375
+    },
+    {
+      "course": "uturn",
+      "loadout": "engine_club",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 22.13333511352539,
+      "rangeSeconds": 0.0,
+      "averageMph": 41.53448013877869,
+      "zeroTo30": 1.5272151231765747,
+      "sustainableMph": null,
+      "brakingMetres": null,
+      "apexMph": 27.09949872493744,
+      "maxOffset": 0.8672218322753906
+    },
+    {
+      "course": "uturn",
+      "loadout": "transmission_long",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 24.791667938232422,
+      "rangeSeconds": 0.0,
+      "averageMph": 37.076932683944705,
+      "zeroTo30": 3.2958743572235107,
+      "sustainableMph": null,
+      "brakingMetres": null,
+      "apexMph": 27.100780879974366,
+      "maxOffset": 0.8664627075195312
+    },
+    {
+      "course": "uturn",
+      "loadout": "transmission_close",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 23.850000381469727,
+      "rangeSeconds": 0.0,
+      "averageMph": 38.546384757995604,
+      "zeroTo30": 2.2005603313446045,
+      "sustainableMph": null,
+      "brakingMetres": null,
+      "apexMph": 27.09833177185059,
+      "maxOffset": 0.867462158203125
+    },
+    {
+      "course": "uturn",
+      "loadout": "tyres_sport",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 22.33333396911621,
+      "rangeSeconds": 0.0,
+      "averageMph": 41.23927300834656,
+      "zeroTo30": 2.69818115234375,
+      "sustainableMph": null,
+      "brakingMetres": null,
+      "apexMph": 34.671663168907166,
+      "maxOffset": 1.1748695373535156
+    },
+    {
+      "course": "uturn",
+      "loadout": "brakes_sport",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 24.158334732055664,
+      "rangeSeconds": 0.0,
+      "averageMph": 38.05691727256775,
+      "zeroTo30": 2.69818115234375,
+      "sustainableMph": null,
+      "brakingMetres": null,
+      "apexMph": 27.09929605484009,
+      "maxOffset": 0.8672828674316406
+    },
+    {
+      "course": "uturn",
+      "loadout": "brakes_sport+tyres_sport",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 22.33333396911621,
+      "rangeSeconds": 0.0,
+      "averageMph": 41.22736027336121,
+      "zeroTo30": 2.69818115234375,
+      "sustainableMph": null,
+      "brakingMetres": null,
+      "apexMph": 34.66801724052429,
+      "maxOffset": 1.1748237609863281
+    },
+    {
+      "course": "uturn",
+      "loadout": "engine_club+transmission_long",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 21.00833511352539,
+      "rangeSeconds": 0.0,
+      "averageMph": 43.761798908233644,
+      "zeroTo30": 1.8436269760131836,
+      "sustainableMph": null,
+      "brakingMetres": null,
+      "apexMph": 27.099605393409732,
+      "maxOffset": 0.8673439025878906
+    },
+    {
+      "course": "uturn",
+      "loadout": "club",
+      "repeats": 3,
+      "valid": 3,
+      "medianSeconds": 17.666667938232422,
+      "rangeSeconds": 0.0,
+      "averageMph": 52.12399699211121,
+      "zeroTo30": 1.282936692237854,
+      "sustainableMph": null,
+      "brakingMetres": null,
+      "apexMph": 34.66503692340851,
+      "maxOffset": 1.1771430969238281
+    }
+  ],
+  "passed": true,
+  "checks": [
+    {
+      "name": "Batch is terminal and contains runs",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Every attempted run completed validly",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "No recovery, impact or missed measured gate",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Same runtime assembly and physics step",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Dry-road runs remained on the measured road",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "No unexplained lift on flat fixtures",
+      "passed": true,
+      "detail": "Collider bottom clearance < 6 cm on these flat courses only."
+    },
+    {
+      "name": "Full declared 90-run matrix is present",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "straight/stock: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "straight/stock: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0808s, not desired natural AI variance."
+    },
+    {
+      "name": "stock: reached sustained speed plateau",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "stock: garage speed estimate agrees with physical run",
+      "passed": true,
+      "detail": "Tolerance 0.08 m/s covers fixed-step gearbox ceiling overshoot."
+    },
+    {
+      "name": "stock: garage 0\u201330 estimate agrees with physical run",
+      "passed": true,
+      "detail": "Independent actual-car measurement versus garage force-integration estimate; tolerance 0.04s."
+    },
+    {
+      "name": "straight/engine_workshop: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "straight/engine_workshop: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0761s, not desired natural AI variance."
+    },
+    {
+      "name": "engine_workshop: reached sustained speed plateau",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "engine_workshop: garage speed estimate agrees with physical run",
+      "passed": true,
+      "detail": "Tolerance 0.08 m/s covers fixed-step gearbox ceiling overshoot."
+    },
+    {
+      "name": "engine_workshop: garage 0\u201330 estimate agrees with physical run",
+      "passed": true,
+      "detail": "Independent actual-car measurement versus garage force-integration estimate; tolerance 0.04s."
+    },
+    {
+      "name": "straight/engine_club: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "straight/engine_club: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0749s, not desired natural AI variance."
+    },
+    {
+      "name": "engine_club: reached sustained speed plateau",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "engine_club: garage speed estimate agrees with physical run",
+      "passed": true,
+      "detail": "Tolerance 0.08 m/s covers fixed-step gearbox ceiling overshoot."
+    },
+    {
+      "name": "engine_club: garage 0\u201330 estimate agrees with physical run",
+      "passed": true,
+      "detail": "Independent actual-car measurement versus garage force-integration estimate; tolerance 0.04s."
+    },
+    {
+      "name": "straight/transmission_long: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "straight/transmission_long: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0819s, not desired natural AI variance."
+    },
+    {
+      "name": "transmission_long: reached sustained speed plateau",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "transmission_long: garage speed estimate agrees with physical run",
+      "passed": true,
+      "detail": "Tolerance 0.08 m/s covers fixed-step gearbox ceiling overshoot."
+    },
+    {
+      "name": "transmission_long: garage 0\u201330 estimate agrees with physical run",
+      "passed": true,
+      "detail": "Independent actual-car measurement versus garage force-integration estimate; tolerance 0.04s."
+    },
+    {
+      "name": "straight/transmission_close: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "straight/transmission_close: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0827s, not desired natural AI variance."
+    },
+    {
+      "name": "transmission_close: reached sustained speed plateau",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "transmission_close: garage speed estimate agrees with physical run",
+      "passed": true,
+      "detail": "Tolerance 0.08 m/s covers fixed-step gearbox ceiling overshoot."
+    },
+    {
+      "name": "transmission_close: garage 0\u201330 estimate agrees with physical run",
+      "passed": true,
+      "detail": "Independent actual-car measurement versus garage force-integration estimate; tolerance 0.04s."
+    },
+    {
+      "name": "straight/tyres_sport: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "straight/tyres_sport: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0808s, not desired natural AI variance."
+    },
+    {
+      "name": "tyres_sport: reached sustained speed plateau",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "tyres_sport: garage speed estimate agrees with physical run",
+      "passed": true,
+      "detail": "Tolerance 0.08 m/s covers fixed-step gearbox ceiling overshoot."
+    },
+    {
+      "name": "tyres_sport: garage 0\u201330 estimate agrees with physical run",
+      "passed": true,
+      "detail": "Independent actual-car measurement versus garage force-integration estimate; tolerance 0.04s."
+    },
+    {
+      "name": "straight/brakes_sport: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "straight/brakes_sport: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0808s, not desired natural AI variance."
+    },
+    {
+      "name": "brakes_sport: reached sustained speed plateau",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brakes_sport: garage speed estimate agrees with physical run",
+      "passed": true,
+      "detail": "Tolerance 0.08 m/s covers fixed-step gearbox ceiling overshoot."
+    },
+    {
+      "name": "brakes_sport: garage 0\u201330 estimate agrees with physical run",
+      "passed": true,
+      "detail": "Independent actual-car measurement versus garage force-integration estimate; tolerance 0.04s."
+    },
+    {
+      "name": "straight/brakes_sport+tyres_sport: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "straight/brakes_sport+tyres_sport: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0808s, not desired natural AI variance."
+    },
+    {
+      "name": "brakes_sport+tyres_sport: reached sustained speed plateau",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brakes_sport+tyres_sport: garage speed estimate agrees with physical run",
+      "passed": true,
+      "detail": "Tolerance 0.08 m/s covers fixed-step gearbox ceiling overshoot."
+    },
+    {
+      "name": "brakes_sport+tyres_sport: garage 0\u201330 estimate agrees with physical run",
+      "passed": true,
+      "detail": "Independent actual-car measurement versus garage force-integration estimate; tolerance 0.04s."
+    },
+    {
+      "name": "straight/engine_club+transmission_long: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "straight/engine_club+transmission_long: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0586s, not desired natural AI variance."
+    },
+    {
+      "name": "engine_club+transmission_long: reached sustained speed plateau",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "engine_club+transmission_long: garage speed estimate agrees with physical run",
+      "passed": true,
+      "detail": "Tolerance 0.08 m/s covers fixed-step gearbox ceiling overshoot."
+    },
+    {
+      "name": "engine_club+transmission_long: garage 0\u201330 estimate agrees with physical run",
+      "passed": true,
+      "detail": "Independent actual-car measurement versus garage force-integration estimate; tolerance 0.04s."
+    },
+    {
+      "name": "straight/club: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "straight/club: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0566s, not desired natural AI variance."
+    },
+    {
+      "name": "club: reached sustained speed plateau",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "club: garage speed estimate agrees with physical run",
+      "passed": true,
+      "detail": "Tolerance 0.08 m/s covers fixed-step gearbox ceiling overshoot."
+    },
+    {
+      "name": "club: garage 0\u201330 estimate agrees with physical run",
+      "passed": true,
+      "detail": "Independent actual-car measurement versus garage force-integration estimate; tolerance 0.04s."
+    },
+    {
+      "name": "brake/stock: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brake/stock: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "brake/engine_workshop: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brake/engine_workshop: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "brake/engine_club: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brake/engine_club: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "brake/transmission_long: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brake/transmission_long: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "brake/transmission_close: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brake/transmission_close: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "brake/tyres_sport: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brake/tyres_sport: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "brake/brakes_sport: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brake/brakes_sport: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "brake/brakes_sport+tyres_sport: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brake/brakes_sport+tyres_sport: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "brake/engine_club+transmission_long: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brake/engine_club+transmission_long: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "brake/club: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "brake/club: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "uturn/stock: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "uturn/stock: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "uturn/engine_workshop: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "uturn/engine_workshop: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "uturn/engine_club: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "uturn/engine_club: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "uturn/transmission_long: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "uturn/transmission_long: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "uturn/transmission_close: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "uturn/transmission_close: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "uturn/tyres_sport: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "uturn/tyres_sport: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "uturn/brakes_sport: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "uturn/brakes_sport: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "uturn/brakes_sport+tyres_sport: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "uturn/brakes_sport+tyres_sport: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "uturn/engine_club+transmission_long: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "uturn/engine_club+transmission_long: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "uturn/club: at least three repeats",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "uturn/club: repeatable elapsed time",
+      "passed": true,
+      "detail": "Range 0.000000s; fixed-driver tolerance 0.0500s, not desired natural AI variance."
+    },
+    {
+      "name": "Workshop engine materially improves 0\u201330 mph",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Club engine improves launch further",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Long gearing alone does not invent engine power/top speed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Long gearing trades away some launch acceleration",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Close gearing improves launch but lowers maximum speed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Powerful engine benefits from longer gearing",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Sport brakes alone meet the stock tyre ceiling",
+      "passed": true,
+      "detail": "Expected current model limitation; no blanket assertion that every purchase improves every metric."
+    },
+    {
+      "name": "Better tyres unlock more of the stock brakes",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Sport brakes add a benefit with sport tyres",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Road sport tyres improve corner speed and total U-turn run",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Road sport tyres do not invent extra engine top speed",
+      "passed": true,
+      "detail": ""
+    }
+  ],
+  "driverLimitations": [
+    "The reference policy caps braking reserve conservatively. Sport brakes plus sport tyres shorten the physical stopping test but do not improve the U-turn elapsed time over sport tyres alone in this batch. Treat this as a driver-policy limit; these laps are not the ideal performance ceiling of each loadout."
+  ]
+}

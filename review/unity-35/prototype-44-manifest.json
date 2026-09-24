@@ -1,0 +1,45 @@
+{
+  "sourceFiles": [
+    {
+      "file": "analyze-preview-car.py",
+      "sha256": "E59326537992FB6B0E0E1396B292AB4566EBD05FEF5261D234FA211B8A0301CF"
+    },
+    {
+      "file": "ContextDriverPolicy.cs",
+      "sha256": "E23414D8DF3AFAF9887722A0512E63C86C481846E4C60229B14F3B4EB0A9F81F"
+    },
+    {
+      "file": "ContextPreferenceMap.cs",
+      "sha256": "7E7A492AFED10C34BB79E2B51610FE914D8E0AD00AB9DE2A802046C700135889"
+    },
+    {
+      "file": "DriverPlanningChecks.cs",
+      "sha256": "CF47880ACF081CB38750B566FA54A51C32FEF14E13DBF0582AE01B2DC07AADF5"
+    },
+    {
+      "file": "DriverPlanningSettings.cs",
+      "sha256": "99FCDF5FA1A861D0A6BA03DE7D6DF711027DFFFEE70B1D0164E99ECE6B2A661E"
+    },
+    {
+      "file": "RoadCar.cs",
+      "sha256": "A0A8B817A90437C43F17DFA47C68972CB4B870EA3336D8B29BF479E0DAC21BCA"
+    },
+    {
+      "file": "run-risk-field-comparison.ps1",
+      "sha256": "496E9B7637598D32DC24A478E3444E728DCF5A2E9FC52DF6C7D33E099945ADB3"
+    },
+    {
+      "file": "run-technical-trial.ps1",
+      "sha256": "BDB682BBB8D084D176D2665336F9D84686B6C45796E7A1F5B8C9CC59838A0C85"
+    },
+    {
+      "file": "TechnicalCircuitReview.cs",
+      "sha256": "2C3A06760AC7CB00643F79109C79BC1BE128BE14C447C195DDBB4E70DD258C34"
+    }
+  ],
+  "buildChecks": 310,
+  "assemblyHash": "A9C7736B58C350FD14803A78538FBA5E2F5DC46DF102D31B3ABC4732E60DF99D",
+  "acceptance": "REJECTED risk5 combined candidate:22/24 finish,35paircontacts,10.9681m/s peak,88 sampled body departures and4035 active unresolved samples. Risk0 exact43parity. See risk-44-review.md.",
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-44-review\\Little Road Unity.exe",
+  "version": 44
+}

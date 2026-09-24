@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "case": "uturn/stock",
+      "valid": true,
+      "time": 23.616668701171875,
+      "baselineTime": 23.616668701171875,
+      "exactTime": true,
+      "contacts": 0,
+      "recoveries": 0,
+      "missedGates": 0
+    },
+    {
+      "case": "uturn/club",
+      "valid": true,
+      "time": 16.83333396911621,
+      "baselineTime": 16.83333396911621,
+      "exactTime": true,
+      "contacts": 0,
+      "recoveries": 0,
+      "missedGates": 0
+    },
+    {
+      "case": "hill/stock",
+      "valid": true,
+      "time": 41.6583366394043,
+      "baselineTime": 41.6583366394043,
+      "exactTime": true,
+      "contacts": 0,
+      "recoveries": 0,
+      "missedGates": 0
+    },
+    {
+      "case": "hill/club",
+      "valid": true,
+      "time": 28.491668701171875,
+      "baselineTime": 28.491668701171875,
+      "exactTime": true,
+      "contacts": 0,
+      "recoveries": 0,
+      "missedGates": 0
+    }
+  ]
+}

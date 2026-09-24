@@ -1,0 +1,10 @@
+{
+  "prefixIdentical": true,
+  "baselineRows": 2448,
+  "candidateRows": 2424,
+  "extraRows": 24,
+  "allExtraAfterFinish": true,
+  "firstExtraTime": 101.00574493408203,
+  "lastFinish": 100.8307876586914,
+  "scope": "Raw motion parity failure retained. Additional tail rows do not alter the entire earlier recorded motion prefix."
+}

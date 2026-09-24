@@ -1,0 +1,43 @@
+{
+  "executable": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-traffic-17-review\\Little Road Unity.exe",
+  "assemblyHash": "D98B774B88CB14EA1FFF882E76DD3B88A5E3AA2ADDF5FEADC91177E9718135CC",
+  "complete": true,
+  "runs": [
+    {
+      "side": "left",
+      "loadout": "street",
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\lanes-17\\left-street\\race.json"
+    },
+    {
+      "side": "left",
+      "loadout": "club",
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\lanes-17\\left-club\\race.json"
+    },
+    {
+      "side": "middle",
+      "loadout": "street",
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\lanes-17\\middle-street\\race.json"
+    },
+    {
+      "side": "middle",
+      "loadout": "club",
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\lanes-17\\middle-club\\race.json"
+    },
+    {
+      "side": "right",
+      "loadout": "street",
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\lanes-17\\right-street\\race.json"
+    },
+    {
+      "side": "right",
+      "loadout": "club",
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\lanes-17\\right-club\\race.json"
+    }
+  ]
+}

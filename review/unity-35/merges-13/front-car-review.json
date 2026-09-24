@@ -1,0 +1,34 @@
+{
+  "left-12": {
+    "frontBrakeSamplesBeforeCorner": 1,
+    "frontMinSpeed": 16.988082885742188,
+    "rearApproachSamples": 12,
+    "maxSideOffset": 5.1770172119140625,
+    "frontBrakeSamplesAfterLaunchBeforeCorner": 0,
+    "note": "The sole negative-pedal record is at green (time 0.0000117), target 12, identical in the witness; retained above. After the launch interval there are no negative-pedal samples on the initial straight."
+  },
+  "right-12": {
+    "frontBrakeSamplesBeforeCorner": 1,
+    "frontMinSpeed": 16.977378845214844,
+    "rearApproachSamples": 12,
+    "maxSideOffset": 5.191680908203125,
+    "frontBrakeSamplesAfterLaunchBeforeCorner": 0,
+    "note": "The sole negative-pedal record is at green (time 0.0000117), target 12, identical in the witness; retained above. After the launch interval there are no negative-pedal samples on the initial straight."
+  },
+  "left-24": {
+    "frontBrakeSamplesBeforeCorner": 1,
+    "frontMinSpeed": 16.988082885742188,
+    "rearApproachSamples": 26,
+    "maxSideOffset": 5.1770172119140625,
+    "frontBrakeSamplesAfterLaunchBeforeCorner": 0,
+    "note": "The sole negative-pedal record is at green (time 0.0000117), target 12, identical in the witness; retained above. After the launch interval there are no negative-pedal samples on the initial straight."
+  },
+  "right-24": {
+    "frontBrakeSamplesBeforeCorner": 1,
+    "frontMinSpeed": 16.977378845214844,
+    "rearApproachSamples": 26,
+    "maxSideOffset": 5.1903533935546875,
+    "frontBrakeSamplesAfterLaunchBeforeCorner": 0,
+    "note": "The sole negative-pedal record is at green (time 0.0000117), target 12, identical in the witness; retained above. After the launch interval there are no negative-pedal samples on the initial straight."
+  }
+}

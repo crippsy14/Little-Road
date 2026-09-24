@@ -1,0 +1,355 @@
+{
+  "scope": "Cedar first-lap mixed street/club field; not general AI or player acceptance.",
+  "soloEvidenceRoot": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34",
+  "soloStandingLapSeconds": {
+    "street": 86.4343032836914,
+    "club": 67.32230377197266
+  },
+  "cutoffSeconds": 117,
+  "firstMovementSeconds": 0.2000117301940918,
+  "firstMovementToLastLapSeconds": 98.67292070388794,
+  "firstLapTimes": {
+    "0": 90.41666412353516,
+    "1": 89.65018463134766,
+    "2": 92.44116973876953,
+    "3": 90.39167022705078,
+    "4": 75.18704986572266,
+    "5": 93.54090118408203,
+    "6": 94.18241119384766,
+    "7": 92.9660415649414,
+    "8": 83.92658233642578,
+    "9": 95.12384796142578,
+    "10": 95.1321792602539,
+    "11": 95.97364044189453,
+    "12": 82.21866607666016,
+    "13": 94.68228912353516,
+    "14": 95.64038848876953,
+    "15": 96.49018096923828,
+    "16": 87.1008071899414,
+    "17": 97.81485748291016,
+    "18": 97.2316665649414,
+    "19": 96.24857330322266,
+    "20": 91.24146270751953,
+    "21": 98.87293243408203,
+    "22": 96.80677032470703,
+    "23": 98.3980484008789
+  },
+  "totalCarSeconds": 2221.678985595703,
+  "meanCarSeconds": 92.5699577331543,
+  "lastCarSeconds": 98.87293243408203,
+  "completedCars": 24,
+  "expectedCars": 24,
+  "collectiveTimeBasis": "Valid first-lap completion after green: official one-lap finishes or ordered checkpoint events; historical fallback is sampled lap count, never route progress alone. Incomplete if any car is missing.",
+  "contacts": 4,
+  "physicalRecoveries": 0,
+  "slowCarSecondsAfterLaunch": 0.0,
+  "sustainedEquipmentPasses": [
+    {
+      "follower": 16,
+      "leader": 11,
+      "time": 47.00281524658203
+    },
+    {
+      "follower": 12,
+      "leader": 5,
+      "time": 49.10326385498047
+    },
+    {
+      "follower": 12,
+      "leader": 6,
+      "time": 49.203285217285156
+    },
+    {
+      "follower": 12,
+      "leader": 2,
+      "time": 51.00366973876953
+    },
+    {
+      "follower": 8,
+      "leader": 2,
+      "time": 58.905357360839844
+    },
+    {
+      "follower": 0,
+      "leader": 17,
+      "time": 61.00580596923828
+    },
+    {
+      "follower": 12,
+      "leader": 3,
+      "time": 61.50591278076172
+    },
+    {
+      "follower": 16,
+      "leader": 9,
+      "time": 62.30608367919922
+    },
+    {
+      "follower": 12,
+      "leader": 1,
+      "time": 64.5063247680664
+    },
+    {
+      "follower": 8,
+      "leader": 3,
+      "time": 64.6063003540039
+    },
+    {
+      "follower": 16,
+      "leader": 10,
+      "time": 64.9062271118164
+    },
+    {
+      "follower": 16,
+      "leader": 6,
+      "time": 67.0057144165039
+    },
+    {
+      "follower": 16,
+      "leader": 5,
+      "time": 67.6055679321289
+    },
+    {
+      "follower": 16,
+      "leader": 7,
+      "time": 69.7050552368164
+    },
+    {
+      "follower": 20,
+      "leader": 15,
+      "time": 69.9050064086914
+    },
+    {
+      "follower": 16,
+      "leader": 2,
+      "time": 70.1049575805664
+    },
+    {
+      "follower": 20,
+      "leader": 11,
+      "time": 70.4048843383789
+    },
+    {
+      "follower": 8,
+      "leader": 1,
+      "time": 71.5046157836914
+    },
+    {
+      "follower": 20,
+      "leader": 9,
+      "time": 71.7045669555664
+    },
+    {
+      "follower": 20,
+      "leader": 14,
+      "time": 71.7045669555664
+    },
+    {
+      "follower": 0,
+      "leader": 18,
+      "time": 71.8045425415039
+    },
+    {
+      "follower": 20,
+      "leader": 13,
+      "time": 73.0042495727539
+    },
+    {
+      "follower": 0,
+      "leader": 15,
+      "time": 73.4041519165039
+    },
+    {
+      "follower": 0,
+      "leader": 11,
+      "time": 73.9040298461914
+    },
+    {
+      "follower": 20,
+      "leader": 10,
+      "time": 74.3039321899414
+    },
+    {
+      "follower": 0,
+      "leader": 9,
+      "time": 75.2037124633789
+    },
+    {
+      "follower": 0,
+      "leader": 14,
+      "time": 75.2037124633789
+    },
+    {
+      "follower": 20,
+      "leader": 6,
+      "time": 76.0035171508789
+    },
+    {
+      "follower": 0,
+      "leader": 13,
+      "time": 76.4034194946289
+    },
+    {
+      "follower": 20,
+      "leader": 5,
+      "time": 77.0032730102539
+    },
+    {
+      "follower": 0,
+      "leader": 10,
+      "time": 77.5031509399414
+    },
+    {
+      "follower": 0,
+      "leader": 6,
+      "time": 78.7028579711914
+    },
+    {
+      "follower": 16,
+      "leader": 3,
+      "time": 79.4026870727539
+    },
+    {
+      "follower": 0,
+      "leader": 5,
+      "time": 80.3024673461914
+    },
+    {
+      "follower": 0,
+      "leader": 7,
+      "time": 82.1020278930664
+    },
+    {
+      "follower": 16,
+      "leader": 1,
+      "time": 82.8018569946289
+    },
+    {
+      "follower": 0,
+      "leader": 2,
+      "time": 83.1017837524414
+    },
+    {
+      "follower": 20,
+      "leader": 7,
+      "time": 87.1008071899414
+    },
+    {
+      "follower": 20,
+      "leader": 2,
+      "time": 90.2000503540039
+    }
+  ],
+  "passed": 11,
+  "total": 11,
+  "checks": [
+    {
+      "name": "At least 24 entrants",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Every car completes lap one",
+      "passed": true,
+      "detail": {
+        "0": 90.41666412353516,
+        "1": 89.65018463134766,
+        "2": 92.44116973876953,
+        "3": 90.39167022705078,
+        "4": 75.18704986572266,
+        "5": 93.54090118408203,
+        "6": 94.18241119384766,
+        "7": 92.9660415649414,
+        "8": 83.92658233642578,
+        "9": 95.12384796142578,
+        "10": 95.1321792602539,
+        "11": 95.97364044189453,
+        "12": 82.21866607666016,
+        "13": 94.68228912353516,
+        "14": 95.64038848876953,
+        "15": 96.49018096923828,
+        "16": 87.1008071899414,
+        "17": 97.81485748291016,
+        "18": 97.2316665649414,
+        "19": 96.24857330322266,
+        "20": 91.24146270751953,
+        "21": 98.87293243408203,
+        "22": 96.80677032470703,
+        "23": 98.3980484008789
+      }
+    },
+    {
+      "name": "First movement within two seconds of green",
+      "passed": true,
+      "detail": 0.2000117301940918
+    },
+    {
+      "name": "Every car starts within eight seconds",
+      "passed": true,
+      "detail": {
+        "0": 0.3000117242336273,
+        "1": 0.2000117301940918,
+        "2": 0.2000117301940918,
+        "3": 0.2000117301940918,
+        "4": 0.2000117301940918,
+        "5": 0.2000117301940918,
+        "6": 0.2000117301940918,
+        "7": 0.3000117242336273,
+        "8": 0.2000117301940918,
+        "9": 0.2000117301940918,
+        "10": 0.3000117242336273,
+        "11": 0.3000117242336273,
+        "12": 0.2000117301940918,
+        "13": 0.3000117242336273,
+        "14": 0.3000117242336273,
+        "15": 0.3000117242336273,
+        "16": 0.3000117242336273,
+        "17": 0.3000117242336273,
+        "18": 0.3000117242336273,
+        "19": 0.3000117242336273,
+        "20": 0.3000117242336273,
+        "21": 0.3000117242336273,
+        "22": 0.3000117242336273,
+        "23": 0.3000117242336273
+      }
+    },
+    {
+      "name": "First movement to last first-lap completion within cutoff",
+      "passed": true,
+      "detail": {
+        "seconds": 98.67292070388794,
+        "cutoff": 117
+      }
+    },
+    {
+      "name": "No recoveries",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "No missedGates",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "No sampled body departure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "No pose overlap above 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "No recovery episodes in the first 15 seconds",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Equipment advantage creates a sustained overtake",
+      "passed": true,
+      "detail": 39
+    }
+  ]
+}

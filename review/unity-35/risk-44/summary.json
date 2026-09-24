@@ -1,0 +1,62 @@
+{
+  "scope": "One-seed 24-car experiment, no rendered-frame or player acceptance.",
+  "readyForControlledRegressions": false,
+  "checks": {
+    "risk0ExactParity": true,
+    "earlierCheckpointProgress": true,
+    "betterPreviewFinish": false,
+    "fasterCompleteField": false,
+    "fieldGates": false,
+    "checkpointDeadlines": false,
+    "contactReviewThreshold": false
+  },
+  "results": [
+    {
+      "risk": 0,
+      "finished": 24,
+      "cars": 24,
+      "totalCarSeconds": 2237.2251892089844,
+      "previewCheckpoint1": [
+        24,
+        24
+      ],
+      "previewFinalPlace": 10,
+      "pairContacts": 5,
+      "contactRecords": 10,
+      "maximumImpact": 4.907209873199463,
+      "outsideBodySamples": 0,
+      "assistedRecoveries": 0,
+      "physicalRecoveries": 0,
+      "unresolvedActiveSamples": 138,
+      "diagnostics": {
+        "analyze-preview-car.py": true,
+        "analyze-field-race.py": true,
+        "analyze-checkpoint-flow.py": true
+      }
+    },
+    {
+      "risk": 5,
+      "finished": 22,
+      "cars": 24,
+      "totalCarSeconds": null,
+      "previewCheckpoint1": [
+        18,
+        18
+      ],
+      "previewFinalPlace": 20,
+      "pairContacts": 35,
+      "contactRecords": 70,
+      "maximumImpact": 10.968125343322754,
+      "outsideBodySamples": 88,
+      "assistedRecoveries": 3,
+      "physicalRecoveries": 7,
+      "unresolvedActiveSamples": 4035,
+      "diagnostics": {
+        "analyze-preview-car.py": true,
+        "analyze-field-race.py": false,
+        "analyze-checkpoint-flow.py": false
+      }
+    }
+  ],
+  "outstanding": "Existing no-unresolved-path and rendered AI CPU/startup requirements remain open. A passing field run alone never promotes production."
+}

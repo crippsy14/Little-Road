@@ -1,0 +1,13 @@
+Start line 24/24 by 12 s met
+Checkpoint 1 24/24 by 20 s met
+Checkpoint 2 18/24 by 29 s multiple-car-delay
+Checkpoint 3 18/24 by 38 s multiple-car-delay
+Checkpoint 4 18/24 by 47 s multiple-car-delay
+Checkpoint 5 18/24 by 56 s multiple-car-delay
+Checkpoint 6 18/24 by 65 s multiple-car-delay
+Checkpoint 7 18/24 by 74 s multiple-car-delay
+Checkpoint 8 18/24 by 82 s multiple-car-delay
+Checkpoint 9 18/24 by 91 s multiple-car-delay
+Checkpoint 10 18/24 by 100 s multiple-car-delay
+Checkpoint 11 18/24 by 108 s multiple-car-delay
+Lap-one finish 18/24 by 117 s multiple-car-delay

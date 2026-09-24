@@ -1,0 +1,32 @@
+{
+    "playerLast": true,
+    "entrants": 1,
+    "playerStartingPlace": 1,
+    "entries": [
+        {
+            "driver": 0,
+            "slot": 0,
+            "laps": 0,
+            "nextGate": 0,
+            "progress": -8.0,
+            "nextGateProgress": 0.0,
+            "equipment": "club",
+            "position": {
+                "x": -108.00019073486328,
+                "y": 0.11999931931495667,
+                "z": -156.5
+            },
+            "tuning": {
+                "power": 418.95721435546875,
+                "acceleration": 11.163310050964355,
+                "mass": 0.8700000047683716,
+                "gearCeiling": 34.0,
+                "braking": 28.735631942749023,
+                "roadGrip": 12.0,
+                "dirtGrip": 3.0,
+                "response": 6.0,
+                "yaw": 1.1799999475479126
+            }
+        }
+    ]
+}

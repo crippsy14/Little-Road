@@ -1,0 +1,689 @@
+{
+    "scope": "Captured chosen continuation overrides. Original nominal forecasts are verified before counterfactual scoring. Traffic scores use the live following controller with fixed observed rival velocity and fading observed yaw. No future rival inputs, repeated replanning, scenery or emergency controller is replayed. Scores are a comparison hypothesis, not guaranteed live progress or collision/road certification.",
+    "captured": 20,
+    "dropped": 0,
+    "nominalMatches": 20,
+    "trafficKeepsContinuation": 16,
+    "rows": [
+        {
+            "id": 0,
+            "timestamp": 13.791666666666666,
+            "route": 1443.22216796875,
+            "speed": 24.033079147338867,
+            "proposalTarget": 0.31935855746269226,
+            "continuationTarget": 6.289999485015869,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 47.4794921875,
+                "endSpeed": 26.982563018798828,
+                "bound": 7.831790447235107
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 58.812744140625,
+                "endSpeed": 32.98408508300781,
+                "bound": 7.897818088531494
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 46.8167724609375,
+                "endSpeed": 26.606691360473633,
+                "bound": 7.831790447235107
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 50.1734619140625,
+                "endSpeed": 24.02466583251953,
+                "bound": 7.89072322845459
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 13.891666666666666,
+            "route": 1445.621826171875,
+            "speed": 24.0335636138916,
+            "proposalTarget": 0.7989561557769775,
+            "continuationTarget": 6.289999485015869,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": false,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 48.6964111328125,
+                "endSpeed": 27.788042068481445,
+                "bound": 7.868780136108398
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 58.82275390625,
+                "endSpeed": 33.075111389160156,
+                "bound": 7.885678291320801
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 47.568603515625,
+                "endSpeed": 27.190837860107422,
+                "bound": 7.866186141967773
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 50.594970703125,
+                "endSpeed": 24.0289306640625,
+                "bound": 7.885190010070801
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 13.991666666666664,
+            "route": 1448.02392578125,
+            "speed": 24.14809799194336,
+            "proposalTarget": 0.7989550232887268,
+            "continuationTarget": 6.289999485015869,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 48.896240234375,
+                "endSpeed": 27.842378616333008,
+                "bound": 7.8765058517456055
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 58.9830322265625,
+                "endSpeed": 32.85166549682617,
+                "bound": 7.899624824523926
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 47.6531982421875,
+                "endSpeed": 27.190771102905273,
+                "bound": 7.8765058517456055
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 51.14306640625,
+                "endSpeed": 24.040189743041992,
+                "bound": 7.898627281188965
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 14.091666666666669,
+            "route": 1450.473388671875,
+            "speed": 24.821874618530273,
+            "proposalTarget": 0.7989471554756165,
+            "continuationTarget": 6.289999485015869,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 49.8572998046875,
+                "endSpeed": 28.199140548706055,
+                "bound": 7.899796485900879
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 59.83544921875,
+                "endSpeed": 33.16604232788086,
+                "bound": 7.899894714355469
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 48.09716796875,
+                "endSpeed": 27.310731887817383,
+                "bound": 7.899796485900879
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 51.5740966796875,
+                "endSpeed": 24.042327880859375,
+                "bound": 7.899670124053955
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 14.191666666666666,
+            "route": 1452.989501953125,
+            "speed": 25.473085403442383,
+            "proposalTarget": 0.7989299297332764,
+            "continuationTarget": 6.289999485015869,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 50.8060302734375,
+                "endSpeed": 28.54817008972168,
+                "bound": 7.893460750579834
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 60.6468505859375,
+                "endSpeed": 33.211395263671875,
+                "bound": 7.897695541381836
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 48.474853515625,
+                "endSpeed": 27.393945693969727,
+                "bound": 7.893460750579834
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 52.1356201171875,
+                "endSpeed": 24.052846908569336,
+                "bound": 7.897269248962402
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 14.291666666666666,
+            "route": 1455.5701904296875,
+            "speed": 26.1019287109375,
+            "proposalTarget": 0.7989037036895752,
+            "continuationTarget": 6.289999485015869,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 51.83984375,
+                "endSpeed": 28.95737075805664,
+                "bound": 7.899431228637695
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 61.3836669921875,
+                "endSpeed": 33.26670837402344,
+                "bound": 7.8953351974487305
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 48.923583984375,
+                "endSpeed": 27.455415725708008,
+                "bound": 7.899431228637695
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 52.67529296875,
+                "endSpeed": 24.06293487548828,
+                "bound": 7.898678779602051
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 17.966666666666665,
+            "route": 1544.845947265625,
+            "speed": 23.869762420654297,
+            "proposalTarget": -0.7987140417098999,
+            "continuationTarget": -6.289999961853027,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 48.922607421875,
+                "endSpeed": 24.75592613220215,
+                "bound": 7.635715484619141
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 60.9779052734375,
+                "endSpeed": 28.887723922729492,
+                "bound": 7.876307487487793
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 46.6944580078125,
+                "endSpeed": 23.25155258178711,
+                "bound": 7.768984794616699
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 54.091064453125,
+                "endSpeed": 28.209550857543945,
+                "bound": 7.888644695281982
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 18.066666666666663,
+            "route": 1547.3524169921875,
+            "speed": 23.864234924316406,
+            "proposalTarget": -0.7987027168273926,
+            "continuationTarget": -6.289999961853027,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 48.2625732421875,
+                "endSpeed": 24.301408767700195,
+                "bound": 7.854076385498047
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 60.9305419921875,
+                "endSpeed": 28.989336013793945,
+                "bound": 7.898003101348877
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 46.4730224609375,
+                "endSpeed": 23.279930114746094,
+                "bound": 7.804311275482178
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 54.1429443359375,
+                "endSpeed": 28.0413761138916,
+                "bound": 7.890976428985596
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 18.175,
+            "route": 1549.99462890625,
+            "speed": 23.859783172607422,
+            "proposalTarget": -0.826067328453064,
+            "continuationTarget": -6.289999961853027,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 47.57080078125,
+                "endSpeed": 23.818662643432617,
+                "bound": 7.883427619934082
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 60.7978515625,
+                "endSpeed": 28.96088981628418,
+                "bound": 7.893161773681641
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 46.3453369140625,
+                "endSpeed": 23.238189697265625,
+                "bound": 7.876188278198242
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 54.247314453125,
+                "endSpeed": 27.925125122070313,
+                "bound": 7.896544456481934
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 18.28333333333333,
+            "route": 1552.64208984375,
+            "speed": 23.856111526489258,
+            "proposalTarget": -1.3228743076324463,
+            "continuationTarget": -6.289999961853027,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 48.410888671875,
+                "endSpeed": 24.16788101196289,
+                "bound": 7.801009654998779
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 60.2469482421875,
+                "endSpeed": 28.970073699951172,
+                "bound": 7.897641181945801
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 46.7691650390625,
+                "endSpeed": 23.494630813598633,
+                "bound": 7.7697858810424805
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 54.3900146484375,
+                "endSpeed": 28.008630752563477,
+                "bound": 7.890895366668701
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 18.383333333333333,
+            "route": 1555.1920166015625,
+            "speed": 23.852603912353516,
+            "proposalTarget": -1.3228696584701538,
+            "continuationTarget": -6.289999961853027,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 47.908935546875,
+                "endSpeed": 23.809358596801758,
+                "bound": 7.7368011474609375
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 59.6396484375,
+                "endSpeed": 28.976652145385742,
+                "bound": 7.898419380187988
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 46.6087646484375,
+                "endSpeed": 23.3592529296875,
+                "bound": 7.771344184875488
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 54.3482666015625,
+                "endSpeed": 28.03219223022461,
+                "bound": 7.88022518157959
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 18.483333333333334,
+            "route": 1557.6605224609375,
+            "speed": 23.848590850830078,
+            "proposalTarget": -1.3275091648101807,
+            "continuationTarget": -6.289999961853027,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 47.7686767578125,
+                "endSpeed": 23.6751651763916,
+                "bound": 7.864654541015625
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 59.41748046875,
+                "endSpeed": 29.147809982299805,
+                "bound": 7.899009704589844
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 46.551513671875,
+                "endSpeed": 23.31075096130371,
+                "bound": 7.875027656555176
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 54.277587890625,
+                "endSpeed": 28.045333862304688,
+                "bound": 7.8988189697265625
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 18.591666666666665,
+            "route": 1560.439208984375,
+            "speed": 23.843442916870117,
+            "proposalTarget": -1.450258493423462,
+            "continuationTarget": -6.289999961853027,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 47.655517578125,
+                "endSpeed": 23.561290740966797,
+                "bound": 7.880385875701904
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 58.92333984375,
+                "endSpeed": 29.16745948791504,
+                "bound": 7.899789810180664
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 46.5782470703125,
+                "endSpeed": 23.32258415222168,
+                "bound": 7.89508056640625
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 54.18994140625,
+                "endSpeed": 28.028242111206055,
+                "bound": 7.896023750305176
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 18.691666666666663,
+            "route": 1562.924560546875,
+            "speed": 23.837743759155273,
+            "proposalTarget": -1.847025752067566,
+            "continuationTarget": -6.289999961853027,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 48.345947265625,
+                "endSpeed": 23.936187744140625,
+                "bound": 7.889026641845703
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 58.8258056640625,
+                "endSpeed": 29.27771759033203,
+                "bound": 7.899819374084473
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 47.0267333984375,
+                "endSpeed": 23.57443618774414,
+                "bound": 7.8462090492248535
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 54.186279296875,
+                "endSpeed": 28.185392379760742,
+                "bound": 7.899210453033447
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 18.8,
+            "route": 1565.7308349609375,
+            "speed": 23.83041763305664,
+            "proposalTarget": -1.8470189571380615,
+            "continuationTarget": -6.289999961853027,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 48.163330078125,
+                "endSpeed": 23.83858871459961,
+                "bound": 7.896963119506836
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 58.5794677734375,
+                "endSpeed": 29.341781616210938,
+                "bound": 7.8979268074035645
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 46.9261474609375,
+                "endSpeed": 23.526090621948242,
+                "bound": 7.894715785980225
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 54.1754150390625,
+                "endSpeed": 28.30485725402832,
+                "bound": 7.899321556091309
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 18.90833333333333,
+            "route": 1568.4281005859375,
+            "speed": 23.821758270263672,
+            "proposalTarget": -1.8470155000686646,
+            "continuationTarget": -6.289999961853027,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 48.1619873046875,
+                "endSpeed": 23.830617904663086,
+                "bound": 7.899721145629883
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 58.6361083984375,
+                "endSpeed": 29.485107421875,
+                "bound": 7.899969100952148
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 46.9844970703125,
+                "endSpeed": 23.53721809387207,
+                "bound": 7.881919860839844
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 54.2186279296875,
+                "endSpeed": 28.328609466552734,
+                "bound": 7.8999528884887695
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 23.6,
+            "route": 1681.9715576171875,
+            "speed": 23.77227783203125,
+            "proposalTarget": 0.31362661719322205,
+            "continuationTarget": 6.289999485015869,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": false,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 48.9052734375,
+                "endSpeed": 28.708234786987305,
+                "bound": 7.89575719833374
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 57.8248291015625,
+                "endSpeed": 32.769710540771484,
+                "bound": 7.899640083312988
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 47.649169921875,
+                "endSpeed": 27.94243049621582,
+                "bound": 7.822124481201172
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 47.2379150390625,
+                "endSpeed": 23.793437957763672,
+                "bound": 7.877174377441406
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 23.7,
+            "route": 1684.339111328125,
+            "speed": 23.779338836669922,
+            "proposalTarget": 0.31107884645462036,
+            "continuationTarget": 6.289999485015869,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": false,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 48.59423828125,
+                "endSpeed": 28.47124671936035,
+                "bound": 7.809004783630371
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 57.7147216796875,
+                "endSpeed": 32.90754699707031,
+                "bound": 7.896781921386719
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 47.484619140625,
+                "endSpeed": 27.807926177978516,
+                "bound": 7.809004783630371
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 47.1722412109375,
+                "endSpeed": 23.797643661499023,
+                "bound": 7.8825297355651855
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 23.8,
+            "route": 1686.7086181640625,
+            "speed": 23.785320281982422,
+            "proposalTarget": 0.2927415370941162,
+            "continuationTarget": 6.289999485015869,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": false,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 48.312744140625,
+                "endSpeed": 28.25829315185547,
+                "bound": 7.866050720214844
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 57.671875,
+                "endSpeed": 33.0010871887207,
+                "bound": 7.894501686096191
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 47.3116455078125,
+                "endSpeed": 27.66411018371582,
+                "bound": 7.8655242919921875
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 49.7669677734375,
+                "endSpeed": 24.51976776123047,
+                "bound": 7.89470100402832
+            }
+        },
+        {
+            "id": 0,
+            "timestamp": 25.575,
+            "route": 1732.9219970703125,
+            "speed": 30.546215057373047,
+            "proposalTarget": -2.620833396911621,
+            "continuationTarget": 3.4059784412384033,
+            "nominalMatches": true,
+            "trafficKeepsContinuation": true,
+            "nominalProposal": {
+                "roadContained": true,
+                "routeGain": 55.9342041015625,
+                "endSpeed": 32.014747619628906,
+                "bound": 7.873358249664307
+            },
+            "nominalContinuation": {
+                "roadContained": true,
+                "routeGain": 63.3333740234375,
+                "endSpeed": 33.38311004638672,
+                "bound": 7.750628471374512
+            },
+            "trafficProposal": {
+                "roadContained": true,
+                "routeGain": 50.627685546875,
+                "endSpeed": 26.702285766601563,
+                "bound": 7.736413955688477
+            },
+            "trafficContinuation": {
+                "roadContained": true,
+                "routeGain": 63.3333740234375,
+                "endSpeed": 33.38311004638672,
+                "bound": 7.750628471374512
+            }
+        }
+    ]
+}

@@ -1,0 +1,162 @@
+{
+  "checks": [
+    {
+      "name": "Quest reward is unavailable before delivery",
+      "passed": true
+    },
+    {
+      "name": "Parcel cannot be delivered before acceptance",
+      "passed": true
+    },
+    {
+      "name": "Delivery can be accepted only once",
+      "passed": true
+    },
+    {
+      "name": "Parcel handover is idempotent",
+      "passed": true
+    },
+    {
+      "name": "Completed delivery grants the expected reward",
+      "passed": true
+    },
+    {
+      "name": "Repeated reward claim cannot duplicate money",
+      "passed": true
+    },
+    {
+      "name": "Unaffordable part does not spend money",
+      "passed": true
+    },
+    {
+      "name": "Engine purchase charges once",
+      "passed": true
+    },
+    {
+      "name": "Tyre purchase charges once",
+      "passed": true
+    },
+    {
+      "name": "Collectible ID grants one reward",
+      "passed": true
+    },
+    {
+      "name": "Refitting stock equipment is free and retains purchased parts",
+      "passed": true
+    },
+    {
+      "name": "Cannot fit an unowned part",
+      "passed": true
+    },
+    {
+      "name": "Last place earns useful race money",
+      "passed": true
+    },
+    {
+      "name": "A settled race cannot pay twice",
+      "passed": true
+    },
+    {
+      "name": "Missing tracks cannot award prizes",
+      "passed": true
+    },
+    {
+      "name": "Long gearing alone cannot overcome a weak engine",
+      "passed": true
+    },
+    {
+      "name": "A stronger engine can exploit long gearing",
+      "passed": true
+    },
+    {
+      "name": "Save writes successfully",
+      "passed": true
+    },
+    {
+      "name": "Saving again safely replaces an existing save",
+      "passed": true
+    },
+    {
+      "name": "Save/load round trip preserves progression and equipment",
+      "passed": true
+    },
+    {
+      "name": "Malformed save is rejected without altering state",
+      "passed": true
+    },
+    {
+      "name": "Version-one saves retain money, purchased parts and race wins",
+      "passed": true
+    },
+    {
+      "name": "Player settles on actual road collision",
+      "passed": true
+    },
+    {
+      "name": "Visual wheel baseline rests at the road surface",
+      "passed": true
+    },
+    {
+      "name": "Throttle advances the actual car on the road",
+      "passed": true
+    },
+    {
+      "name": "Brake stops the car then allows reverse",
+      "passed": true
+    },
+    {
+      "name": "Falling below sea level recovers safely to the road",
+      "passed": true
+    },
+    {
+      "name": "Steering and ground-following traverse hills and bends",
+      "passed": true
+    },
+    {
+      "name": "Race creates player plus 23 physical opponents",
+      "passed": true
+    },
+    {
+      "name": "Countdown holds the full grid before launch",
+      "passed": true
+    },
+    {
+      "name": "Teleporting past checkpoints cannot advance race progress",
+      "passed": true
+    },
+    {
+      "name": "Retry replaces the field and resets all race progress",
+      "passed": true
+    },
+    {
+      "name": "Player finish opens results while the remaining field stays active",
+      "passed": true
+    },
+    {
+      "name": "Rivals continue driving behind the open results screen",
+      "passed": true
+    },
+    {
+      "name": "Background finishing cannot pay the player again",
+      "passed": true
+    },
+    {
+      "name": "The finished player cannot block trailing opponents",
+      "passed": true
+    },
+    {
+      "name": "Full standings include every driver and the player",
+      "passed": true
+    },
+    {
+      "name": "Leaving results clears rivals and restores the player's road collision",
+      "passed": true
+    }
+  ],
+  "driving": {
+    "furthest_distance": 543.165173522001,
+    "maximum_road_offset": 2.83702533129468
+  },
+  "passed": true,
+  "scope": "Headless scripted checks; visual quality, human handling and physical controller remain separate."
+}

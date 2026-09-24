@@ -1,0 +1,42 @@
+{
+  "source": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\source-art\\vendor\\polyhaven\\coastal_cliff_01\\coastal_cliff_01_2k.blend",
+  "changes": "Clip source X to [-12,12] metres, retain UVs, raise base 0.65m; simplify distant LOD only",
+  "lods": [
+    {
+      "lod": 0,
+      "sourceLOD": 2,
+      "vertices": 15578,
+      "triangles": 30447,
+      "dominantHorizontalNormal": [
+        -0.04258105158805847,
+        -0.9988942742347717,
+        0.019925985485315323
+      ],
+      "file": "cliff_scan_lod0.fbx"
+    },
+    {
+      "lod": 1,
+      "sourceLOD": 3,
+      "vertices": 7906,
+      "triangles": 15311,
+      "dominantHorizontalNormal": [
+        -0.04355675354599953,
+        -0.9988431930541992,
+        0.02037447690963745
+      ],
+      "file": "cliff_scan_lod1.fbx"
+    },
+    {
+      "lod": 2,
+      "sourceLOD": 3,
+      "vertices": 1924,
+      "triangles": 3674,
+      "dominantHorizontalNormal": [
+        -0.042472388595342636,
+        -0.9988073110580444,
+        0.02408728189766407
+      ],
+      "file": "cliff_scan_lod2.fbx"
+    }
+  ]
+}

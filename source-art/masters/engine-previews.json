@@ -1,0 +1,14 @@
+[
+  {
+    "part_id": "engine_stock",
+    "triangles": 11804
+  },
+  {
+    "part_id": "engine_workshop",
+    "triangles": 13520
+  },
+  {
+    "part_id": "engine_club",
+    "triangles": 15040
+  }
+]

@@ -1,0 +1,28 @@
+{
+    "scope": "Physical garage entry and reverse exit using synthetic trigger input; not a manual route playtest",
+    "entered": true,
+    "exited": true,
+    "passed": true,
+    "contacts": 0,
+    "recoveries": 0,
+    "entryZ": -107.01480865478516,
+    "exitZ": -97.9843978881836,
+    "maxLateralError": 0.03659820556640625,
+    "exitPosition": {
+        "x": -64.96273040771484,
+        "y": 0.011866062879562378,
+        "z": -97.9843978881836
+    },
+    "exitVelocity": {
+        "x": 0.08068734407424927,
+        "y": -6.780028343200684e-7,
+        "z": 2.0560669898986816
+    },
+    "exitContacts": [
+        "Continuous road and shoulder support normal=(0.000, 0.000, -1.000) point=(-63.841, 0.000, -97.220)",
+        "Continuous road and shoulder support normal=(-0.003, 0.000, -1.000) point=(-63.859, 0.000, -97.215)",
+        "Continuous road and shoulder support normal=(-0.003, 0.000, -1.000) point=(-63.823, 0.000, -97.225)",
+        "Continuous road and shoulder support normal=(-0.005, 0.000, -1.000) point=(-63.838, 0.000, -97.221)",
+        "Continuous road and shoulder support normal=(-0.005, 0.000, -1.000) point=(-63.821, 0.000, -97.226)"
+    ]
+}

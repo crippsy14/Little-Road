@@ -1,0 +1,134 @@
+{
+    "fixture": "wall",
+    "scope": "Synthetic recovery start; ordinary physics thereafter. Reset counts remain assisted recovery.",
+    "complete": false,
+    "returnedBehindMissedGate": true,
+    "unearnedGateAdvance": false,
+    "trafficPassed": false,
+    "maxStepMetres": 0.1999264806509018,
+    "waitingSeconds": 196.29913330078125,
+    "reverseSeconds": 2.525005340576172,
+    "activeSeconds": 206.92987060546875,
+    "physicalRecoveries": 3,
+    "assistedResets": 0,
+    "contacts": 0,
+    "events": [
+        {
+            "time": 0.000011669471859931946,
+            "progress": -24.0,
+            "offset": 0.0,
+            "speed": 5.445630057998585e-10,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 1.225010871887207,
+            "progress": -27.00244140625,
+            "offset": -0.049713134765625,
+            "speed": -2.943159580230713,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 3.5250306129455566,
+            "progress": -23.3519287109375,
+            "offset": -1.180511474609375,
+            "speed": 3.6149277687072754,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 4.725025653839111,
+            "progress": -23.99365234375,
+            "offset": 0.1851043701171875,
+            "speed": -2.925109624862671,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 7.391651630401611,
+            "progress": -21.12158203125,
+            "offset": -3.951904296875,
+            "speed": 3.6842634677886963,
+            "gate": 0,
+            "resets": 0,
+            "state": "Racing"
+        },
+        {
+            "time": 99.41446685791016,
+            "progress": 2009.2393798828125,
+            "offset": 3.5252532958984375,
+            "speed": 23.921892166137695,
+            "gate": 0,
+            "resets": 0,
+            "state": "Stabilise"
+        },
+        {
+            "time": 100.81412506103516,
+            "progress": 2029.1873779296875,
+            "offset": 3.6346893310546875,
+            "speed": 5.432948589324951,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 100.82245635986328,
+            "progress": 2029.23193359375,
+            "offset": 3.634857177734375,
+            "speed": 5.333143711090088,
+            "gate": 0,
+            "resets": 0,
+            "state": "Racing"
+        },
+        {
+            "time": 101.75556182861328,
+            "progress": 2036.4271240234375,
+            "offset": 3.455535888671875,
+            "speed": 9.983987808227539,
+            "gate": 0,
+            "resets": 0,
+            "state": "Stabilise"
+        },
+        {
+            "time": 102.15546417236328,
+            "progress": 2039.4180908203125,
+            "offset": 3.303253173828125,
+            "speed": 5.121035575866699,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 103.45514678955078,
+            "progress": 2044.6802978515625,
+            "offset": 3.4275970458984375,
+            "speed": 3.874508857727051,
+            "gate": 0,
+            "resets": 0,
+            "state": "Racing"
+        },
+        {
+            "time": 103.6301040649414,
+            "progress": 2045.434814453125,
+            "offset": 3.535552978515625,
+            "speed": 4.790658473968506,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 103.7300796508789,
+            "progress": 2045.844970703125,
+            "offset": 3.5968780517578125,
+            "speed": 3.6016931533813477,
+            "gate": 0,
+            "resets": 0,
+            "state": "Wait for clearance"
+        }
+    ]
+}

@@ -1,0 +1,39 @@
+{
+  "executable": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-05-review\\Little Road Unity.exe",
+  "assemblyHash": "6AE20A01D8E67F0C38FF59EAD8AD5654F654B721AE3D5074C4EE15F4FFC10B59",
+  "policy": "context",
+  "scenarios": [
+    "brake-probe"
+  ],
+  "complete": true,
+  "runs": [
+    {
+      "scenario": "brake-probe",
+      "setup": "street",
+      "mode": "baseline",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\braking-05-probe\\brake-probe-street-baseline",
+      "exitCode": 0
+    },
+    {
+      "scenario": "brake-probe",
+      "setup": "street",
+      "mode": "safety",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\braking-05-probe\\brake-probe-street-safety",
+      "exitCode": 0
+    },
+    {
+      "scenario": "brake-probe",
+      "setup": "club",
+      "mode": "baseline",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\braking-05-probe\\brake-probe-club-baseline",
+      "exitCode": 0
+    },
+    {
+      "scenario": "brake-probe",
+      "setup": "club",
+      "mode": "safety",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\braking-05-probe\\brake-probe-club-safety",
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "scope": "Same two-car narrow-walled scenario as prototype35. Existing road-check-off driver is an independent physical witness of clean traversal; candidate must keep road/space/scenery checks enabled. No collision, road, recovery or unresolved tolerance relaxation. Not general AI acceptance.",
+  "requiredCars": 2,
+  "maximumContacts": 0,
+  "maximumAssistedRecoveries": 0,
+  "maximumPhysicalRecoveries": 0,
+  "maximumOutsideBodySamples": 0,
+  "maximumUnresolvedActiveSamples": 0,
+  "maximumOverlapMetres": 0.02,
+  "completionDeadline": 46.802836418151855,
+  "witness": "no-room-35-reference-witness",
+  "candidateCap": 6,
+  "allowanceMetres": 0.1
+}

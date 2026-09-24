@@ -1,0 +1,865 @@
+{
+    "scope": "Replay failed selections with captured bodies, tuning, steering, traffic and corridor bounds. Exact recorded nominal checks required before candidate counterfactuals. Each row states whether the capture includes its previous path; missing paths mean fresh candidates only, not the original full candidate set. No scenery replay; any recorded scenery rejection aborts attribution. Counterfactual acceptance is a short forecast, not a completed manoeuvre.",
+    "recorded": 3,
+    "matched": 3,
+    "rows": [
+        {
+            "id": 0,
+            "fallbackRank": 1,
+            "timestamp": 8.891666666666666,
+            "route": 12.94175910949707,
+            "speed": 24.075664520263672,
+            "hasPrevious": true,
+            "candidates": [
+                {
+                    "rank": 0,
+                    "finite": true,
+                    "accepted": true,
+                    "estimate": 4.4087300300598145,
+                    "clearance": 3.2380118370056152,
+                    "check": {
+                        "path": {
+                            "anchor": 2054.5126953125,
+                            "consumed": 26.22021484375,
+                            "startOffset": 3.5017242431640625,
+                            "startSlope": 0.00014623254537582397,
+                            "endOffset": 3.5017242431640625,
+                            "blend": 34.778812408447266,
+                            "selectedOffset": 3.5017242431640625,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "accepted",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 0.0,
+                        "offset": 3.5020599365234375,
+                        "roadBound": 7.788991451263428,
+                        "predictedRouteGain": 59.6558837890625,
+                        "predictedEndSpeed": 33.67985534667969,
+                        "position": {
+                            "x": -87.05829620361328,
+                            "y": 0.033864766359329224,
+                            "z": -163.50204467773438
+                        },
+                        "velocity": {
+                            "x": 24.07566261291504,
+                            "y": 0.0,
+                            "z": 0.011741029098629951
+                        },
+                        "forward": {
+                            "x": 0.9999999403953552,
+                            "y": 0.0,
+                            "z": 0.0002599954605102539
+                        }
+                    }
+                },
+                {
+                    "rank": 1,
+                    "finite": true,
+                    "accepted": true,
+                    "estimate": 4.4087300300598145,
+                    "clearance": 3.2371487617492676,
+                    "check": {
+                        "path": {
+                            "anchor": 12.94175910949707,
+                            "consumed": 0.0,
+                            "startOffset": 3.5020599365234375,
+                            "startSlope": -0.0005029308958910406,
+                            "endOffset": 3.5020599365234375,
+                            "blend": 39.66809844970703,
+                            "selectedOffset": 3.5020599365234375,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "accepted",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 0.0,
+                        "offset": 3.5020599365234375,
+                        "roadBound": 7.788149833679199,
+                        "predictedRouteGain": 59.6558837890625,
+                        "predictedEndSpeed": 33.67986297607422,
+                        "position": {
+                            "x": -87.05829620361328,
+                            "y": 0.033864766359329224,
+                            "z": -163.50204467773438
+                        },
+                        "velocity": {
+                            "x": 24.07566261291504,
+                            "y": 0.0,
+                            "z": 0.011741029098629951
+                        },
+                        "forward": {
+                            "x": 0.9999999403953552,
+                            "y": 0.0,
+                            "z": 0.0002599954605102539
+                        }
+                    }
+                },
+                {
+                    "rank": 2,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.4087910652160645,
+                    "clearance": 3.2363572120666504,
+                    "check": {
+                        "path": {
+                            "anchor": 12.94175910949707,
+                            "consumed": 0.0,
+                            "startOffset": 3.5020599365234375,
+                            "startSlope": -0.0005029308958910406,
+                            "endOffset": 2.674487590789795,
+                            "blend": 59.50214767456055,
+                            "selectedOffset": 2.674487590789795,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "corridor",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 1.6500000953674316,
+                        "offset": 2.7181854248046875,
+                        "roadBound": 7.793282508850098,
+                        "predictedRouteGain": 59.607666015625,
+                        "predictedEndSpeed": 33.659095764160156,
+                        "position": {
+                            "x": -39.13760757446289,
+                            "y": 0.033864766359329224,
+                            "z": -162.71820068359375
+                        },
+                        "velocity": {
+                            "x": 32.988887786865234,
+                            "y": 0.0,
+                            "z": 0.40464097261428833
+                        },
+                        "forward": {
+                            "x": 0.9999728202819824,
+                            "y": 0.0,
+                            "z": 0.007327254395931959
+                        }
+                    }
+                },
+                {
+                    "rank": 3,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.408816814422607,
+                    "clearance": 3.226268768310547,
+                    "check": {
+                        "path": {
+                            "anchor": 12.94175910949707,
+                            "consumed": 0.0,
+                            "startOffset": 3.5020599365234375,
+                            "startSlope": -0.0005029308958910406,
+                            "endOffset": 2.674487590789795,
+                            "blend": 31.734479904174805,
+                            "selectedOffset": 2.674487590789795,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "corridor",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 1.100000023841858,
+                        "offset": 2.690826416015625,
+                        "roadBound": 7.8986005783081055,
+                        "predictedRouteGain": 59.51904296875,
+                        "predictedEndSpeed": 33.62873458862305,
+                        "position": {
+                            "x": -56.709938049316406,
+                            "y": 0.033864766359329224,
+                            "z": -162.69081115722656
+                        },
+                        "velocity": {
+                            "x": 30.61345672607422,
+                            "y": 0.0,
+                            "z": 0.6859444379806519
+                        },
+                        "forward": {
+                            "x": 0.9999247789382935,
+                            "y": 0.0,
+                            "z": 0.012282807379961014
+                        }
+                    }
+                },
+                {
+                    "rank": 4,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.5632710456848145,
+                    "clearance": 3.2330141067504883,
+                    "check": {
+                        "path": {
+                            "anchor": 12.94175910949707,
+                            "consumed": 0.0,
+                            "startOffset": 3.5020599365234375,
+                            "startSlope": -0.0005029308958910406,
+                            "endOffset": -0.3656981587409973,
+                            "blend": 72.0,
+                            "selectedOffset": -0.3656981587409973,
+                            "rejoin": false,
+                            "guide": true,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 1.5362154245376587,
+                            "guideSlope": -0.04180186986923218
+                        },
+                        "reason": "moving side entry: 23",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 1.100000023841858,
+                        "offset": 0.0,
+                        "roadBound": 7.805093288421631,
+                        "predictedRouteGain": 59.3226318359375,
+                        "predictedEndSpeed": 33.584739685058594,
+                        "position": {
+                            "x": -56.74067687988281,
+                            "y": 0.033864766359329224,
+                            "z": -162.26332092285156
+                        },
+                        "velocity": {
+                            "x": 30.46404457092285,
+                            "y": 0.0,
+                            "z": 2.7666640281677246
+                        },
+                        "forward": {
+                            "x": 0.995179295539856,
+                            "y": 0.0,
+                            "z": 0.09806914627552032
+                        }
+                    }
+                },
+                {
+                    "rank": 5,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.725949287414551,
+                    "clearance": 3.149792194366455,
+                    "check": {
+                        "path": {
+                            "anchor": 12.94175910949707,
+                            "consumed": 0.0,
+                            "startOffset": 3.5020599365234375,
+                            "startSlope": -0.0005029308958910406,
+                            "endOffset": -2.6655120849609375,
+                            "blend": 31.734479904174805,
+                            "selectedOffset": -2.6655120849609375,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "moving side entry: 23",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 0.4583333432674408,
+                        "offset": 0.0,
+                        "roadBound": 7.743383407592773,
+                        "predictedRouteGain": 45.8570556640625,
+                        "predictedEndSpeed": 27.32610321044922,
+                        "position": {
+                            "x": -76.55243682861328,
+                            "y": 0.033864766359329224,
+                            "z": -162.8596649169922
+                        },
+                        "velocity": {
+                            "x": 22.032609939575195,
+                            "y": 0.0,
+                            "z": 4.1265950202941895
+                        },
+                        "forward": {
+                            "x": 0.9637032151222229,
+                            "y": 0.0,
+                            "z": 0.2669757008552551
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": 0,
+            "fallbackRank": 1,
+            "timestamp": 10.991666666666664,
+            "route": 65.398193359375,
+            "speed": 25.130699157714844,
+            "hasPrevious": true,
+            "candidates": [
+                {
+                    "rank": 0,
+                    "finite": true,
+                    "accepted": true,
+                    "estimate": 4.3508124351501465,
+                    "clearance": 3.2382395267486572,
+                    "check": {
+                        "path": {
+                            "anchor": 2054.5126953125,
+                            "consumed": 78.675537109375,
+                            "startOffset": 3.5017242431640625,
+                            "startSlope": 0.00014623254537582397,
+                            "endOffset": 3.5017242431640625,
+                            "blend": 34.778812408447266,
+                            "selectedOffset": 3.5017242431640625,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "accepted",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 0.0,
+                        "offset": 3.5030670166015625,
+                        "roadBound": 6.7767229080200195,
+                        "predictedRouteGain": 61.0313720703125,
+                        "predictedEndSpeed": 33.800384521484375,
+                        "position": {
+                            "x": -34.60183334350586,
+                            "y": 0.03386542201042175,
+                            "z": -163.5030517578125
+                        },
+                        "velocity": {
+                            "x": 25.130693435668945,
+                            "y": 0.0,
+                            "z": -0.010303715243935585
+                        },
+                        "forward": {
+                            "x": 1.0,
+                            "y": 0.0,
+                            "z": -0.000015258785424521193
+                        }
+                    }
+                },
+                {
+                    "rank": 1,
+                    "finite": true,
+                    "accepted": true,
+                    "estimate": 4.3508124351501465,
+                    "clearance": 3.233569860458374,
+                    "check": {
+                        "path": {
+                            "anchor": 65.398193359375,
+                            "consumed": 0.0,
+                            "startOffset": 3.5030670166015625,
+                            "startSlope": 0.0004100052174180746,
+                            "endOffset": 3.5030670166015625,
+                            "blend": 40.61763000488281,
+                            "selectedOffset": 3.5030670166015625,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "accepted",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 0.0,
+                        "offset": 3.5030670166015625,
+                        "roadBound": 6.778752326965332,
+                        "predictedRouteGain": 61.0313720703125,
+                        "predictedEndSpeed": 33.800376892089844,
+                        "position": {
+                            "x": -34.60183334350586,
+                            "y": 0.03386542201042175,
+                            "z": -163.5030517578125
+                        },
+                        "velocity": {
+                            "x": 25.130693435668945,
+                            "y": 0.0,
+                            "z": -0.010303715243935585
+                        },
+                        "forward": {
+                            "x": 1.0,
+                            "y": 0.0,
+                            "z": -0.000015258785424521193
+                        }
+                    }
+                },
+                {
+                    "rank": 2,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.350876808166504,
+                    "clearance": 3.234100341796875,
+                    "check": {
+                        "path": {
+                            "anchor": 65.398193359375,
+                            "consumed": 0.0,
+                            "startOffset": 3.5030670166015625,
+                            "startSlope": 0.0004100052174180746,
+                            "endOffset": 2.667344093322754,
+                            "blend": 60.92644500732422,
+                            "selectedOffset": 2.667344093322754,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "corridor",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 1.6500000953674316,
+                        "offset": 2.7119598388671875,
+                        "roadBound": 6.411797523498535,
+                        "predictedRouteGain": 60.994384765625,
+                        "predictedEndSpeed": 33.790714263916016,
+                        "position": {
+                            "x": 14.623262405395508,
+                            "y": 0.03386542201042175,
+                            "z": -162.7119598388672
+                        },
+                        "velocity": {
+                            "x": 33.379268646240234,
+                            "y": 0.0,
+                            "z": 0.40809378027915955
+                        },
+                        "forward": {
+                            "x": 0.999973475933075,
+                            "y": 0.0,
+                            "z": 0.0073085967451334
+                        }
+                    }
+                },
+                {
+                    "rank": 3,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.350901126861572,
+                    "clearance": 3.2243218421936035,
+                    "check": {
+                        "path": {
+                            "anchor": 65.398193359375,
+                            "consumed": 0.0,
+                            "startOffset": 3.5030670166015625,
+                            "startSlope": 0.0004100052174180746,
+                            "endOffset": 2.667344093322754,
+                            "blend": 32.49410629272461,
+                            "selectedOffset": 2.667344093322754,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "corridor",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 1.0500000715255737,
+                        "offset": 2.7140960693359375,
+                        "roadBound": 7.835524559020996,
+                        "predictedRouteGain": 60.912841796875,
+                        "predictedEndSpeed": 33.77225875854492,
+                        "position": {
+                            "x": -4.848296165466309,
+                            "y": 0.03386542201042175,
+                            "z": -162.714111328125
+                        },
+                        "velocity": {
+                            "x": 31.099044799804688,
+                            "y": 0.0,
+                            "z": 0.7903445363044739
+                        },
+                        "forward": {
+                            "x": 0.9998793005943298,
+                            "y": 0.0,
+                            "z": 0.015519445762038231
+                        }
+                    }
+                },
+                {
+                    "rank": 4,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.455970764160156,
+                    "clearance": 3.227682113647461,
+                    "check": {
+                        "path": {
+                            "anchor": 65.398193359375,
+                            "consumed": 0.0,
+                            "startOffset": 3.5030670166015625,
+                            "startSlope": 0.0004100052174180746,
+                            "endOffset": 0.5335708856582642,
+                            "blend": 72.0,
+                            "selectedOffset": 0.5335708856582642,
+                            "rejoin": false,
+                            "guide": true,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": -0.15898938477039337,
+                            "guideSlope": -0.01774447411298752
+                        },
+                        "reason": "moving side entry: 23",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 1.0416667461395264,
+                        "offset": 0.0,
+                        "roadBound": 7.862436294555664,
+                        "predictedRouteGain": 60.7469482421875,
+                        "predictedEndSpeed": 33.723148345947266,
+                        "position": {
+                            "x": -5.131505489349365,
+                            "y": 0.03386542201042175,
+                            "z": -162.38470458984375
+                        },
+                        "velocity": {
+                            "x": 30.93025779724121,
+                            "y": 0.0,
+                            "z": 2.67400860786438
+                        },
+                        "forward": {
+                            "x": 0.9955704212188721,
+                            "y": 0.0,
+                            "z": 0.09402168542146683
+                        }
+                    }
+                },
+                {
+                    "rank": 5,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.630259037017822,
+                    "clearance": 3.1519405841827393,
+                    "check": {
+                        "path": {
+                            "anchor": 65.398193359375,
+                            "consumed": 0.0,
+                            "startOffset": 3.5030670166015625,
+                            "startSlope": 0.0004100052174180746,
+                            "endOffset": -2.6726555824279785,
+                            "blend": 32.49410629272461,
+                            "selectedOffset": -2.6726555824279785,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "moving side entry: 23",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 0.4583333432674408,
+                        "offset": 0.0,
+                        "roadBound": 7.845120906829834,
+                        "predictedRouteGain": 46.93017578125,
+                        "predictedEndSpeed": 27.71901512145996,
+                        "position": {
+                            "x": -23.75961685180664,
+                            "y": 0.03386542201042175,
+                            "z": -162.84764099121094
+                        },
+                        "velocity": {
+                            "x": 22.61623764038086,
+                            "y": 0.0,
+                            "z": 4.180937767028809
+                        },
+                        "forward": {
+                            "x": 0.9646773338317871,
+                            "y": 0.0,
+                            "z": 0.2634344696998596
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": 0,
+            "fallbackRank": 1,
+            "timestamp": 13.091666666666669,
+            "route": 118.06304931640625,
+            "speed": 25.040773391723633,
+            "hasPrevious": true,
+            "candidates": [
+                {
+                    "rank": 0,
+                    "finite": true,
+                    "accepted": true,
+                    "estimate": 4.356539726257324,
+                    "clearance": 3.2382476329803467,
+                    "check": {
+                        "path": {
+                            "anchor": 2054.5126953125,
+                            "consumed": 131.340576171875,
+                            "startOffset": 3.5017242431640625,
+                            "startSlope": 0.00014623254537582397,
+                            "endOffset": 3.5017242431640625,
+                            "blend": 34.778812408447266,
+                            "selectedOffset": 3.5017242431640625,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "accepted",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 0.0,
+                        "offset": 3.500946044921875,
+                        "roadBound": 6.77292537689209,
+                        "predictedRouteGain": 60.9185791015625,
+                        "predictedEndSpeed": 33.792144775390625,
+                        "position": {
+                            "x": 18.06303596496582,
+                            "y": 0.03386640548706055,
+                            "z": -163.50094604492188
+                        },
+                        "velocity": {
+                            "x": 25.040773391723633,
+                            "y": 0.0,
+                            "z": 0.0007074732566252351
+                        },
+                        "forward": {
+                            "x": 0.9999997615814209,
+                            "y": 0.0,
+                            "z": -0.0006806848687119782
+                        }
+                    }
+                },
+                {
+                    "rank": 1,
+                    "finite": true,
+                    "accepted": true,
+                    "estimate": 4.356539726257324,
+                    "clearance": 3.2390217781066895,
+                    "check": {
+                        "path": {
+                            "anchor": 118.06304931640625,
+                            "consumed": 0.0,
+                            "startOffset": 3.500946044921875,
+                            "startSlope": -0.000028252850825083442,
+                            "endOffset": 3.500946044921875,
+                            "blend": 40.53669357299805,
+                            "selectedOffset": 3.500946044921875,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "accepted",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 0.0,
+                        "offset": 3.500946044921875,
+                        "roadBound": 6.771920204162598,
+                        "predictedRouteGain": 60.9185791015625,
+                        "predictedEndSpeed": 33.79214096069336,
+                        "position": {
+                            "x": 18.06303596496582,
+                            "y": 0.03386640548706055,
+                            "z": -163.50094604492188
+                        },
+                        "velocity": {
+                            "x": 25.040773391723633,
+                            "y": 0.0,
+                            "z": 0.0007074732566252351
+                        },
+                        "forward": {
+                            "x": 0.9999997615814209,
+                            "y": 0.0,
+                            "z": -0.0006806848687119782
+                        }
+                    }
+                },
+                {
+                    "rank": 2,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.356602191925049,
+                    "clearance": 3.236860990524292,
+                    "check": {
+                        "path": {
+                            "anchor": 118.06304931640625,
+                            "consumed": 0.0,
+                            "startOffset": 3.500946044921875,
+                            "startSlope": -0.000028252850825083442,
+                            "endOffset": 2.669111728668213,
+                            "blend": 60.80503845214844,
+                            "selectedOffset": 2.669111728668213,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "corridor",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 1.6500000953674316,
+                        "offset": 2.709808349609375,
+                        "roadBound": 6.413219451904297,
+                        "predictedRouteGain": 60.8798828125,
+                        "predictedEndSpeed": 33.781593322753906,
+                        "position": {
+                            "x": 67.17936706542969,
+                            "y": 0.03386640548706055,
+                            "z": -162.70980834960938
+                        },
+                        "velocity": {
+                            "x": 33.352298736572266,
+                            "y": 0.0,
+                            "z": 0.39811238646507263
+                        },
+                        "forward": {
+                            "x": 0.9999758005142212,
+                            "y": 0.0,
+                            "z": 0.006948587018996477
+                        }
+                    }
+                },
+                {
+                    "rank": 3,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.356626987457275,
+                    "clearance": 3.227153778076172,
+                    "check": {
+                        "path": {
+                            "anchor": 118.06304931640625,
+                            "consumed": 0.0,
+                            "startOffset": 3.500946044921875,
+                            "startSlope": -0.000028252850825083442,
+                            "endOffset": 2.669111728668213,
+                            "blend": 32.42935562133789,
+                            "selectedOffset": 2.669111728668213,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "corridor",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 1.0500000715255737,
+                        "offset": 2.71759033203125,
+                        "roadBound": 7.8293046951293945,
+                        "predictedRouteGain": 60.7982177734375,
+                        "predictedEndSpeed": 33.76216125488281,
+                        "position": {
+                            "x": 47.73856735229492,
+                            "y": 0.03386640548706055,
+                            "z": -162.7175750732422
+                        },
+                        "velocity": {
+                            "x": 31.03919792175293,
+                            "y": 0.0,
+                            "z": 0.8090572357177734
+                        },
+                        "forward": {
+                            "x": 0.9998708367347717,
+                            "y": 0.0,
+                            "z": 0.016057027503848076
+                        }
+                    }
+                },
+                {
+                    "rank": 4,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.373185634613037,
+                    "clearance": 2.1817212104797363,
+                    "check": {
+                        "path": {
+                            "anchor": 118.06304931640625,
+                            "consumed": 0.0,
+                            "startOffset": 3.500946044921875,
+                            "startSlope": -0.000028252850825083442,
+                            "endOffset": 2.9649658203125,
+                            "blend": 72.0,
+                            "selectedOffset": 2.9649658203125,
+                            "rejoin": false,
+                            "guide": true,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": -0.03862335905432701,
+                            "guideSlope": 0.022731952369213104
+                        },
+                        "reason": "corridor",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 1.3000000715255737,
+                        "offset": 2.7006378173828125,
+                        "roadBound": 7.856503486633301,
+                        "predictedRouteGain": 60.8470458984375,
+                        "predictedEndSpeed": 33.762718200683594,
+                        "position": {
+                            "x": 55.66782760620117,
+                            "y": 0.03386640548706055,
+                            "z": -162.70062255859375
+                        },
+                        "velocity": {
+                            "x": 32.15718460083008,
+                            "y": 0.0,
+                            "z": 1.1710861921310425
+                        },
+                        "forward": {
+                            "x": 0.9994763731956482,
+                            "y": 0.0,
+                            "z": 0.03236057236790657
+                        }
+                    }
+                },
+                {
+                    "rank": 5,
+                    "finite": true,
+                    "accepted": false,
+                    "estimate": 4.631366729736328,
+                    "clearance": 3.1544952392578125,
+                    "check": {
+                        "path": {
+                            "anchor": 118.06304931640625,
+                            "consumed": 0.0,
+                            "startOffset": 3.500946044921875,
+                            "startSlope": -0.000028252850825083442,
+                            "endOffset": -2.6708879470825195,
+                            "blend": 32.42935562133789,
+                            "selectedOffset": -2.6708879470825195,
+                            "rejoin": false,
+                            "guide": false,
+                            "coast": false,
+                            "localSpeed": true,
+                            "guideOffset": 0.0,
+                            "guideSlope": 0.0
+                        },
+                        "reason": "moving side entry: 23",
+                        "forecastModel": "nominal",
+                        "afterSeconds": 0.46666669845581055,
+                        "offset": 0.0,
+                        "roadBound": 7.834064483642578,
+                        "predictedRouteGain": 46.7735595703125,
+                        "predictedEndSpeed": 27.66393280029297,
+                        "position": {
+                            "x": 29.058242797851563,
+                            "y": 0.03386640548706055,
+                            "z": -162.8296661376953
+                        },
+                        "velocity": {
+                            "x": 22.452571868896484,
+                            "y": 0.0,
+                            "z": 4.226791858673096
+                        },
+                        "forward": {
+                            "x": 0.9637246131896973,
+                            "y": 0.0,
+                            "z": 0.26689890027046204
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

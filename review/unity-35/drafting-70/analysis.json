@@ -1,0 +1,97 @@
+{
+  "scope": "Mechanical/first-seed screen only. Controlled regression, held-out seed and fixed-resolution rendering are separate gates.",
+  "checks": {
+    "draft-straight logs/exits": true,
+    "draft-straight declared equal loadouts": true,
+    "draft-straight no boost for leader": true,
+    "draft-straight bounded physical wake": true,
+    "draft-straight no contact during commands": true,
+    "physical 26\u201332m/s benefit": true,
+    "physical distance benefit": true,
+    "draft-pullout logs/exits": true,
+    "draft-pullout declared equal loadouts": true,
+    "draft-pullout no boost for leader": true,
+    "draft-pullout bounded physical wake": true,
+    "draft-pullout no contact during commands": true,
+    "pull-out removes wake": true,
+    "off field normal exit/no errors": true,
+    "on field normal exit/no errors": true,
+    "disabled exact parity": true,
+    "24 finish": true,
+    "no physical recovery": true,
+    "no increase in boundary samples": true,
+    "collective time within 2 percent": true,
+    "preview no more than 2 seconds slower": true,
+    "zero warm driver allocation": true,
+    "actual field tow recorded": true
+  },
+  "passed": true,
+  "physics": {
+    "draft-straight": {
+      "timeTo32mps": {
+        "off": 1.2583441734313965,
+        "on": 1.1583442687988281
+      },
+      "speedAtOneSecond": {
+        "off": 30.957666397094727,
+        "on": 31.314434051513672
+      },
+      "progressAtThreeSeconds": {
+        "off": 1279.0341796875,
+        "on": 1279.579345703125
+      },
+      "draftAtOneSecond": 0.07494640350341797,
+      "draftAtTwoSeconds": 0.06969424337148666,
+      "scope": "First three seconds of declared commands; fixture resumes AI after that. Partial-course final time is not a race metric."
+    },
+    "draft-pullout": {
+      "timeTo32mps": {
+        "off": 1.2750108242034912,
+        "on": 1.1583442687988281
+      },
+      "speedAtOneSecond": {
+        "off": 30.957666397094727,
+        "on": 31.314434051513672
+      },
+      "progressAtThreeSeconds": {
+        "off": 1275.40625,
+        "on": 1275.945556640625
+      },
+      "draftAtOneSecond": 0.07494640350341797,
+      "draftAtTwoSeconds": 0.0,
+      "scope": "First three seconds of declared commands; fixture resumes AI after that. Partial-course final time is not a race metric."
+    }
+  },
+  "field": {
+    "off": {
+      "combinedSeconds": 2214.6390380859375,
+      "previewSeconds": 91.7330093383789,
+      "previewPlace": 9,
+      "finished": 24,
+      "physicalRecoveries": 0,
+      "boundarySamples": 4,
+      "impactParticipantRecords": 16,
+      "peakImpact": 9.155982971191406,
+      "unresolvedSamples": 758,
+      "brakingSamplePercent": 7.054522476981405,
+      "meanAiMsPerSnapshot": 3.3289649097588248,
+      "warmAllocatedBytes": 0,
+      "draftNonzeroSamples": 0
+    },
+    "on": {
+      "combinedSeconds": 2223.4535522460938,
+      "previewSeconds": 89.21695709228516,
+      "previewPlace": 6,
+      "finished": 24,
+      "physicalRecoveries": 0,
+      "boundarySamples": 0,
+      "impactParticipantRecords": 16,
+      "peakImpact": 12.034184455871582,
+      "unresolvedSamples": 838,
+      "brakingSamplePercent": 7.484491593994426,
+      "meanAiMsPerSnapshot": 3.4894972062119756,
+      "warmAllocatedBytes": 0,
+      "draftNonzeroSamples": 1135
+    }
+  }
+}

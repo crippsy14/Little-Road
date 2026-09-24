@@ -1,0 +1,79 @@
+{
+  "scope": "Predeclared pace screen. Both aggregate and preview time must improve; physical checks, controlled cases and held-out robustness remain independent. Raw zero times mean DNF, never faster racing. Incomplete-field summed times are not comparable.",
+  "checks": {
+    "noErrors": true,
+    "complete": true,
+    "noRecovery": true,
+    "noAdditionalBoundarySamples": true,
+    "collectiveWithin2Percent": true,
+    "previewWithin2Seconds": true,
+    "zeroWarmDriverAllocation": true,
+    "collectiveImproves": false,
+    "previewImproves": true
+  },
+  "passed": false,
+  "results": {
+    "off": {
+      "analyzerExitCodes": {
+        "analyze-field-race.py": 0,
+        "analyze-checkpoint-flow.py": 0,
+        "analyze-preview-car.py": 0,
+        "analyze-driver-frames.py": 0
+      },
+      "normalExit": true,
+      "runtimeErrors": [],
+      "finished": 24,
+      "combinedSeconds": 2209.8318786621094,
+      "previewSeconds": 90.48331451416016,
+      "previewPlace": 7,
+      "previewCP1": [
+        22,
+        22
+      ],
+      "previewPasses": 12,
+      "possibleHeldBehindSeconds": 3.3998275756835947,
+      "boundarySamples": 0,
+      "maximumBodyOffset": 7.884721755981445,
+      "contacts": 10,
+      "peakImpact": 7.627289295196533,
+      "unresolved": 781,
+      "physicalRecoveries": 0,
+      "brakingSamplePercent": 6.934141487244436,
+      "meanAiMsPerSnapshot": 3.6024823481912147,
+      "warmAllocatedBytes": 0
+    },
+    "on": {
+      "analyzerExitCodes": {
+        "analyze-field-race.py": 0,
+        "analyze-checkpoint-flow.py": 0,
+        "analyze-preview-car.py": 0,
+        "analyze-driver-frames.py": 0
+      },
+      "normalExit": true,
+      "runtimeErrors": [],
+      "finished": 24,
+      "combinedSeconds": 2235.059051513672,
+      "previewSeconds": 87.15912628173828,
+      "previewPlace": 4,
+      "previewCP1": [
+        22,
+        22
+      ],
+      "previewPasses": 14,
+      "possibleHeldBehindSeconds": 2.2999755859375006,
+      "boundarySamples": 0,
+      "maximumBodyOffset": 7.84659481048584,
+      "contacts": 6,
+      "peakImpact": 6.842210292816162,
+      "unresolved": 700,
+      "physicalRecoveries": 0,
+      "brakingSamplePercent": 7.160427568317009,
+      "meanAiMsPerSnapshot": 3.1815530289727834,
+      "warmAllocatedBytes": 0
+    }
+  },
+  "paceComparisonValid": {
+    "field": true,
+    "preview": true
+  }
+}

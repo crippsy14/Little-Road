@@ -1,0 +1,139 @@
+{
+  "scope": "Classification of failed no-unresolved gate; these are current interval diagnostics, not proof that all proposed manoeuvres were physically safe.",
+  "counts": {
+    "currentCentreExcludedByReachableInterval": 5,
+    "currentCentreInsideButNoAcceptedCandidate": 26
+  },
+  "regions": {
+    "First braking zone": 5,
+    "First exit": 2,
+    "Esses entry": 11,
+    "Wide hairpin": 1,
+    "Switchback approach": 6,
+    "Back straight": 2,
+    "Final tightening": 4
+  },
+  "examples": [
+    {
+      "id": 11,
+      "time": 16.808176040649414,
+      "kind": "currentCentreExcludedByReachableInterval",
+      "actualOffset": -1.189866542816162,
+      "left": -1.1659479141235352,
+      "right": 0.16442131996154785,
+      "roadRejected": 3,
+      "region": "First braking zone"
+    },
+    {
+      "id": 14,
+      "time": 18.00815773010254,
+      "kind": "currentCentreInsideButNoAcceptedCandidate",
+      "actualOffset": -0.9338327646255493,
+      "left": -1.0362424850463867,
+      "right": 2.1961824893951416,
+      "roadRejected": 6,
+      "region": "First braking zone"
+    },
+    {
+      "id": 20,
+      "time": 18.508150100708008,
+      "kind": "currentCentreInsideButNoAcceptedCandidate",
+      "actualOffset": -1.196820855140686,
+      "left": -1.5292432308197021,
+      "right": 0.372180700302124,
+      "roadRejected": 3,
+      "region": "First braking zone"
+    },
+    {
+      "id": 20,
+      "time": 18.6081485748291,
+      "kind": "currentCentreInsideButNoAcceptedCandidate",
+      "actualOffset": -1.3400733470916748,
+      "left": -1.5335304737091064,
+      "right": 0.2977273464202881,
+      "roadRejected": 3,
+      "region": "First braking zone"
+    },
+    {
+      "id": 20,
+      "time": 18.708147048950195,
+      "kind": "currentCentreInsideButNoAcceptedCandidate",
+      "actualOffset": -1.4469516277313232,
+      "left": -1.5473854541778564,
+      "right": 0.21300101280212402,
+      "roadRejected": 3,
+      "region": "First braking zone"
+    },
+    {
+      "id": 1,
+      "time": 24.008066177368164,
+      "kind": "currentCentreInsideButNoAcceptedCandidate",
+      "actualOffset": 1.6319538354873657,
+      "left": -6.289999961853027,
+      "right": 1.636547327041626,
+      "roadRejected": 6,
+      "region": "First exit"
+    },
+    {
+      "id": 2,
+      "time": 24.608057022094727,
+      "kind": "currentCentreExcludedByReachableInterval",
+      "actualOffset": -0.6966143250465393,
+      "left": -0.6727101802825928,
+      "right": 2.00793194770813,
+      "roadRejected": 5,
+      "region": "First exit"
+    },
+    {
+      "id": 3,
+      "time": 27.508012771606445,
+      "kind": "currentCentreInsideButNoAcceptedCandidate",
+      "actualOffset": -0.9837462306022644,
+      "left": -2.0520946979522705,
+      "right": -0.8260622024536133,
+      "roadRejected": 2,
+      "region": "Esses entry"
+    },
+    {
+      "id": 13,
+      "time": 28.507997512817383,
+      "kind": "currentCentreInsideButNoAcceptedCandidate",
+      "actualOffset": -5.655894756317139,
+      "left": -6.289999961853027,
+      "right": -5.530136585235596,
+      "roadRejected": 2,
+      "region": "Esses entry"
+    },
+    {
+      "id": 13,
+      "time": 28.607995986938477,
+      "kind": "currentCentreInsideButNoAcceptedCandidate",
+      "actualOffset": -5.558807373046875,
+      "left": -6.289999961853027,
+      "right": -5.521768093109131,
+      "roadRejected": 2,
+      "region": "Esses entry"
+    },
+    {
+      "id": 13,
+      "time": 28.70799446105957,
+      "kind": "currentCentreExcludedByReachableInterval",
+      "actualOffset": -5.426026821136475,
+      "left": -6.289999961853027,
+      "right": -5.51856803894043,
+      "roadRejected": 2,
+      "region": "Esses entry"
+    },
+    {
+      "id": 9,
+      "time": 30.00797462463379,
+      "kind": "currentCentreInsideButNoAcceptedCandidate",
+      "actualOffset": 4.278759002685547,
+      "left": 4.006464958190918,
+      "right": 6.289999961853027,
+      "roadRejected": 5,
+      "region": "Esses entry"
+    }
+  ],
+  "historicalSourceFindingIn25": "The old side reservation activates for abs(route gap) < summed half-lengths + 3m, including same-corridor cars in adjacent grid rows (5.5m spacing). An ahead car then forces an arbitrary left/right centre bound although following is physically available. Prototype26 changes this classification only; residual failures require their own diagnosis."
+}

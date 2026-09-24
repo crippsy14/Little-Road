@@ -1,0 +1,8 @@
+{
+  "status": "Stopped at user-requested evening checkpoint",
+  "completed": false,
+  "wall_seconds": 335.12,
+  "reason": "Full-field verification still running; performance and race completion remain unverified",
+  "result_file_exists": false,
+  "build_sha256": "C66862F56035CEA3849A162FC99A24A47D79CC5F81C411F0A1219CBEB0B7FFEE"
+}

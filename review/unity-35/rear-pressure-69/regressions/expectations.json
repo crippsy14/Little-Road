@@ -1,0 +1,67 @@
+{
+  "scope": "Controlled clean-opportunity regressions versus frozen38; same-build paired solo street/club. Existing corridor contract and rear-merge witness deadlines retained. No rendered or broad personality acceptance.",
+  "trafficCoastContinuation": true,
+  "parallelContinuationForecast": true,
+  "zeroRecovery": true,
+  "anticipatePassingSpace": true,
+  "sharedObservedTraffic": true,
+  "trafficPathCheck": true,
+  "zeroContacts": true,
+  "zeroDepartures": true,
+  "referenceRoot": "review/unity-35/regression-38",
+  "cases": [
+    {
+      "opponents": "street,stock",
+      "cars": 3,
+      "gap": 24,
+      "name": "queue",
+      "loadout": "club"
+    },
+    {
+      "opponents": "stock",
+      "cars": 2,
+      "gap": 24,
+      "name": "no-room",
+      "loadout": "club"
+    },
+    {
+      "opponents": "club",
+      "cars": 2,
+      "gap": 12,
+      "name": "merge-left",
+      "loadout": "street"
+    },
+    {
+      "opponents": "club",
+      "cars": 2,
+      "gap": 12,
+      "name": "merge-right",
+      "loadout": "street"
+    },
+    {
+      "opponents": "stock",
+      "cars": 2,
+      "gap": 24,
+      "name": "brake-leader",
+      "loadout": "club"
+    },
+    {
+      "opponents": "street,stock",
+      "cars": 3,
+      "gap": 24,
+      "name": "corner-three",
+      "loadout": "club"
+    }
+  ],
+  "comparePassCompletion": false,
+  "rearPressureFilter": true,
+  "retainPassTrajectory": false,
+  "completionAllowance": 0.5,
+  "followingFeasibilityFallback": true,
+  "anticipateBlockingCar": false,
+  "noGapCentres": true,
+  "trafficAwareProgress": true,
+  "maximumCompletionRatio": 1.05,
+  "driverRisk": 5,
+  "compareContinuation": true
+}

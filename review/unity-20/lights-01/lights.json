@@ -1,0 +1,76 @@
+{
+    "scope": "Synthetic trigger and actual AI-controller lamp integration; not physical-controller acceptance",
+    "samples": [
+        {
+            "phase": "01-forward",
+            "speed": 7.505458354949951,
+            "command": 1.0,
+            "brake": false,
+            "reverse": false,
+            "expectedBrake": false,
+            "expectedReverse": false,
+            "passed": true
+        },
+        {
+            "phase": "02-forward-braking",
+            "speed": 9.150171279907227,
+            "command": 1.0,
+            "brake": false,
+            "reverse": false,
+            "expectedBrake": true,
+            "expectedReverse": false,
+            "passed": false
+        },
+        {
+            "phase": "03-reversing",
+            "speed": -1.1531281471252441,
+            "command": -1.0,
+            "brake": false,
+            "reverse": true,
+            "expectedBrake": false,
+            "expectedReverse": true,
+            "passed": true
+        },
+        {
+            "phase": "04-reverse-coast",
+            "speed": -3.078126907348633,
+            "command": -1.0,
+            "brake": false,
+            "reverse": true,
+            "expectedBrake": false,
+            "expectedReverse": true,
+            "passed": true
+        },
+        {
+            "phase": "05-braking-in-reverse",
+            "speed": -3.062103509902954,
+            "command": 0.0,
+            "brake": false,
+            "reverse": true,
+            "expectedBrake": true,
+            "expectedReverse": true,
+            "passed": false
+        },
+        {
+            "phase": "06-blocked-idle",
+            "speed": 0.0,
+            "command": 0.0,
+            "brake": false,
+            "reverse": false,
+            "expectedBrake": false,
+            "expectedReverse": false,
+            "passed": true
+        },
+        {
+            "phase": "07-ai-braking",
+            "speed": 32.44107437133789,
+            "command": -1.0,
+            "brake": false,
+            "reverse": false,
+            "expectedBrake": true,
+            "expectedReverse": false,
+            "passed": false
+        }
+    ],
+    "passed": false
+}

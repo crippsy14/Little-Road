@@ -1,0 +1,27 @@
+{
+  "scope": "Exact equality of stored samples/events/results; terminal export positions and profiling costs are separate. Hidden timing is not rendered-frame acceptance.",
+  "baseline": "review\\unity-35\\integration-35\\no-room-parallel",
+  "candidate": "review\\unity-35\\no-room-36-control",
+  "checks": {
+    "motion": true,
+    "checkpointPassages": true,
+    "impacts": true,
+    "assistedRecoveries": true,
+    "overlapPeaks": true,
+    "samples": true,
+    "contextSamples": true,
+    "carRaceResults": true,
+    "normalExit": true
+  },
+  "passed": true,
+  "meanDecisionRegionMsPerPhysicsTick": {
+    "baseline": 0.29052232242124787,
+    "candidate": 0.2887279280948856
+  },
+  "decisionRegionReductionPercent": 0.6176442179752439,
+  "meanAllAiMsPerSnapshotTick": {
+    "baseline": 0.5022376366668726,
+    "candidate": 0.5023264595045407
+  },
+  "allAiWallCostReductionPercent": -0.017685420443114275
+}

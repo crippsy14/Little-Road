@@ -1,0 +1,23 @@
+{
+  "definition": "Frozen before this batch: repeatability <=0.5% time range; every feasible pass must be clean and sustained within 1.25 times the independently driven witness time plus 1 second. Invalid witness means feasibility unproven, not an easier deadline.",
+  "cases": [
+    {
+      "speed": 18,
+      "name": "standard",
+      "repeats": 3,
+      "gap": 24
+    },
+    {
+      "speed": 26,
+      "name": "close-fast",
+      "repeats": 1,
+      "gap": 12
+    },
+    {
+      "speed": 12,
+      "name": "distant-slow",
+      "repeats": 1,
+      "gap": 36
+    }
+  ]
+}

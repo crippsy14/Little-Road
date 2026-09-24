@@ -1,0 +1,16 @@
+{
+  "scope": "Explicit runner metadata for all ten controlled scenarios; supplement to older analyzer.",
+  "checks": {
+    "brake-leader": true,
+    "corner-three": true,
+    "merge-left": true,
+    "merge-right": true,
+    "no-room": true,
+    "queue": true,
+    "solo-club-coast": true,
+    "solo-club-control": true,
+    "solo-street-coast": true,
+    "solo-street-control": true
+  },
+  "passed": true
+}

@@ -1,0 +1,15 @@
+{
+  "scope": "Supplement only; raw parity failure is preserved. Compare common motion prefix and identify extra terminal records.",
+  "commonRecords": 2424,
+  "commonExact": true,
+  "differentIndices": [],
+  "hiddenRecords": 2448,
+  "renderedRecords": 2424,
+  "lastFinishSeconds": 100.75580596923828,
+  "extraHiddenAfterFinish": true,
+  "extraRenderedAfterFinish": true,
+  "hiddenTailTimes": [
+    101.00574493408203
+  ],
+  "renderedTailTimes": []
+}

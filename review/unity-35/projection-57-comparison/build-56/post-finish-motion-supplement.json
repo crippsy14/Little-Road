@@ -1,0 +1,10 @@
+{
+  "scope": "Supplement to raw parity failure; no source evidence rewritten. Batch loop exported24 additional motion records after the final finisher.",
+  "finalFinish": 100.8307876586914,
+  "originalMotionRecords": 2424,
+  "candidateMotionRecords": 2448,
+  "identicalPrefix": true,
+  "extraRecords": 24,
+  "extraRecordsAllAfterFinalFinish": true,
+  "minimumExtraTime": 101.00574493408203
+}

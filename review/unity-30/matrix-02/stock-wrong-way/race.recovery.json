@@ -1,0 +1,1673 @@
+{
+    "fixture": "wrong-way",
+    "scope": "Synthetic recovery start; ordinary physics thereafter. Reset counts remain assisted recovery.",
+    "complete": true,
+    "returnedBehindMissedGate": true,
+    "unearnedGateAdvance": false,
+    "trafficPassed": false,
+    "maxStepMetres": 9.27523136138916,
+    "waitingSeconds": 0.0,
+    "reverseSeconds": 23.574726104736328,
+    "activeSeconds": 60.005577087402344,
+    "physicalRecoveries": 0,
+    "assistedResets": 1,
+    "contacts": 0,
+    "events": [
+        {
+            "time": 0.000011669471859931946,
+            "progress": -24.0,
+            "offset": 0.0,
+            "speed": -4.916407281285728e-10,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 1.8250102996826172,
+            "progress": -20.0391845703125,
+            "offset": 2.13262939453125,
+            "speed": -2.969789981842041,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 2.825021266937256,
+            "progress": -19.874755859375,
+            "offset": 2.371490478515625,
+            "speed": 2.154123067855835,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 3.025023937225342,
+            "progress": -19.913330078125,
+            "offset": 2.1887359619140625,
+            "speed": -0.08762795478105545,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 3.3250279426574707,
+            "progress": -19.9683837890625,
+            "offset": 1.9752655029296875,
+            "speed": 1.4936398267745972,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 3.6250319480895996,
+            "progress": -19.9537353515625,
+            "offset": 1.9925079345703125,
+            "speed": -1.20747971534729,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 4.025036334991455,
+            "progress": -19.9334716796875,
+            "offset": 2.0345001220703125,
+            "speed": 0.9322383999824524,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 4.225033283233643,
+            "progress": -19.9259033203125,
+            "offset": 2.052490234375,
+            "speed": -0.8279998898506165,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 4.625027179718018,
+            "progress": -19.9532470703125,
+            "offset": 1.9504547119140625,
+            "speed": 1.3069969415664673,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 4.825024127960205,
+            "progress": -19.9608154296875,
+            "offset": 1.91351318359375,
+            "speed": -0.6137966513633728,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 5.125019550323486,
+            "progress": -19.9796142578125,
+            "offset": 1.8530731201171875,
+            "speed": 0.9907709956169128,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 5.425014972686768,
+            "progress": -19.9322509765625,
+            "offset": 1.975830078125,
+            "speed": -1.509176254272461,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 5.925007343292236,
+            "progress": -19.8984375,
+            "offset": 2.0435333251953125,
+            "speed": 1.1653720140457153,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 6.125004291534424,
+            "progress": -19.900634765625,
+            "offset": 2.0258636474609375,
+            "speed": -0.6751669049263,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 6.424999713897705,
+            "progress": -19.91259765625,
+            "offset": 1.98260498046875,
+            "speed": 0.929463267326355,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 6.624996662139893,
+            "progress": -19.9044189453125,
+            "offset": 2.0009613037109375,
+            "speed": -0.8307589888572693,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 6.924992084503174,
+            "progress": -19.901611328125,
+            "offset": 2.001983642578125,
+            "speed": 0.7739877700805664,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 7.124989032745361,
+            "progress": -19.887939453125,
+            "offset": 2.0396270751953125,
+            "speed": -0.9061205387115479,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 7.524982929229736,
+            "progress": -19.90673828125,
+            "offset": 1.967620849609375,
+            "speed": 1.232149362564087,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 7.724979877471924,
+            "progress": -19.911865234375,
+            "offset": 1.94134521484375,
+            "speed": -0.6484922766685486,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 8.024975776672363,
+            "progress": -19.927490234375,
+            "offset": 1.890899658203125,
+            "speed": 0.9561126828193665,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 8.324971199035645,
+            "progress": -19.8795166015625,
+            "offset": 2.014984130859375,
+            "speed": -1.5038115978240967,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 8.824963569641113,
+            "progress": -19.8463134765625,
+            "offset": 2.080047607421875,
+            "speed": 1.170711874961853,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 9.0249605178833,
+            "progress": -19.8487548828125,
+            "offset": 2.06134033203125,
+            "speed": -0.6698359847068787,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 9.324955940246582,
+            "progress": -19.8614501953125,
+            "offset": 2.0166168212890625,
+            "speed": 0.9347888231277466,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 9.52495288848877,
+            "progress": -19.8536376953125,
+            "offset": 2.0338897705078125,
+            "speed": -0.8254384994506836,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 9.82494831085205,
+            "progress": -19.851318359375,
+            "offset": 2.0332794189453125,
+            "speed": 0.7793047428131104,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 10.024945259094238,
+            "progress": -19.837646484375,
+            "offset": 2.0698394775390625,
+            "speed": -0.9008070826530457,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 10.424939155578613,
+            "progress": -19.857666015625,
+            "offset": 1.995849609375,
+            "speed": 1.2372771501541138,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 10.724934577941895,
+            "progress": -19.8280029296875,
+            "offset": 2.06463623046875,
+            "speed": -1.3431422710418701,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 11.224926948547363,
+            "progress": -19.8204345703125,
+            "offset": 2.053680419921875,
+            "speed": 1.3258861303329468,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 11.524922370910645,
+            "progress": -19.7962646484375,
+            "offset": 2.10479736328125,
+            "speed": -1.2947500944137573,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 12.024914741516113,
+            "progress": -19.796630859375,
+            "offset": 2.0711212158203125,
+            "speed": 1.3707845211029053,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 12.324910163879395,
+            "progress": -19.7763671875,
+            "offset": 2.1093292236328125,
+            "speed": -1.2499828338623047,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 12.824902534484863,
+            "progress": -19.7841796875,
+            "offset": 2.0546875,
+            "speed": 1.411612868309021,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 13.124897956848145,
+            "progress": -19.764404296875,
+            "offset": 2.088165283203125,
+            "speed": -1.2492502927780151,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 13.541558265686035,
+            "progress": -19.74169921875,
+            "offset": 2.1300048828125,
+            "speed": 0.9797666668891907,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 13.741555213928223,
+            "progress": -19.736572265625,
+            "offset": 2.138763427734375,
+            "speed": -0.7805260419845581,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 14.05821704864502,
+            "progress": -19.742919921875,
+            "offset": 2.111297607421875,
+            "speed": 0.9132629036903381,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 14.266547203063965,
+            "progress": -19.7314453125,
+            "offset": 2.1399383544921875,
+            "speed": -0.9052694439888,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 14.683207511901855,
+            "progress": -19.757080078125,
+            "offset": 2.04693603515625,
+            "speed": 1.3182514905929565,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 14.991536140441895,
+            "progress": -19.727783203125,
+            "offset": 2.11065673828125,
+            "speed": -1.3606401681900024,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 15.416529655456543,
+            "progress": -19.693359375,
+            "offset": 2.1895904541015625,
+            "speed": 0.9129170179367065,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 15.61652660369873,
+            "progress": -19.6845703125,
+            "offset": 2.2112579345703125,
+            "speed": -0.8472923636436462,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 16.041521072387695,
+            "progress": -19.720458984375,
+            "offset": 2.0839996337890625,
+            "speed": 1.4128004312515259,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 16.349849700927734,
+            "progress": -19.697265625,
+            "offset": 2.12738037109375,
+            "speed": -1.3063490390777588,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 16.766510009765625,
+            "progress": -19.667724609375,
+            "offset": 2.1920623779296875,
+            "speed": 0.9225785732269287,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 16.97484016418457,
+            "progress": -19.656982421875,
+            "offset": 2.2189178466796875,
+            "speed": -0.8959603905677795,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 17.39150047302246,
+            "progress": -19.683349609375,
+            "offset": 2.1221771240234375,
+            "speed": 1.327038049697876,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 17.599830627441406,
+            "progress": -19.691162109375,
+            "offset": 2.086669921875,
+            "speed": -0.6520153880119324,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 17.916492462158203,
+            "progress": -19.7119140625,
+            "offset": 2.02093505859375,
+            "speed": 1.0416336059570313,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 18.233154296875,
+            "progress": -19.65966796875,
+            "offset": 2.153106689453125,
+            "speed": -1.5749478340148926,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 18.749813079833984,
+            "progress": -19.619873046875,
+            "offset": 2.2329864501953125,
+            "speed": 1.1889686584472656,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 18.95814323425293,
+            "progress": -19.620849609375,
+            "offset": 2.22113037109375,
+            "speed": -0.7497658133506775,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 19.37480354309082,
+            "progress": -19.665771484375,
+            "offset": 2.06671142578125,
+            "speed": 1.4602351188659668,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 19.68313217163086,
+            "progress": -19.646484375,
+            "offset": 2.0960540771484375,
+            "speed": -1.2590763568878174,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 20.108125686645508,
+            "progress": -19.62451171875,
+            "offset": 2.133544921875,
+            "speed": 1.0144938230514526,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 20.308122634887695,
+            "progress": -19.619873046875,
+            "offset": 2.1403656005859375,
+            "speed": -0.7858337759971619,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 20.624784469604492,
+            "progress": -19.625732421875,
+            "offset": 2.1145172119140625,
+            "speed": 0.9079640507698059,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 20.833114624023438,
+            "progress": -19.61376953125,
+            "offset": 2.1441497802734375,
+            "speed": -0.9105634689331055,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 21.249774932861328,
+            "progress": -19.63916015625,
+            "offset": 2.053436279296875,
+            "speed": 1.313258409500122,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 21.558103561401367,
+            "progress": -19.609130859375,
+            "offset": 2.11846923828125,
+            "speed": -1.3656188249588013,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 21.983097076416016,
+            "progress": -19.57373046875,
+            "offset": 2.1992645263671875,
+            "speed": 0.9079487919807434,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 22.183094024658203,
+            "progress": -19.564453125,
+            "offset": 2.22186279296875,
+            "speed": -0.8522564172744751,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 22.60808753967285,
+            "progress": -19.600830078125,
+            "offset": 2.096893310546875,
+            "speed": 1.4082962274551392,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 22.91641616821289,
+            "progress": -19.57666015625,
+            "offset": 2.14141845703125,
+            "speed": -1.310837745666504,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 23.33307647705078,
+            "progress": -19.546142578125,
+            "offset": 2.20770263671875,
+            "speed": 0.918097734451294,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 23.541406631469727,
+            "progress": -19.53515625,
+            "offset": 2.2353668212890625,
+            "speed": -0.9004374146461487,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 23.958066940307617,
+            "progress": -19.5615234375,
+            "offset": 2.1405487060546875,
+            "speed": 1.3228563070297241,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 24.17473030090332,
+            "progress": -19.56689453125,
+            "offset": 2.11151123046875,
+            "speed": -0.7145151495933533,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 24.48305892944336,
+            "progress": -19.578369140625,
+            "offset": 2.072296142578125,
+            "speed": 0.9346956014633179,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 24.799720764160156,
+            "progress": -19.51953125,
+            "offset": 2.2277984619140625,
+            "speed": -1.64169442653656,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 25.424711227416992,
+            "progress": -19.509765625,
+            "offset": 2.1927337646484375,
+            "speed": 1.6509531736373901,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 25.73303985595703,
+            "progress": -19.506103515625,
+            "offset": 2.18145751953125,
+            "speed": -1.148317575454712,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 26.149700164794922,
+            "progress": -19.498779296875,
+            "offset": 2.1843719482421875,
+            "speed": 1.0802865028381348,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 26.358030319213867,
+            "progress": -19.495849609375,
+            "offset": 2.1849212646484375,
+            "speed": -0.7784078121185303,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 26.774690628051758,
+            "progress": -19.535888671875,
+            "offset": 2.04144287109375,
+            "speed": 1.434743046760559,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 27.083019256591797,
+            "progress": -19.5146484375,
+            "offset": 2.0785064697265625,
+            "speed": -1.2844798564910889,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 27.499679565429688,
+            "progress": -19.488037109375,
+            "offset": 2.1346282958984375,
+            "speed": 0.9444380402565002,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 27.708009719848633,
+            "progress": -19.478759765625,
+            "offset": 2.1571044921875,
+            "speed": -0.8741400837898254,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 28.124670028686523,
+            "progress": -19.5078125,
+            "offset": 2.0517120361328125,
+            "speed": 1.3473073244094849,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 28.44133186340332,
+            "progress": -19.4775390625,
+            "offset": 2.117889404296875,
+            "speed": -1.389955759048462,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 28.957990646362305,
+            "progress": -19.46923828125,
+            "offset": 2.1077423095703125,
+            "speed": 1.3652948141098022,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 29.257986068725586,
+            "progress": -19.448486328125,
+            "offset": 2.14752197265625,
+            "speed": -1.2554452419281006,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 29.66631317138672,
+            "progress": -19.424072265625,
+            "offset": 2.2002105712890625,
+            "speed": 0.9288470149040222,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 29.866310119628906,
+            "progress": -19.416259765625,
+            "offset": 2.218841552734375,
+            "speed": -0.8313669562339783,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 30.282970428466797,
+            "progress": -19.450927734375,
+            "offset": 2.09661865234375,
+            "speed": 1.386736273765564,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 30.591299057006836,
+            "progress": -19.42529296875,
+            "offset": 2.1476898193359375,
+            "speed": -1.332327127456665,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 31.099624633789063,
+            "progress": -19.4228515625,
+            "offset": 2.12066650390625,
+            "speed": 1.377501130104065,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 31.307954788208008,
+            "progress": -19.434326171875,
+            "offset": 2.075347900390625,
+            "speed": -0.601488471031189,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 31.60795021057129,
+            "progress": -19.4541015625,
+            "offset": 2.011444091796875,
+            "speed": 1.003051519393921,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 31.816280364990234,
+            "progress": -19.4462890625,
+            "offset": 2.0270233154296875,
+            "speed": -0.8555690050125122,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 32.116302490234375,
+            "progress": -19.440673828125,
+            "offset": 2.0348663330078125,
+            "speed": 0.7492037415504456,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 32.33301544189453,
+            "progress": -19.4189453125,
+            "offset": 2.0930023193359375,
+            "speed": -1.0475329160690308,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 32.73310089111328,
+            "progress": -19.41943359375,
+            "offset": 2.07440185546875,
+            "speed": 1.0918450355529785,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 32.94147872924805,
+            "progress": -19.41552734375,
+            "offset": 2.077178955078125,
+            "speed": -0.8068957328796387,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 33.24154281616211,
+            "progress": -19.414794921875,
+            "offset": 2.0713653564453125,
+            "speed": 0.7978494763374329,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 33.458255767822266,
+            "progress": -19.39501953125,
+            "offset": 2.125640869140625,
+            "speed": -1.038913369178772,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 33.858341217041016,
+            "progress": -19.396484375,
+            "offset": 2.103790283203125,
+            "speed": 1.1004469394683838,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 34.06671905517578,
+            "progress": -19.39306640625,
+            "offset": 2.104888916015625,
+            "speed": -0.7983062267303467,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 34.366783142089844,
+            "progress": -19.39306640625,
+            "offset": 2.09661865234375,
+            "speed": 0.8064327239990234,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 34.58349609375,
+            "progress": -19.374267578125,
+            "offset": 2.1493072509765625,
+            "speed": -1.0303367376327515,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 34.98358154296875,
+            "progress": -19.377197265625,
+            "offset": 2.1244049072265625,
+            "speed": 1.1089383363723755,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 35.191959381103516,
+            "progress": -19.374267578125,
+            "offset": 2.123809814453125,
+            "speed": -0.789825975894928,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 35.49202346801758,
+            "progress": -19.375244140625,
+            "offset": 2.1131439208984375,
+            "speed": 0.8149064183235168,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 35.708736419677734,
+            "progress": -19.35693359375,
+            "offset": 2.1640625,
+            "speed": -1.0218697786331177,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 36.108821868896484,
+            "progress": -19.361083984375,
+            "offset": 2.13592529296875,
+            "speed": 1.1173878908157349,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 36.31719970703125,
+            "progress": -19.3583984375,
+            "offset": 2.133636474609375,
+            "speed": -0.7813892960548401,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 36.61726379394531,
+            "progress": -19.3603515625,
+            "offset": 2.120513916015625,
+            "speed": 0.8233367800712585,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 36.83397674560547,
+            "progress": -19.342529296875,
+            "offset": 2.1696624755859375,
+            "speed": -1.01344633102417,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 37.23406219482422,
+            "progress": -19.34716796875,
+            "offset": 2.13818359375,
+            "speed": 1.1258548498153687,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 37.442440032958984,
+            "progress": -19.34521484375,
+            "offset": 2.134185791015625,
+            "speed": -0.7729364633560181,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 37.74250411987305,
+            "progress": -19.34765625,
+            "offset": 2.11871337890625,
+            "speed": 0.8317833542823792,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 37.9592170715332,
+            "progress": -19.330322265625,
+            "offset": 2.1661224365234375,
+            "speed": -1.0050066709518433,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 38.35930252075195,
+            "progress": -19.336181640625,
+            "offset": 2.131439208984375,
+            "speed": 1.1342747211456299,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 38.56768035888672,
+            "progress": -19.334716796875,
+            "offset": 2.125762939453125,
+            "speed": -0.7645297050476074,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 38.86774444580078,
+            "progress": -19.338134765625,
+            "offset": 2.1078643798828125,
+            "speed": 0.8401836156845093,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 39.07612228393555,
+            "progress": -19.323974609375,
+            "offset": 2.1456146240234375,
+            "speed": -0.9382913112640381,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 39.48454284667969,
+            "progress": -19.341796875,
+            "offset": 2.0758514404296875,
+            "speed": 1.2441362142562866,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 39.69292068481445,
+            "progress": -19.345703125,
+            "offset": 2.052703857421875,
+            "speed": -0.6948575377464294,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 39.992984771728516,
+            "progress": -19.3564453125,
+            "offset": 2.0153350830078125,
+            "speed": 0.909800112247467,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 40.30138397216797,
+            "progress": -19.300048828125,
+            "offset": 2.165313720703125,
+            "speed": -1.6082887649536133,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 40.918182373046875,
+            "progress": -19.29443359375,
+            "offset": 2.1245269775390625,
+            "speed": 1.6413668394088745,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 41.22658157348633,
+            "progress": -19.286865234375,
+            "offset": 2.11492919921875,
+            "speed": -1.1583008766174316,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 41.62666702270508,
+            "progress": -19.27197265625,
+            "offset": 2.1378936767578125,
+            "speed": 0.9814510941505432,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 41.843379974365234,
+            "progress": -19.26220703125,
+            "offset": 2.1600494384765625,
+            "speed": -0.8954914212226868,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 42.243465423583984,
+            "progress": -19.2822265625,
+            "offset": 2.083892822265625,
+            "speed": 1.2424241304397583,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 42.45184326171875,
+            "progress": -19.28564453125,
+            "offset": 2.0610504150390625,
+            "speed": -0.6965654492378235,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 42.75190734863281,
+            "progress": -19.29638671875,
+            "offset": 2.0239410400390625,
+            "speed": 0.9080936908721924,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 42.96862030029297,
+            "progress": -19.281005859375,
+            "offset": 2.0609588623046875,
+            "speed": -0.968756914138794,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 43.36870574951172,
+            "progress": -19.292724609375,
+            "offset": 2.012847900390625,
+            "speed": 1.1704427003860474,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 43.67710494995117,
+            "progress": -19.2548828125,
+            "offset": 2.1036834716796875,
+            "speed": -1.4281361103057861,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 44.19388198852539,
+            "progress": -19.23974609375,
+            "offset": 2.111846923828125,
+            "speed": 1.3300548791885376,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 44.393924713134766,
+            "progress": -19.249755859375,
+            "offset": 2.07086181640625,
+            "speed": -0.5905231833457947,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 44.70232391357422,
+            "progress": -19.273193359375,
+            "offset": 1.9953460693359375,
+            "speed": 1.0585118532180786,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 44.902366638183594,
+            "progress": -19.27099609375,
+            "offset": 1.9937896728515625,
+            "speed": -0.7418521642684937,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 45.21910095214844,
+            "progress": -19.282470703125,
+            "offset": 1.9550323486328125,
+            "speed": 0.9518970847129822,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 45.5191650390625,
+            "progress": -19.234130859375,
+            "offset": 2.0803070068359375,
+            "speed": -1.5080186128616333,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 46.02760696411133,
+            "progress": -19.203125,
+            "offset": 2.1377410888671875,
+            "speed": 1.2106165885925293,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 46.235984802246094,
+            "progress": -19.20458984375,
+            "offset": 2.1212158203125,
+            "speed": -0.7283199429512024,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 46.54438400268555,
+            "progress": -19.213623046875,
+            "offset": 2.0857696533203125,
+            "speed": 0.9209023118019104,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 46.74442672729492,
+            "progress": -19.205078125,
+            "offset": 2.105682373046875,
+            "speed": -0.8393128514289856,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 47.052825927734375,
+            "progress": -19.203369140625,
+            "offset": 2.102691650390625,
+            "speed": 0.8099870085716248,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 47.25286865234375,
+            "progress": -19.18994140625,
+            "offset": 2.1388397216796875,
+            "speed": -0.9101405739784241,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 47.66962432861328,
+            "progress": -19.21484375,
+            "offset": 2.0478363037109375,
+            "speed": 1.3136531114578247,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 47.978023529052734,
+            "progress": -19.185302734375,
+            "offset": 2.11285400390625,
+            "speed": -1.3652245998382568,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 48.48646545410156,
+            "progress": -19.17822265625,
+            "offset": 2.1017913818359375,
+            "speed": 1.3468542098999023,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 48.794864654541016,
+            "progress": -19.151611328125,
+            "offset": 2.157196044921875,
+            "speed": -1.3321261405944824,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 49.303306579589844,
+            "progress": -19.1494140625,
+            "offset": 2.1300811767578125,
+            "speed": 1.3776990175247192,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 49.50334930419922,
+            "progress": -19.162109375,
+            "offset": 2.08001708984375,
+            "speed": -0.5429337024688721,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 49.82008361816406,
+            "progress": -19.193603515625,
+            "offset": 1.981597900390625,
+            "speed": 1.150518774986267,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 50.120147705078125,
+            "progress": -19.157958984375,
+            "offset": 2.0669403076171875,
+            "speed": -1.3897254467010498,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 50.62858963012695,
+            "progress": -19.14599609375,
+            "offset": 2.0672607421875,
+            "speed": 1.3240591287612915,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 50.83696746826172,
+            "progress": -19.153076171875,
+            "offset": 2.0322113037109375,
+            "speed": -0.6551182866096497,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 51.13703155517578,
+            "progress": -19.16796875,
+            "offset": 1.9835052490234375,
+            "speed": 0.9495038390159607,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 51.453765869140625,
+            "progress": -19.10986328125,
+            "offset": 2.1343536376953125,
+            "speed": -1.6269208192825317,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 52.06222915649414,
+            "progress": -19.09716796875,
+            "offset": 2.117279052734375,
+            "speed": 1.5889595746994019,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 52.370628356933594,
+            "progress": -19.085205078125,
+            "offset": 2.1231689453125,
+            "speed": -1.2105650901794434,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 52.779048919677734,
+            "progress": -19.06640625,
+            "offset": 2.1583404541015625,
+            "speed": 0.9736769199371338,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 52.9874267578125,
+            "progress": -19.05859375,
+            "offset": 2.1749267578125,
+            "speed": -0.844931423664093,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 53.38751220703125,
+            "progress": -19.08544921875,
+            "offset": 2.0797271728515625,
+            "speed": 1.290930986404419,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 53.604225158691406,
+            "progress": -19.08837890625,
+            "offset": 2.05712890625,
+            "speed": -0.746478259563446,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 53.90428924560547,
+            "progress": -19.093994140625,
+            "offset": 2.0341644287109375,
+            "speed": 0.8582361340522766,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 54.112667083740234,
+            "progress": -19.080078125,
+            "offset": 2.0679931640625,
+            "speed": -0.9202547669410706,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 54.4127311706543,
+            "progress": -19.06787109375,
+            "offset": 2.0941314697265625,
+            "speed": 0.684555172920227,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 54.62110900878906,
+            "progress": -19.04736328125,
+            "offset": 2.150970458984375,
+            "speed": -1.013828992843628,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 55.0295295715332,
+            "progress": -19.05517578125,
+            "offset": 2.1103973388671875,
+            "speed": 1.1699556112289429,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 55.23790740966797,
+            "progress": -19.055908203125,
+            "offset": 2.09759521484375,
+            "speed": -0.7289084792137146,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 55.53797149658203,
+            "progress": -19.06298828125,
+            "offset": 2.0696868896484375,
+            "speed": 0.8757756352424622,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 55.7463493347168,
+            "progress": -19.050537109375,
+            "offset": 2.100189208984375,
+            "speed": -0.9027290940284729,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 56.05474853515625,
+            "progress": -19.042236328125,
+            "offset": 2.115570068359375,
+            "speed": 0.7466212511062622,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 56.254791259765625,
+            "progress": -19.02685546875,
+            "offset": 2.15838623046875,
+            "speed": -0.9334707856178284,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 56.663211822509766,
+            "progress": -19.04541015625,
+            "offset": 2.0868072509765625,
+            "speed": 1.248782753944397,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 56.87158966064453,
+            "progress": -19.04931640625,
+            "offset": 2.0627593994140625,
+            "speed": -0.6902202367782593,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 57.179988861083984,
+            "progress": -19.0634765625,
+            "offset": 2.01641845703125,
+            "speed": 0.9589608907699585,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 57.48838806152344,
+            "progress": -19.01123046875,
+            "offset": 2.1517791748046875,
+            "speed": -1.5592329502105713,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 57.996829986572266,
+            "progress": -18.9716796875,
+            "offset": 2.23382568359375,
+            "speed": 1.1601287126541138,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 58.20520782470703,
+            "progress": -18.972412109375,
+            "offset": 2.223297119140625,
+            "speed": -0.7385861277580261,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 58.61362838745117,
+            "progress": -19.0146484375,
+            "offset": 2.07611083984375,
+            "speed": 1.4304488897323608,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 58.913692474365234,
+            "progress": -18.99658203125,
+            "offset": 2.1042327880859375,
+            "speed": -1.2304630279541016,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 59.330448150634766,
+            "progress": -18.9765625,
+            "offset": 2.138671875,
+            "speed": 0.9984990954399109,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 59.53049087524414,
+            "progress": -18.970703125,
+            "offset": 2.1485595703125,
+            "speed": -0.8018083572387695,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 59.838890075683594,
+            "progress": -18.97265625,
+            "offset": 2.134521484375,
+            "speed": 0.847467839717865,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 59.997257232666016,
+            "progress": -28.0,
+            "offset": 2.1337127685546875,
+            "speed": -0.5810444355010986,
+            "gate": 0,
+            "resets": 1,
+            "state": "Racing"
+        }
+    ]
+}

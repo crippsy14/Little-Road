@@ -1,0 +1,597 @@
+{
+  "version": 74,
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-74-review\\Little Road Unity.exe",
+  "assemblyHash": "d0bd710b1921c365876123509b3087a79842b81349b9d683f59aaf2c6f2b517c",
+  "buildCheckLine": "LITTLE_ROAD_BUILD_OK C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\..\\little-road-context-74-review\\Little Road Unity.exe checks=454 development=False",
+  "sourceFiles": [
+    {
+      "file": "unity/Assets/Scripts/AdventureGame.cs",
+      "sha256": "fdc10b43a6c850a63d90bc73b663d01372c478c4b6ec24dcb9b91e67e402bbd6"
+    },
+    {
+      "file": "unity/Assets/Scripts/AdventureProgress.cs",
+      "sha256": "33f2a369cfcdb0cc77dc7efd314a8328fee544af706d97dcc18ee09c1fced7a8"
+    },
+    {
+      "file": "unity/Assets/Scripts/AdventureUI.cs",
+      "sha256": "645c7f5b7f67343846af2c14d793539f85b8138cf007ef2129db098c6e7e3113"
+    },
+    {
+      "file": "unity/Assets/Scripts/CarGallery.cs",
+      "sha256": "b8f166d39f49fdd69e13f7d1f40bc59cc55a70ba833305498de1cc2cc2aa47b1"
+    },
+    {
+      "file": "unity/Assets/Scripts/CheckpointCrossing.cs",
+      "sha256": "17391906e4c216e745ef00f868fae102d6494fd96758504a86824332bbff4527"
+    },
+    {
+      "file": "unity/Assets/Scripts/Circuit.cs",
+      "sha256": "5b4d24fb7ad32fe7180fe0c73ea6f22aa48d9b9cf57e6e6645771286276e925b"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastalCliffs.cs",
+      "sha256": "12e829930c3209ebcfdd1d6d784a2e7c76c0dc4ab1a14abdb2b708acf71920b1"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastalCliffStudy.cs",
+      "sha256": "41c2307bae68df1b1f901ec9047b67ae10cc9ed0c50eb8234f6be97334483027"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastalGroundCover.cs",
+      "sha256": "8f5ce73ff677dd7e30c9c6e1795bd1a6fedf5eed53c7cf8eb6e8050cac4690a8"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastalLandscape.cs",
+      "sha256": "a245354e595b2cd1e292aeeb2f1df7ca9d563a3589aa7b3780491188edec669a"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastalMasonry.cs",
+      "sha256": "eccfb1322204c69f4ef7b93a4c53401be6d434d8b42cf150746c780e9adca375"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastalReflections.cs",
+      "sha256": "c156338004f8fbff9fd941b6cfc0d60ba28b021a8d814a943aea2dfd662a4c06"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastalSky.cs",
+      "sha256": "6adb70ca6c62c87c4c8e7eb29294b4ae6358f783e11b380494fe0af7f4e7e5b5"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastalSurfaces.cs",
+      "sha256": "5b342b4dd9ee0b40c2e406e3c8f0bb87c352f6b22ccda2db4228b9a5602647a3"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastalTalus.cs",
+      "sha256": "980b48dadaaf119c130458b7e32a1bb93e1b8398d03a35abac1e4347fe8f8632"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastalVegetation.cs",
+      "sha256": "ddd0191ca1544d5fd22c720b4a5e70602d6a274dab5711fde3261b11bbdf642f"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastalWater.cs",
+      "sha256": "8bd11542f3763b34d908ee7cac29bd06906edb4e04d76fcec29551ab6f9337df"
+    },
+    {
+      "file": "unity/Assets/Scripts/CoastingEnvelope.cs",
+      "sha256": "f35ccdbd07cbab84562bb682926b9baafbf9092fa8e6b06c44e2cb20786a42d5"
+    },
+    {
+      "file": "unity/Assets/Scripts/CollisionAudit.cs",
+      "sha256": "2e0a7ea7d1357296994b91e60198ba0ae23f024e0b6a4b73c2cbf6f3a800602e"
+    },
+    {
+      "file": "unity/Assets/Scripts/ContextDriverPolicy.cs",
+      "sha256": "1da32aa9e176e3ef2204ccd4b26251c6a0f8594ba3993717dd8dbf0c273d9043"
+    },
+    {
+      "file": "unity/Assets/Scripts/ContextPathFollower.cs",
+      "sha256": "3d27816669254535501538cc8a2e43d44e149e8b0fe106ece36a83cbd6020d84"
+    },
+    {
+      "file": "unity/Assets/Scripts/ContextPathPrediction.cs",
+      "sha256": "826a439cd5c3bd418174f3ce70a8baf73ec31f7798a103133b1fe60ff610189d"
+    },
+    {
+      "file": "unity/Assets/Scripts/ContextPlanAudit.cs",
+      "sha256": "424e13a5e16cf3a82c554799cc321291871fe1cb75d60c2649bf51bffe44ca33"
+    },
+    {
+      "file": "unity/Assets/Scripts/ContextPreferenceMap.cs",
+      "sha256": "016cafc7dd2207fe8c921d407dd5fa2b10676836137281f3ff18f6f5e77b5f30"
+    },
+    {
+      "file": "unity/Assets/Scripts/DisplaySettings.cs",
+      "sha256": "280519f5d1cf8ff7ab0bf4e61b937b5c2f4c858ba9b4fe2b06e193e5e265717b"
+    },
+    {
+      "file": "unity/Assets/Scripts/DraftingModel.cs",
+      "sha256": "91ae4181fc762974be0529b8af6092027b3e8c36834796943b8c32e7699ca8d0"
+    },
+    {
+      "file": "unity/Assets/Scripts/DriveModel.cs",
+      "sha256": "695a6d1daeab06ea209f746d6a3c99dbf8347b7d738be458a174bbaf6e4f280e"
+    },
+    {
+      "file": "unity/Assets/Scripts/DriverFrameAudit.cs",
+      "sha256": "65c37281bdc879a0cbcb8bbc72356ec444bdc492a3ed8f4e2334b11bd42fdec9"
+    },
+    {
+      "file": "unity/Assets/Scripts/DriverPlanningSettings.cs",
+      "sha256": "99fcdf5fa1a861d0a6ba03de7d6df711027dfffee70b1d0164e99ece6b2a661e"
+    },
+    {
+      "file": "unity/Assets/Scripts/DriverPolicy.cs",
+      "sha256": "a57fc3d3d805fd890975c6ee0a6b1fc73aa2b834a0d5f9ec116a2913c3c021c7"
+    },
+    {
+      "file": "unity/Assets/Scripts/DrivingViewInput.cs",
+      "sha256": "7507a80acd7c1c6295c31507dcfa5a250a324844dd3b34b06c4eb4a5a55268e6"
+    },
+    {
+      "file": "unity/Assets/Scripts/DynamicRejoinPlanner.cs",
+      "sha256": "5b67e0c9770de27dcb077402aee381b8fb2a3c7b4134b4018d11443a409b2fd9"
+    },
+    {
+      "file": "unity/Assets/Scripts/EquipmentCatalog.cs",
+      "sha256": "72a81973287e8b020d4fb89843f8999022c375b48171b5bb60cd5de9ba95c4d1"
+    },
+    {
+      "file": "unity/Assets/Scripts/EveningRouteReview.cs",
+      "sha256": "fb7f59c5ee6d4930f1a849616cb4dbbfecc2625ba685112485898fbaac3f44ec"
+    },
+    {
+      "file": "unity/Assets/Scripts/FollowingFallbackSelection.cs",
+      "sha256": "ab6cd40ae460434885a0e35675f0c1526ed72d1921c862dad130756ca2a176ff"
+    },
+    {
+      "file": "unity/Assets/Scripts/ForecastBatchProbe.cs",
+      "sha256": "20de3d4e94a9860da9e129ea2daef5df52dc81ae3d71212680a3f7563708938d"
+    },
+    {
+      "file": "unity/Assets/Scripts/ForecastPathCache.cs",
+      "sha256": "fa7f025202ad89f5504e3606855b4316e255a95cea958429a1d32ac49ca563b7"
+    },
+    {
+      "file": "unity/Assets/Scripts/ForecastRoadEnvelope.cs",
+      "sha256": "82b32cc3b03cfd7a3238c6286826b1f8c5cf7ef9e5e9066ddb19e198313ef2e1"
+    },
+    {
+      "file": "unity/Assets/Scripts/ForecastWorkerPool.cs",
+      "sha256": "65406e8fece908bf552c7265296515c491cc7a7a959eb6ccdedab473c4a89129"
+    },
+    {
+      "file": "unity/Assets/Scripts/GroundCoverGeometryAudit.cs",
+      "sha256": "30d8e28d46ccd9b9dc51fa57abe6c17a22732eb4f094316673d0194fb7d599cb"
+    },
+    {
+      "file": "unity/Assets/Scripts/ImmediateTrafficSafety.cs",
+      "sha256": "ba8220721d42e3697f6106f8f7af4c9566cf359e81940d8fdfd65bb186d37321"
+    },
+    {
+      "file": "unity/Assets/Scripts/LegacyDriverPolicy.cs",
+      "sha256": "9560d8670027b5f1b8db949bebc06bd4008099085415b6cd69adea8a232d3016"
+    },
+    {
+      "file": "unity/Assets/Scripts/ManualRaceStart.cs",
+      "sha256": "360d9cb5ec1697fe745ca76eb81e8e778ec4149b93444ecf4ced6eda9986c884"
+    },
+    {
+      "file": "unity/Assets/Scripts/MotionPredictionAudit.cs",
+      "sha256": "73421fcbfcef0c0057f1728c8eba8d0d2b8052f4f424500b76c963e51d738e20"
+    },
+    {
+      "file": "unity/Assets/Scripts/MovingLeaderControl.cs",
+      "sha256": "1ecb3980ff4f79d7f56b3073470883669bce8beeb589bf15fede418347d36b65"
+    },
+    {
+      "file": "unity/Assets/Scripts/ObservedMotionPredictor.cs",
+      "sha256": "a9ef4d0867920c13534d8a2c2ea7094b69c83aaef1b662b91a38b213d8b1a824"
+    },
+    {
+      "file": "unity/Assets/Scripts/ObservedTrafficRollout.cs",
+      "sha256": "06576738e0128ee28baf81dc3c44bec5a2d6c88b98f69589ef3dc61104f6df6e"
+    },
+    {
+      "file": "unity/Assets/Scripts/OpeningCaptureWindow.cs",
+      "sha256": "bba8b685b5ab735ff21b707d89659fd8bd9a3e0e7a9bb3e1f899961387581582"
+    },
+    {
+      "file": "unity/Assets/Scripts/OpenSpacePriority.cs",
+      "sha256": "fd6f1bfd6ea67cc08bb696fcbdb5c6272955335511994e621c43d06976d58571"
+    },
+    {
+      "file": "unity/Assets/Scripts/PartPreviewStage.cs",
+      "sha256": "dfa118fd4c7bed621d579e438bb289a6b5c0fff2fdb3d1d4e5589d03f904cabf"
+    },
+    {
+      "file": "unity/Assets/Scripts/PartsBrowser.cs",
+      "sha256": "11aa26e04a444b45424000a7517f4d97ed6b66334924a72b4f80ca8d23d500a5"
+    },
+    {
+      "file": "unity/Assets/Scripts/PartsBrowserReview.cs",
+      "sha256": "16915c42314d8819aece449cbd1f4dce8e6fc4ff70cc4ef00b8f14cf5634f596"
+    },
+    {
+      "file": "unity/Assets/Scripts/PassingProgress.cs",
+      "sha256": "181f16de9849d8dec6e5284e544d3a478c2f2494dec8613a864db77b4946b83b"
+    },
+    {
+      "file": "unity/Assets/Scripts/PassingTargetContinuation.cs",
+      "sha256": "fd141a6c5bb7e56795065620d6a88262942fbf525161478fb767d75af0af8c16"
+    },
+    {
+      "file": "unity/Assets/Scripts/PassTrajectory.cs",
+      "sha256": "d98b66216ad610798acb5880baea4e02af9bd30b7638df2bdb0873ba188e4125"
+    },
+    {
+      "file": "unity/Assets/Scripts/PathApproachAudit.cs",
+      "sha256": "f380d5830a26ce8b86d69de1dffd597aa799ead25b4420f9fae4bc3d69e36463"
+    },
+    {
+      "file": "unity/Assets/Scripts/PathPredictionFixture.cs",
+      "sha256": "c7d8195247f4c5f69ff381a896799721da934878097cea55b80aef60142e9b6d"
+    },
+    {
+      "file": "unity/Assets/Scripts/PerformanceCourse.cs",
+      "sha256": "59c3db327a319a244923c67c760def186fcbeafc7404cf7b46530a96e6cddd14"
+    },
+    {
+      "file": "unity/Assets/Scripts/PerformanceTrial.cs",
+      "sha256": "ed6a0e57678c674e43088e35e2005ddd9f75854ab2529c44f0c1ae3aa13f8641"
+    },
+    {
+      "file": "unity/Assets/Scripts/PhysicalRecovery.cs",
+      "sha256": "61844403dc7e244ff5ac0e6526ca5658de0c50f05a80d5683f599c33274de2e8"
+    },
+    {
+      "file": "unity/Assets/Scripts/PlanarDrivePrediction.cs",
+      "sha256": "5c6fd2c888a198cf903eb53ae851a5bae53065f44acaf1ed59376fae5bc74718"
+    },
+    {
+      "file": "unity/Assets/Scripts/RaceGrid.cs",
+      "sha256": "f430e079468cc9e7c9a0d1591f996d01b920025c972ecc4f92837aae2e22e173"
+    },
+    {
+      "file": "unity/Assets/Scripts/RaceTrial.cs",
+      "sha256": "de56d98b25bee68a9103f40bf2b40a86354f08d944ae66dd439a9138698e9630"
+    },
+    {
+      "file": "unity/Assets/Scripts/RaceWorldSnapshot.cs",
+      "sha256": "a2227b41fb25ec1715af99866898ddc4c305e2575765c45d287ece5adc9d36c1"
+    },
+    {
+      "file": "unity/Assets/Scripts/RacingLine.cs",
+      "sha256": "b9419633fa86f69fcf0b7e94bcfa35544ce0e76a388954c8e21fa65c57dd380c"
+    },
+    {
+      "file": "unity/Assets/Scripts/RacingLineOverlay.cs",
+      "sha256": "8ffeaaf199d3c442e39b8e8ee590891491ac6ea44007f273249ccee864345d7f"
+    },
+    {
+      "file": "unity/Assets/Scripts/RecoveryFixture.cs",
+      "sha256": "219321f8c372c13f05b26229748337451445bdf89b795491266b296099a89a68"
+    },
+    {
+      "file": "unity/Assets/Scripts/ReferenceDriverPolicy.cs",
+      "sha256": "03327d203d04790ecbabc185e9476ad8c6c352598a38364569f43d010ae7a22b"
+    },
+    {
+      "file": "unity/Assets/Scripts/ResidentLabel.cs",
+      "sha256": "d5f1ae6e3dfb14541e3fca8a8ec1b172d06138764140c6c038620359d984264b"
+    },
+    {
+      "file": "unity/Assets/Scripts/RoadCar.cs",
+      "sha256": "80f7c70b1e84a96737768684640e845f0da4e200f81c8c890ece1c817acc5d71"
+    },
+    {
+      "file": "unity/Assets/Scripts/RoadGrounding.cs",
+      "sha256": "3de3b93761b5dcfe3e92a695aa54dca4cd53af14128971978698cca679dbee4e"
+    },
+    {
+      "file": "unity/Assets/Scripts/RoadPathFeasibility.cs",
+      "sha256": "a710422276ce7b4e0ca749dd022243d1191ccf4e2ea531a8226d909b5f5d7659"
+    },
+    {
+      "file": "unity/Assets/Scripts/RoadSupport.cs",
+      "sha256": "48fd62b1dcaa4dc85fd6d225d3322a27e0d1260ff5c763d34faf38e0b7cbc0b9"
+    },
+    {
+      "file": "unity/Assets/Scripts/RoadTerrainCollision.cs",
+      "sha256": "668d759acad9dd190ad78b1bc51bb18ac810017c59742df9cfa796179829cba5"
+    },
+    {
+      "file": "unity/Assets/Scripts/RouteProjectionIndex.cs",
+      "sha256": "3e8ffed3af8755bd4d47290e095b9c5ceaf7222c1583639283ca942ed0a2bd75"
+    },
+    {
+      "file": "unity/Assets/Scripts/TechnicalCircuit.cs",
+      "sha256": "ca0679db497b833891fee592b817035a7ad1a2e0d6a7910202f5320906bc78ca"
+    },
+    {
+      "file": "unity/Assets/Scripts/TechnicalCircuitReview.cs",
+      "sha256": "7f81ba40df4e075c9ca92edfc177e71b15d221942e2547f05ab5bc00201010f5"
+    },
+    {
+      "file": "unity/Assets/Scripts/TechnicalCircuitWorld.cs",
+      "sha256": "fcd8e5f970edf4d953e7312ce2719d43417506be9d7eca9667fff1018ddebf52"
+    },
+    {
+      "file": "unity/Assets/Scripts/TrafficDriverPolicy.cs",
+      "sha256": "dbccd0b96f302a93c28245cd5c1105f4297b2eeb65901cb5dc76ff99dbc4a3e8"
+    },
+    {
+      "file": "unity/Assets/Scripts/TrafficFixture.cs",
+      "sha256": "6cdbf4feea5228e978e84582d0080a3c3243fcadd25719357b4cddca2433bd1b"
+    },
+    {
+      "file": "unity/Assets/Scripts/TrafficPathFeasibility.cs",
+      "sha256": "8a8f370b12a552b43f7d1cbff19b2c51020cdb0b58805e2ebaaadf2699d98148"
+    },
+    {
+      "file": "unity/Assets/Scripts/TrafficProgressComparison.cs",
+      "sha256": "8b0211ebad6ec1ad99a72593fdd69a39db6e8b76fc48e534230f99e69e23dae5"
+    },
+    {
+      "file": "unity/Assets/Scripts/TrialWorld.cs",
+      "sha256": "5838ade0956189c29679122bbdeacbadc95c3a50e4d571d67c11feb8dbe703e5"
+    },
+    {
+      "file": "unity/Assets/Scripts/VehicleLightReview.cs",
+      "sha256": "be818285cbc96529db9a60ffdc42acf048c000a7a043f4ab2973c35eb4f24bea"
+    },
+    {
+      "file": "unity/Assets/Scripts/VehicleLights.cs",
+      "sha256": "b722c690c2f73e474b1efbc989d76d44f469c58032cd10f9dbe1f67fb2381610"
+    },
+    {
+      "file": "unity/Assets/Scripts/VerticalMotionAudit.cs",
+      "sha256": "3438c304ca7639d9591c2ff236cb892f3c4a12e047bc8c9626a242b9119b9dc4"
+    },
+    {
+      "file": "unity/Assets/Scripts/VillageKit.cs",
+      "sha256": "4a57d0fd148b65bb1d12f008e69ee6dc9066698a80889e825a087962f5c68461"
+    },
+    {
+      "file": "unity/Assets/Scripts/VillageReview.cs",
+      "sha256": "3a068f6cb37569c7922f07dac537a05b0f2dca8ba26ae52bfbbbfbb3ebd26616"
+    },
+    {
+      "file": "unity/Assets/Scripts/WheelVisuals.cs",
+      "sha256": "17bd226b800d603d2552da54271dcd27c1ec086641fbabb59efddd9758eb4af7"
+    },
+    {
+      "file": "unity/Assets/Scripts/WorldText.cs",
+      "sha256": "26320d63ee35eca3fc1ec48d2806fc0fd7b46725d129793f7c6240376eb6f281"
+    },
+    {
+      "file": "unity/Assets/Editor/AdventureChecks.cs",
+      "sha256": "52afdbe7d8d14e45dbe71851153780ee85a4cf275cd5a9e590002703166793e8"
+    },
+    {
+      "file": "unity/Assets/Editor/CheckpointChecks.cs",
+      "sha256": "a4b1c9496e0ee4bbdc34aa08d53eea9fae07dc36c3b495cde2a44f04e16866cf"
+    },
+    {
+      "file": "unity/Assets/Editor/CliffStudyImport.cs",
+      "sha256": "db037f5b93ef9acd7b5b0cac76509b2fce034fa390c5837608f2ad8d55578109"
+    },
+    {
+      "file": "unity/Assets/Editor/CoastingEnvelopeChecks.cs",
+      "sha256": "379cf19e2416abfdb1856eaca4cb93629196992046b6632e0951ca61c6604f40"
+    },
+    {
+      "file": "unity/Assets/Editor/CollisionEnvelopeReview.cs",
+      "sha256": "ff67b94d8788240a653225bc04e2765091fae8dcf3e7eedd019bf7f55c53be84"
+    },
+    {
+      "file": "unity/Assets/Editor/ContextDriverChecks.cs",
+      "sha256": "5941999d844c2305035e8b91b064fba181098d30c55d450bf51fca9a8ba3e384"
+    },
+    {
+      "file": "unity/Assets/Editor/ContinuationForecastChecks.cs",
+      "sha256": "49d7696304dadd8fd1cb9da8c716557667bdaae07fe0405e24f695e227001c6e"
+    },
+    {
+      "file": "unity/Assets/Editor/DraftingIntegrationChecks.cs",
+      "sha256": "7f63ac1e38c89c1f987dd74aba714fbae1133475f179e71330de49c3e12c3081"
+    },
+    {
+      "file": "unity/Assets/Editor/DraftingModelChecks.cs",
+      "sha256": "9d64366335f1bd19ba8a1435216edebe488abcd02f009feb4b9acf882106f8dd"
+    },
+    {
+      "file": "unity/Assets/Editor/DriverPlanningChecks.cs",
+      "sha256": "88e314a5fdb595db9c7e2038be1b609ad19d60094a0fc07465cf8eb2f04c6d45"
+    },
+    {
+      "file": "unity/Assets/Editor/DriverPolicyChecks.cs",
+      "sha256": "458ca1f12058c5ae774c69c53d1290a129b3e8751d475cd0275b3af84e92b00f"
+    },
+    {
+      "file": "unity/Assets/Editor/DynamicRejoinChecks.cs",
+      "sha256": "20206cf87cbc6cf02f4956acfd47061fd37454ef46979edd87861af48691435b"
+    },
+    {
+      "file": "unity/Assets/Editor/FollowingFallbackSelectionChecks.cs",
+      "sha256": "e9e86f3fa43c0edd485f25bc41c72c713251eac11172f203a4a5e5aaefad03c2"
+    },
+    {
+      "file": "unity/Assets/Editor/FollowingFeasibilityChecks.cs",
+      "sha256": "4197527641ab7092b33a2497e4a3d7e3f126d429629afcefd2af1b7de177eb48"
+    },
+    {
+      "file": "unity/Assets/Editor/FollowingFeasibilityReplay.cs",
+      "sha256": "358d15aa35127fba0286142e1f9cc540c8179fd4ad0a093c8790754c696cba92"
+    },
+    {
+      "file": "unity/Assets/Editor/ForecastEnvelopeChecks.cs",
+      "sha256": "c73088a4f4ea841d0c4cd949b8ae9cb07a4a27bd9fa5257aeb07d2e098cbeabc"
+    },
+    {
+      "file": "unity/Assets/Editor/ForecastPathCacheChecks.cs",
+      "sha256": "022d009e7e8634c318dc97cd88d191035343a69e6795b8e12d08697e87f55ea6"
+    },
+    {
+      "file": "unity/Assets/Editor/ForecastReuseChecks.cs",
+      "sha256": "cf5d49bf98937898703749c4750aa58300f14f860526c4aa786957a8202dba0c"
+    },
+    {
+      "file": "unity/Assets/Editor/ForecastWorkerChecks.cs",
+      "sha256": "90ea1a0ae125dbd6435c54d88930ccd57c094c5cca7ea89c246f16f72cffa1fa"
+    },
+    {
+      "file": "unity/Assets/Editor/GradeCourseChecks.cs",
+      "sha256": "49c4e33a2c4b46c4663007f611cdd34bfd2cb6736ed768dc3c796cb5992cdbdb"
+    },
+    {
+      "file": "unity/Assets/Editor/ManualRaceStartChecks.cs",
+      "sha256": "774bf4a3252af7f36217c8c0a65427defbb23add9dcfdd0e597f2c031bad5aa6"
+    },
+    {
+      "file": "unity/Assets/Editor/MigrationBuild.cs",
+      "sha256": "84f0acbc6fd6d32098f3e85728a6b627b48d62e03dcbcb2c0484b99062d42b79"
+    },
+    {
+      "file": "unity/Assets/Editor/OpeningCaptureChecks.cs",
+      "sha256": "d38dcb2bd937f144e37e39bdd41f2de8be3e267d0d5b6c6d80c2fde6d69914ef"
+    },
+    {
+      "file": "unity/Assets/Editor/OpenSpacePriorityChecks.cs",
+      "sha256": "e42480b510410ed9452e010c7f46b7f44bc78307d3da64d20ebbb3250c2dd93f"
+    },
+    {
+      "file": "unity/Assets/Editor/PassingGeometryReplay.cs",
+      "sha256": "7d716328e470403e2e3f0e7f9abe4d7e9578838ae908bd0797555e66f2025cb4"
+    },
+    {
+      "file": "unity/Assets/Editor/PassingProgressChecks.cs",
+      "sha256": "bea9e06f8babb7106efce98bee43ad11a4e38208daa12df246e8ec5b6d0138be"
+    },
+    {
+      "file": "unity/Assets/Editor/PassingTargetChecks.cs",
+      "sha256": "9155569811ee39da956257bce39e4c39fc1fb3ccb360b961d787123dcf3afe7f"
+    },
+    {
+      "file": "unity/Assets/Editor/PassTrajectoryChecks.cs",
+      "sha256": "35eed78f5d5777e62b1ba8b8026309cdf00e3696f81e690e02e5c7f97a179216"
+    },
+    {
+      "file": "unity/Assets/Editor/PathSpeedChecks.cs",
+      "sha256": "f04477a5112a6220021026425cb33432fba8c5ecfa32f1a4e0670f9fcdefaae2"
+    },
+    {
+      "file": "unity/Assets/Editor/RaceGridChecks.cs",
+      "sha256": "3df09c614499e4ec306fd1568ac4ba4ce94a79006e98466c6e1766941e779870"
+    },
+    {
+      "file": "unity/Assets/Editor/RacingLineChecks.cs",
+      "sha256": "90f94f10a099f747be1b0f91cf600722b7c3e277a1e42687b9415819b4d803dd"
+    },
+    {
+      "file": "unity/Assets/Editor/RearPressureChecks.cs",
+      "sha256": "059f9242701e2fa03dc1a5340bc931156ef27b08eef34a6457b272cd119f7dad"
+    },
+    {
+      "file": "unity/Assets/Editor/RearPressureReview.cs",
+      "sha256": "778d6c02d5da95a8a8ba8cde2ccccf18474a126e55ae64033788dd410895af99"
+    },
+    {
+      "file": "unity/Assets/Editor/RecoverySensorChecks.cs",
+      "sha256": "0e2a5bb4c395bc45a8a34b5b16907b55b123186992ef4d6343ff2927aad58010"
+    },
+    {
+      "file": "unity/Assets/Editor/RouteProjectionChecks.cs",
+      "sha256": "397dd533c3bf276498662697ca603c724ecced632aba88ac30fc74c6a33b89c0"
+    },
+    {
+      "file": "unity/Assets/Editor/SharedTrafficPreparationChecks.cs",
+      "sha256": "7fd48b536d24a08b97dd239a0a1de7dca1e1255e8822ef773ca5e512668bb10b"
+    },
+    {
+      "file": "unity/Assets/Editor/TargetSwitchReplay.cs",
+      "sha256": "08336ed9ef4c9574218d865aa600ac54aee892769fef781f4cb9edcef53ff484"
+    },
+    {
+      "file": "unity/Assets/Editor/TechnicalCircuitChecks.cs",
+      "sha256": "7fb90c932c9334c3de97ab5b3e9660e0825fbd3f69736c58fe8fb13158228bbb"
+    },
+    {
+      "file": "unity/Assets/Editor/TimedCorridorChecks.cs",
+      "sha256": "7d266ffc966b415c84f50ceb9d5541885fc938b469d48722d98655e884959327"
+    },
+    {
+      "file": "unity/Assets/Editor/TrafficCoastChecks.cs",
+      "sha256": "557001733b3dc35d35b74424c000d7fcb9ba9aafde2f2edbf1656b3e20e452b6"
+    },
+    {
+      "file": "unity/Assets/Editor/TrafficCoastReplay.cs",
+      "sha256": "32a6149d6eae8cb3454221d553f27be72c68a72435d0445c389ab2e0ee816b26"
+    },
+    {
+      "file": "unity/Assets/Editor/TrafficPathChecks.cs",
+      "sha256": "1ccd9ca71f70c8b81e5a2da8da953de714c6581efab4c89da457a263294961da"
+    },
+    {
+      "file": "unity/Assets/Editor/TrafficPolicyChecks.cs",
+      "sha256": "fc88a760f730395d853650fc06492372c23548acbeb0ae01637992d0e00e199e"
+    },
+    {
+      "file": "unity/Assets/Editor/TrafficProgressChecks.cs",
+      "sha256": "6691318557807802b0aaf75f8fa7880b59a861d168e768cac18fe504d4d262aa"
+    },
+    {
+      "file": "unity/Assets/Editor/TrafficProgressReplay.cs",
+      "sha256": "ce2889ed51f4dabe2782c02f1b8a8895aad8fa9755f7f6aa790c04bb934ed74e"
+    },
+    {
+      "file": "unity/Assets/Editor/VehicleLightChecks.cs",
+      "sha256": "c40c8788f74bae59c0fce0521fd29482c40ef2a74085a3bfa99b8c56dad3561a"
+    },
+    {
+      "file": "tools/run-technical-trial.ps1",
+      "sha256": "cd2b482efbe099a78131bda2d2954dca5c37c2eec3432128508e1fffef64cd2d"
+    },
+    {
+      "file": "tools/run-coasting-regressions.ps1",
+      "sha256": "99583dc7f4ba514a38104474d4f8ec8825330cdf0b9dc89c401f2706f5465719"
+    },
+    {
+      "file": "tools/run-drafting-70.ps1",
+      "sha256": "350768581ba0b0e49aeaac6fc8ce1e8b93a78ab4d2fe83aa042b2a5663b038d5"
+    }
+  ],
+  "validationToolRevision": {
+    "note": "Completed solo matrix, parity and actual-trajectory plotting tools. Original compiled-source archive is preserved. Plotting uses existing tools/python-packages; the dependency lock is included, packages are not copied.",
+    "files": [
+      {
+        "file": "review/unity-35/validation-tools-74/run-dynamic-rejoin-74.ps1",
+        "sha256": "ee962685732293e5bb69bdbda0fc1f33a605123f121ae5e713dd8fcf9f20fef0"
+      },
+      {
+        "file": "review/unity-35/validation-tools-74/run-technical-trial.ps1",
+        "sha256": "cd2b482efbe099a78131bda2d2954dca5c37c2eec3432128508e1fffef64cd2d"
+      },
+      {
+        "file": "review/unity-35/validation-tools-74/analyze-dynamic-rejoin.py",
+        "sha256": "3cd651e73505997f2fda3aef4e7f0e278cf366738e799fd6a612958c206f24b5"
+      },
+      {
+        "file": "review/unity-35/validation-tools-74/plot-dynamic-rejoin.py",
+        "sha256": "ac1108df382168d2215a38b7c5564ebf61053a346166bc6e32b75f8ac4ecda8b"
+      },
+      {
+        "file": "review/unity-35/validation-tools-74/verify-context-race-parity.py",
+        "sha256": "15106681f4eec916e26f8882dd3959c41ca33748a69035d10f47134829d06123"
+      },
+      {
+        "file": "review/unity-35/validation-tools-74/runtime_log_errors.py",
+        "sha256": "f3d5ccdffacdce8acbb353bc6367ef6a4a0572612d7a0ff0df8ec4697de217fa"
+      },
+      {
+        "file": "review/unity-35/validation-tools-74/python-plotting-lock.txt",
+        "sha256": "84bf1b73002584fe9deb2d7b86c61bf0ea92ed4d8e096ea6629644a7f07ee6ac"
+      }
+    ]
+  }
+}

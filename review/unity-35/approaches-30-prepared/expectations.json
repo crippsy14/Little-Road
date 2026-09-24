@@ -1,0 +1,24 @@
+{
+  "scope": "Captured field-car approaches at two observed times, then two seconds on declared frozen paths using normal Rigidbody forces. No assumption that any path is safe; accuracy and fate are measured before choosing a correction. Not traffic or race acceptance.",
+  "cases": [
+    "start-1-current",
+    "start-1-reanchor",
+    "start-1-guide",
+    "start-2-current",
+    "start-2-reanchor",
+    "start-2-guide"
+  ],
+  "horizon": 2,
+  "positionMaximumMetres": 0.25,
+  "bodyUnderestimateMaximumMetres": 0.1,
+  "departureTimingErrorSeconds": 0.1,
+  "minimumEligibleSamples": 24,
+  "requireNormalPathsContained": false,
+  "requireAtLeastOneOverspeedDeparture": false,
+  "requireContactFree": true,
+  "forecastControlSteps": 3,
+  "adaptiveEnvelope": true,
+  "envelopeUnderestimateTolerance": 0.002,
+  "sourceSha256": "1EE47863582D822951029685EBF13848D5B87FD111DB7C6CA57AD1D3CB328CDF",
+  "preparedPath": true
+}

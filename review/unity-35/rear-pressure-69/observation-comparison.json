@@ -1,0 +1,132 @@
+{
+  "scope": "Constructed initial decisions, not a complete live encounter or proof about the watched incident.",
+  "checks": [
+    {
+      "gap": -5.0,
+      "rearSpeed": 12.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -5.0,
+      "rearSpeed": 18.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -5.0,
+      "rearSpeed": 26.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -6.0,
+      "rearSpeed": 12.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -6.0,
+      "rearSpeed": 18.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -6.0,
+      "rearSpeed": 26.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -7.0,
+      "rearSpeed": 12.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -7.0,
+      "rearSpeed": 18.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -7.0,
+      "rearSpeed": 26.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -8.0,
+      "rearSpeed": 12.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -8.0,
+      "rearSpeed": 18.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -8.0,
+      "rearSpeed": 26.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -12.0,
+      "rearSpeed": 12.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -12.0,
+      "rearSpeed": 18.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -12.0,
+      "rearSpeed": 26.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -24.0,
+      "rearSpeed": 12.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -24.0,
+      "rearSpeed": 18.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    },
+    {
+      "gap": -24.0,
+      "rearSpeed": 26.0,
+      "targetMatchesClear": true,
+      "steeringMatchesClear": true,
+      "pedalMatchesClear": true
+    }
+  ],
+  "allSameCorridorClear": true
+}

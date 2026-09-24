@@ -1,0 +1,136 @@
+{
+    "fixture": "rolling-blocked",
+    "scope": "Synthetic recovery start; ordinary physics thereafter. Reset counts remain assisted recovery.",
+    "complete": true,
+    "returnedBehindMissedGate": true,
+    "unearnedGateAdvance": false,
+    "trafficPassed": false,
+    "maxStepMetres": 0.217041015625,
+    "maxPhysicalStepMetres": 0.217041015625,
+    "waitingSeconds": 0.0,
+    "reverseSeconds": 5.500001907348633,
+    "activeSeconds": 17.991477966308594,
+    "observedResetJumps": 0,
+    "physicalRecoveries": 3,
+    "assistedResets": 0,
+    "contacts": 0,
+    "events": [
+        {
+            "time": 0.000011669471859931946,
+            "progress": -24.0,
+            "offset": 7.399993896484375,
+            "speed": -4.8685797011732354e-14,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 0.10834500193595886,
+            "progress": -21.2606201171875,
+            "offset": 7.4032135009765625,
+            "speed": 24.57442283630371,
+            "gate": 0,
+            "resets": 0,
+            "state": "Stabilise"
+        },
+        {
+            "time": 1.6250104904174805,
+            "progress": 0.1636962890625,
+            "offset": 7.00848388671875,
+            "speed": 4.598169326782227,
+            "gate": 1,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 5.925007343292236,
+            "progress": -2.219482421875,
+            "offset": -0.6124267578125,
+            "speed": -2.9659383296966553,
+            "gate": 1,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 7.124989032745361,
+            "progress": -2.06982421875,
+            "offset": -0.392791748046875,
+            "speed": 2.7076542377471924,
+            "gate": 1,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 8.324971199035645,
+            "progress": -2.834228515625,
+            "offset": -2.1763916015625,
+            "speed": -2.9455647468566895,
+            "gate": 1,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 11.599921226501465,
+            "progress": 4.244140625,
+            "offset": 0.6532135009765625,
+            "speed": 3.8045003414154053,
+            "gate": 1,
+            "resets": 0,
+            "state": "Racing"
+        },
+        {
+            "time": 12.216578483581543,
+            "progress": 7.54345703125,
+            "offset": 1.220184326171875,
+            "speed": 6.98771858215332,
+            "gate": 1,
+            "resets": 0,
+            "state": "Stabilise"
+        },
+        {
+            "time": 12.41657543182373,
+            "progress": 8.6810302734375,
+            "offset": 1.3656158447265625,
+            "speed": 4.586318492889404,
+            "gate": 1,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 12.424908638000488,
+            "progress": 8.7181396484375,
+            "offset": 1.3700408935546875,
+            "speed": 4.486932277679443,
+            "gate": 1,
+            "resets": 0,
+            "state": "Racing"
+        },
+        {
+            "time": 103.6301040649414,
+            "progress": 2028.144287109375,
+            "offset": 3.4464569091796875,
+            "speed": 23.9423828125,
+            "gate": 0,
+            "resets": 0,
+            "state": "Stabilise"
+        },
+        {
+            "time": 105.0297622680664,
+            "progress": 2048.11279296875,
+            "offset": 3.0020751953125,
+            "speed": 5.449063777923584,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 109.78693389892578,
+            "progress": 2066.498779296875,
+            "offset": 0.273529052734375,
+            "speed": 3.82696533203125,
+            "gate": 0,
+            "resets": 0,
+            "state": "Racing"
+        }
+    ]
+}

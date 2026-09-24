@@ -1,0 +1,152 @@
+{
+  "scope": "Cedar first-lap mixed street/club field; not general AI or player acceptance.",
+  "soloStandingLapSeconds": {
+    "street": 86.4343032836914,
+    "club": 67.32230377197266
+  },
+  "cutoffSeconds": 117,
+  "firstMovementSeconds": 2.700019598007202,
+  "firstMovementToLastLapSeconds": null,
+  "firstLapTimes": {
+    "0": null,
+    "1": 114.70240020751953,
+    "2": null,
+    "3": null,
+    "4": null,
+    "5": null,
+    "6": null,
+    "7": null,
+    "8": null,
+    "9": null,
+    "10": null,
+    "11": null,
+    "12": null,
+    "13": null,
+    "14": null,
+    "15": null,
+    "16": null,
+    "17": null,
+    "18": null,
+    "19": null,
+    "20": null,
+    "21": null,
+    "22": null,
+    "23": null
+  },
+  "contacts": 10,
+  "physicalRecoveries": 217,
+  "slowCarSecondsAfterLaunch": 1427.5,
+  "sustainedEquipmentPasses": [],
+  "passed": 3,
+  "total": 11,
+  "checks": [
+    {
+      "name": "At least 24 entrants",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Every car completes lap one",
+      "passed": false,
+      "detail": {
+        "0": null,
+        "1": 114.70240020751953,
+        "2": null,
+        "3": null,
+        "4": null,
+        "5": null,
+        "6": null,
+        "7": null,
+        "8": null,
+        "9": null,
+        "10": null,
+        "11": null,
+        "12": null,
+        "13": null,
+        "14": null,
+        "15": null,
+        "16": null,
+        "17": null,
+        "18": null,
+        "19": null,
+        "20": null,
+        "21": null,
+        "22": null,
+        "23": null
+      }
+    },
+    {
+      "name": "First movement within two seconds of green",
+      "passed": false,
+      "detail": 2.700019598007202
+    },
+    {
+      "name": "Every car starts within eight seconds",
+      "passed": false,
+      "detail": {
+        "0": 18.6081485748291,
+        "1": 2.700019598007202,
+        "2": 2.700019598007202,
+        "3": 2.700019598007202,
+        "4": 6.708328723907471,
+        "5": 6.8083271980285645,
+        "6": 6.908325672149658,
+        "7": 10.108277320861816,
+        "8": 11.208260536193848,
+        "9": 9.508286476135254,
+        "10": 12.408242225646973,
+        "11": 14.008217811584473,
+        "12": 14.308213233947754,
+        "13": 14.808205604553223,
+        "14": 15.208199501037598,
+        "15": 15.208199501037598,
+        "16": 15.408196449279785,
+        "17": 17.608163833618164,
+        "18": 15.608193397521973,
+        "19": 17.20816993713379,
+        "20": 18.208154678344727,
+        "21": 17.20816993713379,
+        "22": 17.80816078186035,
+        "23": 18.908143997192383
+      }
+    },
+    {
+      "name": "First movement to last first-lap completion within cutoff",
+      "passed": false,
+      "detail": {
+        "seconds": null,
+        "cutoff": 117
+      }
+    },
+    {
+      "name": "No recoveries",
+      "passed": false,
+      "detail": 3
+    },
+    {
+      "name": "No missedGates",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "No sampled body departure",
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "No pose overlap above 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "No recovery episodes in the first 15 seconds",
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "Equipment advantage creates a sustained overtake",
+      "passed": false,
+      "detail": 0
+    }
+  ]
+}

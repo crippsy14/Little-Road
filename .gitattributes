@@ -1,0 +1,3 @@
+# Preserve exact source/evidence bytes across platforms. Archived SHA-256
+# manifests must not be invalidated by checkout-time line-ending conversion.
+* -text

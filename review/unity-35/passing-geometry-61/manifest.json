@@ -1,0 +1,25 @@
+{
+  "kind": "editor-only diagnostic; no new player export",
+  "input": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\trajectory-60\\field-retained\\race.track.json",
+  "inputSha256": "d7c290f13f661dfb303602f9553627aa5938beec192cbaf2bfd5e9ee2dff9696",
+  "editorExitCode": 0,
+  "observations": 64,
+  "originalMatches": 64,
+  "sourceFiles": [
+    {
+      "file": "unity/Assets/Editor/PassingGeometryReplay.cs",
+      "sha256": "7d716328e470403e2e3f0e7f9abe4d7e9578838ae908bd0797555e66f2025cb4"
+    },
+    {
+      "file": "tools/analyze-passing-geometry.py",
+      "sha256": "740bbeed3b7becd64363b50ed8225dd646b6551253e26596a0326ae0e176dcfc"
+    },
+    {
+      "file": "review/unity-35/passing-geometry-61-expectations.md",
+      "sha256": "8f2ef185a39cb7d131a0bc9f675e26407a776b4e17b0f3722475abc15d4fd6ff"
+    }
+  ],
+  "log": "passing-geometry-61-editor-fixed.log",
+  "initialCompileFailureLog": "passing-geometry-61-editor.log",
+  "review": "passing-geometry-61-review.md"
+}

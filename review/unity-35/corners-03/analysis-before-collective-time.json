@@ -1,0 +1,718 @@
+{
+  "scope": "First-corner passage and prediction evidence, not full-lap acceptance.",
+  "predictionCaveat": "Prediction error uses the subsequent observed trajectory; opponents can react to us, so it is diagnostic, not proof a rejected counterfactual path was safe.",
+  "assemblyHash": "525B5B3C1A37929A099684102EB46E0E2C1C4FF4AD3C4FBA84E5831EC32984D8",
+  "passed": 89,
+  "total": 91,
+  "results": {
+    "corner-solo-left-street": {
+      "exits": {
+        "0": 10.008278846740723
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-solo-left-club": {
+      "exits": {
+        "0": 9.008294105529785
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-solo-middle-street": {
+      "exits": {
+        "0": 9.608284950256348
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-solo-middle-club": {
+      "exits": {
+        "0": 8.508301734924316
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-solo-right-street": {
+      "exits": {
+        "0": 8.808297157287598
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-solo-right-club": {
+      "exits": {
+        "0": 7.708313465118408
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-pair-left-street": {
+      "exits": {
+        "0": 10.008278846740723,
+        "1": 8.908295631408691
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 16
+    },
+    "corner-pair-left-club": {
+      "exits": {
+        "0": 9.108292579650879,
+        "1": 7.708313465118408
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 14
+    },
+    "corner-pair-right-street": {
+      "exits": {
+        "0": 8.908295631408691,
+        "1": 10.008278846740723
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 16
+    },
+    "corner-pair-right-club": {
+      "exits": {
+        "0": 7.708313465118408,
+        "1": 9.108292579650879
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 14
+    },
+    "corner-three-street": {
+      "exits": {
+        "0": 10.108277320861816,
+        "1": 10.20827579498291,
+        "2": 10.20827579498291
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 16
+    },
+    "corner-three-club": {
+      "exits": {
+        "0": 8.808297157287598,
+        "1": 8.908295631408691,
+        "2": 8.908295631408691
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 14
+    }
+  },
+  "checks": [
+    {
+      "name": "All twelve declared cases",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-left-street: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-left-street: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 10.008278846740723
+      }
+    },
+    {
+      "name": "corner-solo-left-street: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-solo-left-street: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-left-street: bodies remain on road in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-left-street: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-left-street: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-left-club: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-left-club: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 9.008294105529785
+      }
+    },
+    {
+      "name": "corner-solo-left-club: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-solo-left-club: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-left-club: bodies remain on road in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-left-club: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-left-club: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-middle-street: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-middle-street: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 9.608284950256348
+      }
+    },
+    {
+      "name": "corner-solo-middle-street: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-solo-middle-street: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-middle-street: bodies remain on road in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-middle-street: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-middle-street: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-middle-club: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-middle-club: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 8.508301734924316
+      }
+    },
+    {
+      "name": "corner-solo-middle-club: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-solo-middle-club: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-middle-club: bodies remain on road in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-middle-club: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-middle-club: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-right-street: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-right-street: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 8.808297157287598
+      }
+    },
+    {
+      "name": "corner-solo-right-street: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-solo-right-street: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-right-street: bodies remain on road in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-right-street: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-right-street: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-right-club: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-right-club: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 7.708313465118408
+      }
+    },
+    {
+      "name": "corner-solo-right-club: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-solo-right-club: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-right-club: bodies remain on road in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-right-club: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-solo-right-club: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-left-street: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-left-street: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 10.008278846740723,
+        "1": 8.908295631408691
+      }
+    },
+    {
+      "name": "corner-pair-left-street: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-pair-left-street: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-left-street: bodies remain on road in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-left-street: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-left-street: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-left-club: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-left-club: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 9.108292579650879,
+        "1": 7.708313465118408
+      }
+    },
+    {
+      "name": "corner-pair-left-club: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-pair-left-club: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-left-club: bodies remain on road in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-left-club: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-left-club: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-right-street: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-right-street: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 8.908295631408691,
+        "1": 10.008278846740723
+      }
+    },
+    {
+      "name": "corner-pair-right-street: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-pair-right-street: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-right-street: bodies remain on road in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-right-street: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-right-street: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-right-club: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-right-club: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 7.708313465118408,
+        "1": 9.108292579650879
+      }
+    },
+    {
+      "name": "corner-pair-right-club: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-pair-right-club: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-right-club: bodies remain on road in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-right-club: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-right-club: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-three-street: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-three-street: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 10.108277320861816,
+        "1": 10.20827579498291,
+        "2": 10.20827579498291
+      }
+    },
+    {
+      "name": "corner-three-street: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-three-street: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-three-street: bodies remain on road in corner",
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "corner-three-street: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-three-street: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-three-club: normal process exit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-three-club: every car clears corner exit",
+      "passed": true,
+      "detail": {
+        "0": 8.808297157287598,
+        "1": 8.908295631408691,
+        "2": 8.908295631408691
+      }
+    },
+    {
+      "name": "corner-three-club: no contacts in corner",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "corner-three-club: no recovery in corner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-three-club: bodies remain on road in corner",
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "corner-three-club: each car earns the corner checkpoint",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-three-club: context decision capture covers every car",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "corner-pair-left-street: all exit within frozen corner deadline",
+      "passed": true,
+      "detail": {
+        "cutoff": 16,
+        "exits": {
+          "0": 10.008278846740723,
+          "1": 8.908295631408691
+        }
+      }
+    },
+    {
+      "name": "corner-pair-right-street: all exit within frozen corner deadline",
+      "passed": true,
+      "detail": {
+        "cutoff": 16,
+        "exits": {
+          "0": 8.908295631408691,
+          "1": 10.008278846740723
+        }
+      }
+    },
+    {
+      "name": "corner-three-street: all exit within frozen corner deadline",
+      "passed": true,
+      "detail": {
+        "cutoff": 16,
+        "exits": {
+          "0": 10.108277320861816,
+          "1": 10.20827579498291,
+          "2": 10.20827579498291
+        }
+      }
+    },
+    {
+      "name": "corner-pair-left-club: all exit within frozen corner deadline",
+      "passed": true,
+      "detail": {
+        "cutoff": 14,
+        "exits": {
+          "0": 9.108292579650879,
+          "1": 7.708313465118408
+        }
+      }
+    },
+    {
+      "name": "corner-pair-right-club: all exit within frozen corner deadline",
+      "passed": true,
+      "detail": {
+        "cutoff": 14,
+        "exits": {
+          "0": 7.708313465118408,
+          "1": 9.108292579650879
+        }
+      }
+    },
+    {
+      "name": "corner-three-club: all exit within frozen corner deadline",
+      "passed": true,
+      "detail": {
+        "cutoff": 14,
+        "exits": {
+          "0": 8.808297157287598,
+          "1": 8.908295631408691,
+          "2": 8.908295631408691
+        }
+      }
+    }
+  ]
+}

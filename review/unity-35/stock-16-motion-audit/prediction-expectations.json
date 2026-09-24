@@ -1,0 +1,10 @@
+{
+  "scope": "Initial one-second known-input calibration on flat contact-free tarmac. Not future-control, collision, slope or production acceptance.",
+  "minimumOneSecondWindows": 100,
+  "positionP95Metres": 0.1,
+  "positionMaximumMetres": 0.25,
+  "speedP95Mps": 0.25,
+  "headingP95Degrees": 1,
+  "bodyUnderestimateMaximumMetres": 0.1,
+  "reason": "Model uncertainty must be materially smaller than the observed 0.203 m road departure; report excluded domains separately."
+}

@@ -1,0 +1,5868 @@
+{
+  "scope": "Opening straight only, unchanged 24-car Cedar grid. Spatial field spread is a diagnostic, not a target to minimise: a stretched or compact field can both race well.",
+  "brakingZoneRouteMetres": 280,
+  "boundaryBasis": "Authored start of First braking zone, 280 m from the start line; initial grid is behind the line. This is geometry, not each car's actual brake onset.",
+  "precision": "Linearly interpolated 10 Hz car-centre progress/offset/speed; rank ties retained within 1 cm spatially and 1 ms at gates. Centre gaps ignore lateral separation and are not clearance or proof that passing is possible.",
+  "results": {
+    "off": {
+      "firstCarAtBrakingZone": 11.529949122088555,
+      "lastCarAtBrakingZone": 17.18816567686409,
+      "passageWindow": 5.658216554775537,
+      "collectiveArrivalSeconds": {
+        "0": 83.65964564029082,
+        "100": 186.1219004094064,
+        "200": 280.5853601741605,
+        "280": 358.6505743898906
+      },
+      "fieldAtFirstArrival": {
+        "time": 11.529949122088555,
+        "spreadMetres": 129.00177982155728,
+        "cars": [
+          {
+            "id": 4,
+            "progress": 280.0,
+            "speed": 33.68677844552715,
+            "roadOffset": 2.7955767957687203,
+            "rankRange": [
+              1,
+              1
+            ],
+            "centreGapAhead": null
+          },
+          {
+            "id": 1,
+            "progress": 234.29754692096316,
+            "speed": 24.83082875398277,
+            "roadOffset": -2.611901018334977,
+            "rankRange": [
+              2,
+              2
+            ],
+            "centreGapAhead": 45.70245307903684
+          },
+          {
+            "id": 2,
+            "progress": 233.82918508572251,
+            "speed": 24.854339053763294,
+            "roadOffset": 0.6475738577456818,
+            "rankRange": [
+              3,
+              3
+            ],
+            "centreGapAhead": 0.4683618352406427
+          },
+          {
+            "id": 3,
+            "progress": 233.2240237752511,
+            "speed": 24.899129179657482,
+            "roadOffset": 4.193027420219386,
+            "rankRange": [
+              4,
+              4
+            ],
+            "centreGapAhead": 0.6051613104714022
+          },
+          {
+            "id": 16,
+            "progress": 222.23144497293794,
+            "speed": 33.82124703603031,
+            "roadOffset": -5.806253165963867,
+            "rankRange": [
+              5,
+              5
+            ],
+            "centreGapAhead": 10.992578802313176
+          },
+          {
+            "id": 5,
+            "progress": 222.1916912874848,
+            "speed": 24.83402181257083,
+            "roadOffset": -0.0846576926952453,
+            "rankRange": [
+              6,
+              6
+            ],
+            "centreGapAhead": 0.0397536854531495
+          },
+          {
+            "id": 6,
+            "progress": 221.4077615493855,
+            "speed": 24.886435284192586,
+            "roadOffset": 3.8845553783323092,
+            "rankRange": [
+              7,
+              7
+            ],
+            "centreGapAhead": 0.7839297380992889
+          },
+          {
+            "id": 8,
+            "progress": 211.09454339364635,
+            "speed": 24.954284392923444,
+            "roadOffset": 1.0479923619262614,
+            "rankRange": [
+              8,
+              8
+            ],
+            "centreGapAhead": 10.31321815573915
+          },
+          {
+            "id": 7,
+            "progress": 210.88408768246893,
+            "speed": 24.818564110716235,
+            "roadOffset": -2.096338826005408,
+            "rankRange": [
+              9,
+              9
+            ],
+            "centreGapAhead": 0.21045571117741702
+          },
+          {
+            "id": 9,
+            "progress": 209.9094382436682,
+            "speed": 24.848446860510432,
+            "roadOffset": 4.194048604575421,
+            "rankRange": [
+              10,
+              10
+            ],
+            "centreGapAhead": 0.974649438800725
+          },
+          {
+            "id": 10,
+            "progress": 199.32269537027085,
+            "speed": 24.826081634319447,
+            "roadOffset": -2.099577159611357,
+            "rankRange": [
+              11,
+              11
+            ],
+            "centreGapAhead": 10.586742873397355
+          },
+          {
+            "id": 12,
+            "progress": 198.9889389908497,
+            "speed": 24.904579362161133,
+            "roadOffset": 3.6590834578635847,
+            "rankRange": [
+              12,
+              12
+            ],
+            "centreGapAhead": 0.3337563794211462
+          },
+          {
+            "id": 11,
+            "progress": 197.11488830235902,
+            "speed": 24.619873680229066,
+            "roadOffset": 1.0473661109341967,
+            "rankRange": [
+              13,
+              13
+            ],
+            "centreGapAhead": 1.8740506884906836
+          },
+          {
+            "id": 15,
+            "progress": 186.9539648638521,
+            "speed": 24.816793064929268,
+            "roadOffset": 4.155488822874193,
+            "rankRange": [
+              14,
+              14
+            ],
+            "centreGapAhead": 10.160923438506927
+          },
+          {
+            "id": 13,
+            "progress": 186.33773453509224,
+            "speed": 24.828312803805648,
+            "roadOffset": -2.0998146799072104,
+            "rankRange": [
+              15,
+              15
+            ],
+            "centreGapAhead": 0.6162303287598547
+          },
+          {
+            "id": 14,
+            "progress": 185.44178166533428,
+            "speed": 24.74673399385116,
+            "roadOffset": 1.042983848628937,
+            "rankRange": [
+              16,
+              16
+            ],
+            "centreGapAhead": 0.8959528697579628
+          },
+          {
+            "id": 18,
+            "progress": 174.2096736362679,
+            "speed": 24.58801976641034,
+            "roadOffset": 1.760673606141935,
+            "rankRange": [
+              17,
+              17
+            ],
+            "centreGapAhead": 11.232108029066382
+          },
+          {
+            "id": 17,
+            "progress": 173.58208829190593,
+            "speed": 24.87233138963382,
+            "roadOffset": -2.143828255142835,
+            "rankRange": [
+              18,
+              18
+            ],
+            "centreGapAhead": 0.627585344361961
+          },
+          {
+            "id": 20,
+            "progress": 163.43029928225084,
+            "speed": 24.62771047688797,
+            "roadOffset": 0.5469941551718405,
+            "rankRange": [
+              19,
+              19
+            ],
+            "centreGapAhead": 10.15178900965509
+          },
+          {
+            "id": 21,
+            "progress": 163.1167425921494,
+            "speed": 24.50005942959344,
+            "roadOffset": 3.6737600637378893,
+            "rankRange": [
+              20,
+              20
+            ],
+            "centreGapAhead": 0.31355669010144993
+          },
+          {
+            "id": 19,
+            "progress": 162.27573896138838,
+            "speed": 24.83038266919574,
+            "roadOffset": -2.4698165781499193,
+            "rankRange": [
+              21,
+              21
+            ],
+            "centreGapAhead": 0.8410036307610085
+          },
+          {
+            "id": 0,
+            "progress": 153.0086612558517,
+            "speed": 27.740157079629455,
+            "roadOffset": 6.487288969736161,
+            "rankRange": [
+              22,
+              22
+            ],
+            "centreGapAhead": 9.267077705536678
+          },
+          {
+            "id": 22,
+            "progress": 151.33080873134963,
+            "speed": 24.548082171292204,
+            "roadOffset": -2.771310857633182,
+            "rankRange": [
+              23,
+              23
+            ],
+            "centreGapAhead": 1.6778525245020717
+          },
+          {
+            "id": 23,
+            "progress": 150.99822017844272,
+            "speed": 24.77866183592847,
+            "roadOffset": 0.7909412127946791,
+            "rankRange": [
+              24,
+              24
+            ],
+            "centreGapAhead": 0.3325885529069126
+          }
+        ]
+      },
+      "frames": [
+        {
+          "time": 1.1669471859931946e-05,
+          "spreadMetres": 39.699951171875,
+          "cars": [
+            {
+              "id": 1,
+              "progress": -8.0,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 2,
+              "progress": -8.60009765625,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 0.60009765625
+            },
+            {
+              "id": 3,
+              "progress": -9.199951171875,
+              "speed": 3.551837507919861e-14,
+              "roadOffset": 3.5,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.599853515625
+            },
+            {
+              "id": 4,
+              "progress": -13.5,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 5,
+              "progress": -14.10009765625,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 0.60009765625
+            },
+            {
+              "id": 6,
+              "progress": -14.699951171875,
+              "speed": 3.551837507919861e-14,
+              "roadOffset": 3.5,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.599853515625
+            },
+            {
+              "id": 7,
+              "progress": -19.0,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 8,
+              "progress": -19.60009765625,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.60009765625
+            },
+            {
+              "id": 9,
+              "progress": -20.199951171875,
+              "speed": 3.551837507919861e-14,
+              "roadOffset": 3.5,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 0.599853515625
+            },
+            {
+              "id": 10,
+              "progress": -24.5,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 11,
+              "progress": -25.0999755859375,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 12,
+              "progress": -25.699951171875,
+              "speed": 8.164722695679083e-14,
+              "roadOffset": 3.5,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 13,
+              "progress": -30.0,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 14,
+              "progress": -30.5999755859375,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 15,
+              "progress": -31.199951171875,
+              "speed": 1.322311265474982e-13,
+              "roadOffset": 3.5,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 16,
+              "progress": -35.5,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 17,
+              "progress": -36.0999755859375,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 18,
+              "progress": -36.699951171875,
+              "speed": 1.322311265474982e-13,
+              "roadOffset": 3.5,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 19,
+              "progress": -41.0,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 20,
+              "progress": -41.5999755859375,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 21,
+              "progress": -42.199951171875,
+              "speed": 1.322311265474982e-13,
+              "roadOffset": 3.5,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 22,
+              "progress": -46.5,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 23,
+              "progress": -47.0999755859375,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 0,
+              "progress": -47.699951171875,
+              "speed": 1.708734065700157e-13,
+              "roadOffset": 3.5,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 0.5999755859375
+            }
+          ]
+        },
+        {
+          "time": 2.0,
+          "spreadMetres": 49.1664012361097,
+          "cars": [
+            {
+              "id": 1,
+              "progress": 7.014014323102155,
+              "speed": 14.524688885430766,
+              "roadOffset": -3.3372063322452807,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 2,
+              "progress": 6.412695963727155,
+              "speed": 14.524676479549688,
+              "roadOffset": 0.22628478040205893,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 0.601318359375
+            },
+            {
+              "id": 3,
+              "progress": 5.814307266822867,
+              "speed": 14.524684108455366,
+              "roadOffset": 3.379579825217139,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.598388696904288
+            },
+            {
+              "id": 4,
+              "progress": -1.2122844258255203,
+              "speed": 12.69324035581867,
+              "roadOffset": -4.3759933921861265,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 7.026591692648387
+            },
+            {
+              "id": 5,
+              "progress": -1.857548272905538,
+              "speed": 12.63934748846363,
+              "roadOffset": 0.16462477250079577,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 0.6452638470800176
+            },
+            {
+              "id": 6,
+              "progress": -2.550662881548332,
+              "speed": 12.650668242527649,
+              "roadOffset": 4.393876711739343,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.6931146086427942
+            },
+            {
+              "id": 7,
+              "progress": -8.904892306632892,
+              "speed": 10.76665781649945,
+              "roadOffset": -3.9932051036387213,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 6.35422942508456
+            },
+            {
+              "id": 8,
+              "progress": -9.482772815597858,
+              "speed": 10.731133507481662,
+              "roadOffset": 0.13679241587004884,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.5778805089649666
+            },
+            {
+              "id": 9,
+              "progress": -10.27525280879138,
+              "speed": 10.690479297182943,
+              "roadOffset": 4.0077925012894795,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 0.7924799931935222
+            },
+            {
+              "id": 10,
+              "progress": -16.056973269188166,
+              "speed": 8.94081288167017,
+              "roadOffset": -3.942987163290648,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 5.7817204603967856
+            },
+            {
+              "id": 11,
+              "progress": -16.61581068425669,
+              "speed": 8.879593825760372,
+              "roadOffset": 0.10107232434574745,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.558837415068524
+            },
+            {
+              "id": 12,
+              "progress": -17.41122013968662,
+              "speed": 8.83490338321675,
+              "roadOffset": 3.9596498047481523,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.7954094554299296
+            },
+            {
+              "id": 13,
+              "progress": -22.716258933168337,
+              "speed": 7.332340701131219,
+              "roadOffset": -3.8631841423279694,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 5.305038793481717
+            },
+            {
+              "id": 14,
+              "progress": -23.254710618564005,
+              "speed": 7.268174742092447,
+              "roadOffset": 0.07800154838365607,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 0.5384516853956676
+            },
+            {
+              "id": 15,
+              "progress": -24.08747302645995,
+              "speed": 7.1717766593791605,
+              "roadOffset": 3.8788091689215882,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.8327624078959452
+            },
+            {
+              "id": 16,
+              "progress": -28.957945361952053,
+              "speed": 6.039604119177641,
+              "roadOffset": -3.8161567578003113,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 4.870472335492103
+            },
+            {
+              "id": 17,
+              "progress": -29.506285055526323,
+              "speed": 5.996623516903583,
+              "roadOffset": 0.06402480577551733,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 0.5483396935742704
+            },
+            {
+              "id": 18,
+              "progress": -30.3629728567183,
+              "speed": 5.861597967372984,
+              "roadOffset": 3.8211923631182336,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 0.8566878011919776
+            },
+            {
+              "id": 19,
+              "progress": -34.93608572792686,
+              "speed": 5.094933523125743,
+              "roadOffset": -3.7745470333767503,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 4.573112871208558
+            },
+            {
+              "id": 20,
+              "progress": -35.460133529430784,
+              "speed": 5.071917736164275,
+              "roadOffset": 0.05651767240509006,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.5240478015039258
+            },
+            {
+              "id": 21,
+              "progress": -36.35588391822527,
+              "speed": 4.93315914459577,
+              "roadOffset": 3.7767902677815908,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 0.8957503887944824
+            },
+            {
+              "id": 22,
+              "progress": -40.72965928550202,
+              "speed": 4.497341005639704,
+              "roadOffset": -3.7473412382105185,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 4.37377536727675
+            },
+            {
+              "id": 23,
+              "progress": -41.24589439928628,
+              "speed": 4.463577107978875,
+              "roadOffset": 0.05161972156947714,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.516235113784262
+            },
+            {
+              "id": 0,
+              "progress": -42.15238691300755,
+              "speed": 4.3191776756910825,
+              "roadOffset": 3.754207849721695,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 0.9064925137212683
+            }
+          ]
+        },
+        {
+          "time": 4.0,
+          "spreadMetres": 72.04369547137026,
+          "cars": [
+            {
+              "id": 1,
+              "progress": 47.243981364765624,
+              "speed": 24.28224563884211,
+              "roadOffset": -2.5929469202201627,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 2,
+              "progress": 46.64644673688405,
+              "speed": 24.35150291234781,
+              "roadOffset": 0.5548104218812397,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 0.5975346278815721
+            },
+            {
+              "id": 3,
+              "progress": 46.04390825703634,
+              "speed": 24.398371247602803,
+              "roadOffset": 3.62713038153609,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.6025384798477091
+            },
+            {
+              "id": 4,
+              "progress": 37.77760249418488,
+              "speed": 26.48108974959141,
+              "roadOffset": -6.339776722467159,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 8.26630576285146
+            },
+            {
+              "id": 5,
+              "progress": 35.40404848671753,
+              "speed": 23.485967146878373,
+              "roadOffset": 0.4068446333745121,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 2.373554007467355
+            },
+            {
+              "id": 6,
+              "progress": 34.639639618262976,
+              "speed": 23.655690546181397,
+              "roadOffset": 6.581017172491901,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.7644088684545522
+            },
+            {
+              "id": 7,
+              "progress": 25.144444014553244,
+              "speed": 22.553600956372268,
+              "roadOffset": -3.020608897180007,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 9.495195603709732
+            },
+            {
+              "id": 8,
+              "progress": 24.57767267410093,
+              "speed": 22.49276775887745,
+              "roadOffset": 1.067451257446599,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.5667713404523127
+            },
+            {
+              "id": 9,
+              "progress": 23.67435388546078,
+              "speed": 22.46503210645613,
+              "roadOffset": 4.031170507069487,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 0.9033187886401528
+            },
+            {
+              "id": 10,
+              "progress": 14.533536511251278,
+              "speed": 21.117432217524804,
+              "roadOffset": -4.6048091194991105,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 9.140817374209501
+            },
+            {
+              "id": 11,
+              "progress": 13.966151188864465,
+              "speed": 21.148716011967306,
+              "roadOffset": 1.0206933472024564,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.5673853223868122
+            },
+            {
+              "id": 12,
+              "progress": 13.148524908030577,
+              "speed": 21.12582970490885,
+              "roadOffset": 4.139369538260453,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.8176262808338883
+            },
+            {
+              "id": 13,
+              "progress": 4.367821095954882,
+              "speed": 19.6029995743164,
+              "roadOffset": -3.321241236699928,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 8.780703812075695
+            },
+            {
+              "id": 14,
+              "progress": 3.793234880073976,
+              "speed": 19.606969868821192,
+              "roadOffset": 0.9501948620867837,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 0.5745862158809065
+            },
+            {
+              "id": 15,
+              "progress": 2.916770170782198,
+              "speed": 19.598272280621604,
+              "roadOffset": 4.0950001114227925,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.8764647092917781
+            },
+            {
+              "id": 16,
+              "progress": -5.238443656906016,
+              "speed": 17.995259749303752,
+              "roadOffset": -4.128325836746613,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 8.155213827688215
+            },
+            {
+              "id": 17,
+              "progress": -5.906655202948796,
+              "speed": 17.9605421257617,
+              "roadOffset": 0.8687717562934714,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 0.6682115460427802
+            },
+            {
+              "id": 18,
+              "progress": -6.848061452948796,
+              "speed": 17.953479189263785,
+              "roadOffset": 4.140766911885965,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 0.94140625
+            },
+            {
+              "id": 19,
+              "progress": -14.459082241959422,
+              "speed": 16.26632044641417,
+              "roadOffset": -3.8205422714575183,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 7.611020789010626
+            },
+            {
+              "id": 20,
+              "progress": -15.037451561862051,
+              "speed": 16.260280736840706,
+              "roadOffset": 0.761897892334482,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.5783693199026292
+            },
+            {
+              "id": 21,
+              "progress": -16.113622002641016,
+              "speed": 16.213721990805308,
+              "roadOffset": 4.148169906455959,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 1.0761704407789647
+            },
+            {
+              "id": 22,
+              "progress": -23.15457326697205,
+              "speed": 14.472679802960087,
+              "roadOffset": -3.9796801188766096,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 7.040951264331035
+            },
+            {
+              "id": 23,
+              "progress": -23.730012092625348,
+              "speed": 14.457993872854871,
+              "roadOffset": 0.6743888715192666,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.575438825653297
+            },
+            {
+              "id": 0,
+              "progress": -24.799714106604625,
+              "speed": 14.445974524824024,
+              "roadOffset": 4.205174417386703,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 1.0697020139792777
+            }
+          ]
+        },
+        {
+          "time": 6.0,
+          "spreadMetres": 84.43292525275363,
+          "cars": [
+            {
+              "id": 4,
+              "progress": 99.58390045340641,
+              "speed": 33.36638165300622,
+              "roadOffset": -5.767593014892382,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 1,
+              "progress": 96.8202806174314,
+              "speed": 24.780469378881527,
+              "roadOffset": -2.6081694572916145,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 2.763619835975021
+            },
+            {
+              "id": 2,
+              "progress": 96.2226241025825,
+              "speed": 24.77988388874515,
+              "roadOffset": 0.5276031881955083,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.597656514848893
+            },
+            {
+              "id": 3,
+              "progress": 95.62289236971976,
+              "speed": 24.819143531469273,
+              "roadOffset": 3.6699981557028676,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 0.5997317328627361
+            },
+            {
+              "id": 5,
+              "progress": 84.58993388477411,
+              "speed": 24.772352962078433,
+              "roadOffset": -0.19959851145116764,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 11.032958484945652
+            },
+            {
+              "id": 6,
+              "progress": 83.83724816385556,
+              "speed": 24.79746808360532,
+              "roadOffset": 3.407677153787215,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.7526857209185494
+            },
+            {
+              "id": 7,
+              "progress": 73.82186940813752,
+              "speed": 24.56092764204933,
+              "roadOffset": -2.185106144604807,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 10.015378755718046
+            },
+            {
+              "id": 8,
+              "progress": 73.43807716745074,
+              "speed": 25.035057483943984,
+              "roadOffset": 0.7438961343960985,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.3837922406867733
+            },
+            {
+              "id": 9,
+              "progress": 72.30709688747339,
+              "speed": 24.766976620172883,
+              "roadOffset": 3.9948294602406693,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 1.1309802799773507
+            },
+            {
+              "id": 10,
+              "progress": 62.214569739658025,
+              "speed": 24.631161790086193,
+              "roadOffset": -3.7605565208550895,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 10.092527147815368
+            },
+            {
+              "id": 11,
+              "progress": 61.42148897603656,
+              "speed": 22.741326224879415,
+              "roadOffset": 0.316756987431652,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.7930807636214681
+            },
+            {
+              "id": 12,
+              "progress": 61.05013788080219,
+              "speed": 25.022238926573912,
+              "roadOffset": 3.943652391670188,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.3713510952343668
+            },
+            {
+              "id": 13,
+              "progress": 50.69175106638528,
+              "speed": 23.126795435748512,
+              "roadOffset": -1.9732361265493765,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 10.35838681441691
+            },
+            {
+              "id": 14,
+              "progress": 49.91074624370454,
+              "speed": 22.825957059614662,
+              "roadOffset": 1.090179688344606,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 0.7810048226807424
+            },
+            {
+              "id": 15,
+              "progress": 49.37057422181876,
+              "speed": 24.75117123167002,
+              "roadOffset": 4.196411162135057,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.5401720218857804
+            },
+            {
+              "id": 16,
+              "progress": 42.10748841552083,
+              "speed": 28.696255431219253,
+              "roadOffset": -5.406736023413141,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 7.26308580629793
+            },
+            {
+              "id": 17,
+              "progress": 38.4626261719197,
+              "speed": 22.84280619947245,
+              "roadOffset": 0.5590106956544216,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 3.644862243601125
+            },
+            {
+              "id": 18,
+              "progress": 37.78073173552636,
+              "speed": 24.61725648320621,
+              "roadOffset": 4.1548928956904705,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 0.6818944363933426
+            },
+            {
+              "id": 19,
+              "progress": 28.176611714280515,
+              "speed": 23.481239819704935,
+              "roadOffset": -2.00697390980603,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 9.604120021245844
+            },
+            {
+              "id": 20,
+              "progress": 27.347024170932375,
+              "speed": 23.19470512343097,
+              "roadOffset": 1.1197362607136794,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.8295875433481399
+            },
+            {
+              "id": 21,
+              "progress": 26.321871519361597,
+              "speed": 24.27897942705577,
+              "roadOffset": 4.187927185556859,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 1.025152651570778
+            },
+            {
+              "id": 22,
+              "progress": 16.96640213372424,
+              "speed": 24.313182459249006,
+              "roadOffset": -5.174211046666059,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 9.355469385637356
+            },
+            {
+              "id": 23,
+              "progress": 16.14109156131199,
+              "speed": 23.21009074903111,
+              "roadOffset": 1.0882288136143539,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.8253105724122527
+            },
+            {
+              "id": 0,
+              "progress": 15.150975200652784,
+              "speed": 23.938766021936612,
+              "roadOffset": 4.18168628502285,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 0.9901163606592043
+            }
+          ]
+        },
+        {
+          "time": 8.0,
+          "spreadMetres": 97.80312510384354,
+          "cars": [
+            {
+              "id": 4,
+              "progress": 161.3730910812718,
+              "speed": 33.046515833754945,
+              "roadOffset": 1.8177525320138275,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 1,
+              "progress": 146.4623139533255,
+              "speed": 24.927693234412317,
+              "roadOffset": -3.274585405750559,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 14.910777127946318
+            },
+            {
+              "id": 2,
+              "progress": 145.9850795418592,
+              "speed": 24.894808250895057,
+              "roadOffset": 0.5248350127143396,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.4772344114662985
+            },
+            {
+              "id": 3,
+              "progress": 145.38408647009638,
+              "speed": 24.841035005105674,
+              "roadOffset": 3.6696663668088902,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 0.6009930717628151
+            },
+            {
+              "id": 5,
+              "progress": 134.3517486803207,
+              "speed": 24.92469948882772,
+              "roadOffset": -0.5020033173377081,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 11.032337789775681
+            },
+            {
+              "id": 6,
+              "progress": 133.58294915253228,
+              "speed": 24.856445607752363,
+              "roadOffset": 2.5293674417607153,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.768799527788417
+            },
+            {
+              "id": 8,
+              "progress": 123.24929216413473,
+              "speed": 24.87460073465876,
+              "roadOffset": 1.0289119950690888,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 10.33365698839755
+            },
+            {
+              "id": 7,
+              "progress": 123.08934682598584,
+              "speed": 24.85354548395153,
+              "roadOffset": -2.0863382071965058,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.15994533814888712
+            },
+            {
+              "id": 9,
+              "progress": 122.06513738011238,
+              "speed": 24.90018501260274,
+              "roadOffset": 4.116942398429197,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 1.024209445873467
+            },
+            {
+              "id": 10,
+              "progress": 111.50191650093763,
+              "speed": 24.9303819252343,
+              "roadOffset": -2.3047931301865665,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 10.56322087917475
+            },
+            {
+              "id": 12,
+              "progress": 111.01935401803689,
+              "speed": 24.954871305144906,
+              "roadOffset": 4.717872113689886,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.48256248290073245
+            },
+            {
+              "id": 11,
+              "progress": 109.57918490975986,
+              "speed": 24.839151071259412,
+              "roadOffset": 0.7144177716096438,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 1.4401691082770327
+            },
+            {
+              "id": 16,
+              "progress": 103.45891350759356,
+              "speed": 33.16448963698962,
+              "roadOffset": -5.395639631533818,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 6.120271402166296
+            },
+            {
+              "id": 15,
+              "progress": 99.12223760540074,
+              "speed": 24.970082370682587,
+              "roadOffset": 4.190727605364632,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 4.336675902192823
+            },
+            {
+              "id": 13,
+              "progress": 98.50707213502426,
+              "speed": 24.895191905123482,
+              "roadOffset": -2.3091959249010756,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.615165470376482
+            },
+            {
+              "id": 14,
+              "progress": 97.64361704834964,
+              "speed": 24.82388482307067,
+              "roadOffset": 0.8181109917923682,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 0.8634550866746196
+            },
+            {
+              "id": 18,
+              "progress": 87.45010692207549,
+              "speed": 24.967054959716585,
+              "roadOffset": 3.5069965184049527,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 10.193510126274148
+            },
+            {
+              "id": 17,
+              "progress": 85.77572615726798,
+              "speed": 24.77326649214732,
+              "roadOffset": -2.174387367226234,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 1.674380764807509
+            },
+            {
+              "id": 21,
+              "progress": 75.86227995596958,
+              "speed": 24.964267742045312,
+              "roadOffset": 4.177850061538599,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 9.913446201298399
+            },
+            {
+              "id": 20,
+              "progress": 75.34215725055827,
+              "speed": 27.24801209200159,
+              "roadOffset": 0.7396091995369862,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.5201227054113104
+            },
+            {
+              "id": 19,
+              "progress": 75.11678186460018,
+              "speed": 24.370151065123316,
+              "roadOffset": -3.5000351526300277,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 0.22537538595808826
+            },
+            {
+              "id": 22,
+              "progress": 65.22002571576243,
+              "speed": 24.045094199114505,
+              "roadOffset": -5.2974924304159225,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 9.896756148837753
+            },
+            {
+              "id": 0,
+              "progress": 64.72684416866183,
+              "speed": 25.0135442908726,
+              "roadOffset": 4.087288229053013,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.4931815471006047
+            },
+            {
+              "id": 23,
+              "progress": 63.56996597742827,
+              "speed": 24.75555681110575,
+              "roadOffset": 0.09307388968001432,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 1.1568781912335595
+            }
+          ]
+        },
+        {
+          "time": 10.0,
+          "spreadMetres": 115.2473935562149,
+          "cars": [
+            {
+              "id": 4,
+              "progress": 228.48518869032293,
+              "speed": 33.80741701452067,
+              "roadOffset": 4.283057200678555,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 1,
+              "progress": 196.2262205049831,
+              "speed": 24.94307258815435,
+              "roadOffset": -2.5953612222436493,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 32.258968185339825
+            },
+            {
+              "id": 2,
+              "progress": 195.75849680203163,
+              "speed": 24.968400083781834,
+              "roadOffset": 0.524471506916377,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.46772370295147425
+            },
+            {
+              "id": 3,
+              "progress": 195.15434822425368,
+              "speed": 24.971864100441906,
+              "roadOffset": 3.6699970052108943,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 0.6041485777779485
+            },
+            {
+              "id": 5,
+              "progress": 184.1266212361514,
+              "speed": 24.949821902220005,
+              "roadOffset": -0.5213868045202971,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 11.027726988102273
+            },
+            {
+              "id": 6,
+              "progress": 183.35443236890242,
+              "speed": 24.974138645464762,
+              "roadOffset": 2.6843062591669153,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.7721888672489854
+            },
+            {
+              "id": 8,
+              "progress": 173.016834822783,
+              "speed": 24.882449498190763,
+              "roadOffset": 1.0461072065359651,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 10.337597546119412
+            },
+            {
+              "id": 7,
+              "progress": 172.8167049250505,
+              "speed": 24.889970705093905,
+              "roadOffset": -2.0949603978834666,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.20012989773252343
+            },
+            {
+              "id": 9,
+              "progress": 171.83716141041606,
+              "speed": 24.96675972532169,
+              "roadOffset": 4.195476357793338,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 0.9795435146344289
+            },
+            {
+              "id": 16,
+              "progress": 170.6375377687335,
+              "speed": 33.66954661550716,
+              "roadOffset": -5.546649685620515,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 1.1996236416825639
+            },
+            {
+              "id": 10,
+              "progress": 161.2548549049932,
+              "speed": 24.846743868700997,
+              "roadOffset": -2.11022849682131,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 9.382682863740285
+            },
+            {
+              "id": 12,
+              "progress": 160.88214232983992,
+              "speed": 24.92215592913745,
+              "roadOffset": 3.599799401465239,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.3727125751532867
+            },
+            {
+              "id": 11,
+              "progress": 159.34539916577742,
+              "speed": 24.97448439813455,
+              "roadOffset": 0.861624918459136,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 1.5367431640625
+            },
+            {
+              "id": 15,
+              "progress": 148.8906593220889,
+              "speed": 24.883661046930005,
+              "roadOffset": 3.6920838609589057,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 10.454739843688515
+            },
+            {
+              "id": 13,
+              "progress": 148.267093847334,
+              "speed": 24.94130335314701,
+              "roadOffset": -2.1118916052925036,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.623565474754912
+            },
+            {
+              "id": 14,
+              "progress": 147.39968003016673,
+              "speed": 24.975938395812836,
+              "roadOffset": 0.9741215077583055,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 0.867413817167261
+            },
+            {
+              "id": 18,
+              "progress": 136.5890137787459,
+              "speed": 24.576133349580825,
+              "roadOffset": 0.8197330175952616,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 10.810666251420827
+            },
+            {
+              "id": 17,
+              "progress": 135.51484366198866,
+              "speed": 24.973783057059958,
+              "roadOffset": -2.5026155014719125,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 1.0741701167572444
+            },
+            {
+              "id": 20,
+              "progress": 125.8116280114868,
+              "speed": 24.572894789947565,
+              "roadOffset": 0.6499937048327271,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 9.70321565050186
+            },
+            {
+              "id": 21,
+              "progress": 125.27386357377357,
+              "speed": 24.781560806912672,
+              "roadOffset": 3.688610905502993,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.5377644377132356
+            },
+            {
+              "id": 19,
+              "progress": 124.26385062297676,
+              "speed": 24.80782330277183,
+              "roadOffset": -2.5373195280897414,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 1.0100129507968063
+            },
+            {
+              "id": 0,
+              "progress": 114.28589855452246,
+              "speed": 24.787346380803044,
+              "roadOffset": 5.056979670589718,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 9.9779520684543
+            },
+            {
+              "id": 22,
+              "progress": 113.81850890577762,
+              "speed": 24.415266780037623,
+              "roadOffset": -3.006531886307919,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.4673896487448417
+            },
+            {
+              "id": 23,
+              "progress": 113.23779513410803,
+              "speed": 24.672476106953493,
+              "roadOffset": 0.07315803118043845,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 0.5807137716695934
+            }
+          ]
+        },
+        {
+          "time": 11.529949122088555,
+          "spreadMetres": 129.00177982155728,
+          "cars": [
+            {
+              "id": 4,
+              "progress": 280.0,
+              "speed": 33.68677844552715,
+              "roadOffset": 2.7955767957687203,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 1,
+              "progress": 234.29754692096316,
+              "speed": 24.83082875398277,
+              "roadOffset": -2.611901018334977,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 45.70245307903684
+            },
+            {
+              "id": 2,
+              "progress": 233.82918508572251,
+              "speed": 24.854339053763294,
+              "roadOffset": 0.6475738577456818,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.4683618352406427
+            },
+            {
+              "id": 3,
+              "progress": 233.2240237752511,
+              "speed": 24.899129179657482,
+              "roadOffset": 4.193027420219386,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 0.6051613104714022
+            },
+            {
+              "id": 16,
+              "progress": 222.23144497293794,
+              "speed": 33.82124703603031,
+              "roadOffset": -5.806253165963867,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 10.992578802313176
+            },
+            {
+              "id": 5,
+              "progress": 222.1916912874848,
+              "speed": 24.83402181257083,
+              "roadOffset": -0.0846576926952453,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.0397536854531495
+            },
+            {
+              "id": 6,
+              "progress": 221.4077615493855,
+              "speed": 24.886435284192586,
+              "roadOffset": 3.8845553783323092,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 0.7839297380992889
+            },
+            {
+              "id": 8,
+              "progress": 211.09454339364635,
+              "speed": 24.954284392923444,
+              "roadOffset": 1.0479923619262614,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 10.31321815573915
+            },
+            {
+              "id": 7,
+              "progress": 210.88408768246893,
+              "speed": 24.818564110716235,
+              "roadOffset": -2.096338826005408,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 0.21045571117741702
+            },
+            {
+              "id": 9,
+              "progress": 209.9094382436682,
+              "speed": 24.848446860510432,
+              "roadOffset": 4.194048604575421,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 0.974649438800725
+            },
+            {
+              "id": 10,
+              "progress": 199.32269537027085,
+              "speed": 24.826081634319447,
+              "roadOffset": -2.099577159611357,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 10.586742873397355
+            },
+            {
+              "id": 12,
+              "progress": 198.9889389908497,
+              "speed": 24.904579362161133,
+              "roadOffset": 3.6590834578635847,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.3337563794211462
+            },
+            {
+              "id": 11,
+              "progress": 197.11488830235902,
+              "speed": 24.619873680229066,
+              "roadOffset": 1.0473661109341967,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 1.8740506884906836
+            },
+            {
+              "id": 15,
+              "progress": 186.9539648638521,
+              "speed": 24.816793064929268,
+              "roadOffset": 4.155488822874193,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 10.160923438506927
+            },
+            {
+              "id": 13,
+              "progress": 186.33773453509224,
+              "speed": 24.828312803805648,
+              "roadOffset": -2.0998146799072104,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.6162303287598547
+            },
+            {
+              "id": 14,
+              "progress": 185.44178166533428,
+              "speed": 24.74673399385116,
+              "roadOffset": 1.042983848628937,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 0.8959528697579628
+            },
+            {
+              "id": 18,
+              "progress": 174.2096736362679,
+              "speed": 24.58801976641034,
+              "roadOffset": 1.760673606141935,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 11.232108029066382
+            },
+            {
+              "id": 17,
+              "progress": 173.58208829190593,
+              "speed": 24.87233138963382,
+              "roadOffset": -2.143828255142835,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 0.627585344361961
+            },
+            {
+              "id": 20,
+              "progress": 163.43029928225084,
+              "speed": 24.62771047688797,
+              "roadOffset": 0.5469941551718405,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 10.15178900965509
+            },
+            {
+              "id": 21,
+              "progress": 163.1167425921494,
+              "speed": 24.50005942959344,
+              "roadOffset": 3.6737600637378893,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.31355669010144993
+            },
+            {
+              "id": 19,
+              "progress": 162.27573896138838,
+              "speed": 24.83038266919574,
+              "roadOffset": -2.4698165781499193,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 0.8410036307610085
+            },
+            {
+              "id": 0,
+              "progress": 153.0086612558517,
+              "speed": 27.740157079629455,
+              "roadOffset": 6.487288969736161,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 9.267077705536678
+            },
+            {
+              "id": 22,
+              "progress": 151.33080873134963,
+              "speed": 24.548082171292204,
+              "roadOffset": -2.771310857633182,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 1.6778525245020717
+            },
+            {
+              "id": 23,
+              "progress": 150.99822017844272,
+              "speed": 24.77866183592847,
+              "roadOffset": 0.7909412127946791,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 0.3325885529069126
+            }
+          ]
+        }
+      ],
+      "gateCrossings": {
+        "0": [
+          {
+            "id": 1,
+            "time": 1.4478171835868243
+          },
+          {
+            "id": 2,
+            "time": 1.5029720028892892
+          },
+          {
+            "id": 3,
+            "time": 1.5548905403704552
+          },
+          {
+            "id": 4,
+            "time": 2.0934175756730946
+          },
+          {
+            "id": 5,
+            "time": 2.1408342948228363
+          },
+          {
+            "id": 6,
+            "time": 2.192462772106887
+          },
+          {
+            "id": 7,
+            "time": 2.6818213320265247
+          },
+          {
+            "id": 8,
+            "time": 2.7203295726960164
+          },
+          {
+            "id": 9,
+            "time": 2.7727847337090172
+          },
+          {
+            "id": 10,
+            "time": 3.237088298166943
+          },
+          {
+            "id": 11,
+            "time": 3.2719386389971157
+          },
+          {
+            "id": 12,
+            "time": 3.3190258473735663
+          },
+          {
+            "id": 13,
+            "time": 3.7691835941912206
+          },
+          {
+            "id": 14,
+            "time": 3.8010740021576663
+          },
+          {
+            "id": 15,
+            "time": 3.847701631007014
+          },
+          {
+            "id": 16,
+            "time": 4.278415265457491
+          },
+          {
+            "id": 17,
+            "time": 4.312818728663134
+          },
+          {
+            "id": 18,
+            "time": 4.360043463012434
+          },
+          {
+            "id": 19,
+            "time": 4.780065256477012
+          },
+          {
+            "id": 20,
+            "time": 4.806582926156762
+          },
+          {
+            "id": 21,
+            "time": 4.859458276624777
+          },
+          {
+            "id": 22,
+            "time": 5.269550625517323
+          },
+          {
+            "id": 23,
+            "time": 5.295386587279199
+          },
+          {
+            "id": 0,
+            "time": 5.343982491328215
+          }
+        ],
+        "100": [
+          {
+            "id": 4,
+            "time": 6.012420380537719
+          },
+          {
+            "id": 1,
+            "time": 6.1277161560824895
+          },
+          {
+            "id": 2,
+            "time": 6.151821485931226
+          },
+          {
+            "id": 3,
+            "time": 6.175957152541255
+          },
+          {
+            "id": 5,
+            "time": 6.6193071276107345
+          },
+          {
+            "id": 6,
+            "time": 6.650180065395355
+          },
+          {
+            "id": 7,
+            "time": 7.0647873512189525
+          },
+          {
+            "id": 8,
+            "time": 7.065752121791522
+          },
+          {
+            "id": 9,
+            "time": 7.113010355655229
+          },
+          {
+            "id": 10,
+            "time": 7.5359637051290065
+          },
+          {
+            "id": 12,
+            "time": 7.558648104681647
+          },
+          {
+            "id": 11,
+            "time": 7.614387573754828
+          },
+          {
+            "id": 16,
+            "time": 7.8958499014948575
+          },
+          {
+            "id": 15,
+            "time": 8.035239568835191
+          },
+          {
+            "id": 13,
+            "time": 8.059954666797026
+          },
+          {
+            "id": 14,
+            "time": 8.094590431808216
+          },
+          {
+            "id": 18,
+            "time": 8.508998553717655
+          },
+          {
+            "id": 17,
+            "time": 8.572465179635634
+          },
+          {
+            "id": 20,
+            "time": 8.952914037956951
+          },
+          {
+            "id": 21,
+            "time": 8.974895229451096
+          },
+          {
+            "id": 19,
+            "time": 9.016089805632577
+          },
+          {
+            "id": 0,
+            "time": 9.419728168921502
+          },
+          {
+            "id": 22,
+            "time": 9.434280403234892
+          },
+          {
+            "id": 23,
+            "time": 9.466942881590839
+          }
+        ],
+        "200": [
+          {
+            "id": 4,
+            "time": 9.15418672336248
+          },
+          {
+            "id": 1,
+            "time": 10.151823541345705
+          },
+          {
+            "id": 2,
+            "time": 10.170581834341654
+          },
+          {
+            "id": 3,
+            "time": 10.194835457136302
+          },
+          {
+            "id": 5,
+            "time": 10.638092938646396
+          },
+          {
+            "id": 6,
+            "time": 10.669234427495136
+          },
+          {
+            "id": 16,
+            "time": 10.870661513409205
+          },
+          {
+            "id": 8,
+            "time": 11.084416234362873
+          },
+          {
+            "id": 7,
+            "time": 11.092670029745568
+          },
+          {
+            "id": 9,
+            "time": 11.131899667023108
+          },
+          {
+            "id": 10,
+            "time": 11.557159140546023
+          },
+          {
+            "id": 12,
+            "time": 11.570559494259838
+          },
+          {
+            "id": 11,
+            "time": 11.64733121735709
+          },
+          {
+            "id": 15,
+            "time": 12.054283419798683
+          },
+          {
+            "id": 13,
+            "time": 12.079140973150867
+          },
+          {
+            "id": 14,
+            "time": 12.119947015587476
+          },
+          {
+            "id": 18,
+            "time": 12.580419787534616
+          },
+          {
+            "id": 17,
+            "time": 12.593262864996339
+          },
+          {
+            "id": 20,
+            "time": 13.019886740662796
+          },
+          {
+            "id": 21,
+            "time": 13.040132188407853
+          },
+          {
+            "id": 19,
+            "time": 13.051511952928902
+          },
+          {
+            "id": 0,
+            "time": 13.066511741800547
+          },
+          {
+            "id": 22,
+            "time": 13.516331935849886
+          },
+          {
+            "id": 23,
+            "time": 13.530479334411158
+          }
+        ],
+        "280": [
+          {
+            "id": 4,
+            "time": 11.529949122088555
+          },
+          {
+            "id": 16,
+            "time": 13.242667818723366
+          },
+          {
+            "id": 1,
+            "time": 13.366523196106849
+          },
+          {
+            "id": 3,
+            "time": 13.40994635632469
+          },
+          {
+            "id": 2,
+            "time": 13.44913394064305
+          },
+          {
+            "id": 6,
+            "time": 13.885703746447527
+          },
+          {
+            "id": 5,
+            "time": 13.934934819994274
+          },
+          {
+            "id": 7,
+            "time": 14.324347901148696
+          },
+          {
+            "id": 9,
+            "time": 14.376493063735039
+          },
+          {
+            "id": 8,
+            "time": 14.385127243238902
+          },
+          {
+            "id": 10,
+            "time": 14.790363013958846
+          },
+          {
+            "id": 12,
+            "time": 14.870166830226283
+          },
+          {
+            "id": 11,
+            "time": 14.989015560628312
+          },
+          {
+            "id": 13,
+            "time": 15.29347642383489
+          },
+          {
+            "id": 15,
+            "time": 15.348138018531687
+          },
+          {
+            "id": 14,
+            "time": 15.536309826655813
+          },
+          {
+            "id": 0,
+            "time": 15.977193590840226
+          },
+          {
+            "id": 17,
+            "time": 16.029608163371016
+          },
+          {
+            "id": 18,
+            "time": 16.072127618447183
+          },
+          {
+            "id": 19,
+            "time": 16.468715223761244
+          },
+          {
+            "id": 20,
+            "time": 16.544920014247833
+          },
+          {
+            "id": 21,
+            "time": 16.637652885894855
+          },
+          {
+            "id": 22,
+            "time": 16.9998943341774
+          },
+          {
+            "id": 23,
+            "time": 17.18816567686409
+          }
+        ]
+      },
+      "perCar": [
+        {
+          "id": 0,
+          "equipment": "club",
+          "gateTime": 15.977193590840226,
+          "gateRankRange": [
+            17,
+            17
+          ]
+        },
+        {
+          "id": 1,
+          "equipment": "street",
+          "gateTime": 13.366523196106849,
+          "gateRankRange": [
+            3,
+            3
+          ]
+        },
+        {
+          "id": 2,
+          "equipment": "street",
+          "gateTime": 13.44913394064305,
+          "gateRankRange": [
+            5,
+            5
+          ]
+        },
+        {
+          "id": 3,
+          "equipment": "street",
+          "gateTime": 13.40994635632469,
+          "gateRankRange": [
+            4,
+            4
+          ]
+        },
+        {
+          "id": 4,
+          "equipment": "club",
+          "gateTime": 11.529949122088555,
+          "gateRankRange": [
+            1,
+            1
+          ]
+        },
+        {
+          "id": 5,
+          "equipment": "street",
+          "gateTime": 13.934934819994274,
+          "gateRankRange": [
+            7,
+            7
+          ]
+        },
+        {
+          "id": 6,
+          "equipment": "street",
+          "gateTime": 13.885703746447527,
+          "gateRankRange": [
+            6,
+            6
+          ]
+        },
+        {
+          "id": 7,
+          "equipment": "street",
+          "gateTime": 14.324347901148696,
+          "gateRankRange": [
+            8,
+            8
+          ]
+        },
+        {
+          "id": 8,
+          "equipment": "club",
+          "gateTime": 14.385127243238902,
+          "gateRankRange": [
+            10,
+            10
+          ]
+        },
+        {
+          "id": 9,
+          "equipment": "street",
+          "gateTime": 14.376493063735039,
+          "gateRankRange": [
+            9,
+            9
+          ]
+        },
+        {
+          "id": 10,
+          "equipment": "street",
+          "gateTime": 14.790363013958846,
+          "gateRankRange": [
+            11,
+            11
+          ]
+        },
+        {
+          "id": 11,
+          "equipment": "street",
+          "gateTime": 14.989015560628312,
+          "gateRankRange": [
+            13,
+            13
+          ]
+        },
+        {
+          "id": 12,
+          "equipment": "club",
+          "gateTime": 14.870166830226283,
+          "gateRankRange": [
+            12,
+            12
+          ]
+        },
+        {
+          "id": 13,
+          "equipment": "street",
+          "gateTime": 15.29347642383489,
+          "gateRankRange": [
+            14,
+            14
+          ]
+        },
+        {
+          "id": 14,
+          "equipment": "street",
+          "gateTime": 15.536309826655813,
+          "gateRankRange": [
+            16,
+            16
+          ]
+        },
+        {
+          "id": 15,
+          "equipment": "street",
+          "gateTime": 15.348138018531687,
+          "gateRankRange": [
+            15,
+            15
+          ]
+        },
+        {
+          "id": 16,
+          "equipment": "club",
+          "gateTime": 13.242667818723366,
+          "gateRankRange": [
+            2,
+            2
+          ]
+        },
+        {
+          "id": 17,
+          "equipment": "street",
+          "gateTime": 16.029608163371016,
+          "gateRankRange": [
+            18,
+            18
+          ]
+        },
+        {
+          "id": 18,
+          "equipment": "street",
+          "gateTime": 16.072127618447183,
+          "gateRankRange": [
+            19,
+            19
+          ]
+        },
+        {
+          "id": 19,
+          "equipment": "street",
+          "gateTime": 16.468715223761244,
+          "gateRankRange": [
+            20,
+            20
+          ]
+        },
+        {
+          "id": 20,
+          "equipment": "club",
+          "gateTime": 16.544920014247833,
+          "gateRankRange": [
+            21,
+            21
+          ]
+        },
+        {
+          "id": 21,
+          "equipment": "street",
+          "gateTime": 16.637652885894855,
+          "gateRankRange": [
+            22,
+            22
+          ]
+        },
+        {
+          "id": 22,
+          "equipment": "street",
+          "gateTime": 16.9998943341774,
+          "gateRankRange": [
+            23,
+            23
+          ]
+        },
+        {
+          "id": 23,
+          "equipment": "street",
+          "gateTime": 17.18816567686409,
+          "gateRankRange": [
+            24,
+            24
+          ]
+        }
+      ],
+      "previewMovingSamples": 155,
+      "previewPedalDutyPercent": {
+        "powered": 96.12903225806451,
+        "coasting": 0.0,
+        "braking": 3.870967741935484
+      },
+      "previewContextReasonSamples": {
+        "Moving leader stopping-distance limit": 144,
+        "Reachable continuous track-width preference": 11
+      }
+    },
+    "on": {
+      "firstCarAtBrakingZone": 13.312722913397252,
+      "lastCarAtBrakingZone": 18.605137164151806,
+      "passageWindow": 5.292414250754554,
+      "collectiveArrivalSeconds": {
+        "0": 83.61731710779378,
+        "100": 185.89227636291258,
+        "200": 282.43890859331697,
+        "280": 373.60196757451666
+      },
+      "fieldAtFirstArrival": {
+        "time": 13.312722913397252,
+        "spreadMetres": 86.34132674791596,
+        "cars": [
+          {
+            "id": 1,
+            "progress": 280.0,
+            "speed": 24.9920231379468,
+            "roadOffset": -3.5515617711255443,
+            "rankRange": [
+              1,
+              1
+            ],
+            "centreGapAhead": null
+          },
+          {
+            "id": 2,
+            "progress": 278.85112484889584,
+            "speed": 24.45036136358372,
+            "roadOffset": 0.7944879197421388,
+            "rankRange": [
+              2,
+              2
+            ],
+            "centreGapAhead": 1.1488751511041642
+          },
+          {
+            "id": 3,
+            "progress": 274.5259953503436,
+            "speed": 24.176018352482153,
+            "roadOffset": 4.19118741134337,
+            "rankRange": [
+              3,
+              3
+            ],
+            "centreGapAhead": 4.325129498552258
+          },
+          {
+            "id": 4,
+            "progress": 269.0941902137712,
+            "speed": 25.000663799913998,
+            "roadOffset": -3.5012471073313898,
+            "rankRange": [
+              4,
+              4
+            ],
+            "centreGapAhead": 5.431805136572393
+          },
+          {
+            "id": 5,
+            "progress": 266.8376215333173,
+            "speed": 22.90441186448887,
+            "roadOffset": 0.9849753717218364,
+            "rankRange": [
+              5,
+              5
+            ],
+            "centreGapAhead": 2.2565686804538814
+          },
+          {
+            "id": 6,
+            "progress": 262.5441110995817,
+            "speed": 24.149434388380616,
+            "roadOffset": 4.227052961701035,
+            "rankRange": [
+              6,
+              6
+            ],
+            "centreGapAhead": 4.293510433735605
+          },
+          {
+            "id": 7,
+            "progress": 257.0739320283332,
+            "speed": 24.999962024478503,
+            "roadOffset": -3.4989356574191355,
+            "rankRange": [
+              7,
+              7
+            ],
+            "centreGapAhead": 5.470179071248481
+          },
+          {
+            "id": 8,
+            "progress": 256.1915335388344,
+            "speed": 23.075840045479943,
+            "roadOffset": 0.7494054146637483,
+            "rankRange": [
+              8,
+              8
+            ],
+            "centreGapAhead": 0.8823984894988257
+          },
+          {
+            "id": 9,
+            "progress": 250.53510123419906,
+            "speed": 24.09143818543552,
+            "roadOffset": 4.261404623813066,
+            "rankRange": [
+              9,
+              9
+            ],
+            "centreGapAhead": 5.656432304635331
+          },
+          {
+            "id": 10,
+            "progress": 245.54463515333322,
+            "speed": 24.99996228165524,
+            "roadOffset": -3.498994635161487,
+            "rankRange": [
+              10,
+              10
+            ],
+            "centreGapAhead": 4.990466080865843
+          },
+          {
+            "id": 11,
+            "progress": 244.32665447178866,
+            "speed": 23.74557812274529,
+            "roadOffset": 1.0357379732232517,
+            "rankRange": [
+              11,
+              11
+            ],
+            "centreGapAhead": 1.2179806815445602
+          },
+          {
+            "id": 12,
+            "progress": 239.30449527667858,
+            "speed": 23.572074107049023,
+            "roadOffset": 4.215948846266353,
+            "rankRange": [
+              12,
+              12
+            ],
+            "centreGapAhead": 5.022159195110078
+          },
+          {
+            "id": 13,
+            "progress": 234.02388320020822,
+            "speed": 24.999967489347664,
+            "roadOffset": -3.4994592568796894,
+            "rankRange": [
+              13,
+              13
+            ],
+            "centreGapAhead": 5.280612076470362
+          },
+          {
+            "id": 14,
+            "progress": 232.82018613722028,
+            "speed": 23.893886611026982,
+            "roadOffset": 0.9266427887936995,
+            "rankRange": [
+              14,
+              14
+            ],
+            "centreGapAhead": 1.203697062987942
+          },
+          {
+            "id": 15,
+            "progress": 227.44182160590134,
+            "speed": 23.293199669229,
+            "roadOffset": 4.303663621348526,
+            "rankRange": [
+              15,
+              15
+            ],
+            "centreGapAhead": 5.378364531318937
+          },
+          {
+            "id": 16,
+            "progress": 223.11726698927072,
+            "speed": 25.004609075528336,
+            "roadOffset": -3.4993550160315787,
+            "rankRange": [
+              16,
+              16
+            ],
+            "centreGapAhead": 4.324554616630621
+          },
+          {
+            "id": 17,
+            "progress": 221.3203287845839,
+            "speed": 23.90649337683011,
+            "roadOffset": 0.7181806460131704,
+            "rankRange": [
+              17,
+              17
+            ],
+            "centreGapAhead": 1.7969382046868247
+          },
+          {
+            "id": 18,
+            "progress": 215.81578055155677,
+            "speed": 23.048452883118454,
+            "roadOffset": 4.153951770391701,
+            "rankRange": [
+              18,
+              18
+            ],
+            "centreGapAhead": 5.504548233027123
+          },
+          {
+            "id": 19,
+            "progress": 211.15437087783366,
+            "speed": 24.999962195929662,
+            "roadOffset": -3.5008949532047686,
+            "rankRange": [
+              19,
+              19
+            ],
+            "centreGapAhead": 4.661409673723114
+          },
+          {
+            "id": 20,
+            "progress": 210.5338873629113,
+            "speed": 23.902116324042847,
+            "roadOffset": 0.5954826832204393,
+            "rankRange": [
+              20,
+              20
+            ],
+            "centreGapAhead": 0.6204835149223697
+          },
+          {
+            "id": 21,
+            "progress": 204.23429517292317,
+            "speed": 22.919236662893034,
+            "roadOffset": 4.132795901635009,
+            "rankRange": [
+              21,
+              21
+            ],
+            "centreGapAhead": 6.299592189988118
+          },
+          {
+            "id": 22,
+            "progress": 199.65193495802072,
+            "speed": 24.999962195929662,
+            "roadOffset": -3.4997922070205334,
+            "rankRange": [
+              22,
+              22
+            ],
+            "centreGapAhead": 4.582360214902451
+          },
+          {
+            "id": 23,
+            "progress": 198.70069717588507,
+            "speed": 24.333270212218327,
+            "roadOffset": 0.4650517548363117,
+            "rankRange": [
+              23,
+              23
+            ],
+            "centreGapAhead": 0.9512377821356495
+          },
+          {
+            "id": 0,
+            "progress": 193.65867325208404,
+            "speed": 22.478857470398225,
+            "roadOffset": 3.923428170581692,
+            "rankRange": [
+              24,
+              24
+            ],
+            "centreGapAhead": 5.042023923801025
+          }
+        ]
+      },
+      "frames": [
+        {
+          "time": 1.1669471859931946e-05,
+          "spreadMetres": 39.699951171875,
+          "cars": [
+            {
+              "id": 1,
+              "progress": -8.0,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 2,
+              "progress": -8.60009765625,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 0.60009765625
+            },
+            {
+              "id": 3,
+              "progress": -9.199951171875,
+              "speed": 3.551837507919861e-14,
+              "roadOffset": 3.5,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.599853515625
+            },
+            {
+              "id": 4,
+              "progress": -13.5,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 5,
+              "progress": -14.10009765625,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 0.60009765625
+            },
+            {
+              "id": 6,
+              "progress": -14.699951171875,
+              "speed": 3.551837507919861e-14,
+              "roadOffset": 3.5,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.599853515625
+            },
+            {
+              "id": 7,
+              "progress": -19.0,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 8,
+              "progress": -19.60009765625,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.60009765625
+            },
+            {
+              "id": 9,
+              "progress": -20.199951171875,
+              "speed": 3.551837507919861e-14,
+              "roadOffset": 3.5,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 0.599853515625
+            },
+            {
+              "id": 10,
+              "progress": -24.5,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 11,
+              "progress": -25.0999755859375,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 12,
+              "progress": -25.699951171875,
+              "speed": 8.164722695679083e-14,
+              "roadOffset": 3.5,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 13,
+              "progress": -30.0,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 14,
+              "progress": -30.5999755859375,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 15,
+              "progress": -31.199951171875,
+              "speed": 1.322311265474982e-13,
+              "roadOffset": 3.5,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 16,
+              "progress": -35.5,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 17,
+              "progress": -36.0999755859375,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 18,
+              "progress": -36.699951171875,
+              "speed": 1.322311265474982e-13,
+              "roadOffset": 3.5,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 19,
+              "progress": -41.0,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 20,
+              "progress": -41.5999755859375,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 21,
+              "progress": -42.199951171875,
+              "speed": 1.322311265474982e-13,
+              "roadOffset": 3.5,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 22,
+              "progress": -46.5,
+              "speed": 0.0,
+              "roadOffset": -3.5,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 4.300048828125
+            },
+            {
+              "id": 23,
+              "progress": -47.0999755859375,
+              "speed": 0.0,
+              "roadOffset": 0.0,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 0,
+              "progress": -47.699951171875,
+              "speed": 1.708734065700157e-13,
+              "roadOffset": 3.5,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 0.5999755859375
+            }
+          ]
+        },
+        {
+          "time": 2.0,
+          "spreadMetres": 49.096942727711436,
+          "cars": [
+            {
+              "id": 1,
+              "progress": 7.015357071510367,
+              "speed": 14.524891055879797,
+              "roadOffset": -3.499801598198255,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 2,
+              "progress": 6.415137332433223,
+              "speed": 14.524891055977568,
+              "roadOffset": 0.000198401801744838,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 0.6002197390771444
+            },
+            {
+              "id": 3,
+              "progress": 5.815161746495723,
+              "speed": 14.524847186861242,
+              "roadOffset": 3.5041810317852358,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.5999755859375
+            },
+            {
+              "id": 4,
+              "progress": -1.1776170077198613,
+              "speed": 12.675390700063536,
+              "roadOffset": -3.499664328541252,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 6.992778754215584
+            },
+            {
+              "id": 5,
+              "progress": -1.8558393135598261,
+              "speed": 12.63982146137245,
+              "roadOffset": -0.0005950614868272183,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 0.6782223058399648
+            },
+            {
+              "id": 6,
+              "progress": -2.5137982228469617,
+              "speed": 12.635649998594696,
+              "roadOffset": 3.505264341671122,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.6579589092871356
+            },
+            {
+              "id": 7,
+              "progress": -8.88511694103718,
+              "speed": 10.761340939929179,
+              "roadOffset": -3.50019832671388,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 6.371318718190219
+            },
+            {
+              "id": 8,
+              "progress": -9.480819715627145,
+              "speed": 10.730445856872167,
+              "roadOffset": 0.0002746300451757465,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.5957027745899648
+            },
+            {
+              "id": 9,
+              "progress": -10.253768483849958,
+              "speed": 10.68668062114129,
+              "roadOffset": 3.5117646577709505,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 0.7729487682228129
+            },
+            {
+              "id": 10,
+              "progress": -16.032071025555318,
+              "speed": 8.931878720862036,
+              "roadOffset": -3.500183078875131,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 5.77830254170536
+            },
+            {
+              "id": 11,
+              "progress": -16.612392665448112,
+              "speed": 8.874496286070139,
+              "roadOffset": -0.000427208549817662,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.5803216398927944
+            },
+            {
+              "id": 12,
+              "progress": -17.38509719292877,
+              "speed": 8.824008332601725,
+              "roadOffset": 3.506408717999869,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.7727045274806592
+            },
+            {
+              "id": 13,
+              "progress": -22.688915270770845,
+              "speed": 7.322015639770172,
+              "roadOffset": -3.4998321705279483,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 5.303818077842074
+            },
+            {
+              "id": 14,
+              "progress": -23.248118709057206,
+              "speed": 7.257050899737145,
+              "roadOffset": 4.5782624509556336e-05,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 0.5592034382863602
+            },
+            {
+              "id": 15,
+              "progress": -24.055856765463872,
+              "speed": 7.148834601066735,
+              "roadOffset": 3.507049609041121,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.8077380564066665
+            },
+            {
+              "id": 16,
+              "progress": -28.92779410739635,
+              "speed": 6.028520934740444,
+              "roadOffset": -3.499862681848751,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 4.871937341932476
+            },
+            {
+              "id": 17,
+              "progress": -29.495054411571306,
+              "speed": 5.980692753119937,
+              "roadOffset": -1.720763565492278e-08,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 0.5672603041749582
+            },
+            {
+              "id": 18,
+              "progress": -30.321346679921493,
+              "speed": 5.822806779219618,
+              "roadOffset": 3.5073853196081317,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 0.826292268350187
+            },
+            {
+              "id": 19,
+              "progress": -34.902516404504006,
+              "speed": 5.079915377657506,
+              "roadOffset": -3.500091540219731,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 4.581169724582512
+            },
+            {
+              "id": 20,
+              "progress": -35.444142168317555,
+              "speed": 5.055080631653658,
+              "roadOffset": 0.00013732753723198592,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.5416257638135491
+            },
+            {
+              "id": 21,
+              "progress": -36.300463620910946,
+              "speed": 4.8805764794473445,
+              "roadOffset": 3.5095520801696507,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 0.8563214525933915
+            },
+            {
+              "id": 22,
+              "progress": -40.690718780726655,
+              "speed": 4.476813955398672,
+              "roadOffset": -3.499954237711787,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 4.390255159815709
+            },
+            {
+              "id": 23,
+              "progress": -41.225142308500196,
+              "speed": 4.44834275180757,
+              "roadOffset": 0.0,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.5344235277735407
+            },
+            {
+              "id": 0,
+              "progress": -42.08158565620107,
+              "speed": 4.258810832925672,
+              "roadOffset": 3.508377147154516,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 0.8564433477008748
+            }
+          ]
+        },
+        {
+          "time": 4.0,
+          "spreadMetres": 72.07542962923478,
+          "cars": [
+            {
+              "id": 1,
+              "progress": 47.31123802838705,
+              "speed": 24.478256892092723,
+              "roadOffset": -3.5002291003305483,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 2,
+              "progress": 46.71089623151205,
+              "speed": 24.478258798741056,
+              "roadOffset": -0.000274820673476671,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 0.600341796875
+            },
+            {
+              "id": 3,
+              "progress": 46.11067650494955,
+              "speed": 24.47823781720579,
+              "roadOffset": 3.5008083572650537,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.6002197265625
+            },
+            {
+              "id": 4,
+              "progress": 36.17955522104885,
+              "speed": 23.70852419252621,
+              "roadOffset": -3.5003816153896365,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 9.931121283900701
+            },
+            {
+              "id": 5,
+              "progress": 35.43773491801331,
+              "speed": 23.68379501482743,
+              "roadOffset": 0.00039673411805091967,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 0.7418203030355386
+            },
+            {
+              "id": 6,
+              "progress": 34.77757866801331,
+              "speed": 23.683434516131584,
+              "roadOffset": 3.4999846011502895,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.66015625
+            },
+            {
+              "id": 7,
+              "progress": 25.202792996456544,
+              "speed": 22.548485718765686,
+              "roadOffset": -3.499282887335896,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 9.574785671556768
+            },
+            {
+              "id": 8,
+              "progress": 24.598667019894044,
+              "speed": 22.5495748316423,
+              "roadOffset": -0.0005798732013564379,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.6041259765625
+            },
+            {
+              "id": 9,
+              "progress": 23.74600696274732,
+              "speed": 22.520010469135084,
+              "roadOffset": 3.504638755911389,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 0.8526600571467249
+            },
+            {
+              "id": 10,
+              "progress": 14.596643770274671,
+              "speed": 21.16322627692325,
+              "roadOffset": -3.4990693595302615,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 9.149363192472649
+            },
+            {
+              "id": 11,
+              "progress": 13.984095076607892,
+              "speed": 21.15863867417545,
+              "roadOffset": 0.0008085925669422668,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.6125486936667794
+            },
+            {
+              "id": 12,
+              "progress": 13.206262373066782,
+              "speed": 21.175259220800356,
+              "roadOffset": 3.500610435598889,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.7778327035411099
+            },
+            {
+              "id": 13,
+              "progress": 4.423727551122995,
+              "speed": 19.617187541049592,
+              "roadOffset": -3.4989931720310414,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 8.782534821943788
+            },
+            {
+              "id": 14,
+              "progress": 3.8102024742338463,
+              "speed": 19.608074160652297,
+              "roadOffset": 0.0007627601754955699,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 0.6135250768891485
+            },
+            {
+              "id": 15,
+              "progress": 2.953879276865754,
+              "speed": 19.606359443026548,
+              "roadOffset": 3.500015410054562,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.8563231973680923
+            },
+            {
+              "id": 16,
+              "progress": -5.193522767932978,
+              "speed": 18.016520154262864,
+              "roadOffset": -3.4996950819303425,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 8.147402044798731
+            },
+            {
+              "id": 17,
+              "progress": -5.88980976874024,
+              "speed": 17.961686474015007,
+              "roadOffset": -0.00038159858235865287,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 0.6962870008072617
+            },
+            {
+              "id": 18,
+              "progress": -6.811196397851425,
+              "speed": 17.958644229135363,
+              "roadOffset": 3.5003360126976526,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 0.9213866291111854
+            },
+            {
+              "id": 19,
+              "progress": -14.410987704139012,
+              "speed": 16.27756533884162,
+              "roadOffset": -3.500411796822206,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 7.599791306287587
+            },
+            {
+              "id": 20,
+              "progress": -15.021094588181125,
+              "speed": 16.261613913308963,
+              "roadOffset": 0.0006559766641876684,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.6101068840421124
+            },
+            {
+              "id": 21,
+              "progress": -16.077733510043647,
+              "speed": 16.217139695540986,
+              "roadOffset": 3.5121611764488496,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 1.0566389218625218
+            },
+            {
+              "id": 22,
+              "progress": -23.109774089756254,
+              "speed": 14.480795930020722,
+              "roadOffset": -3.5006561447369653,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 7.032040579712607
+            },
+            {
+              "id": 23,
+              "progress": -23.714997802743106,
+              "speed": 14.45883581005818,
+              "roadOffset": -0.0003355196841714896,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.6052237129868523
+            },
+            {
+              "id": 0,
+              "progress": -24.764191600847717,
+              "speed": 14.445668838171562,
+              "roadOffset": 3.500366429432111,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 1.0491937981046107
+            }
+          ]
+        },
+        {
+          "time": 6.0,
+          "spreadMetres": 81.78136710628743,
+          "cars": [
+            {
+              "id": 1,
+              "progress": 97.14327761247792,
+              "speed": 24.99879452917917,
+              "roadOffset": -3.499465922519145,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 2,
+              "progress": 96.54293581560292,
+              "speed": 24.998788807724456,
+              "roadOffset": 0.0010833484844365799,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 0.600341796875
+            },
+            {
+              "id": 3,
+              "progress": 95.94247195598253,
+              "speed": 24.998786899429934,
+              "roadOffset": 3.500824023795599,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.6004638596203904
+            },
+            {
+              "id": 4,
+              "progress": 86.00082064973705,
+              "speed": 25.150909770141705,
+              "roadOffset": -3.499557474307631,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 9.941651306245475
+            },
+            {
+              "id": 5,
+              "progress": 84.99288707071614,
+              "speed": 24.99681465790566,
+              "roadOffset": -0.0010528413110897326,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 1.0079335790209143
+            },
+            {
+              "id": 6,
+              "progress": 84.33224254703325,
+              "speed": 24.99681465755095,
+              "roadOffset": 3.5013885658847994,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.6606445236828904
+            },
+            {
+              "id": 7,
+              "progress": 74.22396617984575,
+              "speed": 24.99230177219503,
+              "roadOffset": -3.500915501804749,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 10.1082763671875
+            },
+            {
+              "id": 8,
+              "progress": 73.80953637924421,
+              "speed": 25.161607869295157,
+              "roadOffset": 0.0008697415176732704,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.414429800601539
+            },
+            {
+              "id": 9,
+              "progress": 72.74130016422075,
+              "speed": 24.991935552862767,
+              "roadOffset": 3.50241089340132,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 1.068236215023461
+            },
+            {
+              "id": 10,
+              "progress": 62.69979634120898,
+              "speed": 24.980615189721767,
+              "roadOffset": -3.500579784798151,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 10.041503823011766
+            },
+            {
+              "id": 11,
+              "progress": 62.09127584096359,
+              "speed": 24.980901298164966,
+              "roadOffset": -0.0011138651166726571,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.6085205002453904
+            },
+            {
+              "id": 12,
+              "progress": 61.44759798591994,
+              "speed": 25.15842587699368,
+              "roadOffset": 3.503204305029901,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.6436778550436486
+            },
+            {
+              "id": 13,
+              "progress": 51.18990884264137,
+              "speed": 24.95185746099398,
+              "roadOffset": -3.5003814177026715,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 10.257689143278569
+            },
+            {
+              "id": 14,
+              "progress": 50.57577310802098,
+              "speed": 24.952237032357857,
+              "roadOffset": -0.0009307426219220437,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 0.6141357346203904
+            },
+            {
+              "id": 15,
+              "progress": 49.72652992882426,
+              "speed": 24.953064840700513,
+              "roadOffset": 3.501800503057374,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.8492431791967192
+            },
+            {
+              "id": 16,
+              "progress": 39.88607555484575,
+              "speed": 25.017173785461917,
+              "roadOffset": -3.5007934040614703,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 9.84045437397851
+            },
+            {
+              "id": 17,
+              "progress": 39.08578337307534,
+              "speed": 24.881568210116058,
+              "roadOffset": 0.0007782086469656526,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 0.8002921817704163
+            },
+            {
+              "id": 18,
+              "progress": 38.16793669338784,
+              "speed": 24.88298349401594,
+              "roadOffset": 3.5008391586732124,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 0.9178466796875
+            },
+            {
+              "id": 19,
+              "progress": 28.398040382651267,
+              "speed": 24.72058825784993,
+              "roadOffset": -3.4991150327993767,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 9.76989631073657
+            },
+            {
+              "id": 20,
+              "progress": 27.785369219364867,
+              "speed": 24.777774509261636,
+              "roadOffset": -0.0010680783447070043,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.6126711632864001
+            },
+            {
+              "id": 21,
+              "progress": 26.65219084894738,
+              "speed": 24.710379903200263,
+              "roadOffset": 3.511474611266778,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 1.133178370417486
+            },
+            {
+              "id": 22,
+              "progress": 17.033175169762206,
+              "speed": 24.303818645671566,
+              "roadOffset": -3.5012817316600273,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 9.619015679185175
+            },
+            {
+              "id": 23,
+              "progress": 16.40927376473915,
+              "speed": 24.313637259059796,
+              "roadOffset": 0.000854465702610157,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.6239014050230551
+            },
+            {
+              "id": 0,
+              "progress": 15.361910506190483,
+              "speed": 24.30832564912636,
+              "roadOffset": 3.5012665286784115,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 1.0473632585486676
+            }
+          ]
+        },
+        {
+          "time": 8.0,
+          "spreadMetres": 81.7550017343271,
+          "cars": [
+            {
+              "id": 1,
+              "progress": 147.15257470179483,
+              "speed": 24.999963760375977,
+              "roadOffset": -3.500610307833536,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 2,
+              "progress": 146.55345360804483,
+              "speed": 24.99996248698818,
+              "roadOffset": -0.0009869245182189841,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 0.59912109375
+            },
+            {
+              "id": 3,
+              "progress": 145.95202332173074,
+              "speed": 24.999967258092823,
+              "roadOffset": 3.4999429435246308,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.6014302863140983
+            },
+            {
+              "id": 4,
+              "progress": 136.19134339379798,
+              "speed": 25.0513757688035,
+              "roadOffset": -3.5010808819090515,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 9.760679927932756
+            },
+            {
+              "id": 5,
+              "progress": 135.00291649866983,
+              "speed": 24.999963918866186,
+              "roadOffset": 0.0007910523747922384,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 1.1884268951281456
+            },
+            {
+              "id": 6,
+              "progress": 134.34141747523233,
+              "speed": 24.999962328497972,
+              "roadOffset": 3.4995969318760007,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.6614990234375
+            },
+            {
+              "id": 7,
+              "progress": 124.22863464985574,
+              "speed": 24.999962011517553,
+              "roadOffset": -3.499158055842357,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 10.112782825376598
+            },
+            {
+              "id": 8,
+              "progress": 124.02659953862168,
+              "speed": 25.060364026247917,
+              "roadOffset": -0.0009385685787177371,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.2020351112340535
+            },
+            {
+              "id": 9,
+              "progress": 122.74609070454324,
+              "speed": 24.99996519225398,
+              "roadOffset": 3.504721524073507,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 1.2805088340784465
+            },
+            {
+              "id": 10,
+              "progress": 112.69981591273233,
+              "speed": 24.999948982523662,
+              "roadOffset": -3.4991300303786175,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 10.046274791810902
+            },
+            {
+              "id": 11,
+              "progress": 112.09227196741983,
+              "speed": 24.999954387589142,
+              "roadOffset": 0.0005316966896937348,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.6075439453125
+            },
+            {
+              "id": 12,
+              "progress": 111.6925137298877,
+              "speed": 25.071147399337868,
+              "roadOffset": 3.5014581980388777,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.39975823753214
+            },
+            {
+              "id": 13,
+              "progress": 101.17918602991983,
+              "speed": 24.999882230787634,
+              "roadOffset": -3.4989087560727294,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 10.51332769996786
+            },
+            {
+              "id": 14,
+              "progress": 100.56590477991983,
+              "speed": 24.999878416090368,
+              "roadOffset": 0.0007758373146937348,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 0.61328125
+            },
+            {
+              "id": 15,
+              "progress": 99.71642761860574,
+              "speed": 24.999878416090368,
+              "roadOffset": 3.499656393007828,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.8494771613140983
+            },
+            {
+              "id": 16,
+              "progress": 90.14018683898222,
+              "speed": 25.097437046780794,
+              "roadOffset": -3.4993334663231295,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 9.576240779623518
+            },
+            {
+              "id": 17,
+              "progress": 89.05125634241983,
+              "speed": 24.99971217071114,
+              "roadOffset": -0.0010592835116148692,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 1.0889304965623836
+            },
+            {
+              "id": 18,
+              "progress": 88.13365380335733,
+              "speed": 24.9997172587962,
+              "roadOffset": 3.5010335752464052,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 0.9176025390625
+            },
+            {
+              "id": 19,
+              "progress": 78.30993347798074,
+              "speed": 24.99934281183393,
+              "roadOffset": -3.500915658530642,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 9.823720325376598
+            },
+            {
+              "id": 20,
+              "progress": 77.98207570400622,
+              "speed": 25.113544015725736,
+              "roadOffset": 0.0007389801281943582,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.32785777397451454
+            },
+            {
+              "id": 21,
+              "progress": 76.56053368616983,
+              "speed": 24.99931913119929,
+              "roadOffset": 3.513875354673476,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 1.4215420178363871
+            },
+            {
+              "id": 22,
+              "progress": 66.80798035298074,
+              "speed": 24.998382858036475,
+              "roadOffset": -3.4994543999008467,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 9.752553333189098
+            },
+            {
+              "id": 23,
+              "progress": 66.18663231898233,
+              "speed": 24.998409877897753,
+              "roadOffset": -0.0006931600320428618,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.6213480339984017
+            },
+            {
+              "id": 0,
+              "progress": 65.39757296746774,
+              "speed": 25.130689822945286,
+              "roadOffset": 3.5030406088912103,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 0.7890593515145952
+            }
+          ]
+        },
+        {
+          "time": 10.0,
+          "spreadMetres": 81.60363530643366,
+          "cars": [
+            {
+              "id": 1,
+              "progress": 197.16285829550617,
+              "speed": 24.999963918284855,
+              "roadOffset": -3.498878329698978,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 2,
+              "progress": 196.56361513144367,
+              "speed": 24.999969166604117,
+              "roadOffset": 0.4387338652421237,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 0.5992431640625
+            },
+            {
+              "id": 3,
+              "progress": 195.96085214065525,
+              "speed": 24.99996629936013,
+              "roadOffset": 3.959711308536426,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 0.6027629907884204
+            },
+            {
+              "id": 4,
+              "progress": 186.2530690527366,
+              "speed": 25.016037424632792,
+              "roadOffset": -3.4992594012790645,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 9.707783087918642
+            },
+            {
+              "id": 5,
+              "progress": 185.01322030471775,
+              "speed": 24.99991481338912,
+              "roadOffset": 0.2820827115670744,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 1.2398487480188578
+            },
+            {
+              "id": 6,
+              "progress": 184.35121278769367,
+              "speed": 24.99996535190685,
+              "roadOffset": 3.818120717329283,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 0.6620075170240796
+            },
+            {
+              "id": 7,
+              "progress": 174.23841981894367,
+              "speed": 24.999964076193734,
+              "roadOffset": -3.5007493420815754,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 10.11279296875
+            },
+            {
+              "id": 8,
+              "progress": 174.0980397558616,
+              "speed": 25.018187040030078,
+              "roadOffset": 0.07810582959643761,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.14038006308206263
+            },
+            {
+              "id": 9,
+              "progress": 172.75588597979944,
+              "speed": 24.99986427487139,
+              "roadOffset": 3.6627175991855516,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 1.3421537760621618
+            },
+            {
+              "id": 10,
+              "progress": 162.70936708456867,
+              "speed": 24.99996566772461,
+              "roadOffset": -3.499997971141021,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 10.046518895230776
+            },
+            {
+              "id": 11,
+              "progress": 162.10279970175617,
+              "speed": 24.999894792449513,
+              "roadOffset": 0.04437324050690277,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.6065673828125
+            },
+            {
+              "id": 12,
+              "progress": 161.7763844824241,
+              "speed": 25.021677704309266,
+              "roadOffset": 3.5532176497326913,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 0.32641521933206263
+            },
+            {
+              "id": 13,
+              "progress": 151.18873720175617,
+              "speed": 24.999967575073242,
+              "roadOffset": -3.500094576959544,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 10.587647280667937
+            },
+            {
+              "id": 14,
+              "progress": 150.57643251425617,
+              "speed": 24.999958985783355,
+              "roadOffset": -0.0003870204938051947,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 0.6123046875
+            },
+            {
+              "id": 15,
+              "progress": 149.72621278769367,
+              "speed": 24.99996057731423,
+              "roadOffset": 3.5014046048867016,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 0.8502197265625
+            },
+            {
+              "id": 16,
+              "progress": 140.25636574746707,
+              "speed": 25.030781849685575,
+              "roadOffset": -3.4998631685815322,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 9.469847040226597
+            },
+            {
+              "id": 17,
+              "progress": 139.06178407675617,
+              "speed": 24.999967890891,
+              "roadOffset": 0.0007736428411345082,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 1.1945816707109032
+            },
+            {
+              "id": 18,
+              "progress": 138.14321508136194,
+              "speed": 24.999969324512996,
+              "roadOffset": 3.499969681495113,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 0.9185689953942244
+            },
+            {
+              "id": 19,
+              "progress": 128.31947450644367,
+              "speed": 24.99996582563349,
+              "roadOffset": -3.4997502090711383,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 9.823740574918276
+            },
+            {
+              "id": 20,
+              "progress": 128.11903664590457,
+              "speed": 25.03647415127008,
+              "roadOffset": -0.0003539763736062731,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.20043786053909685
+            },
+            {
+              "id": 21,
+              "progress": 126.57020692831865,
+              "speed": 24.99996550981573,
+              "roadOffset": 3.5113968530854125,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 1.5488297175859174
+            },
+            {
+              "id": 22,
+              "progress": 116.81727724081865,
+              "speed": 24.9999621688451,
+              "roadOffset": -3.501439777402499,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 9.7529296875
+            },
+            {
+              "id": 23,
+              "progress": 116.19716005331865,
+              "speed": 24.999962326753984,
+              "roadOffset": 0.0007201873111062731,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.6201171875
+            },
+            {
+              "id": 0,
+              "progress": 115.55922298907251,
+              "speed": 25.043224836110685,
+              "roadOffset": 3.5015811642220194,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 0.6379370642461453
+            }
+          ]
+        },
+        {
+          "time": 12.0,
+          "spreadMetres": 82.04692550872224,
+          "cars": [
+            {
+              "id": 1,
+              "progress": 247.17338702061488,
+              "speed": 24.999964075029563,
+              "roadOffset": -3.5006503011084007,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 2,
+              "progress": 246.57414385655238,
+              "speed": 24.99995583575496,
+              "roadOffset": 0.8250078095208865,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 0.5992431640625
+            },
+            {
+              "id": 3,
+              "progress": 244.60807334740994,
+              "speed": 20.103081415763135,
+              "roadOffset": 4.25728285517292,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 1.9660705091424404
+            },
+            {
+              "id": 4,
+              "progress": 236.26921221592738,
+              "speed": 25.004979657974033,
+              "roadOffset": -3.5002398832517185,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 8.33886113148256
+            },
+            {
+              "id": 5,
+              "progress": 235.01445147373988,
+              "speed": 24.999832743773283,
+              "roadOffset": 1.008102684605992,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 1.2547607421875
+            },
+            {
+              "id": 6,
+              "progress": 233.12105183285962,
+              "speed": 19.980309678750224,
+              "roadOffset": 4.294307421481045,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 1.8933996408802614
+            },
+            {
+              "id": 7,
+              "progress": 224.24894854405238,
+              "speed": 24.99996613970499,
+              "roadOffset": -3.4993506466723003,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 8.872103288807239
+            },
+            {
+              "id": 8,
+              "progress": 224.11320635655238,
+              "speed": 25.005357136249433,
+              "roadOffset": 0.7675968540372388,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.1357421875
+            },
+            {
+              "id": 9,
+              "progress": 221.5438542941201,
+              "speed": 19.97473762231278,
+              "roadOffset": 4.259543535665179,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 2.569352062432273
+            },
+            {
+              "id": 10,
+              "progress": 212.71989580967738,
+              "speed": 24.999967417746447,
+              "roadOffset": -3.4994841999308037,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 8.823958484442727
+            },
+            {
+              "id": 11,
+              "progress": 212.104833849564,
+              "speed": 24.999973611772727,
+              "roadOffset": 0.7331727788169479,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 0.615061960113394
+            },
+            {
+              "id": 12,
+              "progress": 210.7953499767594,
+              "speed": 20.356277877718558,
+              "roadOffset": 4.205063724932558,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 1.3094838728045772
+            },
+            {
+              "id": 13,
+              "progress": 201.19914385655238,
+              "speed": 24.99996423235636,
+              "roadOffset": -3.4989070385919607,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 9.596206120207029
+            },
+            {
+              "id": 14,
+              "progress": 200.58262712160382,
+              "speed": 24.999975676448155,
+              "roadOffset": 0.514542642734394,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 0.6165167349485614
+            },
+            {
+              "id": 15,
+              "progress": 198.9160501834156,
+              "speed": 21.025848290172096,
+              "roadOffset": 4.035575964926146,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 1.6665769381882285
+            },
+            {
+              "id": 16,
+              "progress": 190.29228350498988,
+              "speed": 25.009657383838217,
+              "roadOffset": -3.5008695955597364,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 8.62376667842571
+            },
+            {
+              "id": 17,
+              "progress": 189.07171251921721,
+              "speed": 24.99994834426012,
+              "roadOffset": 0.3301570662701258,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 1.2205709857726674
+            },
+            {
+              "id": 18,
+              "progress": 187.3681444240997,
+              "speed": 21.107876139173904,
+              "roadOffset": 3.818505068670069,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 1.7035680951175038
+            },
+            {
+              "id": 19,
+              "progress": 178.32951495030238,
+              "speed": 24.999970917790126,
+              "roadOffset": -3.4998787067716304,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 9.038629473797329
+            },
+            {
+              "id": 20,
+              "progress": 178.16154620030238,
+              "speed": 25.010757178129552,
+              "roadOffset": 0.11779616249592634,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.16796875
+            },
+            {
+              "id": 21,
+              "progress": 175.82708467119863,
+              "speed": 21.186468083843756,
+              "roadOffset": 3.726958596807346,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 2.3344615291037485
+            },
+            {
+              "id": 22,
+              "progress": 166.82695147373988,
+              "speed": 24.999967575073242,
+              "roadOffset": -3.5001810697702664,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 9.000133197458752
+            },
+            {
+              "id": 23,
+              "progress": 166.20768877842738,
+              "speed": 24.999876847827043,
+              "roadOffset": 0.0599839967294153,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.6192626953125
+            },
+            {
+              "id": 0,
+              "progress": 165.12646151189264,
+              "speed": 22.414679965265666,
+              "roadOffset": 3.571562108035272,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 1.0812272665347393
+            }
+          ]
+        },
+        {
+          "time": 13.312722913397252,
+          "spreadMetres": 86.34132674791596,
+          "cars": [
+            {
+              "id": 1,
+              "progress": 280.0,
+              "speed": 24.9920231379468,
+              "roadOffset": -3.5515617711255443,
+              "rankRange": [
+                1,
+                1
+              ],
+              "centreGapAhead": null
+            },
+            {
+              "id": 2,
+              "progress": 278.85112484889584,
+              "speed": 24.45036136358372,
+              "roadOffset": 0.7944879197421388,
+              "rankRange": [
+                2,
+                2
+              ],
+              "centreGapAhead": 1.1488751511041642
+            },
+            {
+              "id": 3,
+              "progress": 274.5259953503436,
+              "speed": 24.176018352482153,
+              "roadOffset": 4.19118741134337,
+              "rankRange": [
+                3,
+                3
+              ],
+              "centreGapAhead": 4.325129498552258
+            },
+            {
+              "id": 4,
+              "progress": 269.0941902137712,
+              "speed": 25.000663799913998,
+              "roadOffset": -3.5012471073313898,
+              "rankRange": [
+                4,
+                4
+              ],
+              "centreGapAhead": 5.431805136572393
+            },
+            {
+              "id": 5,
+              "progress": 266.8376215333173,
+              "speed": 22.90441186448887,
+              "roadOffset": 0.9849753717218364,
+              "rankRange": [
+                5,
+                5
+              ],
+              "centreGapAhead": 2.2565686804538814
+            },
+            {
+              "id": 6,
+              "progress": 262.5441110995817,
+              "speed": 24.149434388380616,
+              "roadOffset": 4.227052961701035,
+              "rankRange": [
+                6,
+                6
+              ],
+              "centreGapAhead": 4.293510433735605
+            },
+            {
+              "id": 7,
+              "progress": 257.0739320283332,
+              "speed": 24.999962024478503,
+              "roadOffset": -3.4989356574191355,
+              "rankRange": [
+                7,
+                7
+              ],
+              "centreGapAhead": 5.470179071248481
+            },
+            {
+              "id": 8,
+              "progress": 256.1915335388344,
+              "speed": 23.075840045479943,
+              "roadOffset": 0.7494054146637483,
+              "rankRange": [
+                8,
+                8
+              ],
+              "centreGapAhead": 0.8823984894988257
+            },
+            {
+              "id": 9,
+              "progress": 250.53510123419906,
+              "speed": 24.09143818543552,
+              "roadOffset": 4.261404623813066,
+              "rankRange": [
+                9,
+                9
+              ],
+              "centreGapAhead": 5.656432304635331
+            },
+            {
+              "id": 10,
+              "progress": 245.54463515333322,
+              "speed": 24.99996228165524,
+              "roadOffset": -3.498994635161487,
+              "rankRange": [
+                10,
+                10
+              ],
+              "centreGapAhead": 4.990466080865843
+            },
+            {
+              "id": 11,
+              "progress": 244.32665447178866,
+              "speed": 23.74557812274529,
+              "roadOffset": 1.0357379732232517,
+              "rankRange": [
+                11,
+                11
+              ],
+              "centreGapAhead": 1.2179806815445602
+            },
+            {
+              "id": 12,
+              "progress": 239.30449527667858,
+              "speed": 23.572074107049023,
+              "roadOffset": 4.215948846266353,
+              "rankRange": [
+                12,
+                12
+              ],
+              "centreGapAhead": 5.022159195110078
+            },
+            {
+              "id": 13,
+              "progress": 234.02388320020822,
+              "speed": 24.999967489347664,
+              "roadOffset": -3.4994592568796894,
+              "rankRange": [
+                13,
+                13
+              ],
+              "centreGapAhead": 5.280612076470362
+            },
+            {
+              "id": 14,
+              "progress": 232.82018613722028,
+              "speed": 23.893886611026982,
+              "roadOffset": 0.9266427887936995,
+              "rankRange": [
+                14,
+                14
+              ],
+              "centreGapAhead": 1.203697062987942
+            },
+            {
+              "id": 15,
+              "progress": 227.44182160590134,
+              "speed": 23.293199669229,
+              "roadOffset": 4.303663621348526,
+              "rankRange": [
+                15,
+                15
+              ],
+              "centreGapAhead": 5.378364531318937
+            },
+            {
+              "id": 16,
+              "progress": 223.11726698927072,
+              "speed": 25.004609075528336,
+              "roadOffset": -3.4993550160315787,
+              "rankRange": [
+                16,
+                16
+              ],
+              "centreGapAhead": 4.324554616630621
+            },
+            {
+              "id": 17,
+              "progress": 221.3203287845839,
+              "speed": 23.90649337683011,
+              "roadOffset": 0.7181806460131704,
+              "rankRange": [
+                17,
+                17
+              ],
+              "centreGapAhead": 1.7969382046868247
+            },
+            {
+              "id": 18,
+              "progress": 215.81578055155677,
+              "speed": 23.048452883118454,
+              "roadOffset": 4.153951770391701,
+              "rankRange": [
+                18,
+                18
+              ],
+              "centreGapAhead": 5.504548233027123
+            },
+            {
+              "id": 19,
+              "progress": 211.15437087783366,
+              "speed": 24.999962195929662,
+              "roadOffset": -3.5008949532047686,
+              "rankRange": [
+                19,
+                19
+              ],
+              "centreGapAhead": 4.661409673723114
+            },
+            {
+              "id": 20,
+              "progress": 210.5338873629113,
+              "speed": 23.902116324042847,
+              "roadOffset": 0.5954826832204393,
+              "rankRange": [
+                20,
+                20
+              ],
+              "centreGapAhead": 0.6204835149223697
+            },
+            {
+              "id": 21,
+              "progress": 204.23429517292317,
+              "speed": 22.919236662893034,
+              "roadOffset": 4.132795901635009,
+              "rankRange": [
+                21,
+                21
+              ],
+              "centreGapAhead": 6.299592189988118
+            },
+            {
+              "id": 22,
+              "progress": 199.65193495802072,
+              "speed": 24.999962195929662,
+              "roadOffset": -3.4997922070205334,
+              "rankRange": [
+                22,
+                22
+              ],
+              "centreGapAhead": 4.582360214902451
+            },
+            {
+              "id": 23,
+              "progress": 198.70069717588507,
+              "speed": 24.333270212218327,
+              "roadOffset": 0.4650517548363117,
+              "rankRange": [
+                23,
+                23
+              ],
+              "centreGapAhead": 0.9512377821356495
+            },
+            {
+              "id": 0,
+              "progress": 193.65867325208404,
+              "speed": 22.478857470398225,
+              "roadOffset": 3.923428170581692,
+              "rankRange": [
+                24,
+                24
+              ],
+              "centreGapAhead": 5.042023923801025
+            }
+          ]
+        }
+      ],
+      "gateCrossings": {
+        "0": [
+          {
+            "id": 1,
+            "time": 1.4477893119989425
+          },
+          {
+            "id": 2,
+            "time": 1.502907625261082
+          },
+          {
+            "id": 3,
+            "time": 1.554863591783015
+          },
+          {
+            "id": 4,
+            "time": 2.090338267618289
+          },
+          {
+            "id": 5,
+            "time": 2.1406804049376094
+          },
+          {
+            "id": 6,
+            "time": 2.188877831707052
+          },
+          {
+            "id": 7,
+            "time": 2.6804891630916665
+          },
+          {
+            "id": 8,
+            "time": 2.7198518739923716
+          },
+          {
+            "id": 9,
+            "time": 2.771131658554077
+          },
+          {
+            "id": 10,
+            "time": 3.2354053924405415
+          },
+          {
+            "id": 11,
+            "time": 3.2712309613743575
+          },
+          {
+            "id": 12,
+            "time": 3.317100499735111
+          },
+          {
+            "id": 13,
+            "time": 3.766687113772247
+          },
+          {
+            "id": 14,
+            "time": 3.8002291683161338
+          },
+          {
+            "id": 15,
+            "time": 3.8457859349349928
+          },
+          {
+            "id": 16,
+            "time": 4.2755075240199485
+          },
+          {
+            "id": 17,
+            "time": 4.311875109760931
+          },
+          {
+            "id": 18,
+            "time": 4.358104057842965
+          },
+          {
+            "id": 19,
+            "time": 4.775675559811426
+          },
+          {
+            "id": 20,
+            "time": 4.805413891138187
+          },
+          {
+            "id": 21,
+            "time": 4.857471181244484
+          },
+          {
+            "id": 22,
+            "time": 5.264902094136113
+          },
+          {
+            "id": 23,
+            "time": 5.293703859299631
+          },
+          {
+            "id": 0,
+            "time": 5.341295031022607
+          }
+        ],
+        "100": [
+          {
+            "id": 1,
+            "time": 6.114249720235422
+          },
+          {
+            "id": 2,
+            "time": 6.138253454723481
+          },
+          {
+            "id": 3,
+            "time": 6.162269992485693
+          },
+          {
+            "id": 4,
+            "time": 6.556976026436228
+          },
+          {
+            "id": 5,
+            "time": 6.600177669636883
+          },
+          {
+            "id": 6,
+            "time": 6.626610049572195
+          },
+          {
+            "id": 7,
+            "time": 7.031034207860838
+          },
+          {
+            "id": 8,
+            "time": 7.042013523777683
+          },
+          {
+            "id": 9,
+            "time": 7.090332366174386
+          },
+          {
+            "id": 10,
+            "time": 7.492104110483126
+          },
+          {
+            "id": 11,
+            "time": 7.516410515611466
+          },
+          {
+            "id": 12,
+            "time": 7.533836656749701
+          },
+          {
+            "id": 13,
+            "time": 7.952842264104649
+          },
+          {
+            "id": 14,
+            "time": 7.977368466487691
+          },
+          {
+            "id": 15,
+            "time": 8.011341100511261
+          },
+          {
+            "id": 16,
+            "time": 8.393014358582898
+          },
+          {
+            "id": 17,
+            "time": 8.437857584291267
+          },
+          {
+            "id": 18,
+            "time": 8.474566957002295
+          },
+          {
+            "id": 19,
+            "time": 8.86743509497081
+          },
+          {
+            "id": 20,
+            "time": 8.87754035469712
+          },
+          {
+            "id": 21,
+            "time": 8.937402251665
+          },
+          {
+            "id": 22,
+            "time": 9.327435886783075
+          },
+          {
+            "id": 23,
+            "time": 9.352249997501563
+          },
+          {
+            "id": 0,
+            "time": 9.378953752567865
+          }
+        ],
+        "200": [
+          {
+            "id": 1,
+            "time": 10.113461776022751
+          },
+          {
+            "id": 2,
+            "time": 10.137426456234646
+          },
+          {
+            "id": 3,
+            "time": 10.161545072223202
+          },
+          {
+            "id": 4,
+            "time": 10.549544690555557
+          },
+          {
+            "id": 5,
+            "time": 10.599514087204216
+          },
+          {
+            "id": 6,
+            "time": 10.625835209696437
+          },
+          {
+            "id": 7,
+            "time": 11.030246263648168
+          },
+          {
+            "id": 8,
+            "time": 11.035674808035138
+          },
+          {
+            "id": 9,
+            "time": 11.089550182005084
+          },
+          {
+            "id": 10,
+            "time": 11.491311284485937
+          },
+          {
+            "id": 11,
+            "time": 11.515766343028183
+          },
+          {
+            "id": 12,
+            "time": 11.5283152111525
+          },
+          {
+            "id": 13,
+            "time": 11.952044343976299
+          },
+          {
+            "id": 14,
+            "time": 11.97669299466848
+          },
+          {
+            "id": 15,
+            "time": 12.052111966631054
+          },
+          {
+            "id": 16,
+            "time": 12.388226909112287
+          },
+          {
+            "id": 17,
+            "time": 12.43706428145692
+          },
+          {
+            "id": 18,
+            "time": 12.603106085813971
+          },
+          {
+            "id": 19,
+            "time": 12.866636910351941
+          },
+          {
+            "id": 20,
+            "time": 12.87401901142963
+          },
+          {
+            "id": 21,
+            "time": 13.126520000864422
+          },
+          {
+            "id": 22,
+            "time": 13.326642583948727
+          },
+          {
+            "id": 23,
+            "time": 13.366107035788147
+          },
+          {
+            "id": 0,
+            "time": 13.591545084983252
+          }
+        ],
+        "280": [
+          {
+            "id": 1,
+            "time": 13.312722913397252
+          },
+          {
+            "id": 2,
+            "time": 13.359648729255108
+          },
+          {
+            "id": 3,
+            "time": 13.537406704486061
+          },
+          {
+            "id": 4,
+            "time": 13.74847636091981
+          },
+          {
+            "id": 5,
+            "time": 13.862503900222675
+          },
+          {
+            "id": 6,
+            "time": 14.037586840751983
+          },
+          {
+            "id": 7,
+            "time": 14.229439776460671
+          },
+          {
+            "id": 8,
+            "time": 14.337082610407903
+          },
+          {
+            "id": 9,
+            "time": 14.563415482007109
+          },
+          {
+            "id": 10,
+            "time": 14.690057751466174
+          },
+          {
+            "id": 11,
+            "time": 14.86066597805239
+          },
+          {
+            "id": 13,
+            "time": 15.151078286672687
+          },
+          {
+            "id": 14,
+            "time": 15.40437784305952
+          },
+          {
+            "id": 12,
+            "time": 15.41231778663363
+          },
+          {
+            "id": 16,
+            "time": 15.586875818285254
+          },
+          {
+            "id": 19,
+            "time": 16.065581584507182
+          },
+          {
+            "id": 22,
+            "time": 16.531514572510268
+          },
+          {
+            "id": 15,
+            "time": 16.56163844918846
+          },
+          {
+            "id": 17,
+            "time": 17.194303166603063
+          },
+          {
+            "id": 18,
+            "time": 17.806484278842543
+          },
+          {
+            "id": 20,
+            "time": 17.843906769787868
+          },
+          {
+            "id": 23,
+            "time": 18.33258296836997
+          },
+          {
+            "id": 0,
+            "time": 18.567161838477258
+          },
+          {
+            "id": 21,
+            "time": 18.605137164151806
+          }
+        ]
+      },
+      "perCar": [
+        {
+          "id": 0,
+          "equipment": "club",
+          "gateTime": 18.567161838477258,
+          "gateRankRange": [
+            23,
+            23
+          ]
+        },
+        {
+          "id": 1,
+          "equipment": "street",
+          "gateTime": 13.312722913397252,
+          "gateRankRange": [
+            1,
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "equipment": "street",
+          "gateTime": 13.359648729255108,
+          "gateRankRange": [
+            2,
+            2
+          ]
+        },
+        {
+          "id": 3,
+          "equipment": "street",
+          "gateTime": 13.537406704486061,
+          "gateRankRange": [
+            3,
+            3
+          ]
+        },
+        {
+          "id": 4,
+          "equipment": "club",
+          "gateTime": 13.74847636091981,
+          "gateRankRange": [
+            4,
+            4
+          ]
+        },
+        {
+          "id": 5,
+          "equipment": "street",
+          "gateTime": 13.862503900222675,
+          "gateRankRange": [
+            5,
+            5
+          ]
+        },
+        {
+          "id": 6,
+          "equipment": "street",
+          "gateTime": 14.037586840751983,
+          "gateRankRange": [
+            6,
+            6
+          ]
+        },
+        {
+          "id": 7,
+          "equipment": "street",
+          "gateTime": 14.229439776460671,
+          "gateRankRange": [
+            7,
+            7
+          ]
+        },
+        {
+          "id": 8,
+          "equipment": "club",
+          "gateTime": 14.337082610407903,
+          "gateRankRange": [
+            8,
+            8
+          ]
+        },
+        {
+          "id": 9,
+          "equipment": "street",
+          "gateTime": 14.563415482007109,
+          "gateRankRange": [
+            9,
+            9
+          ]
+        },
+        {
+          "id": 10,
+          "equipment": "street",
+          "gateTime": 14.690057751466174,
+          "gateRankRange": [
+            10,
+            10
+          ]
+        },
+        {
+          "id": 11,
+          "equipment": "street",
+          "gateTime": 14.86066597805239,
+          "gateRankRange": [
+            11,
+            11
+          ]
+        },
+        {
+          "id": 12,
+          "equipment": "club",
+          "gateTime": 15.41231778663363,
+          "gateRankRange": [
+            14,
+            14
+          ]
+        },
+        {
+          "id": 13,
+          "equipment": "street",
+          "gateTime": 15.151078286672687,
+          "gateRankRange": [
+            12,
+            12
+          ]
+        },
+        {
+          "id": 14,
+          "equipment": "street",
+          "gateTime": 15.40437784305952,
+          "gateRankRange": [
+            13,
+            13
+          ]
+        },
+        {
+          "id": 15,
+          "equipment": "street",
+          "gateTime": 16.56163844918846,
+          "gateRankRange": [
+            18,
+            18
+          ]
+        },
+        {
+          "id": 16,
+          "equipment": "club",
+          "gateTime": 15.586875818285254,
+          "gateRankRange": [
+            15,
+            15
+          ]
+        },
+        {
+          "id": 17,
+          "equipment": "street",
+          "gateTime": 17.194303166603063,
+          "gateRankRange": [
+            19,
+            19
+          ]
+        },
+        {
+          "id": 18,
+          "equipment": "street",
+          "gateTime": 17.806484278842543,
+          "gateRankRange": [
+            20,
+            20
+          ]
+        },
+        {
+          "id": 19,
+          "equipment": "street",
+          "gateTime": 16.065581584507182,
+          "gateRankRange": [
+            16,
+            16
+          ]
+        },
+        {
+          "id": 20,
+          "equipment": "club",
+          "gateTime": 17.843906769787868,
+          "gateRankRange": [
+            21,
+            21
+          ]
+        },
+        {
+          "id": 21,
+          "equipment": "street",
+          "gateTime": 18.605137164151806,
+          "gateRankRange": [
+            24,
+            24
+          ]
+        },
+        {
+          "id": 22,
+          "equipment": "street",
+          "gateTime": 16.531514572510268,
+          "gateRankRange": [
+            17,
+            17
+          ]
+        },
+        {
+          "id": 23,
+          "equipment": "street",
+          "gateTime": 18.33258296836997,
+          "gateRankRange": [
+            22,
+            22
+          ]
+        }
+      ],
+      "previewMovingSamples": 182,
+      "previewPedalDutyPercent": {
+        "powered": 82.41758241758242,
+        "coasting": 4.395604395604396,
+        "braking": 13.186813186813186
+      },
+      "previewContextReasonSamples": {
+        "Moving leader stopping-distance limit": 180,
+        "No viable crossing continuation; straighten and brake": 2
+      }
+    }
+  }
+}

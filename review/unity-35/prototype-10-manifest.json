@@ -1,0 +1,10 @@
+{
+  "utc": "2026-09-21T20:31:53.9895192Z",
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-10-review\\Little Road Unity.exe",
+  "assemblyHash": "3FF0C33AB381E7D40295DF94CADD26BE607421D3859C4987C15408F8A1A02506",
+  "policyHash": "C5806171A9EA6DEFC3EA34682BF097799DE21142D2288AA05754AA678DD8E980",
+  "routeProjectionHash": "D4ACCAE457BCAC15F9804190A61F7BEB7943CD88CC3FF60B6FC88AB68FA20EF2",
+  "change": "Exact-result global route projection hierarchy; per-frame resolution capture; no tactical/follower changes",
+  "checks": 267,
+  "acceptance": "Exact observed field driving parity and 1080p frame thresholds pass; all-AI p95 3.1048 ms misses 3 ms; broader physical/racecraft/integration gates remain open"
+}

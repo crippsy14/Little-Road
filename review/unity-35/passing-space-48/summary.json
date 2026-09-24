@@ -1,0 +1,64 @@
+{
+  "scope": "Seed1709 only; no exact crowded replay, rendered or player acceptance.",
+  "passedScreen": false,
+  "checks": {
+    "disabledExactParity": false,
+    "fieldGates": true,
+    "checkpointGates": true,
+    "declaredConfigurations": true,
+    "recoverHalfLostPace": false,
+    "previewProgress": false,
+    "contactReviewThreshold": true,
+    "controlledRegressions": false
+  },
+  "results": [
+    {
+      "name": "field-control",
+      "finished": 24,
+      "totalCarSeconds": 2235.475616455078,
+      "checkpoint1": [
+        20,
+        20
+      ],
+      "finishPlace": 8,
+      "car0Seconds": 91.1664810180664,
+      "pairContacts": 2,
+      "maximumImpact": 0.3583471477031708,
+      "outside": 0,
+      "recoveries": 0,
+      "unresolvedActiveSamples": 374,
+      "fieldGates": true,
+      "checkpointGates": true,
+      "anticipationMode": "disabled",
+      "declaredConfiguration": true
+    },
+    {
+      "name": "field-anticipation",
+      "finished": 24,
+      "totalCarSeconds": 2238.1749572753906,
+      "checkpoint1": [
+        22,
+        23
+      ],
+      "finishPlace": 8,
+      "car0Seconds": 91.71634674072266,
+      "pairContacts": 2,
+      "maximumImpact": 0.41736650466918945,
+      "outside": 0,
+      "recoveries": 0,
+      "unresolvedActiveSamples": 479,
+      "fieldGates": true,
+      "checkpointGates": true,
+      "anticipationMode": "blocking-car",
+      "declaredConfiguration": true
+    }
+  ],
+  "controlled": {
+    "passed": 80,
+    "total": 82,
+    "failures": [
+      "no-room: no excessive completion delay",
+      "no-room: existing independent corridor contract"
+    ]
+  }
+}

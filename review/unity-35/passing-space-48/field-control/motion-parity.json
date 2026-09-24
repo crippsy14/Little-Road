@@ -1,0 +1,27 @@
+{
+  "scope": "Exact equality of stored samples/events/results; terminal export positions and profiling costs are separate. Hidden timing is not rendered-frame acceptance.",
+  "baseline": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\traffic-path-46\\field-risk5",
+  "candidate": "review\\unity-35\\passing-space-48\\field-control",
+  "checks": {
+    "motion": false,
+    "checkpointPassages": true,
+    "impacts": true,
+    "assistedRecoveries": true,
+    "overlapPeaks": true,
+    "samples": true,
+    "contextSamples": true,
+    "carRaceResults": true,
+    "normalExit": true
+  },
+  "passed": false,
+  "meanDecisionRegionMsPerPhysicsTick": {
+    "baseline": 1.8121039386627382,
+    "candidate": 1.816208831107999
+  },
+  "decisionRegionReductionPercent": -0.2265263243282689,
+  "meanAllAiMsPerSnapshotTick": {
+    "baseline": 2.3981226841040013,
+    "candidate": 2.406986498516321
+  },
+  "allAiWallCostReductionPercent": -0.3696147186744714
+}

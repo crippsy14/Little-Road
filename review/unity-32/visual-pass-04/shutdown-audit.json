@@ -1,0 +1,8 @@
+{
+  "pid": 33368,
+  "executable": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-traffic-04-review\\Little Road Unity.exe",
+  "observedAt": "2026-09-21T17:05:27.0282522+01:00",
+  "lastLogWrite": "2026-09-21T17:03:26.0333083+01:00",
+  "cpuSeconds": 146.078125,
+  "status": "Both cars finished, shutdown log stopped for over 80 seconds, process and window persisted. Verified review process forcibly stopped; normal exit not claimed."
+}

@@ -1,0 +1,253 @@
+{
+  "passed": 54,
+  "total": 54,
+  "summary": {
+    "rejoin-left": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.002926158718764782,
+      "maxBodyUnderestimate": 0.002777099609375,
+      "predictedDeparture": -1.0,
+      "actualDeparture": -1.0,
+      "maxPredictedBodyOffset": 5.196746826171875,
+      "maxActualBodyOffset": 5.196685791015625,
+      "forecastMilliseconds": 10.02560043334961,
+      "forecastCosts": [
+        {
+          "totalMs": 10.0256,
+          "projectionMs": 0.6591000000000024,
+          "followerMs": 5.131900000000013,
+          "bodyMs": 3.191399999999999,
+          "physicsMs": 0.9032999999999926
+        },
+        {
+          "totalMs": 7.5587,
+          "projectionMs": 0.7446000000000023,
+          "followerMs": 4.029000000000006,
+          "bodyMs": 2.6446000000000014,
+          "physicsMs": 0.08609999999999982
+        },
+        {
+          "totalMs": 7.6421,
+          "projectionMs": 0.6429000000000024,
+          "followerMs": 4.218300000000006,
+          "bodyMs": 2.6497000000000015,
+          "physicsMs": 0.07419999999999999
+        },
+        {
+          "totalMs": 7.5983,
+          "projectionMs": 0.6572000000000023,
+          "followerMs": 4.1108000000000064,
+          "bodyMs": 2.6933000000000002,
+          "physicsMs": 0.07929999999999998
+        }
+      ]
+    },
+    "rejoin-right": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.0026603294536471367,
+      "maxBodyUnderestimate": 0.002655029296875,
+      "predictedDeparture": -1.0,
+      "actualDeparture": -1.0,
+      "maxPredictedBodyOffset": 5.2321929931640625,
+      "maxActualBodyOffset": 5.232086181640625,
+      "forecastMilliseconds": 9.366999626159668,
+      "forecastCosts": [
+        {
+          "totalMs": 9.367,
+          "projectionMs": 0.6985000000000025,
+          "followerMs": 4.98450000000002,
+          "bodyMs": 2.914499999999998,
+          "physicsMs": 0.6324999999999922
+        },
+        {
+          "totalMs": 7.5237,
+          "projectionMs": 0.6551000000000026,
+          "followerMs": 4.043700000000006,
+          "bodyMs": 2.6570000000000014,
+          "physicsMs": 0.11529999999999993
+        },
+        {
+          "totalMs": 7.4017,
+          "projectionMs": 0.6515000000000023,
+          "followerMs": 3.988100000000005,
+          "bodyMs": 2.636400000000002,
+          "physicsMs": 0.07110000000000008
+        },
+        {
+          "totalMs": 7.4505,
+          "projectionMs": 0.6453000000000024,
+          "followerMs": 4.049199999999998,
+          "bodyMs": 2.6258000000000026,
+          "physicsMs": 0.07120000000000008
+        }
+      ]
+    },
+    "switchback-left": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.0031733145006000996,
+      "maxBodyUnderestimate": 0.003139019012451172,
+      "predictedDeparture": -1.0,
+      "actualDeparture": -1.0,
+      "maxPredictedBodyOffset": 7.027853965759277,
+      "maxActualBodyOffset": 7.030829429626465,
+      "forecastMilliseconds": 9.364899635314941,
+      "forecastCosts": [
+        {
+          "totalMs": 9.3649,
+          "projectionMs": 0.5763000000000005,
+          "followerMs": 5.375800000000006,
+          "bodyMs": 2.5490000000000035,
+          "physicsMs": 0.7070999999999927
+        },
+        {
+          "totalMs": 7.2225,
+          "projectionMs": 0.5708000000000005,
+          "followerMs": 4.199100000000005,
+          "bodyMs": 2.325500000000002,
+          "physicsMs": 0.07030000000000013
+        },
+        {
+          "totalMs": 7.2955,
+          "projectionMs": 0.5541000000000006,
+          "followerMs": 4.264099999999998,
+          "bodyMs": 2.349700000000002,
+          "physicsMs": 0.07430000000000006
+        },
+        {
+          "totalMs": 7.1732,
+          "projectionMs": 0.5490000000000003,
+          "followerMs": 4.199299999999999,
+          "bodyMs": 2.301600000000002,
+          "physicsMs": 0.07050000000000012
+        }
+      ]
+    },
+    "switchback-right": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.003185151144862175,
+      "maxBodyUnderestimate": 2.288818359375e-05,
+      "predictedDeparture": -1.0,
+      "actualDeparture": -1.0,
+      "maxPredictedBodyOffset": 6.660471439361572,
+      "maxActualBodyOffset": 6.660471439361572,
+      "forecastMilliseconds": 8.912199974060059,
+      "forecastCosts": [
+        {
+          "totalMs": 8.9122,
+          "projectionMs": 0.5490000000000003,
+          "followerMs": 5.231500000000005,
+          "bodyMs": 2.3555,
+          "physicsMs": 0.6424999999999925
+        },
+        {
+          "totalMs": 6.9511,
+          "projectionMs": 0.5187000000000003,
+          "followerMs": 4.172400000000001,
+          "bodyMs": 2.135499999999997,
+          "physicsMs": 0.07110000000000014
+        },
+        {
+          "totalMs": 6.9066,
+          "projectionMs": 0.5235000000000001,
+          "followerMs": 4.1623000000000046,
+          "bodyMs": 2.094499999999996,
+          "physicsMs": 0.07460000000000001
+        },
+        {
+          "totalMs": 6.9552,
+          "projectionMs": 0.5615999999999999,
+          "followerMs": 4.122200000000003,
+          "bodyMs": 2.1509999999999976,
+          "physicsMs": 0.06860000000000012
+        }
+      ]
+    },
+    "overspeed-left": {
+      "eligibleSamples": 108,
+      "totalSamples": 241,
+      "maxPositionError": 0.0033448522444814444,
+      "maxBodyUnderestimate": 0.0030107498168945312,
+      "predictedDeparture": 0.7833333611488342,
+      "actualDeparture": 0.7833333611488342,
+      "maxPredictedBodyOffset": 18.515718460083008,
+      "maxActualBodyOffset": 26.289989471435547,
+      "forecastMilliseconds": 8.87090015411377,
+      "forecastCosts": [
+        {
+          "totalMs": 8.8709,
+          "projectionMs": 0.5501000000000009,
+          "followerMs": 5.131200000000006,
+          "bodyMs": 2.3965000000000027,
+          "physicsMs": 0.6440999999999928
+        },
+        {
+          "totalMs": 6.9194,
+          "projectionMs": 0.5516000000000008,
+          "followerMs": 4.043100000000008,
+          "bodyMs": 2.1968000000000014,
+          "physicsMs": 0.07560000000000003
+        },
+        {
+          "totalMs": 7.0658,
+          "projectionMs": 0.5498000000000012,
+          "followerMs": 4.1595000000000075,
+          "bodyMs": 2.190300000000003,
+          "physicsMs": 0.10819999999999966
+        },
+        {
+          "totalMs": 7.2717,
+          "projectionMs": 0.521200000000001,
+          "followerMs": 4.452100000000006,
+          "bodyMs": 2.1632000000000025,
+          "physicsMs": 0.0698000000000001
+        }
+      ]
+    },
+    "overspeed-right": {
+      "eligibleSamples": 40,
+      "totalSamples": 241,
+      "maxPositionError": 0.000160942247021012,
+      "maxBodyUnderestimate": 0.00026226043701171875,
+      "predictedDeparture": 0.19166667759418488,
+      "actualDeparture": 0.19166667759418488,
+      "maxPredictedBodyOffset": 21.928386688232422,
+      "maxActualBodyOffset": 37.27948760986328,
+      "forecastMilliseconds": 8.752900123596191,
+      "forecastCosts": [
+        {
+          "totalMs": 8.7529,
+          "projectionMs": 0.5420000000000001,
+          "followerMs": 5.057400000000005,
+          "bodyMs": 2.3722999999999974,
+          "physicsMs": 0.6489999999999928
+        },
+        {
+          "totalMs": 6.8478,
+          "projectionMs": 0.5183000000000005,
+          "followerMs": 4.092900000000003,
+          "bodyMs": 2.1182999999999996,
+          "physicsMs": 0.06650000000000009
+        },
+        {
+          "totalMs": 6.8431,
+          "projectionMs": 0.5196000000000006,
+          "followerMs": 4.068200000000007,
+          "bodyMs": 2.1376999999999984,
+          "physicsMs": 0.0658000000000001
+        },
+        {
+          "totalMs": 6.9253,
+          "projectionMs": 0.5283000000000005,
+          "followerMs": 4.120400000000008,
+          "bodyMs": 2.155899999999999,
+          "physicsMs": 0.07130000000000009
+        }
+      ]
+    }
+  },
+  "failures": []
+}

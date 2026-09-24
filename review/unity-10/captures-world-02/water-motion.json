@@ -1,0 +1,7 @@
+{
+  "scope": "Fixed camera, water-only image region at shader times 0 and 1.6 seconds; verifies rendered change, not fluid physics or visual acceptance",
+  "samples": 6000,
+  "changedFraction": 0.8361666666666666,
+  "meanAbsoluteChannelDelta": 21.527833333333312,
+  "passed": true
+}

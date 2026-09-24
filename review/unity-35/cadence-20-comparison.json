@@ -1,0 +1,129 @@
+{
+  "scope": "Six initial two-second club-car forecasts; paired hidden timing, not runtime frame acceptance. Actual driving remains native-rate.",
+  "cadences": {
+    "1": {
+      "passed": 54,
+      "total": 54,
+      "meanWarmCost": {
+        "totalMs": 7.197344444444444,
+        "projectionMs": 0.5812833333333345,
+        "followerMs": 4.138594444444449,
+        "bodyMs": 2.345933333333334,
+        "physicsMs": 0.07687777777777781
+      },
+      "maxPositionError": 0.0033448522444814444,
+      "maxBodyUnderestimate": 0.003139019012451172,
+      "failures": [],
+      "parity": {
+        "rejoin-left": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": true
+        },
+        "rejoin-right": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": true
+        },
+        "switchback-left": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": true
+        },
+        "switchback-right": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": true
+        },
+        "overspeed-left": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": true
+        },
+        "overspeed-right": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": true
+        }
+      }
+    },
+    "3": {
+      "passed": 54,
+      "total": 54,
+      "meanWarmCost": {
+        "totalMs": 4.5154555555555556,
+        "projectionMs": 0.5756555555555566,
+        "followerMs": 1.4197722222222213,
+        "bodyMs": 2.4070000000000005,
+        "physicsMs": 0.0703111111111112
+      },
+      "maxPositionError": 0.05122184008359909,
+      "maxBodyUnderestimate": 0.041839599609375,
+      "failures": [],
+      "parity": {
+        "rejoin-left": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        },
+        "rejoin-right": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        },
+        "switchback-left": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        },
+        "switchback-right": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        },
+        "overspeed-left": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        },
+        "overspeed-right": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        }
+      }
+    },
+    "6": {
+      "passed": 52,
+      "total": 54,
+      "meanWarmCost": {
+        "totalMs": 4.6229611111111115,
+        "projectionMs": 0.6969277777777784,
+        "followerMs": 0.8942888888888889,
+        "bodyMs": 2.8822388888888892,
+        "physicsMs": 0.096561111111111
+      },
+      "maxPositionError": 0.2104145586490631,
+      "maxBodyUnderestimate": 0.1082305908203125,
+      "failures": [
+        "rejoin-left: bounded body-clearance underestimate",
+        "rejoin-right: bounded body-clearance underestimate"
+      ],
+      "parity": {
+        "rejoin-left": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        },
+        "rejoin-right": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        },
+        "switchback-left": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        },
+        "switchback-right": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        },
+        "overspeed-left": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        },
+        "overspeed-right": {
+          "actualMotionInputsEqual19": true,
+          "allComparisonSamplesEqual19": false
+        }
+      }
+    }
+  },
+  "warmReduction1to3Percent": 37.262200101580675
+}

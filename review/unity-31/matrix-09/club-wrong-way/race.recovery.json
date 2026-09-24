@@ -1,0 +1,46 @@
+{
+    "fixture": "wrong-way",
+    "scope": "Synthetic recovery start; ordinary physics thereafter. Reset counts remain assisted recovery.",
+    "complete": true,
+    "returnedBehindMissedGate": true,
+    "unearnedGateAdvance": false,
+    "trafficPassed": false,
+    "maxStepMetres": 0.2837616205215454,
+    "maxPhysicalStepMetres": 0.2837616205215454,
+    "waitingSeconds": 0.0,
+    "reverseSeconds": 1.224999189376831,
+    "activeSeconds": 3.566685914993286,
+    "observedResetJumps": 0,
+    "physicalRecoveries": 1,
+    "assistedResets": 0,
+    "contacts": 0,
+    "events": [
+        {
+            "time": 0.000011669471859931946,
+            "progress": -24.0,
+            "offset": 0.0,
+            "speed": 4.889056937074088e-10,
+            "gate": 0,
+            "resets": 0,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 1.225010871887207,
+            "progress": -21.314453125,
+            "offset": -1.113067626953125,
+            "speed": -2.9577839374542236,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 3.5583643913269043,
+            "progress": -19.21630859375,
+            "offset": 4.35040283203125,
+            "speed": 3.8355305194854736,
+            "gate": 0,
+            "resets": 0,
+            "state": "Racing"
+        }
+    ]
+}

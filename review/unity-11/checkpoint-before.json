@@ -1,0 +1,7 @@
+{
+    "scope": "Controlled state reproduction using the actual pre-fix RoadCar.TrackGates method; not the user's original trajectory",
+    "checks": [
+        "Positive route movement inside road with sideways car heading rejects start gate",
+        "Restoring forward heading after leaving 8m window leaves required gate stuck"
+    ]
+}

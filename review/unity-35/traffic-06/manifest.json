@@ -1,0 +1,102 @@
+{
+  "executable": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-06-review\\Little Road Unity.exe",
+  "assemblyHash": "4F1D2B3E705B0C4FE224B9D2B3C2D976CBA5C3A4FC54EEF944FD7E11D4753116",
+  "policy": "context",
+  "scenarios": [
+    "follow",
+    "pass",
+    "no-room"
+  ],
+  "includeQueue": true,
+  "complete": true,
+  "runs": [
+    {
+      "name": "pass",
+      "fixture": "pass",
+      "loadout": "club",
+      "policy": "context",
+      "cars": 2,
+      "opponents": "stock",
+      "pid": 4960,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\traffic-06\\pass\\race.json"
+    },
+    {
+      "name": "follow",
+      "fixture": "follow",
+      "loadout": "stock",
+      "policy": "context",
+      "cars": 2,
+      "opponents": "stock",
+      "pid": 38444,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\traffic-06\\follow\\race.json"
+    },
+    {
+      "name": "no-room",
+      "fixture": "no-room",
+      "loadout": "club",
+      "policy": "context",
+      "cars": 2,
+      "opponents": "stock",
+      "pid": 35992,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\traffic-06\\no-room\\race.json"
+    },
+    {
+      "name": "solo-stock-reference",
+      "fixture": "solo",
+      "loadout": "stock",
+      "policy": "reference",
+      "cars": 1,
+      "opponents": "stock",
+      "pid": 34884,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\traffic-06\\solo-stock-reference\\race.json"
+    },
+    {
+      "name": "solo-stock-context",
+      "fixture": "solo",
+      "loadout": "stock",
+      "policy": "context",
+      "cars": 1,
+      "opponents": "stock",
+      "pid": 2264,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\traffic-06\\solo-stock-context\\race.json"
+    },
+    {
+      "name": "solo-club-reference",
+      "fixture": "solo",
+      "loadout": "club",
+      "policy": "reference",
+      "cars": 1,
+      "opponents": "stock",
+      "pid": 22704,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\traffic-06\\solo-club-reference\\race.json"
+    },
+    {
+      "name": "solo-club-context",
+      "fixture": "solo",
+      "loadout": "club",
+      "policy": "context",
+      "cars": 1,
+      "opponents": "stock",
+      "pid": 37420,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\traffic-06\\solo-club-context\\race.json"
+    },
+    {
+      "name": "queue",
+      "fixture": "queue",
+      "loadout": "club",
+      "policy": "context",
+      "cars": 3,
+      "opponents": "street,stock",
+      "pid": 35876,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\traffic-06\\queue\\race.json"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "scope": "First prospective two-second frozen-path probes, club car, normal physics. Five-second timed observations; lap completion is not expected or scored. Neither real-time performance nor general race acceptance.",
+  "cases": [
+    "rejoin-left",
+    "rejoin-right",
+    "switchback-left",
+    "switchback-right",
+    "overspeed-left",
+    "overspeed-right"
+  ],
+  "horizon": 2,
+  "positionMaximumMetres": 0.25,
+  "bodyUnderestimateMaximumMetres": 0.1,
+  "departureTimingErrorSeconds": 0.1,
+  "minimumEligibleSamples": 24,
+  "requireNormalPathsContained": true,
+  "requireAtLeastOneOverspeedDeparture": true,
+  "forecastControlSteps": 3
+}

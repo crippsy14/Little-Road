@@ -1,0 +1,9 @@
+{
+  "name": "standard-traffic-r3",
+  "case": "standard",
+  "repeat": 3,
+  "policy": "traffic",
+  "pid": 35308,
+  "exitCode": 0,
+  "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\passing-02\\standard-traffic-r3"
+}

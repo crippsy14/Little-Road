@@ -1,0 +1,22 @@
+{
+  "scope": "Exact equality of stored samples/events/results; terminal export positions and profiling costs are separate. Hidden timing is not rendered-frame acceptance.",
+  "baseline": "outputs\\little-road\\review\\unity-35\\field-31-prepared",
+  "candidate": "outputs\\little-road\\review\\unity-35\\field-31-prepared-visible",
+  "checks": {
+    "motion": true,
+    "checkpointPassages": true,
+    "impacts": true,
+    "assistedRecoveries": true,
+    "overlapPeaks": true,
+    "samples": true,
+    "contextSamples": true,
+    "carRaceResults": true,
+    "normalExit": true
+  },
+  "passed": true,
+  "meanDriverMsPerPhysicsTick": {
+    "baseline": 5.0409520875069935,
+    "candidate": 4.964725946817059
+  },
+  "driverCostReductionPercent": 1.5121377741091013
+}

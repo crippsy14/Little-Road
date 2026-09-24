@@ -1,0 +1,42 @@
+[
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-40\\analyze-failed-plans.py",
+    "Hash": "6C6B7DC51179A88756D1CFF393E3F855F826B02817298317AEBB2789DC57CBFC"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-40\\ContextDriverPolicy.cs",
+    "Hash": "2C4A70DB7645734A79D989ADBB2C169C7E3CD6251F45CB0703CBFEEAC2DF9C22"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-40\\ContextPlanAudit.cs",
+    "Hash": "0A693B834FD443B4BC4E1653D94820FB5A497748D09622ABBE38F67E5F18EDE6"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-40\\ContextPreferenceMap.cs",
+    "Hash": "7FD7F6667026C1B8E23C811D5EB3182F978B46D43051727F8AB1C2AC5ACF0DD8"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-40\\MigrationBuild.cs",
+    "Hash": "B3FDE94215198CDCE0573829E265A66A0D8384EBF35BCDD43C6A4E601BAC1F29"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-40\\RoadPathFeasibility.cs",
+    "Hash": "BA17772A177D4E8B1A3026F7776BECDE11759470D8F5E71D9A6EF5F28109EE24"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-40\\run-technical-trial.ps1",
+    "Hash": "B62334ECF995EABA439F26E7B3147F8864B55C675A46262C442EB0971FB08406"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-40\\summarize-timed-corridor-field.py",
+    "Hash": "C8832714CEF6C7DB4BF9D8C7B7E5D41A7CD1E535576D8E7822C8EE407CE7D85C"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-40\\TechnicalCircuitReview.cs",
+    "Hash": "0DE5D92511BE1D15E568E66F8BF74FD214193306894D3749C4CBF0FCD35A3D60"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-40\\TimedCorridorChecks.cs",
+    "Hash": "7D266FFC966B415C84F50CEB9D5541885FC938B469D48722D98655E884959327"
+  }
+]

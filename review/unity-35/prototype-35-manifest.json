@@ -1,0 +1,21 @@
+{
+  "userReview": "Yes, noticeably smoother",
+  "aiP95Ms": 10.9529,
+  "frameP95Ms": 12.989300727844238,
+  "assemblyHash": "3EA412014C36970DA6D6DBE4231CCB1BA3C9D391323D2C1A224D4A567BA83832",
+  "flags": [
+    "--road-feasibility",
+    "--prepared-path",
+    "--parallel-road-forecasts",
+    "--parallel-forecast-workers",
+    "8"
+  ],
+  "behaviour": "Serial and parallel fields match all stored samples/events/results exactly; visible run also matches.",
+  "allAiMeanCostReductionPercent": 60.011298413091694,
+  "frameP99Ms": 15.167502403259277,
+  "acceptance": "Retain experimental smoother candidate. Not promoted: AI3ms budget, startup hitch, unresolved paths, contacts and broader baseline acceptance remain open.",
+  "buildChecks": 297,
+  "export": "outputs/little-road-context-35-review/Little Road Unity.exe",
+  "focusedParity": "31/31 checks across 12 serial/parallel processes; narrow-corridor defects unchanged in both modes, explicitly not accepted.",
+  "next": "Diagnose narrow-corridor all-candidate rejection with independent feasible follow/stop witness; retain exact same-step worker integration and frame evidence."
+}

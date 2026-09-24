@@ -1,0 +1,165 @@
+{
+  "scope": "Descriptive attribution, not a new acceptance gate. First loading frame excluded; countdown retained. Main-thread decision and snapshot regions are disjoint. Forecast batch is nested in snapshot; traffic-progress component timers are nested in its total. Never add nested timers together. Unity delta time measures an elapsed frame interval; nextCapturedFrameMs is shown as a diagnostic adjacent interval, not asserted as exact GPU/presentation attribution. No causal timing claim from correlation.",
+  "planningBatchFrames": {
+    "count": 1017,
+    "mean": 27.47940825958702,
+    "p95": 58.083499999999994,
+    "maximum": 88.3067
+  },
+  "otherFrames": {
+    "count": 8674,
+    "mean": 1.4693976135577589,
+    "p95": 4.032600000000001,
+    "maximum": 15.7059
+  },
+  "topFivePercent": {
+    "frames": 485,
+    "decisionWallShare": 0.8551841386490516,
+    "snapshotWallShare": 0.1448158613509483,
+    "withForecastBatch": 485
+  },
+  "roadStageTotalsMs": {
+    "forecastMs": 10753.96809999994,
+    "corridorMs": 1656.924200000028,
+    "sceneryMs": 803.7991999998587,
+    "trafficMs": 1949.869999999999,
+    "trafficProgressMs": 4721.8763,
+    "trafficProgressRivalMs": 1569.9027999999998,
+    "trafficProgressProposalMs": 1516.0510000000002,
+    "trafficProgressContinuationMs": 1635.9225
+  },
+  "examples": [
+    {
+      "frame": 2014,
+      "simTime": 18.316486358642578,
+      "allAiMs": 88.3067,
+      "decisionMs": 82.26710000000001,
+      "snapshotMs": 6.0396,
+      "forecastBatchMs": 5.6208,
+      "snapshotCalls": 3,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 91.45439910888672
+    },
+    {
+      "frame": 2012,
+      "simTime": 18.208154678344727,
+      "allAiMs": 82.8451,
+      "decisionMs": 76.60130000000001,
+      "snapshotMs": 6.2438,
+      "forecastBatchMs": 5.8882,
+      "snapshotCalls": 1,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 84.97540283203125
+    },
+    {
+      "frame": 2016,
+      "simTime": 18.42481803894043,
+      "allAiMs": 81.02469999999997,
+      "decisionMs": 75.06519999999996,
+      "snapshotMs": 5.9595,
+      "forecastBatchMs": 5.5462,
+      "snapshotCalls": 2,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 83.3624038696289
+    },
+    {
+      "frame": 2210,
+      "simTime": 21.441438674926758,
+      "allAiMs": 80.98359999999997,
+      "decisionMs": 74.83199999999997,
+      "snapshotMs": 6.1516,
+      "forecastBatchMs": 5.75,
+      "snapshotCalls": 3,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 83.55340576171875
+    },
+    {
+      "frame": 2208,
+      "simTime": 21.333106994628906,
+      "allAiMs": 80.94780000000002,
+      "decisionMs": 75.47920000000002,
+      "snapshotMs": 5.4686,
+      "forecastBatchMs": 5.1322,
+      "snapshotCalls": 1,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 82.7013931274414
+    },
+    {
+      "frame": 1958,
+      "simTime": 17.266502380371094,
+      "allAiMs": 78.45760000000001,
+      "decisionMs": 72.44160000000001,
+      "snapshotMs": 6.016,
+      "forecastBatchMs": 5.6455,
+      "snapshotCalls": 1,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 80.39729309082031
+    },
+    {
+      "frame": 1936,
+      "simTime": 16.74151039123535,
+      "allAiMs": 78.0988,
+      "decisionMs": 71.4348,
+      "snapshotMs": 6.664,
+      "forecastBatchMs": 6.2938,
+      "snapshotCalls": 1,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 80.28909301757812
+    },
+    {
+      "frame": 2212,
+      "simTime": 21.54143714904785,
+      "allAiMs": 77.3964,
+      "decisionMs": 71.9421,
+      "snapshotMs": 5.4543,
+      "forecastBatchMs": 5.1005,
+      "snapshotCalls": 2,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 79.67510223388672
+    },
+    {
+      "frame": 1933,
+      "simTime": 16.641511917114258,
+      "allAiMs": 76.92660000000001,
+      "decisionMs": 70.7171,
+      "snapshotMs": 6.2095,
+      "forecastBatchMs": 5.7719,
+      "snapshotCalls": 1,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 78.8019027709961
+    },
+    {
+      "frame": 1960,
+      "simTime": 17.366500854492188,
+      "allAiMs": 69.41019999999999,
+      "decisionMs": 63.792399999999994,
+      "snapshotMs": 5.6178,
+      "forecastBatchMs": 5.223,
+      "snapshotCalls": 2,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 71.50769805908203
+    },
+    {
+      "frame": 1847,
+      "simTime": 15.183199882507324,
+      "allAiMs": 69.36460000000001,
+      "decisionMs": 63.1159,
+      "snapshotMs": 6.2487,
+      "forecastBatchMs": 5.9211,
+      "snapshotCalls": 1,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 71.04010009765625
+    },
+    {
+      "frame": 2795,
+      "simTime": 28.316333770751953,
+      "allAiMs": 69.20350000000002,
+      "decisionMs": 63.550100000000015,
+      "snapshotMs": 5.6534,
+      "forecastBatchMs": 5.299,
+      "snapshotCalls": 1,
+      "forecastJobs": 24,
+      "nextCapturedFrameMs": 71.00060272216797
+    }
+  ]
+}

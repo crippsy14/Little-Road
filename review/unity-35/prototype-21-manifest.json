@@ -1,0 +1,10 @@
+{
+  "export": "outputs/little-road-context-21-review/Little Road Unity.exe",
+  "assemblyHash": "23E5849E2D11FA6ABA2DE10D42B3EEF50ED5EED37636CBF1363492115FFA5169",
+  "change": "Optional adaptive corner-envelope bounds across interpolated forecast states; dense reference and physical controls unchanged. Strict constant-height domain, pooled storage, seven geometry checks.",
+  "buildChecks": 280,
+  "evidence": "envelope-21-comparison.json",
+  "acceptance": "Dense 60/60; adaptive 72/72 initial physical probes. Exact dense/adaptive comparison-sample parity and parity to interval-3 prototype 20. 12,960 independently queried substep positions covered without observed bound underestimate. Normal paths require 36–132 corner queries vs 964 dense.",
+  "performance": "Same-build hidden probe mean 5.998267 ms dense vs 3.746278 ms adaptive; normal cases 5.983575 vs 3.168008 ms. Not rendered-frame acceptance. Different absolute costs from 20 prohibit directly chaining speedup percentages.",
+  "remaining": "Four-corner interpolation bounds do not establish full polygon footprint, actual motion uncertainty, interrupted paths, traffic or live race acceptance. No live forecast constraint; field-14 defects and campaign requirements remain."
+}

@@ -1,0 +1,82 @@
+{
+  "scope": "Paired hidden fixture forecasts; total includes preparation, native projection/physics and envelope. Not rendered-frame acceptance or live selection safety.",
+  "checks": {
+    "completeManifests": true,
+    "sameCases": true,
+    "matchedExpectationsExceptPreparedMode": true,
+    "baselinePhysicalChecksPass": true,
+    "candidatePhysicalChecksPass": true,
+    "rejoin-left: actual physics and controls identical": true,
+    "rejoin-left: same assembly": true,
+    "rejoin-right: actual physics and controls identical": true,
+    "rejoin-right: same assembly": true,
+    "switchback-left: actual physics and controls identical": true,
+    "switchback-left: same assembly": true,
+    "switchback-right: actual physics and controls identical": true,
+    "switchback-right: same assembly": true,
+    "overspeed-left: actual physics and controls identical": true,
+    "overspeed-left: same assembly": true,
+    "overspeed-right: actual physics and controls identical": true,
+    "overspeed-right: same assembly": true
+  },
+  "passed": true,
+  "cases": {
+    "rejoin-left": {
+      "baselineWarmMs": 2.4094,
+      "candidateWarmMs": 1.9342,
+      "candidatePreparationMs": 0.10066666666666667,
+      "baselineFollowerMs": 1.5269000000000015,
+      "candidateFollowerMs": 0.9130666666666659,
+      "preparedHits": 3321,
+      "preparedMisses": 0
+    },
+    "rejoin-right": {
+      "baselineWarmMs": 2.4804999999999997,
+      "candidateWarmMs": 1.8942333333333334,
+      "candidatePreparationMs": 0.09636666666666667,
+      "baselineFollowerMs": 1.6147666666666687,
+      "candidateFollowerMs": 0.878699999999999,
+      "preparedHits": 3321,
+      "preparedMisses": 0
+    },
+    "switchback-left": {
+      "baselineWarmMs": 2.6063666666666667,
+      "candidateWarmMs": 2.026666666666667,
+      "candidatePreparationMs": 0.09703333333333335,
+      "baselineFollowerMs": 1.5486000000000015,
+      "candidateFollowerMs": 0.9510666666666673,
+      "preparedHits": 3321,
+      "preparedMisses": 0
+    },
+    "switchback-right": {
+      "baselineWarmMs": 2.4045,
+      "candidateWarmMs": 1.9019666666666666,
+      "candidatePreparationMs": 0.0978,
+      "baselineFollowerMs": 1.4783000000000017,
+      "candidateFollowerMs": 0.875533333333334,
+      "preparedHits": 3321,
+      "preparedMisses": 0
+    },
+    "overspeed-left": {
+      "baselineWarmMs": 3.576333333333333,
+      "candidateWarmMs": 3.0407333333333333,
+      "candidatePreparationMs": 0.0974,
+      "baselineFollowerMs": 1.5510000000000017,
+      "candidateFollowerMs": 0.8801999999999999,
+      "preparedHits": 3321,
+      "preparedMisses": 0
+    },
+    "overspeed-right": {
+      "baselineWarmMs": 4.026,
+      "candidateWarmMs": 3.7821,
+      "candidatePreparationMs": 0.1241,
+      "baselineFollowerMs": 1.4614333333333338,
+      "candidateFollowerMs": 0.8839999999999999,
+      "preparedHits": 3321,
+      "preparedMisses": 0
+    }
+  },
+  "baselineWarmMeanMs": 2.9171833333333335,
+  "candidateWarmMeanMs": 2.4299833333333334,
+  "warmReductionPercent": 16.701041529786153
+}

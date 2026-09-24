@@ -1,0 +1,164 @@
+{
+  "scope": "Matched single deterministic field with opening/pedal audits. No rendered or statistical distribution claim. Impact/contact counts may include both participants.",
+  "arms": {
+    "field-control": {
+      "totalCarSeconds": 2215.597137451172,
+      "previewTime": 85.5011978149414,
+      "previewPlace": 4,
+      "contacts": 10,
+      "peakImpact": 8.087912559509277,
+      "physicalRecoveries": 0,
+      "outsideBodySamples": 0,
+      "unresolvedSamples": 375,
+      "followingAttempts": 0,
+      "followingAccepted": 0,
+      "meanAiMsPerSnapshot": 3.0956033440000006
+    },
+    "field-following": {
+      "totalCarSeconds": 2207.1158752441406,
+      "previewTime": 87.65067291259766,
+      "previewPlace": 4,
+      "contacts": 16,
+      "peakImpact": 8.463667869567871,
+      "physicalRecoveries": 0,
+      "outsideBodySamples": 0,
+      "unresolvedSamples": 362,
+      "followingAttempts": 233,
+      "followingAccepted": 9,
+      "meanAiMsPerSnapshot": 3.3772174056755895
+    }
+  },
+  "perCar": [
+    {
+      "id": 0,
+      "equipment": "club",
+      "secondsSaved": -2.14947509765625
+    },
+    {
+      "id": 1,
+      "equipment": "street",
+      "secondsSaved": -0.424896240234375
+    },
+    {
+      "id": 2,
+      "equipment": "street",
+      "secondsSaved": 0.34991455078125
+    },
+    {
+      "id": 3,
+      "equipment": "street",
+      "secondsSaved": -0.191619873046875
+    },
+    {
+      "id": 4,
+      "equipment": "club",
+      "secondsSaved": 0.0
+    },
+    {
+      "id": 5,
+      "equipment": "street",
+      "secondsSaved": -0.34991455078125
+    },
+    {
+      "id": 6,
+      "equipment": "street",
+      "secondsSaved": -3.59912109375
+    },
+    {
+      "id": 7,
+      "equipment": "street",
+      "secondsSaved": 2.174468994140625
+    },
+    {
+      "id": 8,
+      "equipment": "club",
+      "secondsSaved": -8.372955322265625
+    },
+    {
+      "id": 9,
+      "equipment": "street",
+      "secondsSaved": 2.48272705078125
+    },
+    {
+      "id": 10,
+      "equipment": "street",
+      "secondsSaved": 0.98309326171875
+    },
+    {
+      "id": 11,
+      "equipment": "street",
+      "secondsSaved": -1.691253662109375
+    },
+    {
+      "id": 12,
+      "equipment": "club",
+      "secondsSaved": 6.056854248046875
+    },
+    {
+      "id": 13,
+      "equipment": "street",
+      "secondsSaved": -2.78265380859375
+    },
+    {
+      "id": 14,
+      "equipment": "street",
+      "secondsSaved": 5.840240478515625
+    },
+    {
+      "id": 15,
+      "equipment": "street",
+      "secondsSaved": 2.64935302734375
+    },
+    {
+      "id": 16,
+      "equipment": "club",
+      "secondsSaved": 0.0
+    },
+    {
+      "id": 17,
+      "equipment": "street",
+      "secondsSaved": -1.158050537109375
+    },
+    {
+      "id": 18,
+      "equipment": "street",
+      "secondsSaved": -0.9664306640625
+    },
+    {
+      "id": 19,
+      "equipment": "street",
+      "secondsSaved": -0.791473388671875
+    },
+    {
+      "id": 20,
+      "equipment": "club",
+      "secondsSaved": 8.64788818359375
+    },
+    {
+      "id": 21,
+      "equipment": "street",
+      "secondsSaved": 1.474639892578125
+    },
+    {
+      "id": 22,
+      "equipment": "street",
+      "secondsSaved": 1.11639404296875
+    },
+    {
+      "id": 23,
+      "equipment": "street",
+      "secondsSaved": -0.81646728515625
+    }
+  ],
+  "secondsSavedByEquipment": {
+    "club": 4.18231201171875,
+    "street": 4.2989501953125
+  },
+  "fasterCars": 10,
+  "slowerCars": 12,
+  "unchangedCars": 2,
+  "controlled": {
+    "passed": 151,
+    "total": 152
+  }
+}

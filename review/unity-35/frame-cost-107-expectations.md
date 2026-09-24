@@ -1,0 +1,11 @@
+#107: distribute expensive route selection
+
+106 remains retained. Test an opt-in stagger-context-plans clock, with the flag off as the unchanged-racing baseline. Every driver receives an immediate initial plan. Later route selection is distributed by stable driver ID across fixed physics ticks within a nominal100ms period. Non-divisor fixed steps round the period down; no steering, immediate safety, leader response, recovery or physics updates are skipped. Preparation and authoritative selection consult the same clock. Recovery suppression leaves the deadline due; a completed selection returns to the phase schedule.
+
+This deliberately changes observation times and may marginally increase planning frequency relative to the original floating-point timestamp+.1 comparison. It is not exact-behaviour optimization. Do not present different racing as unexplained noise or reward reduced incident count through excessive caution. No changes to equipment, speed limits, gap thresholds, geometry or rendering.
+
+Before runtime evaluation: clock checks across120/60/50/30Hz and non-divisor steps, immediate first plans, maximum gap and distributed burst bounds, unchanged due state between preparation/selection, skipped recovery calls, rewind/step-change reset, no allocation. Existing506 checks remain.
+
+Run sequential normal-speed1080p107-off/on pairs on Bayview and Cedar. Off must preserve106 recorded racing. On must complete24/24 normally without runtime errors or warm allocations; record collective finish time, car0 time/position, impacts, recovery and overlap. Initial usefulness gates: frame p95/p99 improve or meet16.7/33.3ms, collective time and car0 no worse than3%, no added assisted recovery, and no more than25% increase in recorded impact events (inspect their severity too; contacts are not banned). Keep3ms AI-per-frame p95 as an open target, not a per-tick mean. Review actual scheduling distribution via contextPlans and frame costs. A single seed cannot establish final racing balance or smoothness acceptance; repeat if retained and seek moving review separately.
+
+If scheduling harms racing or fails to improve tails, park the option and return to106. Fresh online racing research still precedes later pace tuning. This is a bounded game-performance experiment, not a new AI overhaul or campaign-completion claim.

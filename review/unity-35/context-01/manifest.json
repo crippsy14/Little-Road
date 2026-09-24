@@ -1,0 +1,61 @@
+{
+  "executable": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-01-review\\Little Road Unity.exe",
+  "scope": "Initial mid-course solo/flying-lap and two-car screen; not full acceptance, repeatability, full-field or rendering proof.",
+  "complete": true,
+  "runs": [
+    {
+      "name": "solo-stock-reference",
+      "pid": 37992,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\context-01\\solo-stock-reference\\race.json"
+    },
+    {
+      "name": "solo-stock-context",
+      "pid": 31408,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\context-01\\solo-stock-context\\race.json"
+    },
+    {
+      "name": "solo-street-reference",
+      "pid": 24812,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\context-01\\solo-street-reference\\race.json"
+    },
+    {
+      "name": "solo-street-context",
+      "pid": 15440,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\context-01\\solo-street-context\\race.json"
+    },
+    {
+      "name": "solo-club-reference",
+      "pid": 24072,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\context-01\\solo-club-reference\\race.json"
+    },
+    {
+      "name": "solo-club-context",
+      "pid": 32352,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\context-01\\solo-club-context\\race.json"
+    },
+    {
+      "name": "rear-reference",
+      "pid": 37728,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\context-01\\rear-reference\\race.json"
+    },
+    {
+      "name": "rear-context",
+      "pid": 9600,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\context-01\\rear-context\\race.json"
+    },
+    {
+      "name": "pass-context",
+      "pid": 10108,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\context-01\\pass-context\\race.json"
+    }
+  ]
+}

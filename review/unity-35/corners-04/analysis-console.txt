@@ -1,0 +1,189 @@
+{
+  "passed": 91,
+  "total": 91,
+  "results": {
+    "corner-solo-left-street": {
+      "exits": {
+        "0": 10.008278846740723
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-solo-left-club": {
+      "exits": {
+        "0": 9.008294105529785
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-solo-middle-street": {
+      "exits": {
+        "0": 9.608284950256348
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-solo-middle-club": {
+      "exits": {
+        "0": 8.508301734924316
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-solo-right-street": {
+      "exits": {
+        "0": 8.808297157287598
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-solo-right-club": {
+      "exits": {
+        "0": 7.708313465118408
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {}
+    },
+    "corner-pair-left-street": {
+      "exits": {
+        "0": 10.108277320861816,
+        "1": 8.808297157287598
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 16
+    },
+    "corner-pair-left-club": {
+      "exits": {
+        "0": 9.508286476135254,
+        "1": 7.708313465118408
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 14
+    },
+    "corner-pair-right-street": {
+      "exits": {
+        "0": 8.808297157287598,
+        "1": 10.108277320861816
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 16
+    },
+    "corner-pair-right-club": {
+      "exits": {
+        "0": 7.708313465118408,
+        "1": 9.508286476135254
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 14
+    },
+    "corner-three-street": {
+      "exits": {
+        "0": 9.808281898498535,
+        "1": 9.708283424377441,
+        "2": 10.008278846740723
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 16
+    },
+    "corner-three-club": {
+      "exits": {
+        "0": 8.708298683166504,
+        "1": 8.808297157287598,
+        "2": 8.808297157287598
+      },
+      "contacts": 0,
+      "slowSamples": 0,
+      "emergencySamples": 0,
+      "rejections": {},
+      "comparedPredictions": 0,
+      "medianPredictionError": null,
+      "p95PredictionError": null,
+      "medianConflictHorizon": null,
+      "predictionByHorizon": {},
+      "cutoff": 14
+    }
+  },
+  "failures": []
+}

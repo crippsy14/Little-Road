@@ -1,0 +1,694 @@
+{
+  "complete": true,
+  "elapsed": 113.516666666662,
+  "entries": [
+    {
+      "best_progress": 1833.85063196206,
+      "braking_margin": 0.974124193191528,
+      "consistency": 0.0143551249057055,
+      "driver": 1,
+      "finish": 79.7833333333301,
+      "following_time": 0.439078837633133,
+      "gate": 25,
+      "lane": -1.04333333333333,
+      "lane_cooldown": 0.83333333333334,
+      "line_bias": -0.0267939865589142,
+      "near": 0.141462960703115,
+      "pace": 0.905116682052612,
+      "passes_started": 4,
+      "progress": 1834.58132497356,
+      "recoveries": 0,
+      "rhythm": 1.85038828849792,
+      "stuck": 0.0166666666666667,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1833.46430190605,
+      "braking_margin": 0.956222236156464,
+      "consistency": 0.020055940374732,
+      "driver": 2,
+      "finish": 76.9499999999969,
+      "following_time": 0.328710168600082,
+      "gate": 25,
+      "lane": -1.73666666666666,
+      "lane_cooldown": 2.61666666666667,
+      "line_bias": -0.0781592652201653,
+      "near": 0.112529908533349,
+      "pace": 0.913027786612511,
+      "passes_started": 8,
+      "progress": 1834.55239192139,
+      "recoveries": 0,
+      "rhythm": 4.20666837692261,
+      "stuck": 0.0333333333333333,
+      "target_lane": 2.45
+    },
+    {
+      "best_progress": 1833.8598154712,
+      "braking_margin": 0.953034400939941,
+      "consistency": 0.0165834873914719,
+      "driver": 3,
+      "finish": 84.9999999999965,
+      "following_time": 0.42786830663681,
+      "gate": 25,
+      "lane": -2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": -0.0248487740755081,
+      "near": 0.392448320088173,
+      "pace": 0.934769840240479,
+      "passes_started": 9,
+      "progress": 1834.83231033295,
+      "recoveries": 0,
+      "rhythm": 5.02108478546143,
+      "stuck": 0.0166666666666667,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1834.31563455237,
+      "braking_margin": 0.997745156288147,
+      "consistency": 0.0136989271268249,
+      "driver": 4,
+      "finish": 74.899999999997,
+      "following_time": 0.377789825201035,
+      "gate": 25,
+      "lane": 0.136666666666666,
+      "lane_cooldown": 1.61666666666667,
+      "line_bias": 0.0290610417723656,
+      "near": 0.315278105387574,
+      "pace": 0.96970329284668,
+      "passes_started": 7,
+      "progress": 1834.75514011825,
+      "recoveries": 0,
+      "rhythm": 4.30301761627197,
+      "stuck": 0.0,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1833.79340339497,
+      "braking_margin": 1.03374946117401,
+      "consistency": 0.0206940434873104,
+      "driver": 5,
+      "finish": 81.9666666666633,
+      "following_time": 0.471236348152161,
+      "gate": 25,
+      "lane": -0.69,
+      "lane_cooldown": 1.91666666666667,
+      "line_bias": -0.0254810824990273,
+      "near": 0.207297347689919,
+      "pace": 0.893980054855347,
+      "passes_started": 3,
+      "progress": 1834.64715936055,
+      "recoveries": 0,
+      "rhythm": 0.13445109128952,
+      "stuck": 0.0166666666666667,
+      "target_lane": 2.45
+    },
+    {
+      "best_progress": 1833.48810710336,
+      "braking_margin": 1.01526927947998,
+      "consistency": 0.0129108354449272,
+      "driver": 6,
+      "finish": 86.3333333333297,
+      "following_time": 0.308471977710724,
+      "gate": 25,
+      "lane": 2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": 0.110481895506382,
+      "near": 0.0552975132358477,
+      "pace": 0.893564792275429,
+      "passes_started": 12,
+      "progress": 1834.4951595261,
+      "recoveries": 0,
+      "rhythm": 5.42006301879883,
+      "stuck": 0.0166666666666667,
+      "target_lane": 2.45
+    },
+    {
+      "best_progress": 1833.85838499179,
+      "braking_margin": 0.994608402252197,
+      "consistency": 0.0101180272176862,
+      "driver": 7,
+      "finish": 103.699999999995,
+      "following_time": 0.338294744491577,
+      "gate": 25,
+      "lane": 2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": -0.0680858343839645,
+      "near": 0.201171885812186,
+      "pace": 0.908469976186752,
+      "passes_started": 12,
+      "progress": 1834.64103389868,
+      "recoveries": 0,
+      "rhythm": 1.41953122615814,
+      "stuck": 0.0166666666666667,
+      "target_lane": 2.45
+    },
+    {
+      "best_progress": 1833.4629372586,
+      "braking_margin": 1.0356696844101,
+      "consistency": 0.0123136034235358,
+      "driver": 8,
+      "finish": 90.9833333333295,
+      "following_time": 0.358433485031128,
+      "gate": 25,
+      "lane": 2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": -0.0737942829728127,
+      "near": 0.231250749400398,
+      "pace": 0.956945267319679,
+      "passes_started": 10,
+      "progress": 1834.67111276226,
+      "recoveries": 0,
+      "rhythm": 0.421964347362518,
+      "stuck": 0.0333333333333333,
+      "target_lane": 2.45
+    },
+    {
+      "best_progress": 1834.35612608879,
+      "braking_margin": 1.0294988155365,
+      "consistency": 0.011301452293992,
+      "driver": 9,
+      "finish": 99.1666666666623,
+      "following_time": 0.443830728530884,
+      "gate": 25,
+      "lane": 2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": -0.102000012993813,
+      "near": 0.296086372031196,
+      "pace": 0.864413862228394,
+      "passes_started": 9,
+      "progress": 1834.73594838489,
+      "recoveries": 0,
+      "rhythm": 1.04560363292694,
+      "stuck": 0.0,
+      "target_lane": 2.45
+    },
+    {
+      "best_progress": 1833.82873646626,
+      "braking_margin": 0.982584238052368,
+      "consistency": 0.0115535939112306,
+      "driver": 10,
+      "finish": 100.766666666662,
+      "following_time": 0.469887286424637,
+      "gate": 25,
+      "lane": 2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": -0.0515220761299133,
+      "near": 0.153387551886334,
+      "pace": 0.904117181897163,
+      "passes_started": 14,
+      "progress": 1834.59324956475,
+      "recoveries": 0,
+      "rhythm": 6.00707244873047,
+      "stuck": 0.0166666666666667,
+      "target_lane": 2.45
+    },
+    {
+      "best_progress": 1834.10762034704,
+      "braking_margin": 1.0176876783371,
+      "consistency": 0.0121313463896513,
+      "driver": 11,
+      "finish": 101.566666666662,
+      "following_time": 0.387342602014542,
+      "gate": 25,
+      "lane": 0.296666666666666,
+      "lane_cooldown": 1.30000000000001,
+      "line_bias": 0.0394709780812263,
+      "near": 0.0408956601433096,
+      "pace": 0.944649986028671,
+      "passes_started": 14,
+      "progress": 1834.48075767301,
+      "recoveries": 0,
+      "rhythm": 0.954090297222137,
+      "stuck": 0.0,
+      "target_lane": 2.45
+    },
+    {
+      "best_progress": 1834.22190480413,
+      "braking_margin": 1.03924822807312,
+      "consistency": 0.0100109316408634,
+      "driver": 12,
+      "finish": 92.6666666666627,
+      "following_time": 0.454557716846466,
+      "gate": 25,
+      "lane": -2.16333333333333,
+      "lane_cooldown": 0.133333333333339,
+      "line_bias": -0.0499353930354118,
+      "near": 0.170370180280831,
+      "pace": 0.963940920829773,
+      "passes_started": 7,
+      "progress": 1834.61023219315,
+      "recoveries": 0,
+      "rhythm": 6.08825778961182,
+      "stuck": 0.0,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1833.43028643202,
+      "braking_margin": 0.966296851634979,
+      "consistency": 0.0139364898204803,
+      "driver": 13,
+      "finish": 102.499999999995,
+      "following_time": 0.303842306137085,
+      "gate": 25,
+      "lane": -2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": 0.0868174210190773,
+      "near": 0.0961078055521891,
+      "pace": 0.901404962539673,
+      "passes_started": 11,
+      "progress": 1834.53596981842,
+      "recoveries": 0,
+      "rhythm": 4.07426786422729,
+      "stuck": 0.0333333333333333,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1833.76224293857,
+      "braking_margin": 1.03250849246979,
+      "consistency": 0.0194876212626696,
+      "driver": 14,
+      "finish": 106.983333333329,
+      "following_time": 0.334346085786819,
+      "gate": 25,
+      "lane": -0.29,
+      "lane_cooldown": 1.66666666666667,
+      "line_bias": 0.0324969068169594,
+      "near": 0.0686966015811013,
+      "pace": 0.91695013999939,
+      "passes_started": 11,
+      "progress": 1834.50855861444,
+      "recoveries": 0,
+      "rhythm": 0.126930624246597,
+      "stuck": 0.0166666666666667,
+      "target_lane": 2.45
+    },
+    {
+      "best_progress": 1833.93505094525,
+      "braking_margin": 0.982597589492798,
+      "consistency": 0.0195300839841366,
+      "driver": 15,
+      "finish": 99.683333333329,
+      "following_time": 0.36457285284996,
+      "gate": 25,
+      "lane": -0.27,
+      "lane_cooldown": 1.31666666666667,
+      "line_bias": -0.0521272867918015,
+      "near": 0.296606684360956,
+      "pace": 0.940057085752487,
+      "passes_started": 18,
+      "progress": 1834.73646869723,
+      "recoveries": 0,
+      "rhythm": 2.28660011291504,
+      "stuck": 0.0166666666666667,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1834.06465153613,
+      "braking_margin": 0.968838155269623,
+      "consistency": 0.0196887440979481,
+      "driver": 16,
+      "finish": 104.266666666662,
+      "following_time": 0.414900153875351,
+      "gate": 25,
+      "lane": 0.829999999999999,
+      "lane_cooldown": 0.966666666666674,
+      "line_bias": -0.0193054527044296,
+      "near": 0.0153188316712828,
+      "pace": 0.972403807044029,
+      "passes_started": 15,
+      "progress": 1834.45518084454,
+      "recoveries": 0,
+      "rhythm": 1.18523740768433,
+      "stuck": 0.0,
+      "target_lane": 2.45
+    },
+    {
+      "best_progress": 1833.59720233541,
+      "braking_margin": 1.03657591342926,
+      "consistency": 0.01951296441257,
+      "driver": 17,
+      "finish": 100.116666666662,
+      "following_time": 0.338751673698425,
+      "gate": 25,
+      "lane": -2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": -0.00871321558952332,
+      "near": 0.194615741286422,
+      "pace": 0.860006155967712,
+      "passes_started": 1,
+      "progress": 1834.63447775415,
+      "recoveries": 0,
+      "rhythm": 0.715634167194366,
+      "stuck": 0.0333333333333333,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1833.75812091941,
+      "braking_margin": 1.01696825027466,
+      "consistency": 0.0123856570571661,
+      "driver": 18,
+      "finish": 103.583333333329,
+      "following_time": 0.315785229206085,
+      "gate": 25,
+      "lane": -2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": 0.00666157156229019,
+      "near": 0.042916406812548,
+      "pace": 0.914160357117653,
+      "passes_started": 12,
+      "progress": 1834.48277841968,
+      "recoveries": 0,
+      "rhythm": 5.69227981567383,
+      "stuck": 0.0166666666666667,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1834.2725141459,
+      "braking_margin": 0.975220799446106,
+      "consistency": 0.0147131253033876,
+      "driver": 19,
+      "finish": 111.149999999995,
+      "following_time": 0.436577558517456,
+      "gate": 25,
+      "lane": -2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": -0.0902026742696762,
+      "near": 0.163583686427168,
+      "pace": 0.909706615805626,
+      "passes_started": 6,
+      "progress": 1834.60344569928,
+      "recoveries": 0,
+      "rhythm": 3.94115257263184,
+      "stuck": 0.0,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1834.22549595137,
+      "braking_margin": 0.960686564445496,
+      "consistency": 0.0123637998476624,
+      "driver": 20,
+      "finish": 92.0499999999961,
+      "following_time": 0.427823543548584,
+      "gate": 25,
+      "lane": -2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": 0.0240794941782951,
+      "near": 0.132161841808513,
+      "pace": 0.93836635351181,
+      "passes_started": 2,
+      "progress": 1834.57202385467,
+      "recoveries": 0,
+      "rhythm": 6.2808952331543,
+      "stuck": 0.0,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1834.06207709482,
+      "braking_margin": 0.972252428531647,
+      "consistency": 0.0102494647726417,
+      "driver": 21,
+      "finish": 106.233333333329,
+      "following_time": 0.329000860452652,
+      "gate": 25,
+      "lane": -2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": -0.0675074085593224,
+      "near": 0.308059098641505,
+      "pace": 0.904952087402344,
+      "passes_started": 6,
+      "progress": 1834.7479211115,
+      "recoveries": 0,
+      "rhythm": 3.51336336135864,
+      "stuck": 0.0166666666666667,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1833.47541073621,
+      "braking_margin": 1.00274527072906,
+      "consistency": 0.0126810967922211,
+      "driver": 22,
+      "finish": 101.083333333329,
+      "following_time": 0.344332844018936,
+      "gate": 25,
+      "lane": -2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": 0.037042923271656,
+      "near": 0.0987822632198529,
+      "pace": 0.903312040567398,
+      "passes_started": 6,
+      "progress": 1834.53864427608,
+      "recoveries": 0,
+      "rhythm": 1.84962260723114,
+      "stuck": 0.0333333333333333,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1833.87013719271,
+      "braking_margin": 1.02328276634216,
+      "consistency": 0.00855526700615883,
+      "driver": 23,
+      "finish": 113.516666666662,
+      "following_time": 0.370088577270508,
+      "gate": 25,
+      "lane": -2.45,
+      "lane_cooldown": 0.0,
+      "line_bias": 0.021971620619297,
+      "near": 0.126223901540279,
+      "pace": 0.903641045093536,
+      "passes_started": 4,
+      "progress": 1834.5660859144,
+      "recoveries": 0,
+      "rhythm": 0.398367315530777,
+      "stuck": 0.0166666666666667,
+      "target_lane": -2.45
+    },
+    {
+      "best_progress": 1834.07174835451,
+      "braking_margin": 0.949178338050842,
+      "consistency": 0.00858048815280199,
+      "driver": 24,
+      "finish": 102.116666666662,
+      "following_time": 0.451753735542297,
+      "gate": 25,
+      "lane": 1.57666666666666,
+      "lane_cooldown": 0.500000000000006,
+      "line_bias": -0.0834977477788925,
+      "near": 0.080885002881365,
+      "pace": 0.958292962908745,
+      "passes_started": 20,
+      "progress": 1834.52074701575,
+      "recoveries": 0,
+      "rhythm": 3.82050275802612,
+      "stuck": 0.0,
+      "target_lane": 2.45
+    }
+  ],
+  "equipment": {
+    "brakes": "brakes_race",
+    "chassis": "chassis_light",
+    "engine": "engine_club",
+    "steering": "steering_precision",
+    "transmission": "transmission_long",
+    "tyres": "tyres_sport"
+  },
+  "finished_count": 24,
+  "grid": [
+    0,
+    3,
+    19,
+    1,
+    4,
+    16,
+    21,
+    7,
+    8,
+    2,
+    14,
+    11,
+    20,
+    9,
+    17,
+    5,
+    18,
+    12,
+    13,
+    10,
+    22,
+    6,
+    15,
+    23
+  ],
+  "maximum_stall": 1.5,
+  "options": {
+    "label": "s-bend-seed22",
+    "profile": "developed",
+    "results-image": "",
+    "scenario": "s_bend",
+    "seed": "22"
+  },
+  "player_place": 16,
+  "player_time": 102.116666666662,
+  "recovery_events": [],
+  "stall_events": [
+    {
+      "contacts": [
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        }
+      ],
+      "distance": 70.9804566612916,
+      "driver": 11,
+      "position": "(-14.86181, 8.010942, -11.42593)",
+      "time": 12.2500000000002
+    },
+    {
+      "contacts": [
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        }
+      ],
+      "distance": 66.1699449292546,
+      "driver": 24,
+      "position": "(-15.50937, 8.010942, -5.966878)",
+      "time": 13.1666666666669
+    },
+    {
+      "contacts": [
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        }
+      ],
+      "distance": 67.0176485232433,
+      "driver": 16,
+      "position": "(-14.12976, 8.010942, -6.857842)",
+      "time": 15.816666666667
+    },
+    {
+      "contacts": [
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        }
+      ],
+      "distance": 78.397208986195,
+      "driver": 18,
+      "position": "(-20.98024, 8.010942, -16.25632)",
+      "time": 16.316666666667
+    },
+    {
+      "contacts": [
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        }
+      ],
+      "distance": 74.5782416246054,
+      "driver": 7,
+      "position": "(-17.56108, 8.010942, -14.15625)",
+      "time": 16.3833333333337
+    },
+    {
+      "contacts": [
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        }
+      ],
+      "distance": 71.2534621439083,
+      "driver": 24,
+      "position": "(-16.51156, 8.010942, -10.71905)",
+      "time": 16.866666666667
+    },
+    {
+      "contacts": [
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        }
+      ],
+      "distance": 67.5931459212201,
+      "driver": 16,
+      "position": "(-14.27288, 8.010942, -7.42502)",
+      "time": 16.916666666667
+    },
+    {
+      "contacts": [
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        },
+        {
+          "path": "/root/LittleRoad/@Node3D@5984/@MeshInstance3D@5990/_MeshInstance3D_5990_col",
+          "position": "(0.0, 0.0, 0.0)"
+        }
+      ],
+      "distance": 67.2613089692535,
+      "driver": 19,
+      "position": "(-16.77084, 8.010942, -6.837199)",
+      "time": 16.9500000000003
+    }
+  ]
+}

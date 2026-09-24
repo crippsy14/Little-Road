@@ -1,0 +1,7 @@
+{
+  "export": "outputs/little-road-context-29-review/Little Road Unity.exe",
+  "assemblyHash": "0E97A44B08D8290082AD4C747F03AF801DE6C51444888AA91F00854D7D83E70E",
+  "buildChecks": 286,
+  "change": "Stagger first planning renewal within 0.1s; original cadence thereafter. Native-rate following and safety retained.",
+  "acceptance": "REJECTED. Frame p95 21.9326ms at constant 1080p/1x, still fails 16.7ms and AI 3ms budget. Main field 11/11, all checkpoints, 24 finishes, but unresolved samples 31 -> 165 and scored car contacts 2 -> 10. Total 2248.889008 car-s vs 2239.666260. Scheduling change removed from working source; experimental export retained as failure evidence."
+}

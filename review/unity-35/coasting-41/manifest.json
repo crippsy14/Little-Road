@@ -1,0 +1,86 @@
+{
+  "runs": [
+    {
+      "cars": 3,
+      "exitCode": 0,
+      "coast": true,
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\coasting-41\\queue",
+      "scenario": "queue",
+      "name": "queue"
+    },
+    {
+      "cars": 2,
+      "exitCode": 0,
+      "coast": true,
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\coasting-41\\no-room",
+      "scenario": "no-room",
+      "name": "no-room"
+    },
+    {
+      "cars": 2,
+      "exitCode": 0,
+      "coast": true,
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\coasting-41\\merge-left",
+      "scenario": "merge-left",
+      "name": "merge-left"
+    },
+    {
+      "cars": 2,
+      "exitCode": 0,
+      "coast": true,
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\coasting-41\\merge-right",
+      "scenario": "merge-right",
+      "name": "merge-right"
+    },
+    {
+      "cars": 2,
+      "exitCode": 0,
+      "coast": true,
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\coasting-41\\brake-leader",
+      "scenario": "brake-leader",
+      "name": "brake-leader"
+    },
+    {
+      "cars": 3,
+      "exitCode": 0,
+      "coast": true,
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\coasting-41\\corner-three",
+      "scenario": "corner-three",
+      "name": "corner-three"
+    },
+    {
+      "cars": 1,
+      "exitCode": 0,
+      "coast": false,
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\coasting-41\\solo-street-control",
+      "scenario": "solo",
+      "name": "solo-street-control"
+    },
+    {
+      "cars": 1,
+      "exitCode": 0,
+      "coast": true,
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\coasting-41\\solo-street-coast",
+      "scenario": "solo",
+      "name": "solo-street-coast"
+    },
+    {
+      "cars": 1,
+      "exitCode": 0,
+      "coast": false,
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\coasting-41\\solo-club-control",
+      "scenario": "solo",
+      "name": "solo-club-control"
+    },
+    {
+      "cars": 1,
+      "exitCode": 0,
+      "coast": true,
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\coasting-41\\solo-club-coast",
+      "scenario": "solo",
+      "name": "solo-club-coast"
+    }
+  ],
+  "scope": "Coasting candidate controlled clean-opportunity regressions versus frozen38; same-build paired solo street/club. Existing corridor contract and rear-merge witness deadlines retained. No rendered or broad personality acceptance.",
+  "complete": true
+}

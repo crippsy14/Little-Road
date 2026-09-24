@@ -1,0 +1,79 @@
+{
+  "executable": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-13-review\\Little Road Unity.exe",
+  "assemblyHash": "6AC154D42452F3C5B8D3B8B721264ADB2BE1F52B011610D12103C9A6F4456B69",
+  "complete": true,
+  "runs": [
+    {
+      "name": "left-12-witness",
+      "scenario": "merge-witness-left",
+      "side": "left",
+      "gap": 12,
+      "mode": "witness",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\merges-13\\left-12-witness",
+      "exitCode": 0
+    },
+    {
+      "name": "left-12-candidate",
+      "scenario": "merge-left",
+      "side": "left",
+      "gap": 12,
+      "mode": "candidate",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\merges-13\\left-12-candidate",
+      "exitCode": 0
+    },
+    {
+      "name": "right-12-witness",
+      "scenario": "merge-witness-right",
+      "side": "right",
+      "gap": 12,
+      "mode": "witness",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\merges-13\\right-12-witness",
+      "exitCode": 0
+    },
+    {
+      "name": "right-12-candidate",
+      "scenario": "merge-right",
+      "side": "right",
+      "gap": 12,
+      "mode": "candidate",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\merges-13\\right-12-candidate",
+      "exitCode": 0
+    },
+    {
+      "name": "left-24-witness",
+      "scenario": "merge-witness-left",
+      "side": "left",
+      "gap": 24,
+      "mode": "witness",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\merges-13\\left-24-witness",
+      "exitCode": 0
+    },
+    {
+      "name": "left-24-candidate",
+      "scenario": "merge-left",
+      "side": "left",
+      "gap": 24,
+      "mode": "candidate",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\merges-13\\left-24-candidate",
+      "exitCode": 0
+    },
+    {
+      "name": "right-24-witness",
+      "scenario": "merge-witness-right",
+      "side": "right",
+      "gap": 24,
+      "mode": "witness",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\merges-13\\right-24-witness",
+      "exitCode": 0
+    },
+    {
+      "name": "right-24-candidate",
+      "scenario": "merge-right",
+      "side": "right",
+      "gap": 24,
+      "mode": "candidate",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\merges-13\\right-24-candidate",
+      "exitCode": 0
+    }
+  ]
+}

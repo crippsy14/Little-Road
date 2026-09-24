@@ -1,0 +1,81 @@
+{
+  "complete": true,
+  "executables": {
+    "candidate": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-13-review\\Little Road Unity.exe",
+    "baseline": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-11-review\\Little Road Unity.exe"
+  },
+  "runs": [
+    {
+      "name": "receding-left-baseline",
+      "case": "receding-left",
+      "version": "baseline",
+      "exitCode": 0
+    },
+    {
+      "name": "receding-left-candidate",
+      "case": "receding-left",
+      "version": "candidate",
+      "exitCode": 0
+    },
+    {
+      "name": "receding-right-baseline",
+      "case": "receding-right",
+      "version": "baseline",
+      "exitCode": 0
+    },
+    {
+      "name": "receding-right-candidate",
+      "case": "receding-right",
+      "version": "candidate",
+      "exitCode": 0
+    },
+    {
+      "name": "parallel-left-baseline",
+      "case": "parallel-left",
+      "version": "baseline",
+      "exitCode": 0
+    },
+    {
+      "name": "parallel-left-candidate",
+      "case": "parallel-left",
+      "version": "candidate",
+      "exitCode": 0
+    },
+    {
+      "name": "parallel-right-baseline",
+      "case": "parallel-right",
+      "version": "baseline",
+      "exitCode": 0
+    },
+    {
+      "name": "parallel-right-candidate",
+      "case": "parallel-right",
+      "version": "candidate",
+      "exitCode": 0
+    },
+    {
+      "name": "same-course-baseline",
+      "case": "same-course",
+      "version": "baseline",
+      "exitCode": 0
+    },
+    {
+      "name": "same-course-candidate",
+      "case": "same-course",
+      "version": "candidate",
+      "exitCode": 0
+    },
+    {
+      "name": "distant-closing-baseline",
+      "case": "distant-closing",
+      "version": "baseline",
+      "exitCode": 0
+    },
+    {
+      "name": "distant-closing-candidate",
+      "case": "distant-closing",
+      "version": "candidate",
+      "exitCode": 0
+    }
+  ]
+}

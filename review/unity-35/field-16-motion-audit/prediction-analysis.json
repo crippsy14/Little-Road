@@ -1,0 +1,598 @@
+{
+  "scope": "Observation-only flat-tarmac model. Each window uses the real applied input history, not a held-input forecast. This measures physical model error, not future driving decisions or collision prediction. Contact/slope/off-surface windows remain recorded but separately labelled.",
+  "domain": "Every step grounded, ground normal and body up y > 0.999, centre on tarmac, no new scored collision/recovery. Support contact effects remain in the measurements.",
+  "expectations": {
+    "scope": "Initial one-second known-input calibration on flat contact-free tarmac. Not future-control, collision, slope or production acceptance.",
+    "minimumOneSecondWindows": 100,
+    "positionP95Metres": 0.1,
+    "positionMaximumMetres": 0.25,
+    "speedP95Mps": 0.25,
+    "headingP95Degrees": 1,
+    "bodyUnderestimateMaximumMetres": 0.1,
+    "reason": "Model uncertainty must be materially smaller than the observed 0.203 m road departure; report excluded domains separately."
+  },
+  "checks": {
+    "actualColliderGeometry": true,
+    "normalProcessExit": true,
+    "noDroppedEvidence": true,
+    "allDeclaredCarsCaptured": true,
+    "sufficientOneSecondCalibration": true,
+    "positionP95": true,
+    "positionMaximum": true,
+    "speedP95": true,
+    "headingP95": true,
+    "bodyUnderestimateMaximum": true
+  },
+  "passed": true,
+  "byHorizon": {
+    "0.1": {
+      "flatContactFree": {
+        "samples": 22399,
+        "positionMetres": {
+          "n": 22399,
+          "mean": 4.640733532491294e-06,
+          "p95": 3.0517578125e-05,
+          "max": 0.0010326491901651025
+        },
+        "speedMps": {
+          "n": 22399,
+          "mean": 7.056607572706349e-06,
+          "p95": 1.33514404296875e-05,
+          "max": 0.032955169677734375
+        },
+        "headingDegrees": {
+          "n": 22399,
+          "mean": 9.864982593588555e-05,
+          "p95": 0.0,
+          "max": 0.02797645516693592
+        },
+        "bodyUnderestimateMetres": {
+          "n": 22399,
+          "mean": 7.436474421560894e-06,
+          "p95": 5.1021575927734375e-05,
+          "max": 0.00015926361083984375
+        }
+      },
+      "otherWindows": {
+        "samples": 4,
+        "positionMetres": {
+          "n": 4,
+          "mean": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "speedMps": {
+          "n": 4,
+          "mean": 4.76837158203125e-07,
+          "p95": 1.9073486328125e-06,
+          "max": 1.9073486328125e-06
+        },
+        "headingDegrees": {
+          "n": 4,
+          "mean": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "bodyUnderestimateMetres": {
+          "n": 4,
+          "mean": 0.0,
+          "p95": 0,
+          "max": 0
+        }
+      }
+    },
+    "0.25": {
+      "flatContactFree": {
+        "samples": 22357,
+        "positionMetres": {
+          "n": 22357,
+          "mean": 3.586634611043354e-05,
+          "p95": 0.00016504904488101602,
+          "max": 0.0038049190770834684
+        },
+        "speedMps": {
+          "n": 22357,
+          "mean": 2.7585985110602352e-05,
+          "p95": 9.1552734375e-05,
+          "max": 0.04576873779296875
+        },
+        "headingDegrees": {
+          "n": 22357,
+          "mean": 0.00016847062115633098,
+          "p95": 0.0,
+          "max": 0.02797645516693592
+        },
+        "bodyUnderestimateMetres": {
+          "n": 22357,
+          "mean": 2.1010710599411043e-05,
+          "p95": 0.00015306472778320312,
+          "max": 0.0005555152893066406
+        }
+      },
+      "otherWindows": {
+        "samples": 12,
+        "positionMetres": {
+          "n": 12,
+          "mean": 1.9073486328125e-06,
+          "p95": 1.52587890625e-05,
+          "max": 1.52587890625e-05
+        },
+        "speedMps": {
+          "n": 12,
+          "mean": 7.152557373046875e-07,
+          "p95": 1.9073486328125e-06,
+          "max": 1.9073486328125e-06
+        },
+        "headingDegrees": {
+          "n": 12,
+          "mean": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "bodyUnderestimateMetres": {
+          "n": 12,
+          "mean": 6.755193074544271e-07,
+          "p95": 8.106231689453125e-06,
+          "max": 8.106231689453125e-06
+        }
+      }
+    },
+    "0.5": {
+      "flatContactFree": {
+        "samples": 22287,
+        "positionMetres": {
+          "n": 22287,
+          "mean": 0.00022923709817445796,
+          "p95": 0.001042697113007307,
+          "max": 0.003511362476274371
+        },
+        "speedMps": {
+          "n": 22287,
+          "mean": 6.002266624068307e-05,
+          "p95": 0.000278472900390625,
+          "max": 0.03132438659667969
+        },
+        "headingDegrees": {
+          "n": 22287,
+          "mean": 0.0012253624867518678,
+          "p95": 0.01978234015405178,
+          "max": 0.02797645516693592
+        },
+        "bodyUnderestimateMetres": {
+          "n": 22287,
+          "mean": 9.946901854838873e-05,
+          "p95": 0.0006690025329589844,
+          "max": 0.002262115478515625
+        }
+      },
+      "otherWindows": {
+        "samples": 20,
+        "positionMetres": {
+          "n": 20,
+          "mean": 4.1961669921875e-06,
+          "p95": 1.52587890625e-05,
+          "max": 3.0517578125e-05
+        },
+        "speedMps": {
+          "n": 20,
+          "mean": 1.049041748046875e-06,
+          "p95": 3.814697265625e-06,
+          "max": 5.7220458984375e-06
+        },
+        "headingDegrees": {
+          "n": 20,
+          "mean": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "bodyUnderestimateMetres": {
+          "n": 20,
+          "mean": 3.4332275390625e-06,
+          "p95": 1.52587890625e-05,
+          "max": 2.288818359375e-05
+        }
+      }
+    },
+    "1.0": {
+      "flatContactFree": {
+        "samples": 22147,
+        "positionMetres": {
+          "n": 22147,
+          "mean": 0.0012179436437158829,
+          "p95": 0.005684615578502417,
+          "max": 0.009503619745373726
+        },
+        "speedMps": {
+          "n": 22147,
+          "mean": 0.00011941949234012234,
+          "p95": 0.000652313232421875,
+          "max": 0.051929473876953125
+        },
+        "headingDegrees": {
+          "n": 22147,
+          "mean": 0.006196202236851026,
+          "p95": 0.03426402062177658,
+          "max": 0.048456642776727676
+        },
+        "bodyUnderestimateMetres": {
+          "n": 22147,
+          "mean": 0.0005691661228416423,
+          "p95": 0.004147052764892578,
+          "max": 0.010308265686035156
+        }
+      },
+      "otherWindows": {
+        "samples": 40,
+        "positionMetres": {
+          "n": 40,
+          "mean": 8.056857973315346e-06,
+          "p95": 3.0517578125e-05,
+          "max": 3.1456798751605675e-05
+        },
+        "speedMps": {
+          "n": 40,
+          "mean": 2.1457672119140625e-06,
+          "p95": 7.62939453125e-06,
+          "max": 1.1444091796875e-05
+        },
+        "headingDegrees": {
+          "n": 40,
+          "mean": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "bodyUnderestimateMetres": {
+          "n": 40,
+          "mean": 4.38690185546875e-06,
+          "p95": 1.52587890625e-05,
+          "max": 2.288818359375e-05
+        }
+      }
+    }
+  },
+  "equipment": {
+    "club": {
+      "samples": 5160,
+      "positionMetres": {
+        "n": 5160,
+        "mean": 0.0013160579904072007,
+        "p95": 0.006191889755427837,
+        "max": 0.009503619745373726
+      },
+      "speedMps": {
+        "n": 5160,
+        "mean": 0.00011171504508617313,
+        "p95": 0.000690460205078125,
+        "max": 0.009807586669921875
+      },
+      "headingDegrees": {
+        "n": 5160,
+        "mean": 0.006356963572316161,
+        "p95": 0.03426402062177658,
+        "max": 0.048456642776727676
+      },
+      "bodyUnderestimateMetres": {
+        "n": 5160,
+        "mean": 0.0006183805622795755,
+        "p95": 0.004425048828125,
+        "max": 0.010308265686035156
+      }
+    },
+    "street": {
+      "samples": 16987,
+      "positionMetres": {
+        "n": 16987,
+        "mean": 0.0011881402629584097,
+        "p95": 0.005603936966508627,
+        "max": 0.008552112616598606
+      },
+      "speedMps": {
+        "n": 16987,
+        "mean": 0.00012175980833649474,
+        "p95": 0.0006389617919921875,
+        "max": 0.051929473876953125
+      },
+      "headingDegrees": {
+        "n": 16987,
+        "mean": 0.006147369100275992,
+        "p95": 0.03426402062177658,
+        "max": 0.048456642776727676
+      },
+      "bodyUnderestimateMetres": {
+        "n": 16987,
+        "mean": 0.0005542166610473446,
+        "p95": 0.004075527191162109,
+        "max": 0.007952690124511719
+      }
+    }
+  },
+  "switchbackCar16": {
+    "samples": 50,
+    "positionMetres": {
+      "n": 50,
+      "mean": 2.899169921875e-06,
+      "p95": 1.52587890625e-05,
+      "max": 1.52587890625e-05
+    },
+    "speedMps": {
+      "n": 50,
+      "mean": 2.8228759765625e-06,
+      "p95": 7.62939453125e-06,
+      "max": 9.5367431640625e-06
+    },
+    "headingDegrees": {
+      "n": 50,
+      "mean": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "bodyUnderestimateMetres": {
+      "n": 50,
+      "mean": 3.032684326171875e-06,
+      "p95": 1.6689300537109375e-05,
+      "max": 2.09808349609375e-05
+    }
+  },
+  "worstOneSecond": [
+    {
+      "id": 12,
+      "equipment": "club",
+      "start": 80.4024429321289,
+      "end": 81.4021987915039,
+      "horizon": 1.0,
+      "positionError": 0.009503619745373726,
+      "speedError": 0.000457763671875,
+      "headingError": 0.03956468030810356,
+      "yawError": 0.0007648961618542671,
+      "steeringError": 0.0,
+      "predictedBodyOffset": 4.612836837768555,
+      "actualBodyOffset": 4.604491233825684,
+      "startSpeed": 32.454402923583984,
+      "flatContactFree": true,
+      "predictedPosition": {
+        "x": -305.9450378417969,
+        "y": 0.03570842742919922,
+        "z": -99.70343017578125
+      },
+      "actualPosition": {
+        "x": -305.9381408691406,
+        "y": 0.03546440601348877,
+        "z": -99.69689178466797
+      }
+    },
+    {
+      "id": 12,
+      "equipment": "club",
+      "start": 81.0022964477539,
+      "end": 82.0020523071289,
+      "horizon": 1.0,
+      "positionError": 0.009484095498919487,
+      "speedError": 4.57763671875e-05,
+      "headingError": 0.03426402062177658,
+      "yawError": 0.0007648468017578125,
+      "steeringError": 0.0,
+      "predictedBodyOffset": 3.54286527633667,
+      "actualBodyOffset": 3.5345051288604736,
+      "startSpeed": 33.1185302734375,
+      "flatContactFree": true,
+      "predictedPosition": {
+        "x": -292.0597839355469,
+        "y": 0.03549721837043762,
+        "z": -114.50422668457031
+      },
+      "actualPosition": {
+        "x": -292.0527648925781,
+        "y": 0.03545302152633667,
+        "z": -114.49784851074219
+      }
+    },
+    {
+      "id": 12,
+      "equipment": "club",
+      "start": 80.2024917602539,
+      "end": 81.2022476196289,
+      "horizon": 1.0,
+      "positionError": 0.009473840706050396,
+      "speedError": 0.000606536865234375,
+      "headingError": 0.044234659522771835,
+      "yawError": 0.0007652901113033295,
+      "steeringError": 0.0,
+      "predictedBodyOffset": 4.727025508880615,
+      "actualBodyOffset": 4.71868896484375,
+      "startSpeed": 31.906841278076172,
+      "flatContactFree": true,
+      "predictedPosition": {
+        "x": -310.5225830078125,
+        "y": 0.03578352928161621,
+        "z": -94.82559204101562
+      },
+      "actualPosition": {
+        "x": -310.51556396484375,
+        "y": 0.03547671437263489,
+        "z": -94.81922912597656
+      }
+    },
+    {
+      "id": 12,
+      "equipment": "club",
+      "start": 81.2022476196289,
+      "end": 82.2020034790039,
+      "horizon": 1.0,
+      "positionError": 0.009437236934900284,
+      "speedError": 0.00016021728515625,
+      "headingError": 0.044234659522771835,
+      "yawError": 0.0007633119821548462,
+      "steeringError": 0.0,
+      "predictedBodyOffset": 3.044222354888916,
+      "actualBodyOffset": 3.0358572006225586,
+      "startSpeed": 33.417816162109375,
+      "flatContactFree": true,
+      "predictedPosition": {
+        "x": -287.3446044921875,
+        "y": 0.03547671437263489,
+        "z": -119.38457489013672
+      },
+      "actualPosition": {
+        "x": -287.3376770019531,
+        "y": 0.03538399934768677,
+        "z": -119.37816619873047
+      }
+    },
+    {
+      "id": 12,
+      "equipment": "club",
+      "start": 80.8023452758789,
+      "end": 81.8021011352539,
+      "horizon": 1.0,
+      "positionError": 0.009418594650924206,
+      "speedError": 7.62939453125e-05,
+      "headingError": 0.044234659522771835,
+      "yawError": 0.0007652416825294495,
+      "steeringError": 0.0,
+      "predictedBodyOffset": 3.935878038406372,
+      "actualBodyOffset": 3.927626609802246,
+      "startSpeed": 32.94432830810547,
+      "flatContactFree": true,
+      "predictedPosition": {
+        "x": -296.69293212890625,
+        "y": 0.035538047552108765,
+        "z": -109.54312133789062
+      },
+      "actualPosition": {
+        "x": -296.6860656738281,
+        "y": 0.03549221158027649,
+        "z": -109.53667449951172
+      }
+    },
+    {
+      "id": 12,
+      "equipment": "club",
+      "start": 80.6023941040039,
+      "end": 81.6021499633789,
+      "horizon": 1.0,
+      "positionError": 0.00941627100110054,
+      "speedError": 0.000263214111328125,
+      "headingError": 0.03956468030810356,
+      "yawError": 0.0007649287581443787,
+      "steeringError": 0.0,
+      "predictedBodyOffset": 4.298110008239746,
+      "actualBodyOffset": 4.2898712158203125,
+      "startSpeed": 32.7685546875,
+      "flatContactFree": true,
+      "predictedPosition": {
+        "x": -301.3199768066406,
+        "y": 0.03561431169509888,
+        "z": -104.58786010742188
+      },
+      "actualPosition": {
+        "x": -301.31317138671875,
+        "y": 0.03548702597618103,
+        "z": -104.58135223388672
+      }
+    },
+    {
+      "id": 12,
+      "equipment": "club",
+      "start": 81.4021987915039,
+      "end": 82.4019546508789,
+      "horizon": 1.0,
+      "positionError": 0.009387169033288956,
+      "speedError": 0.000335693359375,
+      "headingError": 0.03956468030810356,
+      "yawError": 0.0007600635290145874,
+      "steeringError": 0.0,
+      "predictedBodyOffset": 2.394449472427368,
+      "actualBodyOffset": 2.386139154434204,
+      "startSpeed": 33.66097640991211,
+      "flatContactFree": true,
+      "predictedPosition": {
+        "x": -282.48150634765625,
+        "y": 0.03546440601348877,
+        "z": -124.11546325683594
+      },
+      "actualPosition": {
+        "x": -282.4748229980469,
+        "y": 0.03529676795005798,
+        "z": -124.10887145996094
+      }
+    },
+    {
+      "id": 12,
+      "equipment": "club",
+      "start": 80.0025405883789,
+      "end": 81.0022964477539,
+      "horizon": 1.0,
+      "positionError": 0.00933618750423193,
+      "speedError": 0.00066375732421875,
+      "headingError": 0.03956468030810356,
+      "yawError": 0.0007658675312995911,
+      "steeringError": 0.0,
+      "predictedBodyOffset": 4.655877590179443,
+      "actualBodyOffset": 4.645398139953613,
+      "startSpeed": 31.12610626220703,
+      "flatContactFree": true,
+      "predictedPosition": {
+        "x": -315.0309143066406,
+        "y": 0.03582233190536499,
+        "z": -89.90975952148438
+      },
+      "actualPosition": {
+        "x": -315.0238037109375,
+        "y": 0.03549721837043762,
+        "z": -89.9037094116211
+      }
+    },
+    {
+      "id": 12,
+      "equipment": "club",
+      "start": 80.7023696899414,
+      "end": 81.7021255493164,
+      "horizon": 1.0,
+      "positionError": 0.00933330412954092,
+      "speedError": 0.00016021728515625,
+      "headingError": 0.03956468030810356,
+      "yawError": 0.0007650358602404594,
+      "steeringError": 0.0,
+      "predictedBodyOffset": 4.116532325744629,
+      "actualBodyOffset": 4.108366012573242,
+      "startSpeed": 33.00340270996094,
+      "flatContactFree": true,
+      "predictedPosition": {
+        "x": -299.00262451171875,
+        "y": 0.03557148575782776,
+        "z": -107.0600357055664
+      },
+      "actualPosition": {
+        "x": -298.9959716796875,
+        "y": 0.03549611568450928,
+        "z": -107.0534896850586
+      }
+    },
+    {
+      "id": 12,
+      "equipment": "club",
+      "start": 81.8021011352539,
+      "end": 82.8018569946289,
+      "horizon": 1.0,
+      "positionError": 0.009296409785747528,
+      "speedError": 0.00077056884765625,
+      "headingError": 0.03956468030810356,
+      "yawError": 0.00074787437915802,
+      "steeringError": 0.0,
+      "predictedBodyOffset": 2.16304874420166,
+      "actualBodyOffset": 2.1732683181762695,
+      "startSpeed": 33.808265686035156,
+      "flatContactFree": true,
+      "predictedPosition": {
+        "x": -272.1881408691406,
+        "y": 0.03549221158027649,
+        "z": -132.94407653808594
+      },
+      "actualPosition": {
+        "x": -272.1822814941406,
+        "y": 0.03510171175003052,
+        "z": -132.93685913085938
+      }
+    }
+  ]
+}

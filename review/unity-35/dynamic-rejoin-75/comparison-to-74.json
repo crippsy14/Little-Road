@@ -1,0 +1,71 @@
+{
+  "scope": "Same fixtures; paired runtime corner and remaining-course comparisons. Hidden timings are not rendered acceptance.",
+  "cases": {
+    "street-left": {
+      "cornerChangeVs74": -0.0899343107345203,
+      "remainingCourseChangeVs74": -0.08331298828125,
+      "meanAiMsOff": 0.21690102854743912,
+      "meanAiMsOn": 0.22751974280594497,
+      "exitSpeedOff": 24.599848506269666,
+      "exitSpeedOn": 24.642951122802167
+    },
+    "street-middle": {
+      "cornerChangeVs74": 0.008040372123900852,
+      "remainingCourseChangeVs74": 0.0,
+      "meanAiMsOff": 0.21608076801350354,
+      "meanAiMsOn": 0.21612689996837778,
+      "exitSpeedOff": 24.568386494849385,
+      "exitSpeedOn": 24.66060104077281
+    },
+    "street-right": {
+      "cornerChangeVs74": -0.13651722871627925,
+      "remainingCourseChangeVs74": -0.158294677734375,
+      "meanAiMsOff": 0.21897123244270777,
+      "meanAiMsOn": 0.21111864048976145,
+      "exitSpeedOff": 24.59961653689036,
+      "exitSpeedOn": 24.628455907073988
+    },
+    "street-deep": {
+      "cornerChangeVs74": -0.11130258902703982,
+      "remainingCourseChangeVs74": -0.241607666015625,
+      "meanAiMsOff": 0.21597825384863817,
+      "meanAiMsOn": 0.21000317769131,
+      "exitSpeedOff": 24.531693156849773,
+      "exitSpeedOn": 24.613818758901793
+    },
+    "club-left": {
+      "cornerChangeVs74": -0.018000844633982993,
+      "remainingCourseChangeVs74": -0.0333404541015625,
+      "meanAiMsOff": 0.19640996203691583,
+      "meanAiMsOn": 0.22591597093791282,
+      "exitSpeedOff": 29.29480730742216,
+      "exitSpeedOn": 29.105964819444665
+    },
+    "club-middle": {
+      "cornerChangeVs74": -0.019005734629796933,
+      "remainingCourseChangeVs74": 0.025005340576171875,
+      "meanAiMsOff": 0.22069336324053304,
+      "meanAiMsOn": 0.2212545081967213,
+      "exitSpeedOff": 29.317284723777693,
+      "exitSpeedOn": 29.116665602047394
+    },
+    "club-right": {
+      "cornerChangeVs74": -0.14270016828599452,
+      "remainingCourseChangeVs74": -0.2583885192871094,
+      "meanAiMsOff": 0.2270197723663314,
+      "meanAiMsOn": 0.22287151378579,
+      "exitSpeedOff": 29.395793538580392,
+      "exitSpeedOn": 28.865825714040735
+    },
+    "club-deep": {
+      "cornerChangeVs74": -0.046189689467246,
+      "remainingCourseChangeVs74": -0.1667022705078125,
+      "meanAiMsOff": 0.20840462139585017,
+      "meanAiMsOn": 0.21941195402298852,
+      "exitSpeedOff": 29.2621064623192,
+      "exitSpeedOn": 28.870114576746342
+    }
+  },
+  "improvedCornersVs74": 7,
+  "medianPairedCornerChangeVs74": -0.06806200010088315
+}

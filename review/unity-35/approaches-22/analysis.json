@@ -1,0 +1,499 @@
+{
+  "scope": "Captured field-car approaches at two observed times, then two seconds on declared frozen paths using normal Rigidbody forces. No assumption that any path is safe; accuracy and fate are measured before choosing a correction. Not traffic or race acceptance.",
+  "passed": 53,
+  "total": 61,
+  "checks": [
+    {
+      "name": "Every declared probe completed once",
+      "passed": true
+    },
+    {
+      "name": "start-1-current: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "start-1-current: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "start-1-current: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "start-1-current: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "start-1-current: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "start-1-current: bounded prospective position error",
+      "passed": false
+    },
+    {
+      "name": "start-1-current: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "start-1-current: contact-free physical witness",
+      "passed": true
+    },
+    {
+      "name": "start-1-current: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "start-1-current: predicts actual departure or containment",
+      "passed": true
+    },
+    {
+      "name": "start-2-current: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "start-2-current: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "start-2-current: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "start-2-current: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "start-2-current: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "start-2-current: bounded prospective position error",
+      "passed": false
+    },
+    {
+      "name": "start-2-current: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "start-2-current: contact-free physical witness",
+      "passed": true
+    },
+    {
+      "name": "start-2-current: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "start-2-current: predicts actual departure or containment",
+      "passed": false
+    },
+    {
+      "name": "start-1-reanchor: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "start-1-reanchor: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "start-1-reanchor: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "start-1-reanchor: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "start-1-reanchor: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "start-1-reanchor: bounded prospective position error",
+      "passed": false
+    },
+    {
+      "name": "start-1-reanchor: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "start-1-reanchor: contact-free physical witness",
+      "passed": true
+    },
+    {
+      "name": "start-1-reanchor: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "start-1-reanchor: predicts actual departure or containment",
+      "passed": true
+    },
+    {
+      "name": "start-2-reanchor: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "start-2-reanchor: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "start-2-reanchor: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "start-2-reanchor: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "start-2-reanchor: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "start-2-reanchor: bounded prospective position error",
+      "passed": false
+    },
+    {
+      "name": "start-2-reanchor: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "start-2-reanchor: contact-free physical witness",
+      "passed": true
+    },
+    {
+      "name": "start-2-reanchor: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "start-2-reanchor: predicts actual departure or containment",
+      "passed": false
+    },
+    {
+      "name": "start-1-guide: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "start-1-guide: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "start-1-guide: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "start-1-guide: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "start-1-guide: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "start-1-guide: bounded prospective position error",
+      "passed": false
+    },
+    {
+      "name": "start-1-guide: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "start-1-guide: contact-free physical witness",
+      "passed": true
+    },
+    {
+      "name": "start-1-guide: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "start-1-guide: predicts actual departure or containment",
+      "passed": true
+    },
+    {
+      "name": "start-2-guide: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "start-2-guide: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "start-2-guide: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "start-2-guide: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "start-2-guide: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "start-2-guide: bounded prospective position error",
+      "passed": false
+    },
+    {
+      "name": "start-2-guide: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "start-2-guide: contact-free physical witness",
+      "passed": true
+    },
+    {
+      "name": "start-2-guide: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "start-2-guide: predicts actual departure or containment",
+      "passed": true
+    }
+  ],
+  "summary": {
+    "start-1-current": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.26788049936294556,
+      "maxBodyUnderestimate": 0.050672054290771484,
+      "predictedDeparture": 1.7916667461395264,
+      "actualDeparture": 1.758333444595337,
+      "maxPredictedBodyOffset": 8.021430015563965,
+      "maxActualBodyOffset": 8.034892082214355,
+      "forecastMilliseconds": 11.073800086975098,
+      "forecastCosts": [
+        {
+          "totalMs": 11.0738,
+          "projectionMs": 0.7022999999999995,
+          "followerMs": 6.2014,
+          "bodyMs": 3.228099999999999,
+          "physicsMs": 0.7548999999999929
+        },
+        {
+          "totalMs": 8.8317,
+          "projectionMs": 0.7199999999999993,
+          "followerMs": 5.098399999999996,
+          "bodyMs": 2.8048,
+          "physicsMs": 0.1116999999999997
+        },
+        {
+          "totalMs": 8.7476,
+          "projectionMs": 0.7007999999999985,
+          "followerMs": 4.997599999999997,
+          "bodyMs": 2.8779999999999983,
+          "physicsMs": 0.0902999999999998
+        },
+        {
+          "totalMs": 8.6114,
+          "projectionMs": 0.6335999999999998,
+          "followerMs": 4.927399999999996,
+          "bodyMs": 2.8798000000000017,
+          "physicsMs": 0.08879999999999992
+        }
+      ]
+    },
+    "start-2-current": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.2595602571964264,
+      "maxBodyUnderestimate": 0.0519108772277832,
+      "predictedDeparture": 1.033333420753479,
+      "actualDeparture": 1.1500000953674316,
+      "maxPredictedBodyOffset": 8.146215438842773,
+      "maxActualBodyOffset": 8.122185707092285,
+      "forecastMilliseconds": 10.348299980163574,
+      "forecastCosts": [
+        {
+          "totalMs": 10.3483,
+          "projectionMs": 0.6451,
+          "followerMs": 5.711599999999994,
+          "bodyMs": 2.7738,
+          "physicsMs": 1.021499999999993
+        },
+        {
+          "totalMs": 8.2332,
+          "projectionMs": 0.6291999999999991,
+          "followerMs": 4.799699999999997,
+          "bodyMs": 2.646599999999998,
+          "physicsMs": 0.08429999999999983
+        },
+        {
+          "totalMs": 8.4305,
+          "projectionMs": 0.6523999999999993,
+          "followerMs": 4.899900000000004,
+          "bodyMs": 2.708999999999997,
+          "physicsMs": 0.08719999999999999
+        },
+        {
+          "totalMs": 8.339,
+          "projectionMs": 0.5997000000000009,
+          "followerMs": 4.977899999999997,
+          "bodyMs": 2.551600000000001,
+          "physicsMs": 0.10909999999999971
+        }
+      ]
+    },
+    "start-1-reanchor": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.26768434047698975,
+      "maxBodyUnderestimate": 0.05066823959350586,
+      "predictedDeparture": 1.7916667461395264,
+      "actualDeparture": 1.7500001192092896,
+      "maxPredictedBodyOffset": 8.020463943481445,
+      "maxActualBodyOffset": 8.034235954284668,
+      "forecastMilliseconds": 10.8951997756958,
+      "forecastCosts": [
+        {
+          "totalMs": 10.8952,
+          "projectionMs": 0.6838999999999992,
+          "followerMs": 6.146099999999995,
+          "bodyMs": 2.9230000000000005,
+          "physicsMs": 0.9359999999999928
+        },
+        {
+          "totalMs": 8.6725,
+          "projectionMs": 0.6755999999999995,
+          "followerMs": 5.032800000000002,
+          "bodyMs": 2.7778000000000014,
+          "physicsMs": 0.10399999999999966
+        },
+        {
+          "totalMs": 8.338,
+          "projectionMs": 0.6472999999999995,
+          "followerMs": 4.844599999999998,
+          "bodyMs": 2.6545999999999985,
+          "physicsMs": 0.10409999999999985
+        },
+        {
+          "totalMs": 8.8169,
+          "projectionMs": 0.6819000000000002,
+          "followerMs": 5.0382,
+          "bodyMs": 2.9062000000000032,
+          "physicsMs": 0.09039999999999983
+        }
+      ]
+    },
+    "start-2-reanchor": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.25974419713020325,
+      "maxBodyUnderestimate": 0.0520472526550293,
+      "predictedDeparture": 1.1166666746139526,
+      "actualDeparture": 1.2166666984558105,
+      "maxPredictedBodyOffset": 8.108139991760254,
+      "maxActualBodyOffset": 8.090788841247559,
+      "forecastMilliseconds": 10.595100402832031,
+      "forecastCosts": [
+        {
+          "totalMs": 10.5951,
+          "projectionMs": 0.6637000000000008,
+          "followerMs": 6.078899999999996,
+          "bodyMs": 2.947199999999999,
+          "physicsMs": 0.706799999999993
+        },
+        {
+          "totalMs": 8.5112,
+          "projectionMs": 0.6316000000000003,
+          "followerMs": 4.911899999999999,
+          "bodyMs": 2.7862000000000005,
+          "physicsMs": 0.09449999999999996
+        },
+        {
+          "totalMs": 8.3621,
+          "projectionMs": 0.6696000000000004,
+          "followerMs": 4.939000000000002,
+          "bodyMs": 2.574,
+          "physicsMs": 0.10249999999999979
+        },
+        {
+          "totalMs": 8.3942,
+          "projectionMs": 0.6409999999999988,
+          "followerMs": 4.979899999999998,
+          "bodyMs": 2.598099999999998,
+          "physicsMs": 0.08909999999999986
+        }
+      ]
+    },
+    "start-1-guide": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.3412918448448181,
+      "maxBodyUnderestimate": 0.050661563873291016,
+      "predictedDeparture": -1.0,
+      "actualDeparture": -1.0,
+      "maxPredictedBodyOffset": 7.69428825378418,
+      "maxActualBodyOffset": 7.582672119140625,
+      "forecastMilliseconds": 11.848400115966797,
+      "forecastCosts": [
+        {
+          "totalMs": 11.8484,
+          "projectionMs": 0.6789,
+          "followerMs": 7.2394,
+          "bodyMs": 2.893499999999998,
+          "physicsMs": 0.8269999999999927
+        },
+        {
+          "totalMs": 9.3526,
+          "projectionMs": 0.6795999999999994,
+          "followerMs": 5.852899999999996,
+          "bodyMs": 2.6262999999999983,
+          "physicsMs": 0.1138999999999997
+        },
+        {
+          "totalMs": 9.4478,
+          "projectionMs": 0.6407000000000003,
+          "followerMs": 5.8770000000000024,
+          "bodyMs": 2.737099999999998,
+          "physicsMs": 0.09649999999999984
+        },
+        {
+          "totalMs": 9.2781,
+          "projectionMs": 0.632100000000001,
+          "followerMs": 5.854499999999996,
+          "bodyMs": 2.599099999999999,
+          "physicsMs": 0.09869999999999997
+        }
+      ]
+    },
+    "start-2-guide": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.2579638957977295,
+      "maxBodyUnderestimate": 0.05222892761230469,
+      "predictedDeparture": -1.0,
+      "actualDeparture": -1.0,
+      "maxPredictedBodyOffset": 7.399690628051758,
+      "maxActualBodyOffset": 7.447728633880615,
+      "forecastMilliseconds": 11.588299751281738,
+      "forecastCosts": [
+        {
+          "totalMs": 11.5883,
+          "projectionMs": 0.5931,
+          "followerMs": 7.276699999999995,
+          "bodyMs": 2.743700000000001,
+          "physicsMs": 0.799899999999993
+        },
+        {
+          "totalMs": 8.7636,
+          "projectionMs": 0.5656,
+          "followerMs": 5.761999999999993,
+          "bodyMs": 2.2831999999999995,
+          "physicsMs": 0.07959999999999993
+        },
+        {
+          "totalMs": 9.2003,
+          "projectionMs": 0.6144999999999997,
+          "followerMs": 5.8603000000000005,
+          "bodyMs": 2.538800000000001,
+          "physicsMs": 0.09289999999999986
+        },
+        {
+          "totalMs": 8.6582,
+          "projectionMs": 0.5532000000000007,
+          "followerMs": 5.5737999999999985,
+          "bodyMs": 2.365099999999998,
+          "physicsMs": 0.09569999999999977
+        }
+      ]
+    }
+  }
+}

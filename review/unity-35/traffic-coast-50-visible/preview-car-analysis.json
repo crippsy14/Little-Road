@@ -1,0 +1,277 @@
+{
+  "carId": 0,
+  "equipment": "club",
+  "fieldEquipment": {
+    "club": 6,
+    "street": 18
+  },
+  "startingRankRange": [
+    24,
+    24
+  ],
+  "finalPlace": 8,
+  "checkpoints": [
+    {
+      "ordinal": 0,
+      "time": 5.358349323272705,
+      "crossingRankRange": [
+        24,
+        24
+      ],
+      "positionsGainedRange": [
+        0,
+        0
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 1,
+      "time": 11.816584587097168,
+      "crossingRankRange": [
+        19,
+        19
+      ],
+      "positionsGainedRange": [
+        5,
+        5
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 2,
+      "time": 20.32478904724121,
+      "crossingRankRange": [
+        19,
+        19
+      ],
+      "positionsGainedRange": [
+        5,
+        5
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 3,
+      "time": 28.574663162231445,
+      "crossingRankRange": [
+        16,
+        16
+      ],
+      "positionsGainedRange": [
+        8,
+        8
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 4,
+      "time": 38.61769104003906,
+      "crossingRankRange": [
+        15,
+        15
+      ],
+      "positionsGainedRange": [
+        9,
+        9
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 5,
+      "time": 47.22786331176758,
+      "crossingRankRange": [
+        15,
+        15
+      ],
+      "positionsGainedRange": [
+        9,
+        9
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 6,
+      "time": 53.254150390625,
+      "crossingRankRange": [
+        14,
+        14
+      ],
+      "positionsGainedRange": [
+        10,
+        10
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 7,
+      "time": 62.88954162597656,
+      "crossingRankRange": [
+        15,
+        15
+      ],
+      "positionsGainedRange": [
+        9,
+        9
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 8,
+      "time": 68.25540924072266,
+      "crossingRankRange": [
+        12,
+        13
+      ],
+      "positionsGainedRange": [
+        11,
+        12
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 9,
+      "time": 73.42081451416016,
+      "crossingRankRange": [
+        10,
+        10
+      ],
+      "positionsGainedRange": [
+        14,
+        14
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 10,
+      "time": 79.81092071533203,
+      "crossingRankRange": [
+        10,
+        10
+      ],
+      "positionsGainedRange": [
+        14,
+        14
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 11,
+      "time": 85.80945587158203,
+      "crossingRankRange": [
+        9,
+        9
+      ],
+      "positionsGainedRange": [
+        15,
+        15
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    },
+    {
+      "ordinal": 12,
+      "time": 91.6663589477539,
+      "crossingRankRange": [
+        8,
+        8
+      ],
+      "positionsGainedRange": [
+        16,
+        16
+      ],
+      "recordedEntrants": 24,
+      "expectedEntrants": 24
+    }
+  ],
+  "slowerEquipmentIds": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    17,
+    18,
+    19,
+    21,
+    22,
+    23
+  ],
+  "sustainedPasses": [
+    {
+      "other": 18,
+      "confirmedAt": 22.708086013793945
+    },
+    {
+      "other": 17,
+      "confirmedAt": 23.10807991027832
+    },
+    {
+      "other": 15,
+      "confirmedAt": 26.30803108215332
+    },
+    {
+      "other": 11,
+      "confirmedAt": 36.900657653808594
+    },
+    {
+      "other": 13,
+      "confirmedAt": 51.303733825683594
+    },
+    {
+      "other": 9,
+      "confirmedAt": 68.2054214477539
+    },
+    {
+      "other": 5,
+      "confirmedAt": 71.2046890258789
+    },
+    {
+      "other": 14,
+      "confirmedAt": 72.2044448852539
+    },
+    {
+      "other": 10,
+      "confirmedAt": 76.7033462524414
+    },
+    {
+      "other": 3,
+      "confirmedAt": 87.4007339477539
+    }
+  ],
+  "possibleHeldBehindSlowerSeconds": 2.699921607971192,
+  "soloEvidence": {
+    "street": {
+      "flyingLaps": [
+        85.61716079711914,
+        85.62909698486328
+      ],
+      "meanSeconds": 85.62312889099121
+    },
+    "club": {
+      "flyingLaps": [
+        66.79124450683594,
+        66.7753677368164
+      ],
+      "meanSeconds": 66.78330612182617
+    }
+  },
+  "limits": "Checkpoint crossing order, not interpolated live HUD position; same-tick ties retained. First lap only. Pass = initially >7m behind, then >7m ahead for 2s at 10Hz without reset; contact not excluded. Held-behind proxy = named street leader <30m ahead, speeds within 1.5m/s, own speed >2m/s and pedal <=0.05. This does not prove a usable gap or unnecessary braking; cornering may justify it. Solo flying laps establish equipment potential, not an expected rear-grid checkpoint rank. No hard acceptance threshold yet."
+}

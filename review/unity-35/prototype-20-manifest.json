@@ -1,0 +1,9 @@
+{
+  "export": "outputs/little-road-context-20-review/Little Road Unity.exe",
+  "assemblyHash": "48021B412744211520EDC282C1A91ED0A95482D04046601ADB921CFEB3960B59",
+  "change": "Forecast-only control hold interval, native projection/body/physics steps preserved; actual car follower unchanged. Default remains native-rate reference.",
+  "buildChecks": 273,
+  "evidence": "cadence-20-comparison.json",
+  "acceptance": "Interval 1 and 3 each pass 54/54 first-probe checks; interval 6 fails 2 body-underestimate checks and is rejected. Interval 3 reduces mean warm cost 37.2622% in these hidden probe runs. Not runtime frame acceptance or live integration.",
+  "remaining": "Cost still too high for naive all-car/candidate evaluation. Swept containment, held-out/retarget/abort and actual switchback replay remain before live feasibility. Full-field departure and contacts are not fixed."
+}

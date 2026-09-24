@@ -1,0 +1,32 @@
+{
+    "checks": [
+        "Fresh stock profile required",
+        "D-pad previews workshop engine",
+        "Confirm on preview card does not buy or fit",
+        "Insufficient credits disable purchase",
+        "Right stick rotates selected 3D model",
+        "Right stick does not also navigate the catalogue",
+        "Throttle remains blocked inside garage",
+        "Idle garage reuses cached model renders",
+        "Circle returns to garage menu without road input leaking",
+        "Preview and cancel preserve inventory and save bytes",
+        "Selection survives back and reopen",
+        "D-pad reaches explicit buy action",
+        "Purchase costs 450 and owns engine without fitting",
+        "Repeat purchase cannot charge twice",
+        "Purchase moves focus to separate fit action",
+        "Separate Cross press fits engine and updates driving power",
+        "Reload preserves fitted engine",
+        "Keyboard arrows preview next engine",
+        "Keyboard rotates engine",
+        "Keyboard returns to stock part",
+        "Keyboard freely refits owned stock engine",
+        "Shoulder opens next equipment category",
+        "Owned workshop engine can be fitted again",
+        "Escape returns to garage"
+    ],
+    "cachedIdleRenders": 21,
+    "stockSprint": 2.699997901916504,
+    "workshopSprint": 2.07999849319458,
+    "limitation": "Synthetic input; physical DualSense and visible frame-time acceptance remain open."
+}

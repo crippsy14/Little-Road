@@ -1,0 +1,25 @@
+{
+  "body_id": "compact_v1",
+  "recipe_version": 1,
+  "vertices": 29622,
+  "triangles": 58336,
+  "bounds_blender": {
+    "min": [
+      -1.1080000400543213,
+      -1.5819998979568481,
+      -0.0009421110153198242
+    ],
+    "max": [
+      1.1080000400543213,
+      1.5859999656677246,
+      1.6890000104904175
+    ]
+  },
+  "wheel_pivots": [
+    "Wheel_FL",
+    "Wheel_RL",
+    "Wheel_FR",
+    "Wheel_RR"
+  ],
+  "status": "Master study; requires Unity/gallery/contact review. UV islands are provisional, no approved decal templates."
+}

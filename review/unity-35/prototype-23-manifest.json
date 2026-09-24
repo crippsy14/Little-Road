@@ -1,0 +1,9 @@
+{
+  "export": "outputs/little-road-context-23-review/Little Road Unity.exe",
+  "assemblyHash": "C239E92481419FC50DE132DEEB2590806161FDC5D764CEC4C3D69EA67C2F89B2",
+  "buildChecks": 280,
+  "change": "Synchronize Transform and Rigidbody on declared approach-fixture release; check first observed position, heading, velocity and steering against capture. No live driver change.",
+  "evidence": "approaches-23/analysis.json and witness-comparison.json",
+  "acceptance": "67/67 across six two-second native-rate physical witnesses from actual field states. Four outside-path departures predicted on exact native ticks; both guide rejoin paths contained. Maximum position error 0.00003412 m, body underestimate 0.00002766 m in measured flat domain. All contact-free.",
+  "remaining": "Counterfactual frozen paths without opponents; guide changes braking as well as steering. No full-field fix, general retarget acceptance, fast-cadence validation on these states, frame-budget acceptance or campaign completion. Desktop unchanged."
+}

@@ -1,0 +1,94 @@
+{
+  "scope": "Fixed-curve planar model executions, 120Hz; no traffic, scenery, Rigidbody contacts or replanning. Runtime paired trials remain independently required.",
+  "cases": {
+    "street-left": {
+      "horizon": 252.0,
+      "selectedBlend": 81.5999984741211,
+      "selectedContained": true,
+      "fastestContainedRank": 0,
+      "selectedRegretSeconds": 0.0,
+      "medianEstimateErrorSeconds": -0.8406982421875,
+      "geometricRejects": 3,
+      "unsafeModelExecutions": 3,
+      "passed": true
+    },
+    "street-middle": {
+      "horizon": 252.0,
+      "selectedBlend": 142.8000030517578,
+      "selectedContained": true,
+      "fastestContainedRank": 1,
+      "selectedRegretSeconds": 0.025000572204589844,
+      "medianEstimateErrorSeconds": -0.7516212463378906,
+      "geometricRejects": 2,
+      "unsafeModelExecutions": 2,
+      "passed": true
+    },
+    "street-right": {
+      "horizon": 252.0,
+      "selectedBlend": 228.0,
+      "selectedContained": true,
+      "fastestContainedRank": 0,
+      "selectedRegretSeconds": 0.0,
+      "medianEstimateErrorSeconds": -0.7192554473876953,
+      "geometricRejects": 0,
+      "unsafeModelExecutions": 0,
+      "passed": true
+    },
+    "street-deep": {
+      "horizon": 204.0,
+      "selectedBlend": 62.400001525878906,
+      "selectedContained": true,
+      "fastestContainedRank": 1,
+      "selectedRegretSeconds": 0.03333282470703125,
+      "medianEstimateErrorSeconds": -0.741786003112793,
+      "geometricRejects": 0,
+      "unsafeModelExecutions": 0,
+      "passed": true
+    },
+    "club-left": {
+      "horizon": 252.0,
+      "selectedBlend": 81.5999984741211,
+      "selectedContained": true,
+      "fastestContainedRank": 0,
+      "selectedRegretSeconds": 0.0,
+      "medianEstimateErrorSeconds": -1.0808181762695312,
+      "geometricRejects": 3,
+      "unsafeModelExecutions": 3,
+      "passed": true
+    },
+    "club-middle": {
+      "horizon": 252.0,
+      "selectedBlend": 142.8000030517578,
+      "selectedContained": true,
+      "fastestContainedRank": 0,
+      "selectedRegretSeconds": 0.0,
+      "medianEstimateErrorSeconds": -0.9064826965332031,
+      "geometricRejects": 2,
+      "unsafeModelExecutions": 2,
+      "passed": true
+    },
+    "club-right": {
+      "horizon": 252.0,
+      "selectedBlend": 228.0,
+      "selectedContained": true,
+      "fastestContainedRank": 0,
+      "selectedRegretSeconds": 0.0,
+      "medianEstimateErrorSeconds": -0.877985954284668,
+      "geometricRejects": 0,
+      "unsafeModelExecutions": 0,
+      "passed": true
+    },
+    "club-deep": {
+      "horizon": 204.0,
+      "selectedBlend": 62.400001525878906,
+      "selectedContained": true,
+      "fastestContainedRank": 0,
+      "selectedRegretSeconds": 0.0,
+      "medianEstimateErrorSeconds": -1.0101909637451172,
+      "geometricRejects": 0,
+      "unsafeModelExecutions": 0,
+      "passed": true
+    }
+  },
+  "passed": true
+}

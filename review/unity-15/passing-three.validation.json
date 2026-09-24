@@ -1,0 +1,85 @@
+{
+  "source": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-15\\passing-three.json",
+  "scope": "Controlled stock/street/club passing from behind; 1Hz physical trajectory and finish evidence",
+  "passed": true,
+  "observedPasses": [
+    {
+      "faster": 1,
+      "slower": 0,
+      "sampleTime": 5.000021457672119,
+      "leadMetres": 4.04754638671875,
+      "fasterOffset": -1.1517294645309448,
+      "slowerOffset": 0.914939820766449
+    },
+    {
+      "faster": 2,
+      "slower": 0,
+      "sampleTime": 8.008309364318848,
+      "leadMetres": 8.7645263671875,
+      "fasterOffset": -5.524606704711914,
+      "slowerOffset": 0.4463340640068054
+    },
+    {
+      "faster": 2,
+      "slower": 1,
+      "sampleTime": 9.008294105529785,
+      "leadMetres": 9.274261474609375,
+      "fasterOffset": -4.262691974639893,
+      "slowerOffset": -1.0355277061462402
+    }
+  ],
+  "failures": [],
+  "carResults": [
+    {
+      "id": 0,
+      "laps": 3,
+      "nextGate": 1,
+      "place": 3,
+      "contacts": 2,
+      "recoveries": 0,
+      "missedGates": 0,
+      "equipment": "stock",
+      "finished": true,
+      "time": 108.4289321899414,
+      "progress": 2050.64599609375,
+      "offset": -0.5251144766807556,
+      "bestLap": 35.2247314453125,
+      "maxImpact": 6.738459587097168,
+      "maxPenetration": 9.960727766156197E-05
+    },
+    {
+      "id": 1,
+      "laps": 3,
+      "nextGate": 1,
+      "place": 2,
+      "contacts": 1,
+      "recoveries": 0,
+      "missedGates": 0,
+      "equipment": "street",
+      "finished": true,
+      "time": 101.45563507080078,
+      "progress": 2176.718505859375,
+      "offset": -1.060487985610962,
+      "bestLap": 32.84197998046875,
+      "maxImpact": 3.615225076675415,
+      "maxPenetration": 9.960727766156197E-05
+    },
+    {
+      "id": 2,
+      "laps": 3,
+      "nextGate": 1,
+      "place": 1,
+      "contacts": 1,
+      "recoveries": 0,
+      "missedGates": 0,
+      "equipment": "club",
+      "finished": true,
+      "time": 84.04322052001953,
+      "progress": 2487.9697265625,
+      "offset": -0.6816287040710449,
+      "bestLap": 26.796550750732422,
+      "maxImpact": 6.738459587097168,
+      "maxPenetration": 0.0
+    }
+  ]
+}

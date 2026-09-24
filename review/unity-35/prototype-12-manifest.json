@@ -1,0 +1,14 @@
+{
+  "utc": "2026-09-21T20:50:39.4656017Z",
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-12-review\\Little Road Unity.exe",
+  "assemblyHash": "7BD978630D18111AAA794018AE9729087F8E40A76127F58E4264B9AFACAC551D",
+  "policyHash": "0445B3B304EB88E132E489558953A09D3658146858ED9A68AFB40DF1E9D1370D",
+  "change": "Reuse relevant observed neighbours and wrapped route gaps within each immutable context selection; no tactic, physics or cadence change",
+  "acceptance": "Retain experimental CPU optimisation: 267 build checks; both fields exact recorded motion/input/result parity versus 10; 24 finish, 11/11 field and all 13 checkpoints. Fixed 1080p driver/frame performance checks all pass. Prototype-11 merge defect remains; not production promotion.",
+  "evidence": [
+    "field-12-performance/motion-parity.json",
+    "field-12-fixed1080/motion-parity.json",
+    "field-12-fixed1080/driver-frame-analysis.json",
+    "merges-11/analysis.json"
+  ]
+}

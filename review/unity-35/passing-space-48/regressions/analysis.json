@@ -1,0 +1,203 @@
+{
+  "scope": "Controlled clean-opportunity regressions versus frozen38; same-build paired solo street/club. Existing corridor contract and rear-merge witness deadlines retained. No rendered or broad personality acceptance.",
+  "passed": 80,
+  "total": 82,
+  "checks": {
+    "Every declared run completed exactly once": true,
+    "queue: normal exit and clean completion": true,
+    "queue: declared coast/road/guide/worker configuration": true,
+    "queue: declared risk and gap-candidate configuration": true,
+    "queue: declared traffic-path check": true,
+    "queue: declared passing-space anticipation": true,
+    "queue: declared blocking-car anticipation": true,
+    "queue: same physical comparison": true,
+    "queue: no excessive completion delay": true,
+    "queue: faster rear car passes both": true,
+    "no-room: normal exit and clean completion": true,
+    "no-room: declared coast/road/guide/worker configuration": true,
+    "no-room: declared risk and gap-candidate configuration": true,
+    "no-room: declared traffic-path check": true,
+    "no-room: declared passing-space anticipation": true,
+    "no-room: declared blocking-car anticipation": true,
+    "no-room: same physical comparison": true,
+    "no-room: no excessive completion delay": false,
+    "no-room: existing independent corridor contract": false,
+    "merge-left: normal exit and clean completion": true,
+    "merge-left: declared coast/road/guide/worker configuration": true,
+    "merge-left: declared risk and gap-candidate configuration": true,
+    "merge-left: declared traffic-path check": true,
+    "merge-left: declared passing-space anticipation": true,
+    "merge-left: declared blocking-car anticipation": true,
+    "merge-left: same physical comparison": true,
+    "merge-left: no excessive completion delay": true,
+    "merge-left: independent witness pass deadline": true,
+    "merge-right: normal exit and clean completion": true,
+    "merge-right: declared coast/road/guide/worker configuration": true,
+    "merge-right: declared risk and gap-candidate configuration": true,
+    "merge-right: declared traffic-path check": true,
+    "merge-right: declared passing-space anticipation": true,
+    "merge-right: declared blocking-car anticipation": true,
+    "merge-right: same physical comparison": true,
+    "merge-right: no excessive completion delay": true,
+    "merge-right: independent witness pass deadline": true,
+    "brake-leader: normal exit and clean completion": true,
+    "brake-leader: declared coast/road/guide/worker configuration": true,
+    "brake-leader: declared risk and gap-candidate configuration": true,
+    "brake-leader: declared traffic-path check": true,
+    "brake-leader: declared passing-space anticipation": true,
+    "brake-leader: declared blocking-car anticipation": true,
+    "brake-leader: same physical comparison": true,
+    "brake-leader: no excessive completion delay": true,
+    "corner-three: normal exit and clean completion": true,
+    "corner-three: declared coast/road/guide/worker configuration": true,
+    "corner-three: declared risk and gap-candidate configuration": true,
+    "corner-three: declared traffic-path check": true,
+    "corner-three: declared passing-space anticipation": true,
+    "corner-three: declared blocking-car anticipation": true,
+    "corner-three: same physical comparison": true,
+    "corner-three: no excessive completion delay": true,
+    "corner-three: all earn corner checkpoint before exit": true,
+    "solo-street-control: normal exit and clean completion": true,
+    "solo-street-control: declared coast/road/guide/worker configuration": true,
+    "solo-street-control: declared risk and gap-candidate configuration": true,
+    "solo-street-control: declared traffic-path check": true,
+    "solo-street-control: declared passing-space anticipation": true,
+    "solo-street-control: declared blocking-car anticipation": true,
+    "solo-street-coast: normal exit and clean completion": true,
+    "solo-street-coast: declared coast/road/guide/worker configuration": true,
+    "solo-street-coast: declared risk and gap-candidate configuration": true,
+    "solo-street-coast: declared traffic-path check": true,
+    "solo-street-coast: declared passing-space anticipation": true,
+    "solo-street-coast: declared blocking-car anticipation": true,
+    "solo-street-coast: same physical comparison": true,
+    "solo-street-coast: no excessive completion delay": true,
+    "solo-club-control: normal exit and clean completion": true,
+    "solo-club-control: declared coast/road/guide/worker configuration": true,
+    "solo-club-control: declared risk and gap-candidate configuration": true,
+    "solo-club-control: declared traffic-path check": true,
+    "solo-club-control: declared passing-space anticipation": true,
+    "solo-club-control: declared blocking-car anticipation": true,
+    "solo-club-coast: normal exit and clean completion": true,
+    "solo-club-coast: declared coast/road/guide/worker configuration": true,
+    "solo-club-coast: declared risk and gap-candidate configuration": true,
+    "solo-club-coast: declared traffic-path check": true,
+    "solo-club-coast: declared passing-space anticipation": true,
+    "solo-club-coast: declared blocking-car anticipation": true,
+    "solo-club-coast: same physical comparison": true,
+    "solo-club-coast: no excessive completion delay": true
+  },
+  "results": {
+    "queue": {
+      "finished": 3,
+      "totalCarSeconds": 97.9837646484375,
+      "contacts": 0,
+      "outsideBodySamples": 0,
+      "physicalRecoveries": 0,
+      "times": [
+        26.866355895996094,
+        35.78375244140625,
+        35.333656311035156
+      ]
+    },
+    "no-room": {
+      "finished": 2,
+      "totalCarSeconds": 69.74211502075195,
+      "contacts": 0,
+      "outsideBodySamples": 0,
+      "physicalRecoveries": 0,
+      "times": [
+        33.49993133544922,
+        36.242183685302734
+      ]
+    },
+    "merge-left": {
+      "finished": 2,
+      "totalCarSeconds": 51.649410247802734,
+      "contacts": 0,
+      "outsideBodySamples": 0,
+      "physicalRecoveries": 0,
+      "times": [
+        29.516315460205078,
+        22.133094787597656
+      ],
+      "passDeadline": 6.145877003669739,
+      "sustainedPass": 3.883368730545044
+    },
+    "merge-right": {
+      "finished": 2,
+      "totalCarSeconds": 51.63274383544922,
+      "contacts": 0,
+      "outsideBodySamples": 0,
+      "physicalRecoveries": 0,
+      "times": [
+        29.499649047851562,
+        22.133094787597656
+      ],
+      "passDeadline": 6.145877003669739,
+      "sustainedPass": 3.86670184135437
+    },
+    "brake-leader": {
+      "finished": 2,
+      "totalCarSeconds": 65.53391647338867,
+      "contacts": 0,
+      "outsideBodySamples": 0,
+      "physicalRecoveries": 0,
+      "times": [
+        27.483013153076172,
+        38.0509033203125
+      ]
+    },
+    "corner-three": {
+      "finished": 3,
+      "totalCarSeconds": 219.3025894165039,
+      "contacts": 0,
+      "outsideBodySamples": 0,
+      "physicalRecoveries": 0,
+      "times": [
+        60.17229461669922,
+        76.12015533447266,
+        83.01013946533203
+      ]
+    },
+    "solo-street-control": {
+      "finished": 1,
+      "totalCarSeconds": 35.458683013916016,
+      "contacts": 0,
+      "outsideBodySamples": 0,
+      "physicalRecoveries": 0,
+      "times": [
+        35.458683013916016
+      ]
+    },
+    "solo-street-coast": {
+      "finished": 1,
+      "totalCarSeconds": 35.458683013916016,
+      "contacts": 0,
+      "outsideBodySamples": 0,
+      "physicalRecoveries": 0,
+      "times": [
+        35.458683013916016
+      ]
+    },
+    "solo-club-control": {
+      "finished": 1,
+      "totalCarSeconds": 26.599693298339844,
+      "contacts": 0,
+      "outsideBodySamples": 0,
+      "physicalRecoveries": 0,
+      "times": [
+        26.599693298339844
+      ]
+    },
+    "solo-club-coast": {
+      "finished": 1,
+      "totalCarSeconds": 26.599693298339844,
+      "contacts": 0,
+      "outsideBodySamples": 0,
+      "physicalRecoveries": 0,
+      "times": [
+        26.599693298339844
+      ]
+    }
+  }
+}

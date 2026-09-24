@@ -1,0 +1,28 @@
+{
+  "scope": "Exact equality of stored samples/events/results; terminal export positions and profiling costs are separate. Hidden timing is not rendered-frame acceptance.",
+  "baseline": "review\\unity-35\\dynamic-traffic-79\\rear-control-right-off",
+  "candidate": "review\\unity-35\\dynamic-traffic-80\\rear-control-right-off",
+  "checks": {
+    "motion": true,
+    "checkpointPassages": true,
+    "impacts": true,
+    "assistedRecoveries": true,
+    "overlapPeaks": true,
+    "samples": true,
+    "contextSamples": true,
+    "carRaceResults": true,
+    "normalExit": true,
+    "noRuntimeErrors": true
+  },
+  "passed": true,
+  "meanDecisionRegionMsPerPhysicsTick": {
+    "baseline": 0.07082425828970318,
+    "candidate": 0.0702177600399101
+  },
+  "decisionRegionReductionPercent": 0.8563425363556032,
+  "meanAllAiMsPerSnapshotTick": {
+    "baseline": 0.21958087281795513,
+    "candidate": 0.21840860778443114
+  },
+  "allAiWallCostReductionPercent": 0.5338648209563646
+}

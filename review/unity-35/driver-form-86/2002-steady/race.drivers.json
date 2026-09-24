@@ -1,0 +1,20 @@
+{
+    "schema": 1,
+    "mode": "steady",
+    "drivers": [
+        {
+            "entrant": 0,
+            "seed": 2002,
+            "risk": 5,
+            "id": "bayview-driver-00",
+            "name": "You",
+            "style": "steady",
+            "baseBraking": 0.7200000286102295,
+            "consistency": 0.8999999761581421,
+            "formAmplitude": 0.003000000724568963,
+            "formSample": 0.2435390055179596,
+            "effectiveBraking": 0.7207306623458862,
+            "variation": true
+        }
+    ]
+}

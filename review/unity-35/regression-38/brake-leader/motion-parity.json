@@ -1,0 +1,27 @@
+{
+  "scope": "Exact equality of stored samples/events/results; terminal export positions and profiling costs are separate. Hidden timing is not rendered-frame acceptance.",
+  "baseline": "review\\unity-35\\integration-35\\brake-leader-parallel",
+  "candidate": "review\\unity-35\\regression-38\\brake-leader",
+  "checks": {
+    "motion": true,
+    "checkpointPassages": true,
+    "impacts": true,
+    "assistedRecoveries": true,
+    "overlapPeaks": true,
+    "samples": true,
+    "contextSamples": true,
+    "carRaceResults": true,
+    "normalExit": true
+  },
+  "passed": true,
+  "meanDecisionRegionMsPerPhysicsTick": {
+    "baseline": 0.07145267857142949,
+    "candidate": 0.07045924497665973
+  },
+  "decisionRegionReductionPercent": 1.3903377936722805,
+  "meanAllAiMsPerSnapshotTick": {
+    "baseline": 0.366998721331439,
+    "candidate": 0.36084555420219244
+  },
+  "allAiWallCostReductionPercent": 1.6766181383203294
+}

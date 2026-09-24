@@ -1,0 +1,19 @@
+{
+  "pid": 3056,
+  "output": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\solo-29-club",
+  "visible": false,
+  "windowed": false,
+  "directGraphics": false,
+  "trafficDiagnostics": false,
+  "sweepContacts": false,
+  "noImmediateSafety": false,
+  "track": "cedar",
+  "loadout": "club",
+  "grid": "pack",
+  "cars": 1,
+  "laps": 1,
+  "seed": 1709,
+  "policy": "reference",
+  "racingLine": "cedar-smooth-v2",
+  "playbackRate": 4
+}

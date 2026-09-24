@@ -1,0 +1,27 @@
+{
+  "scope": "Supplement only. Raw parity remains failed. Identical stored motion/decisions/events and all other race-result fields; incomplete car 9 accumulates two recovery clocks until exports 0.033325 seconds apart. No claim of complete-field or later-time equality.",
+  "reportTimeDifference": 0.0333251953125,
+  "differences": [
+    {
+      "id": 9,
+      "field": "physicalRecoverySeconds",
+      "baseline": 140.829345703125,
+      "candidate": 140.7960205078125,
+      "difference": 0.0333251953125
+    },
+    {
+      "id": 9,
+      "field": "recoveryWaitSeconds",
+      "baseline": 140.81268310546875,
+      "candidate": 140.77935791015625,
+      "difference": 0.0333251953125
+    }
+  ],
+  "checks": {
+    "allOtherStoredParityChecksMatch": true,
+    "onlyCar9RecoveryClocksDiffer": true,
+    "differencesExactlyEqualExportClockDelta": true,
+    "car9UnfinishedInBoth": true
+  },
+  "explained": true
+}

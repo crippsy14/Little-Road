@@ -1,0 +1,585 @@
+{
+  "scope": "First prospective two-second frozen-path probes, club car, normal physics. Five-second timed observations; lap completion is not expected or scored. Neither real-time performance nor general race acceptance.",
+  "passed": 72,
+  "total": 72,
+  "checks": [
+    {
+      "name": "Every declared probe completed once",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: bounded prospective position error",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: swept bounds cover dense reference substeps",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: envelope flags departure without rejecting normal path",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: predicts actual departure or containment",
+      "passed": true
+    },
+    {
+      "name": "rejoin-left: normal path remains contained and contact-free",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: bounded prospective position error",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: swept bounds cover dense reference substeps",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: envelope flags departure without rejecting normal path",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: predicts actual departure or containment",
+      "passed": true
+    },
+    {
+      "name": "rejoin-right: normal path remains contained and contact-free",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: bounded prospective position error",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: swept bounds cover dense reference substeps",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: envelope flags departure without rejecting normal path",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: predicts actual departure or containment",
+      "passed": true
+    },
+    {
+      "name": "switchback-left: normal path remains contained and contact-free",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: bounded prospective position error",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: swept bounds cover dense reference substeps",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: envelope flags departure without rejecting normal path",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: predicts actual departure or containment",
+      "passed": true
+    },
+    {
+      "name": "switchback-right: normal path remains contained and contact-free",
+      "passed": true
+    },
+    {
+      "name": "overspeed-left: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "overspeed-left: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "overspeed-left: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "overspeed-left: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "overspeed-left: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "overspeed-left: bounded prospective position error",
+      "passed": true
+    },
+    {
+      "name": "overspeed-left: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "overspeed-left: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "overspeed-left: swept bounds cover dense reference substeps",
+      "passed": true
+    },
+    {
+      "name": "overspeed-left: envelope flags departure without rejecting normal path",
+      "passed": true
+    },
+    {
+      "name": "overspeed-left: predicts actual departure or containment",
+      "passed": true
+    },
+    {
+      "name": "overspeed-right: normal process exit",
+      "passed": true
+    },
+    {
+      "name": "overspeed-right: declared forecast cadence",
+      "passed": true
+    },
+    {
+      "name": "overspeed-right: warm forecasts exactly match the cold forecast",
+      "passed": true
+    },
+    {
+      "name": "overspeed-right: complete declared forecast window",
+      "passed": true
+    },
+    {
+      "name": "overspeed-right: sufficient supported calibration samples",
+      "passed": true
+    },
+    {
+      "name": "overspeed-right: bounded prospective position error",
+      "passed": true
+    },
+    {
+      "name": "overspeed-right: bounded body-clearance underestimate",
+      "passed": true
+    },
+    {
+      "name": "overspeed-right: declared envelope mode",
+      "passed": true
+    },
+    {
+      "name": "overspeed-right: swept bounds cover dense reference substeps",
+      "passed": true
+    },
+    {
+      "name": "overspeed-right: envelope flags departure without rejecting normal path",
+      "passed": true
+    },
+    {
+      "name": "overspeed-right: predicts actual departure or containment",
+      "passed": true
+    },
+    {
+      "name": "Overspeed set demonstrates at least one real road-envelope failure",
+      "passed": true
+    }
+  ],
+  "summary": {
+    "rejoin-left": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.03697424381971359,
+      "maxBodyUnderestimate": 0.0398712158203125,
+      "predictedDeparture": -1.0,
+      "actualDeparture": -1.0,
+      "maxPredictedBodyOffset": 5.1959991455078125,
+      "maxActualBodyOffset": 5.196685791015625,
+      "forecastMilliseconds": 6.14300012588501,
+      "forecastCosts": [
+        {
+          "totalMs": 6.143,
+          "projectionMs": 0.8543,
+          "followerMs": 2.6289000000000016,
+          "bodyMs": 1.2886,
+          "physicsMs": 1.2364999999999913
+        },
+        {
+          "totalMs": 2.6417,
+          "projectionMs": 0.7848000000000006,
+          "followerMs": 1.6037999999999992,
+          "bodyMs": 0.1254,
+          "physicsMs": 0.08059999999999995
+        },
+        {
+          "totalMs": 2.6617,
+          "projectionMs": 0.8060000000000009,
+          "followerMs": 1.5791999999999988,
+          "bodyMs": 0.13520000000000001,
+          "physicsMs": 0.08539999999999981
+        },
+        {
+          "totalMs": 2.6193,
+          "projectionMs": 0.7823000000000013,
+          "followerMs": 1.4846999999999992,
+          "bodyMs": 0.2052,
+          "physicsMs": 0.08399999999999995
+        }
+      ],
+      "envelope": {
+        "envelopeQueries": 36,
+        "envelopeAuditSamples": 2160,
+        "envelopeMaximumUnderestimate": 0.0,
+        "envelopeFirstUncertain": -1.0,
+        "envelopeMaximumBound": 7.78574275970459
+      }
+    },
+    "rejoin-right": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.03884560614824295,
+      "maxBodyUnderestimate": 0.041839599609375,
+      "predictedDeparture": -1.0,
+      "actualDeparture": -1.0,
+      "maxPredictedBodyOffset": 5.231689453125,
+      "maxActualBodyOffset": 5.232086181640625,
+      "forecastMilliseconds": 5.813799858093262,
+      "forecastCosts": [
+        {
+          "totalMs": 5.8138,
+          "projectionMs": 0.7359,
+          "followerMs": 2.6484,
+          "bodyMs": 1.2238,
+          "physicsMs": 1.0660999999999916
+        },
+        {
+          "totalMs": 2.6948,
+          "projectionMs": 0.788700000000001,
+          "followerMs": 1.6326999999999978,
+          "bodyMs": 0.1244,
+          "physicsMs": 0.0789999999999999
+        },
+        {
+          "totalMs": 2.9675,
+          "projectionMs": 0.8225000000000009,
+          "followerMs": 1.8505,
+          "bodyMs": 0.13620000000000002,
+          "physicsMs": 0.09339999999999968
+        },
+        {
+          "totalMs": 2.9219,
+          "projectionMs": 0.8706000000000007,
+          "followerMs": 1.7089999999999987,
+          "bodyMs": 0.189,
+          "physicsMs": 0.08029999999999997
+        }
+      ],
+      "envelope": {
+        "envelopeQueries": 36,
+        "envelopeAuditSamples": 2160,
+        "envelopeMaximumUnderestimate": 0.0,
+        "envelopeFirstUncertain": -1.0,
+        "envelopeMaximumBound": 7.845694065093994
+      }
+    },
+    "switchback-left": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.05122184008359909,
+      "maxBodyUnderestimate": 0.0318608283996582,
+      "predictedDeparture": -1.0,
+      "actualDeparture": -1.0,
+      "maxPredictedBodyOffset": 6.999392986297607,
+      "maxActualBodyOffset": 7.030829429626465,
+      "forecastMilliseconds": 5.842299938201904,
+      "forecastCosts": [
+        {
+          "totalMs": 5.8423,
+          "projectionMs": 0.7318999999999988,
+          "followerMs": 2.8951,
+          "bodyMs": 1.3954,
+          "physicsMs": 0.6759999999999922
+        },
+        {
+          "totalMs": 2.8653,
+          "projectionMs": 0.6539999999999996,
+          "followerMs": 1.6904000000000003,
+          "bodyMs": 0.3874,
+          "physicsMs": 0.08390000000000002
+        },
+        {
+          "totalMs": 2.9037,
+          "projectionMs": 0.6923999999999995,
+          "followerMs": 1.6759000000000004,
+          "bodyMs": 0.4038,
+          "physicsMs": 0.0772999999999999
+        },
+        {
+          "totalMs": 2.6155,
+          "projectionMs": 0.6054999999999998,
+          "followerMs": 1.5600000000000018,
+          "bodyMs": 0.3337,
+          "physicsMs": 0.07370000000000011
+        }
+      ],
+      "envelope": {
+        "envelopeQueries": 132,
+        "envelopeAuditSamples": 2160,
+        "envelopeMaximumUnderestimate": 0.0,
+        "envelopeFirstUncertain": -1.0,
+        "envelopeMaximumBound": 7.847815036773682
+      }
+    },
+    "switchback-right": {
+      "eligibleSamples": 241,
+      "totalSamples": 241,
+      "maxPositionError": 0.04377427324652672,
+      "maxBodyUnderestimate": 0.008249759674072266,
+      "predictedDeparture": -1.0,
+      "actualDeparture": -1.0,
+      "maxPredictedBodyOffset": 6.660471439361572,
+      "maxActualBodyOffset": 6.660471439361572,
+      "forecastMilliseconds": 5.919300079345703,
+      "forecastCosts": [
+        {
+          "totalMs": 5.9193,
+          "projectionMs": 0.7389999999999995,
+          "followerMs": 3.1815,
+          "bodyMs": 1.1184,
+          "physicsMs": 0.7059999999999923
+        },
+        {
+          "totalMs": 3.1443,
+          "projectionMs": 0.7410999999999992,
+          "followerMs": 1.9232999999999996,
+          "bodyMs": 0.3213,
+          "physicsMs": 0.10069999999999976
+        },
+        {
+          "totalMs": 2.8142,
+          "projectionMs": 0.5912999999999998,
+          "followerMs": 1.7024999999999997,
+          "bodyMs": 0.38470000000000004,
+          "physicsMs": 0.08270000000000005
+        },
+        {
+          "totalMs": 2.5114,
+          "projectionMs": 0.5426999999999998,
+          "followerMs": 1.4637000000000011,
+          "bodyMs": 0.38689999999999997,
+          "physicsMs": 0.07010000000000012
+        }
+      ],
+      "envelope": {
+        "envelopeQueries": 132,
+        "envelopeAuditSamples": 2160,
+        "envelopeMaximumUnderestimate": 0.0,
+        "envelopeFirstUncertain": -1.0,
+        "envelopeMaximumBound": 7.634140968322754
+      }
+    },
+    "overspeed-left": {
+      "eligibleSamples": 108,
+      "totalSamples": 241,
+      "maxPositionError": 0.0033448522444814444,
+      "maxBodyUnderestimate": 0.0030107498168945312,
+      "predictedDeparture": 0.7833333611488342,
+      "actualDeparture": 0.7833333611488342,
+      "maxPredictedBodyOffset": 18.516447067260742,
+      "maxActualBodyOffset": 26.289989471435547,
+      "forecastMilliseconds": 7.788400173187256,
+      "forecastCosts": [
+        {
+          "totalMs": 7.7884,
+          "projectionMs": 0.6938000000000001,
+          "followerMs": 2.956800000000002,
+          "bodyMs": 3.2189,
+          "physicsMs": 0.7057999999999925
+        },
+        {
+          "totalMs": 4.24,
+          "projectionMs": 0.6506999999999995,
+          "followerMs": 1.7339000000000004,
+          "bodyMs": 1.6807,
+          "physicsMs": 0.09309999999999972
+        },
+        {
+          "totalMs": 3.9555,
+          "projectionMs": 0.5802,
+          "followerMs": 1.545699999999999,
+          "bodyMs": 1.7135,
+          "physicsMs": 0.07270000000000003
+        },
+        {
+          "totalMs": 4.2557,
+          "projectionMs": 0.6895999999999991,
+          "followerMs": 1.6428,
+          "bodyMs": 1.7868000000000002,
+          "physicsMs": 0.08329999999999986
+        }
+      ],
+      "envelope": {
+        "envelopeQueries": 636,
+        "envelopeAuditSamples": 2160,
+        "envelopeMaximumUnderestimate": 0.0,
+        "envelopeFirstUncertain": 0.7750000357627869,
+        "envelopeMaximumBound": 18.574710845947266
+      }
+    },
+    "overspeed-right": {
+      "eligibleSamples": 40,
+      "totalSamples": 241,
+      "maxPositionError": 0.000160942247021012,
+      "maxBodyUnderestimate": 0.00026226043701171875,
+      "predictedDeparture": 0.19166667759418488,
+      "actualDeparture": 0.19166667759418488,
+      "maxPredictedBodyOffset": 21.92892074584961,
+      "maxActualBodyOffset": 37.27948760986328,
+      "forecastMilliseconds": 8.199899673461914,
+      "forecastCosts": [
+        {
+          "totalMs": 8.1999,
+          "projectionMs": 0.6135999999999989,
+          "followerMs": 2.6615000000000015,
+          "bodyMs": 4.0391,
+          "physicsMs": 0.7362999999999926
+        },
+        {
+          "totalMs": 5.1605,
+          "projectionMs": 0.6859999999999972,
+          "followerMs": 1.6990000000000012,
+          "bodyMs": 2.6172999999999997,
+          "physicsMs": 0.0797999999999998
+        },
+        {
+          "totalMs": 4.6944,
+          "projectionMs": 0.652399999999999,
+          "followerMs": 1.6597999999999988,
+          "bodyMs": 2.2455,
+          "physicsMs": 0.07939999999999997
+        },
+        {
+          "totalMs": 4.8291,
+          "projectionMs": 0.7177999999999978,
+          "followerMs": 1.8603000000000003,
+          "bodyMs": 2.0737,
+          "physicsMs": 0.1132999999999998
+        }
+      ],
+      "envelope": {
+        "envelopeQueries": 916,
+        "envelopeAuditSamples": 2160,
+        "envelopeMaximumUnderestimate": 0.0,
+        "envelopeFirstUncertain": 0.18333333730697632,
+        "envelopeMaximumBound": 22.006620407104492
+      }
+    }
+  }
+}

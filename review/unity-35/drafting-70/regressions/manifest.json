@@ -1,0 +1,86 @@
+{
+  "complete": true,
+  "runs": [
+    {
+      "cars": 3,
+      "name": "queue",
+      "scenario": "queue",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\drafting-70\\regressions\\queue",
+      "exitCode": 0,
+      "coast": true
+    },
+    {
+      "cars": 2,
+      "name": "no-room",
+      "scenario": "no-room",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\drafting-70\\regressions\\no-room",
+      "exitCode": 0,
+      "coast": true
+    },
+    {
+      "cars": 2,
+      "name": "merge-left",
+      "scenario": "merge-left",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\drafting-70\\regressions\\merge-left",
+      "exitCode": 0,
+      "coast": true
+    },
+    {
+      "cars": 2,
+      "name": "merge-right",
+      "scenario": "merge-right",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\drafting-70\\regressions\\merge-right",
+      "exitCode": 0,
+      "coast": true
+    },
+    {
+      "cars": 2,
+      "name": "brake-leader",
+      "scenario": "brake-leader",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\drafting-70\\regressions\\brake-leader",
+      "exitCode": 0,
+      "coast": true
+    },
+    {
+      "cars": 3,
+      "name": "corner-three",
+      "scenario": "corner-three",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\drafting-70\\regressions\\corner-three",
+      "exitCode": 0,
+      "coast": true
+    },
+    {
+      "cars": 1,
+      "name": "solo-street-control",
+      "scenario": "solo",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\drafting-70\\regressions\\solo-street-control",
+      "exitCode": 0,
+      "coast": false
+    },
+    {
+      "cars": 1,
+      "name": "solo-street-coast",
+      "scenario": "solo",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\drafting-70\\regressions\\solo-street-coast",
+      "exitCode": 0,
+      "coast": true
+    },
+    {
+      "cars": 1,
+      "name": "solo-club-control",
+      "scenario": "solo",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\drafting-70\\regressions\\solo-club-control",
+      "exitCode": 0,
+      "coast": false
+    },
+    {
+      "cars": 1,
+      "name": "solo-club-coast",
+      "scenario": "solo",
+      "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\drafting-70\\regressions\\solo-club-coast",
+      "exitCode": 0,
+      "coast": true
+    }
+  ],
+  "scope": "Controlled clean-opportunity regressions versus frozen38; same-build paired solo street/club. Existing corridor contract and rear-merge witness deadlines retained. No rendered or broad personality acceptance."
+}

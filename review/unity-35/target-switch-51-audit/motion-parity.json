@@ -1,0 +1,27 @@
+{
+  "scope": "Exact equality of stored samples/events/results; terminal export positions and profiling costs are separate. Hidden timing is not rendered-frame acceptance.",
+  "baseline": "review\\unity-35\\traffic-coast-50\\field-combined",
+  "candidate": "review\\unity-35\\target-switch-51-audit",
+  "checks": {
+    "motion": true,
+    "checkpointPassages": true,
+    "impacts": true,
+    "assistedRecoveries": true,
+    "overlapPeaks": true,
+    "samples": true,
+    "contextSamples": true,
+    "carRaceResults": true,
+    "normalExit": true
+  },
+  "passed": true,
+  "meanDecisionRegionMsPerPhysicsTick": {
+    "baseline": 2.125118382178707,
+    "candidate": 2.1184832662722006
+  },
+  "decisionRegionReductionPercent": 0.312223354809249,
+  "meanAllAiMsPerSnapshotTick": {
+    "baseline": 2.735678772317902,
+    "candidate": 2.7086524538425127
+  },
+  "allAiWallCostReductionPercent": 0.9879200273389732
+}

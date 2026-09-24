@@ -1,0 +1,198 @@
+using UnityEngine;
+
+namespace LittleRoad
+{
+    // Initial, inspectable traffic planner. Physics and checkpoint ownership stay
+    // in RoadCar. No opponent policy, future input, or extra grip is consulted.
+    public sealed class TrafficDriverPolicy:IDriverPolicy
+    {
+        const int Count=41;
+        sealed class Path
+        {
+            public readonly Vector3[] point=new Vector3[Count],forward=new Vector3[Count];
+            public readonly float[] speed=new float[Count],distance=new float[Count],time=new float[Count];
+            public float offset,cost,clearance;public bool clear;public int rejection;
+        }
+        readonly RacingSpeedProfile profile;
+        readonly ReferenceDriverPolicy reference;
+        readonly RecoverySensor space;
+        readonly Path[] candidates={new(),new(),new(),new(),new(),new(),new(),new(),new()};
+        readonly float[] observedLineError=new float[24],observedLateralSpeed=new float[24],observedLineDistance=new float[24];
+        Path chosen;double nextPlan,committedUntil;bool planned;
+        float selectedOffset;int passing=-1;
+        public string Intent {get;private set;}="RaceLine";
+        public string Reason {get;private set;}="Clear track";
+        public int Leader {get;private set;}=-1;
+        public int Rejected {get;private set;}
+        public float PlannedOffset=>selectedOffset;
+        public float Clearance=>chosen?.clearance??999;
+        public bool WaitingForTraffic {get;private set;}
+        public TrafficDriverPolicy(RacingSpeedProfile profile,RecoverySensor space)
+        {this.profile=profile;reference=new ReferenceDriverPolicy(profile);this.space=space;}
+
+        static float Gap(float a,float b,float length)=>Mathf.Repeat(b-a+length*.5f,length)-length*.5f;
+        static Vector3 Right(Vector3 forward)=>Vector3.Cross(Vector3.up,forward).normalized;
+        Vector3 LineForward(float d)=>(profile.line.At(d+.5f)-profile.line.At(d-.5f)).normalized;
+        public static float Blend(float start,float derivative,float end,float metres,float length)
+        {
+            float u=Mathf.Clamp01(metres/length),a=derivative*length,delta=end-start;
+            return start+a*u+(10*delta-6*a)*u*u*u+(-15*delta+8*a)*u*u*u*u+(6*delta-3*a)*u*u*u*u*u;
+        }
+        Vector3 Point(float d,float s,float start,float slope,float end,float blend)
+        {return profile.line.At(d+s)+Right(LineForward(d+s))*Blend(start,slope,end,s,blend);}
+        public static float Separation(Vector3 a,Vector3 af,float aw,float al,Vector3 b,Vector3 bf,float bw,float bl)
+        {return Separation(a,af,aw,al,b,bf,bw,bl,out _);}
+        static float Separation(Vector3 a,Vector3 af,float aw,float al,Vector3 b,Vector3 bf,float bw,float bl,out Vector3 separatingAxis)
+        {
+            var ar=Right(af);var br=Right(bf);var delta=b-a;float result=float.NegativeInfinity;separatingAxis=af;
+            for(int i=0;i<4;i++) {
+                var axis=i==0?af:i==1?ar:i==2?bf:br;
+                float span=al*Mathf.Abs(Vector3.Dot(af,axis))+aw*Mathf.Abs(Vector3.Dot(ar,axis))+bl*Mathf.Abs(Vector3.Dot(bf,axis))+bw*Mathf.Abs(Vector3.Dot(br,axis));
+                float separation=Mathf.Abs(Vector3.Dot(delta,axis))-span;
+                if(separation>result){result=separation;separatingAxis=axis;}
+            }
+            return result;
+        }
+        void Evaluate(Path path,in DriverObservation o,float d,float error,float end,float speedLimit)
+        {
+            path.clear=false;path.offset=end;path.clearance=999;path.rejection=0;
+            float v=Mathf.Max(0,o.self.speed),budget=o.tuning.roadGrip*1.65f;
+            float braking=Mathf.Min(o.tuning.braking,budget*.8f);
+            float horizon=Mathf.Max(65,v*4,v*v/(2*Mathf.Max(1,braking))+25),step=horizon/(Count-1);
+            float blend=Mathf.Max(25,v*1.5f),slope=Mathf.Clamp(Vector3.Dot(o.self.forward,Right(LineForward(d)))/Mathf.Max(.5f,Vector3.Dot(o.self.forward,LineForward(d))),-.6f,.6f);
+            path.distance[0]=path.time[0]=0;
+            for(int i=0;i<Count;i++) {
+                float s=i*step;var p=Point(d,s,error,slope,end,blend);p.y=o.self.position.y;
+                var before=Point(d,s-1,error,slope,end,blend);var after=Point(d,s+1,error,slope,end,blend);
+                var forward=(after-before).normalized;forward.y=0;forward.Normalize();
+                path.point[i]=p;path.forward[i]=forward;
+                var a=p-before;a.y=0;var b=after-p;b.y=0;
+                float curvature=2*Mathf.Abs(Vector3.Cross(a,b).y)/Mathf.Max(.0001f,a.magnitude*b.magnitude*(a+b).magnitude);
+                path.speed[i]=Mathf.Min(speedLimit,profile.Speed(d+s),Mathf.Sqrt(budget*.75f/Mathf.Max(.00001f,curvature)));
+                var roadRight=o.route.Right(d+s);float offset=Mathf.Abs(Vector3.Dot(p-o.route.At(d+s),roadRight));
+                float footprint=o.self.halfWidth*Mathf.Abs(Vector3.Dot(Right(forward),roadRight))+o.self.halfLength*Mathf.Abs(Vector3.Dot(forward,roadRight));
+                if(offset+footprint+.25f>Circuit.Width*.5f){path.rejection=1;return;}
+                if(i>0) {
+                    if(!space.StaticSweepClear(path.point[i-1],p,forward)){path.rejection=2;return;}
+                    path.distance[i]=path.distance[i-1]+Vector3.Distance(path.point[i-1],p);
+                }
+            }
+            for(int i=Count-2;i>=0;i--)path.speed[i]=Mathf.Min(path.speed[i],Mathf.Sqrt(path.speed[i+1]*path.speed[i+1]+2*braking*(path.distance[i+1]-path.distance[i])));
+            float predicted=v;
+            for(int i=1;i<Count;i++) {
+                float ds=path.distance[i]-path.distance[i-1];float force=DriveModel.EngineForce(o.tuning,predicted)-DriveModel.Resistance(predicted,o.tuning.mass);
+                float next=Mathf.Min(path.speed[i],Mathf.Sqrt(Mathf.Max(0,predicted*predicted+2*force*ds)));
+                // A requested stop cannot instantly change the observed speed.
+                next=Mathf.Max(next,Mathf.Sqrt(Mathf.Max(0,predicted*predicted-2*braking*ds)));
+                path.time[i]=path.time[i-1]+2*ds/Mathf.Max(1,predicted+next);predicted=next;
+                if(path.time[i]>5)continue;
+                foreach(var other in o.traffic) {
+                    if(other.id==o.self.id||Vector3.Distance(other.position,o.self.position)>horizon+50)continue;
+                    for(int sample=0;sample<3;sample++) {
+                        float u=sample*.5f,t=Mathf.Lerp(path.time[i-1],path.time[i],u);
+                        var point=Vector3.Lerp(path.point[i-1],path.point[i],u);var forward=Vector3.Slerp(path.forward[i-1],path.forward[i],u);
+                        // Current velocity is useful only in the immediate future:
+                        // extrapolating it for seconds sends cornering cars through
+                        // the infield. Longer predictions follow the known line,
+                        // retaining observed line error and lateral movement.
+                        for(int model=0;model<2;model++) {
+                            if(model==0&&t>.6f)continue;
+                            float gap=Gap(o.self.route,other.route,o.route.Length);
+                            // A distant rear car closing on an unchanged lane must
+                            // manage its own following distance. Braking here would
+                            // create the very rear-end collision being predicted.
+                            // Immediate occupancy and all lane changes stay checked.
+                            if(t>.6f&&gap<-(o.self.halfLength+other.halfLength+2)&&Mathf.Abs(end-error)<.5f)continue;
+                            float route=observedLineDistance[other.id]+Mathf.Max(0,other.speed)*t;
+                            float otherError=observedLineError[other.id],lateralVelocity=observedLateralSpeed[other.id];
+                            var position=model==0?other.position+other.velocity*t:profile.line.At(route)+Right(LineForward(route))*(otherError+lateralVelocity*Mathf.Min(t,.75f));
+                            var heading=model==0?other.forward:LineForward(route);
+                            float separation=Separation(point,forward,o.self.halfWidth,o.self.halfLength,position,heading,other.halfWidth,other.halfLength,out var axis);
+                            // Closing along the straight does not consume lateral
+                            // clearance between parallel cars. Inflate only by
+                            // relative motion along the separating axis; retain a
+                            // geometric margin and intermediate sample coverage.
+                            float closing=Mathf.Abs(Vector3.Dot(forward*next-other.velocity,axis));
+                            float sweepMargin=.25f+(closing+.5f)*(path.time[i]-path.time[i-1])*.25f;
+                            path.clearance=Mathf.Min(path.clearance,separation-sweepMargin);
+                            if(separation<sweepMargin){path.rejection=3;return;}
+                        }
+                    }
+                }
+            }
+            path.clear=true;
+            path.cost=path.time[Count-1]+Mathf.Abs(end)*.07f+(Mathf.Abs(end-selectedOffset)>.5f?.3f:0);
+        }
+        void Plan(in DriverObservation o,float d,float error)
+        {
+            nextPlan=o.timestamp+.1;planned=true;Leader=-1;float nearest=float.MaxValue,leaderSpeed=0,leaderLength=0;
+            bool alongside=false,keepPass=false;
+            foreach(var other in o.traffic) {
+                if(other.id==o.self.id)continue;
+                float gap=Gap(o.self.route,other.route,o.route.Length);float otherD=profile.line.Project(other.position,other.route,out float lateral);
+                observedLineDistance[other.id]=otherD;observedLineError[other.id]=lateral;observedLateralSpeed[other.id]=Vector3.Dot(other.velocity,Right(LineForward(otherD)));
+                if(Mathf.Abs(gap)<o.self.halfLength+other.halfLength+3&&Mathf.Abs(lateral-error)<7)alongside=true;
+                if(other.id==passing&&gap>-(o.self.halfLength+other.halfLength+4))keepPass=true;
+                if(gap>0&&gap<nearest&&gap<Mathf.Max(75,o.self.speed*4)&&Mathf.Abs(lateral-error)<o.self.halfWidth+other.halfWidth+.3f) {
+                    nearest=gap;Leader=other.id;leaderSpeed=Mathf.Max(0,other.speed);leaderLength=other.halfLength;
+                }
+            }
+            WaitingForTraffic=Leader>=0&&nearest<20&&o.self.speed<2;
+            bool advantage=Leader>=0&&o.self.speed>leaderSpeed+1.5f;
+            if((!keepPass||(!alongside&&!advantage))&&o.timestamp>=committedUntil)passing=-1;
+            float best=float.MaxValue;chosen=null;Rejected=0;int roadRejected=0,staticRejected=0,trafficRejected=0;
+            for(int i=0;i<candidates.Length;i++) {
+                bool holdLane=i>=7,following=i==6||i==8;
+                float delta=holdLane?error:i==0?0:i==1?-3.8f:i==2?3.8f:i==3?-6:i==4?6:i==5?selectedOffset:0;
+                if(!following&&!holdLane&&passing>=0&&keepPass&&Mathf.Abs(delta-selectedOffset)>.2f)continue;
+                if(!following&&!holdLane&&passing<0&&!alongside&&!advantage&&Mathf.Abs(delta)>.1f)continue;
+                if(!following&&!holdLane&&Leader<0&&!alongside&&passing<0&&Mathf.Abs(delta)>.1f)continue;
+                float limit=float.MaxValue;
+                if(following) {
+                    if(Leader<0)continue;
+                    delta=holdLane?error:0;
+                    float desired=o.self.halfLength+leaderLength+1.5f+Mathf.Max(o.self.speed,0)*.55f;
+                    limit=Mathf.Max(0,leaderSpeed+(nearest-desired)*.65f);
+                }
+                Evaluate(candidates[i],in o,d,error,delta,limit);
+                if(!candidates[i].clear){Rejected++;if(candidates[i].rejection==1)roadRejected++;else if(candidates[i].rejection==2)staticRejected++;else trafficRejected++;continue;}
+                float cost=candidates[i].cost+(following?1.5f:0)+(holdLane?.2f:0);
+                if(cost<best){best=cost;chosen=candidates[i];}
+            }
+            if(chosen==null){Intent="Brake / hold";Reason=$"No clear path: road {roadRejected}, scenery {staticRejected}, traffic {trafficRejected}";return;}
+            selectedOffset=chosen.offset;
+            if(Mathf.Abs(selectedOffset)>.5f&&Leader>=0) {
+                if(passing!=Leader){passing=Leader;committedUntil=o.timestamp+1.5;}
+                Intent=selectedOffset<0?"Pass left":"Pass right";Reason="Clear predicted passing path";
+            }else if(Leader>=0){Intent="Follow";Reason="Preserve gap to leader";}
+            else if(Mathf.Abs(error)>.3f||Mathf.Abs(selectedOffset)>.3f){Intent="Merge";Reason="Return after full-body clearance";}
+            else {Intent="RaceLine";Reason="Clear track";}
+        }
+        public DriveCommand Decide(in DriverObservation o)
+        {
+            float d=profile.line.Project(o.self.position,o.self.route,out float error);
+            bool nearby=false;
+            foreach(var other in o.traffic)if(other.id!=o.self.id&&Mathf.Abs(Gap(o.self.route,other.route,o.route.Length))<Mathf.Max(100,o.self.speed*4+25)){nearby=true;break;}
+            if(!nearby&&passing<0&&Mathf.Abs(selectedOffset)<.1f){Intent="RaceLine";Reason="Clear track";chosen=null;return reference.Decide(in o);}
+            if(!planned||o.timestamp>=nextPlan)Plan(in o,d,error);
+            if(chosen==null)return new DriveCommand(o.self.speed>.1f?-1:0,0,0,o.self.offset,selectedOffset);
+            int nearest=0;float minimum=float.MaxValue,coordinate=0;
+            for(int i=0;i<Count-1;i++) {
+                var edge=chosen.point[i+1]-chosen.point[i];float u=Mathf.Clamp01(Vector3.Dot(o.self.position-chosen.point[i],edge)/Mathf.Max(.001f,edge.sqrMagnitude));
+                float distance=(chosen.point[i]+edge*u-o.self.position).sqrMagnitude;
+                if(distance<minimum){minimum=distance;nearest=i;coordinate=Mathf.Lerp(chosen.distance[i],chosen.distance[i+1],u);}
+            }
+            float look=Mathf.Clamp(5+Mathf.Max(o.self.speed,0)*.4f,6,19);float wanted=coordinate+look;int aim=nearest;
+            while(aim<Count-2&&chosen.distance[aim+1]<wanted)aim++;
+            var targetPoint=Vector3.Lerp(chosen.point[aim],chosen.point[aim+1],Mathf.InverseLerp(chosen.distance[aim],chosen.distance[aim+1],wanted));
+            var delta=targetPoint-o.self.position;float angle=Vector3.SignedAngle(o.self.forward,delta,Vector3.up)*Mathf.Deg2Rad;
+            float curve=2*Mathf.Sin(angle)/Mathf.Max(3,delta.magnitude);
+            float steer=Mathf.Clamp(curve*Mathf.Max(o.self.speed,3)*1.09f/o.tuning.yaw,-1,1);
+            float target=chosen.speed[Mathf.Min(Count-1,nearest+1)];target=Mathf.Min(target,Mathf.Sqrt(o.tuning.roadGrip*1.65f*.85f/Mathf.Max(.00001f,Mathf.Abs(curve))));
+            if(o.finished)target=Mathf.Min(target,18);
+            float force=(target-o.self.speed)*3+DriveModel.Resistance(o.self.speed,o.tuning.mass);
+            float pedal=force>=0?force/Mathf.Max(.01f,DriveModel.EngineForce(o.tuning,o.self.speed)):force/o.tuning.braking;
+            return new DriveCommand(pedal,steer,target,o.self.offset,profile.line.Offset(d)+selectedOffset);
+        }
+    }
+}

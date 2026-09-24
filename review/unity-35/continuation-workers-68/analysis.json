@@ -1,0 +1,93 @@
+{
+  "scope": "Hidden4x same68-assembly off/on pair; shared rival preparation and following fallback enabled in both. Detailed event audits off. Rendered verification recorded separately.",
+  "parity": {
+    "scope": "Exact equality of stored samples/events/results; terminal export positions and profiling costs are separate. Hidden timing is not rendered-frame acceptance.",
+    "baseline": "review\\unity-35\\continuation-workers-68\\off",
+    "candidate": "review\\unity-35\\continuation-workers-68\\on",
+    "checks": {
+      "motion": true,
+      "checkpointPassages": true,
+      "impacts": true,
+      "assistedRecoveries": true,
+      "overlapPeaks": true,
+      "samples": true,
+      "contextSamples": true,
+      "carRaceResults": true,
+      "normalExit": true,
+      "noRuntimeErrors": true
+    },
+    "passed": true,
+    "meanDecisionRegionMsPerPhysicsTick": {
+      "baseline": 2.726069177642154,
+      "candidate": 2.5842718445035953
+    },
+    "decisionRegionReductionPercent": 5.201530992005232,
+    "meanAllAiMsPerSnapshotTick": {
+      "baseline": 3.248644092843949,
+      "candidate": 3.1464079932247144
+    },
+    "allAiWallCostReductionPercent": 3.147039093769566
+  },
+  "referenceParity": {
+    "scope": "Exact equality of stored samples/events/results; terminal export positions and profiling costs are separate. Hidden timing is not rendered-frame acceptance.",
+    "baseline": "review\\unity-35\\shared-traffic-67\\following-shared",
+    "candidate": "review\\unity-35\\continuation-workers-68\\off",
+    "checks": {
+      "motion": true,
+      "checkpointPassages": true,
+      "impacts": true,
+      "assistedRecoveries": true,
+      "overlapPeaks": true,
+      "samples": true,
+      "contextSamples": true,
+      "carRaceResults": true,
+      "normalExit": true,
+      "noRuntimeErrors": true
+    },
+    "passed": true,
+    "meanDecisionRegionMsPerPhysicsTick": {
+      "baseline": 2.7504293578718997,
+      "candidate": 2.726069177642154
+    },
+    "decisionRegionReductionPercent": 0.8856864532813868,
+    "meanAllAiMsPerSnapshotTick": {
+      "baseline": 3.2689319321652475,
+      "candidate": 3.248644092843949
+    },
+    "allAiWallCostReductionPercent": 0.6206259335556186
+  },
+  "runs": {
+    "off": {
+      "combinedSeconds": 2207.1158752441406,
+      "previewSeconds": 87.65067291259766,
+      "finished": 24,
+      "warmAllocationBytes": 0,
+      "droppedFrames": 0,
+      "counters": {
+        "continuationPrepared": 0,
+        "continuationReused": 0,
+        "preparedRequests": 24506,
+        "prefetchedCalls": 24506,
+        "synchronousCalls": 6948,
+        "forecastMs": 10755.193899999917
+      },
+      "summedForecastWorkerElapsedMs": 39583.7618
+    },
+    "on": {
+      "combinedSeconds": 2207.1158752441406,
+      "previewSeconds": 87.65067291259766,
+      "finished": 24,
+      "warmAllocationBytes": 0,
+      "droppedFrames": 0,
+      "counters": {
+        "continuationPrepared": 1288,
+        "continuationReused": 992,
+        "preparedRequests": 24386,
+        "prefetchedCalls": 25378,
+        "synchronousCalls": 5951,
+        "forecastMs": 9022.794199999918
+      },
+      "summedForecastWorkerElapsedMs": 41479.7644
+    }
+  }
+}

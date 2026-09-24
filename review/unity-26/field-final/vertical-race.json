@@ -1,0 +1,726 @@
+{
+    "scope": "120 Hz observed collider-bottom height above the flat Bayview datum, including ground contacts; not all-track or manual acceptance",
+    "passed": true,
+    "cars": [
+        {
+            "id": 0,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499842643737793,
+            "maxUpwardSpeed": 0.0008847713470458984,
+            "peak": {
+                "id": 0,
+                "time": 1.0000110864639282,
+                "progress": -47.4818115234375,
+                "offset": 3.5023279190063477,
+                "bottom": 0.02499842643737793,
+                "verticalSpeed": 0.0000270158052444458,
+                "position": {
+                    "x": -103.60588836669922,
+                    "y": 0.03388494253158569,
+                    "z": -48.08583450317383
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-105.389, 0.025, -47.201) impulse=(0.00, 69.46, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-105.387, 0.025, -47.204) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-105.386, 0.025, -47.206) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-105.384, 0.025, -47.209) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-105.382, 0.025, -47.212) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-105.380, 0.025, -47.215) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-105.378, 0.025, -47.217) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-105.376, 0.025, -47.220) impulse=(0.00, 69.49, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 1,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499997615814209,
+            "maxUpwardSpeed": 1.4901161193847656e-8,
+            "peak": {
+                "id": 1,
+                "time": 1.0000110864639282,
+                "progress": -4.0548095703125,
+                "offset": -3.070504903793335,
+                "bottom": 0.02499997615814209,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -71.76795196533203,
+                    "y": 0.02749994397163391,
+                    "z": -77.30371856689453
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-71.877, 0.025, -78.891) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-71.838, 0.025, -78.932) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-71.798, 0.025, -78.974) impulse=(0.00, 69.46, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-71.759, 0.025, -79.016) impulse=(0.00, 69.52, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-71.719, 0.025, -79.059) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-71.678, 0.025, -79.102) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-71.637, 0.025, -79.146) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-71.596, 0.025, -79.190) impulse=(0.00, 69.49, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.024999618530273438,
+            "maxUpwardSpeed": 0.0,
+            "peak": {
+                "id": 2,
+                "time": 1.0000110864639282,
+                "progress": -4.7479248046875,
+                "offset": 0.05010408163070679,
+                "bottom": 0.024999618530273438,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -74.0462417602539,
+                    "y": 0.027499616146087646,
+                    "z": -79.51405334472656
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-76.383, 0.025, -79.245) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-76.335, 0.025, -79.283) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-76.287, 0.025, -79.322) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-76.238, 0.025, -79.361) impulse=(0.00, 69.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-76.189, 0.025, -79.400) impulse=(0.00, 69.52, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-76.139, 0.025, -79.439) impulse=(0.00, 69.50, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-76.089, 0.025, -79.479) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-76.039, 0.025, -79.519) impulse=(0.00, 69.49, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499842643737793,
+            "maxUpwardSpeed": 0.0009943768382072449,
+            "peak": {
+                "id": 3,
+                "time": 1.0000110864639282,
+                "progress": -6.2763671875,
+                "offset": 3.2624332904815674,
+                "bottom": 0.02499842643737793,
+                "verticalSpeed": 0.000505693256855011,
+                "position": {
+                    "x": -77.17142486572266,
+                    "y": 0.03419524431228638,
+                    "z": -81.21466827392578
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.474, 0.025, -81.290) impulse=(0.00, 69.44, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.430, 0.025, -81.320) impulse=(0.00, 69.53, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.387, 0.025, -81.350) impulse=(0.00, 69.44, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.342, 0.025, -81.380) impulse=(0.00, 69.52, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.298, 0.025, -81.410) impulse=(0.00, 69.48, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.252, 0.025, -81.440) impulse=(0.00, 69.48, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.207, 0.025, -81.470) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.160, 0.025, -81.500) impulse=(0.00, 69.48, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499985694885254,
+            "maxUpwardSpeed": 0.0,
+            "peak": {
+                "id": 4,
+                "time": 1.0000110864639282,
+                "progress": -12.425537109375,
+                "offset": -3.513016700744629,
+                "bottom": 0.02499985694885254,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -77.52881622314453,
+                    "y": 0.027499794960021973,
+                    "z": -72.02307891845703
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.602, 0.025, -71.761) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.587, 0.025, -71.778) impulse=(0.00, 60.46, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.570, 0.025, -71.796) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.554, 0.025, -71.813) impulse=(0.00, 60.46, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.537, 0.025, -71.831) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.520, 0.025, -71.849) impulse=(0.00, 60.46, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.503, 0.025, -71.867) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.485, 0.025, -71.886) impulse=(0.00, 60.45, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499985694885254,
+            "maxUpwardSpeed": 0.0,
+            "peak": {
+                "id": 5,
+                "time": 1.0000110864639282,
+                "progress": -10.960693359375,
+                "offset": 0.34714680910110474,
+                "bottom": 0.02499985694885254,
+                "verticalSpeed": -0.00002288818359375,
+                "position": {
+                    "x": -79.0877685546875,
+                    "y": 0.027499675750732422,
+                    "z": -75.85076904296875
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.330, 0.025, -77.526) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.308, 0.025, -77.558) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.286, 0.025, -77.591) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.264, 0.025, -77.625) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.242, 0.025, -77.658) impulse=(0.00, 69.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.220, 0.025, -77.691) impulse=(0.00, 69.52, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.198, 0.025, -77.724) impulse=(0.00, 69.50, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-79.176, 0.025, -77.758) impulse=(0.00, 69.47, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499830722808838,
+            "maxUpwardSpeed": 0.0012153983116149902,
+            "peak": {
+                "id": 6,
+                "time": 1.0000110864639282,
+                "progress": -13.6417236328125,
+                "offset": 3.521230697631836,
+                "bottom": 0.02499830722808838,
+                "verticalSpeed": 0.00006154179573059082,
+                "position": {
+                    "x": -83.30445861816406,
+                    "y": 0.03391009569168091,
+                    "z": -76.23246002197266
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-85.357, 0.025, -75.728) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-85.343, 0.025, -75.742) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-85.328, 0.025, -75.757) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-85.313, 0.025, -75.772) impulse=(0.00, 69.48, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-85.298, 0.025, -75.787) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-85.282, 0.025, -75.802) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-85.267, 0.025, -75.818) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-85.250, 0.025, -75.835) impulse=(0.00, 69.48, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499973773956299,
+            "maxUpwardSpeed": 1.4901161193847656e-8,
+            "peak": {
+                "id": 7,
+                "time": 1.0000110864639282,
+                "progress": -16.2061767578125,
+                "offset": -3.16909122467041,
+                "bottom": 0.02499973773956299,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -80.28936004638672,
+                    "y": 0.027499735355377197,
+                    "z": -69.75586700439453
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-80.724, 0.025, -71.376) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-80.707, 0.025, -71.411) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-80.691, 0.025, -71.448) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-80.673, 0.025, -71.485) impulse=(0.00, 69.46, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-80.656, 0.025, -71.522) impulse=(0.00, 69.52, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-80.639, 0.025, -71.559) impulse=(0.00, 69.48, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-80.621, 0.025, -71.598) impulse=(0.00, 69.50, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-80.604, 0.025, -71.636) impulse=(0.00, 69.49, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 8,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.025000333786010742,
+            "maxUpwardSpeed": 7.450580596923828e-9,
+            "peak": {
+                "id": 8,
+                "time": 1.0000110864639282,
+                "progress": -15.46820068359375,
+                "offset": 0.5337767601013184,
+                "bottom": 0.025000333786010742,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -82.4761962890625,
+                    "y": 0.0275002121925354,
+                    "z": -72.83013153076172
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-82.977, 0.025, -74.273) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-82.942, 0.025, -74.331) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-82.907, 0.025, -74.391) impulse=(0.00, 60.41, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-82.872, 0.025, -74.451) impulse=(0.00, 60.50, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-82.836, 0.025, -74.511) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-82.800, 0.025, -74.573) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-82.763, 0.025, -74.635) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-82.727, 0.025, -74.697) impulse=(0.00, 60.45, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 9,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499866485595703,
+            "maxUpwardSpeed": 0.0011550411581993103,
+            "peak": {
+                "id": 9,
+                "time": 1.0000110864639282,
+                "progress": -19.8028564453125,
+                "offset": 3.509399890899658,
+                "bottom": 0.02499866485595703,
+                "verticalSpeed": 0.0000545009970664978,
+                "position": {
+                    "x": -87.65789794921875,
+                    "y": 0.03389224410057068,
+                    "z": -71.57159423828125
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-89.611, 0.025, -71.031) impulse=(0.00, 69.46, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-89.606, 0.025, -71.037) impulse=(0.00, 69.52, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-89.600, 0.025, -71.043) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-89.594, 0.025, -71.049) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-89.588, 0.025, -71.055) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-89.582, 0.025, -71.062) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-89.576, 0.025, -71.068) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-89.570, 0.025, -71.075) impulse=(0.00, 69.51, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 10,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499985694885254,
+            "maxUpwardSpeed": 1.4901161193847656e-8,
+            "peak": {
+                "id": 10,
+                "time": 1.0000110864639282,
+                "progress": -23.6929931640625,
+                "offset": -3.5163300037384033,
+                "bottom": 0.02499985694885254,
+                "verticalSpeed": -7.450580596923828e-9,
+                "position": {
+                    "x": -84.75016021728516,
+                    "y": 0.027499884366989136,
+                    "z": -64.08702087402344
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-86.738, 0.025, -63.561) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-86.728, 0.025, -63.576) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-86.717, 0.025, -63.590) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-86.706, 0.025, -63.606) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-86.695, 0.025, -63.621) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-86.684, 0.025, -63.636) impulse=(0.00, 69.48, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-86.673, 0.025, -63.652) impulse=(0.00, 69.50, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-86.662, 0.025, -63.668) impulse=(0.00, 69.49, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 11,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.024999141693115234,
+            "maxUpwardSpeed": 0.0,
+            "peak": {
+                "id": 11,
+                "time": 1.0000110864639282,
+                "progress": -21.74560546875,
+                "offset": 0.39314672350883484,
+                "bottom": 0.024999141693115234,
+                "verticalSpeed": -0.000057220458984375,
+                "position": {
+                    "x": -86.58161926269531,
+                    "y": 0.027499258518218994,
+                    "z": -68.02485656738281
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.114, 0.025, -69.548) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.091, 0.025, -69.594) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.068, 0.025, -69.642) impulse=(0.00, 69.48, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.045, 0.025, -69.689) impulse=(0.00, 69.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.022, 0.025, -69.738) impulse=(0.00, 69.53, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-86.999, 0.025, -69.786) impulse=(0.00, 69.50, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-86.975, 0.025, -69.836) impulse=(0.00, 69.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-86.952, 0.025, -69.886) impulse=(0.00, 69.48, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 12,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499866485595703,
+            "maxUpwardSpeed": 0.002424277365207672,
+            "peak": {
+                "id": 12,
+                "time": 1.0000110864639282,
+                "progress": -25.465087890625,
+                "offset": 3.5025992393493652,
+                "bottom": 0.02499866485595703,
+                "verticalSpeed": 0.000027962028980255127,
+                "position": {
+                    "x": -91.35832214355469,
+                    "y": 0.03388652205467224,
+                    "z": -67.04358673095703
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.261, 0.025, -66.424) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.258, 0.025, -66.427) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.255, 0.025, -66.431) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.252, 0.025, -66.434) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.248, 0.025, -66.438) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.245, 0.025, -66.442) impulse=(0.00, 60.46, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.242, 0.025, -66.446) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.239, 0.025, -66.449) impulse=(0.00, 60.45, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 13,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499985694885254,
+            "maxUpwardSpeed": 1.4901161193847656e-8,
+            "peak": {
+                "id": 13,
+                "time": 1.0000110864639282,
+                "progress": -27.2760009765625,
+                "offset": -3.1964075565338135,
+                "bottom": 0.02499985694885254,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -87.141845703125,
+                    "y": 0.027499884366989136,
+                    "z": -61.50712966918945
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.747, 0.025, -63.081) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.735, 0.025, -63.117) impulse=(0.00, 69.46, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.724, 0.025, -63.154) impulse=(0.00, 69.52, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.712, 0.025, -63.191) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.700, 0.025, -63.228) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.687, 0.025, -63.266) impulse=(0.00, 69.48, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.675, 0.025, -63.304) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-87.663, 0.025, -63.342) impulse=(0.00, 69.49, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 14,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.024999618530273438,
+            "maxUpwardSpeed": 0.0,
+            "peak": {
+                "id": 14,
+                "time": 1.0000110864639282,
+                "progress": -27.28485107421875,
+                "offset": 0.38954997062683105,
+                "bottom": 0.024999618530273438,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -90.01419067382813,
+                    "y": 0.027499526739120483,
+                    "z": -63.653953552246094
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.625, 0.025, -65.151) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.606, 0.025, -65.198) impulse=(0.00, 69.48, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.586, 0.025, -65.246) impulse=(0.00, 69.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.566, 0.025, -65.294) impulse=(0.00, 69.54, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.546, 0.025, -65.343) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.526, 0.025, -65.392) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.505, 0.025, -65.442) impulse=(0.00, 69.43, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.485, 0.025, -65.492) impulse=(0.00, 69.55, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 15,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499842643737793,
+            "maxUpwardSpeed": 0.0032357200980186462,
+            "peak": {
+                "id": 15,
+                "time": 1.0000110864639282,
+                "progress": -30.9349365234375,
+                "offset": 3.5013341903686523,
+                "bottom": 0.02499842643737793,
+                "verticalSpeed": 0.000017330050468444824,
+                "position": {
+                    "x": -94.72640991210938,
+                    "y": 0.03388512134552002,
+                    "z": -62.44362258911133
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.593, 0.025, -61.742) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.591, 0.025, -61.745) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.589, 0.025, -61.748) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.586, 0.025, -61.751) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.584, 0.025, -61.754) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.581, 0.025, -61.757) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.579, 0.025, -61.760) impulse=(0.00, 69.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.576, 0.025, -61.763) impulse=(0.00, 69.51, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 16,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02500009536743164,
+            "maxUpwardSpeed": 0.0,
+            "peak": {
+                "id": 16,
+                "time": 1.0000110864639282,
+                "progress": -32.71502685546875,
+                "offset": -3.1817820072174072,
+                "bottom": 0.02500009536743164,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -90.2249526977539,
+                    "y": 0.027500003576278687,
+                    "z": -57.19278335571289
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.910, 0.025, -58.715) impulse=(0.00, 60.46, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.899, 0.025, -58.754) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.888, 0.025, -58.793) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.877, 0.025, -58.833) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.866, 0.025, -58.874) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.854, 0.025, -58.915) impulse=(0.00, 60.43, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.843, 0.025, -58.957) impulse=(0.00, 60.48, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-90.831, 0.025, -58.999) impulse=(0.00, 60.45, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 17,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499985694885254,
+            "maxUpwardSpeed": 7.450580596923828e-9,
+            "peak": {
+                "id": 17,
+                "time": 1.0000110864639282,
+                "progress": -32.81512451171875,
+                "offset": 0.3818318545818329,
+                "bottom": 0.02499985694885254,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -93.21923828125,
+                    "y": 0.027500063180923462,
+                    "z": -59.12769317626953
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.895, 0.025, -60.599) impulse=(0.00, 69.44, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.878, 0.025, -60.647) impulse=(0.00, 69.54, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.861, 0.025, -60.695) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.844, 0.025, -60.744) impulse=(0.00, 69.50, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.826, 0.025, -60.793) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.808, 0.025, -60.842) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.791, 0.025, -60.893) impulse=(0.00, 69.54, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-93.773, 0.025, -60.943) impulse=(0.00, 69.49, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 18,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499830722808838,
+            "maxUpwardSpeed": 0.001608140766620636,
+            "peak": {
+                "id": 18,
+                "time": 1.0000110864639282,
+                "progress": -36.458984375,
+                "offset": 3.5020217895507813,
+                "bottom": 0.02499830722808838,
+                "verticalSpeed": 0.000028796494007110596,
+                "position": {
+                    "x": -97.86642456054688,
+                    "y": 0.033885300159454346,
+                    "z": -57.74285125732422
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-99.703, 0.025, -56.969) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-99.701, 0.025, -56.972) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-99.698, 0.025, -56.975) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-99.696, 0.025, -56.978) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-99.694, 0.025, -56.981) impulse=(0.00, 69.50, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-99.692, 0.025, -56.984) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-99.690, 0.025, -56.987) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-99.688, 0.025, -56.990) impulse=(0.00, 69.49, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 19,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.024999618530273438,
+            "maxUpwardSpeed": 1.4901161193847656e-8,
+            "peak": {
+                "id": 19,
+                "time": 1.0000110864639282,
+                "progress": -40.155517578125,
+                "offset": -3.510218381881714,
+                "bottom": 0.024999618530273438,
+                "verticalSpeed": -0.000034332275390625,
+                "position": {
+                    "x": -93.86792755126953,
+                    "y": 0.02749970555305481,
+                    "z": -50.902503967285156
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-95.772, 0.025, -50.122) impulse=(0.00, 69.48, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-95.764, 0.025, -50.138) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-95.755, 0.025, -50.154) impulse=(0.00, 69.50, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-95.746, 0.025, -50.171) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-95.737, 0.025, -50.187) impulse=(0.00, 69.48, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-95.728, 0.025, -50.204) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-95.719, 0.025, -50.221) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-95.709, 0.025, -50.239) impulse=(0.00, 69.46, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 20,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02500009536743164,
+            "maxUpwardSpeed": 0.01607230305671692,
+            "peak": {
+                "id": 20,
+                "time": 1.0000110864639282,
+                "progress": -37.66363525390625,
+                "offset": 0.5074016451835632,
+                "bottom": 0.02500009536743164,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -95.981689453125,
+                    "y": 0.027499854564666748,
+                    "z": -55.12237548828125
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.762, 0.025, -56.459) impulse=(0.00, 60.40, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.742, 0.025, -56.519) impulse=(0.00, 60.50, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.722, 0.025, -56.581) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.702, 0.025, -56.643) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.682, 0.025, -56.705) impulse=(0.00, 60.42, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.662, 0.025, -56.769) impulse=(0.00, 60.45, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.641, 0.025, -56.833) impulse=(0.00, 60.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-96.620, 0.025, -56.898) impulse=(0.00, 60.45, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 21,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499866485595703,
+            "maxUpwardSpeed": 0.0009983628988265991,
+            "peak": {
+                "id": 21,
+                "time": 1.0000110864639282,
+                "progress": -41.9735107421875,
+                "offset": 3.5024240016937256,
+                "bottom": 0.02499866485595703,
+                "verticalSpeed": 0.000027492642402648926,
+                "position": {
+                    "x": -100.81820678710938,
+                    "y": 0.03388500213623047,
+                    "z": -52.95166778564453
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-102.626, 0.025, -52.117) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-102.624, 0.025, -52.120) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-102.623, 0.025, -52.122) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-102.621, 0.025, -52.125) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-102.619, 0.025, -52.128) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-102.617, 0.025, -52.131) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-102.615, 0.025, -52.134) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-102.613, 0.025, -52.137) impulse=(0.00, 69.49, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 22,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499985694885254,
+            "maxUpwardSpeed": 1.4901161193847656e-8,
+            "peak": {
+                "id": 22,
+                "time": 1.0000110864639282,
+                "progress": -46.19635009765625,
+                "offset": -3.4997856616973877,
+                "bottom": 0.02499985694885254,
+                "verticalSpeed": -0.00002288818359375,
+                "position": {
+                    "x": -96.87348175048828,
+                    "y": 0.027499854564666748,
+                    "z": -45.785804748535156
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-98.683, 0.025, -44.976) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-98.681, 0.025, -44.982) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-98.678, 0.025, -44.988) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-98.675, 0.025, -44.994) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-98.673, 0.025, -45.000) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-98.670, 0.025, -45.006) impulse=(0.00, 69.47, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-98.667, 0.025, -45.013) impulse=(0.00, 69.51, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-98.664, 0.025, -45.019) impulse=(0.00, 69.47, 0.00)"
+                ]
+            }
+        },
+        {
+            "id": 23,
+            "samples": 13500,
+            "airborneSteps": 0,
+            "maxBottom": 0.02499985694885254,
+            "maxUpwardSpeed": 0.0,
+            "peak": {
+                "id": 23,
+                "time": 1.0000110864639282,
+                "progress": -44.26055908203125,
+                "offset": -0.28453221917152405,
+                "bottom": 0.02499985694885254,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -98.70919036865234,
+                    "y": 0.02749994397163391,
+                    "z": -49.05926513671875
+                },
+                "contacts": [
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-100.815, 0.025, -48.436) impulse=(0.00, 69.44, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-100.789, 0.025, -48.474) impulse=(0.00, 69.53, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-100.763, 0.025, -48.511) impulse=(0.00, 69.50, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-100.738, 0.025, -48.547) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-100.713, 0.025, -48.582) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-100.689, 0.025, -48.617) impulse=(0.00, 69.49, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-100.665, 0.025, -48.650) impulse=(0.00, 69.43, 0.00)",
+                    "Continuous road and shoulder support normal=(0.000, 1.000, 0.000) point=(-100.643, 0.025, -48.683) impulse=(0.00, 69.55, 0.00)"
+                ]
+            }
+        }
+    ]
+}

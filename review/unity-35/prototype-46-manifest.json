@@ -1,0 +1,66 @@
+{
+  "assemblyHash": "F5E1DC4B62AA13D31A34DC44A4EE6AF25FC6922B0CFC7EFB893A42E8E7BA32B3",
+  "sourceFiles": [
+    {
+      "file": "34-driver-identity-prototype.md",
+      "sha256": "2470F7AB3A8DE212F5A3ADA00D641C98543886D0AA792B1D18278326F3AC2329"
+    },
+    {
+      "file": "analyze-coasting-regressions.py",
+      "sha256": "8E76073FA3AD0AE07BB14D674068A9E2D268296977726E04F241060BA275E75F"
+    },
+    {
+      "file": "ContextDriverPolicy.cs",
+      "sha256": "17214C1C0908B5F18E6C9CB2E4C041345D5DF2CF2C8C2706F73BF18D0DC880B1"
+    },
+    {
+      "file": "ContextPreferenceMap.cs",
+      "sha256": "8365104D7A56D8894C0CF207676732984D99C8A57C5AD3E64E85BF2BD72C317F"
+    },
+    {
+      "file": "MigrationBuild.cs",
+      "sha256": "1A3C2CFDA95A4D6581DDEBEF916E82E290CEDFDCE6782679CCBB151C455BAAA8"
+    },
+    {
+      "file": "RaceTrial.cs",
+      "sha256": "605C1179B47A067A240635AD9EFEB94870F4757F9F45E6BEFF33F05D6518EFD8"
+    },
+    {
+      "file": "RoadPathFeasibility.cs",
+      "sha256": "6CDE8C7F1AB7296E51CFBF85DBF228D8841EE0E39931CBB900638A4186ADD5A3"
+    },
+    {
+      "file": "run-coasting-regressions.ps1",
+      "sha256": "4391E7ED106591A2BDDC1E0ECFC8C53B15A4394AF3015A24229D28828A347A6C"
+    },
+    {
+      "file": "run-technical-trial.ps1",
+      "sha256": "96DD744D46F1098796266064E2550B2606D712218C499352352CE1C92007B723"
+    },
+    {
+      "file": "run-traffic-path-comparison.ps1",
+      "sha256": "38EA07E734B5EA2B6187D75AEA8152ADDEF2A26C894711E26FE1FFBF4F2FE727"
+    },
+    {
+      "file": "TechnicalCircuitReview.cs",
+      "sha256": "8F8437EF13EEAB9B70427417A13F95173EBE9CEF6995C68BA75050212B0891A8"
+    },
+    {
+      "file": "TrafficFixture.cs",
+      "sha256": "B1A234CC94A4A5E9EE20698DB0D384B246CABA2021E6F26403EF142F3D68F3DA"
+    },
+    {
+      "file": "TrafficPathChecks.cs",
+      "sha256": "DB657D8C039D800010A32D0D653805B641E389F483A2E57EDF900BF136562487"
+    },
+    {
+      "file": "TrafficPathFeasibility.cs",
+      "sha256": "8A8F370B12A552B43F7D1CBFF19B2C51020CDB0B58805E2EBAAADF2699D98148"
+    }
+  ],
+  "version": 46,
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-46-review\\Little Road Unity.exe",
+  "candidateArguments": "--driver-risk 5 --no-gap-centres --traffic-path-check",
+  "buildChecks": 315,
+  "acceptance": "Experimental, NOT default.315 build checks. Disabled controls exactly preserve43/45. Enabled field24finish/2235.475616 combined seconds/CP1=20/finish=8/two light paircontacts but374unresolved samples and most45pace advantage lost. Controlled59/62, same three failures. Approximate crossing fixture does not reproduce original incident. No rendered or player acceptance. Desktop43 unchanged."
+}

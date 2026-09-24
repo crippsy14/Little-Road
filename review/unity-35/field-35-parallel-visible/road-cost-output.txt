@@ -1,0 +1,25 @@
+{
+  "scope": "Live cumulative main-thread feasibility stage timing, includes measurement overhead. Concurrent forecast worker time and dispatch/join are recorded in driver-frame-analysis.json, not in these decision-region percentages; not rendered-frame acceptance.",
+  "totals": {
+    "calls": 24760,
+    "forecastMs": 481.8878,
+    "corridorMs": 2308.791200000316,
+    "sceneryMs": 769.3963999998556,
+    "roadFailures": 70,
+    "corridorFailures": 244,
+    "sceneryFailures": 0
+  },
+  "driverMs": 18414.82410000012,
+  "remainingDriverMs": 14854.74869999995,
+  "percentDriver": {
+    "forecastMs": 2.6168471519638183,
+    "corridorMs": 12.537677185851049,
+    "sceneryMs": 4.178136026832049
+  },
+  "forecastMeanMs": 0.01946235056542811,
+  "forecastExecution": {
+    "preparedRequests": 24480,
+    "prefetchedCalls": 24480,
+    "synchronousCalls": 280
+  }
+}

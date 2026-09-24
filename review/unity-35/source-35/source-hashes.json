@@ -1,0 +1,70 @@
+[
+  {
+    "file": "unity/Assets/Scripts/ContextPreferenceMap.cs",
+    "sha256": "57B3C61FEB51DF70C37D7A70D4BEA4CF8C729562558FBD5299DF96551BBE5AAC"
+  },
+  {
+    "file": "unity/Assets/Scripts/ContextDriverPolicy.cs",
+    "sha256": "150CEFE4075E678047BD9B6E9FF75246553F574EDD507504FA176B877B59DAD1"
+  },
+  {
+    "file": "unity/Assets/Scripts/ForecastWorkerPool.cs",
+    "sha256": "18A5A75C6C1BF76D3105DE27B5BD5C731D5745AB6B8A513903BF13E3F1D9C324"
+  },
+  {
+    "file": "unity/Assets/Scripts/RoadPathFeasibility.cs",
+    "sha256": "23097D93F22889D335CABEB0CFD00225C0075BE1092DE450342CDEC218976CC7"
+  },
+  {
+    "file": "unity/Assets/Scripts/RaceWorldSnapshot.cs",
+    "sha256": "867F2F16C783C04103E98F411C1578AA3ADCD04D890ADE390296AF93F0A3AC95"
+  },
+  {
+    "file": "unity/Assets/Scripts/RoadCar.cs",
+    "sha256": "ECBD7366D6354294EBE57110E38E7A52CDC73B47F15DCC64674161536CECA2E7"
+  },
+  {
+    "file": "unity/Assets/Scripts/DriverFrameAudit.cs",
+    "sha256": "65C37281BDC879A0CBCB8BBC72356EC444BDC492A3ED8F4E2334B11BD42FDEC9"
+  },
+  {
+    "file": "unity/Assets/Scripts/TechnicalCircuitReview.cs",
+    "sha256": "1D0F04B45D53C7F6FCEE3B447882683B5EBFF92CD43428B429137F2FAE68C4E9"
+  },
+  {
+    "file": "unity/Assets/Editor/ForecastReuseChecks.cs",
+    "sha256": "5B57B1159F8841765739BD17DD3A24A8994C7269C8C7C3F24C9CF4567ACC0703"
+  },
+  {
+    "file": "unity/Assets/Editor/MigrationBuild.cs",
+    "sha256": "8AA6808ED9D1047AD852D8950645CD38FF827C2EBB3C3E280FAB778E3B34A4A3"
+  },
+  {
+    "file": "tools/run-technical-trial.ps1",
+    "sha256": "9538279DA82EF4C4688AB355A0B83FEB3883D7F0AEF42173750C0223CBD2B7F1"
+  },
+  {
+    "file": "tools/run-traffic-fixtures.ps1",
+    "sha256": "0F67644C773FE81EA3EA67C1CCE7D1F9F972BEA2FC07C25087EFCAA2E01AC487"
+  },
+  {
+    "file": "tools/run-forecast-integration-regressions.ps1",
+    "sha256": "742D27858C6194C3BE1503CD23BF98AE94ECD37988AB2CBBC40B53237F59DA67"
+  },
+  {
+    "file": "tools/analyze-forecast-integration.py",
+    "sha256": "48FB728E4F98B4589E3166634B236DA5882385DB9030CCEAE418B875F918BB81"
+  },
+  {
+    "file": "tools/analyze-driver-frames.py",
+    "sha256": "DACA91F6FBE4BA27A270D0E82BDA5D67FD82DCAF570B5F31FE3F03D9C528E356"
+  },
+  {
+    "file": "tools/analyze-road-cost.py",
+    "sha256": "5DDE9A3706A105B3FB45AA0B130DECC2F896D152DFAEBD667A5D26207F16E34C"
+  },
+  {
+    "file": "tools/verify-context-race-parity.py",
+    "sha256": "66C5C67BBDA5E7DB06D28742C1C670478509A754FD2B647641751384F54B667A"
+  }
+]

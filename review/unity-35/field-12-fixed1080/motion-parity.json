@@ -1,0 +1,16 @@
+{
+  "scope": "Exact recorded before/after neighbour-cache field comparison against prototype 10. CPU costs, wall/frame time and rendering dimensions intentionally differ; no claim over unobserved states.",
+  "baseline": "field-10-performance",
+  "checks": {
+    "motion": true,
+    "checkpointPassages": true,
+    "impacts": true,
+    "assistedRecoveries": true,
+    "cars": true,
+    "overlapPeaks": true,
+    "trackSamples": true,
+    "contextSamples": true,
+    "physicalSetup": true
+  },
+  "passed": true
+}

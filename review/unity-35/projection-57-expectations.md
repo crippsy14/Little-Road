@@ -1,0 +1,7 @@
+# Prototype57: reuse spatial bounds within each projection query
+
+56 measures 7322.867ms in traffic progress comparisons; 3904.064ms is rival rollout preparation, 1626.525ms proposal prediction and1792.278ms continuation prediction. Other synchronous forecast work adds9881.594ms, excluding joined worker wall time. These are hidden diagnostic totals, not frame-rate acceptance. Route projection is common to both rival preparation and own forecasts.
+
+Inspection finds every visited child spatial bound computed once to order traversal and again when entering that child.57 will pass those immutable per-query bounds down the recursion. Preserve all projection arithmetic, traversal order, earliest-segment ties, geometry, planning timing and control decisions. No persistent position hint, approximate projection or omitted traffic.
+
+Acceptance: existing exact exhaustive projection checks and all332 build checks; exact stored race samples/events/results versus55 and instrumented56; captured normal process exit and no runtime exceptions. Compare total AI wall cost including snapshot/worker joins, and traffic preparation stages, in sequential equal-setting hidden runs. Hidden timings only identify a promising optimisation. A normal-speed fixed1080p rendered run remains necessary for performance acceptance under the existing frame/AI/allocation budgets. Do not change deadlines, contact thresholds or the desktop55 reference for this experiment.

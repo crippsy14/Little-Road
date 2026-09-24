@@ -1,0 +1,15 @@
+{
+  "flags": [
+    "--road-feasibility",
+    "--prepared-path",
+    "--parallel-road-forecasts",
+    "--parallel-forecast-workers",
+    "8",
+    "--guide-path-fallback"
+  ],
+  "version": 38,
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-38-review\\Little Road Unity.exe",
+  "buildChecks": 297,
+  "assemblyHash": "34BF2D7E0CF9A611A27623E5C819F5F8AFD62EBAE21B5F02EE06F4C0055F29FE",
+  "acceptance": "Retain opt-in scenery-triggered guide fallback: corridor13/13 including inherited no-pass-in-corridor rule; regression13/13, exact recorded smoother35 field/queue/merge/braking/corner parity. Not general racecraft or production acceptance."
+}

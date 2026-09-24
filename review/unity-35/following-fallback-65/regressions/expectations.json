@@ -1,0 +1,64 @@
+{
+  "trafficPathCheck": true,
+  "cases": [
+    {
+      "loadout": "club",
+      "cars": 3,
+      "name": "queue",
+      "opponents": "street,stock",
+      "gap": 24
+    },
+    {
+      "loadout": "club",
+      "cars": 2,
+      "name": "no-room",
+      "opponents": "stock",
+      "gap": 24
+    },
+    {
+      "loadout": "street",
+      "cars": 2,
+      "name": "merge-left",
+      "opponents": "club",
+      "gap": 12
+    },
+    {
+      "loadout": "street",
+      "cars": 2,
+      "name": "merge-right",
+      "opponents": "club",
+      "gap": 12
+    },
+    {
+      "loadout": "club",
+      "cars": 2,
+      "name": "brake-leader",
+      "opponents": "stock",
+      "gap": 24
+    },
+    {
+      "loadout": "club",
+      "cars": 3,
+      "name": "corner-three",
+      "opponents": "street,stock",
+      "gap": 24
+    }
+  ],
+  "compareContinuation": true,
+  "followingFeasibilityFallback": true,
+  "zeroContacts": true,
+  "trafficCoastContinuation": true,
+  "comparePassCompletion": false,
+  "anticipateBlockingCar": false,
+  "driverRisk": 5,
+  "noGapCentres": true,
+  "completionAllowance": 0.5,
+  "anticipatePassingSpace": true,
+  "zeroRecovery": true,
+  "retainPassTrajectory": false,
+  "trafficAwareProgress": true,
+  "maximumCompletionRatio": 1.05,
+  "referenceRoot": "review/unity-35/regression-38",
+  "scope": "Controlled clean-opportunity regressions versus frozen38; same-build paired solo street/club. Existing corridor contract and rear-merge witness deadlines retained. No rendered or broad personality acceptance.",
+  "zeroDepartures": true
+}

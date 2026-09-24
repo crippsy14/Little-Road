@@ -1,0 +1,83 @@
+{
+    "scope": "Synthetic trigger and actual AI-controller lamp integration; not physical-controller acceptance",
+    "samples": [
+        {
+            "phase": "01-forward",
+            "speed": 7.212222099304199,
+            "command": 1.0,
+            "expectedCommand": 1.0,
+            "brake": false,
+            "reverse": false,
+            "expectedBrake": false,
+            "expectedReverse": false,
+            "passed": true
+        },
+        {
+            "phase": "02-forward-braking",
+            "speed": 7.887959003448486,
+            "command": -1.0,
+            "expectedCommand": -1.0,
+            "brake": true,
+            "reverse": false,
+            "expectedBrake": true,
+            "expectedReverse": false,
+            "passed": true
+        },
+        {
+            "phase": "03-reversing",
+            "speed": -0.9552189707756042,
+            "command": -1.0,
+            "expectedCommand": -1.0,
+            "brake": false,
+            "reverse": true,
+            "expectedBrake": false,
+            "expectedReverse": true,
+            "passed": true
+        },
+        {
+            "phase": "04-reverse-coast",
+            "speed": -1.7068629264831543,
+            "command": 0.0,
+            "expectedCommand": 0.0,
+            "brake": false,
+            "reverse": true,
+            "expectedBrake": false,
+            "expectedReverse": true,
+            "passed": true
+        },
+        {
+            "phase": "05-braking-in-reverse",
+            "speed": -1.5467913150787354,
+            "command": 1.0,
+            "expectedCommand": 1.0,
+            "brake": true,
+            "reverse": true,
+            "expectedBrake": true,
+            "expectedReverse": true,
+            "passed": true
+        },
+        {
+            "phase": "06-blocked-idle",
+            "speed": 0.0,
+            "command": 0.0,
+            "expectedCommand": 0.0,
+            "brake": false,
+            "reverse": false,
+            "expectedBrake": false,
+            "expectedReverse": false,
+            "passed": true
+        },
+        {
+            "phase": "07-ai-braking",
+            "speed": 33.15223693847656,
+            "command": -1.0,
+            "expectedCommand": -1.0,
+            "brake": true,
+            "reverse": false,
+            "expectedBrake": true,
+            "expectedReverse": false,
+            "passed": true
+        }
+    ],
+    "passed": true
+}

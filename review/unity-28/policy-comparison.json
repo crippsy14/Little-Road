@@ -1,0 +1,228 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "Cedar stock: matched track/equipment/seed/physics",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Cedar stock: whole field finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Cedar stock: exact frozen-run car outcomes",
+      "passed": true,
+      "detail": {
+        "maxTimeDifference": 0.0
+      }
+    },
+    {
+      "name": "Cedar stock: exact sampled commands and motion",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Cedar stock: no introduced recovery/gate failure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Cedar stock: contact depth stays below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Cedar club: matched track/equipment/seed/physics",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Cedar club: whole field finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Cedar club: exact frozen-run car outcomes",
+      "passed": true,
+      "detail": {
+        "maxTimeDifference": 0.0
+      }
+    },
+    {
+      "name": "Cedar club: exact sampled commands and motion",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Cedar club: no introduced recovery/gate failure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Cedar club: contact depth stays below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 1: matched track/equipment/seed/physics",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 1: whole field finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 1: exact frozen-run car outcomes",
+      "passed": true,
+      "detail": {
+        "maxTimeDifference": 0.0
+      }
+    },
+    {
+      "name": "Bayview 24 run 1: exact sampled commands and motion",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 1: no introduced recovery/gate failure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 1: contact depth stays below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 2: matched track/equipment/seed/physics",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 2: whole field finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 2: exact frozen-run car outcomes",
+      "passed": true,
+      "detail": {
+        "maxTimeDifference": 0.0
+      }
+    },
+    {
+      "name": "Bayview 24 run 2: exact sampled commands and motion",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 2: no introduced recovery/gate failure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 2: contact depth stays below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 3: matched track/equipment/seed/physics",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 3: whole field finishes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 3: exact frozen-run car outcomes",
+      "passed": true,
+      "detail": {
+        "maxTimeDifference": 0.0
+      }
+    },
+    {
+      "name": "Bayview 24 run 3: exact sampled commands and motion",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 3: no introduced recovery/gate failure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bayview 24 run 3: contact depth stays below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "snapshot-fields: explicitly selected common pre-controller observations",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "snapshot-fields: all ordered laps finish without assisted resets/missing gates",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "snapshot-fields: contact depth stays below 2 cm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "stock-fields: full body remains in bounds at 10 Hz",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "cedar-fields: full body remains in bounds at 10 Hz",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "comparisons": [
+    {
+      "name": "Cedar stock",
+      "before": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-27\\solo-stock\\race.json",
+      "after": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-28\\stock-fields\\race.json",
+      "maxTimeDifference": 0.0,
+      "exact": true
+    },
+    {
+      "name": "Cedar club",
+      "before": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-27\\solo-club\\race.json",
+      "after": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-28\\cedar-fields\\race.json",
+      "maxTimeDifference": 0.0,
+      "exact": true
+    },
+    {
+      "name": "Bayview 24 run 1",
+      "before": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-28\\bayview-before\\race.json",
+      "after": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-28\\bayview-fields\\race.json",
+      "maxTimeDifference": 0.0,
+      "exact": true
+    },
+    {
+      "name": "Bayview 24 run 2",
+      "before": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-28\\bayview-before-r2\\race.json",
+      "after": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-28\\bayview-fields-r2\\race.json",
+      "maxTimeDifference": 0.0,
+      "exact": true
+    },
+    {
+      "name": "Bayview 24 run 3",
+      "before": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-28\\bayview-before-r3\\race.json",
+      "after": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-28\\bayview-fields-r3\\race.json",
+      "maxTimeDifference": 0.0,
+      "exact": true
+    }
+  ],
+  "limits": "Frozen legacy compatibility retains cached observation order. Shared snapshots are separate smoke tests, not full racecraft/CPU acceptance. Exact results apply only to these matched runs on this machine. Terminal post-finish positions are excluded because render-frame report latency varies; timestamped motion is compared exactly."
+}

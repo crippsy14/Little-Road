@@ -1,0 +1,910 @@
+{
+    "course": "uturn",
+    "version": "dry-proving-grounds-v1",
+    "start": 20.0,
+    "finish": 429.1021423339844,
+    "samples": [
+        {
+            "distance": 0.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 20.0
+            }
+        },
+        {
+            "distance": 5.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 25.0
+            }
+        },
+        {
+            "distance": 10.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 30.0
+            }
+        },
+        {
+            "distance": 15.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 35.0
+            }
+        },
+        {
+            "distance": 20.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 40.0
+            }
+        },
+        {
+            "distance": 25.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 45.0
+            }
+        },
+        {
+            "distance": 30.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 50.0
+            }
+        },
+        {
+            "distance": 35.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 55.0
+            }
+        },
+        {
+            "distance": 40.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 60.0
+            }
+        },
+        {
+            "distance": 45.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 65.0
+            }
+        },
+        {
+            "distance": 50.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 70.0
+            }
+        },
+        {
+            "distance": 55.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 75.0
+            }
+        },
+        {
+            "distance": 60.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 80.0
+            }
+        },
+        {
+            "distance": 65.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 85.0
+            }
+        },
+        {
+            "distance": 70.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 90.0
+            }
+        },
+        {
+            "distance": 75.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 95.0
+            }
+        },
+        {
+            "distance": 80.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 100.0
+            }
+        },
+        {
+            "distance": 85.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 105.0
+            }
+        },
+        {
+            "distance": 90.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 110.0
+            }
+        },
+        {
+            "distance": 95.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 115.0
+            }
+        },
+        {
+            "distance": 100.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 120.0
+            }
+        },
+        {
+            "distance": 105.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 125.0
+            }
+        },
+        {
+            "distance": 110.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 130.0
+            }
+        },
+        {
+            "distance": 115.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 135.0
+            }
+        },
+        {
+            "distance": 120.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 140.0
+            }
+        },
+        {
+            "distance": 125.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 145.0
+            }
+        },
+        {
+            "distance": 130.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 150.0
+            }
+        },
+        {
+            "distance": 135.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 155.0
+            }
+        },
+        {
+            "distance": 140.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 160.0
+            }
+        },
+        {
+            "distance": 145.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 165.0
+            }
+        },
+        {
+            "distance": 150.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 170.0
+            }
+        },
+        {
+            "distance": 155.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 175.0
+            }
+        },
+        {
+            "distance": 160.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 180.0
+            }
+        },
+        {
+            "distance": 165.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 185.0
+            }
+        },
+        {
+            "distance": 170.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 190.0
+            }
+        },
+        {
+            "distance": 175.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 195.0
+            }
+        },
+        {
+            "distance": 180.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 200.0
+            }
+        },
+        {
+            "distance": 185.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 205.0
+            }
+        },
+        {
+            "distance": 190.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 210.0
+            }
+        },
+        {
+            "distance": 195.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 215.0
+            }
+        },
+        {
+            "distance": 200.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.02334924042224884,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 220.0
+            }
+        },
+        {
+            "distance": 205.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.04448707029223442,
+            "position": {
+                "x": 0.5774349570274353,
+                "y": 0.0,
+                "z": 224.95526123046875
+            }
+        },
+        {
+            "distance": 210.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.045729126781225204,
+            "position": {
+                "x": 2.241751194000244,
+                "y": 0.0,
+                "z": 229.65753173828125
+            }
+        },
+        {
+            "distance": 215.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.04570508748292923,
+            "position": {
+                "x": 4.926436424255371,
+                "y": 0.0,
+                "z": 233.8616180419922
+            }
+        },
+        {
+            "distance": 220.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.04451178014278412,
+            "position": {
+                "x": 8.49201488494873,
+                "y": 0.0,
+                "z": 237.34983825683594
+            }
+        },
+        {
+            "distance": 225.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.046698980033397675,
+            "position": {
+                "x": 12.744590759277344,
+                "y": 0.0,
+                "z": 239.9581756591797
+            }
+        },
+        {
+            "distance": 230.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.04448709264397621,
+            "position": {
+                "x": 17.482852935791016,
+                "y": 0.0,
+                "z": 241.5191650390625
+            }
+        },
+        {
+            "distance": 235.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.04575255513191223,
+            "position": {
+                "x": 22.448904037475586,
+                "y": 0.0,
+                "z": 241.9877166748047
+            }
+        },
+        {
+            "distance": 240.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.04568224027752876,
+            "position": {
+                "x": 27.392288208007813,
+                "y": 0.0,
+                "z": 241.3206329345703
+            }
+        },
+        {
+            "distance": 245.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.04453462362289429,
+            "position": {
+                "x": 32.05690002441406,
+                "y": 0.0,
+                "z": 239.5535888671875
+            }
+        },
+        {
+            "distance": 250.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.04669838771224022,
+            "position": {
+                "x": 36.21213912963867,
+                "y": 0.0,
+                "z": 236.79281616210938
+            }
+        },
+        {
+            "distance": 255.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.044487517327070236,
+            "position": {
+                "x": 39.62175369262695,
+                "y": 0.0,
+                "z": 233.15109252929688
+            }
+        },
+        {
+            "distance": 260.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.04577592760324478,
+            "position": {
+                "x": 42.13618087768555,
+                "y": 0.0,
+                "z": 228.8430938720703
+            }
+        },
+        {
+            "distance": 265.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.04378322884440422,
+            "position": {
+                "x": 43.61048889160156,
+                "y": 0.0,
+                "z": 224.07777404785156
+            }
+        },
+        {
+            "distance": 270.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.017385993152856827,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 219.10214233398438
+            }
+        },
+        {
+            "distance": 275.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 214.10214233398438
+            }
+        },
+        {
+            "distance": 280.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 209.10214233398438
+            }
+        },
+        {
+            "distance": 285.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 204.10214233398438
+            }
+        },
+        {
+            "distance": 290.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 199.10214233398438
+            }
+        },
+        {
+            "distance": 295.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 194.10214233398438
+            }
+        },
+        {
+            "distance": 300.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 189.10214233398438
+            }
+        },
+        {
+            "distance": 305.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 184.10214233398438
+            }
+        },
+        {
+            "distance": 310.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 179.10214233398438
+            }
+        },
+        {
+            "distance": 315.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 174.10214233398438
+            }
+        },
+        {
+            "distance": 320.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 169.10214233398438
+            }
+        },
+        {
+            "distance": 325.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 164.10214233398438
+            }
+        },
+        {
+            "distance": 330.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 159.10214233398438
+            }
+        },
+        {
+            "distance": 335.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 154.10214233398438
+            }
+        },
+        {
+            "distance": 340.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 149.10214233398438
+            }
+        },
+        {
+            "distance": 345.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 144.10214233398438
+            }
+        },
+        {
+            "distance": 350.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 139.10214233398438
+            }
+        },
+        {
+            "distance": 355.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 134.10214233398438
+            }
+        },
+        {
+            "distance": 360.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 129.10214233398438
+            }
+        },
+        {
+            "distance": 365.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 124.10214233398438
+            }
+        },
+        {
+            "distance": 370.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 119.10214233398438
+            }
+        },
+        {
+            "distance": 375.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 114.10214233398438
+            }
+        },
+        {
+            "distance": 380.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 109.10214233398438
+            }
+        },
+        {
+            "distance": 385.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 104.10214233398438
+            }
+        },
+        {
+            "distance": 390.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 99.10214233398438
+            }
+        },
+        {
+            "distance": 395.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 94.10214233398438
+            }
+        },
+        {
+            "distance": 400.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 89.10214233398438
+            }
+        },
+        {
+            "distance": 405.0,
+            "height": 0.0,
+            "grade": 0.0,
+            "turnCurvature": 0.0,
+            "position": {
+                "x": 44.0,
+                "y": 0.0,
+                "z": 84.10214233398438
+            }
+        }
+    ]
+}

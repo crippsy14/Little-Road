@@ -1,0 +1,20 @@
+{
+  "scope": "Corridor acceptance plus preservation of smoother35 on the field and five open-track cases. Does not erase existing field unresolved/contact/performance issues or establish general racecraft acceptance.",
+  "passed": 13,
+  "total": 13,
+  "checks": {
+    "all seven processes completed normally": true,
+    "corridor all acceptance checks": true,
+    "queue: exact recorded parity with smoother35": true,
+    "queue: clean completion": true,
+    "merge-left: exact recorded parity with smoother35": true,
+    "merge-left: clean completion": true,
+    "merge-right: exact recorded parity with smoother35": true,
+    "merge-right: clean completion": true,
+    "brake-leader: exact recorded parity with smoother35": true,
+    "brake-leader: clean completion": true,
+    "corner-three: exact recorded parity with smoother35": true,
+    "corner-three: clean completion": true,
+    "field exact recorded parity with smoother35": true
+  }
+}

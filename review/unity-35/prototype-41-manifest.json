@@ -1,0 +1,10 @@
+{
+  "rejectedTimedCorridorsEnabled": false,
+  "buildChecksCoastEnabled": true,
+  "assemblyHash": "7D74476591D6D6B680EFC780EF276A8214B636194C12B9BCB5094D327270E79C",
+  "flag": "--coast-within-envelope",
+  "buildChecks": 303,
+  "acceptance": "Retain opt-in moving-review candidate: three fields exact recorded parity, field11/11 and checkpoint13/13, controlled suite42/42, visible frame targets pass. More contacts/hard braking/unresolved samples remain disclosed. AI3ms budget and startup hitch fail; user feel review pending. Production unchanged.",
+  "version": 41,
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-41-review\\Little Road Unity.exe"
+}

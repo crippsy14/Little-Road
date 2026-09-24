@@ -1,0 +1,265 @@
+{
+  "complete": true,
+  "scope": "Measured results only; remaining ability/straight-power/variation acceptance not claimed.",
+  "results": [
+    {
+      "name": "field-neutral",
+      "finished": 24,
+      "cars": 24,
+      "totalTime": 93.04935455322266,
+      "flyingLaps": [],
+      "contacts": 10,
+      "outside": 0,
+      "recoveries": 0,
+      "missedGates": 0,
+      "planning": [
+        {
+          "id": 0,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 1,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 2,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 3,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 4,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 5,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 6,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 7,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 8,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 9,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 10,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 11,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 12,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 13,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 14,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 15,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 16,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 17,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 18,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 19,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 20,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 21,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 22,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        },
+        {
+          "id": 23,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        }
+      ]
+    },
+    {
+      "name": "street-neutral",
+      "finished": 1,
+      "cars": 1,
+      "totalTime": 206.70494079589844,
+      "flyingLaps": [
+        85.61716079711914,
+        85.62909698486328
+      ],
+      "contacts": 0,
+      "outside": 0,
+      "recoveries": 0,
+      "missedGates": 0,
+      "planning": [
+        {
+          "id": 0,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        }
+      ]
+    },
+    {
+      "name": "street-earlier",
+      "finished": 1,
+      "cars": 1,
+      "totalTime": 206.83824157714844,
+      "flyingLaps": [
+        85.69214248657227,
+        85.68741607666016
+      ],
+      "contacts": 0,
+      "outside": 0,
+      "recoveries": 0,
+      "missedGates": 0,
+      "planning": [
+        {
+          "id": 0,
+          "localBrakeFraction": 0.6499999761581421,
+          "referenceBrakeScale": 0.8666666150093079
+        }
+      ]
+    },
+    {
+      "name": "street-early",
+      "finished": 1,
+      "cars": 1,
+      "totalTime": 206.97154235839844,
+      "flyingLaps": [
+        85.76712417602539,
+        85.74573516845703
+      ],
+      "contacts": 0,
+      "outside": 0,
+      "recoveries": 0,
+      "missedGates": 0,
+      "planning": [
+        {
+          "id": 0,
+          "localBrakeFraction": 0.550000011920929,
+          "referenceBrakeScale": 0.7333333492279053
+        }
+      ]
+    },
+    {
+      "name": "club-neutral",
+      "finished": 1,
+      "cars": 1,
+      "totalTime": 160.1663055419922,
+      "flyingLaps": [
+        66.79124450683594,
+        66.7753677368164
+      ],
+      "contacts": 0,
+      "outside": 0,
+      "recoveries": 0,
+      "missedGates": 0,
+      "planning": [
+        {
+          "id": 0,
+          "localBrakeFraction": 0.75,
+          "referenceBrakeScale": 1.0
+        }
+      ]
+    },
+    {
+      "name": "club-earlier",
+      "finished": 1,
+      "cars": 1,
+      "totalTime": 160.31626892089844,
+      "flyingLaps": [
+        66.87455749511719,
+        66.8420181274414
+      ],
+      "contacts": 0,
+      "outside": 0,
+      "recoveries": 0,
+      "missedGates": 0,
+      "planning": [
+        {
+          "id": 0,
+          "localBrakeFraction": 0.6499999761581421,
+          "referenceBrakeScale": 0.8666666150093079
+        }
+      ]
+    },
+    {
+      "name": "club-early",
+      "finished": 1,
+      "cars": 1,
+      "totalTime": 160.59120178222656,
+      "flyingLaps": [
+        66.99952697753906,
+        66.99198150634766
+      ],
+      "contacts": 0,
+      "outside": 0,
+      "recoveries": 0,
+      "missedGates": 0,
+      "planning": [
+        {
+          "id": 0,
+          "localBrakeFraction": 0.550000011920929,
+          "referenceBrakeScale": 0.7333333492279053
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4787 @@
+{
+  "scope": "Captured live choices, not alternative-route acceptance. Leader formula uses recorded dimensions/offsets with Python float precision; identifies the potential lowest speed envelope, not final pedal attribution. Destination-clear test uses current leader position only, not future occupancy. Future telemetry is an observational comparator, never AI input; nearest samples must be within60ms. Selected capture cadence is not whole-race statistics.",
+  "checks": {
+    "normalExit": true,
+    "noRuntimeErrors": true,
+    "allCarsFinish": true,
+    "onlyOwnCar": true,
+    "firstCaptureMoving": true,
+    "noCountdown": true,
+    "boundedCadence": true,
+    "boundedWindow": true,
+    "noDrops": true,
+    "coversCheckpoint4": true,
+    "candidatesPresent": true
+  },
+  "passed": 11,
+  "total": 11,
+  "summary": {
+    "captures": 131,
+    "raceTimeRange": [
+      0.4833450028051929,
+      40.391678336138526
+    ],
+    "checkpoint4": 37.867530822753906,
+    "potentialLeaderObservations": 131,
+    "destinationsNotClearOfCurrentLeader": 103,
+    "futureSpeedComparisons": 131,
+    "leaderSpeedRisesOver2mps": 39,
+    "leaderSpeedFallsOver2mps": 41,
+    "candidateReasons": {
+      "accepted": 129,
+      "corridor": 33,
+      "moving side entry: 18": 8,
+      "moving side entry: 11": 85,
+      "moving side entry: 8": 2,
+      "moving side entry: 17": 11,
+      "moving side entry: 20": 4,
+      "moving side entry: 22": 11,
+      "moving side entry: 15": 5
+    }
+  },
+  "rows": [
+    {
+      "timestamp": 3.4749999999999996,
+      "raceTime": 0.4833450028051929,
+      "speed": 2.23647141456604,
+      "offset": 3.503265380859375,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 2.196790933609009,
+      "leaderOffset": 3.504119873046875,
+      "leaderLimit": 3.818086403017437,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 2.669145441055298,
+      "next1s": {
+        "actualClock": 4.491666666666666,
+        "speed": 3.816462993621826,
+        "differenceFromObserved": 1.6196720600128174,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 5.491666666666666,
+        "speed": 7.025916576385498,
+        "differenceFromObserved": 4.829125642776489,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 3.775,
+      "raceTime": 0.7833450028051931,
+      "speed": 3.023669958114624,
+      "offset": 3.5154571533203125,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 2.921497344970703,
+      "leaderOffset": 3.516754150390625,
+      "leaderLimit": 3.4458876795553812,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 2.6687029361724854,
+      "next1s": {
+        "actualClock": 4.791666666666666,
+        "speed": 4.374329566955566,
+        "differenceFromObserved": 1.4528322219848633,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 5.791666666666666,
+        "speed": 8.671649932861328,
+        "differenceFromObserved": 5.750152587890625,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 4.083333333333333,
+      "raceTime": 1.0916783361385263,
+      "speed": 3.2953550815582275,
+      "offset": 3.543426513671875,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 3.343735694885254,
+      "leaderOffset": 3.5450897216796875,
+      "leaderLimit": 3.5256736267575595,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 2.6683367252349854,
+      "previous1s": {
+        "actualClock": 3.0916666666666663,
+        "speed": 0.24003897607326508,
+        "differenceFromObserved": -3.103696718811989,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 5.091666666666667,
+        "speed": 5.272861480712891,
+        "differenceFromObserved": 1.9291257858276367,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 6.091666666666667,
+        "speed": 10.496472358703613,
+        "differenceFromObserved": 7.152736663818359,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 4.383333333333333,
+      "raceTime": 1.391678336138526,
+      "speed": 3.5073294639587402,
+      "offset": 3.5898590087890625,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 3.6754963397979736,
+      "leaderOffset": 3.5931243896484375,
+      "leaderLimit": 3.7692311994535808,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 2.666734552383423,
+      "previous1s": {
+        "actualClock": 3.3916666666666666,
+        "speed": 1.8623309135437012,
+        "differenceFromObserved": -1.8131654262542725,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 5.391666666666667,
+        "speed": 6.53406286239624,
+        "differenceFromObserved": 2.8585665225982666,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 6.391666666666667,
+        "speed": 12.409284591674805,
+        "differenceFromObserved": 8.733788251876831,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 4.683333333333334,
+      "raceTime": 1.6916783361385268,
+      "speed": 3.8015947341918945,
+      "offset": 3.6575164794921875,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 4.138230323791504,
+      "leaderOffset": 3.6661834716796875,
+      "leaderLimit": 4.222643101649754,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.661332941055298,
+      "previous1s": {
+        "actualClock": 3.6916666666666664,
+        "speed": 2.7667789459228516,
+        "differenceFromObserved": -1.3714513778686523,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 5.691666666666666,
+        "speed": 8.098299980163574,
+        "differenceFromObserved": 3.9600696563720703,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 6.691666666666666,
+        "speed": 14.33418083190918,
+        "differenceFromObserved": 10.195950508117676,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 4.983333333333333,
+      "raceTime": 1.9916783361385266,
+      "speed": 4.30080509185791,
+      "offset": 3.7511444091796875,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 4.905449867248535,
+      "leaderOffset": 3.7732086181640625,
+      "leaderLimit": 5.017703266541716,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.647935724258423,
+      "previous1s": {
+        "actualClock": 3.9916666666666667,
+        "speed": 3.2357075214385986,
+        "differenceFromObserved": -1.6697423458099365,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 5.991666666666666,
+        "speed": 9.874258995056152,
+        "differenceFromObserved": 4.968809127807617,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 6.991666666666666,
+        "speed": 16.210111618041992,
+        "differenceFromObserved": 11.304661750793457,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 5.283333333333333,
+      "raceTime": 2.2916783361385265,
+      "speed": 5.106011867523193,
+      "offset": 3.8774261474609375,
+      "selected": 3.1449995040893555,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 6.039500713348389,
+      "leaderOffset": 3.928070068359375,
+      "leaderLimit": 6.19497252599033,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.6193560123443604,
+      "previous1s": {
+        "actualClock": 4.291666666666666,
+        "speed": 3.5702574253082275,
+        "differenceFromObserved": -2.469243288040161,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 6.291666666666666,
+        "speed": 11.766754150390625,
+        "differenceFromObserved": 5.727253437042236,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 7.291666666666666,
+        "speed": 17.994352340698242,
+        "differenceFromObserved": 11.954851627349854,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 5.583333333333333,
+      "raceTime": 2.5916783361385263,
+      "speed": 6.2486114501953125,
+      "offset": 4.0115509033203125,
+      "selected": 3.1449995040893555,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 7.503859519958496,
+      "leaderOffset": 4.111907958984375,
+      "leaderLimit": 7.705226432317274,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.5696428775787354,
+      "previous1s": {
+        "actualClock": 4.591666666666667,
+        "speed": 3.9706497192382812,
+        "differenceFromObserved": -3.533209800720215,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 6.591666666666667,
+        "speed": 13.69530963897705,
+        "differenceFromObserved": 6.191450119018555,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 7.591666666666667,
+        "speed": 19.667028427124023,
+        "differenceFromObserved": 12.163168907165527,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 5.883333333333333,
+      "raceTime": 2.891678336138526,
+      "speed": 7.697934150695801,
+      "offset": 4.1244049072265625,
+      "selected": 3.1449995040893555,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 9.214743614196777,
+      "leaderOffset": 4.2644195556640625,
+      "leaderLimit": 9.46041621936416,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.529985284805298,
+      "previous1s": {
+        "actualClock": 4.891666666666667,
+        "speed": 4.6326680183410645,
+        "differenceFromObserved": -4.582075595855713,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 6.891666666666667,
+        "speed": 15.593177795410156,
+        "differenceFromObserved": 6.378434181213379,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 7.891666666666667,
+        "speed": 21.207637786865234,
+        "differenceFromObserved": 11.992894172668457,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 6.183333333333333,
+      "raceTime": 3.191678336138526,
+      "speed": 9.382576942443848,
+      "offset": 4.1961669921875,
+      "selected": 3.1449995040893555,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 11.07534408569336,
+      "leaderOffset": 4.3515472412109375,
+      "leaderLimit": 11.357524856707537,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.5146196842193604,
+      "previous1s": {
+        "actualClock": 5.191666666666666,
+        "speed": 5.654708385467529,
+        "differenceFromObserved": -5.42063570022583,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 7.191666666666666,
+        "speed": 17.411781311035156,
+        "differenceFromObserved": 6.336437225341797,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 8.191666666666666,
+        "speed": 22.49679183959961,
+        "differenceFromObserved": 11.42144775390625,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 6.483333333333333,
+      "raceTime": 3.4916783361385266,
+      "speed": 11.216690063476562,
+      "offset": 4.209381103515625,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "corridor": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 12.999370574951172,
+      "leaderOffset": 4.354278564453125,
+      "leaderLimit": 13.308890950286816,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.525102472305298,
+      "previous1s": {
+        "actualClock": 5.491666666666666,
+        "speed": 7.025916576385498,
+        "differenceFromObserved": -5.973453998565674,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 7.491666666666666,
+        "speed": 19.122072219848633,
+        "differenceFromObserved": 6.122701644897461,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 8.491666666666667,
+        "speed": 23.435834884643555,
+        "differenceFromObserved": 10.436464309692383,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 6.783333333333333,
+      "raceTime": 3.7916783361385265,
+      "speed": 13.11889362335205,
+      "offset": 4.1674652099609375,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 14.914899826049805,
+      "leaderOffset": 4.2921142578125,
+      "leaderLimit": 15.242618505312935,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.5453508853912354,
+      "previous1s": {
+        "actualClock": 5.791666666666666,
+        "speed": 8.671649932861328,
+        "differenceFromObserved": -6.243249893188477,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 7.791666666666666,
+        "speed": 20.715518951416016,
+        "differenceFromObserved": 5.800619125366211,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 8.791666666666666,
+        "speed": 24.033002853393555,
+        "differenceFromObserved": 9.11810302734375,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 7.083333333333333,
+      "raceTime": 4.091678336138527,
+      "speed": 15.018664360046387,
+      "offset": 4.0899200439453125,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 16.766796112060547,
+      "leaderOffset": 4.2188568115234375,
+      "leaderLimit": 17.105948146575717,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.541063165664673,
+      "previous1s": {
+        "actualClock": 6.091666666666667,
+        "speed": 10.496472358703613,
+        "differenceFromObserved": -6.270323753356934,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 8.091666666666667,
+        "speed": 22.103036880493164,
+        "differenceFromObserved": 5.336240768432617,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 9.091666666666667,
+        "speed": 24.377357482910156,
+        "differenceFromObserved": 7.610561370849609,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 7.383333333333333,
+      "raceTime": 4.391678336138526,
+      "speed": 16.86219024658203,
+      "offset": 3.9896392822265625,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 18.517457962036133,
+      "leaderOffset": 4.1644134521484375,
+      "leaderLimit": 18.862757492720927,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.495225763320923,
+      "previous1s": {
+        "actualClock": 6.391666666666667,
+        "speed": 12.409284591674805,
+        "differenceFromObserved": -6.108173370361328,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 8.391666666666666,
+        "speed": 23.15778350830078,
+        "differenceFromObserved": 4.640325546264648,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 9.391666666666666,
+        "speed": 24.528154373168945,
+        "differenceFromObserved": 6.0106964111328125,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 7.683333333333333,
+      "raceTime": 4.691678336138526,
+      "speed": 18.6141357421875,
+      "offset": 3.8888397216796875,
+      "selected": 4.193332672119141,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 20.15540885925293,
+      "leaderOffset": 4.1343841552734375,
+      "leaderLimit": 20.501345952599177,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.424455499649048,
+      "previous1s": {
+        "actualClock": 6.691666666666666,
+        "speed": 14.33418083190918,
+        "differenceFromObserved": -5.82122802734375,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 8.691666666666666,
+        "speed": 23.82689666748047,
+        "differenceFromObserved": 3.671487808227539,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 9.7,
+        "speed": 24.73561668395996,
+        "differenceFromObserved": 4.580207824707031,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 7.983333333333333,
+      "raceTime": 4.991678336138527,
+      "speed": 20.24190902709961,
+      "offset": 3.8229522705078125,
+      "selected": 4.193332672119141,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 20,
+      "leaderSpeed": 20.79871368408203,
+      "leaderOffset": 1.2332305908203125,
+      "leaderLimit": 21.809936296591736,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.08027825355529794,
+      "previous1s": {
+        "actualClock": 6.991666666666666,
+        "speed": 16.246007919311523,
+        "differenceFromObserved": -4.552705764770508,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 8.991666666666667,
+        "speed": 22.192930221557617,
+        "differenceFromObserved": 1.394216537475586,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 10.0,
+        "speed": 23.362995147705078,
+        "differenceFromObserved": 2.564281463623047,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 8.291666666666666,
+      "raceTime": 5.300011669471859,
+      "speed": 21.094951629638672,
+      "offset": 3.824462890625,
+      "selected": 4.193332672119141,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 20,
+      "leaderSpeed": 20.633943557739258,
+      "leaderOffset": 1.2429351806640625,
+      "leaderLimit": 21.506018498682916,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.08847222328186044,
+      "previous1s": {
+        "actualClock": 7.291666666666666,
+        "speed": 18.01970863342285,
+        "differenceFromObserved": -2.6142349243164062,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 9.291666666666666,
+        "speed": 22.59819221496582,
+        "differenceFromObserved": 1.9642486572265625,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 10.299999999999999,
+        "speed": 23.92802619934082,
+        "differenceFromObserved": 3.2940826416015625,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 8.591666666666667,
+      "raceTime": 5.60001166947186,
+      "speed": 21.441375732421875,
+      "offset": 3.882659912109375,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 20,
+      "leaderSpeed": 21.208118438720703,
+      "leaderOffset": 1.2200469970703125,
+      "leaderLimit": 21.926629002485033,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.00738701820373544,
+      "previous1s": {
+        "actualClock": 7.591666666666667,
+        "speed": 19.645578384399414,
+        "differenceFromObserved": -1.562540054321289,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 9.591666666666667,
+        "speed": 22.7558650970459,
+        "differenceFromObserved": 1.5477466583251953,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 10.6,
+        "speed": 24.38188362121582,
+        "differenceFromObserved": 3.173765182495117,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 8.891666666666666,
+      "raceTime": 5.9000116694718585,
+      "speed": 23.29210662841797,
+      "offset": 3.9560089111328125,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 24.086305618286133,
+      "leaderOffset": 4.1675262451171875,
+      "leaderLimit": 24.831088155412377,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.458482599258423,
+      "previous1s": {
+        "actualClock": 7.891666666666667,
+        "speed": 21.207637786865234,
+        "differenceFromObserved": -2.8786678314208984,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 9.9,
+        "speed": 24.719701766967773,
+        "differenceFromObserved": 0.6333961486816406,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 10.9,
+        "speed": 24.820558547973633,
+        "differenceFromObserved": 0.7342529296875,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 9.191666666666666,
+      "raceTime": 6.200011669471859,
+      "speed": 24.31032371520996,
+      "offset": 3.976715087890625,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 24.37959861755371,
+      "leaderOffset": 4.174407958984375,
+      "leaderLimit": 25.042541177601606,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.472307062149048,
+      "previous1s": {
+        "actualClock": 8.191666666666666,
+        "speed": 22.49679183959961,
+        "differenceFromObserved": -1.8828067779541016,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 10.2,
+        "speed": 24.85980987548828,
+        "differenceFromObserved": 0.4802112579345703,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 11.2,
+        "speed": 24.963756561279297,
+        "differenceFromObserved": 0.5841579437255859,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 9.491666666666667,
+      "raceTime": 6.50001166947186,
+      "speed": 24.834394454956055,
+      "offset": 3.9424285888671875,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 24.73423194885254,
+      "leaderOffset": 4.1794586181640625,
+      "leaderLimit": 25.309352792300004,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.432969903945923,
+      "previous1s": {
+        "actualClock": 8.491666666666667,
+        "speed": 23.435834884643555,
+        "differenceFromObserved": -1.2983970642089844,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 10.5,
+        "speed": 24.98227882385254,
+        "differenceFromObserved": 0.248046875,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 11.5,
+        "speed": 24.952768325805664,
+        "differenceFromObserved": 0.218536376953125,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 9.791666666666666,
+      "raceTime": 6.800011669471859,
+      "speed": 25.118366241455078,
+      "offset": 3.8760528564453125,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 24.907121658325195,
+      "leaderOffset": 4.1782073974609375,
+      "leaderLimit": 25.403140727710785,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.367845392227173,
+      "previous1s": {
+        "actualClock": 8.791666666666666,
+        "speed": 24.033002853393555,
+        "differenceFromObserved": -0.8741188049316406,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 10.799999999999999,
+        "speed": 24.890445709228516,
+        "differenceFromObserved": -0.016675949096679688,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 11.799999999999999,
+        "speed": 24.80106544494629,
+        "differenceFromObserved": -0.10605621337890625,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 10.091666666666667,
+      "raceTime": 7.10001166947186,
+      "speed": 25.231847763061523,
+      "offset": 3.8076934814453125,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 24.816213607788086,
+      "leaderOffset": 4.1292266845703125,
+      "leaderLimit": 25.24249820293993,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.348466730117798,
+      "previous1s": {
+        "actualClock": 9.091666666666667,
+        "speed": 24.377357482910156,
+        "differenceFromObserved": -0.4388561248779297,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 11.1,
+        "speed": 24.774627685546875,
+        "differenceFromObserved": -0.04158592224121094,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 12.1,
+        "speed": 24.636629104614258,
+        "differenceFromObserved": -0.17958450317382812,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 10.391666666666666,
+      "raceTime": 7.4000116694718585,
+      "speed": 25.236059188842773,
+      "offset": 3.7569122314453125,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 24.768449783325195,
+      "leaderOffset": 4.032989501953125,
+      "leaderLimit": 25.13018530880747,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.3939226627349854,
+      "previous1s": {
+        "actualClock": 9.391666666666666,
+        "speed": 24.528154373168945,
+        "differenceFromObserved": -0.24029541015625,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 11.4,
+        "speed": 24.864904403686523,
+        "differenceFromObserved": 0.09645462036132812,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 12.4,
+        "speed": 24.57708740234375,
+        "differenceFromObserved": -0.1913623809814453,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 10.691666666666666,
+      "raceTime": 7.700011669471859,
+      "speed": 25.205347061157227,
+      "offset": 3.72796630859375,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 24.90302848815918,
+      "leaderOffset": 3.9307403564453125,
+      "leaderLimit": 25.207216033797707,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.4672258853912354,
+      "previous1s": {
+        "actualClock": 9.7,
+        "speed": 24.73561668395996,
+        "differenceFromObserved": -0.16741180419921875,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 11.7,
+        "speed": 24.98729133605957,
+        "differenceFromObserved": 0.08426284790039062,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 12.7,
+        "speed": 24.58419418334961,
+        "differenceFromObserved": -0.3188343048095703,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 10.991666666666665,
+      "raceTime": 8.000011669471858,
+      "speed": 25.173612594604492,
+      "offset": 3.8569793701171875,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 24.98761558532715,
+      "leaderOffset": 3.817169189453125,
+      "leaderLimit": 25.24643920839641,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.6301897525787354,
+      "previous1s": {
+        "actualClock": 10.0,
+        "speed": 24.934133529663086,
+        "differenceFromObserved": -0.0534820556640625,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 12.0,
+        "speed": 24.734737396240234,
+        "differenceFromObserved": -0.25287818908691406,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 13.0,
+        "speed": 24.51106071472168,
+        "differenceFromObserved": -0.47655487060546875,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 11.291666666666666,
+      "raceTime": 8.300011669471859,
+      "speed": 25.149763107299805,
+      "offset": 4.2574615478515625,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 24.863231658935547,
+      "leaderOffset": 3.6911163330078125,
+      "leaderLimit": 25.08800071633501,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.103654718399048,
+      "previous1s": {
+        "actualClock": 10.299999999999999,
+        "speed": 24.92449188232422,
+        "differenceFromObserved": 0.061260223388671875,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 12.299999999999999,
+        "speed": 24.537906646728516,
+        "differenceFromObserved": -0.32532501220703125,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 13.299999999999999,
+        "speed": 24.50177001953125,
+        "differenceFromObserved": -0.3614616394042969,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 11.591666666666667,
+      "raceTime": 8.60001166947186,
+      "speed": 25.10818099975586,
+      "offset": 4.79241943359375,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 24.776214599609375,
+      "leaderOffset": 3.5657196044921875,
+      "leaderLimit": 24.97456672313461,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 1.4433001041412354,
+      "previous1s": {
+        "actualClock": 10.6,
+        "speed": 24.78685188293457,
+        "differenceFromObserved": 0.010637283325195312,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 12.6,
+        "speed": 24.521570205688477,
+        "differenceFromObserved": -0.25464439392089844,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 13.6,
+        "speed": 24.502822875976562,
+        "differenceFromObserved": -0.2733917236328125,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 11.891666666666666,
+      "raceTime": 8.900011669471859,
+      "speed": 25.065460205078125,
+      "offset": 5.323211669921875,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 21,
+      "leaderSpeed": 24.7832088470459,
+      "leaderOffset": 3.373443603515625,
+      "leaderLimit": 24.957865854949787,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.7202318668365479,
+      "previous1s": {
+        "actualClock": 10.9,
+        "speed": 24.820558547973633,
+        "differenceFromObserved": 0.037349700927734375,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 12.9,
+        "speed": 24.554723739624023,
+        "differenceFromObserved": -0.228485107421875,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 13.899999999999999,
+        "speed": 24.458860397338867,
+        "differenceFromObserved": -0.32434844970703125,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 12.191666666666666,
+      "raceTime": 9.20001166947186,
+      "speed": 25.047204971313477,
+      "offset": 5.766082763671875,
+      "selected": 5.499326229095459,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 18,
+      "leaderSpeed": 24.467140197753906,
+      "leaderOffset": 3.3146820068359375,
+      "leaderLimit": 30.393153354113203,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.21859917640686044,
+      "previous1s": {
+        "actualClock": 11.2,
+        "speed": 24.93361473083496,
+        "differenceFromObserved": 0.4664745330810547,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 13.2,
+        "speed": 24.638288497924805,
+        "differenceFromObserved": 0.17114830017089844,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 14.2,
+        "speed": 24.731611251831055,
+        "differenceFromObserved": 0.26447105407714844,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 12.491666666666665,
+      "raceTime": 9.500011669471858,
+      "speed": 26.90559196472168,
+      "offset": 6.0609588623046875,
+      "selected": 4.960791110992432,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.96293067932129,
+      "leaderOffset": 3.894989013671875,
+      "leaderLimit": 35.39869493628046,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.5040300846099854,
+      "previous1s": {
+        "actualClock": 11.5,
+        "speed": 24.991609573364258,
+        "differenceFromObserved": 0.02867889404296875,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 13.5,
+        "speed": 24.844682693481445,
+        "differenceFromObserved": -0.11824798583984375,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 14.5,
+        "speed": 24.779726028442383,
+        "differenceFromObserved": -0.18320465087890625,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 12.791666666666666,
+      "raceTime": 9.800011669471859,
+      "speed": 28.566133499145508,
+      "offset": 6.12115478515625,
+      "selected": 4.436715126037598,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.81092643737793,
+      "leaderOffset": 4.0608367919921875,
+      "leaderLimit": 34.78344577032902,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.6096819400787354,
+      "previous1s": {
+        "actualClock": 11.799999999999999,
+        "speed": 24.881195068359375,
+        "differenceFromObserved": 0.07026863098144531,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 13.799999999999999,
+        "speed": 24.781452178955078,
+        "differenceFromObserved": -0.029474258422851562,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 14.799999999999999,
+        "speed": 24.848024368286133,
+        "differenceFromObserved": 0.037097930908203125,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 13.091666666666667,
+      "raceTime": 10.10001166947186,
+      "speed": 30.046815872192383,
+      "offset": 5.9250946044921875,
+      "selected": 4.959104061126709,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.80392837524414,
+      "leaderOffset": 4.147674560546875,
+      "leaderLimit": 34.089546907358596,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.8925798892974854,
+      "previous1s": {
+        "actualClock": 12.1,
+        "speed": 24.776321411132812,
+        "differenceFromObserved": -0.027606964111328125,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 14.1,
+        "speed": 24.910783767700195,
+        "differenceFromObserved": 0.10685539245605469,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 15.1,
+        "speed": 24.98257064819336,
+        "differenceFromObserved": 0.17864227294921875,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 13.391666666666666,
+      "raceTime": 10.400011669471859,
+      "speed": 31.281814575195312,
+      "offset": 5.5948486328125,
+      "selected": 4.960266590118408,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.946374893188477,
+      "leaderOffset": 4.162567138671875,
+      "leaderLimit": 33.349659789032344,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.237718439102173,
+      "previous1s": {
+        "actualClock": 12.4,
+        "speed": 24.878345489501953,
+        "differenceFromObserved": -0.06802940368652344,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 14.399999999999999,
+        "speed": 24.988712310791016,
+        "differenceFromObserved": 0.04233741760253906,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 15.399999999999999,
+        "speed": 24.929372787475586,
+        "differenceFromObserved": -0.017002105712890625,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 13.691666666666666,
+      "raceTime": 10.70001166947186,
+      "speed": 32.058467864990234,
+      "offset": 5.2859954833984375,
+      "selected": 4.960361480712891,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.971467971801758,
+      "leaderOffset": 4.13177490234375,
+      "leaderLimit": 32.418452514925306,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.5157793521881104,
+      "previous1s": {
+        "actualClock": 12.7,
+        "speed": 24.99152374267578,
+        "differenceFromObserved": 0.020055770874023438,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 14.7,
+        "speed": 24.860166549682617,
+        "differenceFromObserved": -0.11130142211914062,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 15.7,
+        "speed": 24.78706169128418,
+        "differenceFromObserved": -0.18440628051757812,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 13.991666666666665,
+      "raceTime": 11.000011669471858,
+      "speed": 31.92656707763672,
+      "offset": 5.0612945556640625,
+      "selected": 4.717499732971191,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.82121467590332,
+      "leaderOffset": 4.0773162841796875,
+      "leaderLimit": 31.38335776612955,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.686021661758423,
+      "previous1s": {
+        "actualClock": 13.0,
+        "speed": 24.898435592651367,
+        "differenceFromObserved": 0.07722091674804688,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 15.0,
+        "speed": 24.77800941467285,
+        "differenceFromObserved": -0.04320526123046875,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 16.0,
+        "speed": 24.836366653442383,
+        "differenceFromObserved": 0.0151519775390625,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 14.291666666666666,
+      "raceTime": 11.300011669471859,
+      "speed": 31.335426330566406,
+      "offset": 4.9127655029296875,
+      "selected": 4.717499732971191,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.79354476928711,
+      "leaderOffset": 4.0272979736328125,
+      "leaderLimit": 30.517209822061396,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.784532403945923,
+      "previous1s": {
+        "actualClock": 13.299999999999999,
+        "speed": 24.776561737060547,
+        "differenceFromObserved": -0.0169830322265625,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 15.299999999999999,
+        "speed": 24.8970947265625,
+        "differenceFromObserved": 0.10354995727539062,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 16.3,
+        "speed": 24.975522994995117,
+        "differenceFromObserved": 0.1819782257080078,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 14.591666666666667,
+      "raceTime": 11.60001166947186,
+      "speed": 30.624576568603516,
+      "offset": 4.812103271484375,
+      "selected": 4.717499732971191,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.934051513671875,
+      "leaderOffset": 3.99481201171875,
+      "leaderLimit": 29.874867208173363,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.852708673477173,
+      "previous1s": {
+        "actualClock": 13.6,
+        "speed": 24.862045288085938,
+        "differenceFromObserved": -0.0720062255859375,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 15.6,
+        "speed": 24.992294311523438,
+        "differenceFromObserved": 0.0582427978515625,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 16.599999999999998,
+        "speed": 24.943017959594727,
+        "differenceFromObserved": 0.008966445922851562,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 14.891666666666666,
+      "raceTime": 11.900011669471859,
+      "speed": 29.92884635925293,
+      "offset": 4.75103759765625,
+      "selected": 4.941608905792236,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.980131149291992,
+      "leaderOffset": 3.9818572998046875,
+      "leaderLimit": 29.240851642408856,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.9008196353912354,
+      "previous1s": {
+        "actualClock": 13.899999999999999,
+        "speed": 24.987279891967773,
+        "differenceFromObserved": 0.00714874267578125,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 15.899999999999999,
+        "speed": 24.878660202026367,
+        "differenceFromObserved": -0.101470947265625,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 16.9,
+        "speed": 24.79448890686035,
+        "differenceFromObserved": -0.18564224243164062,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 15.191666666666666,
+      "raceTime": 12.20001166947186,
+      "speed": 29.271408081054688,
+      "offset": 4.7345733642578125,
+      "selected": 4.93900728225708,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.835430145263672,
+      "leaderOffset": 3.9959869384765625,
+      "leaderLimit": 28.519318767152217,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.931413507461548,
+      "previous1s": {
+        "actualClock": 14.2,
+        "speed": 24.91368293762207,
+        "differenceFromObserved": 0.07825279235839844,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 16.2,
+        "speed": 24.777456283569336,
+        "differenceFromObserved": -0.05797386169433594,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 17.2,
+        "speed": 24.200937271118164,
+        "differenceFromObserved": -0.6344928741455078,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 15.491666666666665,
+      "raceTime": 12.500011669471858,
+      "speed": 28.658960342407227,
+      "offset": 4.7631988525390625,
+      "selected": 4.923808574676514,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.787120819091797,
+      "leaderOffset": 4.040740966796875,
+      "leaderLimit": 27.950642993791167,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.9475420475006104,
+      "previous1s": {
+        "actualClock": 14.5,
+        "speed": 24.779726028442383,
+        "differenceFromObserved": -0.0073947906494140625,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 16.5,
+        "speed": 24.881885528564453,
+        "differenceFromObserved": 0.09476470947265625,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 17.5,
+        "speed": 23.802003860473633,
+        "differenceFromObserved": -0.9851169586181641,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 15.791666666666666,
+      "raceTime": 12.800011669471859,
+      "speed": 28.122215270996094,
+      "offset": 4.8130340576171875,
+      "selected": 4.929698467254639,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.92270278930664,
+      "leaderOffset": 4.1143798828125,
+      "leaderLimit": 27.614359394455633,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.9713457584381104,
+      "previous1s": {
+        "actualClock": 14.799999999999999,
+        "speed": 24.848024368286133,
+        "differenceFromObserved": -0.07467842102050781,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 16.8,
+        "speed": 24.991779327392578,
+        "differenceFromObserved": 0.0690765380859375,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 17.8,
+        "speed": 23.695796966552734,
+        "differenceFromObserved": -1.2269058227539062,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 16.091666666666665,
+      "raceTime": 13.100011669471858,
+      "speed": 27.66997528076172,
+      "offset": 4.8566741943359375,
+      "selected": 5.241666316986084,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.987468719482422,
+      "leaderOffset": 4.214874267578125,
+      "leaderLimit": 27.277919141762457,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.0282000064849854,
+      "previous1s": {
+        "actualClock": 15.1,
+        "speed": 24.98257064819336,
+        "differenceFromObserved": -0.0048980712890625,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 17.099999999999998,
+        "speed": 24.895090103149414,
+        "differenceFromObserved": -0.09237861633300781,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 18.099999999999998,
+        "speed": 23.45624542236328,
+        "differenceFromObserved": -1.5312232971191406,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 16.40833333333333,
+      "raceTime": 13.416678336138524,
+      "speed": 27.24725914001465,
+      "offset": 4.9261016845703125,
+      "selected": 5.241666316986084,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.811655044555664,
+      "leaderOffset": 4.3259429931640625,
+      "leaderLimit": 26.754594635695717,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.069841241836548,
+      "previous1s": {
+        "actualClock": 15.399999999999999,
+        "speed": 24.929372787475586,
+        "differenceFromObserved": 0.11771774291992188,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 17.4,
+        "speed": 23.911272048950195,
+        "differenceFromObserved": -0.9003829956054688,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 18.4,
+        "speed": 23.35268783569336,
+        "differenceFromObserved": -1.4589672088623047,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 16.716666666666665,
+      "raceTime": 13.725011669471858,
+      "speed": 26.870817184448242,
+      "offset": 5.01873779296875,
+      "selected": 5.241666316986084,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.821495056152344,
+      "leaderOffset": 4.406829833984375,
+      "leaderLimit": 26.461865690255223,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.058091974258423,
+      "previous1s": {
+        "actualClock": 15.7,
+        "speed": 24.78706169128418,
+        "differenceFromObserved": -0.03443336486816406,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 17.7,
+        "speed": 23.764537811279297,
+        "differenceFromObserved": -1.0569572448730469,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 18.7,
+        "speed": 23.227006912231445,
+        "differenceFromObserved": -1.5944881439208984,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 17.03333333333333,
+      "raceTime": 14.041678336138524,
+      "speed": 26.561208724975586,
+      "offset": 5.1038665771484375,
+      "selected": 5.241666316986084,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.987138748168945,
+      "leaderOffset": 4.4550323486328125,
+      "leaderLimit": 26.356620041795615,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.021165704727173,
+      "previous1s": {
+        "actualClock": 16.0,
+        "speed": 24.836366653442383,
+        "differenceFromObserved": -0.1507720947265625,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 18.0,
+        "speed": 23.526756286621094,
+        "differenceFromObserved": -1.4603824615478516,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 19.0,
+        "speed": 22.536184310913086,
+        "differenceFromObserved": -2.4509544372558594,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 17.341666666666665,
+      "raceTime": 14.350011669471858,
+      "speed": 25.659399032592773,
+      "offset": 5.162811279296875,
+      "selected": 5.241666316986084,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 23.883058547973633,
+      "leaderOffset": 4.47344970703125,
+      "leaderLimit": 25.132718603862553,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.980638360977173,
+      "previous1s": {
+        "actualClock": 16.3,
+        "speed": 24.975522994995117,
+        "differenceFromObserved": 1.0924644470214844,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 18.3,
+        "speed": 23.373912811279297,
+        "differenceFromObserved": -0.5091457366943359,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 19.3,
+        "speed": 19.815235137939453,
+        "differenceFromObserved": -4.06782341003418,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 17.65833333333333,
+      "raceTime": 14.666678336138524,
+      "speed": 25.226835250854492,
+      "offset": 5.19873046875,
+      "selected": 4.969377040863037,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 18": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 23.783309936523438,
+      "leaderOffset": 4.4676513671875,
+      "leaderLimit": 24.818490310448926,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.938920831680298,
+      "previous1s": {
+        "actualClock": 16.7,
+        "speed": 24.790937423706055,
+        "differenceFromObserved": 1.0076274871826172,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 18.7,
+        "speed": 23.227006912231445,
+        "differenceFromObserved": -0.5563030242919922,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 19.7,
+        "speed": 19.05548667907715,
+        "differenceFromObserved": -4.727823257446289,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 17.966666666666665,
+      "raceTime": 14.975011669471858,
+      "speed": 24.84559440612793,
+      "offset": 5.2075042724609375,
+      "selected": 4.9401421546936035,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 18": 2,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 23.553672790527344,
+      "leaderOffset": 4.4942474365234375,
+      "leaderLimit": 24.415850006919158,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.956743097305298,
+      "previous1s": {
+        "actualClock": 17.0,
+        "speed": 24.928653717041016,
+        "differenceFromObserved": 1.3749809265136719,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 19.0,
+        "speed": 22.536184310913086,
+        "differenceFromObserved": -1.0174884796142578,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 20.0,
+        "speed": 19.34383773803711,
+        "differenceFromObserved": -4.209835052490234,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 18.28333333333333,
+      "raceTime": 15.291678336138524,
+      "speed": 24.453887939453125,
+      "offset": 5.17535400390625,
+      "selected": 4.937236309051514,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 18": 3,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 23.378250122070312,
+      "leaderOffset": 4.5820770263671875,
+      "leaderLimit": 24.086130057059393,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.0767229557037354,
+      "previous1s": {
+        "actualClock": 17.3,
+        "speed": 23.835426330566406,
+        "differenceFromObserved": 0.45717620849609375,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 19.3,
+        "speed": 19.815235137939453,
+        "differenceFromObserved": -3.5630149841308594,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 20.3,
+        "speed": 18.483386993408203,
+        "differenceFromObserved": -4.894863128662109,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 18.591666666666665,
+      "raceTime": 15.600011669471858,
+      "speed": 24.1380615234375,
+      "offset": 5.113067626953125,
+      "selected": 4.932560920715332,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 18": 2,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 23.302501678466797,
+      "leaderOffset": 4.651604175567627,
+      "leaderLimit": 23.813683239280294,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.2085364818573,
+      "previous1s": {
+        "actualClock": 17.599999999999998,
+        "speed": 23.795434951782227,
+        "differenceFromObserved": 0.4929332733154297,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 19.599999999999998,
+        "speed": 18.94730567932129,
+        "differenceFromObserved": -4.355195999145508,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 20.599999999999998,
+        "speed": 17.184946060180664,
+        "differenceFromObserved": -6.117555618286133,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 18.90833333333333,
+      "raceTime": 15.916678336138524,
+      "speed": 23.743541717529297,
+      "offset": 5.000312805175781,
+      "selected": 5.000312805175781,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 5,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 22.84123420715332,
+      "leaderOffset": 4.683340549468994,
+      "leaderLimit": 23.175972793055795,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.353027677536011,
+      "previous1s": {
+        "actualClock": 17.9,
+        "speed": 23.610952377319336,
+        "differenceFromObserved": 0.7697181701660156,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 19.9,
+        "speed": 19.326663970947266,
+        "differenceFromObserved": -3.5145702362060547,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 20.9,
+        "speed": 17.765003204345703,
+        "differenceFromObserved": -5.076231002807617,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 19.216666666666665,
+      "raceTime": 16.225011669471858,
+      "speed": 21.349430084228516,
+      "offset": 4.919800281524658,
+      "selected": 4.919800281524658,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 5,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 20.697526931762695,
+      "leaderOffset": 4.68057918548584,
+      "leaderLimit": 21.243853360719744,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.4307788372039796,
+      "previous1s": {
+        "actualClock": 18.2,
+        "speed": 23.405941009521484,
+        "differenceFromObserved": 2.708414077758789,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 20.2,
+        "speed": 19.242307662963867,
+        "differenceFromObserved": -1.4552192687988281,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 21.2,
+        "speed": 17.835506439208984,
+        "differenceFromObserved": -2.862020492553711,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 19.53333333333333,
+      "raceTime": 16.541678336138524,
+      "speed": 20.253036499023438,
+      "offset": 4.8608808517456055,
+      "selected": 3.8992650508880615,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 18.942211151123047,
+      "leaderOffset": 4.654433727264404,
+      "leaderLimit": 19.49858118307308,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.4635528087615968,
+      "previous1s": {
+        "actualClock": 18.5,
+        "speed": 23.33305549621582,
+        "differenceFromObserved": 4.390844345092773,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 20.5,
+        "speed": 17.18410301208496,
+        "differenceFromObserved": -1.758108139038086,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 21.5,
+        "speed": 17.679916381835938,
+        "differenceFromObserved": -1.2622947692871094,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 19.841666666666665,
+      "raceTime": 16.850011669471858,
+      "speed": 19.56151008605957,
+      "offset": 4.7839555740356445,
+      "selected": 4.717499732971191,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 8": 2,
+        "moving side entry: 11": 2,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 19.277381896972656,
+      "leaderOffset": 4.660582542419434,
+      "leaderLimit": 19.724091604152015,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.546626901626587,
+      "previous1s": {
+        "actualClock": 18.8,
+        "speed": 23.09197425842285,
+        "differenceFromObserved": 3.8145923614501953,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 20.8,
+        "speed": 17.666032791137695,
+        "differenceFromObserved": -1.611349105834961,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 21.8,
+        "speed": 17.20011329650879,
+        "differenceFromObserved": -2.077268600463867,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 20.15833333333333,
+      "raceTime": 17.166678336138524,
+      "speed": 19.618730545043945,
+      "offset": 4.692436695098877,
+      "selected": 3.914172649383545,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 4,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 19.273347854614258,
+      "leaderOffset": 4.645061016082764,
+      "leaderLimit": 19.518036023222137,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.6226242542266847,
+      "previous1s": {
+        "actualClock": 19.2,
+        "speed": 20.90530014038086,
+        "differenceFromObserved": 1.6319522857666016,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 21.2,
+        "speed": 17.835506439208984,
+        "differenceFromObserved": -1.4378414154052734,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 22.2,
+        "speed": 17.688777923583984,
+        "differenceFromObserved": -1.5845699310302734,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 20.466666666666665,
+      "raceTime": 17.475011669471858,
+      "speed": 18.808944702148438,
+      "offset": 4.605606555938721,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.256059646606445,
+      "leaderOffset": 4.604803562164307,
+      "leaderLimit": 17.34388374024095,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.669196939468384,
+      "previous1s": {
+        "actualClock": 19.5,
+        "speed": 18.9691162109375,
+        "differenceFromObserved": 1.7130565643310547,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 21.5,
+        "speed": 17.679916381835938,
+        "differenceFromObserved": 0.4238567352294922,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 22.5,
+        "speed": 18.29735565185547,
+        "differenceFromObserved": 1.0412960052490234,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 20.78333333333333,
+      "raceTime": 17.791678336138524,
+      "speed": 17.917926788330078,
+      "offset": 4.470771312713623,
+      "selected": 3.669166326522827,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.64150619506836,
+      "leaderOffset": 4.644618511199951,
+      "leaderLimit": 17.64150619506836,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.49615273475647,
+      "previous1s": {
+        "actualClock": 19.8,
+        "speed": 19.21944236755371,
+        "differenceFromObserved": 1.5779361724853516,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 21.8,
+        "speed": 17.20011329650879,
+        "differenceFromObserved": -0.4413928985595703,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 22.8,
+        "speed": 18.417327880859375,
+        "differenceFromObserved": 0.7758216857910156,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 21.099999999999998,
+      "raceTime": 18.10834500280519,
+      "speed": 17.796852111816406,
+      "offset": 4.279147624969482,
+      "selected": 4.193332672119141,
+      "captureReason": "opening-unresolved",
+      "candidateReasons": {
+        "moving side entry: 11": 8
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.82689094543457,
+      "leaderOffset": 4.630759239196777,
+      "leaderLimit": 17.82689094543457,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.318388319015503,
+      "previous1s": {
+        "actualClock": 20.099999999999998,
+        "speed": 19.308855056762695,
+        "differenceFromObserved": 1.481964111328125,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 22.099999999999998,
+        "speed": 17.493366241455078,
+        "differenceFromObserved": -0.3335247039794922,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 23.099999999999998,
+        "speed": 18.676877975463867,
+        "differenceFromObserved": 0.8499870300292969,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 21.40833333333333,
+      "raceTime": 18.416678336138524,
+      "speed": 15.173225402832031,
+      "offset": 4.153257846832275,
+      "selected": 4.153257846832275,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 6,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.921846389770508,
+      "leaderOffset": 4.6547369956970215,
+      "leaderLimit": 18.626795252060635,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.168520784378052,
+      "previous1s": {
+        "actualClock": 20.4,
+        "speed": 17.397903442382812,
+        "differenceFromObserved": -0.5239429473876953,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 22.4,
+        "speed": 18.213886260986328,
+        "differenceFromObserved": 0.2920398712158203,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 23.4,
+        "speed": 18.92591667175293,
+        "differenceFromObserved": 1.0040702819824219,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 21.724999999999998,
+      "raceTime": 18.73334500280519,
+      "speed": 16.463523864746094,
+      "offset": 4.095236301422119,
+      "selected": 2.620832920074463,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.11603355407715,
+      "leaderOffset": 4.716032028198242,
+      "leaderLimit": 17.93388344442924,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.049204206466675,
+      "previous1s": {
+        "actualClock": 20.7,
+        "speed": 17.475875854492188,
+        "differenceFromObserved": 0.35984230041503906,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 22.7,
+        "speed": 18.375633239746094,
+        "differenceFromObserved": 1.2595996856689453,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 23.7,
+        "speed": 18.933753967285156,
+        "differenceFromObserved": 1.8177204132080078,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 22.03333333333333,
+      "raceTime": 19.041678336138524,
+      "speed": 15.229382514953613,
+      "offset": 4.089837074279785,
+      "selected": 2.620832920074463,
+      "captureReason": "opening-unresolved",
+      "candidateReasons": {
+        "moving side entry: 11": 7,
+        "moving side entry: 17": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.42452621459961,
+      "leaderOffset": 4.667172431945801,
+      "leaderLimit": 18.59141329725155,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.0926645755767823,
+      "previous1s": {
+        "actualClock": 21.0,
+        "speed": 17.81125831604004,
+        "differenceFromObserved": 0.3867321014404297,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 23.0,
+        "speed": 18.572641372680664,
+        "differenceFromObserved": 1.1481151580810547,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 24.0,
+        "speed": 18.939512252807617,
+        "differenceFromObserved": 1.5149860382080078,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 22.349999999999998,
+      "raceTime": 19.35834500280519,
+      "speed": 13.759121894836426,
+      "offset": 4.157747745513916,
+      "selected": 2.8198111057281494,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 18.150989532470703,
+      "leaderOffset": 4.5782270431518555,
+      "leaderLimit": 20.21204506585022,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.2495206356048585,
+      "previous1s": {
+        "actualClock": 21.3,
+        "speed": 17.86302947998047,
+        "differenceFromObserved": -0.2879600524902344,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 23.3,
+        "speed": 18.867347717285156,
+        "differenceFromObserved": 0.7163581848144531,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 24.3,
+        "speed": 17.880538940429688,
+        "differenceFromObserved": -0.2704505920410156,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 22.65833333333333,
+      "raceTime": 19.666678336138524,
+      "speed": 14.88265609741211,
+      "offset": 4.244021415710449,
+      "selected": 4.717499732971191,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 4,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 18.363548278808594,
+      "leaderOffset": 4.617099761962891,
+      "leaderLimit": 20.936277626276464,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.2969215869903565,
+      "previous1s": {
+        "actualClock": 21.7,
+        "speed": 17.17804718017578,
+        "differenceFromObserved": -1.1855010986328125,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 23.7,
+        "speed": 18.933753967285156,
+        "differenceFromObserved": 0.5702056884765625,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 24.7,
+        "speed": 17.339569091796875,
+        "differenceFromObserved": -1.0239791870117188,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 22.974999999999998,
+      "raceTime": 19.98334500280519,
+      "speed": 17.625019073486328,
+      "offset": 4.290427207946777,
+      "selected": 4.717499732971191,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 4,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 18.549274444580078,
+      "leaderOffset": 4.764702320098877,
+      "leaderLimit": 21.104812849941673,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.1957248210906983,
+      "previous1s": {
+        "actualClock": 22.0,
+        "speed": 17.398828506469727,
+        "differenceFromObserved": -1.1504459381103516,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 24.0,
+        "speed": 18.939512252807617,
+        "differenceFromObserved": 0.39023780822753906,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 25.0,
+        "speed": 16.171293258666992,
+        "differenceFromObserved": -2.377981185913086,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 23.28333333333333,
+      "raceTime": 20.291678336138524,
+      "speed": 19.612899780273438,
+      "offset": 4.390352249145508,
+      "selected": 4.193332672119141,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 2,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 18.855178833007812,
+      "leaderOffset": 4.94846248626709,
+      "leaderLimit": 21.07286580057638,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.111889696121216,
+      "previous1s": {
+        "actualClock": 22.3,
+        "speed": 18.056663513183594,
+        "differenceFromObserved": -0.7985153198242188,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 24.3,
+        "speed": 17.880538940429688,
+        "differenceFromObserved": -0.974639892578125,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 25.3,
+        "speed": 15.974069595336914,
+        "differenceFromObserved": -2.8811092376708984,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 23.599999999999998,
+      "raceTime": 20.60834500280519,
+      "speed": 20.38134002685547,
+      "offset": 4.559411525726318,
+      "selected": 4.559411525726318,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 5,
+        "moving side entry: 17": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 18.949228286743164,
+      "leaderOffset": 5.081869602203369,
+      "leaderLimit": 20.93924262249448,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.147541856765747,
+      "previous1s": {
+        "actualClock": 22.599999999999998,
+        "speed": 18.34410285949707,
+        "differenceFromObserved": -0.6051254272460938,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 24.599999999999998,
+        "speed": 17.442995071411133,
+        "differenceFromObserved": -1.5062332153320312,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 25.599999999999998,
+        "speed": 16.85076904296875,
+        "differenceFromObserved": -2.098459243774414,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 23.90833333333333,
+      "raceTime": 20.916678336138524,
+      "speed": 19.304718017578125,
+      "offset": 4.634350299835205,
+      "selected": 4.634350299835205,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 6,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 18.92469024658203,
+      "leaderOffset": 5.155150413513184,
+      "leaderLimit": 20.863397403215476,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.1491998195648194,
+      "previous1s": {
+        "actualClock": 22.9,
+        "speed": 18.482566833496094,
+        "differenceFromObserved": -0.4421234130859375,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 24.9,
+        "speed": 16.422679901123047,
+        "differenceFromObserved": -2.5020103454589844,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 25.9,
+        "speed": 18.41679573059082,
+        "differenceFromObserved": -0.5078945159912109,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 24.224999999999998,
+      "raceTime": 21.23334500280519,
+      "speed": 19.111366271972656,
+      "offset": 4.616267681121826,
+      "selected": 4.616267681121826,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 6,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 18.10953140258789,
+      "leaderOffset": 5.1728644371032715,
+      "leaderLimit": 19.927432175300606,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.1134031772613526,
+      "previous1s": {
+        "actualClock": 23.2,
+        "speed": 18.780107498168945,
+        "differenceFromObserved": 0.6705760955810547,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 25.2,
+        "speed": 15.981493949890137,
+        "differenceFromObserved": -2.128037452697754,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 26.2,
+        "speed": 19.917076110839844,
+        "differenceFromObserved": 1.8075447082519531,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 24.53333333333333,
+      "raceTime": 21.541678336138524,
+      "speed": 18.182842254638672,
+      "offset": 4.561624050140381,
+      "selected": 4.561624050140381,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 6,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.51678466796875,
+      "leaderOffset": 4.94838809967041,
+      "leaderLimit": 19.404891495389162,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.2832358837127686,
+      "previous1s": {
+        "actualClock": 23.5,
+        "speed": 18.95108985900879,
+        "differenceFromObserved": 1.434305191040039,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 25.5,
+        "speed": 16.423906326293945,
+        "differenceFromObserved": -1.0928783416748047,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 26.5,
+        "speed": 21.157346725463867,
+        "differenceFromObserved": 3.640562057495117,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 24.849999999999998,
+      "raceTime": 21.85834500280519,
+      "speed": 17.849454879760742,
+      "offset": 4.472525119781494,
+      "selected": 4.472525119781494,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "corridor": 1,
+        "moving side entry: 20": 4,
+        "moving side entry: 11": 1,
+        "accepted": 2
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 16.62032699584961,
+      "leaderOffset": 4.599621772766113,
+      "leaderLimit": 18.360412415049748,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.542903280258179,
+      "previous1s": {
+        "actualClock": 23.8,
+        "speed": 18.920827865600586,
+        "differenceFromObserved": 2.3005008697509766,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 25.8,
+        "speed": 17.890592575073242,
+        "differenceFromObserved": 1.2702655792236328,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 26.799999999999997,
+        "speed": 22.487445831298828,
+        "differenceFromObserved": 5.867118835449219,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 25.15833333333333,
+      "raceTime": 22.166678336138524,
+      "speed": 14.252359390258789,
+      "offset": 4.270384788513184,
+      "selected": 4.270384788513184,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 17": 5,
+        "moving side entry: 11": 2,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 16.005733489990234,
+      "leaderOffset": 4.409038066864014,
+      "leaderLimit": 18.183860180462364,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.531346654891968,
+      "previous1s": {
+        "actualClock": 24.2,
+        "speed": 18.24604034423828,
+        "differenceFromObserved": 2.240306854248047,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 26.2,
+        "speed": 19.917076110839844,
+        "differenceFromObserved": 3.9113426208496094,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 27.2,
+        "speed": 23.930269241333008,
+        "differenceFromObserved": 7.924535751342773,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 25.474999999999998,
+      "raceTime": 22.48334500280519,
+      "speed": 11.44764232635498,
+      "offset": 3.852660894393921,
+      "selected": 3.852660894393921,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 6,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 16.33063316345215,
+      "leaderOffset": 4.359599590301514,
+      "leaderLimit": 19.513970997485366,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.163061237335205,
+      "previous1s": {
+        "actualClock": 24.5,
+        "speed": 17.53940773010254,
+        "differenceFromObserved": 1.2087745666503906,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 26.5,
+        "speed": 21.157346725463867,
+        "differenceFromObserved": 4.826713562011719,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 27.5,
+        "speed": 24.57900047302246,
+        "differenceFromObserved": 8.248367309570312,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 25.78333333333333,
+      "raceTime": 22.791678336138524,
+      "speed": 11.072168350219727,
+      "offset": 3.5575759410858154,
+      "selected": 3.5575759410858154,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 11": 6,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.80139923095703,
+      "leaderOffset": 4.436621189117432,
+      "leaderLimit": 21.806827081011765,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.7909546852111817,
+      "previous1s": {
+        "actualClock": 24.8,
+        "speed": 16.859039306640625,
+        "differenceFromObserved": -0.9423599243164062,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 26.799999999999997,
+        "speed": 22.487445831298828,
+        "differenceFromObserved": 4.686046600341797,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 27.799999999999997,
+        "speed": 24.784624099731445,
+        "differenceFromObserved": 6.983224868774414,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 26.099999999999998,
+      "raceTime": 23.10834500280519,
+      "speed": 13.074592590332031,
+      "offset": 3.3393185138702393,
+      "selected": 3.8811962604522705,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 19.430255889892578,
+      "leaderOffset": 4.614599704742432,
+      "leaderLimit": 23.931166023237772,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.3947187423706056,
+      "previous1s": {
+        "actualClock": 25.099999999999998,
+        "speed": 16.0493221282959,
+        "differenceFromObserved": -3.3809337615966797,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 27.099999999999998,
+        "speed": 23.622264862060547,
+        "differenceFromObserved": 4.192008972167969,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 28.099999999999998,
+        "speed": 24.7322998046875,
+        "differenceFromObserved": 5.302043914794922,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 26.40833333333333,
+      "raceTime": 23.416678336138524,
+      "speed": 14.868066787719727,
+      "offset": 3.2338733673095703,
+      "selected": 4.338018894195557,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 11,
+      "leaderSpeed": 16.7285213470459,
+      "leaderOffset": 0.9244608283042908,
+      "leaderLimit": 16.7285213470459,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.3605873942375184,
+      "previous1s": {
+        "actualClock": 25.4,
+        "speed": 10.5089693069458,
+        "differenceFromObserved": -6.219552040100098,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 27.4,
+        "speed": 20.417720794677734,
+        "differenceFromObserved": 3.689199447631836,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 28.4,
+        "speed": 24.40827178955078,
+        "differenceFromObserved": 7.679750442504883,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 26.724999999999998,
+      "raceTime": 23.73334500280519,
+      "speed": 16.4097900390625,
+      "offset": 3.227076530456543,
+      "selected": 4.8702802658081055,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 11,
+      "leaderSpeed": 18.00335693359375,
+      "leaderOffset": 1.2825214862823486,
+      "leaderLimit": 18.00335693359375,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.7254448890686036,
+      "previous1s": {
+        "actualClock": 25.7,
+        "speed": 12.542513847351074,
+        "differenceFromObserved": -5.460843086242676,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 27.7,
+        "speed": 21.903474807739258,
+        "differenceFromObserved": 3.900117874145508,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 28.7,
+        "speed": 24.55459213256836,
+        "differenceFromObserved": 6.551235198974609,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 27.041666666666664,
+      "raceTime": 24.050011669471857,
+      "speed": 17.648204803466797,
+      "offset": 3.3490936756134033,
+      "selected": 0.7651776671409607,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 17": 4,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 11,
+      "leaderSpeed": 18.838815689086914,
+      "leaderOffset": 1.721481442451477,
+      "leaderLimit": 18.838815689086914,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.0423877000808717,
+      "previous1s": {
+        "actualClock": 26.0,
+        "speed": 14.435072898864746,
+        "differenceFromObserved": -4.403742790222168,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 28.0,
+        "speed": 23.191028594970703,
+        "differenceFromObserved": 4.352212905883789,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 29.0,
+        "speed": 24.621789932250977,
+        "differenceFromObserved": 5.7829742431640625,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 27.349999999999998,
+      "raceTime": 24.35834500280519,
+      "speed": 17.87799835205078,
+      "offset": 3.524235963821411,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 11,
+      "leaderSpeed": 20.16584014892578,
+      "leaderOffset": 2.2554433345794678,
+      "leaderLimit": 20.49845495957699,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 1.4012073040008546,
+      "previous1s": {
+        "actualClock": 26.3,
+        "speed": 16.18084144592285,
+        "differenceFromObserved": -3.9849987030029297,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 28.299999999999997,
+        "speed": 24.08966827392578,
+        "differenceFromObserved": 3.923828125,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 29.299999999999997,
+        "speed": 24.47700309753418,
+        "differenceFromObserved": 4.311162948608398,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 27.666666666666664,
+      "raceTime": 24.675011669471857,
+      "speed": 20.135578155517578,
+      "offset": 3.690291166305542,
+      "selected": 6.019064426422119,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 11,
+      "leaderSpeed": 21.742122650146484,
+      "leaderOffset": 2.627103090286255,
+      "leaderLimit": 22.37812393303346,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 1.6068118572235108,
+      "previous1s": {
+        "actualClock": 26.7,
+        "speed": 17.870689392089844,
+        "differenceFromObserved": -3.8714332580566406,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 28.7,
+        "speed": 24.55459213256836,
+        "differenceFromObserved": 2.812469482421875,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 29.7,
+        "speed": 24.19970703125,
+        "differenceFromObserved": 2.4575843811035156,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 27.974999999999998,
+      "raceTime": 24.98334500280519,
+      "speed": 22.07623863220215,
+      "offset": 4.229417324066162,
+      "selected": 6.018919467926025,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 11,
+      "leaderSpeed": 23.094181060791016,
+      "leaderOffset": 2.7035741806030273,
+      "leaderLimit": 23.922566044027686,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 1.1441567897796632,
+      "previous1s": {
+        "actualClock": 27.0,
+        "speed": 18.735536575317383,
+        "differenceFromObserved": -4.358644485473633,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 29.0,
+        "speed": 24.621789932250977,
+        "differenceFromObserved": 1.527608871459961,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 30.0,
+        "speed": 23.43564224243164,
+        "differenceFromObserved": 0.341461181640625,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 28.291666666666664,
+      "raceTime": 25.300011669471857,
+      "speed": 23.56696891784668,
+      "offset": 4.828855991363525,
+      "selected": 6.017737865447998,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 11,
+      "leaderSpeed": 24.0559024810791,
+      "leaderOffset": 2.739488363265991,
+      "leaderLimit": 24.78276480878997,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.5806323051452638,
+      "previous1s": {
+        "actualClock": 27.299999999999997,
+        "speed": 19.913480758666992,
+        "differenceFromObserved": -4.142421722412109,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 29.299999999999997,
+        "speed": 24.47700309753418,
+        "differenceFromObserved": 0.4211006164550781,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 30.299999999999997,
+        "speed": 22.36404037475586,
+        "differenceFromObserved": -1.6918621063232422,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 28.599999999999998,
+      "raceTime": 25.60834500280519,
+      "speed": 24.478958129882812,
+      "offset": 5.327630043029785,
+      "selected": 5.4954609870910645,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 24.761260986328125,
+      "leaderOffset": 3.0647621154785156,
+      "leaderLimit": 32.74714931558764,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.4071320056915284,
+      "previous1s": {
+        "actualClock": 27.599999999999998,
+        "speed": 24.53125,
+        "differenceFromObserved": -0.230010986328125,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 29.599999999999998,
+        "speed": 22.424835205078125,
+        "differenceFromObserved": -2.33642578125,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 30.599999999999998,
+        "speed": 19.196229934692383,
+        "differenceFromObserved": -5.565031051635742,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 28.916666666666664,
+      "raceTime": 25.925011669471857,
+      "speed": 26.49996566772461,
+      "offset": 5.700788497924805,
+      "selected": 5.982507705688477,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 9,
+      "leaderSpeed": 21.996591567993164,
+      "leaderOffset": 4.0572967529296875,
+      "leaderLimit": 41.410049856065804,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.0265081882476808,
+      "previous1s": {
+        "actualClock": 27.9,
+        "speed": 24.771303176879883,
+        "differenceFromObserved": 2.7747116088867188,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 29.9,
+        "speed": 17.022245407104492,
+        "differenceFromObserved": -4.974346160888672,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 30.9,
+        "speed": 15.50130558013916,
+        "differenceFromObserved": -6.495285987854004,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 29.224999999999998,
+      "raceTime": 26.23334500280519,
+      "speed": 28.258520126342773,
+      "offset": 5.896421432495117,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 9,
+      "leaderSpeed": 20.949974060058594,
+      "leaderOffset": 4.062439441680908,
+      "leaderLimit": 40.06836303324991,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.836017942428589,
+      "previous1s": {
+        "actualClock": 28.2,
+        "speed": 24.73491859436035,
+        "differenceFromObserved": 3.784944534301758,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 30.2,
+        "speed": 15.527161598205566,
+        "differenceFromObserved": -5.422812461853027,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 31.2,
+        "speed": 17.277795791625977,
+        "differenceFromObserved": -3.672178268432617,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 29.541666666666664,
+      "raceTime": 26.550011669471857,
+      "speed": 29.858530044555664,
+      "offset": 6.0150980949401855,
+      "selected": 5.985887050628662,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 9,
+      "leaderSpeed": 19.56224250793457,
+      "leaderOffset": 4.058285236358643,
+      "leaderLimit": 38.21357755579268,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.713187074661255,
+      "previous1s": {
+        "actualClock": 28.5,
+        "speed": 24.088687896728516,
+        "differenceFromObserved": 4.526445388793945,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 30.5,
+        "speed": 14.267393112182617,
+        "differenceFromObserved": -5.294849395751953,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 31.5,
+        "speed": 18.96726417541504,
+        "differenceFromObserved": -0.5949783325195312,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 29.849999999999998,
+      "raceTime": 26.85834500280519,
+      "speed": 28.95526695251465,
+      "offset": 6.0916242599487305,
+      "selected": 5.985262870788574,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 21.5079288482666,
+      "leaderOffset": 3.73068904876709,
+      "leaderLimit": 26.914730544800015,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.3090647220611573,
+      "previous1s": {
+        "actualClock": 28.799999999999997,
+        "speed": 23.69397735595703,
+        "differenceFromObserved": 2.1860485076904297,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 30.799999999999997,
+        "speed": 18.631784439086914,
+        "differenceFromObserved": -2.8761444091796875,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 31.799999999999997,
+        "speed": 15.952553749084473,
+        "differenceFromObserved": -5.555375099182129,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 30.166666666666664,
+      "raceTime": 27.175011669471857,
+      "speed": 27.029823303222656,
+      "offset": 6.1094279289245605,
+      "selected": 5.983484745025635,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 20.343135833740234,
+      "leaderOffset": 4.242476940155029,
+      "leaderLimit": 25.02385661927754,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.8030489444732667,
+      "previous1s": {
+        "actualClock": 29.2,
+        "speed": 23.526212692260742,
+        "differenceFromObserved": 3.183076858520508,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 31.2,
+        "speed": 17.644193649291992,
+        "differenceFromObserved": -2.698942184448242,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 32.199999999999996,
+        "speed": 15.065058708190918,
+        "differenceFromObserved": -5.278077125549316,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 30.474999999999998,
+      "raceTime": 27.48334500280519,
+      "speed": 25.251537322998047,
+      "offset": 6.0892229080200195,
+      "selected": 5.9796977043151855,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 19.51814079284668,
+      "leaderOffset": 4.678813934326172,
+      "leaderLimit": 23.488094536577126,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.2595909595489503,
+      "previous1s": {
+        "actualClock": 29.5,
+        "speed": 22.758411407470703,
+        "differenceFromObserved": 3.2402706146240234,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 31.5,
+        "speed": 16.84322166442871,
+        "differenceFromObserved": -2.6749191284179688,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 32.5,
+        "speed": 16.1904296875,
+        "differenceFromObserved": -3.3277111053466797,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 30.791666666666664,
+      "raceTime": 27.800011669471857,
+      "speed": 23.632007598876953,
+      "offset": 6.051131725311279,
+      "selected": 5.4670939445495605,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 18.65544891357422,
+      "leaderOffset": 5.054110050201416,
+      "leaderLimit": 21.965837433117326,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.6729782581329347,
+      "previous1s": {
+        "actualClock": 29.799999999999997,
+        "speed": 21.69376564025879,
+        "differenceFromObserved": 3.0383167266845703,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 31.799999999999997,
+        "speed": 15.952553749084473,
+        "differenceFromObserved": -2.702895164489746,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 32.8,
+        "speed": 17.889253616333008,
+        "differenceFromObserved": -0.7661952972412109,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 31.099999999999998,
+      "raceTime": 28.10834500280519,
+      "speed": 22.13766860961914,
+      "offset": 5.986297607421875,
+      "selected": 5.765832901000977,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.874942779541016,
+      "leaderOffset": 5.32041072845459,
+      "leaderLimit": 20.604321823258232,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.004113054275513,
+      "previous1s": {
+        "actualClock": 30.099999999999998,
+        "speed": 20.586069107055664,
+        "differenceFromObserved": 2.7111263275146484,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 32.1,
+        "speed": 15.242342948913574,
+        "differenceFromObserved": -2.6325998306274414,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 33.1,
+        "speed": 17.372034072875977,
+        "differenceFromObserved": -0.5029087066650391,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 31.416666666666664,
+      "raceTime": 28.425011669471857,
+      "speed": 20.82151222229004,
+      "offset": 5.903023719787598,
+      "selected": 5.765832901000977,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "corridor": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.08153533935547,
+      "leaderOffset": 5.738977909088135,
+      "leaderLimit": 19.64657406596341,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.505954122543335,
+      "previous1s": {
+        "actualClock": 30.4,
+        "speed": 19.681055068969727,
+        "differenceFromObserved": 2.599519729614258,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 32.4,
+        "speed": 15.594013214111328,
+        "differenceFromObserved": -1.4875221252441406,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 33.4,
+        "speed": 15.476129531860352,
+        "differenceFromObserved": -1.6054058074951172,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 31.724999999999998,
+      "raceTime": 28.73334500280519,
+      "speed": 19.841917037963867,
+      "offset": 5.889688968658447,
+      "selected": 5.765832901000977,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "corridor": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 16.14842987060547,
+      "leaderOffset": 5.8331618309021,
+      "leaderLimit": 19.577801289482935,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.6134727954864503,
+      "previous1s": {
+        "actualClock": 30.7,
+        "speed": 18.916501998901367,
+        "differenceFromObserved": 2.7680721282958984,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 32.699999999999996,
+        "speed": 17.355873107910156,
+        "differenceFromObserved": 1.2074432373046875,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 33.699999999999996,
+        "speed": 13.245367050170898,
+        "differenceFromObserved": -2.9030628204345703,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 32.03333333333333,
+      "raceTime": 29.041678336138524,
+      "speed": 18.44956398010254,
+      "offset": 6.226261138916016,
+      "selected": 5.765832901000977,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 15.390138626098633,
+      "leaderOffset": 5.59138822555542,
+      "leaderLimit": 19.051024351102097,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.0351270198822022,
+      "previous1s": {
+        "actualClock": 31.0,
+        "speed": 18.09865379333496,
+        "differenceFromObserved": 2.708515167236328,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 33.0,
+        "speed": 17.76249885559082,
+        "differenceFromObserved": 2.3723602294921875,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 34.0,
+        "speed": 11.138847351074219,
+        "differenceFromObserved": -4.251291275024414,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 32.34166666666667,
+      "raceTime": 29.35001166947186,
+      "speed": 17.25058364868164,
+      "offset": 6.414811134338379,
+      "selected": 5.968070030212402,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 15.24410343170166,
+      "leaderOffset": 5.224503993988037,
+      "leaderLimit": 17.68529953653276,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.4796927928924561,
+      "previous1s": {
+        "actualClock": 31.299999999999997,
+        "speed": 17.39707374572754,
+        "differenceFromObserved": 2.152970314025879,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 33.3,
+        "speed": 16.221920013427734,
+        "differenceFromObserved": 0.9778165817260742,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 34.3,
+        "speed": 8.960840225219727,
+        "differenceFromObserved": -6.283263206481934,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 32.65,
+      "raceTime": 29.65834500280519,
+      "speed": 16.550939559936523,
+      "offset": 6.3133063316345215,
+      "selected": 4.717499732971191,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "corridor": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.068531036376953,
+      "leaderOffset": 4.809539318084717,
+      "leaderLimit": 18.5209857879831,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.1662329196929933,
+      "previous1s": {
+        "actualClock": 31.599999999999998,
+        "speed": 16.488855361938477,
+        "differenceFromObserved": -0.5796756744384766,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 33.6,
+        "speed": 13.633404731750488,
+        "differenceFromObserved": -3.435126304626465,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 34.6,
+        "speed": 9.012782096862793,
+        "differenceFromObserved": -8.05574893951416,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 32.95833333333333,
+      "raceTime": 29.96667833613852,
+      "speed": 17.74717140197754,
+      "offset": 6.052185535430908,
+      "selected": 4.717499732971191,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "corridor": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.796188354492188,
+      "leaderOffset": 4.39494514465332,
+      "leaderLimit": 18.544493697395808,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.01275954246521,
+      "previous1s": {
+        "actualClock": 32.0,
+        "speed": 15.46634578704834,
+        "differenceFromObserved": -2.3298425674438477,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 34.0,
+        "speed": 11.138847351074219,
+        "differenceFromObserved": -6.657341003417969,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 35.0,
+        "speed": 10.881426811218262,
+        "differenceFromObserved": -6.914761543273926,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 33.25833333333333,
+      "raceTime": 30.266678336138526,
+      "speed": 17.548725128173828,
+      "offset": 5.650612831115723,
+      "selected": 3.8812057971954346,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 16.352005004882812,
+      "leaderOffset": 4.144975185394287,
+      "leaderLimit": 16.57760551869277,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.1643622875213624,
+      "previous1s": {
+        "actualClock": 32.3,
+        "speed": 15.146252632141113,
+        "differenceFromObserved": -1.2057523727416992,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 34.3,
+        "speed": 8.960840225219727,
+        "differenceFromObserved": -7.391164779663086,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 35.3,
+        "speed": 11.758341789245605,
+        "differenceFromObserved": -4.593663215637207,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 33.574999999999996,
+      "raceTime": 30.58334500280519,
+      "speed": 15.400883674621582,
+      "offset": 5.204836845397949,
+      "selected": 3.875850200653076,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 13.727333068847656,
+      "leaderOffset": 4.006176471710205,
+      "leaderLimit": 13.741958573495161,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.4713395595550538,
+      "previous1s": {
+        "actualClock": 32.6,
+        "speed": 16.778669357299805,
+        "differenceFromObserved": 3.0513362884521484,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 34.6,
+        "speed": 9.012782096862793,
+        "differenceFromObserved": -4.714550971984863,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 35.6,
+        "speed": 11.913476943969727,
+        "differenceFromObserved": -1.8138561248779297,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 33.875,
+      "raceTime": 30.883345002805193,
+      "speed": 13.7404203414917,
+      "offset": 4.836419582366943,
+      "selected": 4.193332672119141,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "corridor": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 11.938854217529297,
+      "leaderOffset": 3.9008688926696777,
+      "leaderLimit": 11.938854217529297,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.7344492435455323,
+      "previous1s": {
+        "actualClock": 32.9,
+        "speed": 17.930952072143555,
+        "differenceFromObserved": 5.992097854614258,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 34.9,
+        "speed": 10.43343734741211,
+        "differenceFromObserved": -1.5054168701171875,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 35.9,
+        "speed": 11.583366394042969,
+        "differenceFromObserved": -0.3554878234863281,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 34.18333333333333,
+      "raceTime": 31.191678336138523,
+      "speed": 11.85490608215332,
+      "offset": 4.548202037811279,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 9.661669731140137,
+      "leaderOffset": 3.7989695072174072,
+      "leaderLimit": 9.661669731140137,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.9207674026489259,
+      "previous1s": {
+        "actualClock": 33.199999999999996,
+        "speed": 16.505691528320312,
+        "differenceFromObserved": 6.844021797180176,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 35.199999999999996,
+        "speed": 11.521944999694824,
+        "differenceFromObserved": 1.8602752685546875,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 36.199999999999996,
+        "speed": 11.680240631103516,
+        "differenceFromObserved": 2.018570899963379,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 34.483333333333334,
+      "raceTime": 31.491678336138527,
+      "speed": 10.09909725189209,
+      "offset": 4.410520553588867,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 8.737655639648438,
+      "leaderOffset": 3.714472770690918,
+      "leaderLimit": 8.737655639648438,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.9739521503448487,
+      "previous1s": {
+        "actualClock": 33.5,
+        "speed": 14.15585994720459,
+        "differenceFromObserved": 5.418204307556152,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 35.5,
+        "speed": 11.970185279846191,
+        "differenceFromObserved": 3.232529640197754,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 36.5,
+        "speed": 13.08910083770752,
+        "differenceFromObserved": 4.351445198059082,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 34.8,
+      "raceTime": 31.80834500280519,
+      "speed": 9.603919982910156,
+      "offset": 4.384227275848389,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 9.913658142089844,
+      "leaderOffset": 3.622728109359741,
+      "leaderLimit": 9.913658142089844,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.9085007667541505,
+      "previous1s": {
+        "actualClock": 33.8,
+        "speed": 12.692924499511719,
+        "differenceFromObserved": 2.779266357421875,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 35.8,
+        "speed": 11.71647834777832,
+        "differenceFromObserved": 1.8028202056884766,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 36.8,
+        "speed": 15.024262428283691,
+        "differenceFromObserved": 5.110604286193848,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 35.1,
+      "raceTime": 32.108345002805194,
+      "speed": 10.26740550994873,
+      "offset": 4.426304817199707,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 11.236178398132324,
+      "leaderOffset": 3.500598907470703,
+      "leaderLimit": 11.236178398132324,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 1.744294023513794,
+      "previous1s": {
+        "actualClock": 34.1,
+        "speed": 10.334774017333984,
+        "differenceFromObserved": -0.9014043807983398,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 36.1,
+        "speed": 11.591533660888672,
+        "differenceFromObserved": 0.35535526275634766,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 37.09166666666667,
+        "speed": 16.809446334838867,
+        "differenceFromObserved": 5.573267936706543,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 35.40833333333333,
+      "raceTime": 32.416678336138524,
+      "speed": 11.120058059692383,
+      "offset": 4.519086837768555,
+      "selected": 5.924246788024902,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 11.96852970123291,
+      "leaderOffset": 3.333181381225586,
+      "leaderLimit": 11.96852970123291,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.4840944766998292,
+      "previous1s": {
+        "actualClock": 34.4,
+        "speed": 8.738869667053223,
+        "differenceFromObserved": -3.2296600341796875,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 36.4,
+        "speed": 12.438624382019043,
+        "differenceFromObserved": 0.4700946807861328,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 37.391666666666666,
+        "speed": 18.540512084960938,
+        "differenceFromObserved": 6.571982383728027,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 35.71666666666667,
+      "raceTime": 32.72501166947186,
+      "speed": 11.579182624816895,
+      "offset": 4.63075590133667,
+      "selected": 5.916914463043213,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 11.798127174377441,
+      "leaderOffset": 3.1123576164245605,
+      "leaderLimit": 11.798127174377441,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 1.1516016483306886,
+      "previous1s": {
+        "actualClock": 34.699999999999996,
+        "speed": 9.409926414489746,
+        "differenceFromObserved": -2.3882007598876953,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 36.699999999999996,
+        "speed": 14.39096450805664,
+        "differenceFromObserved": 2.592837333679199,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 37.69166666666666,
+        "speed": 20.126863479614258,
+        "differenceFromObserved": 8.328736305236816,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 36.025,
+      "raceTime": 33.03334500280519,
+      "speed": 11.489241600036621,
+      "offset": 4.724594593048096,
+      "selected": 1.5724997520446777,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 11.55603313446045,
+      "leaderOffset": 2.8536746501922607,
+      "leaderLimit": 11.55603313446045,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.799079990386963,
+      "previous1s": {
+        "actualClock": 35.0,
+        "speed": 10.881426811218262,
+        "differenceFromObserved": -0.6746063232421875,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 37.0,
+        "speed": 16.2587890625,
+        "differenceFromObserved": 4.702755928039551,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 37.99166666666667,
+        "speed": 21.591747283935547,
+        "differenceFromObserved": 10.035714149475098,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 36.33333333333333,
+      "raceTime": 33.34167833613852,
+      "speed": 11.520249366760254,
+      "offset": 4.72101354598999,
+      "selected": 6.289999485015869,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 2
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 12.003582954406738,
+      "leaderOffset": 2.6175222396850586,
+      "leaderLimit": 12.003582954406738,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.5665086269378663,
+      "previous1s": {
+        "actualClock": 35.3,
+        "speed": 11.758341789245605,
+        "differenceFromObserved": -0.2452411651611328,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 37.291666666666664,
+        "speed": 17.97614288330078,
+        "differenceFromObserved": 5.972559928894043,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 38.291666666666664,
+        "speed": 20.365957260131836,
+        "differenceFromObserved": 8.362374305725098,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 36.63333333333333,
+      "raceTime": 33.641678336138526,
+      "speed": 12.398571014404297,
+      "offset": 4.591471195220947,
+      "selected": 5.495151996612549,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 13.962525367736816,
+      "leaderOffset": 2.4816832542419434,
+      "leaderLimit": 13.962525367736816,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.560211992263794,
+      "previous1s": {
+        "actualClock": 35.6,
+        "speed": 11.913476943969727,
+        "differenceFromObserved": -2.04904842376709,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 37.59166666666667,
+        "speed": 19.6160888671875,
+        "differenceFromObserved": 5.653563499450684,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 38.59166666666667,
+        "speed": 15.448151588439941,
+        "differenceFromObserved": 1.485626220703125,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 36.949999999999996,
+      "raceTime": 33.95834500280519,
+      "speed": 14.097430229187012,
+      "offset": 4.489678382873535,
+      "selected": 5.495074272155762,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 2
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 15.954334259033203,
+      "leaderOffset": 2.45908522605896,
+      "leaderLimit": 16.349571814116825,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.6394067764282227,
+      "previous1s": {
+        "actualClock": 35.9,
+        "speed": 11.583366394042969,
+        "differenceFromObserved": -4.370967864990234,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 37.99166666666667,
+        "speed": 21.591747283935547,
+        "differenceFromObserved": 5.637413024902344,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 38.99166666666667,
+        "speed": 17.859724044799805,
+        "differenceFromObserved": 1.9053897857666016,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 37.25,
+      "raceTime": 34.25834500280519,
+      "speed": 16.240310668945312,
+      "offset": 4.635599613189697,
+      "selected": 5.495074272155762,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 22": 2,
+        "accepted": 2
+      },
+      "hasLeader": true,
+      "leader": 15,
+      "leaderSpeed": 17.737083435058594,
+      "leaderOffset": 2.2738640308380127,
+      "leaderLimit": 18.73839196955732,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.30826435089111337,
+      "previous1s": {
+        "actualClock": 36.3,
+        "speed": 11.84489631652832,
+        "differenceFromObserved": -5.892187118530273,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 38.291666666666664,
+        "speed": 20.365957260131836,
+        "differenceFromObserved": 2.628873825073242,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 39.291666666666664,
+        "speed": 19.538372039794922,
+        "differenceFromObserved": 1.8012886047363281,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 37.55833333333333,
+      "raceTime": 34.56667833613852,
+      "speed": 18.672405242919922,
+      "offset": 4.974194526672363,
+      "selected": 4.450443267822266,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 22": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 12,
+      "leaderSpeed": 27.17882537841797,
+      "leaderOffset": 2.422166109085083,
+      "leaderLimit": 36.85362501138363,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.11797151565551767,
+      "previous1s": {
+        "actualClock": 36.6,
+        "speed": 21.813566207885742,
+        "differenceFromObserved": -5.365259170532227,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 38.59166666666667,
+        "speed": 26.785324096679688,
+        "differenceFromObserved": -0.39350128173828125,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 39.59166666666667,
+        "speed": 25.302156448364258,
+        "differenceFromObserved": -1.876668930053711,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 37.858333333333334,
+      "raceTime": 34.86667833613853,
+      "speed": 21.080944061279297,
+      "offset": 5.154718399047852,
+      "selected": 3.405928611755371,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 12,
+      "leaderSpeed": 27.280935287475586,
+      "leaderOffset": 2.6245670318603516,
+      "leaderLimit": 37.51820455112217,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.13984856605529794,
+      "previous1s": {
+        "actualClock": 36.9,
+        "speed": 23.94831085205078,
+        "differenceFromObserved": -3.3326244354248047,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 38.891666666666666,
+        "speed": 26.534868240356445,
+        "differenceFromObserved": -0.7460670471191406,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 39.891666666666666,
+        "speed": 24.189605712890625,
+        "differenceFromObserved": -3.091329574584961,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 38.175,
+      "raceTime": 35.18334500280519,
+      "speed": 23.372201919555664,
+      "offset": 5.1168084144592285,
+      "selected": 2.3575949668884277,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 12,
+      "leaderSpeed": 27.10261344909668,
+      "leaderOffset": 3.314258098602295,
+      "leaderLimit": 37.804663495125205,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.8674496173858643,
+      "previous1s": {
+        "actualClock": 37.19166666666666,
+        "speed": 25.815078735351562,
+        "differenceFromObserved": -1.2875347137451172,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 39.19166666666666,
+        "speed": 26.182161331176758,
+        "differenceFromObserved": -0.9204521179199219,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 40.19166666666666,
+        "speed": 22.945940017700195,
+        "differenceFromObserved": -4.156673431396484,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 38.475,
+      "raceTime": 35.483345002805194,
+      "speed": 25.324951171875,
+      "offset": 4.819978713989258,
+      "selected": 3.1449995040893555,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 15": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 12,
+      "leaderSpeed": 26.864770889282227,
+      "leaderOffset": 4.1043171882629395,
+      "leaderLimit": 37.7826591542848,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.9543384075164796,
+      "previous1s": {
+        "actualClock": 37.49166666666667,
+        "speed": 27.070964813232422,
+        "differenceFromObserved": 0.2061939239501953,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 39.49166666666667,
+        "speed": 25.582441329956055,
+        "differenceFromObserved": -1.2823295593261719,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 40.49166666666667,
+        "speed": 21.9097843170166,
+        "differenceFromObserved": -4.954986572265625,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 38.78333333333333,
+      "raceTime": 35.791678336138524,
+      "speed": 27.143648147583008,
+      "offset": 4.38698148727417,
+      "selected": 2.878087282180786,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 12,
+      "leaderSpeed": 26.625919342041016,
+      "leaderOffset": 4.690277099609375,
+      "leaderLimit": 37.68413010805597,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 2.366704320907593,
+      "previous1s": {
+        "actualClock": 37.791666666666664,
+        "speed": 27.288888931274414,
+        "differenceFromObserved": 0.6629695892333984,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 39.791666666666664,
+        "speed": 24.606969833374023,
+        "differenceFromObserved": -2.018949508666992,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 40.791666666666664,
+        "speed": 21.009986877441406,
+        "differenceFromObserved": -5.615932464599609,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 39.09166666666667,
+      "raceTime": 36.10001166947186,
+      "speed": 28.77889633178711,
+      "offset": 3.943450450897217,
+      "selected": 4.4327921867370605,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 12,
+      "leaderSpeed": 26.314111709594727,
+      "leaderOffset": 4.9538092613220215,
+      "leaderLimit": 37.327634882099,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.6596411228179933,
+      "previous1s": {
+        "actualClock": 38.09166666666667,
+        "speed": 27.15394401550293,
+        "differenceFromObserved": 0.8398323059082031,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 40.09166666666667,
+        "speed": 23.332061767578125,
+        "differenceFromObserved": -2.9820499420166016,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 41.09166666666667,
+        "speed": 20.077533721923828,
+        "differenceFromObserved": -6.236577987670898,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 39.4,
+      "raceTime": 36.40834500280519,
+      "speed": 30.26933479309082,
+      "offset": 3.641270875930786,
+      "selected": 4.966981887817383,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 12,
+      "leaderSpeed": 25.806840896606445,
+      "leaderOffset": 5.0632243156433105,
+      "leaderLimit": 36.66973995085219,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.2480464935302735,
+      "previous1s": {
+        "actualClock": 38.391666666666666,
+        "speed": 26.940664291381836,
+        "differenceFromObserved": 1.1338233947753906,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 40.391666666666666,
+        "speed": 22.23769187927246,
+        "differenceFromObserved": -3.5691490173339844,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 41.391666666666666,
+        "speed": 19.434879302978516,
+        "differenceFromObserved": -6.37196159362793,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 39.70833333333333,
+      "raceTime": 36.71667833613852,
+      "speed": 30.664731979370117,
+      "offset": 3.6551551818847656,
+      "selected": 5.459722995758057,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 19,
+      "leaderSpeed": 24.946758270263672,
+      "leaderOffset": 1.207564115524292,
+      "leaderLimit": 26.228826398581194,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.2224088668823243,
+      "previous1s": {
+        "actualClock": 38.69166666666666,
+        "speed": 24.53673553466797,
+        "differenceFromObserved": -0.4100227355957031,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 40.69166666666666,
+        "speed": 24.868972778320312,
+        "differenceFromObserved": -0.07778549194335938,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 41.69166666666666,
+        "speed": 19.340560913085938,
+        "differenceFromObserved": -5.606197357177734,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 40.00833333333333,
+      "raceTime": 37.016678336138526,
+      "speed": 27.85759925842285,
+      "offset": 3.9886507987976074,
+      "selected": 3.7348129749298096,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 15": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 19,
+      "leaderSpeed": 24.813003540039062,
+      "leaderOffset": 2.3256304264068604,
+      "leaderLimit": 25.812305544397745,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.0069795608520509,
+      "previous1s": {
+        "actualClock": 38.99166666666667,
+        "speed": 24.73200225830078,
+        "differenceFromObserved": -0.08100128173828125,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 40.99166666666667,
+        "speed": 24.307432174682617,
+        "differenceFromObserved": -0.5055713653564453,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 41.99166666666667,
+        "speed": 18.449277877807617,
+        "differenceFromObserved": -6.363725662231445,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 40.324999999999996,
+      "raceTime": 37.33334500280519,
+      "speed": 26.529560089111328,
+      "offset": 4.426773548126221,
+      "selected": 3.6245737075805664,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 15": 1,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 19,
+      "leaderSpeed": 24.839073181152344,
+      "leaderOffset": 3.1511404514312744,
+      "leaderLimit": 25.596104782547254,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.3943668365478517,
+      "previous1s": {
+        "actualClock": 39.291666666666664,
+        "speed": 24.712770462036133,
+        "differenceFromObserved": -0.12630271911621094,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 41.291666666666664,
+        "speed": 22.570022583007812,
+        "differenceFromObserved": -2.2690505981445312,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 42.291666666666664,
+        "speed": 17.864049911499023,
+        "differenceFromObserved": -6.97502326965332,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 40.625,
+      "raceTime": 37.63334500280519,
+      "speed": 25.94956398010254,
+      "offset": 4.6320343017578125,
+      "selected": 3.634539842605591,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 2
+      },
+      "hasLeader": true,
+      "leader": 19,
+      "leaderSpeed": 24.976604461669922,
+      "leaderOffset": 3.6321840286254883,
+      "leaderLimit": 25.579743095941904,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.6701496601104737,
+      "previous1s": {
+        "actualClock": 39.59166666666667,
+        "speed": 24.782808303833008,
+        "differenceFromObserved": -0.19379615783691406,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 41.59166666666666,
+        "speed": 19.904855728149414,
+        "differenceFromObserved": -5.071748733520508,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 42.59166666666666,
+        "speed": 18.0340576171875,
+        "differenceFromObserved": -6.942546844482422,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 40.93333333333333,
+      "raceTime": 37.94167833613852,
+      "speed": 25.487445831298828,
+      "offset": 4.606624126434326,
+      "selected": 3.634539842605591,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 2
+      },
+      "hasLeader": true,
+      "leader": 19,
+      "leaderSpeed": 24.472410202026367,
+      "leaderOffset": 3.7859575748443604,
+      "leaderLimit": 24.988944637962664,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 1.8493333816528321,
+      "previous1s": {
+        "actualClock": 39.891666666666666,
+        "speed": 24.939739227294922,
+        "differenceFromObserved": 0.4673290252685547,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 41.891666666666666,
+        "speed": 18.72856903076172,
+        "differenceFromObserved": -5.743841171264648,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 42.891666666666666,
+        "speed": 17.866044998168945,
+        "differenceFromObserved": -6.606365203857422,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 41.233333333333334,
+      "raceTime": 38.24167833613853,
+      "speed": 24.692623138427734,
+      "offset": 4.4337477684021,
+      "selected": 0.10683920979499817,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "moving side entry: 15": 2,
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 19,
+      "leaderSpeed": 23.017770767211914,
+      "leaderOffset": 3.845630168914795,
+      "leaderLimit": 23.359421260937996,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 2.0818823337554933,
+      "previous1s": {
+        "actualClock": 40.19166666666666,
+        "speed": 24.95577621459961,
+        "differenceFromObserved": 1.9380054473876953,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 42.19166666666666,
+        "speed": 17.981294631958008,
+        "differenceFromObserved": -5.036476135253906,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 43.19166666666666,
+        "speed": 17.08557891845703,
+        "differenceFromObserved": -5.932191848754883,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 41.541666666666664,
+      "raceTime": 38.55001166947186,
+      "speed": 22.921865463256836,
+      "offset": 4.021448612213135,
+      "selected": -0.19569064676761627,
+      "captureReason": "opening-unresolved",
+      "candidateReasons": {
+        "corridor": 5
+      },
+      "hasLeader": true,
+      "leader": 19,
+      "leaderSpeed": 20.300151824951172,
+      "leaderOffset": 4.0372209548950195,
+      "leaderLimit": 20.445530680142376,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 2.654227590560913,
+      "previous1s": {
+        "actualClock": 40.49166666666667,
+        "speed": 24.78968620300293,
+        "differenceFromObserved": 4.489534378051758,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 42.49166666666667,
+        "speed": 17.891565322875977,
+        "differenceFromObserved": -2.4085865020751953,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 43.49166666666667,
+        "speed": 16.289146423339844,
+        "differenceFromObserved": -4.011005401611328,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 41.85,
+      "raceTime": 38.858345002805194,
+      "speed": 20.772850036621094,
+      "offset": 3.240711212158203,
+      "selected": -0.19569064676761627,
+      "captureReason": "opening-unresolved",
+      "candidateReasons": {
+        "corridor": 6
+      },
+      "hasLeader": true,
+      "leader": 19,
+      "leaderSpeed": 18.843460083007812,
+      "leaderOffset": 4.452176094055176,
+      "leaderLimit": 18.860579494848686,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 1.4585350513458253,
+      "previous1s": {
+        "actualClock": 40.891666666666666,
+        "speed": 24.55601692199707,
+        "differenceFromObserved": 5.712556838989258,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 42.891666666666666,
+        "speed": 17.866044998168945,
+        "differenceFromObserved": -0.9774150848388672,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 43.891666666666666,
+        "speed": 15.185514450073242,
+        "differenceFromObserved": -3.6579456329345703,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 42.15833333333333,
+      "raceTime": 39.166678336138524,
+      "speed": 19.464521408081055,
+      "offset": 2.251638889312744,
+      "selected": -0.19569064676761627,
+      "captureReason": "opening-unresolved",
+      "candidateReasons": {
+        "corridor": 6
+      },
+      "hasLeader": true,
+      "leader": 13,
+      "leaderSpeed": 17.8316707611084,
+      "leaderOffset": 2.6605985164642334,
+      "leaderLimit": 24.882693123775404,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 2.2610403060913087,
+      "previous1s": {
+        "actualClock": 41.19166666666666,
+        "speed": 20.046344757080078,
+        "differenceFromObserved": 2.2146739959716797,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 43.19166666666666,
+        "speed": 10.92603874206543,
+        "differenceFromObserved": -6.905632019042969,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 44.19166666666666,
+        "speed": 11.317404747009277,
+        "differenceFromObserved": -6.514266014099121,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 42.46666666666666,
+      "raceTime": 39.475011669471854,
+      "speed": 18.533374786376953,
+      "offset": 1.3749452829360962,
+      "selected": -0.19569064676761627,
+      "captureReason": "opening-unresolved",
+      "candidateReasons": {
+        "corridor": 6
+      },
+      "hasLeader": true,
+      "leader": 13,
+      "leaderSpeed": 17.51616096496582,
+      "leaderOffset": 2.7966341972351074,
+      "leaderLimit": 24.76741972444863,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 1.2483110189437867,
+      "previous1s": {
+        "actualClock": 41.49166666666667,
+        "speed": 16.648983001708984,
+        "differenceFromObserved": -0.8671779632568359,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 43.49166666666667,
+        "speed": 7.858712673187256,
+        "differenceFromObserved": -9.657448291778564,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 44.49166666666667,
+        "speed": 12.731781005859375,
+        "differenceFromObserved": -4.784379959106445,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 42.766666666666666,
+      "raceTime": 39.77501166947186,
+      "speed": 17.550485610961914,
+      "offset": 0.6215770244598389,
+      "selected": 0.6355939507484436,
+      "captureReason": "opening-unresolved",
+      "candidateReasons": {
+        "corridor": 3
+      },
+      "hasLeader": true,
+      "leader": 13,
+      "leaderSpeed": 16.311246871948242,
+      "leaderOffset": 2.984060525894165,
+      "leaderLimit": 24.18117081500981,
+      "destinationClearsCurrentLeader": false,
+      "lateralDistanceStillNeeded": 0.30751643180847177,
+      "previous1s": {
+        "actualClock": 41.791666666666664,
+        "speed": 17.40654182434082,
+        "differenceFromObserved": 1.0952949523925781,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 43.791666666666664,
+        "speed": 9.192011833190918,
+        "differenceFromObserved": -7.119235038757324,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 44.791666666666664,
+        "speed": 14.029638290405273,
+        "differenceFromObserved": -2.2816085815429688,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 43.08333333333333,
+      "raceTime": 40.09167833613852,
+      "speed": 17.776905059814453,
+      "offset": 0.11681342869997025,
+      "selected": -6.289999961853027,
+      "captureReason": "opening-accepted",
+      "candidateReasons": {
+        "accepted": 1
+      },
+      "hasLeader": true,
+      "leader": 5,
+      "leaderSpeed": 12.0169095993042,
+      "leaderOffset": -2.3789174556732178,
+      "leaderLimit": 22.11810720121635,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.17426904886960992,
+      "previous1s": {
+        "actualClock": 42.09166666666666,
+        "speed": 12.145427703857422,
+        "differenceFromObserved": 0.12851810455322266,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 44.09166666666666,
+        "speed": 14.747346878051758,
+        "differenceFromObserved": 2.7304372787475586,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 45.09166666666666,
+        "speed": 16.476835250854492,
+        "differenceFromObserved": 4.459925651550293,
+        "physicalRecovery": "Racing"
+      }
+    },
+    {
+      "timestamp": 43.38333333333333,
+      "raceTime": 40.391678336138526,
+      "speed": 16.262413024902344,
+      "offset": -0.33161523938179016,
+      "selected": 0.5241664052009583,
+      "captureReason": "opening-unresolved",
+      "candidateReasons": {
+        "moving side entry: 22": 8
+      },
+      "hasLeader": true,
+      "leader": 5,
+      "leaderSpeed": 13.163585662841797,
+      "leaderOffset": -2.4973058700561523,
+      "leaderLimit": 21.756719370278066,
+      "destinationClearsCurrentLeader": true,
+      "lateralDistanceStillNeeded": 0.5043093025684358,
+      "previous1s": {
+        "actualClock": 42.391666666666666,
+        "speed": 9.403399467468262,
+        "differenceFromObserved": -3.760186195373535,
+        "physicalRecovery": "Racing"
+      },
+      "next1s": {
+        "actualClock": 44.391666666666666,
+        "speed": 14.95911979675293,
+        "differenceFromObserved": 1.7955341339111328,
+        "physicalRecovery": "Racing"
+      },
+      "next2s": {
+        "actualClock": 45.391666666666666,
+        "speed": 17.891002655029297,
+        "differenceFromObserved": 4.7274169921875,
+        "physicalRecovery": "Racing"
+      }
+    }
+  ]
+}

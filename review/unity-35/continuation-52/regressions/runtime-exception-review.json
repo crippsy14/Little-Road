@@ -1,0 +1,66 @@
+{
+  "scope": "Additional exception audit; original52 analysis retained unchanged.",
+  "results": [
+    {
+      "name": "brake-leader",
+      "count": 0,
+      "examples": []
+    },
+    {
+      "name": "corner-three",
+      "count": 1860,
+      "examples": [
+        "NullReferenceException: Object reference not set to an instance of an object"
+      ]
+    },
+    {
+      "name": "merge-left",
+      "count": 5001,
+      "examples": [
+        "NullReferenceException: Object reference not set to an instance of an object"
+      ]
+    },
+    {
+      "name": "merge-right",
+      "count": 58,
+      "examples": [
+        "NullReferenceException: Object reference not set to an instance of an object"
+      ]
+    },
+    {
+      "name": "no-room",
+      "count": 285,
+      "examples": [
+        "NullReferenceException: Object reference not set to an instance of an object"
+      ]
+    },
+    {
+      "name": "queue",
+      "count": 615,
+      "examples": [
+        "NullReferenceException: Object reference not set to an instance of an object"
+      ]
+    },
+    {
+      "name": "solo-club-coast",
+      "count": 0,
+      "examples": []
+    },
+    {
+      "name": "solo-club-control",
+      "count": 0,
+      "examples": []
+    },
+    {
+      "name": "solo-street-coast",
+      "count": 0,
+      "examples": []
+    },
+    {
+      "name": "solo-street-control",
+      "count": 0,
+      "examples": []
+    }
+  ],
+  "knownClean50MergeErrors": 0
+}

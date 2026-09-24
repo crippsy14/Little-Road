@@ -1,0 +1,202 @@
+{
+  "status": "Human comparison only; no training data or accepted reference changed",
+  "humanRun": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\technical-runs\\20260921-151207-48cdcf",
+  "aiRun": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-29\\pilot-mincurve-club",
+  "sameTuning": true,
+  "sameTrack": true,
+  "laps": [
+    {
+      "lap": 1,
+      "seconds": 63.71293309270031,
+      "start": 1.2212150639888504,
+      "end": 64.93414815668916,
+      "bodyOutsideSamples": 45,
+      "centreOutsideSamples": 2,
+      "maxBodyOffset": 9.356974601745605,
+      "maxCentreOffset": 8.030696868896484,
+      "humanSamples": 637,
+      "samples": 637,
+      "backwardsProgressSteps": 0,
+      "minSpeed": 13.559259414672852,
+      "topSpeed": 34.02416229248047,
+      "selectedByUser": true,
+      "note": "User-selected comparison lap; boundary usage reported separately"
+    },
+    {
+      "lap": 2,
+      "seconds": 70.60176276182915,
+      "start": 64.93414815668916,
+      "end": 135.5359109185183,
+      "bodyOutsideSamples": 65,
+      "centreOutsideSamples": 42,
+      "maxBodyOffset": 19.578386306762695,
+      "maxCentreOffset": 18.26953125,
+      "humanSamples": 706,
+      "samples": 706,
+      "backwardsProgressSteps": 1,
+      "minSpeed": 0.36252519488334656,
+      "topSpeed": 34.02418518066406,
+      "selectedByUser": false,
+      "note": "Excluded: user reported off-track attempt"
+    },
+    {
+      "lap": 3,
+      "seconds": 63.04188977848597,
+      "start": 135.5359109185183,
+      "end": 198.57780069700428,
+      "bodyOutsideSamples": 35,
+      "centreOutsideSamples": 0,
+      "maxBodyOffset": 9.057140350341797,
+      "maxCentreOffset": 7.788815021514893,
+      "humanSamples": 630,
+      "samples": 630,
+      "backwardsProgressSteps": 0,
+      "minSpeed": 21.449569702148438,
+      "topSpeed": 34.02406692504883,
+      "selectedByUser": true,
+      "note": "User-selected comparison lap; boundary usage reported separately"
+    },
+    {
+      "lap": 4,
+      "seconds": 62.6055183947926,
+      "start": 198.57780069700428,
+      "end": 261.1833190917969,
+      "bodyOutsideSamples": 59,
+      "centreOutsideSamples": 4,
+      "maxBodyOffset": 9.362003326416016,
+      "maxCentreOffset": 8.177054405212402,
+      "humanSamples": 626,
+      "samples": 626,
+      "backwardsProgressSteps": 0,
+      "minSpeed": 21.198509216308594,
+      "topSpeed": 34.02366638183594,
+      "selectedByUser": true,
+      "note": "User-selected comparison lap; boundary usage reported separately"
+    }
+  ],
+  "aiLaps": [
+    {
+      "lap": 1,
+      "seconds": 67.38416143439838,
+      "start": 1.2906180199454813,
+      "end": 68.67477945434386,
+      "bodyOutsideSamples": 0,
+      "centreOutsideSamples": 0,
+      "maxBodyOffset": 6.4384613037109375,
+      "maxCentreOffset": 5.262115478515625,
+      "humanSamples": 0,
+      "samples": 674,
+      "backwardsProgressSteps": 0,
+      "minSpeed": 11.337593078613281,
+      "topSpeed": 34.01642608642578
+    },
+    {
+      "lap": 2,
+      "seconds": 66.33933492553895,
+      "start": 68.67477945434386,
+      "end": 135.0141143798828,
+      "bodyOutsideSamples": 0,
+      "centreOutsideSamples": 0,
+      "maxBodyOffset": 6.436492919921875,
+      "maxCentreOffset": 5.2629241943359375,
+      "humanSamples": 0,
+      "samples": 664,
+      "backwardsProgressSteps": 0,
+      "minSpeed": 16.034748077392578,
+      "topSpeed": 34.015419006347656
+    }
+  ],
+  "bestSelectedFlyingLap": 4,
+  "humanBestApproxSeconds": 62.6055183947926,
+  "humanOfficialBestSeconds": 62.60139465332031,
+  "aiOfficialBestSeconds": 66.33380889892578,
+  "aiLostSeconds": 3.7282905041331844,
+  "aiGapPercent": 5.955210658304039,
+  "selectedFlyingSpread": 0.4363713836933698,
+  "sectors": [
+    {
+      "sector": 1,
+      "humanSeconds": 5.070745239287504,
+      "aiSeconds": 5.080499964416404,
+      "aiLostSeconds": 0.009754725128900077
+    },
+    {
+      "sector": 2,
+      "humanSeconds": 5.143096746736205,
+      "aiSeconds": 5.393200141849945,
+      "aiLostSeconds": 0.25010339511374013
+    },
+    {
+      "sector": 3,
+      "humanSeconds": 5.712417079777879,
+      "aiSeconds": 6.213231660211875,
+      "aiLostSeconds": 0.5008145804339961
+    },
+    {
+      "sector": 4,
+      "humanSeconds": 4.913902117035491,
+      "aiSeconds": 6.649803525247847,
+      "aiLostSeconds": 1.7359014082123565
+    },
+    {
+      "sector": 5,
+      "humanSeconds": 6.02316698079278,
+      "aiSeconds": 6.471041529887117,
+      "aiLostSeconds": 0.44787454909433677
+    },
+    {
+      "sector": 6,
+      "humanSeconds": 5.022019987107143,
+      "aiSeconds": 5.005989852426353,
+      "aiLostSeconds": -0.016030134680789843
+    },
+    {
+      "sector": 7,
+      "humanSeconds": 5.743076157932421,
+      "aiSeconds": 6.292313864966715,
+      "aiLostSeconds": 0.549237707034294
+    },
+    {
+      "sector": 8,
+      "humanSeconds": 5.070549162512066,
+      "aiSeconds": 5.081233647219349,
+      "aiLostSeconds": 0.01068448470728356
+    },
+    {
+      "sector": 9,
+      "humanSeconds": 5.087225942011287,
+      "aiSeconds": 5.081878957983903,
+      "aiLostSeconds": -0.005346984027383428
+    },
+    {
+      "sector": 10,
+      "humanSeconds": 4.842071828363402,
+      "aiSeconds": 4.977788987113854,
+      "aiLostSeconds": 0.13571715875045243
+    },
+    {
+      "sector": 11,
+      "humanSeconds": 5.006426282572022,
+      "aiSeconds": 5.073995420218452,
+      "aiLostSeconds": 0.06756913764643002
+    },
+    {
+      "sector": 12,
+      "humanSeconds": 4.970820870664397,
+      "aiSeconds": 5.018357373997134,
+      "aiLostSeconds": 0.0475365033327364
+    }
+  ],
+  "incidents": {
+    "contacts": 0,
+    "recoveries": 1,
+    "missedGates": 1
+  },
+  "limitations": [
+    "Individual lap and sector splits interpolate 10 Hz telemetry; displayed to 0.1 s. Official best lap is timed by ordered gates.",
+    "Lap 1 begins at the timing-line crossing after grid acceleration; compare flying laps 3 and 4 for steady pace.",
+    "The road/body boundary audit is stricter than the permissive checkpoint corridor. User-selected laps are not automatically full-body-on-asphalt laps.",
+    "Centreline adherence in the raw human report is not an ideal-line score.",
+    "AI pilot uses build 01, human uses build 04; same reported tuning and geometry, intervening changes were UI/recording only."
+  ]
+}

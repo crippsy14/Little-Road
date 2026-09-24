@@ -1,0 +1,11 @@
+{
+  "scope": "Only all-selection metadata changed; compare recorded race and finish, excluding export-tick terminal position.",
+  "checks": {
+    "motion": true,
+    "checkpointPassages": true,
+    "impacts": true,
+    "assistedRecoveries": true,
+    "raceResults": true
+  },
+  "passed": true
+}

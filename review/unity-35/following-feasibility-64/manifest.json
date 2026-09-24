@@ -1,0 +1,29 @@
+{
+  "kind": "Editor-only replay; no player export",
+  "inputs": [
+    {
+      "name": "reference",
+      "input": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\opening-62\\field\\race.track.json",
+      "sha256": "12ada0e1d55ce358f179efabe34cd73c3e5b9d3bdcfdfddce59c6a305064e4be",
+      "editorExitCode": 0,
+      "decisions": 2,
+      "candidates": 14,
+      "matches": 14,
+      "accepted": 11
+    },
+    {
+      "name": "experimental",
+      "input": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\pass-completion-63\\field-completion\\race.track.json",
+      "sha256": "231749e0d7362faf0d5da5a1a440c002aa2de50e83ce1558f2bf4e03d8de6e4b",
+      "editorExitCode": 0,
+      "decisions": 11,
+      "candidates": 54,
+      "matches": 54,
+      "accepted": 7
+    }
+  ],
+  "source": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\following-feasibility-64\\source\\FollowingFeasibilityReplay.cs",
+  "sourceSha256": "a214497fa6ca270d2c4b140794bdf0ff0698bb94a1522fb7b4b8c6fff157bb1c",
+  "sourceNote": "Exact executed source reconstructed by removing the later65 non-nominal-model input guard; no other edits.",
+  "review": "following-feasibility-64-review.md"
+}

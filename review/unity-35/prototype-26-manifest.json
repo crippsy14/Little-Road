@@ -1,0 +1,8 @@
+{
+  "export": "outputs/little-road-context-26-review/Little Road Unity.exe",
+  "assemblyHash": "5B4040C44A89F607343F7CCA9CA05246A0C8F5B42EB56B1088499FD22E9009D9",
+  "buildChecks": 283,
+  "change": "Opt-in lateral reservation uses oriented longitudinal body overlap plus 0.10m padding, including actual collider-centre offsets. Longitudinal following stays separate; rear-closing merge reservation unchanged.",
+  "acceptance": "NOT promoted. Field 11/11 and all checkpoint deadlines; 24 finish, no sampled road departures/recoveries/overlap failure. Unresolved samples fall 936 -> 31 but no-unresolved gate still fails. Total 2239.666260 car-s; one paired 2.768684m/s contact. Hidden driver decision mean 7.171889ms per physics tick: runtime cost remains unacceptable for intended budget.",
+  "remaining": "Resolve residual path choices/traffic validity and contact encounter, reduce/stagger/reuse expensive forecasts, then run focused regressions and visible 1x performance/motion review. Native model, full footprint, held-out/retarget and broader campaign acceptance remain open."
+}

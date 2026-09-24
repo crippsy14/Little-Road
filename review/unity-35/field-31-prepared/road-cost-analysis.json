@@ -1,0 +1,20 @@
+{
+  "scope": "Live cumulative stage timing, includes measurement overhead; not rendered-frame acceptance.",
+  "totals": {
+    "calls": 24904,
+    "forecastMs": 44659.03550000001,
+    "corridorMs": 2334.337200000462,
+    "sceneryMs": 914.603599999842,
+    "roadFailures": 70,
+    "corridorFailures": 244,
+    "sceneryFailures": 0
+  },
+  "driverMs": 62906.04109999977,
+  "remainingDriverMs": 14998.064799999454,
+  "percentDriver": {
+    "forecastMs": 70.99323804053563,
+    "corridorMs": 3.7108315182156177,
+    "sceneryMs": 1.4539201386809975
+  },
+  "forecastMeanMs": 1.7932474903629945
+}

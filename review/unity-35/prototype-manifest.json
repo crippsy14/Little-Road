@@ -1,0 +1,17 @@
+{
+  "utc": "2026-09-21T19:26:50.4868139Z",
+  "driverSourceHash": "69FA731C99B61ADC19D4364B93BB2CF52612C8C8487DF9C8634D00203880B352",
+  "frozenFirstDriverHash": "69FA731C99B61ADC19D4364B93BB2CF52612C8C8487DF9C8634D00203880B352",
+  "builds": [
+    {
+      "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-01-review\\Little Road Unity_Data\\Managed\\Assembly-CSharp.dll",
+      "Hash": "8E2E22BEED95C102A6A8CA71E442BBCF17E2BC491B5DADE70C7C82C7346B099E"
+    },
+    {
+      "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-02-review\\Little Road Unity_Data\\Managed\\Assembly-CSharp.dll",
+      "Hash": "99A680FB8E1F999289F4F608EC0059E94494E683468E5EB342DE342B2E24CEEB"
+    }
+  ],
+  "desktopUnchanged": "No promotion; normal adventure checkpoint 20",
+  "validation": "27 physical calibration runs, 9 initial comparison cases, 1 visible passing repeat. No full-field acceptance."
+}

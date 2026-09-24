@@ -1,0 +1,25 @@
+{
+  "id": "cedar-technical",
+  "version": "cedar-v1",
+  "title": "Cedar Technical Circuit",
+  "knots": [
+    {"name":"Home straight", "x":-100,"z":-160,"dx":1,"dz":0,"incoming":38,"outgoing":90},
+    {"name":"First braking zone", "x":180,"z":-160,"dx":1,"dz":0,"incoming":90,"outgoing":38},
+    {"name":"Tightening left", "x":245,"z":-120,"dx":0,"dz":1,"incoming":30,"outgoing":22},
+    {"name":"First exit", "x":210,"z":-82,"dx":-1,"dz":0,"incoming":22,"outgoing":36},
+    {"name":"Esses entry", "x":110,"z":-80,"dx":-1,"dz":0,"incoming":30,"outgoing":30},
+    {"name":"Esses crest", "x":55,"z":-35,"dx":-1,"dz":0,"incoming":25,"outgoing":25},
+    {"name":"Esses exit", "x":-5,"z":-50,"dx":-1,"dz":-0.5,"incoming":25,"outgoing":25},
+    {"name":"Short hairpin entry", "x":-65,"z":-65,"dx":-1,"dz":0,"incoming":24,"outgoing":18},
+    {"name":"Short hairpin", "x":-100,"z":-35,"dx":0,"dz":1,"incoming":17,"outgoing":17},
+    {"name":"Short hairpin exit", "x":-65,"z":-5,"dx":1,"dz":0,"incoming":18,"outgoing":35},
+    {"name":"Rising arc", "x":40,"z":20,"dx":1,"dz":0.35,"incoming":40,"outgoing":35},
+    {"name":"Switchback approach", "x":110,"z":70,"dx":1,"dz":0.7,"incoming":30,"outgoing":25},
+    {"name":"Wide hairpin", "x":160,"z":110,"dx":0,"dz":1,"incoming":23,"outgoing":20},
+    {"name":"Back straight", "x":125,"z":145,"dx":-1,"dz":0,"incoming":20,"outgoing":120},
+    {"name":"Final sweep entry", "x":-260,"z":145,"dx":-1,"dz":0,"incoming":120,"outgoing":55},
+    {"name":"Final sweep", "x":-350,"z":55,"dx":0,"dz":-1,"incoming":55,"outgoing":65},
+    {"name":"Final tightening", "x":-315,"z":-85,"dx":0.7,"dz":-0.7,"incoming":60,"outgoing":50},
+    {"name":"Home exit", "x":-215,"z":-160,"dx":1,"dz":0,"incoming":50,"outgoing":38}
+  ]
+}

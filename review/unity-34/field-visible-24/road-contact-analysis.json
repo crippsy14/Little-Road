@@ -1,0 +1,24 @@
+{
+  "scope": "10 Hz observations of the strongest single solver impulse per sampling interval, divided by mass. Not summed impulses or complete contact history. The 1 m/s planar threshold flags investigation, not a pass/fail gate.",
+  "comparison": {
+    "folder": "outputs\\little-road\\review\\unity-34\\field-24",
+    "fields": [
+      "id",
+      "time",
+      "position",
+      "speed",
+      "progress",
+      "pedal",
+      "steer",
+      "trafficIntent"
+    ],
+    "previousSamples": 24354,
+    "currentSamples": 24354,
+    "firstMismatch": null,
+    "exact": true
+  },
+  "strongRoadImpulseSamples": 0,
+  "maximumPlanarRoadImpulse": 0,
+  "roadImpulseEvents": [],
+  "bodyDepartures": []
+}

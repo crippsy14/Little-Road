@@ -1,0 +1,95 @@
+{
+  "executable": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-traffic-26-review\\Little Road Unity.exe",
+  "assemblyHash": "DE2B8AC4E53349A56FA24E3607A218FAD61D53E8883A43CF904F5875CAB4A854",
+  "complete": true,
+  "runs": [
+    {
+      "name": "follow",
+      "fixture": "follow",
+      "loadout": "stock",
+      "policy": "traffic",
+      "cars": 2,
+      "opponents": "stock",
+      "pid": 12212,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\traffic-26\\follow\\race.json"
+    },
+    {
+      "name": "pass",
+      "fixture": "pass",
+      "loadout": "club",
+      "policy": "traffic",
+      "cars": 2,
+      "opponents": "stock",
+      "pid": 34360,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\traffic-26\\pass\\race.json"
+    },
+    {
+      "name": "no-room",
+      "fixture": "no-room",
+      "loadout": "club",
+      "policy": "traffic",
+      "cars": 2,
+      "opponents": "stock",
+      "pid": 28372,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\traffic-26\\no-room\\race.json"
+    },
+    {
+      "name": "solo-stock-reference",
+      "fixture": "solo",
+      "loadout": "stock",
+      "policy": "reference",
+      "cars": 1,
+      "opponents": "stock",
+      "pid": 31416,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\traffic-26\\solo-stock-reference\\race.json"
+    },
+    {
+      "name": "solo-club-reference",
+      "fixture": "solo",
+      "loadout": "club",
+      "policy": "reference",
+      "cars": 1,
+      "opponents": "stock",
+      "pid": 28800,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\traffic-26\\solo-club-reference\\race.json"
+    },
+    {
+      "name": "solo-stock-traffic",
+      "fixture": "solo",
+      "loadout": "stock",
+      "policy": "traffic",
+      "cars": 1,
+      "opponents": "stock",
+      "pid": 38344,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\traffic-26\\solo-stock-traffic\\race.json"
+    },
+    {
+      "name": "solo-club-traffic",
+      "fixture": "solo",
+      "loadout": "club",
+      "policy": "traffic",
+      "cars": 1,
+      "opponents": "stock",
+      "pid": 19892,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\traffic-26\\solo-club-traffic\\race.json"
+    },
+    {
+      "name": "queue",
+      "fixture": "queue",
+      "loadout": "club",
+      "policy": "traffic",
+      "cars": 3,
+      "opponents": "street,stock",
+      "pid": 35748,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-34\\traffic-26\\queue\\race.json"
+    }
+  ]
+}

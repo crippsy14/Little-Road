@@ -1,0 +1,34 @@
+{
+  "pass": {
+    "passed": true,
+    "failed": []
+  },
+  "queue": {
+    "passed": true,
+    "failed": []
+  },
+  "corner-pair-left": {
+    "passed": true,
+    "failed": []
+  },
+  "corner-pair-right": {
+    "passed": true,
+    "failed": []
+  },
+  "corner-three": {
+    "passed": true,
+    "failed": []
+  },
+  "rear-control-left": {
+    "passed": true,
+    "failed": []
+  },
+  "rear-control-right": {
+    "passed": true,
+    "failed": []
+  },
+  "no-room": {
+    "passed": true,
+    "failed": []
+  }
+}

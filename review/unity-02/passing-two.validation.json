@@ -1,0 +1,52 @@
+{
+  "source": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-02\\passing-two.json",
+  "scope": "Controlled stock/street/club passing from behind; 1Hz physical trajectory and finish evidence",
+  "passed": true,
+  "observedPasses": [
+    {
+      "faster": 1,
+      "slower": 0,
+      "sampleTime": 3.016662359237671,
+      "leadMetres": 10.077117919921875,
+      "fasterOffset": -2.6052420139312744,
+      "slowerOffset": 0.12109304219484329
+    }
+  ],
+  "failures": [],
+  "carResults": [
+    {
+      "id": 0,
+      "laps": 1,
+      "nextGate": 1,
+      "place": 2,
+      "contacts": 0,
+      "recoveries": 0,
+      "missedGates": 0,
+      "equipment": "stock",
+      "finished": true,
+      "time": 38.09959030151367,
+      "progress": 683.51513671875,
+      "offset": 0.038142524659633636,
+      "bestLap": 36.33292770385742,
+      "maxImpact": 0.0,
+      "maxPenetration": 0.0
+    },
+    {
+      "id": 1,
+      "laps": 1,
+      "nextGate": 1,
+      "place": 1,
+      "contacts": 0,
+      "recoveries": 0,
+      "missedGates": 0,
+      "equipment": "club",
+      "finished": true,
+      "time": 28.433069229125977,
+      "progress": 859.4327392578125,
+      "offset": -0.5654850006103516,
+      "bestLap": 26.59973907470703,
+      "maxImpact": 0.0,
+      "maxPenetration": 0.0
+    }
+  ]
+}

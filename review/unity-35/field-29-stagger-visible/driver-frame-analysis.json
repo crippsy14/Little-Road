@@ -1,0 +1,57 @@
+{
+  "scope": "All RoadCar.Plan calls plus shared snapshot on the main thread, summed per rendered frame. Includes recovery/sensing/follower/guard; excludes physics simulation, rendering, diagnostics and direct fixture commands. Allocation counters cover these same regions. First captured frame may include setup/loading; retained explicitly. Hidden/accelerated runs cannot establish real-time performance.",
+  "realTimeRenderingEvidence": true,
+  "omittedInitialLoadingFrames": 1,
+  "frames": 7145,
+  "observedFrameResolutions": [
+    [
+      1920,
+      1080
+    ]
+  ],
+  "settings": {
+    "cpu": "Intel(R) Core(TM) i7-14700KF",
+    "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "width": 1920,
+    "height": 1080,
+    "frameCap": 120,
+    "vsync": 0,
+    "playbackRate": 1.0,
+    "batchMode": false,
+    "developmentBuild": false,
+    "droppedFrames": 0
+  },
+  "allAiMsPerRenderedFrame": {
+    "mean": 10.631298866340098,
+    "p50": 12.316100000000002,
+    "p95": 18.755499999999998,
+    "p99": 29.124299999999995,
+    "maximum": 63.813100000000006
+  },
+  "observedFrameMs": {
+    "mean": 14.592044061910364,
+    "p50": 15.01500129699707,
+    "p95": 21.93259620666504,
+    "p99": 32.70899963378906,
+    "maximum": 599.1843872070312
+  },
+  "worstOneSecondWindow": {
+    "startRealTime": 37.04536819458008,
+    "endRealTime": 38.03750991821289,
+    "startSimTime": 30.849628448486328,
+    "meanFrameMs": 41.19278388977051,
+    "frames": 25
+  },
+  "totalDecisionCalls": 298584,
+  "totalSnapshotCalls": 12441,
+  "driverBytesAfter5s": 0,
+  "allocatingFramesAfter5s": 0,
+  "checks": {
+    "allFramesAt1920x1080": true,
+    "completeCapture": true,
+    "allAiP95Within3ms": false,
+    "frameP95Within16_7ms": false,
+    "frameP99Within33_3ms": true,
+    "noObservedDriverAllocationAfter5s": true
+  }
+}

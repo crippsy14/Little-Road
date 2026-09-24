@@ -1,0 +1,56 @@
+[
+  {
+    "asset": "rock_08",
+    "map": "Diffuse",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/rock_08/rock_08_diff_2k.jpg",
+    "path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\unity\\Assets\\Resources\\Surfaces\\rock_08\\rock_08_diff_2k.jpg",
+    "bytes": 2633011,
+    "md5": "39e2cc33265a24439ed6b12096971f49",
+    "sha256": "1D55CC7C6357AD30B9486C38F280C6DA095A0A07246B2659403A3A36006DB521"
+  },
+  {
+    "asset": "rock_08",
+    "map": "nor_gl",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/rock_08/rock_08_nor_gl_2k.png",
+    "path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\unity\\Assets\\Resources\\Surfaces\\rock_08\\rock_08_nor_gl_2k.png",
+    "bytes": 7831504,
+    "md5": "b4eef13cec78d4bed951ca9263c52bbe",
+    "sha256": "D7F01008D159F013311DFA2B062A6C51BAFD181355214C4AF6CFEEDD50704ED4"
+  },
+  {
+    "asset": "rock_08",
+    "map": "arm",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/rock_08/rock_08_arm_2k.jpg",
+    "path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\unity\\Assets\\Resources\\Surfaces\\rock_08\\rock_08_arm_2k.jpg",
+    "bytes": 679783,
+    "md5": "bdfcfb26f4936a9813f786f4e232f5cb",
+    "sha256": "303B3A9A760E15C45E1EDB80C662F2B26DEF2423D84FAFA725E425BA7AEABD96"
+  },
+  {
+    "asset": "grass_ground",
+    "map": "Diffuse",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/grass_ground/grass_ground_diff_2k.jpg",
+    "path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\unity\\Assets\\Resources\\Surfaces\\grass_ground\\grass_ground_diff_2k.jpg",
+    "bytes": 3787330,
+    "md5": "fd97f2402677e6686b2d9159fc3a4256",
+    "sha256": "4272BDDC71A7FA659D1DEEB13A9DF8C42E68A5AC8CDE7523187E4A081E028258"
+  },
+  {
+    "asset": "grass_ground",
+    "map": "nor_gl",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/grass_ground/grass_ground_nor_gl_2k.png",
+    "path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\unity\\Assets\\Resources\\Surfaces\\grass_ground\\grass_ground_nor_gl_2k.png",
+    "bytes": 24557731,
+    "md5": "5792932be9f2695195f5f38dd14046d8",
+    "sha256": "D215B1EF91E7FDDAEF060064B3A9219551BDEC51C64A14DEED8AA7CE0E68D012"
+  },
+  {
+    "asset": "grass_ground",
+    "map": "arm",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/grass_ground/grass_ground_arm_2k.jpg",
+    "path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\unity\\Assets\\Resources\\Surfaces\\grass_ground\\grass_ground_arm_2k.jpg",
+    "bytes": 3850286,
+    "md5": "75b34cc0f86f6b7ccd7f41898963ad15",
+    "sha256": "79554D3CB2C1CBF4351960E16BC6BBA004FA3112D256FF1B500AC994694B5673"
+  }
+]

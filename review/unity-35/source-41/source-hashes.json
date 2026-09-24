@@ -1,0 +1,30 @@
+[
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-41\\analyze-coasting-regressions.py",
+    "Hash": "A4D24C159190A94249FE468E5AFFD44FB94753CDDB94AFEC2405D00704726E2B"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-41\\CoastingEnvelope.cs",
+    "Hash": "19C26033AD7C5ADEDBF0FE80F1A7543CDA3766FCB9E55F6CE01975F4C81D9D95"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-41\\CoastingEnvelopeChecks.cs",
+    "Hash": "379CF19E2416ABFDB1856EACA4CB93629196992046B6632E0951CA61C6604F40"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-41\\ContextPathFollower.cs",
+    "Hash": "C042CE07D92466BBDFB8E73A9365BC12E06AF4478CCBED9B5D97B2500321228D"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-41\\MigrationBuild.cs",
+    "Hash": "F94358DA0E534C9DD71D9CE0730351CDB147DB46BF13508295E5D63314B87879"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-41\\run-coasting-regressions.ps1",
+    "Hash": "E8ED9F1822949C503AF6040679E4340FA9FC4BAE881305BF8CDB8F227EA121AB"
+  },
+  {
+    "Path": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\source-41\\run-technical-trial.ps1",
+    "Hash": "30D98D76BCA2D9451364D94C4D44A47CE7295A12BAF6EF2C833EA73B6AABDCB4"
+  }
+]

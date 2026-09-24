@@ -1,0 +1,155 @@
+{
+  "scope": "Seed1709 comparison. Pedal percentages are diagnostic attribution, not proof of unnecessary braking or rendered performance. Only combined arm has this controlled regression suite.",
+  "results": [
+    {
+      "name": "field-control",
+      "finished": 24,
+      "totalCarSeconds": 2235.475616455078,
+      "lastCarSeconds": 103.68842315673828,
+      "checkpoint1": [
+        20,
+        20
+      ],
+      "finishPlace": 8,
+      "car0Seconds": 91.1664810180664,
+      "pairContacts": 2,
+      "maximumImpact": 0.3583471477031708,
+      "outside": 0,
+      "recoveries": 0,
+      "unresolvedActiveSamples": 374,
+      "fieldGates": true,
+      "checkpointGates": true,
+      "coastAttempts": 0,
+      "coastAccepted": 0,
+      "coastActiveSamples": 0,
+      "pedalAuditValid": true,
+      "brakingPercent": 7.629709558492941,
+      "brakingPercentByStage": {
+        "follower": 3.4619188921859547,
+        "immediate safety": 0.7463357611725564,
+        "moving leader": 3.4214549051344303
+      },
+      "declaredConfiguration": true,
+      "checks": {
+        "field": true,
+        "checkpoints": true,
+        "declaredConfiguration": true,
+        "normalExit": true,
+        "pedalAudit": true,
+        "collectivePace": false,
+        "previewProgress": true,
+        "contacts": true,
+        "physicalCompletion": true
+      }
+    },
+    {
+      "name": "field-coast",
+      "finished": 24,
+      "totalCarSeconds": 2238.524871826172,
+      "lastCarSeconds": 103.05524444580078,
+      "checkpoint1": [
+        19,
+        19
+      ],
+      "finishPlace": 6,
+      "car0Seconds": 88.4338150024414,
+      "pairContacts": 7,
+      "maximumImpact": 13.960556030273438,
+      "outside": 0,
+      "recoveries": 0,
+      "unresolvedActiveSamples": 358,
+      "fieldGates": true,
+      "checkpointGates": true,
+      "coastAttempts": 447,
+      "coastAccepted": 241,
+      "coastActiveSamples": 269,
+      "pedalAuditValid": true,
+      "brakingPercent": 7.687132798134278,
+      "brakingPercentByStage": {
+        "follower": 3.0676772659999103,
+        "immediate safety": 0.6234022514239583,
+        "moving leader": 3.9960532807104094
+      },
+      "declaredConfiguration": true,
+      "checks": {
+        "field": true,
+        "checkpoints": true,
+        "declaredConfiguration": true,
+        "normalExit": true,
+        "pedalAudit": true,
+        "collectivePace": false,
+        "previewProgress": true,
+        "contacts": false,
+        "physicalCompletion": true
+      }
+    },
+    {
+      "name": "field-combined",
+      "finished": 24,
+      "totalCarSeconds": 2245.8314208984375,
+      "lastCarSeconds": 102.43872833251953,
+      "checkpoint1": [
+        19,
+        19
+      ],
+      "finishPlace": 8,
+      "car0Seconds": 91.6663589477539,
+      "pairContacts": 4,
+      "maximumImpact": 8.75584888458252,
+      "outside": 0,
+      "recoveries": 0,
+      "unresolvedActiveSamples": 436,
+      "fieldGates": true,
+      "checkpointGates": true,
+      "coastAttempts": 390,
+      "coastAccepted": 203,
+      "coastActiveSamples": 239,
+      "pedalAuditValid": true,
+      "brakingPercent": 7.9288459819433275,
+      "brakingPercentByStage": {
+        "follower": 3.5889872173058013,
+        "immediate safety": 0.8313220702601234,
+        "moving leader": 3.508536694377402
+      },
+      "declaredConfiguration": true,
+      "checks": {
+        "field": true,
+        "checkpoints": true,
+        "declaredConfiguration": true,
+        "normalExit": true,
+        "pedalAudit": true,
+        "collectivePace": false,
+        "previewProgress": true,
+        "contacts": false,
+        "physicalCompletion": true
+      }
+    }
+  ],
+  "disabledRawParity": false,
+  "disabledParityChecks": {
+    "motion": false,
+    "checkpointPassages": true,
+    "impacts": true,
+    "assistedRecoveries": true,
+    "overlapPeaks": true,
+    "samples": true,
+    "contextSamples": true,
+    "carRaceResults": true,
+    "normalExit": true
+  },
+  "motionWindow": {
+    "lastFinishSeconds": 103.68842315673828,
+    "oldRows": 2520,
+    "newRows": 2496,
+    "scope": "Supplement only; raw parity above remains authoritative for full stored arrays.",
+    "raceActiveMotionEqual": true,
+    "oldRaceActiveRows": 2496,
+    "newRaceActiveRows": 2496
+  },
+  "controlled": {
+    "passed": 92,
+    "total": 92,
+    "failures": []
+  },
+  "combinedPassesDeclaredScreen": false
+}

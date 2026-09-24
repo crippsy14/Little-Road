@@ -1,0 +1,41 @@
+{
+  "version": 53,
+  "buildChecks": 326,
+  "buildLog": "build-context-53.log",
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-53-review\\Little Road Unity.exe",
+  "assemblyHash": "dba53580d6c2a12d1a66b7ad19b8f98bc3a70b8c4251e87511861095a42790f0",
+  "sourceFiles": [
+    {
+      "file": "unity/Assets/Scripts/ContextDriverPolicy.cs",
+      "sha256": "e85d847883d6c8953cba6b6dcb3fedf329d28a4f6c81119b73e8337cb9ba34fd"
+    },
+    {
+      "file": "tools/runtime_log_errors.py",
+      "sha256": "f3d5ccdffacdce8acbb353bc6367ef6a4a0572612d7a0ff0df8ec4697de217fa"
+    },
+    {
+      "file": "tools/analyze-field-race.py",
+      "sha256": "0f1ef215e74c4ffb3c060080ba0e925a6521128ed154e3e2de653047e01caf06"
+    },
+    {
+      "file": "tools/analyze-coasting-regressions.py",
+      "sha256": "f8cf33038a78d90a5f9e3c18084052092168a4895081174c50d76729c18f0dfd"
+    },
+    {
+      "file": "tools/verify-context-race-parity.py",
+      "sha256": "15106681f4eec916e26f8882dd3959c41ca33748a69035d10f47134829d06123"
+    },
+    {
+      "file": "docs/34-driver-identity-prototype.md",
+      "sha256": "52bb10c2eda60c185bafcf8c665f198a3f06ec193036ced8d1103f9e29452690"
+    },
+    {
+      "file": "review/unity-35/recorder-53-expectations.md",
+      "sha256": "b85d112542cd6697aacf0d5e0bf68baf20713a5c817907f95bb005257cb816b6"
+    }
+  ],
+  "baseSource": "source-52",
+  "scope": "Changed source/tools/docs over52 snapshot; all other C# source unchanged.",
+  "review": "recorder-53-review.md",
+  "status": "Optional-recorder fix verified: exact audited/unaudited field parity; controlled110/112, all runs clean without exceptions or recovery. No-room delay/unresolved and1.454mm field road edge remain; opt-in, reviewed50 retained."
+}

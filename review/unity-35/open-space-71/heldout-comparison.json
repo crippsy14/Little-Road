@@ -1,0 +1,73 @@
+{
+  "scope": "Predeclared open-space first-lap screening; controlled cases, exact disabled parity, held-out field and rendering remain separate.",
+  "checks": {
+    "noErrors": true,
+    "complete": true,
+    "noRecovery": true,
+    "noAdditionalBoundarySamples": true,
+    "collectiveWithin2Percent": true,
+    "previewWithin2Seconds": true,
+    "zeroWarmDriverAllocation": true
+  },
+  "passed": true,
+  "results": {
+    "off": {
+      "analyzerExitCodes": {
+        "analyze-field-race.py": 1,
+        "analyze-checkpoint-flow.py": 0,
+        "analyze-preview-car.py": 0,
+        "analyze-driver-frames.py": 0
+      },
+      "normalExit": true,
+      "runtimeErrors": [],
+      "finished": 24,
+      "combinedSeconds": 2186.279296875,
+      "previewSeconds": 82.61856842041016,
+      "previewPlace": 4,
+      "previewCP1": [
+        24,
+        24
+      ],
+      "previewPasses": 13,
+      "possibleHeldBehindSeconds": 2.999965381622315,
+      "boundarySamples": 4,
+      "maximumBodyOffset": 8.014671325683594,
+      "contacts": 10,
+      "peakImpact": 2.6345088481903076,
+      "unresolved": 738,
+      "physicalRecoveries": 0,
+      "brakingSamplePercent": 7.3015727871250915,
+      "meanAiMsPerSnapshot": 3.4533238152902235,
+      "warmAllocatedBytes": 0
+    },
+    "on": {
+      "analyzerExitCodes": {
+        "analyze-field-race.py": 0,
+        "analyze-checkpoint-flow.py": 0,
+        "analyze-preview-car.py": 0,
+        "analyze-driver-frames.py": 0
+      },
+      "normalExit": true,
+      "runtimeErrors": [],
+      "finished": 24,
+      "combinedSeconds": 2186.9291381835938,
+      "previewSeconds": 80.36078643798828,
+      "previewPlace": 4,
+      "previewCP1": [
+        24,
+        24
+      ],
+      "previewPasses": 13,
+      "possibleHeldBehindSeconds": 1.9999877929687508,
+      "boundarySamples": 0,
+      "maximumBodyOffset": 7.875586986541748,
+      "contacts": 4,
+      "peakImpact": 5.170708179473877,
+      "unresolved": 679,
+      "physicalRecoveries": 0,
+      "brakingSamplePercent": 6.915306915306915,
+      "meanAiMsPerSnapshot": 3.383704061444427,
+      "warmAllocatedBytes": 0
+    }
+  }
+}

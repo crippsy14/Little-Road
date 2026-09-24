@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "checks": {
+    "fullField": true,
+    "orderedLaps": true,
+    "noRecoveries": true,
+    "sampledCarOverlapBelow1mm": true,
+    "noTaggedSceneryOverlap": true,
+    "verticalAudit": true
+  },
+  "scope": "24-car three-lap Bayview seed 1721; sampled overlap and 120 Hz flat vertical audit"
+}

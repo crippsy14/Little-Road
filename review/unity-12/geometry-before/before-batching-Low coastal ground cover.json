@@ -1,0 +1,10 @@
+{
+    "stage": "before-batching",
+    "mesh": "Coastal grass and dry herb clumps",
+    "indexFormat": "UInt32",
+    "batched": false,
+    "vertices": 402768,
+    "triangles": 302076,
+    "longEdges": 0,
+    "maxEdge": 0.3527807593345642
+}

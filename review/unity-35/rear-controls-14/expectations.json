@@ -1,0 +1,49 @@
+{
+  "scope": "Revised controls: front car begins on the reference for receding/parallel/same-course cases. Same build, rear anticipation disabled/enabled. Exact first 2 s lead-car commands/motion, then all cars finish cleanly. Later genuine interactions may differ; original off-line-front failures remain in rear-controls-13.",
+  "unchangedWindowSeconds": 2,
+  "timeout": 45,
+  "cases": [
+    {
+      "opponents": "stock",
+      "name": "receding-left",
+      "fixture": "rear-control-left",
+      "rear": 12,
+      "gap": 12
+    },
+    {
+      "opponents": "stock",
+      "name": "receding-right",
+      "fixture": "rear-control-right",
+      "rear": 12,
+      "gap": 12
+    },
+    {
+      "opponents": "street",
+      "name": "parallel-left",
+      "fixture": "rear-control-left",
+      "rear": 18,
+      "gap": 12
+    },
+    {
+      "opponents": "street",
+      "name": "parallel-right",
+      "fixture": "rear-control-right",
+      "rear": 18,
+      "gap": 12
+    },
+    {
+      "opponents": "street",
+      "name": "same-course",
+      "fixture": "rear-control",
+      "rear": 18,
+      "gap": 12
+    },
+    {
+      "opponents": "club",
+      "name": "distant-closing",
+      "fixture": "merge-left",
+      "rear": 26,
+      "gap": 60
+    }
+  ]
+}

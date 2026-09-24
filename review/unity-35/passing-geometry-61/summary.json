@@ -1,0 +1,187 @@
+{
+  "scope": "Fixed two-second counterfactuals with constant observed rival speed; capped selected captures. Feasibility is not live safety certification and small score differences are not lap-time improvements.",
+  "observations": 64,
+  "originalMatches": 64,
+  "timestampRange": [
+    0.10833333333333332,
+    9.391666666666666
+  ],
+  "groups": {
+    "all": [
+      {
+        "name": "captured-retained",
+        "feasible": 64,
+        "observations": 64,
+        "meanMetresVsFresh": -0.0066814422607421875,
+        "minimumMetresVsFresh": -0.15283203125,
+        "maximumMetresVsFresh": 0.0,
+        "rejections": {}
+      },
+      {
+        "name": "fresh-0.50",
+        "feasible": 63,
+        "observations": 64,
+        "meanMetresVsFresh": -0.023063538566468252,
+        "minimumMetresVsFresh": -0.279052734375,
+        "maximumMetresVsFresh": -0.00048828125,
+        "rejections": {
+          "moving side entry: 20": 1
+        }
+      },
+      {
+        "name": "fresh-0.75",
+        "feasible": 63,
+        "observations": 64,
+        "meanMetresVsFresh": -0.009337410094246032,
+        "minimumMetresVsFresh": -0.10693359375,
+        "maximumMetresVsFresh": -0.0001220703125,
+        "rejections": {
+          "moving side entry: 20": 1
+        }
+      },
+      {
+        "name": "fresh-1.00",
+        "feasible": 64,
+        "observations": 64,
+        "meanMetresVsFresh": 0.0,
+        "minimumMetresVsFresh": 0.0,
+        "maximumMetresVsFresh": 0.0,
+        "rejections": {}
+      },
+      {
+        "name": "fresh-1.25",
+        "feasible": 64,
+        "observations": 64,
+        "meanMetresVsFresh": 0.0051898956298828125,
+        "minimumMetresVsFresh": 0.0,
+        "maximumMetresVsFresh": 0.078125,
+        "rejections": {}
+      },
+      {
+        "name": "hold-offset",
+        "feasible": 64,
+        "observations": 64,
+        "meanMetresVsFresh": 0.011259078979492188,
+        "minimumMetresVsFresh": 0.0,
+        "maximumMetresVsFresh": 0.08056640625,
+        "rejections": {}
+      }
+    ],
+    "speed_below_2_mps": [
+      {
+        "name": "captured-retained",
+        "feasible": 33,
+        "observations": 33,
+        "meanMetresVsFresh": -1.1097301136363637e-05,
+        "minimumMetresVsFresh": -0.0003662109375,
+        "maximumMetresVsFresh": 0.0,
+        "rejections": {}
+      },
+      {
+        "name": "fresh-0.50",
+        "feasible": 33,
+        "observations": 33,
+        "meanMetresVsFresh": -0.002496892755681818,
+        "minimumMetresVsFresh": -0.0408935546875,
+        "maximumMetresVsFresh": -0.00048828125,
+        "rejections": {}
+      },
+      {
+        "name": "fresh-0.75",
+        "feasible": 33,
+        "observations": 33,
+        "meanMetresVsFresh": -0.0005955551609848485,
+        "minimumMetresVsFresh": -0.0107421875,
+        "maximumMetresVsFresh": -0.0001220703125,
+        "rejections": {}
+      },
+      {
+        "name": "fresh-1.00",
+        "feasible": 33,
+        "observations": 33,
+        "meanMetresVsFresh": 0.0,
+        "minimumMetresVsFresh": 0.0,
+        "maximumMetresVsFresh": 0.0,
+        "rejections": {}
+      },
+      {
+        "name": "fresh-1.25",
+        "feasible": 33,
+        "observations": 33,
+        "meanMetresVsFresh": 0.00019975142045454547,
+        "minimumMetresVsFresh": 0.0,
+        "maximumMetresVsFresh": 0.0029296875,
+        "rejections": {}
+      },
+      {
+        "name": "hold-offset",
+        "feasible": 33,
+        "observations": 33,
+        "meanMetresVsFresh": 0.0003107244318181818,
+        "minimumMetresVsFresh": 0.0,
+        "maximumMetresVsFresh": 0.0050048828125,
+        "rejections": {}
+      }
+    ],
+    "moving_at_least_2_mps": [
+      {
+        "name": "captured-retained",
+        "feasible": 31,
+        "observations": 31,
+        "meanMetresVsFresh": -0.013782132056451613,
+        "minimumMetresVsFresh": -0.15283203125,
+        "maximumMetresVsFresh": -0.000244140625,
+        "rejections": {}
+      },
+      {
+        "name": "fresh-0.50",
+        "feasible": 30,
+        "observations": 31,
+        "meanMetresVsFresh": -0.04568684895833333,
+        "minimumMetresVsFresh": -0.279052734375,
+        "maximumMetresVsFresh": -0.00048828125,
+        "rejections": {
+          "moving side entry: 20": 1
+        }
+      },
+      {
+        "name": "fresh-0.75",
+        "feasible": 30,
+        "observations": 31,
+        "meanMetresVsFresh": -0.018953450520833335,
+        "minimumMetresVsFresh": -0.10693359375,
+        "maximumMetresVsFresh": -0.00048828125,
+        "rejections": {
+          "moving side entry: 20": 1
+        }
+      },
+      {
+        "name": "fresh-1.00",
+        "feasible": 31,
+        "observations": 31,
+        "meanMetresVsFresh": 0.0,
+        "minimumMetresVsFresh": 0.0,
+        "maximumMetresVsFresh": 0.0,
+        "rejections": {}
+      },
+      {
+        "name": "fresh-1.25",
+        "feasible": 31,
+        "observations": 31,
+        "meanMetresVsFresh": 0.010501984627016129,
+        "minimumMetresVsFresh": 0.0009765625,
+        "maximumMetresVsFresh": 0.078125,
+        "rejections": {}
+      },
+      {
+        "name": "hold-offset",
+        "feasible": 31,
+        "observations": 31,
+        "meanMetresVsFresh": 0.02291377898185484,
+        "minimumMetresVsFresh": 0.0042724609375,
+        "maximumMetresVsFresh": 0.08056640625,
+        "rejections": {}
+      }
+    ]
+  }
+}

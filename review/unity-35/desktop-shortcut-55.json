@@ -1,0 +1,6 @@
+{
+  "shortcut": "C:\\Users\\cripp\\Desktop\\Little Road - Racing Prototype.lnk",
+  "target": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-55-review\\Little Road Unity.exe",
+  "arguments": "--trial-auto --trial-track cedar --trial-setup club --trial-cars 24 --trial-laps 1 --trial-seed 1709 --trial-grid pack --trial-duration 180 --trial-report \"C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\desktop-prototype-replay\\race.json\" -logFile \"C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\desktop-prototype-replay\\run.log\" -screen-width 1920 -screen-height 1080 --trial-timescale 1 --physical-recovery --traffic-case field --traffic-gap 24 --traffic-speed 18 --traffic-diagnostics --road-feasibility --prepared-path --guide-path-fallback --compare-continuation --traffic-aware-progress --coast-within-envelope --driver-braking neutral --driver-risk 5 --no-gap-centres --traffic-path-check --anticipate-passing-space --traffic-coast-continuation --parallel-road-forecasts --parallel-forecast-workers 8 --start-windowed -screen-fullscreen 0 --driver-policy context --racing-line cedar-smooth-v2",
+  "verified": true
+}

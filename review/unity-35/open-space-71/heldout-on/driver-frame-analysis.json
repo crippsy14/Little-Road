@@ -1,0 +1,68 @@
+{
+  "scope": "All RoadCar.Plan calls plus shared snapshot on the main thread, summed per rendered frame. Includes recovery/sensing/follower/guard; excludes physics simulation, rendering, diagnostics and direct fixture commands. Snapshot cost includes forecast preparation, dispatch and joined wait. Forecast worker elapsed/allocations are reported separately; worker elapsed is not CPU utilization and must not be added to joined wall time. Allocation counters cover these same regions plus separately identified workers. First captured frame may include setup/loading; retained explicitly. Hidden/accelerated runs cannot establish real-time performance.",
+  "realTimeRenderingEvidence": false,
+  "omittedInitialLoadingFrames": 1,
+  "frames": 246,
+  "observedFrameResolutions": [
+    [
+      1600,
+      900
+    ]
+  ],
+  "settings": {
+    "cpu": "Intel(R) Core(TM) i7-14700KF",
+    "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "width": 1600,
+    "height": 900,
+    "frameCap": 120,
+    "vsync": 0,
+    "playbackRate": 4.0,
+    "batchMode": true,
+    "developmentBuild": false,
+    "droppedFrames": 0
+  },
+  "allAiMsPerRenderedFrame": {
+    "mean": 171.02835894308947,
+    "p50": 179.23490000000015,
+    "p95": 389.23860000000013,
+    "p99": 512.0305000000003,
+    "maximum": 538.7112999999993
+  },
+  "observedFrameMs": {
+    "mean": 189.20275728489327,
+    "p50": 203.6636962890625,
+    "p95": 415.9455871582031,
+    "p99": 538.8941650390625,
+    "maximum": 565.3546142578125
+  },
+  "worstOneSecondWindow": {
+    "startRealTime": 10.991312026977539,
+    "endRealTime": 11.990862846374512,
+    "startSimTime": 17.824827194213867,
+    "meanFrameMs": 553.9314575195312,
+    "frames": 3
+  },
+  "totalDecisionCalls": 298416,
+  "totalSnapshotCalls": 12434,
+  "driverBytesAfter5s": 0,
+  "forecastWorkerBytesAfter5s": 0,
+  "forecastJobs": 25820,
+  "forecastBatches": 1021,
+  "forecastBatchWallMs": {
+    "mean": 27.771465853658537,
+    "p50": 37.184799999999996,
+    "p95": 43.6236,
+    "p99": 46.4932,
+    "maximum": 48.2176
+  },
+  "summedForecastWorkerElapsedMs": 46987.8495,
+  "allocatingFramesAfter5s": 0,
+  "checks": {
+    "allFramesAt1920x1080": false,
+    "completeCapture": true,
+    "allAiP95Within3ms": null,
+    "frameP95Within16_7ms": null,
+    "frameP99Within33_3ms": null,
+    "noObservedDriverAllocationAfter5s": true
+  }
+}

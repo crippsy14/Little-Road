@@ -1,0 +1,44 @@
+{
+    "fixture": "blocked-wait",
+    "scope": "Synthetic recovery start; ordinary physics thereafter. Reset counts remain assisted recovery.",
+    "complete": true,
+    "returnedBehindMissedGate": true,
+    "unearnedGateAdvance": false,
+    "trafficPassed": false,
+    "maxStepMetres": 0.1999267190694809,
+    "waitingSeconds": 9.024948120117188,
+    "reverseSeconds": 0.0,
+    "activeSeconds": 9.324943542480469,
+    "physicalRecoveries": 1,
+    "assistedResets": 0,
+    "contacts": 0,
+    "events": [
+        {
+            "time": 0.000011669471859931946,
+            "progress": -24.0,
+            "offset": 0.0,
+            "speed": 5.445630057998585e-10,
+            "gate": 0,
+            "resets": 0,
+            "state": "Wait for clearance"
+        },
+        {
+            "time": 9.0249605178833,
+            "progress": -23.9918212890625,
+            "offset": 0.0,
+            "speed": 0.0020831639412790537,
+            "gate": 0,
+            "resets": 0,
+            "state": "Rejoin"
+        },
+        {
+            "time": 9.316622734069824,
+            "progress": -23.758056640625,
+            "offset": 0.00152587890625,
+            "speed": 1.5334936380386353,
+            "gate": 0,
+            "resets": 0,
+            "state": "Racing"
+        }
+    ]
+}

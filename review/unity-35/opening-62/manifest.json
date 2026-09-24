@@ -1,0 +1,10 @@
+{
+  "version": 62,
+  "buildChecks": 356,
+  "assemblyHash": "5d0ab5ea83b1de425bb27a910060f87e7602fde22d6ab7a3e009f3b04560ecb2",
+  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-62-review\\Little Road Unity.exe",
+  "sourceSnapshot": null,
+  "sourceCaveat": "No full source snapshot was frozen before beginning63. Runtime DLL and evidence identify62.",
+  "review": "opening-62-review.md",
+  "status": "Diagnostic recording only; exact recorded race prefix/events/results preserved, post-finish tail difference disclosed; desktop55 unchanged."
+}

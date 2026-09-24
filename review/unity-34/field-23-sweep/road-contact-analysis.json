@@ -1,0 +1,8 @@
+{
+  "scope": "10 Hz observations of the strongest single solver impulse per sampling interval, divided by mass. Not summed impulses or complete contact history. The 1 m/s planar threshold flags investigation, not a pass/fail gate.",
+  "comparison": null,
+  "strongRoadImpulseSamples": 0,
+  "maximumPlanarRoadImpulse": 4.306130273010594e-09,
+  "roadImpulseEvents": [],
+  "bodyDepartures": []
+}

@@ -1,0 +1,27 @@
+{
+    "scope": "120 Hz observed collider-bottom height above the flat Bayview datum, including ground contacts; not all-track or manual acceptance",
+    "passed": true,
+    "cars": [
+        {
+            "id": 0,
+            "samples": 5175,
+            "airborneSteps": 0,
+            "maxBottom": 0.1411348581314087,
+            "maxUpwardSpeed": 0.0006557479500770569,
+            "peak": {
+                "id": 0,
+                "time": 1.0,
+                "progress": 10.034445762634277,
+                "offset": 8.669212341308594,
+                "bottom": 0.1411348581314087,
+                "verticalSpeed": 0.0,
+                "position": {
+                    "x": -63.0,
+                    "y": 0.14999929070472717,
+                    "z": -94.0
+                },
+                "contacts": []
+            }
+        }
+    ]
+}

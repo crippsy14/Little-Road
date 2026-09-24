@@ -1,0 +1,201 @@
+{
+  "scope": "Same-build110 optional third-candidate pilot, fixed three-group scheduling. No allocating pace diagnostics. Per-course regression checks do not establish pooled pace improvement, broader acceptance or statistical confidence. Relative contact speed is retained for review, not called impact impulse.",
+  "before": {
+    "finished": 24,
+    "carCount": 24,
+    "collectiveSeconds": 2144.1312561035156,
+    "playerSeconds": 81.44385528564453,
+    "playerPlace": 5,
+    "impactEvents": 4,
+    "maxRelativeContactSpeed": 8.806233406066895,
+    "assistedRecoveries": 0,
+    "physicalRecoveries": 0,
+    "physicalRecoverySeconds": 0.0,
+    "missedGates": 0,
+    "maxCarPoseOverlap": 1.9073486328125e-06,
+    "maxEnvironmentPoseOverlap": 0.0,
+    "thirdCalls": 0,
+    "thirdAccepted": 0,
+    "wholeAiMsPerTick": 2.7030048558170368,
+    "performance": {
+      "scope": "All RoadCar.Plan calls plus shared snapshot on the main thread, summed per rendered frame. Includes recovery/sensing/follower/guard; excludes physics simulation, rendering, diagnostics and direct fixture commands. Snapshot cost includes forecast preparation, dispatch and joined wait. Forecast worker elapsed/allocations are reported separately; worker elapsed is not CPU utilization and must not be added to joined wall time. Allocation counters cover these same regions plus separately identified workers. First captured frame may include setup/loading; retained explicitly. Hidden/accelerated runs cannot establish real-time performance.",
+      "realTimeRenderingEvidence": true,
+      "omittedInitialLoadingFrames": 1,
+      "frames": 11412,
+      "observedFrameResolutions": [
+        [
+          1920,
+          1080
+        ]
+      ],
+      "settings": {
+        "cpu": "Intel(R) Core(TM) i7-14700KF",
+        "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "width": 1920,
+        "height": 1080,
+        "frameCap": 120,
+        "vsync": 0,
+        "playbackRate": 1.0,
+        "batchMode": false,
+        "developmentBuild": false,
+        "droppedFrames": 0
+      },
+      "allAiMsPerRenderedFrame": {
+        "mean": 2.8583826323168595,
+        "p50": 1.1682,
+        "p95": 9.638,
+        "p99": 16.848100000000002,
+        "maximum": 33.2086
+      },
+      "observedFrameMs": {
+        "mean": 8.865673881662632,
+        "p50": 8.333602905273438,
+        "p95": 11.565199851989746,
+        "p99": 18.59990119934082,
+        "maximum": 620.8377075195312
+      },
+      "worstOneSecondWindow": {
+        "startRealTime": 3.208468198776245,
+        "endRealTime": 4.165050029754639,
+        "startSimTime": -2.9749996662139893,
+        "meanFrameMs": 14.577838131675014,
+        "frames": 108
+      },
+      "totalDecisionCalls": 289632,
+      "totalSnapshotCalls": 12068,
+      "driverBytesAfter5s": 0,
+      "forecastWorkerBytesAfter5s": 0,
+      "forecastJobs": 24238,
+      "forecastBatches": 3017,
+      "forecastBatchWallMs": {
+        "mean": 0.6364287329127234,
+        "p50": 0.0,
+        "p95": 2.6588,
+        "p99": 3.5795,
+        "maximum": 6.8287
+      },
+      "summedForecastWorkerElapsedMs": 47180.4319,
+      "allocatingFramesAfter5s": 0,
+      "checks": {
+        "allFramesAt1920x1080": true,
+        "completeCapture": true,
+        "allAiP95Within3ms": false,
+        "frameP95Within16_7ms": true,
+        "frameP99Within33_3ms": true,
+        "noObservedDriverAllocationAfter5s": true
+      }
+    },
+    "normalExit": true,
+    "runtimeErrors": []
+  },
+  "after": {
+    "finished": 19,
+    "carCount": 24,
+    "collectiveSeconds": null,
+    "playerSeconds": 80.49408721923828,
+    "playerPlace": 5,
+    "impactEvents": 22,
+    "maxRelativeContactSpeed": 13.003545761108398,
+    "assistedRecoveries": 7,
+    "physicalRecoveries": 5,
+    "physicalRecoverySeconds": 571.233211517334,
+    "missedGates": 0,
+    "maxCarPoseOverlap": 1.52587890625e-05,
+    "maxEnvironmentPoseOverlap": 0.0,
+    "thirdCalls": 1214,
+    "thirdAccepted": 55,
+    "wholeAiMsPerTick": 2.912663095346508,
+    "performance": {
+      "scope": "All RoadCar.Plan calls plus shared snapshot on the main thread, summed per rendered frame. Includes recovery/sensing/follower/guard; excludes physics simulation, rendering, diagnostics and direct fixture commands. Snapshot cost includes forecast preparation, dispatch and joined wait. Forecast worker elapsed/allocations are reported separately; worker elapsed is not CPU utilization and must not be added to joined wall time. Allocation counters cover these same regions plus separately identified workers. First captured frame may include setup/loading; retained explicitly. Hidden/accelerated runs cannot establish real-time performance.",
+      "realTimeRenderingEvidence": true,
+      "omittedInitialLoadingFrames": 1,
+      "frames": 19594,
+      "observedFrameResolutions": [
+        [
+          1920,
+          1080
+        ]
+      ],
+      "settings": {
+        "cpu": "Intel(R) Core(TM) i7-14700KF",
+        "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "width": 1920,
+        "height": 1080,
+        "frameCap": 120,
+        "vsync": 0,
+        "playbackRate": 1.0,
+        "batchMode": false,
+        "developmentBuild": false,
+        "droppedFrames": 0
+      },
+      "allAiMsPerRenderedFrame": {
+        "mean": 3.2646681075839545,
+        "p50": 0.9478000000000001,
+        "p95": 14.645199999999999,
+        "p99": 21.930400000000002,
+        "maximum": 40.882799999999996
+      },
+      "observedFrameMs": {
+        "mean": 9.370939305951257,
+        "p50": 8.333602905273438,
+        "p95": 16.377197265625,
+        "p99": 23.60829734802246,
+        "maximum": 612.4859008789062
+      },
+      "worstOneSecondWindow": {
+        "startRealTime": 34.17971420288086,
+        "endRealTime": 35.175819396972656,
+        "startSimTime": 27.999671936035156,
+        "meanFrameMs": 17.889012609209335,
+        "frames": 56
+      },
+      "totalDecisionCalls": 527088,
+      "totalSnapshotCalls": 21962,
+      "driverBytesAfter5s": 0,
+      "forecastWorkerBytesAfter5s": 0,
+      "forecastJobs": 39143,
+      "forecastBatches": 5496,
+      "forecastBatchWallMs": {
+        "mean": 0.6378394814739207,
+        "p50": 0.0,
+        "p95": 2.6701,
+        "p99": 3.4861,
+        "maximum": 7.5601
+      },
+      "summedForecastWorkerElapsedMs": 70467.8873,
+      "allocatingFramesAfter5s": 0,
+      "checks": {
+        "allFramesAt1920x1080": true,
+        "completeCapture": true,
+        "allAiP95Within3ms": false,
+        "frameP95Within16_7ms": true,
+        "frameP99Within33_3ms": true,
+        "noObservedDriverAllocationAfter5s": true
+      }
+    },
+    "normalExit": true,
+    "runtimeErrors": []
+  },
+  "collectiveGain": null,
+  "playerGain": 0.94976806640625,
+  "checks": {
+    "sameGraphics": true,
+    "normalComplete1080p": true,
+    "all24Finish": false,
+    "zeroWarmAllocation": true,
+    "playerWithin3Percent": true,
+    "noAdditionalAssistedRecovery": false,
+    "noAdditionalPhysicalRecovery": false,
+    "noAdditionalRecoveryTime": false,
+    "noAdditionalMissedGates": true,
+    "boundedContactCount": false,
+    "carOverlapRegression": true,
+    "environmentOverlapRegression": true,
+    "wholeAiWallWithin10Percent": true,
+    "baselineExtraPathDisabled": true,
+    "candidateExtraPathExercised": true,
+    "framep95Regression": true,
+    "framep99Regression": true
+  },
+  "passed": false
+}

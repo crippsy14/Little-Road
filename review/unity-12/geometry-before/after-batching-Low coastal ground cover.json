@@ -1,0 +1,10 @@
+{
+    "stage": "after-batching",
+    "mesh": "Combined Mesh (root: Bayview coast / authored landforms) 154",
+    "indexFormat": "UInt16",
+    "batched": true,
+    "vertices": 0,
+    "triangles": 0,
+    "longEdges": 0,
+    "maxEdge": 0.0
+}

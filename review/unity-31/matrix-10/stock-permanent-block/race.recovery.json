@@ -1,0 +1,91 @@
+{
+    "fixture": "permanent-block",
+    "scope": "Synthetic recovery start; ordinary physics thereafter. Reset counts remain assisted recovery.",
+    "complete": true,
+    "returnedBehindMissedGate": true,
+    "unearnedGateAdvance": false,
+    "trafficPassed": false,
+    "maxStepMetres": 13.376349449157715,
+    "maxPhysicalStepMetres": 0.19992664456367493,
+    "waitingSeconds": 59.99724197387695,
+    "reverseSeconds": 1.224999189376831,
+    "activeSeconds": 71.27132415771484,
+    "observedResetJumps": 1,
+    "physicalRecoveries": 2,
+    "assistedResets": 1,
+    "contacts": 0,
+    "events": [
+        {
+            "time": 0.000011669471859931946,
+            "progress": -24.0,
+            "offset": 10.5,
+            "speed": 2.919883854701766e-7,
+            "gate": 0,
+            "resets": 0,
+            "state": "Wait for clearance"
+        },
+        {
+            "time": 59.997257232666016,
+            "progress": -32.0103759765625,
+            "offset": 10.719451904296875,
+            "speed": 0.0011798408813774586,
+            "gate": 0,
+            "resets": 1,
+            "state": "Racing"
+        },
+        {
+            "time": 60.005592346191406,
+            "progress": -32.0103759765625,
+            "offset": 0.0,
+            "speed": -0.0020828754641115665,
+            "gate": 0,
+            "resets": 1,
+            "state": "Reverse / turn"
+        },
+        {
+            "time": 61.23085403442383,
+            "progress": -35.0142822265625,
+            "offset": -0.0118560791015625,
+            "speed": -2.9774563312530518,
+            "gate": 0,
+            "resets": 1,
+            "state": "Rejoin"
+        },
+        {
+            "time": 64.8062515258789,
+            "progress": -27.38232421875,
+            "offset": -4.0169525146484375,
+            "speed": 3.7794294357299805,
+            "gate": 0,
+            "resets": 1,
+            "state": "Racing"
+        },
+        {
+            "time": 156.52552795410156,
+            "progress": 1995.995849609375,
+            "offset": 3.18072509765625,
+            "speed": 23.904861450195313,
+            "gate": 0,
+            "resets": 1,
+            "state": "Stabilise"
+        },
+        {
+            "time": 157.92518615722656,
+            "progress": 2015.9132080078125,
+            "offset": 3.8341064453125,
+            "speed": 5.419609546661377,
+            "gate": 0,
+            "resets": 1,
+            "state": "Rejoin"
+        },
+        {
+            "time": 162.9739532470703,
+            "progress": 2035.5181884765625,
+            "offset": 3.5057220458984375,
+            "speed": 3.827601432800293,
+            "gate": 0,
+            "resets": 1,
+            "state": "Racing"
+        }
+    ]
+}

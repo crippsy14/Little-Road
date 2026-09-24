@@ -1,0 +1,43 @@
+{
+  "scope": "Descriptive slices of one mixed-resolution run, not matched fixed-resolution benchmarks; race phase differs between slices.",
+  "slices": [
+    {
+      "resolution": [
+        1920,
+        1080
+      ],
+      "frames": 1641,
+      "firstSimTime": -2.9749996662139893,
+      "lastSimTime": 14.191548347473145,
+      "frameMs": {
+        "p95": 24.149702072143555,
+        "p99": 43.2942008972168,
+        "mean": 10.808322054812416
+      },
+      "aiMs": {
+        "p95": 21.6526,
+        "p99": 40.310700000000004,
+        "mean": 3.996947836684948
+      }
+    },
+    {
+      "resolution": [
+        3840,
+        2160
+      ],
+      "frames": 7811,
+      "firstSimTime": 14.199881553649902,
+      "lastSimTime": 100.8307876586914,
+      "frameMs": {
+        "p95": 31.079301834106445,
+        "p99": 60.604698181152344,
+        "mean": 11.091558785158332
+      },
+      "aiMs": {
+        "p95": 29.4159,
+        "p99": 58.7254,
+        "mean": 4.671881718089873
+      }
+    }
+  ]
+}

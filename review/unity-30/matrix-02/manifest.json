@@ -1,0 +1,119 @@
+{
+  "executable": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-recovery-02-review\\Little Road Unity.exe",
+  "assemblyHash": "AB67C75F2C4AC4817FC8C5C6A02549D21D70865CC3912D105406EF017AA0EBC4",
+  "complete": true,
+  "runs": [
+    {
+      "name": "stock-sideways",
+      "loadout": "stock",
+      "fixture": "sideways",
+      "pid": 16876,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\stock-sideways\\race.json"
+    },
+    {
+      "name": "stock-wrong-way",
+      "loadout": "stock",
+      "fixture": "wrong-way",
+      "pid": 20632,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\stock-wrong-way\\race.json"
+    },
+    {
+      "name": "stock-off-road",
+      "loadout": "stock",
+      "fixture": "off-road",
+      "pid": 4852,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\stock-off-road\\race.json"
+    },
+    {
+      "name": "stock-missed-gate",
+      "loadout": "stock",
+      "fixture": "missed-gate",
+      "pid": 15320,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\stock-missed-gate\\race.json"
+    },
+    {
+      "name": "stock-blocked-wait",
+      "loadout": "stock",
+      "fixture": "blocked-wait",
+      "pid": 4624,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\stock-blocked-wait\\race.json"
+    },
+    {
+      "name": "stock-wall",
+      "loadout": "stock",
+      "fixture": "wall",
+      "pid": 28220,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\stock-wall\\race.json"
+    },
+    {
+      "name": "club-sideways",
+      "loadout": "club",
+      "fixture": "sideways",
+      "pid": 28468,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\club-sideways\\race.json"
+    },
+    {
+      "name": "club-wrong-way",
+      "loadout": "club",
+      "fixture": "wrong-way",
+      "pid": 30536,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\club-wrong-way\\race.json"
+    },
+    {
+      "name": "club-off-road",
+      "loadout": "club",
+      "fixture": "off-road",
+      "pid": 28824,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\club-off-road\\race.json"
+    },
+    {
+      "name": "stock-traffic",
+      "loadout": "stock",
+      "fixture": "traffic",
+      "pid": 10844,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\stock-traffic\\race.json"
+    },
+    {
+      "name": "club-missed-gate",
+      "loadout": "club",
+      "fixture": "missed-gate",
+      "pid": 21792,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\club-missed-gate\\race.json"
+    },
+    {
+      "name": "club-wall",
+      "loadout": "club",
+      "fixture": "wall",
+      "pid": 14732,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\club-wall\\race.json"
+    },
+    {
+      "name": "club-blocked-wait",
+      "loadout": "club",
+      "fixture": "blocked-wait",
+      "pid": 14564,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\club-blocked-wait\\race.json"
+    },
+    {
+      "name": "club-traffic",
+      "loadout": "club",
+      "fixture": "traffic",
+      "pid": 31408,
+      "exitCode": 0,
+      "report": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-30\\matrix-02\\club-traffic\\race.json"
+    }
+  ]
+}
