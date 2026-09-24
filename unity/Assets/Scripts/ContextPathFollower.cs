@@ -16,6 +16,8 @@ namespace LittleRoad
         readonly RacingSpeedProfile profile;
         readonly bool pathSpeedEnvelope,localOriginCurvature;
         public float MinimumClearance {get;private set;}
+        // Set by the policy for one Follow call (--corner-aware-pass late braking); 0 = driver's own fraction.
+        public float BrakeFractionOverride;
         bool equipmentCached;float cachedPower,cachedGear,cachedEquipmentSpeed;
         readonly bool coastWithinEnvelope=RaceTrial.Has("--coast-within-envelope");
         readonly Vector3[] points=new Vector3[MaximumPoints];
@@ -72,7 +74,7 @@ namespace LittleRoad
                 curvatures[0]=curvatures[1];
                 speeds[0]=Mathf.Min(speeds[0],Mathf.Sqrt(budget*.78f/Mathf.Max(.00001f,curvatures[0])));
             }
-            for(int i=count-2;i>=0;i--)speeds[i]=Mathf.Min(speeds[i],Mathf.Sqrt(speeds[i+1]*speeds[i+1]+2*Mathf.Min(o.tuning.braking,budget)*profile.planning.BrakeFraction*(distances[i+1]-distances[i])));
+            for(int i=count-2;i>=0;i--)speeds[i]=Mathf.Min(speeds[i],Mathf.Sqrt(speeds[i+1]*speeds[i+1]+2*Mathf.Min(o.tuning.braking,budget)*(BrakeFractionOverride>0?BrakeFractionOverride:profile.planning.BrakeFraction)*(distances[i+1]-distances[i])));
         }
         // Cheap common downstream-gate estimate (120-360m). This is a geometry/capability ranking,
         // not a promise of feasible actual motion or a substitute for rollouts.

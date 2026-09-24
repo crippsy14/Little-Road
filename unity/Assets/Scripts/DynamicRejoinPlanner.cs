@@ -25,7 +25,11 @@ namespace LittleRoad
         public int Evaluated {get;private set;}
         public int GeometricRejects {get;private set;}
         public int Selections {get;private set;}
-        int trafficPlans,trafficSelections,freshHoldIndex=-1;bool trafficPlan;
+        int trafficPlans,trafficSelections,freshHoldIndex=-1;bool trafficPlan,retained;
+        // Traffic plans only: the car the passing sides were built around.
+        public bool TrafficPlan=>trafficPlan;
+        public int Blocker {get;private set;}=-1;
+        public float BlockerCentre {get;private set;}
         public float LastBlend {get;private set;}
         public float LastEstimatedTime {get;private set;}
         float minimumBlend=float.PositiveInfinity,maximumBlend,minimumHorizon=float.PositiveInfinity,maximumHorizon;
@@ -67,6 +71,7 @@ namespace LittleRoad
             if(!source.preparedIdentity.Matches(in identity))return false;
             for(int i=0;i<o.traffic.Length;i++)if(!DraftingModel.Same(in o.traffic[i],in source.preparedTraffic[i]))return false;
             Count=source.Count;trafficPlan=source.trafficPlan;freshHoldIndex=source.freshHoldIndex;
+            retained=source.retained;Blocker=source.Blocker;BlockerCentre=source.BlockerCentre;
             Horizon=source.Horizon;CornerExit=source.CornerExit;
             System.Array.Copy(source.paths,paths,Count);System.Array.Copy(source.times,times,Count);
             System.Array.Copy(source.clearance,clearance,Count);System.Array.Copy(source.order,order,Count);
@@ -105,7 +110,7 @@ namespace LittleRoad
         }
         public void Prepare(in DriverObservation o,in ContextPathState previous,bool hasPrevious)
         {
-            Count=0;trafficPlan=false;freshHoldIndex=-1;
+            Count=0;trafficPlan=false;freshHoldIndex=-1;Blocker=-1;
             SetHorizon(in o);float exit=CornerExit;
             bool retain=hasPrevious&&previous.guide&&previous.localSpeed&&!previous.coast;
             if(retain)Add(in o,previous);
@@ -146,7 +151,7 @@ namespace LittleRoad
         public void PrepareTraffic(in DriverObservation o,in ContextPathState previous,bool hasPrevious)
         {
             float nearest=float.PositiveInfinity,centre=o.self.offset,width=o.self.halfWidth*2+profile.planning.PassingClearance;
-            int blocker=-1;
+            int blocker=-1,nearestId=-1;
             if(blockingTarget) {
                 // Generate passing sides around the car limiting this corridor's
                 // attainable pace. A nearer car alongside remains an occupancy
@@ -161,13 +166,13 @@ namespace LittleRoad
                 float gap=Mathf.Repeat(other.route-o.self.route+o.route.Length*.5f,o.route.Length)-o.route.Length*.5f;
                 if(gap<0&&!RoadPathFeasibility.LongitudinallyAdjacent(in o,in other,routeLocalAdjacency))continue;
                 if(Mathf.Abs(gap)>=nearest)continue;
-                nearest=Mathf.Abs(gap);
+                nearest=Mathf.Abs(gap);nearestId=other.id;
                 float lateral=Vector3.Dot(other.velocity,o.route.Right(other.route));
                 centre=other.offset+Mathf.Clamp(lateral*.5f,-1,1);
                 width=o.self.halfWidth+other.halfWidth+profile.planning.PassingClearance;
             }
             if(float.IsPositiveInfinity(nearest)){Prepare(in o,in previous,hasPrevious);return;}
-            Count=0;trafficPlan=true;trafficPlans++;SetHorizon(in o);
+            Count=0;trafficPlan=true;trafficPlans++;SetHorizon(in o);Blocker=nearestId;BlockerCentre=centre;
             bool retain=hasPrevious&&previous.localSpeed&&!previous.coast;
             if(retain)Add(in o,previous,true);
             var hold=RoadPathFeasibility.FromMotion(in o,o.self.offset,false);
@@ -196,13 +201,31 @@ namespace LittleRoad
         }
         void Sort(bool retain)
         {
-            // Stable insertion sort. Preference for a viable current curve is
-            // a small time tolerance, never a reward for reaching the guide.
+            retained=retain;biasSide=0;
+            Resort();
+        }
+        // Stable insertion sort. Preference for a viable current curve is
+        // a small time tolerance, never a reward for reaching the guide.
+        void Resort()
+        {
             for(int i=1;i<Count;i++) {
-                int key=order[i],j=i-1;float cost=times[key]-(retain&&key==0?RetentionAllowance:0);
-                while(j>=0&&cost<times[order[j]]-(retain&&order[j]==0?RetentionAllowance:0)){order[j+1]=order[j];j--;}
+                int key=order[i],j=i-1;float cost=Cost(key);
+                while(j>=0&&cost<Cost(order[j])){order[j+1]=order[j];j--;}
                 order[j+1]=key;
             }
+        }
+        int biasSide;float biasPenalty,biasCentre;
+        float Cost(int key)=>times[key]-(retained&&key==0?RetentionAllowance:0)+(biasSide!=0&&(paths[key].endOffset-biasCentre)*biasSide< -.5f?biasPenalty:0);
+        public bool OppositeSide(int key,int side)=>(paths[key].endOffset-BlockerCentre)*side< -.5f;
+        // Experiment --pass-commitment: a committed pass ranks candidates that
+        // end clearly on the other side of the same blocker behind by a time
+        // penalty. Ordering only; every candidate keeps its physical check.
+        public void Commit(int side,float penalty)=>Commit(side,penalty,BlockerCentre);
+        // Centre of the committed target car, which may differ from this plan's blocker.
+        public void Commit(int side,float penalty,float centre)
+        {
+            if(!trafficPlan||side==0)return;
+            biasSide=side;biasPenalty=penalty;biasCentre=centre;Resort();
         }
         public void Selected(int rank){Selections++;if(trafficPlan)trafficSelections++;LastBlend=Path(rank).blend;LastEstimatedTime=EstimatedTime(rank);minimumBlend=Mathf.Min(minimumBlend,LastBlend);maximumBlend=Mathf.Max(maximumBlend,LastBlend);minimumHorizon=Mathf.Min(minimumHorizon,Horizon);maximumHorizon=Mathf.Max(maximumHorizon,Horizon);}
     }

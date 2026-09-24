@@ -13,10 +13,14 @@ for f in sorted(glob.glob(os.path.join(root,'*','race.json'))):
     for g in (1,2):
         ts=[x['time'] for x in r.get('checkpointPassages',[]) if x['gate']==g]
         rows[name][f'g{g}']=st.mean(ts) if len(ts)==len(cars) else None
+    # Racecraft (builds from 118 on): plan reversals per car-minute and pass commitments.
+    minutes=sum(c['time'] if c['finished'] else r.get('simSeconds',0) for c in cars)/60
+    rows[name]['rev']=sum(c.get('planReversals',0) for c in cars)/minutes if 'planReversals' in c0 and minutes>0 else None
+    rows[name]['commits']=(sum(c.get('passCommits',0) for c in cars),sum(c.get('passCompleted',0) for c in cars),sum(c.get('passAborted',0) for c in cars)) if 'passCommits' in c0 else None
 fmt=lambda v:'-' if v is None else (f'{v:.3f}' if isinstance(v,float) else str(v))
-print(f"{'run':28} fin  collective  car0(t/pl)   contacts maxrel assist phys(s) missed  gate1   gate2")
+print(f"{'run':28} fin  collective  car0(t/pl)   contacts maxrel assist phys(s) missed  gate1   gate2  rev/min  commits(done/abort)")
 for k,v in rows.items():
-    print(f"{k:28} {v['fin']:2}/{v['n']} {fmt(v['coll']):>10}  {fmt(v['c0']):>7}/{v['c0p']:<2}  {v['contacts']:4} {v['maxrel']:6.2f} {v['assist']:4} {v['phys']:2}({v['physs']:.1f}) {v['missed']:6} {fmt(v['g1']):>7} {fmt(v['g2']):>7}")
+    print(f"{k:28} {v['fin']:2}/{v['n']} {fmt(v['coll']):>10}  {fmt(v['c0']):>7}/{v['c0p']:<2}  {v['contacts']:4} {v['maxrel']:6.2f} {v['assist']:4} {v['phys']:2}({v['physs']:.1f}) {v['missed']:6} {fmt(v['g1']):>7} {fmt(v['g2']):>7}  {('-' if v['rev'] is None else f"{v['rev']:.1f}"):>6}  {'-' if v['commits'] is None else '%d(%d/%d)'%v['commits']}")
 # paired deltas
 arms=sorted({k.rsplit('-',1)[1] for k in rows}-{'off'})
 for arm in arms:

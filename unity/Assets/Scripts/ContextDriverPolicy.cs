@@ -25,6 +25,27 @@ namespace LittleRoad
         readonly bool dynamicTrafficFallback=RaceTrial.Has("--dynamic-traffic-fallback");
         // Kept in 114 (default on); --no-conditional-hold restores the full-brake response.
         readonly bool conditionalHold=!RaceTrial.Has("--no-conditional-hold");
+        // Experiment --pass-commitment (ai-racing-review goal 1): remember the side
+        // of a pass around one blocker and rank candidates ending on the other
+        // side behind for a while. Ordering only; physical checks are unchanged.
+        readonly bool passCommitment=RaceTrial.Has("--pass-commitment");
+        public const float CommitPenalty=.5f,CommitSeconds=3,CommitRange=40;
+        // Experiment --corner-aware-pass (goal 2, with --pass-commitment): prefer setting
+        // up on the inside of the next corner, and let a committed car alongside
+        // its target on the inside brake later (risk-scaled). Guard still applies.
+        readonly bool cornerAwarePass=RaceTrial.Has("--corner-aware-pass");
+        public const float SetupPenalty=.2f;
+        public int LateBrakeTicks {get;private set;}
+        int commitSide,commitTarget=-1;double commitUntil;
+        public int PassCommits {get;private set;}
+        public int PassCompleted {get;private set;}
+        public int PassAborted {get;private set;}
+        public int AbortTarget {get;private set;}
+        public int AbortTimeout {get;private set;}
+        public int AbortUnaccepted {get;private set;}
+        // Diagnostic: planned-line jumps (>1.5 m) that reverse within 3 s.
+        public int PlanReversals {get;private set;}
+        float lastSelectedOffset=float.NaN;double lastSwitchTime=-99;int lastSwitchDirection;
         public DynamicRejoinPlanner DynamicRejoin=>dynamicRejoin;
         readonly ReferenceDriverPolicy reference;
         readonly RecoverySensor scenery;
@@ -245,6 +266,7 @@ namespace LittleRoad
                 else if(dynamicTraffic&&RelevantCars>0)dynamicRejoin.PrepareTraffic(in o,in priorPath,hadPriorPath);
                 else dynamicRejoin.Prepare(in o,in priorPath,hadPriorPath);
                 phaseCost.liveRankMs+=PhaseMs(phase);phaseCost.liveRankCalls++;
+                if(passCommitment)ApplyCommitment(in o);
                 int triedRanks=0;
                 for(int attempt=0;attempt<Mathf.Min(DynamicRejoinPlanner.PhysicalShortlist,dynamicRejoin.Count);attempt++) {
                     int rank=attempt==0?0:dynamicRejoin.FallbackRank(roadCheck.SceneryFailures>sceneryFailuresBefore,roadCheck.CorridorFailures>corridorFailuresBefore);
@@ -269,6 +291,7 @@ namespace LittleRoad
                     roadPath=candidate;roadAccepted=true;acceptedGuide=candidate.guide;selected=candidate.selectedOffset;best=Slots;
                     dynamicRejoin.Selected(rank);break;
                 }
+                if(passCommitment)UpdateCommitment(in o,roadAccepted,selected);
             }
             // Check in preference order. Usually only the winning continuous
             // target needs a sweep; blocked choices cannot win on score alone.
@@ -386,6 +409,14 @@ namespace LittleRoad
             if(useCheckedReference){selected=guide;pathActive=false;}
             if(best<0&&!referenceClear){staticStopDistance=referenceDistance;if(roadCheck==null){useCheckedReference=true;pathActive=false;}}
             SelectedOffset=selected;
+            if(!o.finished) {
+                if(!float.IsNaN(lastSelectedOffset)&&Mathf.Abs(selected-lastSelectedOffset)>1.5f) {
+                    int direction=selected>lastSelectedOffset?1:-1;
+                    if(lastSwitchDirection!=0&&direction!=lastSwitchDirection&&o.timestamp-lastSwitchTime<3)PlanReversals++;
+                    lastSwitchDirection=direction;lastSwitchTime=o.timestamp;
+                }
+                lastSelectedOffset=selected;
+            }
             bool needsPath=!useCheckedReference&&(RelevantCars>0||pathActive||!referenceClear);
             if(needsPath&&!localSpeedPath&&(!pathActive||consumed>blend+20)) {
                 if(!pathActive){endOffset=selected;pathRejoin=RelevantCars==0;guidePath=false;}
@@ -417,7 +448,28 @@ namespace LittleRoad
             if(!pathActive)return reference.Decide(in o);
             var path=new ContextPathState{anchor=anchor,consumed=consumed,startOffset=startOffset,startSlope=startSlope,
                 endOffset=endOffset,blend=blend,selectedOffset=SelectedOffset,rejoin=PathRejoin,guide=guidePath,guideOffset=guideOffset,guideSlope=guideSlope,coast=coastPath,localSpeed=localSpeedPath};
-            return follower.Follow(in o,in path);
+            if(cornerAwarePass&&commitSide!=0&&OutbrakingOnInside(in o)){follower.BrakeFractionOverride=Mathf.Min(.95f,profile.planning.BrakeFraction+.05f+.01f*profile.planning.Risk);LateBrakeTicks++;}
+            var command=follower.Follow(in o,in path);follower.BrakeFractionOverride=0;
+            return command;
+        }
+        // Alongside the committed target (overlapping, laterally clear) on the inside of the next corner.
+        bool OutbrakingOnInside(in DriverObservation o)
+        {
+            foreach(var other in o.traffic) {
+                if(other.id!=commitTarget)continue;
+                float gap=Gap(o.self.route,other.route,o.route.Length),lengths=o.self.halfLength+other.halfLength;
+                if(Mathf.Abs(gap)>=lengths||Mathf.Abs(o.self.offset-other.offset)<o.self.halfWidth+other.halfWidth+.2f)return false;
+                int inside=NextCornerSide(in o);
+                return inside!=0&&(o.self.offset-other.offset)*inside>0;
+            }
+            return false;
+        }
+        // +1 when the sharpest turn 20-150 m ahead bends to the right (positive offsets), -1 left, 0 straight.
+        public static int NextCornerSide(in DriverObservation o)
+        {
+            float sharpest=0;
+            for(float ahead=20;ahead<=150;ahead+=6){float d=o.self.route+ahead;float turn=Vector3.Cross(o.route.Forward(d),o.route.Forward(d+6)).y;if(Mathf.Abs(turn)>Mathf.Abs(sharpest))sharpest=turn;}
+            return Mathf.Abs(sharpest)<.024f?0:sharpest>0?1:-1;
         }
         public DriveCommand Decide(in DriverObservation o)
         {
@@ -431,6 +483,33 @@ namespace LittleRoad
             double ms=(System.Diagnostics.Stopwatch.GetTimestamp()-started)*1000.0/System.Diagnostics.Stopwatch.Frequency;
             DecisionCount++;DecisionTotalMs+=ms;DecisionMaxMs=System.Math.Max(DecisionMaxMs,ms);
             return applied;
+        }
+        // A committed pass ends when the planner is no longer working around the
+        // same blocker (completed if we drew level or ahead of it), on timeout,
+        // or when no candidate was physically accepted.
+        void ApplyCommitment(in DriverObservation o)
+        {
+            if(commitSide==0) {
+                if(cornerAwarePass&&dynamicRejoin.TrafficPlan){int inside=NextCornerSide(in o);if(inside!=0)dynamicRejoin.Commit(inside,SetupPenalty);}
+                return;
+            }
+            // Follow the committed car itself; the planner's blocker can switch
+            // between neighbours from plan to plan inside a pack.
+            bool found=false;float gap=0,centre=0;
+            foreach(var other in o.traffic)if(other.id==commitTarget){found=true;gap=Gap(o.self.route,other.route,o.route.Length);centre=other.offset;}
+            // Corner-aware passes stay committed while alongside; complete once clear ahead.
+            if(found&&gap<=(cornerAwarePass?-(o.self.halfLength*2+1):0)){PassCompleted++;commitSide=0;return;}
+            if(!found||gap>CommitRange){PassAborted++;AbortTarget++;commitSide=0;return;}
+            if(o.timestamp>commitUntil){PassAborted++;AbortTimeout++;commitSide=0;return;}
+            dynamicRejoin.Commit(commitSide,CommitPenalty,centre);
+        }
+        void UpdateCommitment(in DriverObservation o,bool accepted,float selectedOffset)
+        {
+            if(!accepted){if(commitSide!=0){PassAborted++;AbortUnaccepted++;commitSide=0;}return;}
+            if(commitSide!=0||!dynamicRejoin.TrafficPlan||dynamicRejoin.Blocker<0)return;
+            float side=selectedOffset-dynamicRejoin.BlockerCentre;
+            if(Mathf.Abs(selectedOffset-o.self.offset)<=1.5f||Mathf.Abs(side)<=.5f)return;
+            commitSide=side>0?1:-1;commitTarget=dynamicRejoin.Blocker;commitUntil=o.timestamp+CommitSeconds;PassCommits++;
         }
         public static DriveCommand UnresolvedBrakeCommand(in DriveCommand planned)=>
             new DriveCommand(-1,0,0,planned.predictedOffset,planned.chosenLane);
