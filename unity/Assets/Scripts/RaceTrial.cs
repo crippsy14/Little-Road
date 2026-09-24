@@ -63,8 +63,8 @@ namespace LittleRoad
         [Serializable] public class RecoverySample {public int id,gateBefore,gateAfter,rejectedDestinations;public string reason;public float time,progressBefore,progressAfter;public Vector3 positionBefore,positionAfter;}
         [Serializable] public class CheckpointSample {public int id,gate;public float time,requiredProgress,actualProgress;}
         [Serializable] public class Report {public string engine,stage,utc,graphics,equipment,gridMode,collisionMode,trackId,trackVersion,driverPolicy,observationMode;public int seed,carCount,finished,requiredLaps,overlapSampledSteps,overlapQuerySaturations;public float simSeconds,wallSeconds,trackLength,trackWidth,meanFrameMs,p95FrameMs,physicsStepSeconds,maxCarPoseOverlap,maxEnvironmentPoseOverlap;public bool autonomous;public CarResult[] cars;public MotionSample[] motion;public DraftSample[] draftingSamples;public ImpactSample[] impacts;public RecoverySample[] assistedRecoveries;public CheckpointSample[] checkpointPassages;public CollisionAudit.Peak[] overlapPeaks;}
-        public static string Arg(string key,string fallback=null) {var args=Environment.GetCommandLineArgs();int i=Array.IndexOf(args,key);return i>=0&&i+1<args.Length?args[i+1]:AdventureDriverPreset.Value(key,fallback);}
-        public static bool Has(string key)=>Array.IndexOf(Environment.GetCommandLineArgs(),key)>=0||AdventureDriverPreset.Enabled(key);
+        public static string Arg(string key,string fallback=null) {var args=Environment.GetCommandLineArgs();int i=Array.IndexOf(args,key);return i>=0&&i+1<args.Length?args[i+1]:RaceAiPreset.Value(key,fallback);}
+        public static bool Has(string key)=>Array.IndexOf(Environment.GetCommandLineArgs(),key)>=0||RaceAiPreset.Enabled(key);
         IEnumerator Start()
         {
             if(Has("--performance-trial")){enabled=false;gameObject.AddComponent<PerformanceTrial>();yield break;}

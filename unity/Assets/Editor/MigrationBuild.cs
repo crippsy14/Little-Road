@@ -151,6 +151,7 @@ public static class MigrationBuild
         evidence.checks.AddRange(TrafficProgressChecks.Run());
         evidence.checks.AddRange(PathAwareLeaderChecks.Run());
         evidence.checks.AddRange(UnresolvedHoldChecks.Run());
+        evidence.checks.AddRange(PassingRankingChecks.Run());
         if(RaceTrial.Has("--traffic-coast-input"))TrafficCoastReplay.Run();
         evidence.checks.AddRange(RacingLineChecks.Run());
         evidence.checks.AddRange(BayviewTransferBake.Run());

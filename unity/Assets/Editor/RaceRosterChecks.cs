@@ -39,10 +39,11 @@ public static class RaceRosterChecks
         var oldRoster=AdventureSession.EnteredRoster;bool oldRacing=AdventureSession.Racing;
         try {
             AdventureSession.EnteredRoster=roster;AdventureSession.Racing=true;
-            Require(AdventureDriverPreset.Enabled("--parallel-dynamic-forecast")&&AdventureDriverPreset.Value("--driver-policy",null)=="context"&&AdventureDriverPreset.Value("--racing-line",null)=="bayview-smooth-v1","modern adventure missing retained package");
-            AdventureSession.Racing=false;Require(!AdventureDriverPreset.Enabled("--dynamic-rejoin")&&AdventureDriverPreset.Value("--driver-policy","legacy")=="legacy","race preset leaks into exploration");
+            Require(RaceAiPreset.Enabled("--parallel-dynamic-forecast")&&RaceAiPreset.Value("--driver-policy",null)=="context"&&RaceAiPreset.Value("--racing-line",null)=="bayview-smooth-v1"
+                &&RaceAiPreset.Enabled("--stagger-context-plans")&&RaceAiPreset.Value("--context-plan-groups",null)=="3","modern adventure missing retained package");
+            AdventureSession.Racing=false;Require(!RaceAiPreset.Enabled("--dynamic-rejoin")&&RaceAiPreset.Value("--driver-policy","legacy")=="legacy","race preset leaks into exploration");
         }finally{AdventureSession.EnteredRoster=oldRoster;AdventureSession.Racing=oldRacing;}
-        checks.Add("Connected race reuses the retained driver package; driver flags stop applying on return to exploration");
+        checks.Add("Connected race reuses the retained driver package (including three-group staggered planning, as tested); driver flags stop applying on return to exploration");
         return checks;
     }
 }

@@ -40,10 +40,10 @@ Run PowerShell **from the project root**, with other project editors/games close
 
 ```powershell
 $runName = 'watch-' + (Get-Date -Format 'yyyyMMdd-HHmmss')
-.\tools\run-frame-cost.ps1 -Version 111 -Study 111 -Track cedar -Seed 1709 -Name $runName -Rendered -StaggerContextPlans -ContextPlanGroups 3
+.\tools\run-frame-cost.ps1 -Study 117 -Track cedar -Seed 1709 -Name $runName -Rendered
 ```
 
-This selects the mixed roster, equipment, physical recovery, dynamic paths, light drafting, workers and HUD through the checked-in harness. It deliberately leaves the rejected third candidate and unaccepted rolling recovery off. Use `-Track bayview` for the coastal circuit. Omit `-StaggerContextPlans` to compare the unscheduled baseline. The report is under `review/unity-35/frame-cost-111/<runName>/`; the harness waits for finish or the 180-second cutoff.
+This runs the dev build (`tools/build-dev.ps1`) with the game's shared `RaceAiPreset` (`--ai-preset field`, the same AI package as adventure races), the mixed roster and HUD. Use `-Track bayview` for the coastal circuit, and `-Extra @('--preset-without','--stagger-context-plans')` to compare the unscheduled baseline. The report is under `review/unity-35/frame-cost-117/<runName>/`; the harness waits for finish or the 180-second cutoff.
 
 For manual control, custom fixtures, car count, fullscreen or a different executable, use [run-technical-trial.ps1](tools/run-technical-trial.ps1). It supports `-Manual`, `-Visible`, `-Windowed`, `-Fullscreen`, `-PlaybackRate 1`, `-Executable` and `-OutputDirectory`. **Preserve the full option set from `run-frame-cost.ps1` when comparing manual and AI runs**; the low-level harness defaults to the older legacy policy. The rear view is handled by [DrivingViewInput.cs](unity/Assets/Scripts/DrivingViewInput.cs), including Triangle on the PS5 controller.
 
@@ -53,7 +53,7 @@ To drive the latest adventure rather than the automatic trial:
 & '..\little-road-context-111-review\Little Road Unity.exe'
 ```
 
-The connected adventure uses [AdventureDriverPreset](unity/Assets/Scripts/RaceRoster.cs), not every experimental switch. The known second-race recovery problem remains open; this is not a fully accepted campaign build.
+The connected adventure uses [RaceAiPreset](unity/Assets/Scripts/RaceRoster.cs), not every experimental switch. The known second-race recovery problem remains open; this is not a fully accepted campaign build.
 
 ### Build the source
 
@@ -97,7 +97,7 @@ Ordinary racing uses physical steering and forces. The guide line is a reference
 | Area | Code reference / symbols | Responsibility |
 |---|---|---|
 | Trial lifecycle and configuration | [RaceTrial.cs](unity/Assets/Scripts/RaceTrial.cs) | CLI flags, track, roster, countdown, finish/export and diagnostics. |
-| Entrants and adventure defaults | [RaceRoster.cs](unity/Assets/Scripts/RaceRoster.cs): `RaceEntrant`, `RaceRoster`, `AdventureDriverPreset`, `CarPerformanceRating` | Immutable fitted parts, physical tuning, identity, grid and preview values. Explicit CLI overrides take precedence. |
+| Entrants and adventure defaults | [RaceRoster.cs](unity/Assets/Scripts/RaceRoster.cs): `RaceEntrant`, `RaceRoster`, `RaceAiPreset`, `CarPerformanceRating` | Immutable fitted parts, physical tuning, identity, grid and preview values. Explicit CLI overrides take precedence. |
 | Shared observation | [RaceWorldSnapshot.cs](unity/Assets/Scripts/RaceWorldSnapshot.cs): `Capture`, execution order −50 | Stable-ID snapshot before controller updates; dispatch and join owned forecasts. Currently bounded to **24 cars**; larger fields require capacity and validation work. |
 | Driver contract | [DriverPolicy.cs](unity/Assets/Scripts/DriverPolicy.cs): `ObservedCar`, `DriverObservation`, `DriveCommand`, `IDriverPolicy` | Actual body dimensions/centre, motion, immutable traffic, equipment and command interface. |
 | Physical vehicle | [RoadCar.cs](unity/Assets/Scripts/RoadCar.cs): `FixedUpdate`, `PrepareRoadForecast`, `PlanObserved` | Sensor/driver selection, actual Rigidbody forces, physical collider, manual control and recovery integration. |

@@ -76,7 +76,7 @@ namespace LittleRoad
         }
         // Cheap common downstream-gate estimate (120-360m). This is a geometry/capability ranking,
         // not a promise of feasible actual motion or a substitute for rollouts.
-        public float EstimateGateTime(in DriverObservation o,in ContextPathState path,float horizon=120,bool trafficAware=false)
+        public float EstimateGateTime(in DriverObservation o,in ContextPathState path,float horizon=120,bool trafficAware=false,float trafficSeconds=3)
         {
             MinimumClearance=float.PositiveInfinity;
             horizon=Mathf.Clamp(horizon,120,360);
@@ -109,10 +109,12 @@ namespace LittleRoad
                 float net=drive-DraftingModel.Resistance(speed,o.tuning.mass,o.dragReduction);
                 float distance=distances[i+1]-distances[i];
                 float next=Mathf.Min(speeds[i+1],Mathf.Sqrt(Mathf.Max(0,speed*speed+2*net*distance)));
-                // Short observed-motion window only. This ranks delay on the
+                // Observed-motion window (3 s by default). This ranks delay on the
                 // actual candidate curve; it is not collision certification or
                 // a prediction that rivals keep their inputs for a whole bend.
-                if(trafficAware&&time<3) {
+                // --sustained-leader-ranking extends it over the whole horizon so
+                // a slower car being followed cannot vanish from the estimate.
+                if(trafficAware&&time<trafficSeconds) {
                     float ahead=i*step;
                     for(int t=0;t<trafficCount;t++) {
                         var other=rankedTraffic[t];float initial=other.initial,longitudinal=other.longitudinal,sideVelocity=other.sideVelocity;

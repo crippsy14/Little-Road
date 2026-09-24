@@ -87,17 +87,21 @@ namespace LittleRoad
             System.IO.File.WriteAllText(path,JsonUtility.ToJson(new Evidence{seed=Seed,laps=Laps,track=Track,title=Title,ratingVersion=CarPerformanceRating.Version,modern=Modern,entries=entries},true));
         }
     }
-    // The approved driver package, reused by connected races without scattering
-    // different defaults throughout every controller. Explicit CLI values win.
-    public static class AdventureDriverPreset
+    // The approved driver package, shared by connected adventure races and
+    // trials (`--ai-preset field`) so tests measure what is played. Explicit
+    // CLI values win; `--preset-without <switch>` drops one switch for A/B runs.
+    public static class RaceAiPreset
     {
-        static bool Active=>AdventureSession.Racing&&AdventureSession.EnteredRoster?.Modern==true;
-        static readonly HashSet<string> switches=new(StringComparer.Ordinal){"--physical-recovery","--traffic-diagnostics","--road-feasibility","--prepared-path","--guide-path-fallback","--compare-continuation","--traffic-aware-progress","--following-feasibility-fallback","--shared-observed-traffic","--parallel-continuation-forecast","--rear-pressure-filter","--light-drafting","--coast-within-envelope","--no-gap-centres","--traffic-path-check","--anticipate-passing-space","--traffic-coast-continuation","--parallel-road-forecasts","--dynamic-rejoin","--dynamic-traffic","--local-origin-curvature","--dynamic-field-study","--dynamic-blocking-target","--dynamic-traffic-fallback","--parallel-dynamic-forecast","--open-space-priority","--driver-roster","--driver-form"};
-        public static bool Enabled(string key)=>Active&&switches.Contains(key);
+        static bool Active=>AdventureSession.Racing&&AdventureSession.EnteredRoster?.Modern==true||CommandLineValue("--ai-preset")=="field";
+        static string CommandLineValue(string key){var args=Environment.GetCommandLineArgs();int i=Array.IndexOf(args,key);return i>=0&&i+1<args.Length?args[i+1]:null;}
+        static bool Dropped(string key){var args=Environment.GetCommandLineArgs();for(int i=0;i+1<args.Length;i++)if(args[i]=="--preset-without"&&args[i+1]==key)return true;return false;}
+        static readonly HashSet<string> switches=new(StringComparer.Ordinal){"--stagger-context-plans","--physical-recovery","--traffic-diagnostics","--road-feasibility","--prepared-path","--guide-path-fallback","--compare-continuation","--traffic-aware-progress","--following-feasibility-fallback","--shared-observed-traffic","--parallel-continuation-forecast","--rear-pressure-filter","--light-drafting","--coast-within-envelope","--no-gap-centres","--traffic-path-check","--anticipate-passing-space","--traffic-coast-continuation","--parallel-road-forecasts","--dynamic-rejoin","--dynamic-traffic","--local-origin-curvature","--dynamic-field-study","--dynamic-blocking-target","--dynamic-traffic-fallback","--parallel-dynamic-forecast","--open-space-priority","--driver-roster","--driver-form"};
+        public static bool Enabled(string key)=>Active&&switches.Contains(key)&&!Dropped(key);
         public static string Value(string key,string fallback)
         {
             if(!Active)return fallback;
-            return key switch {"--driver-policy"=>"context","--driver-risk"=>"5","--driver-braking"=>"neutral","--parallel-forecast-workers"=>"8","--driver-roster"=>"mixed","--racing-line"=>"bayview-smooth-v1","--traffic-case"=>"field",_=>fallback};
+            return key switch {"--driver-policy"=>"context","--driver-risk"=>"5","--driver-braking"=>"neutral","--parallel-forecast-workers"=>"8","--driver-roster"=>"mixed","--context-plan-groups"=>"3","--following-fallback-scope"=>"all",
+                "--racing-line"=>CommandLineValue("--trial-track")=="cedar"?"cedar-smooth-v2":"bayview-smooth-v1","--traffic-case"=>"field",_=>fallback};
         }
     }
 }
