@@ -63,9 +63,10 @@ namespace LittleRoad
             var shape=Card(parent,name,size,position,fill,size.y*.5f,6,0);shape.raycastTarget=true;
             var button=shape.gameObject.AddComponent<Button>();button.targetGraphic=shape;button.transition=Selectable.Transition.None;
             var face=Rect(shape.transform,"Face",size,Vector2.zero);
-            float glyphSize=size.y*.52f;
-            var text=Title(face,"Caption",caption,Mathf.RoundToInt(size.y*.42f),new Vector2(size.x-glyphSize-40,size.y),new Vector2(glyphSize*.5f+8,2),White,TextAnchor.MiddleCenter);
-            if(!string.IsNullOrEmpty(glyph)){
+            // With a glyph the caption centres in the space right of it; without one, on the button.
+            bool hasGlyph=!string.IsNullOrEmpty(glyph);float glyphSize=size.y*.52f,reserved=hasGlyph?glyphSize+10:0;
+            var text=Title(face,"Caption",caption,Mathf.RoundToInt(size.y*.42f),new Vector2(size.x-reserved-40,size.y),new Vector2(reserved*.5f,2),White,TextAnchor.MiddleCenter);
+            if(hasGlyph){
                 var g=Card(face,"Glyph",new Vector2(glyphSize,glyphSize),new Vector2(-size.x*.5f+glyphSize*.5f+22,0),White,glyphSize*.5f,4,0);
                 if(ToyPadGlyph.TryParse(glyph,out var symbol)){var mark=Rect(g.transform,"Glyph "+symbol,new Vector2(glyphSize,glyphSize)*.56f,Vector2.zero).gameObject.AddComponent<ToyPadGlyph>();mark.symbol=symbol;mark.raycastTarget=false;}
                 else Label(g.transform,"Glyph text",glyph,Mathf.RoundToInt(glyphSize*.55f),new Vector2(glyphSize,glyphSize),Vector2.zero,Navy,TextAnchor.MiddleCenter,true);

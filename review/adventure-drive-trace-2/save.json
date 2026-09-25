@@ -1,0 +1,57 @@
+﻿{
+    "version": 1,
+    "credits": 240,
+    "questStage": 3,
+    "paintIndex": 2,
+    "raceSerial": 3,
+    "settledSerial": 3,
+    "bestPlace": 9,
+    "raceWins": 0,
+    "bodyId": "puddle",
+    "owned": [
+        "engine_stock",
+        "turbo_stock",
+        "tyres_stock",
+        "transmission_stock",
+        "brakes_stock",
+        "steering_stock",
+        "chassis_stock",
+        "engine_workshop",
+        "steering_quick"
+    ],
+    "collected": [
+        "postcard_1",
+        "postcard_0",
+        "postcard_3"
+    ],
+    "fitted": [
+        {
+            "slot": "engine",
+            "id": "engine_workshop"
+        },
+        {
+            "slot": "turbo",
+            "id": "turbo_stock"
+        },
+        {
+            "slot": "tyres",
+            "id": "tyres_stock"
+        },
+        {
+            "slot": "transmission",
+            "id": "transmission_stock"
+        },
+        {
+            "slot": "brakes",
+            "id": "brakes_stock"
+        },
+        {
+            "slot": "steering",
+            "id": "steering_quick"
+        },
+        {
+            "slot": "chassis",
+            "id": "chassis_stock"
+        }
+    ]
+}

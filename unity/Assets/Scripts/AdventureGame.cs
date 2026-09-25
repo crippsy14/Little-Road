@@ -32,6 +32,12 @@ namespace LittleRoad
             var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));
             player=car.AddComponent<RoadCar>();player.Setup(world,0,EquipmentCatalog.Stats(Store.Data.Loadout()),false,1709,"owned equipment");world.cars.Add(player);world.running=true;
             if(RaceTrial.Has("--vertical-audit"))gameObject.AddComponent<VerticalMotionAudit>().Setup(world);
+            if(RaceTrial.Has("--drive-trace"))gameObject.AddComponent<DriveTrace>().Setup(player,RaceTrial.Arg("--drive-trace"));
+            if(RaceTrial.Has("--drive-replay"))gameObject.AddComponent<DriveReplay>().Setup(player,RaceTrial.Arg("--drive-replay"));
+            // Speculative contacts snag internal road-mesh edges while the car yaws: a one-step
+            // sideways knock and ~5 m/s speed loss mid-corner. Free roam sweeps instead (races
+            // keep their validated mode). --free-roam-speculative restores it for comparison.
+            if(!RaceTrial.Has("--free-roam-speculative"))player.body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
             cameraView=new GameObject("Adventure camera").AddComponent<Camera>();cameraView.tag="MainCamera";cameraView.fieldOfView=55;cameraView.nearClipPlane=.15f;cameraView.farClipPlane=1500;
             cameraView.gameObject.AddComponent<AudioListener>();var cd=cameraView.GetUniversalAdditionalCameraData();cd.renderPostProcessing=true;cd.antialiasing=AntialiasingMode.SubpixelMorphologicalAntiAliasing;
             CameraPose(true);if(!string.IsNullOrEmpty(AdventureSession.Notice)){Notify(AdventureSession.Notice);AdventureSession.Notice=null;}
@@ -41,6 +47,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--world-review")){RefreshHUD();reviewing=true;player.controlsBlocked=true;gameObject.AddComponent<VillageReview>();yield break;}
             if(RaceTrial.Has("--vehicle-lights-review")){reviewing=true;gameObject.AddComponent<VehicleLightReview>();yield break;}
             if(RaceTrial.Has("--evening-route-review")){gameObject.AddComponent<EveningRouteReview>();yield break;}
+            if(RaceTrial.Has("--turn-review")){gameObject.AddComponent<TurnReview>();yield break;}
             if(RaceTrial.Has("--parts-browser-review")){Parts("engine");gameObject.AddComponent<PartsBrowserReview>().Setup(browser,Store,player,ui,()=>Parts("engine"));yield break;}
             yield return null;if(AdventureSession.Smoke)StartCoroutine(Smoke());
         }
@@ -72,7 +79,10 @@ namespace LittleRoad
                 var npc=TrialWorld.Car(pair.Key=="cafe"?"otter":pair.Key=="garage"?"kipper":"pebble",color);npc.name="Resident "+pair.Key;npc.transform.position=pair.Value+Vector3.up*.05f;
                 var renderers=npc.GetComponentsInChildren<Renderer>();Bounds visualBounds=renderers[0].bounds;foreach(var renderer in renderers)visualBounds.Encapsulate(renderer.bounds);
                 var bounds=npc.AddComponent<BoxCollider>();bounds.center=visualBounds.center-npc.transform.position;bounds.size=visualBounds.size+Vector3.one*.02f;npc.tag="Respawn";
-                npc.transform.position+=Vector3.up*(.018f-visualBounds.min.y);
+                // Generated bodies stand on their model origin. Their wheel meshes are
+                // spun about the axle, so renderer bounds reach well below the tyres.
+                float lowest=npc.GetComponent<StandardEnvelope>()!=null?npc.transform.position.y:visualBounds.min.y;
+                npc.transform.position+=Vector3.up*(.018f-lowest);
                 string name=pair.Key=="garage"?"MARA / GARAGE":pair.Key=="post"?"PIP / LIGHTHOUSE":"ROWAN / COAST RUN";
                 Sign(name,name,pair.Value+Vector3.up*3);
             }

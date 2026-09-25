@@ -33,7 +33,9 @@ namespace LittleRoad
         }
         public static Text Label(Transform parent,string name,string value,int size,Vector2 box,Vector2 pos,Color color,bool bold=false,TextAnchor anchor=TextAnchor.MiddleLeft)
         {
-            var t=Rect(parent,name,box,pos).gameObject.AddComponent<Text>();t.font=bold?Toy.Heavy:Toy.Body;t.fontSize=size;t.text=value;t.color=color;t.alignment=anchor;t.raycastTarget=false;t.horizontalOverflow=HorizontalWrapMode.Wrap;return t;
+            var t=Rect(parent,name,box,pos).gameObject.AddComponent<Text>();t.font=bold?Toy.Heavy:Toy.Body;t.fontSize=size;t.text=value;t.color=color;t.alignment=anchor;t.raycastTarget=false;t.horizontalOverflow=HorizontalWrapMode.Wrap;
+            // Nunito's line height exceeds the older font's: truncation hid large readouts (speed, gear) entirely.
+            t.verticalOverflow=VerticalWrapMode.Overflow;return t;
         }
         public static Canvas Canvas(Transform parent,string name,int order)
         {

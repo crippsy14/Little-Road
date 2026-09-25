@@ -80,7 +80,7 @@ namespace LittleRoad
             state=Toy.Label(selectedShape.transform,"Part state",string.Empty,22,new Vector2(580,36),new Vector2(0,-192),Toy.Navy,TextAnchor.MiddleCenter,true);
             previous=Toy.Candy(background,"PREVIOUS","< PREV",null,new Vector2(220,70),new Vector2(-355,-160),Toy.Sky,()=>Step(-1));buttons.Add(previous);
             next=Toy.Candy(background,"NEXT","NEXT >",null,new Vector2(220,70),new Vector2(470,-160),Toy.Sky,()=>Step(1));buttons.Add(next);
-            Toy.Label(background,"Rotate hint","Left / right: browse · Q / E: spin · L1 / R1: category",19,new Vector2(560,30),new Vector2(55,-172),Toy.Navy,TextAnchor.MiddleCenter,true);
+            Toy.Label(background,"Rotate hint","Left / right: browse · Q / E: spin · L1 / R1: category",19,new Vector2(560,30),new Vector2(55,-214),Toy.Navy,TextAnchor.MiddleCenter,true);
 
             var detail=Toy.Card(background,"Complete setup comparison",new Vector2(1560,210),new Vector2(110,-340),Toy.Cream,34,7,10);
             hint=Toy.Label(detail.transform,"Hint",string.Empty,25,new Vector2(620,90),new Vector2(-430,44),Toy.Navy,TextAnchor.UpperLeft,true);

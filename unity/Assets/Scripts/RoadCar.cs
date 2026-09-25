@@ -44,6 +44,10 @@ namespace LittleRoad
         public ContextDriverPolicy contextPolicy {get;private set;}
         public Vector3 CollisionHalf {get;private set;}
         public Vector3 CollisionCentre {get;private set;}
+        // Lowest point of the car's physical contact shape, in local space.
+        public float ContactBottom {get;private set;}
+        // Tyre grip used on the last physics step (0 while controls are blocked).
+        public float Grip {get;private set;}
         RecoverySensor recoverySensor;
         public RacingSpeedProfile referenceProfile {get;private set;}
         public DriverIdentity Driver {get;private set;}
@@ -91,6 +95,7 @@ namespace LittleRoad
             // ground brake, disproportionately affecting stock equipment.
             collider.material=new PhysicsMaterial("Arcade tyre contact") {dynamicFriction=0,staticFriction=0,
                 frictionCombine=PhysicsMaterialCombine.Minimum,bounciness=.05f,bounceCombine=PhysicsMaterialCombine.Minimum};
+            ContactBottom=collider.center.y-size.y*.5f;
             if(race.track.hasElevation){ground=new RoadGrounding(this);ground.Sample();}
             wheels=new WheelVisuals(gameObject);
             pathDistance=race.track.Nearest(transform.position,out offset);previousPath=pathDistance;
@@ -103,6 +108,7 @@ namespace LittleRoad
             if(ground!=null)ground.Sample();
             float recoveryDatum=ground==null?0:race.track.At(pathDistance).y;
             if(race.freeRoam&&body.position.y<recoveryDatum-3){TryRecover();return;}
+            Grip=0;
             if(controlsBlocked){throttle=0;steering=0;speed=0;body.linearVelocity=Vector3.zero;body.angularVelocity=Vector3.zero;return;}
             Vector3 driveForward=DriveForward,driveRight=ground==null?transform.right:ground.right,driveUp=ground==null?Vector3.up:ground.normal;
             speed=Vector3.Dot(body.linearVelocity,driveForward);
@@ -122,7 +128,7 @@ namespace LittleRoad
             race.MotionAudit?.Observe(this,race.elapsed);
             race.ApproachAudit?.Observe(this,race.elapsed);
             steerState=Mathf.MoveTowards(steerState,steering,tuning.response*Time.fixedDeltaTime);
-            float grip=Mathf.Abs(offset)<Circuit.Width*.5f?tuning.roadGrip:tuning.dirtGrip;
+            float grip=Mathf.Abs(offset)<Circuit.Width*.5f?tuning.roadGrip:tuning.dirtGrip;Grip=grip;
             float yawRequest=steerState*tuning.yaw*Mathf.Clamp01(Mathf.Abs(speed)/3)*Mathf.Sign(speed==0?1:speed);
             DriveModel.Forces(tuning,speed,throttle,yawRequest,grip,0,out float acceleration,out float yaw,DragReduction);
             // PhysX gravity and ground contact already produce the along-grade

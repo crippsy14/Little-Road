@@ -120,6 +120,9 @@ namespace LittleRoad
                 int i=entrant.Id;var go=TrialWorld.Car(entrant.Body,entrant.Paint);bool line=gridMode=="line";float grid=RaceGrid.Distance(entrant.Slot,line);
                 go.transform.SetPositionAndRotation(RaceGrid.Position(track,entrant.Slot,line),Quaternion.LookRotation(track.Forward(grid)));
                 var car=go.AddComponent<RoadCar>();car.Setup(this,i,entrant.Tuning,automation||i!=0,seed+i*997,entrant.EquipmentLabel,entrant.Driver);cars.Add(car);
+                // The human's car in adventure races sweeps its contacts like free roam: speculative
+                // contacts snag Bayview road-mesh edges mid-corner. AI cars keep their validated mode.
+                if(career&&!car.autonomous&&!Has("--free-roam-speculative"))car.body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
             }
             if(reportPath!=null)Roster.Save(Path.ChangeExtension(reportPath,"roster.json"));
             if(Has("--driver-roster")&&reportPath!=null){Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(reportPath)));File.WriteAllText(Path.ChangeExtension(reportPath,"drivers.json"),JsonUtility.ToJson(new DriverRosterEvidence{mode=Arg("--driver-roster"),drivers=cars.Select(c=>c.Driver.Export(c.driverId)).ToArray()},true));}

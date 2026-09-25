@@ -23,7 +23,7 @@ namespace LittleRoad
     public sealed class RaceResultScreen:MonoBehaviour
     {
         RaceResultSummary summary;RectTransform root,podium,story;readonly List<Text[]> rows=new();readonly List<ToyCarIcon> rowCars=new();readonly List<ToyShape> rowBacks=new();
-        readonly List<RenderTexture> renders=new();string podiumKey="";float nextRefresh;Button storyClose,storyButton;
+        readonly List<RenderTexture> renders=new();string podiumKey="";float nextRefresh;Button storyClose,storyButton,homeButton;
         public Text TimeLabel {get;private set;}
         public readonly List<Button> Choices=new();
         public bool StoryOpen=>story!=null&&story.gameObject.activeSelf;
@@ -35,8 +35,8 @@ namespace LittleRoad
             root.gameObject.AddComponent<Image>().color=new Color(0,0,0,0);
             var confetti=Toy.Rect(root,"Confetti",new Vector2(1920,1080),Vector2.zero).gameObject.AddComponent<ToyConfetti>();confetti.Setup(new Vector2(1920,1080),46);
             Toy.Checker(root,1920,525);Toy.Checker(root,1920,-525);
-            Toy.Title(root,"Heading","RACE RESULTS",92,new Vector2(1200,120),new Vector2(0,432),Color.white,TextAnchor.MiddleCenter);
-            Toy.Label(root,"Venue",data.venue.ToUpperInvariant(),28,new Vector2(900,40),new Vector2(0,362),Toy.Navy,TextAnchor.MiddleCenter,true);
+            Toy.Title(root,"Heading","RACE RESULTS",92,new Vector2(1200,120),new Vector2(0,440),Color.white,TextAnchor.MiddleCenter);
+            Toy.Label(root,"Venue",data.venue.ToUpperInvariant(),28,new Vector2(900,40),new Vector2(0,372),Toy.Navy,TextAnchor.MiddleCenter,true);
 
             // Stamped finishing place.
             var badge=Toy.Card(root,"Place badge",new Vector2(360,360),new Vector2(-705,140),Toy.Sky,180,9,12);
@@ -49,17 +49,17 @@ namespace LittleRoad
             StatPill("Best lap",data.bestLap>0&&data.bestLap<float.MaxValue?AdventureUI.FinishTimeLabel(data.bestLap):"-",Toy.White,-178);
             StatPill(gained>=0?"Places gained":"Places lost",(gained>0?"+":"")+gained+"  (from "+Toy.Ordinal(data.grid)+")",gained>0?Toy.Mint:gained<0?Toy.Faster:Toy.White,-246);
 
-            podium=Toy.Rect(root,"Podium",new Vector2(620,560),new Vector2(-150,40));
+            podium=Toy.Rect(root,"Podium",new Vector2(620,560),new Vector2(-190,40));
 
             // Credits.
-            var coin=Toy.Card(root,"Credit coin",new Vector2(96,96),new Vector2(-330,-315),Toy.Sun,48,6,5);
+            var coin=Toy.Card(root,"Credit coin",new Vector2(96,96),new Vector2(-420,-315),Toy.Sun,48,6,5);
             Toy.Title(coin.transform,"Coin mark","C",58,new Vector2(96,96),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter);
             coin.gameObject.AddComponent<ToyCoinFlip>();
-            Toy.Title(root,"Earned credits","+"+data.reward,78,new Vector2(260,100),new Vector2(-150,-312),Toy.Sun,TextAnchor.MiddleCenter);
-            Toy.Label(root,"Wallet","credits\nwallet "+data.wallet+" · saved",24,new Vector2(240,70),new Vector2(80,-315),Toy.Navy,TextAnchor.MiddleLeft,true);
+            Toy.Title(root,"Earned credits","+"+data.reward,78,new Vector2(260,100),new Vector2(-240,-312),Toy.Sun,TextAnchor.MiddleCenter);
+            Toy.Label(root,"Wallet","credits\nwallet "+data.wallet+" · saved",24,new Vector2(240,70),new Vector2(-10,-315),Toy.Navy,TextAnchor.MiddleLeft,true);
 
             // Standings board.
-            var board=Toy.Card(root,"Final standings",new Vector2(800,690),new Vector2(530,20),Toy.Cream,34,7,10);
+            var board=Toy.Card(root,"Final standings",new Vector2(800,690),new Vector2(530,-2),Toy.Cream,34,7,10);
             Toy.Title(board.transform,"Standings heading","FINAL STANDINGS",40,new Vector2(700,60),new Vector2(-10,300),Toy.Orange);
             for(int i=0;i<24;i++){
                 int column=i/12,row=i%12;var pos=new Vector2(-190+column*382,242-row*45);
@@ -74,7 +74,7 @@ namespace LittleRoad
             var home=Toy.Candy(root,"Choice Return to Bayview","BACK TO BAYVIEW","O",new Vector2(520,96),new Vector2(-640,-445),Toy.Blue,returnToTown);
             storyButton=Toy.Candy(root,"Choice Race story","RACE STORY","[]",new Vector2(400,96),new Vector2(-110,-445),Toy.Pink,OpenStory);
             var again=Toy.Candy(root,"Choice Race again","RACE AGAIN!","X",new Vector2(500,106),new Vector2(560,-445),Toy.Gold,retry,true);
-            Choices.AddRange(new[]{home,storyButton,again});
+            Choices.AddRange(new[]{home,storyButton,again});homeButton=home;
             home.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnRight=storyButton};
             storyButton.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=home,selectOnRight=again};
             again.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=storyButton};
@@ -91,7 +91,13 @@ namespace LittleRoad
             if(root==null)return;
             if(Time.unscaledTime>=nextRefresh){nextRefresh=Time.unscaledTime+.5f;RefreshStandings(false);}
             if(StoryOpen){var k=Keyboard.current;var p=Gamepad.current;if(k?.escapeKey.wasPressedThisFrame==true||p?.buttonEast.wasPressedThisFrame==true)CloseStory();}
-            else{var k=Keyboard.current;var p=Gamepad.current;if(k?.tabKey.wasPressedThisFrame==true||p?.buttonWest.wasPressedThisFrame==true)OpenStory();}
+            else{
+                // Face buttons match the glyphs: square opens the story, circle heads home.
+                // Cross confirms the focused choice (RACE AGAIN! by default).
+                var k=Keyboard.current;var p=Gamepad.current;
+                if(k?.tabKey.wasPressedThisFrame==true||p?.buttonWest.wasPressedThisFrame==true)OpenStory();
+                else if(k?.escapeKey.wasPressedThisFrame==true||p?.buttonEast.wasPressedThisFrame==true)homeButton?.onClick.Invoke();
+            }
         }
         public void RefreshNow()=>RefreshStandings(false);
         void RefreshStandings(bool force)
@@ -149,12 +155,12 @@ namespace LittleRoad
             var chart=Toy.Rect(plot.transform,"Place chart",new Vector2(1040,400),new Vector2(10,6)).gameObject.AddComponent<ToyLineChart>();chart.raycastTarget=false;
             chart.maxX=Mathf.Max(1,summary.laps);chart.maxPlace=Mathf.Max(2,summary.entrants);chart.points.AddRange(summary.trace);chart.SetVerticesDirty();
             foreach(int p in new[]{1,6,12,18,24}.Where(p=>p<=summary.entrants))
-                Toy.Label(card.transform,"Place "+p,Toy.Ordinal(p),22,new Vector2(80,30),new Vector2(-560,-30+chart.rectTransform.rect.height*.5f+6-(p-1)*400f/Mathf.Max(1,summary.entrants-1)),Toy.Soft,TextAnchor.MiddleRight,true);
+                Toy.Label(card.transform,"Place "+p,Toy.Ordinal(p),22,new Vector2(80,30),new Vector2(-578,-30+chart.rectTransform.rect.height*.5f+6-(p-1)*400f/Mathf.Max(1,summary.entrants-1)),Toy.Soft,TextAnchor.MiddleRight,true);
             for(int lap=0;lap<=summary.laps;lap++)
                 Toy.Label(card.transform,"Lap "+lap,lap==0?"START":lap==summary.laps?"FINISH":"LAP "+lap,22,new Vector2(140,30),new Vector2(50-520+1040f*lap/Mathf.Max(1,summary.laps),-290),Toy.Soft,TextAnchor.MiddleCenter,true);
             int best=summary.trace.Count>0?Mathf.RoundToInt(summary.trace.Min(p=>p.y)):summary.place,worst=summary.trace.Count>0?Mathf.RoundToInt(summary.trace.Max(p=>p.y)):summary.place;
-            Toy.Pill(card.transform,"Best place","HIGHEST  "+Toy.Ordinal(best).ToUpperInvariant(),24,new Vector2(290,54),new Vector2(270,318),Toy.Mint,Toy.Navy,-3);
-            Toy.Pill(card.transform,"Lowest place","LOWEST  "+Toy.Ordinal(worst).ToUpperInvariant(),24,new Vector2(290,54),new Vector2(560,318),Toy.Faster,Toy.Navy,3);
+            Toy.Pill(card.transform,"Best place","HIGHEST  "+Toy.Ordinal(best).ToUpperInvariant(),24,new Vector2(270,54),new Vector2(220,318),Toy.Mint,Toy.Navy,-3);
+            Toy.Pill(card.transform,"Lowest place","LOWEST  "+Toy.Ordinal(worst).ToUpperInvariant(),24,new Vector2(270,54),new Vector2(510,318),Toy.Faster,Toy.Navy,3);
             storyClose=Toy.Candy(card.transform,"Close race story","BACK","O",new Vector2(300,84),new Vector2(0,-352),Toy.Red,CloseStory);
             story.gameObject.SetActive(false);
         }

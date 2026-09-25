@@ -380,8 +380,6 @@ class Car:
             curve('Front wiper',[(x-.2,fi[0][1]-.02,b+.07),(x,fi[0][1]-.05,b+.10),(x+.18,fi[0][1]-.06,b+.12)],M['trim'],.008)
         if self.R['rear'] in ('hatch',):
             curve('Rear wiper',[(.26,ri[0][1]-.02,b+.09),(0,ri[0][1]-.03,b+.11),(-.28,ri[0][1]-.03,b+.12)],M['trim'],.011)
-        yb_=G['yr1']-.05 if G['yr1']-G['yr0']<.2 else G['yr0']+.02
-        box('High mounted brake lens',(0,G['yr1']-.04,r-.06),(.30,.03,.035),M['red'],.012)
 
     # Details ----------------------------------------------------------
     def bumper(self,front):

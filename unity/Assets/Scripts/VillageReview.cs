@@ -80,7 +80,7 @@ namespace LittleRoad
         bool drivePassed;
         void Place(Vector3 position,float heading)
         {
-            var box=player.GetComponent<BoxCollider>();position.y=box.size.y*.5f-box.center.y+.015f;
+            position.y=.015f-player.ContactBottom;
             player.body.position=position;player.body.rotation=Quaternion.Euler(0,heading,0);player.body.linearVelocity=Vector3.zero;player.body.angularVelocity=Vector3.zero;
             // Review teleports must synchronise the render transform as well
             // as the physics pose before a camera capture requests culling.

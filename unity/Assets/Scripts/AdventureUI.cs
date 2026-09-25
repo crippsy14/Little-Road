@@ -125,7 +125,7 @@ namespace LittleRoad
         {
             ClearChoices();panel.gameObject.SetActive(false);SetHudVisible(false);CloseResult();
             result=gameObject.AddComponent<RaceResultScreen>();result.Build(canvas.transform,summary,returnToTown,retry);
-            StartCoroutine(SelectNextFrame(result.Choices[0]));
+            StartCoroutine(SelectNextFrame(result.Choices[2]));
         }
         void CloseResult(){if(result!=null){result.Close();result=null;}}
         IEnumerator SelectNextFrame(Button button){yield return null;if(button!=null&&IsOpen)EventSystem.current.SetSelectedGameObject(button.gameObject);}
