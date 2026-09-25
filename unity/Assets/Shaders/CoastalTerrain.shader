@@ -16,6 +16,13 @@ Shader "LittleRoad/CoastalTerrain"
         _GrassScale("Grass repeats per metre",Float)=.3984
         _NormalStrength("Surface relief",Float)=.7
         _RockOnly("Expose rock on every face",Float)=0
+        _Stylise("Toy look (0 photo, 1 toy)",Float)=0
+        _Bands("Toy rock strata",Float)=1
+        _Flowers("Meadow flower density",Float)=.12
+        _ToyGrassA("Toy meadow light",Color)=(.52,.74,.27,1)
+        _ToyGrassB("Toy meadow deep",Color)=(.35,.59,.22,1)
+        _ToyRockA("Toy rock light",Color)=(.93,.80,.58,1)
+        _ToyRockB("Toy rock warm",Color)=(.87,.71,.52,1)
         _BaseMap("Shadow pass base",2D)="white"{}
         _BaseColor("Shadow pass colour",Color)=(1,1,1,1)
         _Cutoff("Cutoff",Float)=.5
@@ -49,7 +56,8 @@ Shader "LittleRoad/CoastalTerrain"
             TEXTURE2D(_GrassMask);SAMPLER(sampler_GrassMask);
             CBUFFER_START(UnityPerMaterial)
                 half4 _GrassColor,_RockColor,_DryColor;
-                float _RockScale,_GrassScale,_NormalStrength,_RockOnly;
+                float _RockScale,_GrassScale,_NormalStrength,_RockOnly,_Stylise,_Bands,_Flowers;
+                half4 _ToyGrassA,_ToyGrassB,_ToyRockA,_ToyRockB;
             CBUFFER_END
             struct Attributes {float4 positionOS:POSITION;float3 normalOS:NORMAL;};
             struct Varyings {float4 positionCS:SV_POSITION;float3 positionWS:TEXCOORD0;half3 normalWS:TEXCOORD1;half fog:TEXCOORD2;};
@@ -90,11 +98,26 @@ Shader "LittleRoad/CoastalTerrain"
                 half2 rockMask=TriSample(TEXTURE2D_ARGS(_RockMask,sampler_RockMask),p*_RockScale,weights,signs).rg;
                 half2 grassMask=TriSample(TEXTURE2D_ARGS(_GrassMask,sampler_GrassMask),p*_GrassScale,weights,signs).rg;
                 half3 relief=lerp(TriRelief(TEXTURE2D_ARGS(_RockNormal,sampler_RockNormal),p*_RockScale,weights,signs),
-                    TriRelief(TEXTURE2D_ARGS(_GrassNormal,sampler_GrassNormal),p*_GrassScale,weights,signs),meadow)*_NormalStrength;
+                    TriRelief(TEXTURE2D_ARGS(_GrassNormal,sampler_GrassNormal),p*_GrassScale,weights,signs),meadow)*_NormalStrength*lerp(1,.3,_Stylise);
                 relief-=normal*dot(relief,normal);normal=normalize(normal+relief);
                 half wet=1-smoothstep(-11.8,-8.5,p.y);
                 SurfaceData surface=(SurfaceData)0;
-                surface.albedo=lerp(rock,turf,meadow)*lerp(.96,1.04,grain)*lerp(1,.66,wet);
+                // Toy look: soft meadow patches with wildflower dots, and warm banded
+                // sandstone following height. A little photo luminance keeps the crevices.
+                half patch=smoothstep(.25,.75,saturate((broad-.93)/.07));
+                half fine=saturate((SAMPLE_TEXTURE2D(_NoiseTex,sampler_NoiseTex,p.xz*.11).r-.93)/.07);
+                half3 toyTurf=lerp(_ToyGrassB.rgb,_ToyGrassA.rgb,saturate(patch*.8+fine*.35));
+                float2 cell=floor(p.xz*1.7);float2 seed=frac(sin(float2(dot(cell,float2(127.1,311.7)),dot(cell,float2(269.5,183.3))))*43758.5453);
+                float2 dotAt=(cell+.2+seed*.6)/1.7;half petal=1-smoothstep(.045,.075,distance(p.xz,dotAt));
+                half bloom=petal*step(1-_Flowers,frac(seed.x*7.13+seed.y*3.7))*smoothstep(.85,.97,normal.y);
+                half3 flower=seed.y<.35?half3(1,.97,.9):seed.y<.6?half3(1,.84,.25):seed.y<.8?half3(1,.55,.72):half3(.72,.62,1);
+                toyTurf=lerp(toyTurf,flower,bloom);
+                half strata=frac(p.y*.3+(patch-.5)*1.1+sin(p.x*.05+p.z*.04)*.25);
+                half3 toyRock=lerp(_ToyRockA.rgb,_ToyRockB.rgb,lerp(.35,smoothstep(.38,.52,strata)-smoothstep(.88,1,strata),_Bands));
+                toyRock*=lerp(1,.93,_Bands*smoothstep(.38,.46,strata)*(1-smoothstep(.46,.56,strata)));
+                half rockLuma=dot(rock/max(_RockColor.rgb,.01),half3(.3,.59,.11));toyRock*=lerp(1,saturate(rockLuma*1.5),.3);
+                half3 toy=lerp(toyRock,toyTurf,meadow);
+                surface.albedo=lerp(lerp(rock,turf,meadow)*lerp(.96,1.04,grain),toy,_Stylise)*lerp(1,.66,wet);
                 surface.normalTS=half3(0,0,1);surface.smoothness=lerp(1-lerp(rockMask.y,grassMask.y,meadow),.46,wet);
                 surface.occlusion=lerp(.7,1,lerp(rockMask.x,grassMask.x,meadow));surface.alpha=1;
                 InputData data=(InputData)0;data.positionWS=p;data.positionCS=input.positionCS;data.normalWS=normal;

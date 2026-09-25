@@ -52,9 +52,10 @@ namespace LittleRoad
             sun.transform.rotation=Quaternion.LookRotation(-sunDirection);sun.shadows=LightShadows.Soft;RenderSettings.sun=sun;
             var fill=new GameObject("Cool open-sky fill").AddComponent<Light>();fill.type=LightType.Directional;fill.intensity=.38f;fill.color=new Color(.70f,.84f,1);fill.transform.rotation=Quaternion.Euler(28,145,0);fill.shadows=LightShadows.None;
             var volume=new GameObject("Coastal colour and bloom").AddComponent<Volume>();volume.isGlobal=true;volume.profile=ScriptableObject.CreateInstance<VolumeProfile>();
-            var tone=volume.profile.Add<Tonemapping>();tone.mode.Override(TonemappingMode.ACES);
+            // Neutral keeps the toy palette bright and saturated; ACES greyed it down.
+            var tone=volume.profile.Add<Tonemapping>();tone.mode.Override(TonemappingMode.Neutral);
             var bloom=volume.profile.Add<Bloom>();bloom.intensity.Override(.15f);bloom.threshold.Override(1.2f);
-            var color=volume.profile.Add<ColorAdjustments>();color.postExposure.Override(.10f);color.saturation.Override(0);color.contrast.Override(3);
+            var color=volume.profile.Add<ColorAdjustments>();color.postExposure.Override(.10f);color.saturation.Override(8);color.contrast.Override(8);
             var asphalt=Material("Warm aggregate asphalt",new Color(.23f,.27f,.29f));
             var texture=new Texture2D(128,128);var pixels=new Color[128*128];var rng=new System.Random(83);
             for(int i=0;i<pixels.Length;i++){float n=.84f+(float)rng.NextDouble()*.25f;pixels[i]=new Color(n,n,n);}

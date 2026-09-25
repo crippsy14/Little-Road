@@ -26,7 +26,7 @@ namespace LittleRoad
             try{AdventureSession.Load();}catch(Exception e){ui.Show("Your save needs attention",e.Message+"\nThe existing save has been left intact.",new List<AdventureUI.Choice>{new("Quit",()=>Application.Quit())});yield break;}
             Application.targetFrameRate=60;QualitySettings.vSyncCount=0;Time.fixedDeltaTime=1f/120;
             world=GetComponent<RaceTrial>();world.freeRoam=true;world.track=new Circuit();world.elapsed=1;TrialWorld.Create(world.track,false);
-            residents["garage"]=new Vector3(-62,0,-100);residents["cafe"]=new Vector3(-17,0,-99);
+            residents["garage"]=new Vector3(-62,0,-100);residents["cafe"]=new Vector3(-40.5f,0,-101.8f);
             residents["post"]=world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
             CreatePlaces();
             var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));
@@ -83,6 +83,7 @@ namespace LittleRoad
                 // spun about the axle, so renderer bounds reach well below the tyres.
                 float lowest=npc.GetComponent<StandardEnvelope>()!=null?npc.transform.position.y:visualBounds.min.y;
                 npc.transform.position+=Vector3.up*(.018f-lowest);
+                if(pair.Key=="cafe")npc.transform.rotation=Quaternion.Euler(0,90,0); // parked along the café kerb, clear of the race shoulder
                 string name=pair.Key=="garage"?"MARA / GARAGE":pair.Key=="post"?"PIP / LIGHTHOUSE":"ROWAN / COAST RUN";
                 Sign(name,name,pair.Value+Vector3.up*3);
             }
@@ -91,13 +92,18 @@ namespace LittleRoad
             // carriageway; a world-Z offset can move it into a curved road.
             float road=world.track.Nearest(post,out _);Vector3 a=world.track.At(road);
             Vector3 tower=post+(post-a).normalized*9;
+            if(BayviewKit.Has("lighthouse")) {
+                var facing=Quaternion.LookRotation(Vector3.ProjectOnPlane(post-tower,Vector3.up)).eulerAngles.y;
+                BayviewKit.Spawn("lighthouse",tower,facing,null,new BayviewKit.Tint(Color.white,Toy.Hex(0x2bb5a8),Toy.Hex(0xff4d5e),Toy.Hex(0x1d6fa8)));
+            } else {
             Block("Lighthouse footing",tower+Vector3.up*.3f,new Vector3(9,.6f,9),stone,true,PrimitiveType.Cylinder);
             Block("Lighthouse tower",tower+Vector3.up*5,new Vector3(4,5,4),stone,true,PrimitiveType.Cylinder);
             Block("Lighthouse red band",tower+Vector3.up*7.4f,new Vector3(4.08f,.55f,4.08f),red,false,PrimitiveType.Cylinder);
             Block("Lantern balcony",tower+Vector3.up*10,new Vector3(6,.25f,6),stone,false,PrimitiveType.Cylinder);
             Block("Lantern housing",tower+Vector3.up*11,new Vector3(3.4f,1,3.4f),new Color(.34f,.65f,.68f),false,PrimitiveType.Cylinder);
             Block("Lantern cap",tower+Vector3.up*12.3f,new Vector3(5,.35f,5),red,false,PrimitiveType.Cylinder);
-            var lamp=new GameObject("Lighthouse beacon").AddComponent<Light>();lamp.transform.position=tower+Vector3.up*11;lamp.type=LightType.Point;lamp.color=new Color(1,.81f,.44f);lamp.range=20;lamp.intensity=4;
+            }
+            var lamp=new GameObject("Lighthouse beacon").AddComponent<Light>();lamp.transform.position=tower+Vector3.up*(BayviewKit.Has("lighthouse")?14.1f:11);lamp.type=LightType.Point;lamp.color=new Color(1,.81f,.44f);lamp.range=20;lamp.intensity=4;
             Vector3 outward=(post-a).normalized;
             Vector3 laneStart=a+outward*12,laneEnd=post+outward*2.5f,delta=laneEnd-laneStart;
             var spur=Block("Lighthouse lane",(laneStart+laneEnd)*.5f+Vector3.up*.043f,new Vector3(6,.04f,delta.magnitude),new Color(.66f,.62f,.46f));spur.transform.rotation=Quaternion.LookRotation(delta);

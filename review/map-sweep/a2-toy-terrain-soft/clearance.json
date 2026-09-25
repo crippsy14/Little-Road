@@ -1,0 +1,11 @@
+{
+    "scope": "Static car-sized clearance and road/shoulder support samples, not continuous collision proof",
+    "roadSamples": 171,
+    "garageSamples": 11,
+    "forecourtSamples": 27,
+    "supportSamples": 1710,
+    "obstructions": [
+        "Road support 52 offset 11: Resident cafe height 1.608098"
+    ],
+    "passed": false
+}

@@ -175,6 +175,63 @@ namespace LittleRoad
             Piece("Garage notice board",p+new Vector3(-5,2.1f,5.13f),new Vector3(1.35f,1.8f,.14f),teal);
             Sign("KEEP\nEXPLORING",p+new Vector3(-5,2.1f,5.23f),.03f,new Color(1,.94f,.77f));
         }
+        // Toy-town high street from the Blender kit: painted frontages facing the road (+Z),
+        // shop signs, lamps, benches and a fountain. Everything stays over 12 m from the road
+        // centreline (z about -88 here): the race shoulder must remain clear.
+        void Street()
+        {
+            BayviewKit.Tint T(int wall,int shutter,int awning,int door)=>new(Toy.Hex(wall),Toy.Hex(shutter),Toy.Hex(awning),Toy.Hex(door));
+            BayviewKit.Spawn("cafe",new Vector3(-49,0,-110),0,root,T(0xffd9b8,0x2bb5a8,0xff4d5e,0x1d6fa8),"THE DAILY MILE");
+            BayviewKit.Spawn("post_office",new Vector3(-36,0,-110),0,root,T(0xfff0a8,0x3a7bd5,0x3a7bd5,0xd94040),"POST OFFICE");
+            BayviewKit.Spawn("shop",new Vector3(-23,0,-110),0,root,T(0xc8f0dc,0x1f8a70,0x1fa37a,0x1f6b8a),"TIDES & TYRES");
+            BayviewKit.Spawn("house_b",new Vector3(-12,0,-110.5f),0,root,T(0xffc8d2,0x2e9e5b,0xff4d5e,0x2e7bd6));
+            BayviewKit.Spawn("shop",new Vector3(-1,0,-111),0,root,T(0xbfe0ff,0xf29b1d,0xffb400,0x315fbf),"BAYVIEW STORES");
+            BayviewKit.Spawn("house_a",new Vector3(12,0,-112),0,root,T(0xfff3dc,0x3a7bd5,0xff4d5e,0x3a7bd5));
+            BayviewKit.Spawn("house_a",new Vector3(25,0,-117),-12,root,T(0xffd2b0,0x2bb5a8,0xff4d5e,0xc0392b));
+            BayviewKit.Spawn("fountain",new Vector3(-29.5f,0,-103.2f),0,root);
+            foreach(float x in new[]{-77f,-56f,-44f,-16.5f,-6f,6f})BayviewKit.Spawn("lamp_post",new Vector3(x,0,-103.6f),0,root,T(0xfff3dc,0x1d6fa8,0xff4d5e,0x1d6fa8));
+            foreach(float x in new[]{-35f,-24f,5f})BayviewKit.Spawn("bench",new Vector3(x,0,-103.4f),180,root);
+            foreach(var (x,z) in new[]{(-80f,-104f),(-56.5f,-110f),(-5.5f,-106f),(19f,-107f),(33f,-110f)})BayviewKit.Spawn("tree_round",new Vector3(x,0,z),x*7,root);
+            foreach(var (x,z) in new[]{(-58f,-116f),(-42f,-117f),(-17f,-117f),(4f,-118f)})BayviewKit.Spawn("tree_cypress",new Vector3(x,0,z),0,root);
+            foreach(var (x,z) in new[]{(-74f,-117f),(-52f,-120f),(-30f,-119f),(-7f,-120f),(10f,-122f)})BayviewKit.Spawn("bush",new Vector3(x,0,z),x*13,root);
+        }
+        // Sea wall along the pad's southern edge, promenade railing (its colliders keep cars on
+        // the pad), stairs down to a pier and bobbing fishing boats in the basin below.
+        void Harbour()
+        {
+            const float face=-134.4f,water=CoastalLandscape.SeaLevel;
+            var rail=new BayviewKit.Tint(Color.white,Toy.Hex(0x1d6fa8),Color.white,Color.white);
+            for(float x=-80;x<=20;x+=12)BayviewKit.Spawn("sea_wall",new Vector3(x,0,face),180,root);
+            for(float x=-83;x<=23;x+=6)BayviewKit.Spawn("promenade_rail",new Vector3(x,.27f,face+.2f),0,root,rail);
+            BayviewKit.Spawn("harbour_steps",new Vector3(-44,0,face),180,root,rail);
+            BayviewKit.Spawn("pier",new Vector3(-30,water+1.0f,face-.6f),180,root,rail);
+            foreach(var (x,z,yaw,hull,stripe) in new[]{(-24.5f,-143f,172f,0xffffff,0xff4d5e),(-36f,-147f,8f,0x3a7bd5,0xffd23f),(-17f,-154f,160f,0xffd23f,0x1d6fa8)}) {
+                var boat=BayviewKit.Spawn("boat",new Vector3(x,water,z),yaw,BayviewKit.AnimatedRoot,new BayviewKit.Tint(Toy.Hex(hull),Toy.Hex(0x2bb5a8),Toy.Hex(stripe),Color.white),solid:false);
+                boat.AddComponent<KitBob>().phase=x;
+            }
+            foreach(float x in new[]{-70f,-52f,-14f,4f,18f})BayviewKit.Spawn("palm",new Vector3(x,0,-129.5f),x*11,root);
+            foreach(float x in new[]{-62f,-22f,10f})BayviewKit.Spawn("bench",new Vector3(x,0,-131.2f),0,root);
+            foreach(var (x,t) in new[]{(26f,0xff7ac8),(29.2f,0x5ec8ff),(32.4f,0xffd23f)})
+                BayviewKit.Spawn("beach_hut",new Vector3(x,0,-126f),0,root,new BayviewKit.Tint(Toy.Hex(t),Color.white,Color.white,Toy.Hex(0x1d6fa8)));
+            BayviewKit.Spawn("parasol",new Vector3(21f,0,-128f),30,root,new BayviewKit.Tint(Toy.Hex(0xffd23f),Toy.Hex(0xff4d5e),Toy.Hex(0xff4d5e),Color.white));
+        }
+        void LegacyStreet()
+        {
+            House(new Vector3(-49,0,-109),9,9,6.5f,"TIDES & TYRES",true);
+            House(new Vector3(-34,0,-111),9,10,7.5f,"BAYVIEW STORES",true);
+            House(new Vector3(-17,0,-109),11,10,6.6f,"THE DAILY MILE",true);
+            House(new Vector3(1,0,-111),9,9,7.4f,"POSTCARDS & FINDS",false);
+            House(new Vector3(18,0,-117),10,10,7.8f,"COAST HOUSE",false);
+            foreach(float x in new[]{-80f,-40f, -7f,12f}) {Tree(new Vector3(x,0,-101),.8f);Furniture(new Vector3(x+3,0,-101));}
+            foreach(float x in new[]{-77f,-55f,-28f,-3f}) {
+                // Keep the drivable forecourt clear. Posts belong at the rear
+                // edge between frontages, not across the resident approach.
+                Piece("Lantern post",new Vector3(x,2.2f,-103),new Vector3(.10f,4.4f,.10f),teal,true);
+                Piece("Lantern frame",new Vector3(x,4.55f,-103),new Vector3(.52f,.55f,.52f),wood);
+                Piece("Lantern glass",new Vector3(x,4.55f,-102.72f),new Vector3(.35f,.38f,.025f),cream);
+                Piece("Lantern cap",new Vector3(x,4.9f,-103),new Vector3(.68f,.15f,.68f),teal);
+            }
+        }
         void Tree(Vector3 p,float scale)
         {
             // A soil opening conceals the paving beneath the trunk and gives
@@ -206,20 +263,8 @@ namespace LittleRoad
                 Piece("Forecourt paving seam",new Vector3(x+1.5f,.017f,z+1.5f),new Vector3(2.97f,.006f,.025f),wood);
             }
             Garage(new Vector3(-65,0,-109));
-            House(new Vector3(-49,0,-109),9,9,6.5f,"TIDES & TYRES",true);
-            House(new Vector3(-34,0,-111),9,10,7.5f,"BAYVIEW STORES",true);
-            House(new Vector3(-17,0,-109),11,10,6.6f,"THE DAILY MILE",true);
-            House(new Vector3(1,0,-111),9,9,7.4f,"POSTCARDS & FINDS",false);
-            House(new Vector3(18,0,-117),10,10,7.8f,"COAST HOUSE",false);
-            foreach(float x in new[]{-80f,-40f, -7f,12f}) {Tree(new Vector3(x,0,-101),.8f);Furniture(new Vector3(x+3,0,-101));}
-            foreach(float x in new[]{-77f,-55f,-28f,-3f}) {
-                // Keep the drivable forecourt clear. Posts belong at the rear
-                // edge between frontages, not across the resident approach.
-                Piece("Lantern post",new Vector3(x,2.2f,-103),new Vector3(.10f,4.4f,.10f),teal,true);
-                Piece("Lantern frame",new Vector3(x,4.55f,-103),new Vector3(.52f,.55f,.52f),wood);
-                Piece("Lantern glass",new Vector3(x,4.55f,-102.72f),new Vector3(.35f,.38f,.025f),cream);
-                Piece("Lantern cap",new Vector3(x,4.9f,-103),new Vector3(.68f,.15f,.68f),teal);
-            }
+            if(BayviewKit.Has("cafe"))Street();else LegacyStreet();
+            if(BayviewKit.Has("sea_wall"))Harbour();
             var sign=Piece("Village welcome board",new Vector3(-84,1.2f,-96),new Vector3(2.5f,2.4f,.20f),wood,true);
             Sign("BAYVIEW\nSmall cars\nBright roads",sign.transform.position+Vector3.forward*.12f,.048f,new Color(1,.94f,.74f));
             // All architectural pieces share a small material palette. Static

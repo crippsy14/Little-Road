@@ -29,6 +29,7 @@ namespace LittleRoad
             // cube UVs stretch a single image over their full twelve-metre height.
             stone=TerrainMaterial("World-mapped bridge limestone",new Color(.35f,.43f,.24f),new Color(.60f,.56f,.46f));
             stone.SetFloat("_RockOnly",1);stone.SetFloat("_RockScale",1.15f);stone.SetFloat("_NormalStrength",.25f);stone.SetColor("_RockColor",new Color(1.18f,1.20f,1.19f));
+            stone.SetFloat("_Stylise",.35f);stone.SetFloat("_Bands",0);stone.SetColor("_ToyRockA",new Color(.95f,.86f,.68f));
             cap=new Material(stone){name="Pale cut bridge voussoirs"};cap.SetColor("_RockColor",new Color(1.28f,1.29f,1.27f));
             wood=Surface("Coast tree bark",new Color(.29f,.23f,.14f));leaf=Surface("Cypress deep foliage",new Color(.16f,.29f,.17f));leafLight=Surface("Olive silver green",new Color(.34f,.43f,.24f));
             mortar=Surface("Recessed warm limestone mortar",new Color(.63f,.60f,.52f));
@@ -73,6 +74,10 @@ namespace LittleRoad
             Vector3 delta=p-bridgePoint;float along=Vector3.Dot(delta,bridgeForward),across=Vector3.Dot(delta,bridgeRight);
             float inlet=(1-Blend(15,25,Mathf.Abs(along)))*Blend(-32,-18,across);
             height=Mathf.Lerp(height,Mathf.Min(height,-15.5f),inlet);
+            // Harbour: the village pad ends at a sea wall (face z -134.4) above a shallow basin.
+            // Deep sea stays deep; the cut hides inside the wall's 1.2 m core.
+            float harbour=Blend(-92,-80,x)*(1-Blend(22,32,x))*Blend(133.8f,135.2f,-z);
+            height=Mathf.Lerp(height,Mathf.Min(height,-14.5f),harbour);
             return height;
         }
         Material Surface(string name,Color color)
@@ -125,7 +130,7 @@ namespace LittleRoad
             material.SetTexture("_NoiseTex",grass.mainTexture);
             material.SetColor("_GrassColor",new Color(meadow.r/.35f,meadow.g/.43f*1.18f,meadow.b/.24f*.82f));
             material.SetColor("_RockColor",new Color(stoneColour.r/.60f,stoneColour.g/.56f,stoneColour.b/.46f));
-            material.SetColor("_DryColor",new Color(1.16f,1.13f,.86f));return material;
+            material.SetColor("_DryColor",new Color(1.16f,1.13f,.86f));material.SetFloat("_Stylise",1);return material;
         }
         void DistantHeadland()
         {
@@ -149,6 +154,8 @@ namespace LittleRoad
             distant.SetColor("_RockColor",new Color(.34f,.57f,.85f));
             distant.SetColor("_GrassColor",new Color(.40f,.65f,.60f));
             distant.SetColor("_DryColor",new Color(.51f,.70f,.76f));
+            distant.SetColor("_ToyGrassA",new Color(.42f,.66f,.50f));distant.SetColor("_ToyGrassB",new Color(.33f,.56f,.48f));
+            distant.SetColor("_ToyRockA",new Color(.55f,.62f,.62f));distant.SetColor("_ToyRockB",new Color(.48f,.56f,.60f));distant.SetFloat("_Flowers",0);distant.SetFloat("_Bands",0);
             MeshObject("Distant layered headland",mesh,new[]{distant},true);
         }
         void Bridge()
@@ -272,7 +279,7 @@ namespace LittleRoad
             // Shared leaf meshes use GPU instancing and can exceed 65k vertices.
             // Keep them outside the terrain's static-combine hierarchy.
             var vegetationRoot=new GameObject("Bayview shared foliage / unbatched").transform;
-            var rng=new System.Random(7341);
+            var rng=new System.Random(7341);bool kitTrees=BayviewKit.Has("tree_round");
             for(int i=0;i<520;i++) {
                 float x=(float)rng.NextDouble()*310-155,z=(float)rng.NextDouble()*235-118;var p=new Vector3(x,0,z);
                 float d=track.Nearest(p,out float lateral),distance=FlatDistance(p,track.At(d));
@@ -291,7 +298,12 @@ namespace LittleRoad
                     lowest=Mathf.Min(lowest,ground.point.y);
                 }
                 if(!supported)continue;p.y=lowest-.06f*scale;
-                vegetation.Plant(vegetationRoot,p,scale,species,i%3);
+                if(kitTrees) {
+                    // Toy-kit trees: cypress, umbrella pine, round broadleaf. Keep the windmill hilltop open.
+                    if(FlatDistance(p,new Vector3(-24,0,12))<10)continue;
+                    BayviewKit.Spawn(species==0?"tree_cypress":species==1?"tree_pine":"tree_round",p+Vector3.down*.1f,i*47,vegetationRoot,scale:.75f+size/14);
+                }
+                else vegetation.Plant(vegetationRoot,p,scale,species,i%3);
             }
             for(float d=15;d<track.length;d+=8) {
                 if(Mathf.Abs(d-bridgeDistance)<31)continue;
@@ -322,7 +334,9 @@ namespace LittleRoad
                     float a=foot*Mathf.PI*.25f;
                     if(SurfacePoint(p+new Vector3(Mathf.Cos(a),0,Mathf.Sin(a))*.6f*scale,out var ground))low=Mathf.Min(low,ground.point.y);
                 }
-                p.y=low-.03f;vegetation.PlantScrub(vegetationRoot,p,scale,shrubs%3,(float)rng.NextDouble()*360);shrubs++;
+                p.y=low-.03f;
+                if(kitTrees)BayviewKit.Spawn("bush",p+Vector3.down*.05f,(float)rng.NextDouble()*360,vegetationRoot,solid:false,scale:scale*.8f);
+                else vegetation.PlantScrub(vegetationRoot,p,scale,shrubs%3,(float)rng.NextDouble()*360);shrubs++;
             }
             Debug.Log("LITTLE_ROAD_SCRUB patches="+shrubs);
         }
@@ -335,6 +349,10 @@ namespace LittleRoad
             new CoastalCliffs(this,root,cliffMaterial).Build();
             if(RaceTrial.Has("--cliff-study"))CoastalCliffStudy.Build(this,cliffMaterial);
             Physics.SyncTransforms();Planting();
+            if(BayviewKit.Has("windmill")) {
+                var hill=new Vector3(-24,0,12);hill.y=Height(hill.x,hill.z)-.4f;
+                BayviewKit.Spawn("windmill",hill,200,BayviewKit.AnimatedRoot,new BayviewKit.Tint(Color.white,Toy.Hex(0x3a7bd5),Toy.Hex(0xff4d5e),Toy.Hex(0x3a7bd5)));
+            }
             // Runtime static batching converts combined geometry to 16-bit
             // chunks. Keep the large grass mesh and displaced sea independent.
             StaticBatchingUtility.Combine(root.gameObject);

@@ -8,7 +8,8 @@ namespace LittleRoad
         {
             var material=new Material(Shader.Find("LittleRoad/CoastalTerrain")){name="Fine weathered limestone shoulder"};Apply(material);
             material.SetFloat("_RockOnly",1);material.SetFloat("_RockScale",1.4f);material.SetFloat("_NormalStrength",.22f);
-            material.SetColor("_RockColor",new Color(1.18f,1.17f,1.10f));return material;
+            material.SetColor("_RockColor",new Color(1.18f,1.17f,1.10f));
+            material.SetFloat("_Stylise",.8f);material.SetFloat("_Bands",0);material.SetColor("_ToyRockA",new Color(.96f,.87f,.66f));return material;
         }
         public static void Apply(Material material)
         {

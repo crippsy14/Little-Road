@@ -44,6 +44,7 @@ namespace LittleRoad
             water.Surface.SetFloat("_ReviewTime",1.6f);
             yield return Frame("12-distant-water-time-1-6",coast,Quaternion.LookRotation(coastForward).eulerAngles.y,coast-coastForward*10+Vector3.up*4,coast+coastForward*10+Vector3.up);
             water.Surface.SetFloat("_ReviewTime",-1);
+            if(RaceTrial.Has("--map-views"))yield return MapViews(world);
             if(RaceTrial.Has("--cliff-study"))yield return Frame("13-cliff-driving-distance",world.track.At(bridge),Quaternion.LookRotation(forward).eulerAngles.y,new Vector3(-115,3.5f,-16),new Vector3(-97,7,-7));
             var evidence=new Evidence();Physics.SyncTransforms();
             var lane=GameObject.Find("Lighthouse lane");
@@ -76,6 +77,24 @@ namespace LittleRoad
             File.WriteAllText(Path.Combine(folder,"clearance.json"),JsonUtility.ToJson(evidence,true));
             yield return DriveGarage();
             Debug.Log("LITTLE_ROAD_WORLD_REVIEW_COMPLETE clearance="+evidence.passed+" folder="+folder);Application.Quit(evidence.passed&&drivePassed?0:2);
+        }
+        // Fixed before/after views for the Bayview map sweep: overhead, eight chase-cam
+        // views around the lap (as the player sees it), and landmark/wide shots.
+        IEnumerator MapViews(RaceTrial world)
+        {
+            var track=world.track;float fov=cameraView.fieldOfView;
+            cameraView.fieldOfView=40;yield return Frame("m01-overhead",track.At(0),0,new Vector3(0,420,-160),new Vector3(0,0,-5));cameraView.fieldOfView=fov;
+            for(int i=0;i<8;i++) {
+                float d=track.length*(i+.5f)/8;var f=track.Forward(d);var at=track.At(d);
+                yield return Frame("m"+(i+2).ToString("00")+"-chase-"+Mathf.RoundToInt(d),at,Quaternion.LookRotation(f).eulerAngles.y,at-f*6.5f+Vector3.up*3.4f,at+Vector3.up*.9f+f*1.7f);
+            }
+            var post=track.At(track.length*.46f)-track.Right(track.length*.46f)*16;
+            yield return Frame("m10-lighthouse",post+(post-track.At(track.length*.46f)).normalized*-4,0,post+new Vector3(-26,9,-22),post+new Vector3(4,6,6));
+            yield return Frame("m11-village-from-sea",new Vector3(-40,0,-95),90,new Vector3(-30,14,-160),new Vector3(-35,3,-100));
+            yield return Frame("m13-harbour",new Vector3(-40,0,-95),90,new Vector3(-12,6,-172),new Vector3(-34,-6,-138));
+            yield return Frame("m14-promenade",new Vector3(-40,0,-95),90,new Vector3(-8,2.2f,-129),new Vector3(-45,-1,-137));
+            yield return Frame("m15-windmill",track.At(track.length*.6f),0,new Vector3(-24,48,-40),new Vector3(-24,28,12));
+            yield return Frame("m12-inland-hills",track.At(track.length*.6f),0,new Vector3(-10,42,-60),new Vector3(-20,6,30));
         }
         bool drivePassed;
         void Place(Vector3 position,float heading)

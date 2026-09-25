@@ -5,8 +5,8 @@ Shader "LittleRoad/CoastalWater"
         _SkyTex("Credited coastal sky",2D)="white"{}
         _AzimuthOffset("Sky rotation",Float)=0
         _ReviewTime("Fixed review time; negative uses live clock",Float)=-1
-        _DeepColor("Deep water",Color)=(.014,.105,.16,1)
-        _ShallowColor("Shallow water",Color)=(.065,.34,.32,1)
+        _DeepColor("Deep water",Color)=(.02,.19,.36,1)
+        _ShallowColor("Shallow water",Color)=(.08,.55,.56,1)
     }
     SubShader
     {
