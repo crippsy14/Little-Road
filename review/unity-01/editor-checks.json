@@ -280,15 +280,15 @@
         "Imported puddle",
         "Metre scale and upright puddle",
         "Four animated axle pivots in imported puddle",
-        "Wheel geometry stays on axles through spin and steering puddle drift=0.04710397 height=0.8797045",
+        "Wheel geometry stays on axles through spin and steering puddle drift=0.04710402 height=0.8956769",
         "Imported puddle_lod1",
         "Metre scale and upright puddle_lod1",
         "Four animated axle pivots in imported puddle_lod1",
-        "Wheel geometry stays on axles through spin and steering puddle_lod1 drift=0.04711286 height=0.8797044",
+        "Wheel geometry stays on axles through spin and steering puddle_lod1 drift=0.04711286 height=0.8942212",
         "Imported puddle_lod2",
         "Metre scale and upright puddle_lod2",
         "Four animated axle pivots in imported puddle_lod2",
-        "Wheel geometry stays on axles through spin and steering puddle_lod2 drift=0.04661448 height=0.8805894",
+        "Wheel geometry stays on axles through spin and steering puddle_lod2 drift=0.04661448 height=0.893663",
         "Separate brake/reverse lenses: compact_v1",
         "Forward braking illuminates red only: compact_v1",
         "Backing illuminates white: compact_v1",
@@ -874,7 +874,11 @@
         "Invalid candidate leaves live state and disk unchanged",
         "Failed disk commit does not award or advance live progress",
         "Unsupported save is rejected without overwrite",
-        "Atomic replacement retains previous save backup"
+        "Atomic replacement retains previous save backup",
+        "Repaint refused without credits",
+        "Repaint charges once and refuses the current colour",
+        "Repaint persists across reload",
+        "Paint catalogue keeps the original first colours for old saves"
     ],
     "models": [
         "little_car bounds=(2.17, 1.67, 3.10) center=(0.00, 0.84, 0.00) verts=18331",
@@ -929,8 +933,8 @@
         "zenith bounds=(2.37, 1.69, 3.78) center=(0.00, 0.66, 0.00) verts=44765",
         "zenith_lod1 bounds=(2.37, 1.69, 3.78) center=(0.00, 0.66, 0.00) verts=24262",
         "zenith_lod2 bounds=(2.36, 1.69, 3.78) center=(0.00, 0.67, 0.00) verts=13285",
-        "puddle bounds=(1.97, 2.16, 3.18) center=(0.00, 0.94, 0.00) verts=43442",
-        "puddle_lod1 bounds=(1.97, 2.16, 3.18) center=(0.00, 0.94, 0.00) verts=23558",
-        "puddle_lod2 bounds=(1.97, 2.16, 3.18) center=(0.00, 0.94, 0.00) verts=13227"
+        "puddle bounds=(1.97, 2.07, 3.18) center=(0.00, 0.90, 0.00) verts=43558",
+        "puddle_lod1 bounds=(1.97, 2.07, 3.18) center=(0.00, 0.89, 0.00) verts=23595",
+        "puddle_lod2 bounds=(1.97, 2.07, 3.18) center=(0.00, 0.89, 0.00) verts=13239"
     ]
 }

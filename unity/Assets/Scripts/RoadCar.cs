@@ -330,9 +330,11 @@ namespace LittleRoad
             pathDistance=Mathf.Repeat(route,race.track.length);previousPath=pathDistance;offset=side;progress=lastSafeDistance=route;
             laps=nextGate=0;nextGateProgress=lapStart=0;
         }
+        // Adventure speech bubbles listen for bumps: (other collider, closing speed).
+        public event Action<Collider,float> Bumped;
         void OnCollisionEnter(Collision c)
         {
-            ObserveContact(c);
+            ObserveContact(c);Bumped?.Invoke(c.collider,c.relativeVelocity.magnitude);
             if(c.collider.GetComponent<RoadCar>()==null && !c.collider.CompareTag("Respawn"))return;
             contacts++;maxImpact=Mathf.Max(maxImpact,c.relativeVelocity.magnitude);
             float depth=0;for(int i=0;i<c.contactCount;i++)depth=Mathf.Max(depth,-c.GetContact(i).separation);

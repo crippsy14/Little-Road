@@ -185,7 +185,7 @@ namespace LittleRoad
             BayviewKit.Spawn("post_office",new Vector3(-36,0,-110),0,root,T(0xfff0a8,0x3a7bd5,0x3a7bd5,0xd94040),"POST OFFICE");
             BayviewKit.Spawn("shop",new Vector3(-23,0,-110),0,root,T(0xc8f0dc,0x1f8a70,0x1fa37a,0x1f6b8a),"TIDES & TYRES");
             BayviewKit.Spawn("house_b",new Vector3(-12,0,-110.5f),0,root,T(0xffc8d2,0x2e9e5b,0xff4d5e,0x2e7bd6));
-            BayviewKit.Spawn("shop",new Vector3(-1,0,-111),0,root,T(0xbfe0ff,0xf29b1d,0xffb400,0x315fbf),"BAYVIEW STORES");
+            BayviewKit.Spawn("shop",new Vector3(-1,0,-111),0,root,T(0xbfe0ff,0xff7ac8,0xff7ac8,0x315fbf),"BAYVIEW PAINTS");
             BayviewKit.Spawn("house_a",new Vector3(12,0,-112),0,root,T(0xfff3dc,0x3a7bd5,0xff4d5e,0x3a7bd5));
             BayviewKit.Spawn("house_a",new Vector3(25,0,-117),-12,root,T(0xffd2b0,0x2bb5a8,0xff4d5e,0xc0392b));
             BayviewKit.Spawn("fountain",new Vector3(-29.5f,0,-103.2f),0,root);
@@ -230,6 +230,7 @@ namespace LittleRoad
                 if(i==4)continue;
                 var car=TrialWorld.Car(parked[i],paints[i]);car.name="Parked "+parked[i];car.transform.SetPositionAndRotation(new Vector3(x,.02f,-101.5f),Quaternion.Euler(0,i%2==0?180:0,0));
                 var box=car.AddComponent<BoxCollider>();box.center=CarBodies.Envelope.center;box.size=CarBodies.Envelope.size;car.tag="Respawn";
+                var chatter=car.AddComponent<NpcChatter>();chatter.speaker=new[]{"Wren","Monty","Priya","Gus"}[i];chatter.colour=paints[i];
             }
         }
         void LegacyStreet()

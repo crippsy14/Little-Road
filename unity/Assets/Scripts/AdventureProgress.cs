@@ -20,7 +20,7 @@ namespace LittleRoad
         public Dictionary<string,string> Loadout()=>fitted.ToDictionary(p=>p.slot,p=>p.id);
         public void Validate()
         {
-            if(version!=1||credits<0||credits>10000000||questStage<0||questStage>3||paintIndex<0||paintIndex>3||
+            if(version!=1||credits<0||credits>10000000||questStage<0||questStage>3||paintIndex<0||paintIndex>=PaintCatalog.All.Length||
                 raceSerial<0||settledSerial<0||settledSerial>raceSerial||raceWins<0||raceWins>settledSerial||bestPlace<0||bestPlace>24)
                 throw new InvalidDataException("Save version or progression values are invalid.");
             if(!CarBodies.Owned.Contains(bodyId))throw new InvalidDataException("Unknown body.");
@@ -64,6 +64,8 @@ namespace LittleRoad
         public bool Deliver()=>Change(p=>{if(p.questStage!=1)return false;p.questStage=2;return true;});
         public bool ClaimDelivery()=>Change(p=>{if(p.questStage!=2)return false;p.questStage=3;p.credits+=350;return true;});
         public bool Collect(string id)=>Change(p=>{if(p.collected.Contains(id))return false;p.collected.Add(id);p.credits+=50;return true;});
+        // Paid repaint at Bayview Paints: charges once; the current colour or a short wallet is refused.
+        public bool Repaint(int index,int price)=>Change(p=>{if(index==p.paintIndex||index<0||index>=PaintCatalog.All.Length||price<0||p.credits<price)return false;p.credits-=price;p.paintIndex=index;return true;});
         public bool Buy(string id)=>Change(p=>{var part=EquipmentCatalog.Get(id);if(p.owned.Contains(id)||p.credits<part.price)return false;p.credits-=part.price;p.owned.Add(id);return true;});
         public bool Fit(string id)=>Change(p=>{var part=EquipmentCatalog.Get(id);if(!p.owned.Contains(id))return false;var item=p.fitted.Find(f=>f.slot==part.slot);if(item.id==id)return false;item.id=id;return true;});
         public int BeginRace(){Change(p=>{p.raceSerial++;return true;});return Data.raceSerial;}

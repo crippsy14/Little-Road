@@ -17,20 +17,23 @@ namespace LittleRoad
         readonly Dictionary<string,Vector3> residents=new();
         readonly Dictionary<string,GameObject> finds=new();
         string nearest;float interactionReadyTime;
-        public static readonly Color[] Paints={new Color(.08f,.56f,.49f),new Color(.88f,.36f,.17f),new Color(.30f,.45f,.75f),new Color(.88f,.70f,.25f)};
+        public static readonly Color[] Paints=PaintCatalog.Colors();
+        PaintShop paintShop;SpeechBubbles bubbles;
         AdventureStore Store=>AdventureSession.Store;
         bool reviewing,wasLookingBehind;
         IEnumerator Start()
         {
             ui=gameObject.AddComponent<AdventureUI>();browser=gameObject.AddComponent<PartsBrowser>();racePreview=gameObject.AddComponent<RacePreviewUI>();
+            paintShop=gameObject.AddComponent<PaintShop>();bubbles=gameObject.AddComponent<SpeechBubbles>();
             try{AdventureSession.Load();}catch(Exception e){ui.Show("Your save needs attention",e.Message+"\nThe existing save has been left intact.",new List<AdventureUI.Choice>{new("Quit",()=>Application.Quit())});yield break;}
             Application.targetFrameRate=60;QualitySettings.vSyncCount=0;Time.fixedDeltaTime=1f/120;
             world=GetComponent<RaceTrial>();world.freeRoam=true;world.track=new Circuit();world.elapsed=1;TrialWorld.Create(world.track,false);
-            residents["garage"]=new Vector3(-62,0,-100);residents["cafe"]=new Vector3(-40.5f,0,-101.8f);
+            residents["garage"]=new Vector3(-62,0,-100);residents["cafe"]=new Vector3(-40.5f,0,-101.8f);residents["paint"]=new Vector3(3.5f,0,-102.2f);
             residents["post"]=world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
             CreatePlaces();
             var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));
             player=car.AddComponent<RoadCar>();player.Setup(world,0,EquipmentCatalog.Stats(Store.Data.Loadout()),false,1709,"owned equipment");world.cars.Add(player);world.running=true;
+            player.Bumped+=(other,speed)=>{if(speed>1f&&!ui.IsOpen&&!paintShop.IsOpen)other.GetComponentInParent<NpcChatter>()?.TrySay(bubbles);};
             if(RaceTrial.Has("--vertical-audit"))gameObject.AddComponent<VerticalMotionAudit>().Setup(world);
             if(RaceTrial.Has("--ambient-traffic"))AmbientTraffic();
             if(RaceTrial.Has("--drive-trace"))gameObject.AddComponent<DriveTrace>().Setup(player,RaceTrial.Arg("--drive-trace"));
@@ -49,6 +52,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--vehicle-lights-review")){reviewing=true;gameObject.AddComponent<VehicleLightReview>();yield break;}
             if(RaceTrial.Has("--evening-route-review")){gameObject.AddComponent<EveningRouteReview>();yield break;}
             if(RaceTrial.Has("--turn-review")){gameObject.AddComponent<TurnReview>();yield break;}
+            if(RaceTrial.Has("--paint-shop-review")){reviewing=true;yield return PaintShopReview();yield break;}
             if(RaceTrial.Has("--parts-browser-review")){Parts("engine");gameObject.AddComponent<PartsBrowserReview>().Setup(browser,Store,player,ui,()=>Parts("engine"));yield break;}
             yield return null;if(AdventureSession.Smoke)StartCoroutine(Smoke());
         }
@@ -76,16 +80,22 @@ namespace LittleRoad
         void CreatePlaces()
         {
             foreach(var pair in residents) {
-                Color color=pair.Key=="garage"?new Color(.85f,.38f,.19f):pair.Key=="post"?new Color(.9f,.7f,.23f):new Color(.38f,.48f,.68f);
-                var npc=TrialWorld.Car(pair.Key=="cafe"?"otter":pair.Key=="garage"?"kipper":"pebble",color);npc.name="Resident "+pair.Key;npc.transform.position=pair.Value+Vector3.up*.05f;
+                Color color=pair.Key=="garage"?new Color(.85f,.38f,.19f):pair.Key=="post"?new Color(.9f,.7f,.23f):pair.Key=="paint"?Toy.Hex(0xff7ac8):new Color(.38f,.48f,.68f);
+                var npc=TrialWorld.Car(pair.Key=="cafe"?"otter":pair.Key=="garage"?"kipper":pair.Key=="paint"?"picnic":"pebble",color);npc.name="Resident "+pair.Key;npc.transform.position=pair.Value+Vector3.up*.05f;
                 var renderers=npc.GetComponentsInChildren<Renderer>();Bounds visualBounds=renderers[0].bounds;foreach(var renderer in renderers)visualBounds.Encapsulate(renderer.bounds);
                 var bounds=npc.AddComponent<BoxCollider>();bounds.center=visualBounds.center-npc.transform.position;bounds.size=visualBounds.size+Vector3.one*.02f;npc.tag="Respawn";
                 // Generated bodies stand on their model origin. Their wheel meshes are
                 // spun about the axle, so renderer bounds reach well below the tyres.
                 float lowest=npc.GetComponent<StandardEnvelope>()!=null?npc.transform.position.y:visualBounds.min.y;
                 npc.transform.position+=Vector3.up*(.018f-lowest);
-                if(pair.Key=="cafe")npc.transform.rotation=Quaternion.Euler(0,90,0); // parked along the café kerb, clear of the race shoulder
-                string name=pair.Key=="garage"?"MARA / GARAGE":pair.Key=="post"?"PIP / LIGHTHOUSE":"ROWAN / COAST RUN";
+                if(pair.Key=="cafe"||pair.Key=="paint")npc.transform.rotation=Quaternion.Euler(0,90,0); // parked along the kerb, clear of the race shoulder
+                string name=pair.Key=="garage"?"MARA / GARAGE":pair.Key=="post"?"PIP / LIGHTHOUSE":pair.Key=="paint"?"DOT / PAINTS":"ROWAN / COAST RUN";
+                var chatter=npc.AddComponent<NpcChatter>();
+                (chatter.speaker,chatter.colour,chatter.lines)=pair.Key switch {
+                    "garage"=>("Mara",Toy.Orange,new[]{"Careful! I only just fixed that dent.","Bring it round the garage and I'll take a look!","Ha! You drive like I did at your age."}),
+                    "post"=>("Pip",Toy.Sun,new[]{"Whoa! The lighthouse is that way, not through me!","Letters, parcels... and now bumps. Busy day!"}),
+                    "paint"=>("Dot",Toy.Pink,new[]{"Ooh, that scrape would look lovely in candy pink.","Fancy a fresh coat after that?","Mind my wet paint!"}),
+                    _=>("Rowan",Toy.Sky,new[]{"Save it for the race!","Rubbing's racing... but not by the café!","Is that a challenge? See you on the grid!"})};
                 Sign(name,name,pair.Value+Vector3.up*3);
             }
             var post=residents["post"];var stone=new Color(.91f,.83f,.65f);var red=new Color(.71f,.26f,.18f);
@@ -124,12 +134,31 @@ namespace LittleRoad
                 var go=TrialWorld.Car(bodies[i],paints[i]);go.name="Traffic "+bodies[i];
                 go.transform.SetPositionAndRotation(world.track.At(d)+world.track.Right(d)*2.5f+Vector3.up*.15f,Quaternion.LookRotation(world.track.Forward(d)));
                 var car=go.AddComponent<RoadCar>();car.Setup(world,world.cars.Count,CarTuning.Stock,true,1709+i*31,"traffic");car.finished=true;
+                var chatter=go.AddComponent<NpcChatter>();chatter.speaker=new[]{"Nell","Hugo","Bea","Otis"}[i];chatter.colour=paints[i];
                 world.cars.Add(car);
             }
         }
+        // Opt-in capture pass: paint shop open, live repaint on a new swatch, purchase, then a
+        // speech bubble on Rowan's car. Captures go to --trial-captures.
+        IEnumerator PaintShopReview()
+        {
+            string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);
+            Store.Change(p=>{p.credits=Math.Max(p.credits,600);return true;});
+            yield return new WaitForSeconds(.5f);OpenPaintShop();yield return new WaitForSeconds(.8f);
+            ui.Capture(Path.Combine(folder,"p1-open.png"));
+            var target=GameObject.Find("SWATCH Candy pink");EventSystem.current.SetSelectedGameObject(target);yield return new WaitForSeconds(.5f);
+            ui.Capture(Path.Combine(folder,"p2-preview.png"));
+            target.GetComponent<UnityEngine.UI.Button>().onClick.Invoke();yield return new WaitForSeconds(.4f);
+            ui.Capture(Path.Combine(folder,"p3-bought.png"));
+            bool bought=Store.Data.paintIndex==5;paintShop.Leave();Close();yield return new WaitForSeconds(.3f);
+            var rowan=GameObject.Find("Resident cafe");Place(residents["cafe"]+Vector3.forward*6);cameraView.transform.position=residents["cafe"]+new Vector3(-3,4,9);cameraView.transform.LookAt(residents["cafe"]+Vector3.up);
+            rowan.GetComponent<NpcChatter>().TrySay(bubbles);yield return new WaitForSeconds(.6f);
+            ui.Capture(Path.Combine(folder,"p4-bubble.png"));
+            Debug.Log("PAINT_SHOP_REVIEW bought="+bought+" credits="+Store.Data.credits);Application.Quit(bought?0:2);
+        }
         void Update()
         {
-            if(player==null||reviewing||browser.IsOpen||racePreview.IsOpen||racePreview.LastCloseFrame==Time.frameCount||browser.LastCloseFrame==Time.frameCount)return;
+            if(player==null||reviewing||browser.IsOpen||racePreview.IsOpen||paintShop.IsOpen||racePreview.LastCloseFrame==Time.frameCount||browser.LastCloseFrame==Time.frameCount||paintShop.LastCloseFrame==Time.frameCount)return;
             var k=Keyboard.current;var pad=Gamepad.current;
             if(k?.escapeKey.wasPressedThisFrame==true||pad?.buttonEast.wasPressedThisFrame==true) {if(ui.IsOpen)Close();else Pause();}
             if(ui.IsOpen){RefreshHUD();return;}
@@ -173,16 +202,23 @@ namespace LittleRoad
         public bool Interact(string id)
         {
             if(!residents.ContainsKey(id)||Vector3.Distance(player.body.position,residents[id])>7||Mathf.Abs(player.speed)>1.2f)return false;
-            if(id=="garage")Mara();else if(id=="post")Pip();else Rowan();return true;
+            if(id=="garage")Mara();else if(id=="post")Pip();else if(id=="paint")Dot();else Rowan();return true;
         }
         void Mara()
         {
             var choices=new List<AdventureUI.Choice>();int stage=Store.Data.questStage;
             if(stage==0)choices.Add(new("I'll take the parcel",()=>Attempt(()=>{Store.AcceptDelivery();Close();Notify("Parcel aboard. Follow the coast road to Pip's lighthouse.");})));
             if(stage==2)choices.Add(new("Collect 350 credits",()=>Attempt(()=>{Store.ClaimDelivery();Mara();})));
-            choices.Add(new("Parts & fitted equipment",Garage));choices.Add(new("Try the next paint colour · free",()=>Attempt(()=>{Store.Change(p=>{p.paintIndex=(p.paintIndex+1)%4;return true;});ApplyEquipment();})));
+            choices.Add(new("Parts & fitted equipment",Garage));
             choices.Add(new("Back to the road",Close));
             Show("Mara / Harbour Garage",stage==0?"Pip needs a parcel at the lighthouse. Take the coast road and look for the red lantern cap. I'll have 350 credits for you when you return.":stage==1?"Pip is by the lighthouse on the far side of the loop. There are postcards beside the road if you take a detour.":stage==2?"Pip sent word! The parcel arrived safely. Here's something towards making this car your own.":"A good car becomes your own, one improvement at a time. What shall we work on?",choices);
+        }
+        void Dot()=>Show("Dot / Bayview Paints","Sixteen shades, one coat, no drips! Every colour is 150–200 credits. Pick one and I'll have you gleaming before you can say 'wet paint'.",
+            new(){new("Browse the paint colours",OpenPaintShop),new("Back to the road",Close)});
+        void OpenPaintShop()
+        {
+            ui.Close();ui.SetVisible(false);player.controlsBlocked=true;
+            paintShop.Open(Store,_=>{ApplyEquipment();Notify("Fresh paint · "+PaintCatalog.All[Store.Data.paintIndex].name);},()=>{ui.SetVisible(true);Dot();});
         }
         void Pip()
         {

@@ -36,7 +36,7 @@ namespace LittleRoad
         public Vector2 OrbitPosition(int index)=>orbitPositions[index];
         static readonly Color Background=new(.13f,.23f,.25f,1);
 
-        public PartPreviewStage(string body,Color paint,IEnumerable<EquipmentCatalog.Part> catalogue,Color? backdrop=null,bool showroom=false)
+        public PartPreviewStage(string body,Color paint,IEnumerable<EquipmentCatalog.Part> catalogue,Color? backdrop=null,bool showroom=false,float lightScale=1)
         {
             useShowroom=showroom;partBackground=backdrop??Background;
             worldLights=UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None);worldLightMasks=new int[worldLights.Length];
@@ -45,8 +45,8 @@ namespace LittleRoad
             camera.enabled=false;camera.cullingMask=1<<Layer;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=backdrop??Background;
             camera.orthographic=true;camera.nearClipPlane=.02f;camera.farClipPlane=40;camera.allowHDR=false;camera.allowMSAA=true;
             var data=camera.GetUniversalAdditionalCameraData();data.renderPostProcessing=false;data.renderShadows=false;data.volumeLayerMask=0;
-            AddLight(new Vector3(-3,4,3),new Color(.82f,.92f,1),140);
-            AddLight(new Vector3(3,2,-2),new Color(1,.82f,.60f),95);
+            AddLight(new Vector3(-3,4,3),new Color(.82f,.92f,1),140*lightScale);
+            AddLight(new Vector3(3,2,-2),new Color(1,.82f,.60f),95*lightScale);
             Selected=Texture(720,406);Car=Texture(900,500);Orbit=Texture(744,392);
             foreach(var part in catalogue) {
                 var prefab=Resources.Load<GameObject>("Parts/"+part.id);
@@ -130,6 +130,13 @@ namespace LittleRoad
             if(selected==null||Mathf.Abs(degrees)<.01f)return;angle=Mathf.Repeat(angle+degrees,360);Render(selected,Selected,angle);
         }
         public void RotateCar(float degrees){carAngle=Mathf.Repeat(carAngle+degrees,360);Render(carModel,Car,carAngle);}
+        // Paint shop preview: recolour the showroom car's body panels and re-render it.
+        public void Repaint(Color paint)
+        {
+            foreach(var renderer in carModel.GetComponentsInChildren<Renderer>(true))foreach(var material in renderer.sharedMaterials)
+                if(material!=null&&material.name.Contains("BodyPaint"))material.color=paint;
+            Render(carModel,Car,carAngle);
+        }
         public void RenderOrbit(float degrees)
         {
             if(orbitIds.Count==0)return;if(platform!=null)platform.SetActive(false);carModel.SetActive(false);

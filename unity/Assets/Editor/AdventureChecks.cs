@@ -37,6 +37,12 @@ public static class AdventureChecks
         try{new AdventureStore(broken);}catch(Exception){rejected=true;}
         Check(rejected&&File.ReadAllText(broken)=="{\"version\":99}","Unsupported save is rejected without overwrite");
         Check(File.Exists(store.path+".bak"),"Atomic replacement retains previous save backup");
+        var paints=new AdventureStore(Path.Combine(folder,"paint.json"));
+        Check(!paints.Repaint(5,150)&&paints.Data.paintIndex==0,"Repaint refused without credits");
+        paints.Change(p=>{p.credits=400;return true;});
+        Check(!paints.Repaint(0,150)&&paints.Repaint(5,150)&&paints.Data.credits==250&&!paints.Repaint(5,150),"Repaint charges once and refuses the current colour");
+        paints=new AdventureStore(paints.path);Check(paints.Data.paintIndex==5&&paints.Data.credits==250,"Repaint persists across reload");
+        Check(PaintCatalog.All.Length==16&&PaintCatalog.All[0].color==new Color(.08f,.56f,.49f),"Paint catalogue keeps the original first colours for old saves");
         return checks;
     }
 }

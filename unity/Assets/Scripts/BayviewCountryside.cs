@@ -65,6 +65,9 @@ namespace LittleRoad
             Put("picnic_table",c+new Vector3(6,0,-5),20);
             var car=TrialWorld.Car("doodle",Toy.Hex(0xffd23f));car.transform.SetPositionAndRotation(Ground(c+new Vector3(-10.5f,0,-1))+Vector3.up*.02f,Quaternion.Euler(0,20,0));
             car.transform.SetParent(root);
+            var box=car.AddComponent<BoxCollider>();box.center=CarBodies.Envelope.center;box.size=CarBodies.Envelope.size;car.tag="Respawn";
+            var chatter=car.AddComponent<NpcChatter>();chatter.speaker="Camper Jo";chatter.colour=Toy.Sun;
+            chatter.lines=new[]{"Shh! Someone's napping in the tent!","Marshmallows are nearly ready!","Oi! This is a campsite, not a car park!"};
         }
         void LookoutPoint()
         {
