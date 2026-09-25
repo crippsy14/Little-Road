@@ -97,6 +97,9 @@ namespace LittleRoad
                 frictionCombine=PhysicsMaterialCombine.Minimum,bounciness=.05f,bounceCombine=PhysicsMaterialCombine.Minimum};
             ContactBottom=collider.center.y-size.y*.5f;
             if(race.track.hasElevation){ground=new RoadGrounding(this);ground.Sample();}
+            // Free roam on the level Bayview road still crosses real hills: let the car pitch and
+            // roll with the ground it sits on (races keep their locked axes). --free-roam-level restores.
+            else if(race.freeRoam&&!RaceTrial.Has("--free-roam-level")){body.constraints=RigidbodyConstraints.None;tiltToGround=true;}
             wheels=new WheelVisuals(gameObject);
             pathDistance=race.track.Nearest(transform.position,out offset);previousPath=pathDistance;
             progress=pathDistance>race.track.length*.8f?pathDistance-race.track.length:pathDistance;
@@ -145,6 +148,7 @@ namespace LittleRoad
             // imposing a new rotation can push a corner into an adjacent car.
             if(supported)body.AddTorque(driveUp*Mathf.Clamp((yaw-Vector3.Dot(body.angularVelocity,driveUp))*20,-25,25),ForceMode.Acceleration);
             if(ground!=null)ground.Align();
+            if(tiltToGround)TiltToGround();
             if(!race.freeRoam) {
                 if(Mathf.Abs(step)<10)TrackGates(beforeProgress,beforeOffset);
                 if(CheckpointMissed&&!wasCheckpointMissed) {
@@ -162,6 +166,25 @@ namespace LittleRoad
             }
             wheelSpin+=speed/.425f*Mathf.Rad2Deg*Time.fixedDeltaTime;
             wheels.Pose(wheelSpin,steerState*25);
+        }
+        bool tiltToGround;readonly RaycastHit[] tiltHits=new RaycastHit[8];
+        // Averages the surface normal under the four corners and servos the car's up vector to
+        // it (upright when airborne), damping tilt so it follows slopes without rolling over.
+        void TiltToGround()
+        {
+            Vector3 normals=Vector3.zero;int found=0;
+            for(int axle=-1;axle<=1;axle+=2)for(int side=-1;side<=1;side+=2) {
+                Vector3 origin=body.position+transform.forward*(axle*1.1f)+transform.right*(side*.8f)+transform.up*1.2f;
+                int count=Physics.RaycastNonAlloc(origin,Vector3.down,tiltHits,3.5f,~0,QueryTriggerInteraction.Ignore);
+                float nearest=float.MaxValue;Vector3 normal=Vector3.zero;
+                for(int i=0;i<count;i++){var h=tiltHits[i];if(h.collider.transform.IsChildOf(transform)||h.collider.GetComponentInParent<RoadCar>()!=null||h.normal.y<.55f)continue;if(h.distance<nearest){nearest=h.distance;normal=h.normal;}}
+                if(nearest<float.MaxValue){normals+=normal;found++;}
+            }
+            // Follow slopes up to 30 degrees; beyond that (cliff faces, outcrops) stay near upright.
+            Vector3 target=Vector3.RotateTowards(Vector3.up,found>=2?normals.normalized:Vector3.up,30*Mathf.Deg2Rad,0);
+            Vector3 tiltVelocity=Vector3.ProjectOnPlane(body.angularVelocity,transform.up);
+            float righting=transform.up.y<.77f?160:70; // past ~40 degrees, push back hard
+            body.AddTorque(Vector3.ClampMagnitude(Vector3.Cross(transform.up,target)*righting-tiltVelocity*12,righting<100?45:90),ForceMode.Acceleration);
         }
         void OnDestroy(){recoverySensor?.Dispose();}
         void ReadInput()

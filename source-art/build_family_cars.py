@@ -724,7 +724,9 @@ class Car:
                 cylinder('Spot lamp cover strap',(x,y+.05,z),.068,.006,M['trim'],'Y',16,r=0)
         if 'roof_vent' in E:box('Roof vent',(0,G['yf1']-.35,r+G['crown']*.9+.02),(.22,.18,.04),M['trim'],.015)
         if 'spare_on_roof' in E:
-            z0=r+G['crown']*.25+.16;yc=(G['yr1']+G['yf1'])*.5-.1
+            # Seated on the crowned roof panel (was floating 16 cm above it), on a low clamp plate.
+            z0=r+G['crown']+.02;yc=(G['yr1']+G['yf1'])*.5-.1
+            box('Spare clamp plate',(0,yc,z0-.005),(.34,.34,.03),M['trim'],.008)
             cylinder('Spare tyre',(0,yc,z0+.06),.26,.12,M['rubber'],'Z',32,.03)
             cylinder('Spare wheel',(0,yc,z0+.07),.17,.12,M['steel'],'Z',24,0)
             box('Spare strap',(0,yc,z0+.13),(.04,.56,.02),M['trim'],.005)

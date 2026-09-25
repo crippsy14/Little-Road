@@ -69,7 +69,8 @@ namespace LittleRoad
             Ribbon(track,"16 metre race surface",0,Circuit.Width,.025f,asphalt);
             new GameObject("Continuous road and shoulder support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
             foreach(int side in new[]{-1,1}) {Ribbon(track,"Edge paint",side*7.7f,.16f,.037f,white);
-                if(racing)for(float d=0;d<track.length;d+=4) {var kerb=Box("Alternating kerb",track.At(d)+track.Right(d)*side*8.25f+Vector3.up*.055f,new Vector3(.7f,.10f,3.8f),((int)(d/4)%2==0)?white:coral);
+                if(racing)for(float d=0;d<track.length;d+=4) {// Coral blocks stand 6 mm prouder: on curves neighbouring blocks overlap and equal tops z-fought.
+                    bool odd=(int)(d/4)%2!=0;var kerb=Box("Alternating kerb",track.At(d)+track.Right(d)*side*8.25f+Vector3.up*(odd?.058f:.055f),new Vector3(.7f,odd?.106f:.10f,3.8f),odd?coral:white);
                     kerb.transform.rotation=Quaternion.LookRotation(track.Forward(d));}}
             for(float d=0;d<track.length;d+=12) {
                 if(track.Curvature(d)>.012f)continue;var mark=Box("Grid guide",track.At(d)+Vector3.up*.04f,new Vector3(.12f,.015f,3),white);mark.transform.rotation=Quaternion.LookRotation(track.Forward(d));}

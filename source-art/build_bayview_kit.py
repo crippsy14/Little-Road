@@ -118,14 +118,15 @@ def window(x,y,z,w=1.2,h=1.5,shutters=True,flowers=True,face=-1,glass='Glass'):
     """Window on a wall whose outward normal is face*Y (face=-1 front)."""
     o=face*.02
     box('Window frame',(x,y+o*2,z),(w+.3,.18,h+.3),'WhiteTrim',.05)
-    box('Window glass',(x,y+face*.10,z),(w,.06,h),glass,.01)
-    box('Glazing bar',(x,y+face*.14,z),(.07,.06,h),'WhiteTrim',.02);box('Glazing bar',(x,y+face*.14,z+h*.12),(w,.06,.07),'WhiteTrim',.02)
+    # Distinct depths (frame front .13, glass .17, bars .21, shutters .16) so no faces z-fight.
+    box('Window glass',(x,y+face*.15,z),(w,.04,h),glass,.01)
+    box('Glazing bar',(x,y+face*.19,z),(.07,.04,h),'WhiteTrim',.015);box('Glazing bar',(x,y+face*.19,z+h*.12),(w,.04,.07),'WhiteTrim',.015)
     box('Sill',(x,y+face*.22,z-h/2-.12),(w+.5,.36,.14),'WhiteTrim',.04)
     if shutters:
         for s in(-1,1):
             sx=x+s*(w/2+.36)
-            box('Shutter',(sx,y+face*.08,z),(.62,.12,h+.12),'Tint_Shutter',.05)
-            for k in range(5):box('Shutter slat',(sx,y+face*.15,z-h*.36+k*h*.18),(.52,.05,.07),'Tint_Shutter',.02)
+            box('Shutter',(sx,y+face*.10,z),(.62,.12,h+.12),'Tint_Shutter',.05)
+            for k in range(5):box('Shutter slat',(sx,y+face*.18,z-h*.36+k*h*.18),(.52,.05,.07),'Tint_Shutter',.02)
     if flowers:
         box('Flower box',(x,y+face*.42,z-h/2-.32),(w+.2,.34,.3),'Wood',.05)
         rnd=random.Random(int(x*100+z*10))
@@ -430,11 +431,131 @@ def windmill():
     collision('Tower',(0,0,5),(5.6,5.6,10))
 
 
+# ---------------------------------------------------------------- countryside and roadside
+
+def barn():
+    """Red timber barn: board-and-batten walls, big white-trimmed doors, loft hatch, weathervane."""
+    w,d,h=8.0,10.0,4.6
+    box('Barn walls',(0,0,h/2),(w,d,h),'Red',.1)
+    for k in range(17):box('Batten',(-w/2+.25+k*(w-.5)/16,-d/2-.05,h/2),(.08,.08,h),'Red',.02)
+    gable_roof(0,0,w,d,h,3.0,.4,'RoofSlate',ridge_axis='Y')
+    for s in(-1,1):
+        box('Door frame',(s*.95,-d/2-.06,1.5),(1.9,.06,3.1),'WhiteTrim',.02)
+        box('Barn door',(s*.95,-d/2-.14,1.5),(1.7,.1,2.9),'Red',.04)
+        box('Door brace',(s*.95,-d/2-.24,1.5),(.14,.05,3.3),'WhiteTrim',.02,rot=(0,s*.55,0))
+    box('Loft hatch',(0,-d/2-.1,h+1.0),(1.4,.12,1.2),'WhiteTrim',.04)
+    cyl('Vane post',(0,0,h+3.6),.04,1.2,'Metal','Z',8);box('Vane arrow',(0,0,h+4.1),(1.1,.05,.08),'Black',.01)
+    box('Vane rooster',(.2,0,h+4.35),(.4,.05,.4),'Black',.02)
+    collision('Barn',(0,0,h/2),(w+.3,d+.3,h))
+
+def fence():
+    """6 m white picket fence section along X."""
+    for k in range(13):
+        x=-3+k*.5;box('Picket',(x,0,.5),(.12,.05,1.0),'WhiteTrim',.02);sphere('Picket tip',(x,0,1.0),(.07,.03,.1),'WhiteTrim',1)
+    for z in(.3,.72):box('Fence rail',(0,.04,z),(6.0,.05,.1),'WhiteTrim',.02)
+    collision('Fence',(0,0,.5),(6,.2,1))
+
+def hay_bale():
+    cyl('Bale',(0,0,.65),.65,1.2,'Yellow','X',20,.08)
+    for x in(-.35,.35):cyl('Twine',(x,0,.65),.66,.04,'Rope','X',20,.01)
+    collision('Bale',(0,0,.65),(1.2,1.3,1.3))
+
+def tractor():
+    box('Tractor body',(0,.2,1.15),(1.2,2.0,.9),'Green',.12)
+    box('Tractor hood',(0,-.9,1.0),(.9,1.3,.7),'Green',.1)
+    box('Cab',(0,.8,2.0),(1.3,1.1,1.1),'WhiteTrim',.1);box('Cab glass',(0,.24,2.05),(1.05,.04,.75),'Glass',.02)
+    box('Cab roof',(0,.8,2.62),(1.5,1.3,.12),'Green',.04)
+    cyl('Exhaust',(.35,-1.2,1.8),.07,1.0,'Metal','Z',8)
+    for s in(-1,1):
+        cyl('Big wheel',(s*.95,.75,.85),.85,.5,'Black','X',24,.08);cyl('Hub',(s*1.21,.75,.85),.4,.06,'Yellow','X',16)
+        cyl('Small wheel',(s*.75,-1.25,.5),.5,.35,'Black','X',20,.06);cyl('Hub',(s*.93,-1.25,.5),.24,.05,'Yellow','X',12)
+    collision('Tractor',(0,0,1.1),(2.4,3.6,2.2))
+
+def tent():
+    """A-frame camping tent with open flap and guy lines."""
+    v=[(-1.3,-1.4,0),(1.3,-1.4,0),(0,-1.5,1.6),(-1.3,1.4,0),(1.3,1.4,0),(0,1.5,1.6)]
+    poly('Tent',v,[(0,2,5,3),(1,4,5,2),(0,1,2),(3,5,4)],'Tint_Wall',.02)
+    box('Tent door',(0,-1.43,.55),(.7,.04,1.0),'Tint_Awning',.02)
+    box('Groundsheet',(0,-2.0,.02),(1.8,1.0,.03),'Tint_Awning',.01)
+    for s in(-1,1):cyl('Tent pole',(0,s*1.5,.8),.03,1.6,'Metal','Z',6)
+    collision('Tent',(0,0,.8),(2.6,2.9,1.6))
+
+def campfire():
+    for k in range(8):
+        a=k*math.tau/8;sphere('Fire stone',(math.cos(a)*.6,math.sin(a)*.6,.12),(.2,.18,.15),'StoneDark',1)
+    for k in range(3):box('Log',(0,0,.18),(1.0,.16,.16),'WoodDark',.06,rot=(0,0,k*1.05))
+    cyl('Flame',(0,0,.5),.3,.7,'Yellow','Z',8,.02,r2=.02);cyl('Flame core',(0,0,.45),.2,.5,'Red','Z',8,.02,r2=.02)
+    for s in(-1,1):box('Log seat',(s*1.6,0,.25),(.45,1.6,.45),'Wood',.15)
+
+def caravan():
+    """Rounded retro caravan (~5 m), door on the -Y side, drawbar toward +X."""
+    box('Caravan body',(0,0,1.45),(4.4,2.1,2.0),'WhiteTrim',.55,segments=4)
+    box('Caravan stripe',(0,0,1.25),(4.42,2.12,.35),'Tint_Awning',.1)
+    box('Caravan skirt',(0,0,.65),(4.3,2.0,.5),'Tint_Wall',.2)
+    for x in(-1.2,1.2):box('Caravan window',(x,-1.06,1.8),(1.0,.05,.6),'Glass',.1)
+    box('Caravan door',(0,-1.07,1.2),(.7,.05,1.6),'Tint_Wall',.05)
+    box('Front window',(2.21,0,1.85),(.05,1.4,.5),'Glass',.1)
+    cyl('Caravan wheel',(0,-1.05,.42),.42,.3,'Black','Y',20,.05);cyl('Caravan wheel',(0,1.05,.42),.42,.3,'Black','Y',20,.05)
+    box('Drawbar',(2.8,0,.55),(1.4,.12,.12),'Metal',.03);cyl('Jockey wheel',(3.3,0,.2),.18,.1,'Black','Y',12)
+    awning(0,-1.07,2.35,3.0,1.4,6)
+    collision('Caravan',(0,0,1.3),(4.5,2.2,2.6))
+
+def telescope():
+    cyl('Scope post',(0,0,.55),.08,1.1,'Tint_Shutter','Z',10);cyl('Scope base',(0,0,.05),.3,.1,'Tint_Shutter','Z',12)
+    cyl('Scope body',(0,-.15,1.28),.16,.8,'Tint_Shutter','Y',14);cyl('Scope eye',(0,.3,1.22),.09,.2,'Black','Y',10)
+    cyl('Scope lens',(0,-.57,1.33),.17,.06,'Glass','Y',14)
+    collision('Scope',(0,0,.7),(.5,.5,1.4))
+
+def kiosk():
+    """Ice-cream kiosk with a giant cone on the roof and a striped awning."""
+    w,d,h=3.2,2.6,2.6
+    box('Kiosk',(0,0,h/2),(w,d,h),'Tint_Wall',.2)
+    box('Counter',(0,-d/2-.05,1.0),(w-.4,.3,.12),'WhiteTrim',.04)
+    box('Serving hatch',(0,-d/2-.02,1.65),(w-.7,.06,1.0),'GlassLit',.03)
+    awning(0,-d/2,2.45,w,1.0,6)
+    box('Kiosk roof',(0,0,h+.1),(w+.3,d+.3,.2),'WhiteTrim',.08)
+    cyl('Cone',(0,0,h+.9),.05,1.3,'Yellow','Z',16,.03,r2=.5)
+    for k,c in enumerate(['FlowerPink','FlowerWhite','FlowerRed']):sphere('Scoop',(0,0,h+1.75+k*.42),(.52-k*.06,.52-k*.06,.42),c,2)
+    collision('Kiosk',(0,0,h/2),(w+.2,d+.2,h))
+
+def flower_bed():
+    """Round raised flower bed with rings of colour."""
+    cyl('Bed wall',(0,0,.25),2.2,.5,'Stone','Z',28,.06);cyl('Bed soil',(0,0,.5),2.0,.04,'Soil','Z',28,.01)
+    for ring,(r,n,c) in enumerate([(1.7,16,'FlowerRed'),(1.15,11,'FlowerYellow'),(.6,6,'FlowerPink')]):
+        for k in range(n):
+            a=k*math.tau/n+ring*.3;sphere('Bed bloom',(math.cos(a)*r,math.sin(a)*r,.66+ring*.08),(.24,.24,.2),c,1)
+    sphere('Bed centre',(0,0,.95),(.4,.4,.5),'Leaf',2)
+    collision('Bed',(0,0,.35),(4.4,4.4,.7))
+
+def picnic_table():
+    box('Table top',(0,0,.78),(2.0,.9,.08),'Wood',.03)
+    for s in(-1,1):
+        box('Table bench',(0,s*.75,.45),(2.0,.32,.07),'Wood',.03)
+        for x in(-.8,.8):box('Table leg',(x,s*.35,.4),(.08,.08,.85),'WoodDark',.02,rot=(s*.5,0,0))
+    collision('Table',(0,0,.45),(2.1,2.0,.9))
+
+def chevron_sign():
+    """Bend warning board: yellow with black chevrons, pointing +X."""
+    for s in(-1,1):cyl('Sign leg',(s*.9,0,.9),.05,1.8,'Metal','Z',8)
+    box('Chevron board',(0,-.05,1.55),(2.2,.08,.8),'Yellow',.04)
+    for k in range(3):
+        for sgn in(-1,1):box('Chevron',(-.6+k*.6,-.1,1.55+sgn*.15),(.4,.04,.12),'Black',.02,rot=(0,sgn*.8,0))
+    collision('Sign',(0,0,1.2),(2.2,.3,2.2))
+
+def telegraph_pole():
+    cyl('Pole',(0,0,3.5),.14,7.0,'WoodDark','Z',10,.03,r2=.11)
+    box('Crossarm',(0,0,6.6),(2.0,.12,.12),'WoodDark',.03)
+    for x in(-.8,-.3,.3,.8):cyl('Insulator',(x,0,6.75),.06,.16,'WhiteTrim','Z',8)
+    collision('Pole',(0,0,3.5),(.3,.3,7))
+
+
 ASSETS={'house_a':house_a,'house_b':house_b,'shop':shop,'cafe':cafe,'post_office':post_office,
     'lamp_post':lamp_post,'bench':bench,'fountain':fountain,'tree_round':tree_round,'tree_cypress':tree_cypress,
     'tree_pine':tree_pine,'palm':palm,'bush':bush,
     'sea_wall':sea_wall,'promenade_rail':promenade_rail,'harbour_steps':harbour_steps,'pier':pier,'boat':boat,'beach_hut':beach_hut,'parasol':parasol,
-    'lighthouse':lighthouse,'windmill':windmill}
+    'lighthouse':lighthouse,'windmill':windmill,
+    'barn':barn,'fence':fence,'hay_bale':hay_bale,'tractor':tractor,'tent':tent,'campfire':campfire,'caravan':caravan,
+    'telescope':telescope,'kiosk':kiosk,'flower_bed':flower_bed,'picnic_table':picnic_table,'chevron_sign':chevron_sign,'telegraph_pole':telegraph_pole}
 ONLY=[a for a in args if a in ASSETS] or list(ASSETS)
 
 # ---------------------------------------------------------------- build / export / render
@@ -478,7 +599,7 @@ def build(name):
     return v
 
 def render_lineup(names,path):
-    reset();x=0;spacing={'house_a':12,'house_b':10,'shop':12,'cafe':14,'post_office':12,'fountain':8,'lighthouse':14,'windmill':12,'boat':8,'beach_hut':5,'parasol':5,'pier':6}
+    reset();x=0;spacing={'house_a':12,'house_b':10,'shop':12,'cafe':14,'post_office':12,'fountain':8,'lighthouse':14,'windmill':12,'boat':8,'beach_hut':5,'parasol':5,'pier':6,'barn':11,'caravan':7,'tractor':5,'kiosk':5,'flower_bed':6}
     for n in names:
         before=set(bpy.data.objects);ASSETS[n]()
         step=spacing.get(n,5);x+=step/2
@@ -504,4 +625,5 @@ if __name__=='__main__':
         RENDER.mkdir(parents=True,exist_ok=True)
         render_lineup([n for n in ONLY if n in('house_a','house_b','shop','cafe','post_office','fountain')],RENDER/'buildings.png')
         render_lineup([n for n in ONLY if n in('lighthouse','windmill','boat','beach_hut','parasol','pier')],RENDER/'landmarks.png')
+        render_lineup([n for n in ONLY if n in('barn','fence','hay_bale','tractor','tent','campfire','caravan','telescope','kiosk','flower_bed','picnic_table','chevron_sign','telegraph_pole')],RENDER/'countryside.png')
         render_lineup([n for n in ONLY if n in('lamp_post','bench','tree_round','tree_cypress','tree_pine','palm','bush')],RENDER/'props.png')

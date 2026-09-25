@@ -32,6 +32,7 @@ namespace LittleRoad
             var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));
             player=car.AddComponent<RoadCar>();player.Setup(world,0,EquipmentCatalog.Stats(Store.Data.Loadout()),false,1709,"owned equipment");world.cars.Add(player);world.running=true;
             if(RaceTrial.Has("--vertical-audit"))gameObject.AddComponent<VerticalMotionAudit>().Setup(world);
+            if(RaceTrial.Has("--ambient-traffic"))AmbientTraffic();
             if(RaceTrial.Has("--drive-trace"))gameObject.AddComponent<DriveTrace>().Setup(player,RaceTrial.Arg("--drive-trace"));
             if(RaceTrial.Has("--drive-replay"))gameObject.AddComponent<DriveReplay>().Setup(player,RaceTrial.Arg("--drive-replay"));
             // Speculative contacts snag internal road-mesh edges while the car yaws: a one-step
@@ -111,6 +112,19 @@ namespace LittleRoad
                 string id="postcard_"+i;if(Store.Data.collected.Contains(id))continue;
                 float d=world.track.length*(.12f+i*.17f);Vector3 p=world.track.At(d)+world.track.Right(d)*(i%2==0?13:-13)+Vector3.up*1.1f;
                 finds[id]=Block(id,p,new Vector3(.8f,.65f,.10f),new Color(1,.75f,.22f));
+            }
+        }
+        // Opt-in (--ambient-traffic): a few family cars cruising the loop on stock kit, using
+        // the finished-car planner (gentle cruise, no gates). The player stays cars[0].
+        void AmbientTraffic()
+        {
+            string[] bodies={"pebble","tallboy","picnic","dover"};Color[] paints={Toy.Hex(0xff7ac8),Toy.Hex(0x5ec8ff),Toy.Hex(0xffd23f),Toy.Hex(0x3ee6a4)};
+            for(int i=0;i<bodies.Length;i++) {
+                float d=world.track.length*(.18f+i*.21f);
+                var go=TrialWorld.Car(bodies[i],paints[i]);go.name="Traffic "+bodies[i];
+                go.transform.SetPositionAndRotation(world.track.At(d)+world.track.Right(d)*2.5f+Vector3.up*.15f,Quaternion.LookRotation(world.track.Forward(d)));
+                var car=go.AddComponent<RoadCar>();car.Setup(world,world.cars.Count,CarTuning.Stock,true,1709+i*31,"traffic");car.finished=true;
+                world.cars.Add(car);
             }
         }
         void Update()

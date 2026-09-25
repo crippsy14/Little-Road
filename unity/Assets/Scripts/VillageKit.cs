@@ -215,6 +215,23 @@ namespace LittleRoad
                 BayviewKit.Spawn("beach_hut",new Vector3(x,0,-126f),0,root,new BayviewKit.Tint(Toy.Hex(t),Color.white,Color.white,Toy.Hex(0x1d6fa8)));
             BayviewKit.Spawn("parasol",new Vector3(21f,0,-128f),30,root,new BayviewKit.Tint(Toy.Hex(0xffd23f),Toy.Hex(0xff4d5e),Toy.Hex(0xff4d5e),Color.white));
         }
+        // Village green behind the shops (ice-cream kiosk, flower beds, picnic tables) and a
+        // small car park east of the high street, well clear of the race shoulder.
+        void GreenAndCarPark()
+        {
+            BayviewKit.Spawn("kiosk",new Vector3(-33,0,-123.5f),180,root,new BayviewKit.Tint(Toy.Hex(0xffc8d2),Color.white,Toy.Hex(0xff7ac8),Color.white));
+            foreach(float x in new[]{-50f,-13f})BayviewKit.Spawn("flower_bed",new Vector3(x,0,-125f),x*9,root);
+            foreach(float x in new[]{-41f,-25f})BayviewKit.Spawn("picnic_table",new Vector3(x,0,-126f),90,root);
+            var paint=TrialWorld.Material("Car park paint",new Color(.97f,.96f,.9f));
+            Piece("Car park tarmac",new Vector3(19.4f,.01f,-101.5f),new Vector3(19.5f,.016f,7),TrialWorld.Material("Car park tarmac",new Color(.30f,.32f,.35f)));
+            string[] parked={"pebble","marlow","bramble","heron"};Color[] paints={Toy.Hex(0xff7ac8),Toy.Hex(0x5ec8ff),Toy.Hex(0x3ee6a4),Toy.Hex(0xffb400)};
+            for(int i=0;i<5;i++) {
+                float x=13+i*3.6f;Piece("Bay line",new Vector3(x-1.8f,.02f,-101.5f),new Vector3(.12f,.012f,5),paint);
+                if(i==4)continue;
+                var car=TrialWorld.Car(parked[i],paints[i]);car.name="Parked "+parked[i];car.transform.SetPositionAndRotation(new Vector3(x,.02f,-101.5f),Quaternion.Euler(0,i%2==0?180:0,0));
+                var box=car.AddComponent<BoxCollider>();box.center=CarBodies.Envelope.center;box.size=CarBodies.Envelope.size;car.tag="Respawn";
+            }
+        }
         void LegacyStreet()
         {
             House(new Vector3(-49,0,-109),9,9,6.5f,"TIDES & TYRES",true);
@@ -265,6 +282,7 @@ namespace LittleRoad
             Garage(new Vector3(-65,0,-109));
             if(BayviewKit.Has("cafe"))Street();else LegacyStreet();
             if(BayviewKit.Has("sea_wall"))Harbour();
+            if(BayviewKit.Has("kiosk"))GreenAndCarPark();
             var sign=Piece("Village welcome board",new Vector3(-84,1.2f,-96),new Vector3(2.5f,2.4f,.20f),wood,true);
             Sign("BAYVIEW\nSmall cars\nBright roads",sign.transform.position+Vector3.forward*.12f,.048f,new Color(1,.94f,.74f));
             // All architectural pieces share a small material palette. Static

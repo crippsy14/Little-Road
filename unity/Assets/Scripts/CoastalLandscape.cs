@@ -76,8 +76,10 @@ namespace LittleRoad
             height=Mathf.Lerp(height,Mathf.Min(height,-15.5f),inlet);
             // Harbour: the village pad ends at a sea wall (face z -134.4) above a shallow basin.
             // Deep sea stays deep; the cut hides inside the wall's 1.2 m core.
-            float harbour=Blend(-92,-80,x)*(1-Blend(22,32,x))*Blend(133.8f,135.2f,-z);
-            height=Mathf.Lerp(height,Mathf.Min(height,-14.5f),harbour);
+            float harbourX=Blend(-92,-80,x)*(1-Blend(22,32,x));
+            // Keep the promenade flat right up to the wall (the coast's natural fall leaked in).
+            height=Mathf.Lerp(height,0,harbourX*Blend(118,126,-z)*(1-Blend(133.8f,135.2f,-z)));
+            height=Mathf.Lerp(height,Mathf.Min(height,-14.5f),harbourX*Blend(133.8f,135.2f,-z));
             return height;
         }
         Material Surface(string name,Color color)
@@ -283,7 +285,7 @@ namespace LittleRoad
             for(int i=0;i<520;i++) {
                 float x=(float)rng.NextDouble()*310-155,z=(float)rng.NextDouble()*235-118;var p=new Vector3(x,0,z);
                 float d=track.Nearest(p,out float lateral),distance=FlatDistance(p,track.At(d));
-                if(distance<18||VillageDistance(p)<7||FlatDistance(p,post)<24)continue;
+                if(distance<18||VillageDistance(p)<7||FlatDistance(p,post)<24||BayviewCountryside.Reserved(p))continue;
                 float h=Height(x,z);if(h<-.1f||Mathf.Abs(Height(x+1,z)-h)>1||Mathf.Abs(Height(x,z+1)-h)>1)continue;
                 float size=5+(float)rng.NextDouble()*5;
                 if(!SurfacePoint(p,out var surface)||surface.normal.y<.62f)continue;p=surface.point;
@@ -321,7 +323,7 @@ namespace LittleRoad
                 float along=d+(float)rng.NextDouble()*4-2;
                 float offset=15.7f+(float)rng.NextDouble()*17;
                 Vector3 p=track.At(along)+track.Right(along)*side*offset;
-                if(!SolidClearance(p)||Mathf.PerlinNoise(p.x*.06f+18,p.z*.06f+53)<.43f)continue;
+                if(!SolidClearance(p)||BayviewCountryside.Reserved(p)||Mathf.PerlinNoise(p.x*.06f+18,p.z*.06f+53)<.43f)continue;
                 bool nearFind=false;
                 for(int find=0;find<5;find++) {
                     float fd=track.length*(.12f+find*.17f);Vector3 fp=track.At(fd)+track.Right(fd)*(find%2==0?13:-13);
@@ -353,6 +355,7 @@ namespace LittleRoad
                 var hill=new Vector3(-24,0,12);hill.y=Height(hill.x,hill.z)-.4f;
                 BayviewKit.Spawn("windmill",hill,200,BayviewKit.AnimatedRoot,new BayviewKit.Tint(Color.white,Toy.Hex(0x3a7bd5),Toy.Hex(0xff4d5e),Toy.Hex(0x3a7bd5)));
             }
+            new BayviewCountryside(this,track,root).Build();
             // Runtime static batching converts combined geometry to 16-bit
             // chunks. Keep the large grass mesh and displaced sea independent.
             StaticBatchingUtility.Combine(root.gameObject);

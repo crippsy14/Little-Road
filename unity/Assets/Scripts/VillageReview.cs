@@ -94,6 +94,10 @@ namespace LittleRoad
             yield return Frame("m13-harbour",new Vector3(-40,0,-95),90,new Vector3(-12,6,-172),new Vector3(-34,-6,-138));
             yield return Frame("m14-promenade",new Vector3(-40,0,-95),90,new Vector3(-8,2.2f,-129),new Vector3(-45,-1,-137));
             yield return Frame("m15-windmill",track.At(track.length*.6f),0,new Vector3(-24,48,-40),new Vector3(-24,28,12));
+            yield return Frame("m16-farm",track.At(track.length*.6f),0,new Vector3(46,34,-38),new Vector3(38,8,0));
+            yield return Frame("m17-campsite",track.At(track.length*.6f),0,new Vector3(-40,34,-46),new Vector3(-58,12,-20));
+            yield return Frame("m18-green",new Vector3(-40,0,-95),90,new Vector3(-20,9,-136),new Vector3(-35,1,-121));
+            yield return Frame("m19-car-park",new Vector3(-40,0,-95),90,new Vector3(4,5,-93),new Vector3(20,0,-103));
             yield return Frame("m12-inland-hills",track.At(track.length*.6f),0,new Vector3(-10,42,-60),new Vector3(-20,6,30));
         }
         bool drivePassed;

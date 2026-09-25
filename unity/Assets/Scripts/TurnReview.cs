@@ -20,6 +20,7 @@ namespace LittleRoad
             string folder=RaceTrial.Arg("--trial-captures");if(string.IsNullOrEmpty(folder))throw new Exception("Turn review requires --trial-captures");Directory.CreateDirectory(folder);
             world=GetComponent<RaceTrial>();while(!world.running||world.cars.Count==0)yield return null;car=world.cars[0];probe=car.gameObject.AddComponent<TurnContactProbe>();
             if(RaceTrial.Has("--kick-probe")){yield return KickProbe(folder);yield break;}
+            if(RaceTrial.Has("--hill-review")){yield return HillClimb(folder);yield break;}
             var track=world.track;
             var places=new List<(string name,Vector3 at,Vector3 heading)>{("village paving",new Vector3(-50,0,-94),Vector3.left),("village forecourt",new Vector3(-40,0,-97),Vector3.left)};
             for(int i=0;i<14;i++){float d=track.length*i/14;places.Add(("road "+Mathf.RoundToInt(d),track.At(d),track.Forward(d)));}
@@ -41,6 +42,27 @@ namespace LittleRoad
         }
         // Random mid-corner states on the asphalt at 20 m/s, full lock toward the bend with the
         // throttle held; counts road-support contacts that change velocity by over 1.5 m/s.
+        // Drives up the windmill hill from four directions: records the car's pitch against the
+        // ground slope under it, and whether it ever tipped (up.y < 0.6).
+        IEnumerator HillClimb(string folder)
+        {
+            var lines=new List<string>();var top=new Vector3(-24,0,12);
+            foreach(float bearing in new[]{0f,90f,180f,270f}) {
+                var dir=Quaternion.Euler(0,bearing,0)*Vector3.forward;var start=top-dir*45;
+                if(!Physics.Raycast(start+Vector3.up*80,Vector3.down,out var hit,160)){lines.Add("no ground "+bearing);continue;}
+                start=hit.point+Vector3.up*(.03f-car.ContactBottom);
+                car.body.position=start;car.body.rotation=Quaternion.LookRotation(dir);car.body.linearVelocity=car.body.angularVelocity=Vector3.zero;
+                car.transform.SetPositionAndRotation(start,car.body.rotation);Physics.SyncTransforms();
+                car.commandSource=_=>new Vector2(1,0);float t=0,maxPitch=0,maxSlope=0,minUp=1,rise=0;float y0=start.y;
+                while(t<7){yield return new WaitForFixedUpdate();t+=Time.fixedDeltaTime;
+                    float pitch=Vector3.SignedAngle(Vector3.ProjectOnPlane(car.transform.forward,Vector3.up),car.transform.forward,car.transform.right);
+                    maxPitch=Mathf.Max(maxPitch,Mathf.Abs(pitch));minUp=Mathf.Min(minUp,car.transform.up.y);rise=Mathf.Max(rise,car.body.position.y-y0);
+                    if(Physics.Raycast(car.body.position+Vector3.up*2,Vector3.down,out var g,5)&&!g.collider.transform.IsChildOf(car.transform))maxSlope=Mathf.Max(maxSlope,Vector3.Angle(g.normal,Vector3.up));}
+                lines.Add($"bearing={bearing} rise={rise:0.0}m maxPitch={maxPitch:0.0} maxSlope={maxSlope:0.0} minUp={minUp:0.00} tipped={minUp<.6f}");
+            }
+            car.commandSource=null;File.WriteAllLines(Path.Combine(folder,"hill-review.txt"),lines);
+            Debug.Log("HILL_REVIEW "+string.Join(" | ",lines));Application.Quit();
+        }
         IEnumerator KickProbe(string folder)
         {
             var track=world.track;var random=new System.Random(1709);Time.timeScale=4;int kicks=0,trials=int.Parse(RaceTrial.Arg("--kick-trials","150"));float worst=0;var lines=new List<string>();
