@@ -25,7 +25,7 @@ namespace LittleRoad
         readonly uint seed;
         readonly float halfWidth,halfLength;
         readonly float[] heat=new float[Bins],smooth=new float[Bins];
-        readonly float[] allowed=new float[160],path=new float[160+2*Span];
+        readonly float[] allowed=new float[160],raw=new float[200],path=new float[160+2*Span];
         // Lateral bending is measured over +-Span samples (about 8 m): the steering look-ahead rounds off
         // shorter kinks, such as where a planned line meets the road edge.
         const int Span=4;
@@ -134,6 +134,8 @@ namespace LittleRoad
             float pedal=wheel>=0?wheel/Mathf.Max(.01f,DriveModel.EngineForce(tuning,v)):wheel/tuning.braking;
             // Below the limit line, full power: the braking recursion guarantees we can still slow in time.
             if(reason==Reason.Limit&&(limitSpeed>v+.5f||limitSpeed>=tuning.AttainableSpeed-.15f))pedal=1;
+            // Control: a less assured driver feeds the throttle in gently while still turning.
+            if(pedal>0&&Mathf.Abs(track.LineCurvature(track.Index(s)))>1/90f)pedal=Mathf.Min(pedal,ability.CornerThrottle);
             // Following: small slowdowns lift and coast (drag alone is ~4 m/s^2 at speed) rather than dab the brakes.
             if(reason==Reason.Follow&&wheel<0&&wheel>-2)pedal=0;
             pedal=Mathf.Clamp(pedal,-1,1);
@@ -158,14 +160,18 @@ namespace LittleRoad
             float next=attainable;
             // Bending is read from the planned line itself; the short correction from where the car is back
             // onto it is the steering's job, not a corner.
+            // Braking skill: a cautious braker wants to be down to a corner's speed `margin` metres before it.
+            int margin=Mathf.Min(Span,Mathf.RoundToInt(ability.BrakeMargin/step));
             for(int k=-Span;k<=count+Span;k++)path[k+Span]=PathTarget(s,k*step,edge);
             float span=Span*step;
-            for(int k=count;k>=0;k--) {
+            for(int k=count+margin;k>=0;k--) {
                 float x=k*step;int i=track.Index(s+x);
-                float kappa=track.OffLineCurvature(i,s+x,PathOffset(s,o,x,edge,lateralDistance),(path[k+2*Span]-2*path[k+Span]+path[k])/(span*span),span);
-                float grip=budget*track.Load(i,next);
+                float kappa=track.OffLineCurvature(i,s+x,PathOffset(s,o,x,edge,lateralDistance),(path[Mathf.Min(k+2*Span,path.Length-1)]-2*path[k+Span]+path[k])/(span*span),span);
+                float grip=budget*track.Load(i,k>count?attainable:next);
                 if(offRoad&&x<12)grip*=tuning.dirtGrip/Mathf.Max(.01f,tuning.roadGrip);
-                float corner=Mathf.Min(attainable,CornerSpeed(grip,cornerUse,kappa));
+                raw[k]=Mathf.Min(attainable,CornerSpeed(grip,cornerUse,kappa));
+                if(k>count)continue;
+                float corner=raw[k];for(int j=1;j<=margin;j++)corner=Mathf.Min(corner,raw[k+j]);
                 float lateral=next*next*Mathf.Abs(kappa);
                 float traction=Mathf.Sqrt(Mathf.Max(0,grip*grip-lateral*lateral));
                 float decel=Mathf.Max(.5f,Mathf.Min(tuning.braking,traction)*brakeUse+DriveModel.Resistance(next,tuning.mass)+track.Gravity(i));

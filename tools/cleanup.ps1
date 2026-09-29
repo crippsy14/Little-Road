@@ -7,9 +7,11 @@
 #     run-name letter prefix, e.g. map-sweep/v*, map-sweep/m*)
 #   - logs older than -LogDays, and any log bigger than -BigLogMB (runaway error spam)
 #   - per-tick race telemetry (*.track.json etc.) older than -TelemetryDays
+#   - racing AI study folders beyond the newest -KeepStudies; smoke/UI runs beyond the newest 6
+#   - editor-check scratch profiles; review/tmp files older than -ScratchDays
 #   - empty folders left behind
 # build-dev.ps1 runs it with -Apply -Quiet after every successful build.
-param([switch]$Apply,[switch]$Quiet,[int]$KeepRuns=3,[int]$LogDays=7,[int]$BigLogMB=50,[int]$TelemetryDays=1)
+param([switch]$Apply,[switch]$Quiet,[int]$KeepRuns=3,[int]$LogDays=7,[int]$BigLogMB=50,[int]$TelemetryDays=1,[int]$KeepStudies=2,[int]$ScratchDays=3)
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'));$review=Join-Path $root 'review'
 function Rel([string]$path){$path.Substring($root.Length+1) -replace '\\','/'}
@@ -28,6 +30,18 @@ foreach($f in $files) {
   $age=($now-$f.LastWriteTime).TotalDays
   if($f.Extension -eq '.log'){if($f.Length -gt $BigLogMB*1MB){Add $f 'log over size'}elseif($age -gt $LogDays){Add $f 'old log'}}
   elseif($f.Name -match '\.(track|driver-frames|traffic|motion-prediction|path-prediction)\.json$' -and $age -gt $TelemetryDays){Add $f 'per-tick telemetry'}
+}
+# Racing AI studies (review/unity-35/frame-cost-N): keep the newest -KeepStudies studies whole; the results
+# of older ones are written up in docs (docs/46 for the v2 AI).
+$studies=@(Get-ChildItem (Join-Path $review 'unity-35') -Directory -Filter 'frame-cost-*' -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending)
+foreach($study in ($studies | Select-Object -Skip $KeepStudies)){foreach($f in (Get-ChildItem $study.FullName -Recurse -File -Force)){Add $f 'older AI study run'}}
+# Adventure/UI smoke runs (review/ui-screens/<run>): keep the newest -KeepRuns*2 runs.
+$screens=@(Get-ChildItem (Join-Path $review 'ui-screens') -Directory -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending)
+foreach($run in ($screens | Select-Object -Skip ($KeepRuns*2))){foreach($f in (Get-ChildItem $run.FullName -Recurse -File -Force)){if(-not (Referenced (Rel $f.FullName))){Add $f 'older smoke/UI run'}}}
+# Editor-check scratch profiles (older builds left one per build) and scratch files older than -ScratchDays.
+foreach($f in $files){
+  if((Rel $f.FullName) -match '^review/unity-04/(bodies|profiles)-[0-9a-f]{32}/'){Add $f 'editor-check scratch'}
+  elseif((Rel $f.FullName) -match '^review/tmp/' -and ($now-$f.LastWriteTime).TotalDays -gt $ScratchDays){Add $f 'old scratch (review/tmp)'}
 }
 # Capture runs: folders holding images. A series is the parent folder plus the run name's letter
 # prefix (map-sweep/v12-..., v13-... are one series; m21-... another); keep the newest few of each.

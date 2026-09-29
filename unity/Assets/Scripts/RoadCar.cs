@@ -93,7 +93,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--physical-recovery"))physicalRecovery=new PhysicalRecovery();
             if(owner.DriverPolicyId=="traffic-v1"){trafficPolicy=new TrafficDriverPolicy(referenceProfile,recoverySensor);driverPolicy=trafficPolicy;}
             if(owner.DriverPolicyId=="context-v1"){contextPolicy=new ContextDriverPolicy(referenceProfile,recoverySensor,collider.center,collider.size*.5f);driverPolicy=contextPolicy;}
-            if(owner.DriverPolicyId=="racer-v2"){racerPolicy=new RacerDriverPolicy(owner.ReferenceLine,RacerAbilities.From(identity),id,owner.Roster?.Seed??seed,collider.size*.5f);driverPolicy=racerPolicy;if(physicalRecovery!=null)physicalRecovery.OffsetTrigger=13;}
+            if(owner.DriverPolicyId=="racer-v2"){racerPolicy=new RacerDriverPolicy(owner.ReferenceLine,RacerAbilities.From(identity).WithOverrides(RaceTrial.Arg("--racer-abilities")),id,owner.Roster?.Seed??seed,collider.size*.5f);driverPolicy=racerPolicy;if(physicalRecovery!=null)physicalRecovery.OffsetTrigger=13;}
             // Tyre/rolling resistance is already calculated by DriveModel.
             // Sliding a box with the default contact friction adds an unintended
             // ground brake, disproportionately affecting stock equipment.

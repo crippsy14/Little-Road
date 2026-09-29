@@ -8,6 +8,8 @@ param([int]$Study,[string]$Label,[string[]]$Flags=@(),[string[]]$Tracks=@('cedar
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $arms=@();if(-not $SkipBaseline){$arms+=,@('off',@())};$arms+=,@($Label,$Flags)
+# (A bare [bool]$KeepTelemetry in an argument list is passed as the text "[bool]False", which is truthy.)
+$keepTelemetry=$KeepTelemetry.IsPresent
 $queue=[Collections.Generic.Queue[object]]::new()
 foreach($track in $Tracks){foreach($seed in $Seeds){foreach($arm in $arms){
   $name="$track-s$seed-$($arm[0])"
@@ -17,14 +19,19 @@ foreach($track in $Tracks){foreach($seed in $Seeds){foreach($arm in $arms){
 $running=@()
 while($queue.Count -gt 0 -or $running.Count -gt 0){
   while($queue.Count -gt 0 -and $running.Count -lt $Jobs){
+    # The first AI (--first-ai) uses 8 forecast worker threads and is not repeatable under heavy load (study
+    # 206: Bayview 1709 gave 23/24 in parallel, 919.0 alone as always). Race it on its own.
+    $alone=$queue.Peek().Extra -contains '--first-ai'
+    if($alone -and $running.Count -gt 0){break}
+    if($running.Count -gt 0 -and $running[0][3]){break}
     $r=$queue.Dequeue()
     $job=Start-Job -ScriptBlock{param($root,$study,$r,$rate,$keep)
       Set-Location $root
       $a=@{Study=$study;Track=$r.Track;Seed=$r.Seed;Name=$r.Name;PlaybackRate=$rate}
       if($r.Extra.Count){$a.Extra=[string[]]$r.Extra};if($keep){$a.KeepTelemetry=$true}
       & .\tools\run-frame-cost.ps1 @a | Select-Object -Last 1
-    } -ArgumentList $root,$Study,$r,$PlaybackRate,[bool]$KeepTelemetry
-    $running+=,@($job,$r.Name,(Get-Date))
+    } -ArgumentList $root,$Study,$r,$PlaybackRate,$keepTelemetry
+    $running+=,@($job,$r.Name,(Get-Date),$alone)
   }
   Start-Sleep -Seconds 3
   foreach($entry in @($running)){

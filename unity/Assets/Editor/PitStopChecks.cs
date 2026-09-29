@@ -58,6 +58,8 @@ public static class PitStopChecks
         File.WriteAllText(retired,JsonUtility.ToJson(AdventureProgress.New()).Replace("\"bodyId\":\"puddle\"","\"bodyId\":\"coupe_car\"").Replace("\"bodies\":[\"puddle\"]","\"bodies\":[\"coupe_car\",\"pebble\",\"formula_car\"]"));
         var moved=new AdventureStore(retired);
         Check(moved.Data.bodyId==CarBodies.Starter&&moved.Data.bodies.SequenceEqual(new[]{"pebble",CarBodies.Starter})&&CarBodies.Retired.All(b=>!CarBodies.IsKnown(b)),"Saves on a retired body move to the starter and keep their other bodies");
+        // Scratch profile: kept only when a check fails (the exception above leaves it as evidence).
+        Directory.Delete(folder,true);
         return checks;
     }
 }

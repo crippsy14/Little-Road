@@ -62,6 +62,8 @@ public static class AdventureChecks
         Check(!paints.Repaint(0,150)&&paints.Repaint(5,150)&&paints.Data.credits==250&&!paints.Repaint(5,150),"Repaint charges once and refuses the current colour");
         paints=new AdventureStore(paints.path);Check(paints.Data.paintIndex==5&&paints.Data.credits==250,"Repaint persists across reload");
         Check(PaintCatalog.All.Length==16&&PaintCatalog.All[0].color==new Color(.08f,.56f,.49f),"Paint catalogue keeps the original first colours for old saves");
+        // Scratch profile: kept only when a check fails (the exception above leaves it as evidence).
+        Directory.Delete(folder,true);
         return checks;
     }
 }

@@ -35,15 +35,34 @@ namespace LittleRoad
             return a;
         }
 
+        // Test fixture (--racer-abilities line-0.2_braking-1): override named abilities for every driver.
+        public RacerAbilities WithOverrides(string spec)
+        {
+            if(string.IsNullOrWhiteSpace(spec))return this;var a=this;
+            foreach(var pair in spec.Split('_',',')) {
+                var kv=pair.Split(new[]{'-','='},2);if(kv.Length!=2||!float.TryParse(kv[1],System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float v))throw new ArgumentException("Bad ability override: "+pair);
+                v=Mathf.Clamp01(v);
+                switch(kv[0].Trim()) {
+                    case "braking":a.braking=v;break;case "line":a.line=v;break;case "control":a.control=v;break;case "consistency":a.consistency=v;break;
+                    case "racecraft":a.racecraft=v;break;case "strategy":a.strategy=v;break;case "aggression":a.aggression=v;break;case "patience":a.patience=v;break;
+                    case "all":a.braking=a.line=a.control=a.consistency=a.racecraft=v;break;
+                    default:throw new ArgumentException("Unknown ability: "+kv[0]);
+                }
+            }
+            return a;
+        }
+
         // How the abilities turn into driving numbers. Kept together so checks and tuning see one table.
-        public float CornerUse=>.88f+.07f*line;              // share of the steady cornering limit
+        public float CornerUse=>.8f+.15f*line;               // share of the steady cornering limit
         public float BrakeUse=>.86f+.11f*braking;            // share of brake/tyre deceleration
-        public float ApexError=>.6f*(1-line);                // metres of seeded lateral error per corner
+        public float ApexError=>1.2f*(1-line);               // metres of seeded lateral error per corner
+        public float BrakeMargin=>8*(1-braking);             // metres early a driver wants to be at corner speed
+        public float CornerThrottle=>.55f+.45f*control;      // throttle limit while still turning
         public float BrakeScatter=>.05f*(1-braking);         // +- share of BrakeUse, seeded per corner
         public float PedalRise=>3+6*control;                 // pedal units per second when getting back on power
         public float LateralRate=>1.6f+1.6f*control;         // metres per second of deliberate lateral movement
         public float LaunchDelay=>.06f+.22f*(1-control);     // seconds after the lights
-        public float SpellDip=>.005f+.035f*(1-consistency);  // grip/brake use lost during an off spell
+        public float SpellDip=>.01f+.06f*(1-consistency);    // grip/brake use lost during an off spell
         public float Reaction=>.25f-.13f*racecraft;          // Gipps reaction time in traffic, seconds
         public float Standstill=>1.3f-.7f*aggression;        // metres kept behind a car at low speed
         public float Clearance=>.85f-.55f*aggression;        // metres of side room wanted when passing

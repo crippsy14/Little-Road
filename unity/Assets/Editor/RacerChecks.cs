@@ -11,7 +11,7 @@ public static class RacerChecks
     {
         var checks=new List<string>();void Check(bool pass,string label){if(!pass)throw new Exception("Racer check: "+label);checks.Add(label);}
         var low=new RacerAbilities();var high=new RacerAbilities{braking=1,line=1,control=1,consistency=1,racecraft=1,strategy=1,aggression=1,patience=1};
-        Check(low.CornerUse>=.82f&&high.CornerUse<=.96f&&low.BrakeUse>=.85f&&high.BrakeUse<.98f&&high.LateBrake<=.04f,
+        Check(low.CornerUse>=.78f&&high.CornerUse<=.96f&&low.BrakeUse>=.85f&&high.BrakeUse<.98f&&high.LateBrake<=.04f,
             "Abilities map to grip and brake use near, never beyond, the physical limit");
         Check(low.Reaction>high.Reaction&&high.Reaction>.1f&&low.Standstill>high.Standstill&&high.Standstill>.5f&&low.Clearance>high.Clearance&&high.Clearance>.2f,
             "Racecraft shortens reaction time and Aggression tightens gaps, within safe floors");

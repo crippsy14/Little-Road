@@ -196,3 +196,20 @@ Races are deterministic: hidden 4× screens and normal-speed runs of the same bu
 Study 205 passes the protocol: all 24 finish, no new assisted resets, and total finish time improves by 118.9 s over six races (19.8 s per race). The gain is all Bayview. Cedar is 33.5 s behind, and 132 s of the Bayview gain is the first AI's poor seed 1709. Soft contacts remain higher than the first AI's (15–64 against 1–8).
 
 **29 September: v2 is the default driver** (Richard), for adventure races and trials alike. `--first-ai` races the first AI as the benchmark; `--racer-v2` is still accepted and changes nothing.
+
+### Abilities that show (study 206)
+
+Solo club laps on Cedar (standing start from the back of the grid) showed the first mapping barely mattered: every ability from worst to best was within 0.5 s, and Braking did nothing. Cedar's racing line tightens gradually, so a car rarely needs more than half its braking, and the lap is not very sensitive to grip use. The mapping now puts each ability where the lap is sensitive:
+
+| Ability | Now | Solo Cedar lap at 0 (others at default) |
+|---|---|---|
+| Braking | how early the driver wants to be at corner speed (up to 8 m early at 0), plus brake use 0.86–0.97 | +0.7 s |
+| Line | corner grip use 0.80–0.95; apex error up to 1.2 m | +0.8 s |
+| Control | throttle limited to 55–100% while still turning; pedal rise; lane-change rate | +1.6 s |
+| Consistency | off spells losing 1–7% grip and braking for 8–18% of the time | +0.2 s (its job is variety between races and spells) |
+
+All abilities at 0: 72.1 s. At 0.5: 69.4 s. At 1: 68.3 s (5.6% spread). `--racer-abilities line-0.2_braking-1` overrides them for tests.
+
+Study 206 (same build; `--first-ai` for the benchmark): v2 Cedar 6,375.5 against 6,345.0 (+30.5); Bayview 2,383.2 against 2,510.2 (−127.0). All 24 finish, no assisted resets. That's 16.1 s better per race. The slower lower-rated drivers cost v2 a little pace, as intended.
+
+**The first AI is not repeatable under heavy parallel load.** Its 8 forecast worker threads made Bayview 1709 finish 23/24 with 2 resets when six races ran at once, but 919.0 s alone, as always. `run-pace-parallel.ps1` now races any `--first-ai` run on its own. v2 is single-threaded and repeatable in parallel.
