@@ -28,8 +28,8 @@ namespace LittleRoad
             bool lane=scenario=="lane-left"||scenario=="lane-middle"||scenario=="lane-right";
             bool rejoin=scenario=="rejoin-left"||scenario=="rejoin-right";
             bool corner=Array.IndexOf(new[]{"corner-solo-left","corner-solo-middle","corner-solo-right","corner-solo-deep","corner-pair-left","corner-pair-right","corner-three"},scenario)>=0;
-            int required=scenario=="field"?24:scenario=="solo"||scenario=="standing-solo"||scenario=="pace-solo"||lane||rejoin||scenario.StartsWith("corner-solo-")?1:scenario=="queue"||scenario=="corner-three"?3:2;
-            if(course==null||race.cars.Count!=required||(!lane&&!corner&&Array.IndexOf(new[]{"draft-straight","draft-pullout","solo","standing-solo","pace-solo","follow","pass","no-room","queue","field","rear-control","rear-control-left","rear-control-right","rejoin-left","rejoin-right","crossing-pass","brake-leader","brake-probe","merge-left","merge-right","merge-witness-left","merge-witness-right"},scenario)<0))throw new ArgumentException("Invalid declared traffic fixture.");
+            int required=scenario=="field"?24:scenario=="class-sort"?RaceGrid.ClassSortCars:scenario=="solo"||scenario=="standing-solo"||scenario=="pace-solo"||lane||rejoin||scenario.StartsWith("corner-solo-")?1:scenario=="queue"||scenario=="corner-three"?3:2;
+            if(course==null||race.cars.Count!=required||(!lane&&!corner&&Array.IndexOf(new[]{"draft-straight","draft-pullout","solo","standing-solo","pace-solo","follow","pass","no-room","queue","field","class-sort","rear-control","rear-control-left","rear-control-right","rejoin-left","rejoin-right","crossing-pass","brake-leader","brake-probe","merge-left","merge-right","merge-witness-left","merge-witness-right"},scenario)<0))throw new ArgumentException("Invalid declared traffic fixture.");
             if(lane) {
                 if(race.cars[0].trafficPolicy==null)throw new ArgumentException("Lane fixture requires the local traffic controller.");
                 float side=scenario=="lane-left"?-4:scenario=="lane-right"?4:0;
@@ -37,11 +37,11 @@ namespace LittleRoad
                 evidence=new Evidence{scenario=scenario,scope="Full standing lap, fixed road corridor, ordinary local driver/physics. Tests off-reference tracking independently of traffic choice.",passes=Array.Empty<PassEvidence>()};
                 Physics.SyncTransforms();return;
             }
-            if(scenario=="field"||scenario=="standing-solo") {
+            if(scenario=="field"||scenario=="class-sort"||scenario=="standing-solo") {
                 // Experimental full-field preview keeps the normal stationary
                 // starting grid and lap/checkpoint accounting. No mid-lap placing.
                 released=true;
-                evidence=new Evidence{scenario=scenario,scope=scenario=="standing-solo"?"One car from the exact24-car player rear-grid slot, full standing lap, ordinary AI/physics; traffic removed without moving the player start.":"Experimental 24-car full race from the normal standing grid. Traffic behaviour is not yet accepted for production.",passes=Array.Empty<PassEvidence>()};
+                evidence=new Evidence{scenario=scenario,scope=scenario=="class-sort"?"15-car overtaking fixture from a class-mixed standing grid (3/2/3/1/empty/2 rows, 1 fastest); ordinary AI/physics.":scenario=="standing-solo"?"One car from the exact24-car player rear-grid slot, full standing lap, ordinary AI/physics; traffic removed without moving the player start.":"Experimental 24-car full race from the normal standing grid. Traffic behaviour is not yet accepted for production.",passes=Array.Empty<PassEvidence>()};
                 return;
             }
             float start=course.regionStarts[13]+40;
@@ -114,9 +114,9 @@ namespace LittleRoad
             foreach(var car in race.cars)if(car.trafficPolicy!=null&&lastIntent[car.driverId]!=car.trafficPolicy.Intent) {
                 var policy=car.trafficPolicy;decisions.Add(new IntentEvent{id=car.driverId,time=race.elapsed,progress=car.progress,offset=policy.PlannedOffset,intent=policy.Intent,reason=policy.Reason,leader=policy.Leader,rejected=policy.Rejected,clearance=policy.Clearance});
                 lastIntent[car.driverId]=policy.Intent;
-                if(evidence.scenario!="field"||car.driverId==0)Debug.Log($"TRAFFIC_INTENT id={car.driverId} t={race.elapsed:0.00} {policy.Intent} offset={policy.PlannedOffset:0.00} reason={policy.Reason}");
+                if((evidence.scenario!="field"&&evidence.scenario!="class-sort")||car.driverId==0)Debug.Log($"TRAFFIC_INTENT id={car.driverId} t={race.elapsed:0.00} {policy.Intent} offset={policy.PlannedOffset:0.00} reason={policy.Reason}");
             }
-            if(evidence.scenario=="field")return;
+            if(evidence.scenario=="field"||evidence.scenario=="class-sort")return;
             foreach(var pass in evidence.passes) {
                 var a=race.cars[pass.follower];var b=race.cars[pass.leader];if(a.finished||b.finished)continue;
                 if(b.progress-a.progress<-(a.CollisionHalf.z+b.CollisionHalf.z+2)) {

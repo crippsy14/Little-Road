@@ -23,6 +23,12 @@ namespace LittleRoad
             Place(player.body.position,player.body.rotation.eulerAngles.y);
             yield return new WaitForSeconds(.3f);ui.Capture(Path.Combine(folder,"01-default-chase.png"));
             ui.SetVisible(false);
+            if(RaceTrial.Has("--world-map")){yield return WorldMap.Capture(cameraView,folder,GetComponent<AdventureGame>().ResidentDirectory(),world.track);Application.Quit(0);yield break;}
+            if(RaceTrial.Has("--edge-audit")){File.WriteAllText(Path.Combine(folder,"edge-audit.txt"),PlacementAudit.Edges());Application.Quit(0);yield break;}
+            if(RaceTrial.Has("--car-audit")){yield return new WaitForSeconds(1);File.WriteAllText(Path.Combine(folder,"car-audit.txt"),StationarySpot.Audit());Application.Quit(0);yield break;}
+            if(RaceTrial.Has("--placement-audit")){File.WriteAllText(Path.Combine(folder,"placement-audit.txt"),PlacementAudit.Run());Application.Quit(0);yield break;}
+            if(RaceTrial.Has("--zip-survey")){File.WriteAllText(Path.Combine(folder,"zip-survey.txt"),ZipLine.Survey());Application.Quit(0);yield break;}
+            if(RaceTrial.Has("--valley-views"))yield return ValleyViews(world);else {
             yield return Frame("02-village-approach",new Vector3(-39,.10f,-91),270,new Vector3(-28,4,-88),new Vector3(-66,2.2f,-104));
             yield return Frame("03-garage-forecourt",new Vector3(-66,.10f,-99),180,new Vector3(-69,3.4f,-88),new Vector3(-65,2.6f,-108));
             yield return Frame("04-open-workshop",new Vector3(-65,.10f,-108),180,new Vector3(-66.5f,2.9f,-100),new Vector3(-65,1.9f,-112));
@@ -46,6 +52,7 @@ namespace LittleRoad
             water.Surface.SetFloat("_ReviewTime",-1);
             if(RaceTrial.Has("--map-views"))yield return MapViews(world);
             if(RaceTrial.Has("--cliff-study"))yield return Frame("13-cliff-driving-distance",world.track.At(bridge),Quaternion.LookRotation(forward).eulerAngles.y,new Vector3(-115,3.5f,-16),new Vector3(-97,7,-7));
+            }
             var evidence=new Evidence();Physics.SyncTransforms();
             var lane=GameObject.Find("Lighthouse lane");
             if(lane==null)evidence.obstructions.Add("Missing lighthouse access lane");
@@ -58,8 +65,9 @@ namespace LittleRoad
                 evidence.roadSamples++;var hits=Physics.OverlapBox(world.track.At(d)+Vector3.up, new Vector3(7.8f,.8f,1.5f),Quaternion.LookRotation(world.track.Forward(d)));
                 foreach(var hit in hits)if(hit.CompareTag("Respawn"))evidence.obstructions.Add("Road "+d.ToString("0.0")+": "+hit.name);
             }
+            float bay=GarageBayX;
             for(float z=-99;z>=-109;z-=1) {
-                evidence.garageSamples++;var hits=Physics.OverlapBox(new Vector3(-65,.9f,z),new Vector3(1.25f,.75f,1.8f),Quaternion.identity);
+                evidence.garageSamples++;var hits=Physics.OverlapBox(new Vector3(bay,.9f,z),new Vector3(1.25f,.75f,1.8f),Quaternion.identity);
                 foreach(var hit in hits)if(hit.CompareTag("Respawn"))evidence.obstructions.Add("Garage "+z+": "+hit.name);
             }
             for(float x=-72;x<= -20;x+=2) {
@@ -98,9 +106,163 @@ namespace LittleRoad
             yield return Frame("m17-campsite",track.At(track.length*.6f),0,new Vector3(-40,34,-46),new Vector3(-58,12,-20));
             yield return Frame("m18-green",new Vector3(-40,0,-95),90,new Vector3(-20,9,-136),new Vector3(-35,1,-121));
             yield return Frame("m19-car-park",new Vector3(-40,0,-95),90,new Vector3(4,5,-93),new Vector3(20,0,-103));
+            // Interaction prompt: stopped in front of Mara at the Pit Stop garage bay.
+            if(PitStop.Hosts.TryGetValue("bayview/garage",out var mara)){var car=mara.at+new Vector3(0,0,6.2f);
+                ui.SetVisible(true);yield return Frame("i00-prompt-mara",car,180,car+new Vector3(1.5f,3.4f,6.5f),car+Vector3.up*.9f+new Vector3(0,0,-1.7f));ui.SetVisible(false);}
+            yield return Frame("h1-causeway-start",new Vector3(27,0,-101.5f),100,new Vector3(14,7,-92),new Vector3(60,0,-125));
+            yield return Frame("h2-causeway-side",new Vector3(27,0,-101.5f),100,new Vector3(150,6,-250),new Vector3(80,-4,-240));
+            yield return Frame("h3-mainland",new Vector3(27,0,-101.5f),100,new Vector3(100,70,-330),new Vector3(92,20,-560));
+            yield return Frame("h4-hill-road",new Vector3(27,0,-101.5f),100,new Vector3(150,40,-470),new Vector3(100,15,-520));
             yield return Frame("m12-inland-hills",track.At(track.length*.6f),0,new Vector3(-10,42,-60),new Vector3(-20,6,30));
         }
+        // Hillcrest Valley review frames (--valley-views): the crossing, the reveal, the town,
+        // the landmarks and an overhead map. The car is parked by the square throughout.
+        IEnumerator ValleyViews(RaceTrial world)
+        {
+            var sq=HillcrestRoute.Square;var park=sq+new Vector3(-6,0,-4);
+            bool costOnly=RaceTrial.Has("--valley-cost-only");
+            IEnumerator V(string name,Vector3 cameraPosition,Vector3 target,float fov=55,bool keepPlayer=false)
+            {
+                if(costOnly)yield break;
+                cameraView.fieldOfView=fov;if(!keepPlayer)PlaceAt(park,60);
+                cameraView.transform.position=cameraPosition;cameraView.transform.LookAt(target);WorldLook.Cut(cameraView);yield return new WaitForFixedUpdate();yield return new WaitForSeconds(.6f);
+                ui.Capture(Path.Combine(folder,name+".png"));Debug.Log("VALLEY_FRAME "+name);
+            }
+            var main=HillcrestRoute.Mainline;float north=HillcrestRoute.PortalNorthRun,south=HillcrestRoute.PortalSouthRun;
+            Vector3 On(float d,float up=0,float side=0)=>main.At(d)+Vector3.up*up+main.Right(d)*side;
+            yield return V("v01-causeway-approach",On(north-150,4.5f,-1),On(north,6));
+            yield return V("v02-cliff-from-sea",new Vector3(20,6,-360),new Vector3(100,30,-470));
+            yield return V("v03-tunnel",On(north+40,2.4f),On(south,1.5f));
+            yield return V("v04-the-reveal",On(south+6,3.2f),On(south+6,-6)+main.Forward(south+6)*200,62);
+            yield return V("v05-vista",HillcrestRoute.Vista+new Vector3(-4,3,4),new Vector3(200,30,-1100));
+            yield return V("v06-valley-aerial",new Vector3(60,300,-420),new Vector3(160,0,-1100),60);
+            yield return V("v07-town-from-bridge",On(main.Length-50,2.5f),new Vector3(200,40,-1100));
+            yield return V("v08-square",sq+new Vector3(-34,12,-8),sq+new Vector3(10,2,0));
+            yield return V("v09-castle",new Vector3(110,85,-990),new Vector3(200,52,-1110));
+            yield return V("v10-falls",HillcrestRoute.Lookout+new Vector3(-2,5,-6),HillcrestRoute.FallsHead+new Vector3(10,-6,20));
+            yield return V("v11-raceway",new Vector3(-280,55,-980),new Vector3(-450,10,-1260));
+            yield return V("v12-station",new Vector3(420,45,-930),new Vector3(505,9,-1035));
+            yield return V("v13-mountains",new Vector3(150,14,-1320),new Vector3(150,260,-3600));
+            yield return V("v14-back-to-sea",new Vector3(200,70,-1150),new Vector3(100,20,-450));
+            yield return V("v15-overhead",new Vector3(100,2600,-1080),new Vector3(100,0,-1079),45);
+            yield return V("v16-bayview-halt",new Vector3(62,10,-98),new Vector3(100,1,-145));
+            yield return V("v17-sea-viaduct",new Vector3(60,14,-300),new Vector3(135,10,-380));
+            var crest=HillcrestRoute.Crest;yield return V("v18-street-life",crest.At(140)+Vector3.up*2.2f-crest.Forward(140)*6,crest.At(170)+Vector3.up*1.5f);
+            yield return V("v19-quay-life",new Vector3(20,3.2f,-905)+Vector3.up*6,new Vector3(160,6,-915));
+            yield return V("v20-lake-shore",new Vector3(-330,16,-1180),new Vector3(-400,4,-1260));
+            yield return V("v21-poplar-avenue",HillcrestRoute.Mainline.At(HillcrestRoute.Mainline.Length-160)+Vector3.up*2.5f,HillcrestRoute.Mainline.At(HillcrestRoute.Mainline.Length-100)+Vector3.up*2);
+            // Interaction prompts: stopped beside Gio (prompt card + targeted badge), then the Pit Stop
+            // badges from the road while driving past (the card asks you to slow down).
+            if(HillcrestTown.Spots.TryGetValue("motors",out var gio)) {
+                var rot=Quaternion.Euler(0,gio.yaw,0);var stand=gio.at+rot*new Vector3(0,0,6.5f);
+                PlaceAt(stand,gio.yaw+180);yield return new WaitForSeconds(.8f);
+                ui.SetVisible(true);yield return V("i01-prompt-gio",stand+rot*new Vector3(-2.5f,3.2f,7.5f),gio.at+Vector3.up*1.2f,58,true);ui.SetVisible(false);
+                var road=gio.at+rot*new Vector3(-14,0,10);PlaceAt(road,gio.yaw+90);yield return new WaitForSeconds(.8f);
+                yield return V("i02-pit-badges",gio.at+rot*new Vector3(-22,3.5f,10),gio.at+Vector3.up*2+rot*new Vector3(4,0,0),58,true);
+            }
+            // Meadow grass up close (GrassField): eye height across open ground by the lake.
+            {var g=new Vector3(-310,0,-1160);g.y=ValleyField.Height(g.x,g.z)+1.3f;var look=new Vector3(-340,0,-1190);look.y=ValleyField.Height(look.x,look.z)+.4f;
+             PlaceAt(park,60);cameraView.transform.position=g;cameraView.transform.LookAt(look);yield return new WaitForSeconds(1.5f);yield return V("g01-meadow-close",g,look);}
+            // Pit Stops (every town): three-quarter arrival view and the bays close up.
+            foreach(var pair in PitStop.Sites) {
+                var site=pair.Value;float yaw=0;foreach(var h in PitStop.Hosts)if(h.Key.StartsWith(pair.Key+"/")){yaw=h.Value.yaw;break;}
+                var rot=Quaternion.Euler(0,yaw,0);
+                yield return V("p-"+pair.Key+"-arrival",site+rot*new Vector3(-28,9,19),site+Vector3.up*5+rot*new Vector3(0,0,4));
+                yield return V("p-"+pair.Key+"-bays",site+rot*new Vector3(4,2.4f,19),site+Vector3.up*2.6f,62);
+            }
+            if(HillcrestTown.Chimneys.Count>0){var ch=HillcrestTown.Chimneys[0];yield return V("v22-chimney",ch+new Vector3(10,4,10),ch);}
+            // The Bayview end: junction, quay, gateway, bridge, ridge and each tunnel mouth.
+            yield return V("v23-junction",On(0,4,-10)-main.Forward(0)*14,On(40,1));
+            yield return V("v24-halt-forecourt",new Vector3(80,3.2f,-104),new Vector3(92,1,-150));
+            yield return V("v25-halt-from-sea",new Vector3(150,6,-205),new Vector3(92,2,-135));
+            yield return V("v26-gateway",On(40,2.2f,-1.5f),On(110,2));
+            yield return V("v27-bridge-arches",new Vector3(40,-6,-300),new Vector3(90,4,-330));
+            yield return V("v28-north-portal",On(north-45,4,-3),On(north,6));
+            yield return V("v29-sea-portal",HillcrestRoute.SeaPortal+new Vector3(-6,6,40),HillcrestRoute.SeaPortal+Vector3.up*3);
+            yield return V("v30-ridge-from-sea",new Vector3(-150,8,-330),new Vector3(0,30,-480));
+            yield return V("v31-south-portal",On(south+30,4,2),On(south,5));
+            yield return V("v32-valley-rail-portal",HillcrestRoute.ValleyPortal+new Vector3(40,8,-6),HillcrestRoute.ValleyPortal+Vector3.up*3);
+            // Golden Acre Farm. A crop circle and a drive line are pressed into the wheat first.
+            Vector3 Fm(float x,float z,float up=0){var p=HillcrestRoute.Farm(x,z);p.y=ValleyField.Height(p.x,p.z)+up;return p;}
+            var golden=WheatField.All.Find(f=>f.name=="Golden Acre wheat");var ring=Fm(HillcrestTown.WheatLocal.x+30,HillcrestTown.WheatLocal.y);
+            if(golden!=null) {
+                for(float a=0;a<360;a+=3){var dir=new Vector3(Mathf.Sin(a*Mathf.Deg2Rad),0,Mathf.Cos(a*Mathf.Deg2Rad));var tangent=Vector3.Cross(Vector3.up,dir);golden.Press(ring+dir*14,tangent,tangent,1.2f,1.3f);golden.Press(ring+dir*5,tangent,tangent,1.2f,1.3f);}
+                Vector3 from=Fm(-46,-8),to=Fm(0,24);for(float t=0;t<=1;t+=.01f)golden.Press(Vector3.Lerp(from,to,t),to-from,to-from,2.3f,1.2f);
+            }
+            yield return V("v33-farm-aerial",Fm(-170,150,80),Fm(0,0));
+            yield return V("v34-farm-yard",Fm(-116,40,5),Fm(-60,78,3));
+            yield return V("v35-wheat-car-height",Fm(-52,-14,1.5f),Fm(10,-2,1));
+            yield return V("v36-crop-circle",ring+new Vector3(-30,40,-30),ring);
+            yield return V("v37-sunflowers",Fm(-70,-60,6),Fm(-98,4));
+            yield return V("v38-farm-gate",Fm(-150,48,4),Fm(-100,56,3));
+            // Realism sweep: the Bayview gatehouses from the water, the station forecourt, the paddock.
+            yield return V("v39-gatehouses-from-sea",new Vector3(118,3,-372),new Vector3(120,20,-452));
+            yield return V("v40-gatehouses-close",On(north-60,6,-12),new Vector3(115,24,-452));
+            yield return V("v41-station-forecourt",new Vector3(404,14,-1004),new Vector3(436,8,-1036));
+            yield return V("v42-paddock",new Vector3(-320,22,-1012),new Vector3(-362,9,-1056));
+            // Junctions and the raceway (v2 layout).
+            yield return V("j01-mainline-quay",new Vector3(92,22,-872),new Vector3(110,7,-905));
+            yield return V("j02-crest",new Vector3(244,20,-948),new Vector3(262,7,-922));
+            yield return V("j03-station-road",new Vector3(378,20,-962),new Vector3(395,7,-938));
+            yield return V("j04-bayview-junction",new Vector3(56,14,-104),new Vector3(68,0,-80));
+            yield return V("j05-give-way",On(main.Length-42,2.2f,1.6f),On(main.Length-2,1.2f));
+            yield return V("r01-raceway-overhead",new Vector3(-400,700,-1262),new Vector3(-400,0,-1261),50);
+            yield return V("r02-raceway-hairpins",new Vector3(-120,30,-1230),new Vector3(-200,9,-1310));
+            yield return V("r03-raceway-t1",new Vector3(-470,6,-1082),new Vector3(-584,9,-1115));
+            // Fidelity close-ups: a street facade, the castle walls, causeway masonry, trees.
+            yield return V("f01-facades",crest.At(150)-crest.Right(150)*1.5f+Vector3.up*2.2f,crest.At(162)+crest.Right(162)*12+Vector3.up*4);
+            yield return V("f02-castle",HillcrestRoute.CastleCourt+new Vector3(-50,8,-45),HillcrestRoute.CastleCourt+Vector3.up*8);
+            yield return V("f03-causeway",On(north-120,-1,11),On(north-90,0,3));
+            yield return V("f04-square-close",sq+new Vector3(-14,2.5f,-6),sq+new Vector3(14,5,8));
+            // Hillcrest Castle and the zipline: far, courtyard, the Zip Tower, the whole span, and a real ride.
+            var court=HillcrestRoute.CastleCourt;
+            yield return V("c01-castle-lower-town",court+new Vector3(150,-22,230),court+Vector3.up*22,50);
+            yield return V("c02-castle-courtyard",court+new Vector3(-4,3.5f,-30),court+new Vector3(0,14,18));
+            yield return V("c03-castle-from-valley",court+new Vector3(-260,-30,120),court+Vector3.up*25,40);
+            var zip=ZipLine.Active;
+            if(zip!=null&&!costOnly) {
+                var inward=Quaternion.Euler(0,zip.top.facing+180,0)*Vector3.forward;
+                yield return V("z01-zip-tower",zip.top.bay+inward*16+Vector3.up*4,zip.top.bay+Vector3.up*9);
+                var midSpan=(zip.top.cable+zip.bottom.cable)*.5f;var across=Vector3.Cross(Vector3.up,(zip.bottom.cable-zip.top.cable).normalized);
+                yield return V("z02-zip-span",midSpan+across*150+Vector3.up*25,midSpan,50);
+                yield return V("z07-zip-landing",zip.bottom.bay+Quaternion.Euler(0,zip.bottom.facing,0)*new Vector3(22,20,-34),zip.bottom.bay+Vector3.up*3,50);
+                yield return V("z03-zip-station",zip.bottom.bay+Quaternion.Euler(0,zip.bottom.facing,0)*new Vector3(10,5,-14),zip.bottom.bay+Vector3.up*6);
+                foreach(bool down in new[]{true,false}) {
+                    var from=down?zip.top:zip.bottom;PlaceAt(from.bay+Quaternion.Euler(0,from.facing,0)*Vector3.back*5,from.facing);
+                    player.body.isKinematic=true;float start=Time.time;var shots=down?new[]{(3.5f,"z04-ride-launch"),(9f,"z05-ride-mid")}:new[]{(12f,"z06-ride-up")};int next=0;
+                    StartCoroutine(zip.Ride(player,down));yield return null;
+                    while(zip.Busy&&Time.time-start<120) {
+                        var fwd=player.transform.forward;fwd.y=0;fwd.Normalize();
+                        cameraView.transform.position=player.transform.position-fwd*13+Vector3.up*5.5f+Vector3.Cross(Vector3.up,fwd)*4;cameraView.transform.LookAt(player.transform.position+Vector3.up);
+                        if(next<shots.Length&&Time.time-start>=shots[next].Item1){ui.Capture(Path.Combine(folder,shots[next].Item2+".png"));next++;}
+                        yield return null;
+                    }
+                    var to=down?zip.bottom:zip.top;float miss=Vector3.Distance(player.body.position,to.bay);
+                    player.body.isKinematic=false;
+                    Debug.Log($"ZIP_RIDE down={down} seconds={Time.time-start:0.0} arrivalMiss={miss:0.00}");
+                    File.AppendAllText(Path.Combine(folder,"zip-ride.txt"),$"down={down} seconds={Time.time-start:0.0} arrivalMiss={miss:0.00}\n");
+                }
+            }
+            cameraView.fieldOfView=55;
+            // Frame cost at driving-height views (mean / 95th percentile over 240 frames each).
+            var lines=new List<string>();int cap=Application.targetFrameRate;Application.targetFrameRate=1000;QualitySettings.vSyncCount=0;
+            foreach(var (name,at,look) in new[]{("reveal",On(south+6,3.2f),On(south+6,-6)+main.Forward(south+6)*200),("vista",HillcrestRoute.Vista+new Vector3(-4,3,4),new Vector3(200,30,-1100)),
+                ("square",sq+new Vector3(-20,3,-6),sq+new Vector3(20,3,6)),("castle",HillcrestRoute.CastleCourt+new Vector3(0,4,-20),HillcrestRoute.CastleCourt+new Vector3(0,4,20)),("quay",new Vector3(60,9,-905),new Vector3(300,9,-925)),("bayview",new Vector3(-30,4,-80),new Vector3(-60,2,-110))}) {
+                cameraView.transform.position=at;cameraView.transform.LookAt(look);yield return new WaitForSeconds(.5f);
+                var times=new List<float>();for(int i=0;i<240;i++){yield return null;times.Add(Time.unscaledDeltaTime*1000);}
+                times.Sort();lines.Add($"{name} mean={times.Average():0.00}ms p95={times[(int)(times.Count*.95f)]:0.00}ms");
+            }
+            Application.targetFrameRate=cap;File.WriteAllLines(Path.Combine(folder,"valley-frame-cost.txt"),lines);Debug.Log("VALLEY_FRAME_COST "+string.Join(" | ",lines));
+        }
+        void PlaceAt(Vector3 position,float heading)
+        {
+            position.y=ValleyField.Height(position.x,position.z)+.02f-player.ContactBottom;
+            player.body.position=position;player.body.rotation=Quaternion.Euler(0,heading,0);player.body.linearVelocity=Vector3.zero;player.body.angularVelocity=Vector3.zero;
+            player.transform.SetPositionAndRotation(position,player.body.rotation);Physics.SyncTransforms();
+        }
         bool drivePassed;
+        // The Pit Stop's garage bay (kit X mirrors on import: Blender -4.5 lands at +4.5).
+        static float GarageBayX=>BayviewKit.Has("pit_stop_2")?VillageKit.PitStopSite.x+4.5f:-65;
         void Place(Vector3 position,float heading)
         {
             position.y=.015f-player.ContactBottom;
@@ -119,27 +281,30 @@ namespace LittleRoad
         }
         IEnumerator DriveGarage()
         {
-            var result=new DrivingEvidence();Place(new Vector3(-65,0,-98),180);
+            float bay=GarageBayX;var result=new DrivingEvidence();Place(new Vector3(bay,0,-98),180);
             var probe=player.gameObject.AddComponent<GarageContactReview>();
             yield return new WaitForSeconds(.1f);player.controlsBlocked=false;
             int initialContacts=player.contacts,initialRecoveries=player.recoveries;
-            var pad=InputSystem.AddDevice<Gamepad>("GarageClearanceTest");
+            // A real controller plugged in would stay Gamepad.current and hide the synthetic pad's input.
+            var others=Gamepad.all.Where(g=>g.enabled).ToArray();foreach(var g in others)InputSystem.DisableDevice(g);
+            var pad=InputSystem.AddDevice<Gamepad>("GarageClearanceTest");pad.MakeCurrent();
             try {
                 float deadline=Time.time+14;
                 while(player.body.position.z> -107&&Time.time<deadline) {
                     InputSystem.QueueStateEvent(pad,new GamepadState{rightTrigger=player.speed<2?.30f:0});
-                    result.maxLateralError=Mathf.Max(result.maxLateralError,Mathf.Abs(player.body.position.x+65));yield return new WaitForFixedUpdate();
+                    result.maxLateralError=Mathf.Max(result.maxLateralError,Mathf.Abs(player.body.position.x-bay));yield return new WaitForFixedUpdate();
                 }
+                Debug.Log($"GARAGE_DRIVE_STATE z={player.body.position.z:0.00} speed={player.speed:0.00} throttle={player.throttle:0.00} blocked={player.controlsBlocked} running={player.GetComponentInParent<RoadCar>()!=null} pad={Gamepad.current?.name} trigger={Gamepad.current?.rightTrigger.ReadValue():0.00} kinematic={player.body.isKinematic} time={Time.timeScale}");
                 result.entryZ=player.body.position.z;result.entered=result.entryZ<= -107;
                 InputSystem.QueueStateEvent(pad,new GamepadState{leftTrigger=1});
                 deadline=Time.time+14;
                 while(player.body.position.z< -98&&Time.time<deadline) {
                     InputSystem.QueueStateEvent(pad,new GamepadState{leftTrigger=player.speed> -2?.30f:0});
-                    result.maxLateralError=Mathf.Max(result.maxLateralError,Mathf.Abs(player.body.position.x+65));yield return new WaitForFixedUpdate();
+                    result.maxLateralError=Mathf.Max(result.maxLateralError,Mathf.Abs(player.body.position.x-bay));yield return new WaitForFixedUpdate();
                 }
                 result.exitZ=player.body.position.z;result.exited=result.exitZ>= -98;
                 result.exitPosition=player.body.position;result.exitVelocity=player.body.linearVelocity;result.exitContacts=probe.contacts.ToArray();
-            }finally {InputSystem.RemoveDevice(pad);player.controlsBlocked=true;}
+            }finally {InputSystem.RemoveDevice(pad);foreach(var g in others)InputSystem.EnableDevice(g);player.controlsBlocked=true;}
             result.contacts=player.contacts-initialContacts;result.recoveries=player.recoveries-initialRecoveries;
             result.passed=result.entered&&result.exited&&result.contacts==0&&result.recoveries==0&&result.maxLateralError<.3f;
             drivePassed=result.passed;File.WriteAllText(Path.Combine(folder,"garage-driving.json"),JsonUtility.ToJson(result,true));

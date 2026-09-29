@@ -25,6 +25,8 @@ Shader "LittleRoad/CoastalWater"
             #pragma multi_compile_fog
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "HeightFog.hlsl"
+            #include "DaySky.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
             TEXTURE2D(_SkyTex);SAMPLER(sampler_SkyTex);
@@ -98,10 +100,12 @@ Shader "LittleRoad/CoastalWater"
                 half3 scatter=lerp(_ShallowColor.rgb,_DeepColor.rgb,1-exp(-depth*.18));
                 Light light=GetMainLight(TransformWorldToShadowCoord(p));
                 half shade=lerp(.68,1,light.shadowAttenuation);
-                half3 base=lerp(scatter*shade,bottom*half3(.50,.83,.78),transmission*.7);
+                // Body colour takes the light (sky SH + sun) so the sea darkens with the day; ~1 at afternoon.
+                half3 lit=SampleSH(half3(0,1,0))*1.6h+Luminance(light.color)*saturate(light.direction.y)*.3h;
+                half3 base=lerp(scatter*shade*lit,bottom*half3(.50,.83,.78),transmission*.7);
                 half3 reflection=reflect(-v,n);reflection.y=max(.001,reflection.y);
                 float2 skyUV=float2(.5-(atan2(reflection.z,reflection.x)+_AzimuthOffset)/(2*PI),1-acos(clamp(reflection.y,-1,1))/PI);
-                half3 sky=min(SAMPLE_TEXTURE2D_LOD(_SkyTex,sampler_SkyTex,skyUV,5).rgb*.70,3);
+                half3 sky=_DaySunDir.w>.5?DaySkyColour(reflection,false)*.85:min(SAMPLE_TEXTURE2D_LOD(_SkyTex,sampler_SkyTex,skyUV,5).rgb*.70,3);
                 sky=lerp(unity_FogColor.rgb,sky,smoothstep(0,.2,reflection.y));
                 half fresnel=.025+.72*pow(1-saturate(dot(n,v)),5);
                 half3 colour=lerp(base,sky,fresnel);
@@ -113,8 +117,8 @@ Shader "LittleRoad/CoastalWater"
                 float wash=.5+.5*sin(depth*5-t*1.8+noise*3);
                 half foam=(1-smoothstep(.05,.95,depth))*smoothstep(.50,.91,noise+wash*.28);
                 foam*=smoothstep(0,.08,depth);
-                colour=lerp(colour,half3(.70,.84,.80)*shade,foam*.88);
-                return half4(MixFog(colour,input.fog),1);
+                colour=lerp(colour,half3(.70,.84,.80)*shade*lit,foam*.88);
+                return half4(ApplyHeightFog(MixFog(colour,input.fog),input.positionWS),1);
             }
             ENDHLSL
         }

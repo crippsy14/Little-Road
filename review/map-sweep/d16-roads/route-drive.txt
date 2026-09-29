@@ -1,0 +1,7 @@
+ROUTE_DRIVE arrived=False seconds=400.0 gate=45.8 square=-1.0 castleClimb=354.3 roadGripShare=0.15 recoveries=0 lowestY=-0.1 final=(266.62, 6.93, -930.09)
+Valley road@(109.62, 6.99, -902.53)
+Road shoulder@(115.93, 6.95, -907.69)
+Via Crest@(256.60, 7.03, -920.24)
+Junction fillet@(265.44, 7.05, -926.73)
+Hillcrest mainland collider@(266.24, 7.00, -928.97)
+Collision_Trunk@(266.45, 6.99, -929.81)

@@ -6,7 +6,7 @@ from mathutils import Vector
 root = Path(__file__).resolve().parents[1]
 target = root / 'unity/Assets/Resources/Cars'
 target.mkdir(parents=True, exist_ok=True)
-for name in ['little_car', 'coupe_car', 'utility_car', 'formula_car']:
+for name in ['little_car']:  # coupe/utility/formula retired 2026-09-28
     bpy.ops.wm.open_mainfile(filepath=str(root / 'source-art' / (name + '.blend')))
     # The preserved prototypes shared one material between front and reversing
     # lenses. Give rear-facing lamp geometry its own identity without changing
@@ -22,18 +22,6 @@ for name in ['little_car', 'coupe_car', 'utility_car', 'formula_car']:
             centre=sum((obj.matrix_world@obj.data.vertices[i].co for i in face.vertices),Vector())/len(face.vertices)
             if face.material_index in slots and centre.y<0:face.material_index=target_slot;changed+=1
     print('REVERSE_LENS_FACES',name,changed)
-    if name=='formula_car':
-        # This prototype had no rear lighting assembly. Keep the new compact
-        # safety cluster inside the existing rear-wing/body envelope.
-        red=bpy.data.materials.get('TailLight') or bpy.data.materials.new('TailLight');red.diffuse_color=(.6,.025,.012,1)
-        trim=bpy.data.materials.get('CharcoalTrim') or bpy.data.materials.new('CharcoalTrim');trim.diffuse_color=(.035,.04,.045,1)
-        for label,location,dimensions,mat in [
-            ('Formula lamp housing',(0,-1.405,.60),(.21,.05,.28),trim),
-            ('Formula brake lens',(0,-1.442,.67),(.15,.013,.095),red),
-            ('Formula reverse lens',(0,-1.442,.53),(.15,.013,.065),reverse)]:
-            bpy.ops.mesh.primitive_cube_add(size=1,location=location);lamp=bpy.context.object;lamp.name=label;lamp.dimensions=dimensions
-            bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);lamp.data.materials.append(mat)
-            bevel=lamp.modifiers.new('Lamp edge radius','BEVEL');bevel.width=.006;bevel.segments=2
     # Blender +Y nose becomes Unity +Z. FBX carries units, independent wheels,
     # material identities and transforms. Unity importer applies axis conversion.
     bpy.ops.export_scene.fbx(filepath=str(target / (name + '.fbx')),

@@ -42,6 +42,20 @@ public static class CheckpointChecks
             var finishOrder=(List<RoadCar>)typeof(RaceTrial).GetField("finishOrder",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(race);
             Check(car.laps==3&&car.nextGate==lastGate&&finishOrder.Count==1,"Repeated line crossing and finish callback cannot duplicate finish order");
         } finally {UnityEngine.Object.DestroyImmediate(root);}
+        // --gate-first (study 125). Progress projects onto 1.5 m route segments, so on the inside of a
+        // tight corner one 28 m/s physics tick (0.23 m) can move it >0.5 m. At Hillcrest T5 that lands
+        // past gate 6 in a single tick; recovery then read a missed gate before TrackGates credited it.
+        Check(!RoadCar.GateFirst,"Gate-first ordering is off unless --gate-first");
+        var raceway=new Circuit(HillcrestRoute.Circuit);float gate6=raceway.length/12*6,worstLanding=0;
+        for(float lateral=-6;lateral<=-3;lateral+=.5f) {
+            float before=raceway.Nearest(raceway.At(gate6-8)+raceway.Right(gate6-8)*lateral+Vector3.up*.5f,out _);
+            for(float s=gate6-8+.233f;s<gate6+8;s+=.233f) {
+                float after=raceway.Nearest(raceway.At(s)+raceway.Right(s)*lateral+Vector3.up*.5f,out _);
+                if(before<=gate6&&after>gate6)worstLanding=Mathf.Max(worstLanding,after-gate6);
+                before=after;
+            }
+        }
+        Check(worstLanding>.5f,"Raceway T5 inside line can first appear >0.5 m past gate 6 in one tick ("+worstLanding.ToString("0.00")+" m): gates must be credited before recovery reads them");
         return checks;
     }
 }

@@ -1,7 +1,7 @@
 param(
     [string]$Executable=(Join-Path $PSScriptRoot '../../little-road-ai-review/Little Road Unity.exe'),
     [string]$OutputDirectory,
-    [ValidateSet('cedar','bayview')][string]$Track='cedar',
+    [ValidateSet('cedar','bayview','cedar-hills')][string]$Track='cedar',
     [ValidateSet('stock','street','club')][string]$Loadout='club',
     [ValidateSet('pack','line')][string]$Grid='pack',
     [ValidateRange(1,24)][int]$Cars=1,
@@ -100,7 +100,7 @@ if($Manual -and $PlaybackRate -ne 1){throw 'Human comparison laps must use real-
 if($Fullscreen -and $Windowed){throw 'Choose fullscreen or windowed, not both.'}
 if($Policy -eq 'traffic' -and ($Track -ne 'cedar' -or -not $TrafficCase)){throw 'Traffic policy requires Cedar and an explicit -TrafficCase (use field for a standing 24-car race).'}
 if($BayviewTransferStudy -and ($Track -ne 'bayview' -or $Policy -notin @('legacy','context') -or -not (($Cars -eq 1 -and $TrafficCase -eq 'standing-solo') -or ($Cars -eq 24 -and $TrafficCase -eq 'field')))){throw 'Invalid Bayview transfer fixture.'}
-if($Policy -eq 'context' -and -not $BayviewTransferStudy -and ($Track -ne 'cedar' -or $TrafficCase -notin @('draft-straight','draft-pullout','solo','standing-solo','pace-solo','rear-control','rear-control-left','rear-control-right','follow','pass','crossing-pass','brake-leader','brake-probe','queue','no-room','field','merge-left','merge-right','merge-witness-left','merge-witness-right','corner-solo-left','corner-solo-middle','corner-solo-right','corner-solo-deep','corner-pair-left','corner-pair-right','corner-three'))){throw 'Context prototype requires a supported explicit Cedar fixture.'}
+if($Policy -eq 'context' -and -not $BayviewTransferStudy -and ($Track -notin @('cedar','cedar-hills') -or $TrafficCase -notin @('draft-straight','draft-pullout','solo','standing-solo','pace-solo','rear-control','rear-control-left','rear-control-right','follow','pass','crossing-pass','brake-leader','brake-probe','queue','no-room','field','merge-left','merge-right','merge-witness-left','merge-witness-right','corner-solo-left','corner-solo-middle','corner-solo-right','corner-solo-deep','corner-pair-left','corner-pair-right','corner-three'))){throw 'Context prototype requires a supported explicit Cedar fixture.'}
 if($TrafficCase -eq 'standing-solo' -and $Cars -ne 1){throw 'Standing solo requires one car in the24-car player grid slot.'}
 if(-not $OutputDirectory){$OutputDirectory=Join-Path $PSScriptRoot ('../review/technical-runs/'+[DateTime]::Now.ToString('yyyyMMdd-HHmmss')+'-'+[Guid]::NewGuid().ToString('N').Substring(0,6))}
 $trialOutput=[IO.Path]::GetFullPath($OutputDirectory)
@@ -175,7 +175,7 @@ if($PathApproachFile){$trialArguments+=@('--path-approach-file',('"'+(Resolve-Pa
 if($Opponents){$trialArguments+=@('--trial-opponents',$Opponents)}
 if($Manual){$trialArguments+=@('--trial-human','--hide-racing-line')}
 if($Fullscreen){$trialArguments+='--start-fullscreen'}
-if($Windowed){$trialArguments+=@('--start-windowed','-screen-fullscreen','0')}
+if($Windowed){$trialArguments+=@('--start-windowed','-screen-fullscreen','0','-monitor','1')}
 if($DirectGraphics){$trialArguments+='-force-gfx-direct'}
 $trialArguments+=@('--driver-policy',$Policy,'--racing-line',$RacingLine)
 foreach($extra in $ExtraArguments){if($extra -notmatch '^--[a-z0-9-]+$' -and $extra -notmatch '^[A-Za-z0-9._-]+$'){throw "Unsafe extra argument: $extra"};$trialArguments+=$extra}

@@ -1,0 +1,47 @@
+frames=22343 mean=5.59ms p50=5.26 p95=8.15 p99=9.04 max=19.03
+over 16.7ms=3 over 33ms=0
+batches mean=0 max=0  setpass mean=189 max=259
+triangles mean=19.54M max=32.47M  shadow casters mean=7571 max=16745
+gc bytes/frame mean=0.0KB max=0.0KB  frames allocating >64KB=0
+worst frames (ms, batches, setpass, tris, gcKB, position):
+  19.0 b=0 sp=164 tri=8.42M gc=0KB at=(66,25,-658) t=44.6
+  18.0 b=0 sp=178 tri=28.16M gc=0KB at=(104,27,-620) t=41.1
+  17.3 b=0 sp=193 tri=7.20M gc=0KB at=(68,0,-83) t=11.4
+  14.5 b=0 sp=192 tri=28.49M gc=0KB at=(100,18,-418) t=30.4
+  11.2 b=0 sp=186 tri=30.87M gc=0KB at=(102,23,-506) t=34.8
+  10.7 b=0 sp=187 tri=30.05M gc=0KB at=(101,21,-469) t=32.9
+  10.0 b=0 sp=194 tri=31.18M gc=0KB at=(103,24,-528) t=35.8
+  10.0 b=0 sp=188 tri=30.94M gc=0KB at=(102,23,-518) t=35.4
+  10.0 b=0 sp=188 tri=30.95M gc=0KB at=(102,23,-512) t=35.1
+  10.0 b=0 sp=185 tri=31.00M gc=0KB at=(102,23,-521) t=35.5
+  10.0 b=0 sp=189 tri=30.73M gc=0KB at=(102,22,-500) t=34.4
+  9.9 b=0 sp=188 tri=30.29M gc=0KB at=(102,22,-485) t=33.7
+  9.9 b=0 sp=186 tri=29.57M gc=0KB at=(101,20,-454) t=32.1
+  9.9 b=0 sp=188 tri=30.59M gc=0KB at=(102,22,-496) t=34.3
+  9.9 b=0 sp=187 tri=30.10M gc=0KB at=(101,21,-473) t=33.1
+  9.9 b=0 sp=187 tri=30.90M gc=0KB at=(102,23,-509) t=34.9
+  9.9 b=0 sp=185 tri=30.76M gc=0KB at=(103,25,-552) t=37.1
+  9.9 b=0 sp=193 tri=31.14M gc=0KB at=(103,24,-532) t=36.0
+  9.9 b=0 sp=192 tri=30.96M gc=0KB at=(103,24,-543) t=36.6
+  9.9 b=0 sp=187 tri=31.00M gc=0KB at=(102,23,-515) t=35.2
+  9.9 b=0 sp=185 tri=30.99M gc=0KB at=(102,23,-520) t=35.5
+  9.8 b=0 sp=187 tri=30.92M gc=0KB at=(102,24,-526) t=35.8
+  9.8 b=0 sp=191 tri=30.13M gc=0KB at=(102,22,-482) t=33.5
+  9.8 b=0 sp=189 tri=28.32M gc=0KB at=(99,17,-397) t=29.3
+  9.8 b=0 sp=207 tri=32.26M gc=0KB at=(68,0,-92) t=13.2
+by 100 m cell (mean ms, p95 ms, mean batches, frames):
+  cell (100,-600) mean=8.65 p95=9.61 batches=0 frames=600
+  cell (100,-500) mean=8.19 p95=9.21 batches=0 frames=479
+  cell (100,-700) mean=7.82 p95=8.61 batches=0 frames=316
+  cell (0,-500) mean=7.59 p95=8.38 batches=0 frames=143
+  cell (0,-200) mean=7.38 p95=8.44 batches=0 frames=728
+  cell (0,-400) mean=7.36 p95=8.31 batches=0 frames=684
+  cell (0,-900) mean=7.32 p95=7.73 batches=0 frames=275
+  cell (0,-300) mean=7.28 p95=8.26 batches=0 frames=674
+  cell (-100,-800) mean=6.99 p95=7.83 batches=0 frames=481
+  cell (0,-100) mean=6.80 p95=8.80 batches=0 frames=372
+  cell (0,-800) mean=6.58 p95=7.28 batches=0 frames=849
+  cell (100,-900) mean=6.40 p95=6.95 batches=0 frames=852
+  cell (0,-1200) mean=5.79 p95=6.04 batches=0 frames=723
+  cell (100,-1200) mean=5.77 p95=6.04 batches=0 frames=200
+  cell (100,-1300) mean=5.44 p95=5.80 batches=0 frames=929

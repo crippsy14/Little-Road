@@ -1,6 +1,6 @@
 # -Version 0 (default) runs the reusable dev build (tools/build-dev.ps1); N>0 runs ../little-road-context-N-review.
 # Per-tick telemetry (~75 MB/race) is deleted after the run unless -KeepTelemetry; race.json etc. stay.
-param([int]$Version=0,[int]$Study=104,[ValidateSet('bayview','cedar')][string]$Track='bayview',[int]$Seed=1709,[switch]$Rendered,[switch]$StaggerContextPlans,[switch]$PaceAudit,[ValidateRange(1,24)][int]$ContextPlanGroups=3,[ValidatePattern('^[a-z0-9-]+$')][string]$Name='baseline',[string[]]$Extra=@(),[ValidateRange(.25,4)][float]$PlaybackRate=1,[switch]$KeepTelemetry)
+param([int]$Version=0,[int]$Study=104,[ValidateSet('bayview','cedar','cedar-hills')][string]$Track='bayview',[int]$Seed=1709,[switch]$Rendered,[switch]$StaggerContextPlans,[switch]$PaceAudit,[ValidateRange(1,24)][int]$ContextPlanGroups=3,[ValidatePattern('^[a-z0-9-]+$')][string]$Name='baseline',[string[]]$Extra=@(),[ValidateRange(.25,4)][float]$PlaybackRate=1,[switch]$KeepTelemetry)
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $exe=if($Version -gt 0){"../little-road-context-$Version-review/Little Road Unity.exe"}else{"../little-road-dev-build/Little Road Unity.exe"}

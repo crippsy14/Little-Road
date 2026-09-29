@@ -1,0 +1,2 @@
+ROUTE_DRIVE arrived=True seconds=49.1 gate=-1.0 square=-1.0 castleClimb=50.1 roadGripShare=1.00 reversals=0 recoveries=0 lowestY=7.2 final=(202.90, 52.03, -1125.68)
+Road shoulder@(204.56, 51.89, -1151.39)

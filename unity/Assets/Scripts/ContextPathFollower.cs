@@ -146,6 +146,10 @@ namespace LittleRoad
             float look=Mathf.Clamp(5+Mathf.Max(0,o.self.speed)*.4f,6,19);int aim=0;
             while(aim<Points-2&&distances[aim+1]<look)aim++;
             var delta=Vector3.Lerp(points[aim],points[aim+1],Mathf.InverseLerp(distances[aim],distances[aim+1],look))-o.self.position;
+            // Grade-aware: steer on the horizontal bearing. SignedAngle is the full 3-D angle, so a
+            // look-ahead point below the car (downhill; ~2 deg even on the flat from ride height)
+            // became a steering error whose sign came only from the tiny sideways component.
+            if(GradeModel.Enabled&&o.route is Circuit graded&&graded.hasElevation)delta.y=0;
             // The tyre model permits measurable lateral velocity. Pure pursuit
             // must turn the direction of travel toward the path, rather than
             // assuming that body heading and actual travel are identical.

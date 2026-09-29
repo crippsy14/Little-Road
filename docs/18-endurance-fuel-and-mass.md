@@ -1,5 +1,12 @@
 # Endurance, fuel, tyres and vehicle mass
 
+**Updated 29 September:** tyre wear, fuel and pit stops now **arrive with class A Touring**, as "the professional league", and class E Endurance extends them to long stints and day-to-night races.
+- **Fuel:** a GT-style fuel mix (1–6), changeable during the race, sets burn = throttle × delivered power × mix; engines get an efficiency figure.
+- **Order:** the systems and the strategy AI are prototyped on one pit-lane test track during class B.
+
+See [doc 45](45-roadmap-and-feature-spec.md) F8. The mechanics below still apply.
+
+
 19 September 2026. User-requested expansion; specification only. The current prototype does not implement these endurance systems. This promotes energy/endurance from a later possibility to a required part of the 12-hour game.
 
 ## Reference and design intent

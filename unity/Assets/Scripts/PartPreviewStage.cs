@@ -20,7 +20,10 @@ namespace LittleRoad
         readonly Dictionary<string,GameObject> parts=new();
         readonly Dictionary<string,RenderTexture> cards=new();
         readonly Dictionary<GameObject,float> radii=new();
-        readonly Vector3 origin=new(0,-10000,0);
+        // Each stage gets its own hidden spot (60 m apart, cameras see 40 m): a stage still alive from another
+        // screen, e.g. the retry preview's showroom, once hid a podium car rendered at the shared spot.
+        static int nextSpot;
+        readonly Vector3 origin=new((nextSpot++%16)*60f,-10000,0);
         GameObject selected;
         GameObject carModel,platform,showroom;float carAngle=35;
         readonly Color partBackground;readonly bool useShowroom;
@@ -49,17 +52,18 @@ namespace LittleRoad
             AddLight(new Vector3(3,2,-2),new Color(1,.82f,.60f),95*lightScale);
             Selected=Texture(720,406);Car=Texture(900,500);Orbit=Texture(744,392);
             foreach(var part in catalogue) {
-                var prefab=Resources.Load<GameObject>("Parts/"+part.id);
+                var prefab=Resources.Load<GameObject>("Parts/"+part.id);if(prefab==null&&part.slot=="engine")prefab=Resources.Load<GameObject>("Parts/engine_club");
                 var model=prefab==null?PartDisplayModels.Create(part,root.transform,materials,displayMeshes):UnityEngine.Object.Instantiate(prefab,root.transform);model.name=part.id;
                 if(prefab!=null)foreach(var renderer in model.GetComponentsInChildren<Renderer>()) {
                     var converted=new Material[renderer.sharedMaterials.Length];
                     for(int i=0;i<converted.Length;i++) {
                         string name=renderer.sharedMaterials[i].name;
-                        Color color=name.Contains("Rubber")?new Color(.04f,.055f,.06f):name.Contains("Alloy")?new Color(.65f,.70f,.72f):
-                            name.Contains("Brass")?new Color(.58f,.40f,.16f):name.Contains("Cover")?
-                            (part.id=="engine_stock"?new Color(.19f,.27f,.29f):part.id=="engine_workshop"?new Color(.09f,.46f,.39f):new Color(.77f,.22f,.12f)):
-                            new Color(.30f,.34f,.35f);
-                        converted[i]=TrialWorld.Material(name,color,name.Contains("Rubber")?0:.45f,.38f);materials.Add(converted[i]);
+                        // Finish from the Blender material name (source-art/build_*_previews.py).
+                        bool chrome=name.Contains("Chrome"),matte=name.Contains("Rubber")||name.Contains("White")||name.Contains("Carbon");
+                        Color color=name.Contains("Rubber")?new Color(.04f,.055f,.06f):chrome?new Color(.86f,.87f,.88f):name.Contains("Alloy")?new Color(.65f,.70f,.72f):
+                            name.Contains("Brass")?new Color(.58f,.40f,.16f):name.Contains("Carbon")?new Color(.07f,.075f,.08f):name.Contains("White")?new Color(.92f,.92f,.9f):
+                            name.Contains("Cover")?Accent(part):new Color(.30f,.34f,.35f);
+                        converted[i]=TrialWorld.Material(name,color,name.Contains("Rubber")||name.Contains("White")?0:chrome?.9f:matte?.2f:.45f,chrome?.7f:.38f);materials.Add(converted[i]);
                     }
                     renderer.sharedMaterials=converted;
                 }
@@ -71,13 +75,25 @@ namespace LittleRoad
             carModel=car;
             foreach(var renderer in car.GetComponentsInChildren<Renderer>())foreach(var material in renderer.sharedMaterials)
                 if(!materials.Contains(material))materials.Add(material);
-            var lod=car.GetComponent<LODGroup>();if(lod!=null)lod.ForceLOD(0);
+            // Full detail, chosen directly: the LOD group sometimes left the car hidden in a one-off render
+            // (a podium car missing on the result screen), and cross-fades need frames the stage never runs.
+            var lod=car.GetComponent<LODGroup>();
+            if(lod!=null){var levels=lod.GetLODs();lod.enabled=false;
+                for(int l=0;l<levels.Length;l++)foreach(var r in levels[l].renderers)if(r!=null)r.enabled=l==0;}
             Prepare(car);
             platform=GameObject.CreatePrimitive(PrimitiveType.Cylinder);platform.name="Display turntable";platform.transform.SetParent(root.transform,false);platform.layer=Layer;
             platform.transform.localScale=new Vector3(3.75f,.06f,3.75f);platform.transform.localPosition=new Vector3(0,-.10f,0);UnityEngine.Object.Destroy(platform.GetComponent<Collider>());
             var deck=TrialWorld.Material("Showroom turntable",useShowroom?new Color(.045f,.065f,.074f):new Color(.20f,.40f,.40f),.35f,.4f);materials.Add(deck);platform.GetComponent<Renderer>().sharedMaterial=deck;
             if(useShowroom)this.showroom=CarShowroom.Create(root.transform,materials,displayMeshes);
             Render(car,Car,35);car.SetActive(false);platform.SetActive(false);
+        }
+        // Tier colour for a part's painted pieces: stock grey-teal, then teal, then red within a Bayview
+        // slot by price; Hillcrest's valley parts in amber.
+        public static Color Accent(EquipmentCatalog.Part part)
+        {
+            if(part.shop=="hillcrest")return new Color(.86f,.62f,.12f);
+            int rank=0;foreach(var p in EquipmentCatalog.All.parts)if(p.slot==part.slot&&p.shop!="hillcrest"&&p.price<part.price)rank++;
+            return rank==0?new Color(.19f,.27f,.29f):rank==1?new Color(.09f,.46f,.39f):new Color(.77f,.22f,.12f);
         }
         void AddLight(Vector3 position,Color color,float intensity)
         {

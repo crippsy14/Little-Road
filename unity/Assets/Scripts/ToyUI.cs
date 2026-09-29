@@ -96,44 +96,47 @@ namespace LittleRoad
         {
             var c=Rect(parent,name,size,position).gameObject.AddComponent<ToyCarIcon>();c.color=paint;c.raycastTarget=false;return c;
         }
-        // Menus render on their own overlay camera, stacked on the game camera with
-        // post-processing off: the world's ACES tonemapping otherwise greys the
-        // palette, and the menu always draws above the in-race HUD.
+        // Screen UI (HUD, prompts, menus) draws as screen-space overlays, after the frame's post-processing:
+        // motion blur, TAA and the speed FOV never smear it. There is no camera stack either (a stack
+        // switches URP's TAA off). Canvases sort by sortingOrder: race HUD 4, area banner 6, speech
+        // bubbles 7, adventure HUD and menus 20, shops 30, race day 50, countdown 60, fades 90.
         public const int MenuLayer=5; // Unity's built-in "UI" layer
-        static Camera menuCamera;static Camera menuBase;
+        static Camera menuCamera;
+        // A disabled camera used only by Capture, to draw the overlays into a screenshot.
         public static Camera MenuCamera()
         {
-            var main=Camera.main;if(main==null)return null;
-            if(menuCamera!=null&&menuBase==main)return menuCamera;
-            if(menuCamera!=null)UnityEngine.Object.Destroy(menuCamera.gameObject);
-            var go=new GameObject("Menu overlay camera");go.transform.SetParent(main.transform,false);
-            menuCamera=go.AddComponent<Camera>();menuCamera.clearFlags=CameraClearFlags.Depth;menuCamera.cullingMask=1<<MenuLayer;menuCamera.nearClipPlane=.05f;menuCamera.farClipPlane=5;
-            menuCamera.fieldOfView=main.fieldOfView;
-            var data=menuCamera.GetUniversalAdditionalCameraData();data.renderType=CameraRenderType.Overlay;data.renderPostProcessing=false;
-            main.GetUniversalAdditionalCameraData().cameraStack.Add(menuCamera);main.cullingMask&=~(1<<MenuLayer);menuBase=main;return menuCamera;
+            if(menuCamera!=null)return menuCamera;
+            var go=new GameObject("Menu capture camera");UnityEngine.Object.DontDestroyOnLoad(go);
+            menuCamera=go.AddComponent<Camera>();menuCamera.enabled=false;menuCamera.clearFlags=CameraClearFlags.SolidColor;menuCamera.backgroundColor=new Color(0,0,0,0);
+            menuCamera.cullingMask=1<<MenuLayer;menuCamera.nearClipPlane=.05f;menuCamera.farClipPlane=5;menuCamera.fieldOfView=55;
+            var data=menuCamera.GetUniversalAdditionalCameraData();data.renderType=CameraRenderType.Base;data.renderPostProcessing=false;
+            return menuCamera;
         }
         public static void UseMenuCamera(Canvas canvas)
         {
-            var camera=MenuCamera();if(camera==null)return;
+            if(canvas.renderMode==RenderMode.ScreenSpaceOverlay)return;
+            canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.worldCamera=null;
             foreach(var t in canvas.GetComponentsInChildren<Transform>(true))t.gameObject.layer=MenuLayer;
-            canvas.worldCamera=camera;
         }
         // Screenshot of the world plus menus. Camera.Render() into a texture skips the
         // overlay stack, so render the menu camera separately on top (as a base
         // camera that keeps the world image) and restore it afterwards.
         public static void Capture(string path,int width=1920,int height=1080)
         {
-            var main=Camera.main;var menu=MenuCamera();Canvas.ForceUpdateCanvases();
+            var main=Camera.main;var menu=MenuCamera();
+            // Overlay canvases draw straight to the screen; for the screenshot they go on the capture camera.
+            var moved=new List<(Canvas canvas,int order)>();
+            foreach(var c in UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+                if(c.isRootCanvas&&c.renderMode==RenderMode.ScreenSpaceOverlay&&c.isActiveAndEnabled&&c.sortingOrder<1000){moved.Add((c,c.sortingOrder));c.renderMode=RenderMode.ScreenSpaceCamera;c.worldCamera=menu;c.planeDistance=1;}
+            Canvas.ForceUpdateCanvases();
             var rt=new RenderTexture(width,height,24);var active=RenderTexture.active;var oldMain=main.targetTexture;
-            var stack=main.GetUniversalAdditionalCameraData().cameraStack;bool stacked=menu!=null&&stack.Remove(menu);
             main.targetTexture=rt;main.Render();main.targetTexture=oldMain;
             RenderTexture.active=rt;var image=new Texture2D(width,height,TextureFormat.RGBA32,false);image.ReadPixels(new UnityEngine.Rect(0,0,width,height),0,0);
             if(menu!=null){
                 // Menus into their own transparent texture, then blended over the world image.
                 var ui=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
-                var data=menu.GetUniversalAdditionalCameraData();data.renderType=CameraRenderType.Base;var flags=menu.clearFlags;var background=menu.backgroundColor;
-                menu.clearFlags=CameraClearFlags.SolidColor;menu.backgroundColor=new Color(0,0,0,0);menu.targetTexture=ui;menu.Render();menu.targetTexture=null;
-                menu.clearFlags=flags;menu.backgroundColor=background;data.renderType=CameraRenderType.Overlay;if(stacked)stack.Add(menu);
+                menu.transform.SetPositionAndRotation(new Vector3(0,-5000,0),Quaternion.identity);menu.targetTexture=ui;menu.Render();menu.targetTexture=null;
+                foreach(var (c,order) in moved){c.renderMode=RenderMode.ScreenSpaceOverlay;c.worldCamera=null;c.sortingOrder=order;}
                 RenderTexture.active=ui;var overlay=new Texture2D(width,height,TextureFormat.RGBA32,false);overlay.ReadPixels(new UnityEngine.Rect(0,0,width,height),0,0);
                 var world=image.GetPixels32();var top=overlay.GetPixels32();
                 for(int i=0;i<world.Length;i++){var t=top[i];if(t.a==0)continue;float a=t.a/255f;world[i]=new Color32((byte)Mathf.Lerp(world[i].r,t.r,a),(byte)Mathf.Lerp(world[i].g,t.g,a),(byte)Mathf.Lerp(world[i].b,t.b,a),255);}
@@ -291,6 +294,7 @@ namespace LittleRoad
     {
         Button button;ToyShape shape;RectTransform face;Color fill;bool pulse,hover;float focusScale=1;
         public void Setup(Button b,ToyShape s,RectTransform f,Color c,bool beat){button=b;shape=s;face=f;fill=c;pulse=beat;Refresh(true);}
+        public void SetFill(Color c){fill=c;Refresh(true);}
         public void OnPointerEnter(PointerEventData e){hover=true;}
         public void OnPointerExit(PointerEventData e){hover=false;}
         public bool Focused=>button!=null&&button.interactable&&(EventSystem.current?.currentSelectedGameObject==gameObject||hover);
@@ -309,19 +313,30 @@ namespace LittleRoad
     // Queued pop-up stickers ("Postcard found!"): stamp in, hold, fade out.
     public sealed class ToyToaster:MonoBehaviour
     {
-        readonly Queue<(string headline,string detail,Color colour)> queue=new();RectTransform current;CanvasGroup fade;float shownAt=-99;
-        const float Hold=3.2f;
-        public void Show(string headline,string detail,Color colour){queue.Enqueue((headline,detail,colour));}
+        // A compact card that slides down at the top centre: a coloured stripe, the headline, one detail
+        // line, an optional tag ("DISCOVERED"). One at a time, queued. (It used to be a huge stamped
+        // headline over a spinning sunburst: too much on top of driving.)
+        readonly Queue<(string headline,string detail,Color colour,string tag)> queue=new();RectTransform current;CanvasGroup fade;float shownAt=-99;
+        const float Hold=2.8f,Top=320;   // under the objective pill
+        public void Show(string headline,string detail,Color colour,string tag=null){queue.Enqueue((headline,detail,colour,tag));}
         void Update()
         {
             float age=Time.unscaledTime-shownAt;
-            if(current!=null){fade.alpha=age<Hold?1:Mathf.Clamp01(1-(age-Hold)/.4f);if(age>=Hold+.4f){Destroy(current.gameObject);current=null;}return;}
-            if(queue.Count==0)return;var (headline,detail,colour)=queue.Dequeue();shownAt=Time.unscaledTime;
-            current=Toy.Rect(transform,"Toast",new Vector2(900,190),new Vector2(-400,170));fade=current.gameObject.AddComponent<CanvasGroup>();fade.blocksRaycasts=false;
-            Toy.Sunburst(current,new Vector2(300,300),new Vector2(0,10),colour,Color.Lerp(colour,Color.white,.35f),14,20).circular=true;
-            Toy.Title(current,"Headline",headline,76,new Vector2(900,100),new Vector2(0,24),Color.white,TextAnchor.MiddleCenter);
-            if(!string.IsNullOrEmpty(detail)){var pill=Toy.Pill(current,"Detail",detail,26,new Vector2(Mathf.Min(860,detail.Length*15+80),54),new Vector2(0,-56),Toy.White,Toy.Navy);}
-            var stamp=current.gameObject.AddComponent<ToyStamp>();stamp.duration=.4f;stamp.tilt=-3;
+            if(current!=null){
+                float t=Mathf.Clamp01(age/.22f);current.anchoredPosition=new Vector2(0,Top+40*(1-t)*(1-t));
+                fade.alpha=age<Hold?Mathf.Clamp01(age/.15f):Mathf.Clamp01(1-(age-Hold)/.35f);if(age>=Hold+.35f){Destroy(current.gameObject);current=null;}return;
+            }
+            if(queue.Count==0)return;var (headline,detail,colour,tag)=queue.Dequeue();shownAt=Time.unscaledTime;
+            bool hasDetail=!string.IsNullOrEmpty(detail);
+            current=Toy.Rect(transform,"Toast",new Vector2(760,hasDetail?96:70),new Vector2(0,Top+40));fade=current.gameObject.AddComponent<CanvasGroup>();fade.blocksRaycasts=false;fade.alpha=0;
+            var card=Toy.Card(current,"Toast card",new Vector2(760,hasDetail?96:70),Vector2.zero,Toy.White,24,5,6);
+            var title=Toy.Title(current,"Headline",headline,34,new Vector2(700,44),new Vector2(0,hasDetail?16:0),colour,TextAnchor.MiddleCenter);
+            Text line=hasDetail?Toy.Label(current,"Detail",detail,22,new Vector2(700,30),new Vector2(0,-22),Toy.Navy,TextAnchor.MiddleCenter,true):null;
+            float width=Mathf.Clamp(Mathf.Max(title.preferredWidth,line!=null?line.preferredWidth:0)+90,320,1100);
+            current.sizeDelta=card.rectTransform.sizeDelta=new Vector2(width,card.rectTransform.sizeDelta.y);
+            Toy.Card(current,"Stripe",new Vector2(12,hasDetail?66:44),new Vector2(-width/2+20,0),colour,6,0,0);
+            if(!string.IsNullOrEmpty(tag)){var pill=Toy.Card(current,"Tag",new Vector2(190,32),new Vector2(0,(hasDetail?48:35)+10),colour,16,4,3);
+                Toy.Label(pill.transform,"Tag text",tag,18,new Vector2(190,32),Vector2.zero,Toy.White,TextAnchor.MiddleCenter,true).gameObject.AddComponent<Outline>().effectColor=Toy.Navy;}
         }
     }
     // Race start: big stamped 3 / 2 / 1 / GO! on the menu camera.
@@ -338,7 +353,7 @@ namespace LittleRoad
         }
         void LateUpdate()
         {
-            if(elapsed==null)return;if(canvas.worldCamera==null)Toy.UseMenuCamera(canvas);
+            if(elapsed==null)return;Toy.UseMenuCamera(canvas);
             float t=elapsed();string text=hidden()||t>.9f?"":t<0?Mathf.CeilToInt(-t).ToString():"GO!";
             canvas.enabled=text.Length>0;if(text==shown)return;shown=text;label.text=text;
             label.color=text=="GO!"?Toy.Mint:text=="1"?Toy.Red:text=="2"?Toy.Orange:Toy.Sun;if(text.Length>0)stamp.Replay();

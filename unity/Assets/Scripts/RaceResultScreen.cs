@@ -53,7 +53,7 @@ namespace LittleRoad
 
             // Credits.
             var coin=Toy.Card(root,"Credit coin",new Vector2(96,96),new Vector2(-420,-315),Toy.Sun,48,6,5);
-            Toy.Title(coin.transform,"Coin mark","C",58,new Vector2(96,96),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter);
+            Toy.Label(coin.transform,"Coin mark","C",58,new Vector2(96,96),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter,true);
             coin.gameObject.AddComponent<ToyCoinFlip>();
             Toy.Title(root,"Earned credits","+"+data.reward,78,new Vector2(260,100),new Vector2(-240,-312),Toy.Sun,TextAnchor.MiddleCenter);
             Toy.Label(root,"Wallet","credits\nwallet "+data.wallet+" · saved",24,new Vector2(240,70),new Vector2(-10,-315),Toy.Navy,TextAnchor.MiddleLeft,true);

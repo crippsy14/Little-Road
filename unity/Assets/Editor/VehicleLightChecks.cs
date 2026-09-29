@@ -9,7 +9,7 @@ public static class VehicleLightChecks
     {
         var checks=new List<string>();
         void Check(bool condition,string message){if(!condition)throw new InvalidOperationException(message);checks.Add(message);}
-        var assets=new List<string>{"compact_v1","coupe_car","utility_car","formula_car","little_car",CarBodies.Flagship,CarBodies.Starter};
+        var assets=new List<string>{"compact_v1","little_car",CarBodies.Flagship,CarBodies.Starter};
         assets.AddRange(CarBodies.Family);assets.AddRange(CarBodies.Sporty);
         foreach(string asset in assets) {
             var car=TrialWorld.Car(asset,Color.cyan);var other=TrialWorld.Car(asset,Color.yellow);

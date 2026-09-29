@@ -15,7 +15,7 @@ public static class RaceRosterChecks
         Require(a.Parts["engine"]=="engine_club"&&a.Tuning.Equals(CarTuning.Club),"entry aliases mutable source equipment");
         bool rejected=false;try{((IDictionary<string,string>)a.Parts)["engine"]="engine_stock";}catch(NotSupportedException){rejected=true;}
         Require(rejected,"public loadout can be modified");
-        var b=new RaceEntrant(1,0,"formula_car",Color.blue,"club",a.Parts,DriverIdentity.ForRace(1,2005,"mixed",true));
+        var b=new RaceEntrant(1,0,"pebble",Color.blue,"club",a.Parts,DriverIdentity.ForRace(1,2005,"mixed",true));
         Require(a.Rating==b.Rating&&a.Tuning.Equals(b.Tuning),"body/paint/driver inflate rating or equipment");
         checks.Add("Race entries own immutable validated loadouts; body, paint and driver have no equipment-rating bonus");
 
@@ -37,6 +37,12 @@ public static class RaceRosterChecks
         checks.Add("Adventure preview starts player24th, does not spend a race serial/re-roll form, rejects stale equipment and fixes opponents across upgrades");
 
         var fresh=AdventureProgress.New();Require(fresh.bodyId==CarBodies.Starter,"new save does not start in the starter car");
+        foreach(var track in new[]{"cedar","bayview"}) {
+            var trialField=RaceRoster.Trial(24,1,1709,track,"stock",Array.Empty<string>(),"field","mixed",true);
+            Require(trialField.Entries[0].Body=="compact_v1","trial car 0 is not the compact master");
+            foreach(var e in trialField.Entries)Require(e.Id==0||CarBodies.UsesStandardEnvelope(e.Body),"trial entrant outside the standard envelope: "+e.Body);
+        }
+        checks.Add("Trial fields race the compact plus generated bodies, all in the standard envelope");
         foreach(var serial in new[]{0,1,2,7}) {
             fresh.raceSerial=serial;fresh.settledSerial=serial;var field=RaceRoster.Adventure(fresh);int flagships=0;var used=new HashSet<string>();
             foreach(var e in field.Entries) {
@@ -52,7 +58,7 @@ public static class RaceRosterChecks
         }
         foreach(var body in CarBodies.Family)Require(CarBodies.UsesStandardEnvelope(body),"family body outside standard envelope: "+body);
         foreach(var body in CarBodies.Sporty)Require(CarBodies.UsesStandardEnvelope(body),"sporty body outside standard envelope: "+body);
-        Require(CarBodies.UsesStandardEnvelope(CarBodies.Flagship)&&CarBodies.UsesStandardEnvelope(CarBodies.Starter)&&!CarBodies.UsesStandardEnvelope("coupe_car"),"envelope set wrong");
+        Require(CarBodies.UsesStandardEnvelope(CarBodies.Flagship)&&CarBodies.UsesStandardEnvelope(CarBodies.Starter)&&!CarBodies.UsesStandardEnvelope("compact_v1"),"envelope set wrong");
         var probe=TrialWorld.Car(CarBodies.Flagship,Color.white);
         try{Require(probe.GetComponent<StandardEnvelope>()!=null,"flagship car missing its standard envelope marker");}finally{UnityEngine.Object.DestroyImmediate(probe);}
         checks.Add("Generated bodies share one physical envelope; body shape grants no collision advantage");

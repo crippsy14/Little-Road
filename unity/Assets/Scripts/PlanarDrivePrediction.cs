@@ -13,14 +13,15 @@ namespace LittleRoad
             this.position=position;velocity.y=0;forward.y=0;
             this.velocity=velocity;this.forward=forward.normalized;this.yawRate=yawRate;this.steering=steering;
         }
-        public void Step(CarTuning tuning,float pedal,float steeringRequest,float dt,float dragReduction=0,float gripOverride=-1)
+        // slope: gravity deceleration along the path (GradeModel.Slope); 0 on level road.
+        public void Step(CarTuning tuning,float pedal,float steeringRequest,float dt,float dragReduction=0,float gripOverride=-1,float slope=0)
         {
             var right=Vector3.Cross(Vector3.up,forward);
             float grip=gripOverride<0?tuning.roadGrip:gripOverride;
             float speed=Vector3.Dot(velocity,forward),budget=grip*1.65f;
             steering=Mathf.MoveTowards(steering,Mathf.Clamp(steeringRequest,-1,1),tuning.response*dt);
             float request=steering*tuning.yaw*Mathf.Clamp01(Mathf.Abs(speed)/3)*Mathf.Sign(speed==0?1:speed);
-            DriveModel.Forces(tuning,speed,Mathf.Clamp(pedal,-1,1),request,grip,0,out float acceleration,out float targetYaw,dragReduction);
+            DriveModel.Forces(tuning,speed,Mathf.Clamp(pedal,-1,1),request,grip,slope,out float acceleration,out float targetYaw,dragReduction);
             if(speed< -7&&acceleration<0)acceleration=0;
             velocity+=(forward*acceleration-right*Mathf.Clamp(Vector3.Dot(velocity,right)*8,-budget,budget))*dt;
             // Match the configured torque servo and explicit angular damping;

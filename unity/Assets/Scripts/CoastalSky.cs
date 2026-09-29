@@ -19,6 +19,7 @@ namespace LittleRoad
             var sky=new Material(Shader.Find("LittleRoad/CoastalSky")){name="Poly Haven coastal cloud sky"};
             sky.SetTexture("_SkyTex",texture);sky.SetFloat("_Exposure",.85f);sky.SetFloat("_AzimuthOffset",textureAzimuth-desiredAzimuth);RenderSettings.skybox=sky;
             Vector3 sunDirection=new Vector3(Mathf.Cos(desiredAzimuth)*Mathf.Cos(elevation),Mathf.Sin(elevation),Mathf.Sin(desiredAzimuth)*Mathf.Cos(elevation));
+            TimeOfDay.PhotoSun=sunDirection;Shader.SetGlobalVector("_DaySunDir",new Vector4(sunDirection.x,sunDirection.y,sunDirection.z,0)); // water: use the photo
             Debug.Log("LITTLE_ROAD_SKY sunElevation="+elevation*Mathf.Rad2Deg+" peak="+peak+" texture="+texture.width+"x"+texture.height);
             return sunDirection;
         }

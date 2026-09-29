@@ -9,7 +9,22 @@ namespace LittleRoad
     public sealed class NpcChatter:MonoBehaviour
     {
         public string speaker="Driver";public Color colour=Toy.Sky;public string[] lines;
-        float ready;int last=-1;
+        float ready;int last=-1;public float LastSaid=-99;
+        // Talk (E / Cross) to any standing car: title shows under the name; talk lines default to the
+        // bump lines. Handled elsewhere (talkable=false): Hillcrest residents and Bayview characters
+        // (their own dialogs) and the train.
+        public string title;public string[] talk;public bool talkable=true;
+        public static readonly List<NpcChatter> All=new();
+        void OnEnable()=>All.Add(this);void OnDisable()=>All.Remove(this);
+        Rigidbody body;
+        public bool CanTalk
+        {
+            get{
+                if(!talkable)return false;if(body==null)body=GetComponent<Rigidbody>();
+                return body==null||(body.isKinematic?GetComponent<RoadCruiser>()==null||GetComponent<RoadCruiser>().Speed<.6f:body.linearVelocity.sqrMagnitude<1);
+            }
+        }
+        public string[] TalkLines=>talk!=null&&talk.Length>0?talk:lines!=null&&lines.Length>0?lines:General;
         public static readonly string[] General={
             "Hey! Mind the paintwork!","Beep beep! Coming through?","Oof, my bumper!","Easy there, speedy!",
             "I only just washed this!","Nice little car you've got!","Are you racing today?","Have you tried the ice cream?",
@@ -19,7 +34,7 @@ namespace LittleRoad
             if(Time.unscaledTime<ready||bubbles==null)return false;
             var pool=lines!=null&&lines.Length>0?lines:General;
             int pick=Random.Range(0,pool.Length);if(pool.Length>1&&pick==last)pick=(pick+1)%pool.Length;last=pick;
-            bubbles.Show(transform,speaker,pool[pick],colour);ready=Time.unscaledTime+4f;return true;
+            bubbles.Show(transform,speaker,pool[pick],colour);ready=Time.unscaledTime+4f;LastSaid=Time.time;return true;
         }
     }
 
@@ -30,11 +45,11 @@ namespace LittleRoad
         Canvas canvas;RectTransform area;readonly List<Bubble> live=new();const float Life=3.2f;
         void Awake()
         {
-            canvas=CoastUI.Canvas(transform,"Speech bubbles",40);canvas.gameObject.layer=Toy.MenuLayer;area=(RectTransform)canvas.transform;
+            canvas=CoastUI.Canvas(transform,"Speech bubbles",7);canvas.gameObject.layer=Toy.MenuLayer;area=(RectTransform)canvas.transform;
         }
         public void Show(Transform target,string speaker,string words,Color colour)
         {
-            if(canvas.worldCamera!=Toy.MenuCamera())Toy.UseMenuCamera(canvas);
+            Toy.UseMenuCamera(canvas);
             live.RemoveAll(b=>{if(b.target!=target)return false;Destroy(b.rect.gameObject);return true;});
             var holder=Toy.Rect(canvas.transform,"Speech",new Vector2(460,150),Vector2.zero);
             float width=Mathf.Clamp(words.Length*14+70,260,560);

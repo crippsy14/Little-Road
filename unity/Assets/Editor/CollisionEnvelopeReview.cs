@@ -12,7 +12,7 @@ public static class CollisionEnvelopeReview
     public static void Run(string path)
     {
         var result=new Evidence();
-        foreach(string asset in new[]{"compact_v1","coupe_car","utility_car","formula_car"}) {
+        foreach(string asset in new[]{"compact_v1",CarBodies.Starter,CarBodies.Flagship}) {
             var car=TrialWorld.Car(asset,Color.white);
             var race=new GameObject("Envelope review owner").AddComponent<RaceTrial>();race.track=new Circuit();
             var driver=car.AddComponent<RoadCar>();driver.Setup(race,0,CarTuning.Stock,false,1,"envelope review");

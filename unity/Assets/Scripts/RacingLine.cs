@@ -12,15 +12,21 @@ namespace LittleRoad
         public readonly float[] segmentLength,curvature;
         public readonly float roadLength,roadStep,pathLength;
         public int Count=>points.Length;
-        public RacingLine(Circuit road,string id,string trackId,string trackVersion)
+        public RacingLine(Circuit road,string id,string trackId,string trackVersion):this(road,Load(road,id,trackId,trackVersion)){}
+        static Data Load(Circuit road,string id,string trackId,string trackVersion)
         {
             var asset=Resources.Load<TextAsset>("RacingLines/"+id);if(asset==null)throw new ArgumentException("Missing racing line: "+id);
-            data=JsonUtility.FromJson<Data>(asset.text);
+            var data=JsonUtility.FromJson<Data>(asset.text);
             var geometry=Resources.Load<TextAsset>("Tracks/cedar-technical");
             using var sha=SHA256.Create();string hash=trackId=="bayview"?BayviewGeometryHash(road):BitConverter.ToString(sha.ComputeHash(geometry.bytes)).Replace("-","");
             if((data.schema!=1&&data.schema!=2)||data.trackId!=trackId||data.trackVersion!=trackVersion||data.trackHash!=hash||Mathf.Abs(data.roadLength-road.length)>.05f||data.offsets==null||data.offsets.Length<10)
                 throw new ArgumentException("Stale or incompatible racing line: "+id);
             if(data.schema==2&&(data.positions==null||data.positions.Length!=data.offsets.Length))throw new ArgumentException("Missing Cartesian racing-line samples: "+id);
+            return data;
+        }
+        public RacingLine(Circuit road,Data baked)
+        {
+            data=baked;
             roadLength=road.length;roadStep=road.length/data.offsets.Length;points=new Vector3[data.offsets.Length];segmentLength=new float[Count];curvature=new float[Count];
             for(int i=0;i<Count;i++) {
                 if(float.IsNaN(data.offsets[i])||float.IsInfinity(data.offsets[i])||Mathf.Abs(data.offsets[i])>5.01f)throw new ArgumentException("Racing-line offset exceeds initial body/tracking corridor.");
@@ -37,6 +43,41 @@ namespace LittleRoad
                 if(segmentLength[i]<.1f||Vector3.Dot(after,road.Forward(i*roadStep))<=0)throw new ArgumentException("Reversed or degenerate racing-line segment.");
             }
             pathLength=length;
+        }
+        // The bake in tools/bake-racing-line-candidates.py (--smooth-only), run on the live road:
+        // bounded bending-energy offsets at ~8 m controls, then a periodic C2 cubic B-spline sampled
+        // every ~2 m. Heights follow the road. Used for circuits built at runtime (Hillcrest).
+        public static Data BakeSmooth(Circuit road,string id,string trackId,float bound=4)
+        {
+            float length=road.length;int count=Mathf.CeilToInt(length/8);var centre=new Vector2[count];var normal=new Vector2[count];var offset=new float[count];
+            for(int i=0;i<count;i++){var p=road.At(i*length/count);centre[i]=new Vector2(p.x,p.z);}
+            for(int i=0;i<count;i++){var f=(centre[(i+1)%count]-centre[(i+count-1)%count]).normalized;normal[i]=new Vector2(f.y,-f.x);}
+            var path=new Vector2[count];var second=new Vector2[count];
+            for(int iteration=0;iteration<24000;iteration++) {
+                for(int i=0;i<count;i++)path[i]=centre[i]+normal[i]*offset[i];
+                for(int i=0;i<count;i++)second[i]=path[(i+count-1)%count]-2*path[i]+path[(i+1)%count];
+                for(int i=0;i<count;i++){var fourth=second[(i+count-1)%count]-2*second[i]+second[(i+1)%count];offset[i]=Mathf.Clamp(offset[i]-.025f*2*Vector2.Dot(normal[i],fourth),-bound,bound);}
+            }
+            for(int i=0;i<count;i++)path[i]=centre[i]+normal[i]*offset[i];
+            int samples=Mathf.CeilToInt(length/2);var data=new Data{schema=2,id=id,trackId=trackId,trackVersion=trackId+"-runtime",status="runtime geometric seed, not validated ideal line",
+                method="bounded bending-energy controls at ~8m;24000 iterations;"+bound+"m offset bound; periodic cubic B-spline",roadLength=length,offsets=new float[samples],positions=new Vector3[samples]};
+            for(int k=0;k<samples;k++) {
+                float s=k*length/samples,coordinate=s/length*count;int i=Mathf.FloorToInt(coordinate);float t=coordinate-i;
+                Vector2 P(int j)=>path[((j%count)+count)%count];
+                var q=((1-t)*(1-t)*(1-t)*P(i-1)+(3*t*t*t-6*t*t+4)*P(i)+(-3*t*t*t+3*t*t+3*t+1)*P(i+1)+t*t*t*P(i+2))/6;
+                // Settle the height on the road (Nearest is 3-D, as in the corridor check above).
+                var at=new Vector3(q.x,road.At(s).y,q.y);for(int pass=0;pass<4;pass++)at.y=road.At(road.Nearest(at,out _)).y;
+                data.offsets[k]=Mathf.Clamp(Vector3.Dot(new Vector3(q.x-road.At(s).x,0,q.y-road.At(s).z),road.Right(s)),-5,5);data.positions[k]=at;
+            }
+            return data;
+        }
+        // An authored line's lateral offsets carried onto a circuit with the same layout (Cedar ->
+        // Cedar Hills): positions are rebuilt from the new road, so heights follow its elevation.
+        public static Data Transfer(Circuit road,string id,string trackId)
+        {
+            var asset=Resources.Load<TextAsset>("RacingLines/"+id);if(asset==null)throw new ArgumentException("Missing racing line: "+id);
+            var source=JsonUtility.FromJson<Data>(asset.text);
+            return new Data{schema=1,id=id+"-on-"+trackId,trackId=trackId,trackVersion=trackId+"-runtime",status="offsets transferred from "+id,method=source.method,roadLength=road.length,offsets=source.offsets,positions=null};
         }
         public static string BayviewGeometryHash(Circuit road)
         {
@@ -72,21 +113,34 @@ namespace LittleRoad
             this.planning=planning;
             this.line=line;int n=line.Count;speed=new float[n];acceleration=new float[n];
             float budget=tuning.roadGrip*1.65f;
-            for(int i=0;i<n;i++)speed[i]=Mathf.Min(tuning.AttainableSpeed,Mathf.Sqrt(budget*PaceMargins.Corner/Mathf.Max(.00001f,Mathf.Abs(line.curvature[i]))));
+            // Grade-aware: per-point grade (gravity along the line) and vertical curvature (load on
+            // crests/dips). Both are zero on a level line, so the profile is then unchanged.
+            var grade=new float[n];var vertical=new float[n];bool graded=false;
+            if(GradeModel.Enabled&&GradeModel.Physics) {
+                for(int i=0;i<n;i++){int next=(i+1)%n;var d=line.points[next]-line.points[i];float run=new Vector2(d.x,d.z).magnitude;grade[i]=run>.01f?d.y/run:0;}
+                for(int i=0;i<n;i++){int prev=(i+n-1)%n;float ds=Mathf.Max(.1f,(line.segmentLength[prev]+line.segmentLength[i])*.5f);vertical[i]=(grade[i]-grade[prev])/ds;if(grade[i]!=0)graded=true;}
+            }
+            float Grip(int i,float v)=>graded?budget*GradeModel.Load(v,vertical[i]):budget;
+            float Gravity(int i)=>graded?GradeModel.Gravity*grade[i]/Mathf.Sqrt(1+grade[i]*grade[i]):0;
+            for(int i=0;i<n;i++) {
+                speed[i]=Mathf.Min(tuning.AttainableSpeed,Mathf.Sqrt(budget*PaceMargins.Corner/Mathf.Max(.00001f,Mathf.Abs(line.curvature[i]))));
+                if(graded)for(int pass=0;pass<3;pass++)speed[i]=Mathf.Min(tuning.AttainableSpeed,Mathf.Sqrt(Grip(i,speed[i])*PaceMargins.Corner/Mathf.Max(.00001f,Mathf.Abs(line.curvature[i]))));
+            }
             int iteration=0;
             for(;iteration<64;iteration++) {
                 float change=0;
                 for(int i=n-1;i>=0;i--) {
                     int next=(i+1)%n;float lateral=speed[next]*speed[next]*Mathf.Max(Mathf.Abs(line.curvature[i]),Mathf.Abs(line.curvature[next]));
-                    float traction=Mathf.Sqrt(Mathf.Max(0,budget*budget-lateral*lateral));
+                    float g=Grip(i,speed[next]);float traction=Mathf.Sqrt(Mathf.Max(0,g*g-lateral*lateral));
                     float braking=Mathf.Min(tuning.braking,traction)*PaceMargins.ProfileBrake*planning.ReferenceBrakeScale+DraftingModel.Resistance(speed[next],tuning.mass,drafting?DraftingModel.MaximumReduction:0);
+                    if(graded)braking=Mathf.Max(.5f,braking+Gravity(i));
                     float value=Mathf.Min(speed[i],Mathf.Sqrt(speed[next]*speed[next]+2*braking*line.segmentLength[i]));change=Mathf.Max(change,speed[i]-value);speed[i]=value;
                 }
                 for(int i=0;i<n;i++) {
                     int next=(i+1)%n;float lateral=speed[i]*speed[i]*Mathf.Abs(line.curvature[i]);
-                    float traction=Mathf.Sqrt(Mathf.Max(0,budget*budget-lateral*lateral));
+                    float g=Grip(i,speed[i]);float traction=Mathf.Sqrt(Mathf.Max(0,g*g-lateral*lateral));
                     float force=speed[i]>=tuning.gearCeiling?0:Mathf.Min(DriveModel.EngineForce(tuning,speed[i]),traction);
-                    float net=force-DriveModel.Resistance(speed[i],tuning.mass);
+                    float net=force-DriveModel.Resistance(speed[i],tuning.mass)-Gravity(i);
                     float value=Mathf.Min(speed[next],Mathf.Sqrt(Mathf.Max(.01f,speed[i]*speed[i]+2*net*line.segmentLength[i])));change=Mathf.Max(change,speed[next]-value);speed[next]=value;
                 }
                 if(change<.0001f)break;

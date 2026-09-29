@@ -17,6 +17,11 @@ namespace LittleRoad
         public sealed class Choice {public string text;public Action action;public bool enabled=true;public Choice(string text,Action action,bool enabled=true){this.text=text;this.action=action;this.enabled=enabled;}}
         Canvas canvas;RectTransform panel,choiceColumn,topBar,bottomBar;Text heading,place,description,prompt,objective;ToyShape promptPill,objectivePill,placePill;
         readonly List<ToyShape> chips=new();readonly List<Text> chipTexts=new();string shownHud,shownControls;
+        // Free-roam HUD (docs/ui-design.md): the race speed dash at bottom centre; the objective and the
+        // controls hint fade in only when they're useful.
+        RectTransform dash;Text dashSpeed,dashDrive;CanvasGroup objectiveFade,controlsFade;bool roaming;
+        // Interaction prompt ("act" tier): button glyph + verb + name, role in the character's colour.
+        ToyShape interaction,glyph;Text interactionTitle,interactionRole,glyphLetter;GameObject glyphCross;float interactionShown;string shownInteraction;InputGlyphs.Family shownFamily;
         RaceResultScreen result;ToyToaster toaster;
         readonly List<Button> buttons=new();
         static readonly Color[] ChoiceColours={Toy.Blue,Toy.Mint,Toy.Orange,Toy.Pink,Toy.Red,Toy.Sky};
@@ -26,7 +31,7 @@ namespace LittleRoad
         void Awake()
         {
             var root=new GameObject("Adventure interface",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));root.transform.SetParent(transform);root.layer=Toy.MenuLayer;
-            canvas=root.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.planeDistance=1;canvas.sortingOrder=10;
+            canvas=root.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=20;
             var scaler=root.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1920,1080);scaler.matchWidthOrHeight=.5f;
             if(EventSystem.current==null){var events=new GameObject("Menu input",typeof(EventSystem),typeof(InputSystemUIInputModule));events.transform.SetParent(transform);events.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();}
             // Reserve the right stick for model inspection. Unity's defaults
@@ -42,7 +47,26 @@ namespace LittleRoad
             objective=Toy.Label(objectivePill.transform,"Objective text",string.Empty,24,new Vector2(820,56),new Vector2(24,0),Toy.Navy,TextAnchor.MiddleLeft,true);
             bottomBar=Toy.Rect(root.transform,"Journey controls",new Vector2(1880,80),new Vector2(0,-490));
             promptPill=Toy.Card(bottomBar,"Controls pill",new Vector2(1200,58),Vector2.zero,Toy.Navy,29,4,4);promptPill.borderColor=Toy.White;
-            prompt=Toy.Label(promptPill.transform,"Controls",string.Empty,21,new Vector2(1160,58),Vector2.zero,Toy.White,TextAnchor.MiddleCenter,true);
+            prompt=Toy.Label(promptPill.transform,"Controls",string.Empty,24,new Vector2(1160,58),Vector2.zero,Toy.White,TextAnchor.MiddleCenter,true);
+            // One consistent place for "what can I do here": just above the controls bar.
+            // Compact: a keycap, "Talk to Mara" and the role underneath, just above the speed dash.
+            interaction=Toy.Card(root.transform,"Interaction prompt",new Vector2(500,72),new Vector2(0,-330),Toy.Navy,36,4,6);interaction.borderColor=Toy.White;
+            glyph=Toy.Card(interaction.transform,"Button glyph",new Vector2(50,50),new Vector2(-212,0),Toy.White,12,0,3);
+            // Bold label face: the outlined display face smeared into a blob inside the small keycap.
+            glyphLetter=Toy.Label(glyph.transform,"Glyph letter","E",28,new Vector2(50,50),new Vector2(0,1),Toy.Navy,TextAnchor.MiddleCenter,true);
+            glyphCross=new GameObject("Glyph cross",typeof(RectTransform));glyphCross.transform.SetParent(glyph.transform,false);
+            foreach(float a in new[]{45f,-45f}){var bar=Toy.Card(glyphCross.transform,"Cross bar",new Vector2(30,7),Vector2.zero,Toy.Hex(0x7fb3ff),5,0,0);bar.rectTransform.localRotation=Quaternion.Euler(0,0,a);}
+            interactionTitle=Toy.Title(interaction.transform,"Interaction title",string.Empty,26,new Vector2(400,36),new Vector2(36,11),Toy.White,TextAnchor.MiddleLeft);
+            interactionRole=Toy.Label(interaction.transform,"Interaction role",string.Empty,17,new Vector2(400,24),new Vector2(36,-17),Toy.Sun,TextAnchor.MiddleLeft,true);
+            interaction.gameObject.SetActive(false);
+            objectiveFade=objectivePill.gameObject.AddComponent<CanvasGroup>();controlsFade=promptPill.gameObject.AddComponent<CanvasGroup>();
+            dash=CoastUI.Panel(root.transform,"Speed dash",new Vector2(250,105),new Vector2(0,-434),new Color(0,0,0,.14f),1);
+            dashSpeed=DashText(dash,"Speed","0",70,new Vector2(150,87),new Vector2(-40,6),TextAnchor.MiddleRight);
+            DashText(dash,"Speed unit","mph",15,new Vector2(150,25),new Vector2(-42,-39),TextAnchor.MiddleRight);
+            CoastUI.Panel(dash,"Separator",new Vector2(1,66),new Vector2(52,0),new Color(1,1,1,.6f),0);
+            dashDrive=DashText(dash,"Drive selector","D",54,new Vector2(75,70),new Vector2(90,7),TextAnchor.MiddleCenter);
+            DashText(dash,"Transmission","AUTO",13,new Vector2(76,23),new Vector2(90,-38),TextAnchor.MiddleCenter);
+            dash.gameObject.SetActive(false);
 
             toaster=Toy.Rect(root.transform,"Toasts",new Vector2(1920,1080),Vector2.zero).gameObject.AddComponent<ToyToaster>();
             panel=Toy.Rect(root.transform,"Conversation",new Vector2(1920,1080),Vector2.zero);
@@ -56,8 +80,37 @@ namespace LittleRoad
             choiceColumn=Toy.Rect(panel,"Choices",new Vector2(600,700),new Vector2(590,-40));
             panel.gameObject.SetActive(false);
         }
+        static Text DashText(Transform parent,string name,string value,int size,Vector2 box,Vector2 pos,TextAnchor align)
+        {
+            var text=CoastUI.Label(parent,name,value,size,box,pos,Color.white,false,align);
+            var shadow=text.gameObject.AddComponent<Shadow>();shadow.effectColor=new Color(0,0,0,.88f);shadow.effectDistance=new Vector2(1.5f,-1.5f);return text;
+        }
+        // Free roam: speed dash, the objective pill top left and the controls hint bottom left, each shown
+        // only when asked (they fade). Conversations hide the dash and always show the menu controls.
+        public void Roam(string goal,bool showGoal,string controls,bool showControls,float speed,string drive)
+        {
+            if(!roaming){roaming=true;foreach(var c in chips)c.gameObject.SetActive(false);shownHud=null;shownControls=null;objectiveFade.alpha=0;controlsFade.alpha=0;}
+            dash.gameObject.SetActive(!IsOpen&&topBar.gameObject.activeSelf);dashSpeed.text=Mathf.RoundToInt(Mathf.Abs(speed)*2.2369363f).ToString();dashDrive.text=drive;
+            if(goal!=shownHud) {
+                shownHud=goal;objective.text=goal??string.Empty;
+                float w=Mathf.Clamp(Mathf.Ceil(objective.preferredWidth)+110,300,1300);objectivePill.rectTransform.sizeDelta=new Vector2(w,56);objectivePill.rectTransform.anchoredPosition=new Vector2(-920+w*.5f,20);
+                objective.rectTransform.sizeDelta=new Vector2(w-80,56);objective.rectTransform.anchoredPosition=new Vector2(28,0);objectivePill.transform.Find("Objective mark").GetComponent<RectTransform>().anchoredPosition=new Vector2(-w*.5f+34,0);objectivePill.SetVerticesDirty();
+            }
+            if(IsOpen){controls=InputGlyphs.Menu;showControls=true;showGoal=false;}
+            if(controls!=shownControls) {
+                // One line: shrink the type (20 down to 14 px) rather than wrap.
+                shownControls=controls;prompt.text=controls;prompt.horizontalOverflow=HorizontalWrapMode.Overflow;prompt.fontSize=20;float room=IsOpen?1150:700;
+                if(prompt.preferredWidth>room)prompt.fontSize=Mathf.Max(14,Mathf.FloorToInt(20*room/prompt.preferredWidth));
+                float w=Mathf.Ceil(prompt.preferredWidth)+50;promptPill.rectTransform.sizeDelta=new Vector2(w,50);prompt.rectTransform.sizeDelta=new Vector2(w-30,50);
+                promptPill.rectTransform.anchoredPosition=IsOpen?Vector2.zero:new Vector2(-940+w*.5f,0);promptPill.SetVerticesDirty();
+            }
+            objectivePill.gameObject.SetActive(!string.IsNullOrEmpty(goal));promptPill.gameObject.SetActive(!string.IsNullOrEmpty(controls));
+            float step=Time.unscaledDeltaTime*5;
+            objectiveFade.alpha=Mathf.MoveTowards(objectiveFade.alpha,showGoal?1:0,step);controlsFade.alpha=Mathf.MoveTowards(controlsFade.alpha,showControls?1:0,step);
+        }
         public void HUD(string value,string controls)
         {
+            if(roaming){roaming=false;dash.gameObject.SetActive(false);objectiveFade.alpha=1;controlsFade.alpha=1;promptPill.rectTransform.anchoredPosition=Vector2.zero;prompt.fontSize=24;shownHud=null;}
             if(value==shownHud&&controls==shownControls)return;shownHud=value;shownControls=controls;
             var lines=(value??string.Empty).Split('\n');var parts=lines[0].Split('·');
             while(chips.Count<parts.Length){
@@ -84,11 +137,33 @@ namespace LittleRoad
             if(!headline.EndsWith("!")&&!headline.EndsWith("?"))headline+="!";
             toaster.Show(headline,detail,value.Contains("postcard")?Toy.Pink:value.Contains("credit")?Toy.Gold:Toy.Sky);
         }
+        // First visit to a place: the toast card with a DISCOVERED tag.
+        public void Discovery(string place,string subtitle)=>toaster.Show(place,subtitle,Toy.Sky,"DISCOVERED");
         public void SetVisible(bool value){canvas.enabled=value;}
-        public void SetHudVisible(bool value){topBar.gameObject.SetActive(value);bottomBar.gameObject.SetActive(value);}
+        public void SetHudVisible(bool value){topBar.gameObject.SetActive(value);bottomBar.gameObject.SetActive(value);if(!value)dash.gameObject.SetActive(false);}
         void LateUpdate()
         {
-            if(canvas.worldCamera==null)Toy.UseMenuCamera(canvas);
+            Toy.UseMenuCamera(canvas);
+        }
+        // Show the interaction prompt (null title hides it). `ready` false greys the button and the
+        // title explains why (e.g. "Slow down to talk to Mara").
+        public void Interaction(string title,string role,Color roleColour,bool ready)
+        {
+            var family=InputGlyphs.Current;string key=title==null||IsOpen?null:title+"|"+role+"|"+ready;
+            if(key!=shownInteraction||family!=shownFamily) {
+                bool appearing=shownInteraction==null&&key!=null;shownInteraction=key;shownFamily=family;
+                interaction.gameObject.SetActive(key!=null);
+                if(key!=null) {
+                    interactionTitle.text=title;interactionRole.text=role??string.Empty;interactionRole.color=roleColour;
+                    bool ps=family==InputGlyphs.Family.PlayStation,xbox=family==InputGlyphs.Family.Xbox;
+                    glyph.color=ps?Toy.Navy:xbox?Toy.Hex(0x3fb24a):Toy.White;glyph.borderColor=ps?Toy.White:glyph.color;
+                    glyph.rectTransform.sizeDelta=new Vector2(50,50);glyph.radius=ps||xbox?25:12;
+                    glyphLetter.text=InputGlyphs.Confirm;glyphLetter.color=xbox?Toy.White:Toy.Navy;glyphCross.SetActive(ps);
+                    var fade=glyph.GetComponent<CanvasGroup>();if(fade==null)fade=glyph.gameObject.AddComponent<CanvasGroup>();fade.alpha=ready?1:.35f;
+                    glyph.SetVerticesDirty();if(appearing)interactionShown=Time.unscaledTime;
+                }
+            }
+            if(interaction.gameObject.activeSelf){float t=Mathf.Clamp01((Time.unscaledTime-interactionShown)/.16f);interaction.rectTransform.localScale=Vector3.one*Mathf.Lerp(.86f,1,1-(1-t)*(1-t));}
         }
         public void Capture(string path)
         {
@@ -130,6 +205,8 @@ namespace LittleRoad
         void CloseResult(){if(result!=null){result.Close();result=null;}}
         IEnumerator SelectNextFrame(Button button){yield return null;if(button!=null&&IsOpen)EventSystem.current.SetSelectedGameObject(button.gameObject);}
         public void Close(){StopAllCoroutines();panel.gameObject.SetActive(false);CloseResult();EventSystem.current.SetSelectedGameObject(null);}
+        // B / Esc: the menu's own Back choice ("Back", "Back to all parts", "Back to the road"); false if none.
+        public bool Back(){var b=buttons.Find(x=>x.interactable&&x.name.StartsWith("Choice Back"));if(b==null)return false;b.onClick.Invoke();return true;}
         public bool InvokeChoice(string startsWith)
         {
             var button=buttons.Find(b=>b.name.StartsWith("Choice "+startsWith)&&b.interactable)??result?.Choices.Find(b=>b.name.StartsWith("Choice "+startsWith)&&b.interactable);if(button==null)return false;button.onClick.Invoke();return true;

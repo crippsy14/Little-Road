@@ -36,6 +36,12 @@ namespace LittleRoad
         double nextAssistedAttempt;
         bool wasCheckpointMissed;
         public bool CheckpointMissed=>!race.freeRoam&&!finished&&progress>nextGateProgress+.5f;
+        // --gate-first (off by default): credit a checkpoint crossed this tick before the driver and
+        // physical recovery read nextGateProgress. Progress is a projection onto 1.5 m route segments;
+        // on the inside of a tight corner it jumps ~offset x segment bend when the nearest segment
+        // changes (~0.4 m at Hillcrest T5). A jump that lands >0.5 m past a gate read as a missed gate
+        // to recovery for that one tick, which stopped a racing car dead (study 125).
+        public static bool GateFirst;
         public float RankedProgress=>Mathf.Min(progress,nextGateProgress);
         public string CheckpointMessage=>CheckpointMissed?"CHECKPOINT MISSED — R / D-pad Down: return before it":"";
         IDriverPolicy driverPolicy;
@@ -48,6 +54,7 @@ namespace LittleRoad
         public float ContactBottom {get;private set;}
         // Tyre grip used on the last physics step (0 while controls are blocked).
         public float Grip {get;private set;}
+        public float UnsupportedSeconds {get;private set;}
         RecoverySensor recoverySensor;
         public RacingSpeedProfile referenceProfile {get;private set;}
         public DriverIdentity Driver {get;private set;}
@@ -72,20 +79,10 @@ namespace LittleRoad
             body.linearDamping=0;body.angularDamping=1.5f;body.maxAngularVelocity=2.3f;
             body.solverIterations=12;body.solverVelocityIterations=8;
             body.centerOfMass=new Vector3(0,.45f,0);
-            Bounds envelope=new Bounds();bool firstVertex=true;
-            foreach(var renderer in GetComponentsInChildren<Renderer>()) {
-                Bounds local=renderer.localBounds;
-                for(int corner=0;corner<8;corner++) {
-                    Vector3 p=local.center+Vector3.Scale(local.extents,new Vector3((corner&1)==0?-1:1,(corner&2)==0?-1:1,(corner&4)==0?-1:1));
-                    p=transform.InverseTransformPoint(renderer.transform.TransformPoint(p));
-                    if(firstVertex){envelope=new Bounds(p,Vector3.zero);firstVertex=false;}else envelope.Encapsulate(p);
-                }
-            }
-            // Generated bodies all race in one physical envelope, so shape is never a hidden stat.
-            if(GetComponent<StandardEnvelope>()!=null)envelope=CarBodies.Envelope;
-            envelope.Expand(.015f);Vector3 size=envelope.size;size.x=Mathf.Max(size.x,2.32f);
-            var collider=gameObject.AddComponent<BoxCollider>();collider.center=envelope.center;collider.size=size;
-            CollisionHalf=size*.5f;CollisionCentre=envelope.center;
+            var (boxCentre,size)=CollisionBox(gameObject);
+            var collider=gameObject.AddComponent<BoxCollider>();collider.center=boxCentre;collider.size=size;
+            CollisionHalf=size*.5f;CollisionCentre=boxCentre;
+            if(!Application.isBatchMode)gameObject.AddComponent<LightTrails>().Setup(this,boxCentre,CollisionHalf);
             if(RaceTrial.Has("--physical-recovery")||owner.DriverPolicyId=="traffic-v1"||owner.DriverPolicyId=="context-v1")recoverySensor=new RecoverySensor(body,collider);
             if(RaceTrial.Has("--physical-recovery"))physicalRecovery=new PhysicalRecovery();
             if(owner.DriverPolicyId=="traffic-v1"){trafficPolicy=new TrafficDriverPolicy(referenceProfile,recoverySensor);driverPolicy=trafficPolicy;}
@@ -100,19 +97,47 @@ namespace LittleRoad
             // Free roam on the level Bayview road still crosses real hills: let the car pitch and
             // roll with the ground it sits on (races keep their locked axes). --free-roam-level restores.
             else if(race.freeRoam&&!RaceTrial.Has("--free-roam-level")){body.constraints=RigidbodyConstraints.None;tiltToGround=true;}
+            // Visible weight transfer (visual only); it moves the wheel pivots, so before WheelVisuals.
+            if(BodyMotion.Enabled&&!Application.isBatchMode)(GetComponent<BodyMotion>()??gameObject.AddComponent<BodyMotion>()).Collect(body);
             wheels=new WheelVisuals(gameObject);
             pathDistance=race.track.Nearest(transform.position,out offset);previousPath=pathDistance;
             progress=pathDistance>race.track.length*.8f?pathDistance-race.track.length:pathDistance;
             nextGate=0;nextGateProgress=0;lastSafeDistance=progress;
         }
-        void FixedUpdate()
+        // Timed for the frame probe (FrameCost.Cars): every car's driving and AI step.
+        // The physical box for a car body, fitted to that body: its model's length and height, and its
+        // shoulder-and-tyre width (CarBodies.ShoulderWidth, mirrors excluded). It used to be one shared
+        // envelope forced to 2.32 m wide: 27 cm of air each side of the Puddle, while the longer field bodies
+        // sank up to 54 cm into each other at contact (contact review, 29 Sep). --collider-width overrides
+        // the width for before/after reviews.
+        public static (Vector3 centre,Vector3 size) CollisionBox(GameObject car)
+        {
+            Bounds envelope=new Bounds();bool firstVertex=true;
+            foreach(var renderer in car.GetComponentsInChildren<Renderer>()) {
+                if(renderer is TrailRenderer)continue;Bounds local=renderer.localBounds;
+                for(int corner=0;corner<8;corner++) {
+                    Vector3 p=local.center+Vector3.Scale(local.extents,new Vector3((corner&1)==0?-1:1,(corner&2)==0?-1:1,(corner&4)==0?-1:1));
+                    p=car.transform.InverseTransformPoint(renderer.transform.TransformPoint(p));
+                    if(firstVertex){envelope=new Bounds(p,Vector3.zero);firstVertex=false;}else envelope.Encapsulate(p);
+                }
+            }
+            envelope.Expand(.015f);Vector3 size=envelope.size;
+            string body=car.name.Replace("(Clone)","").Trim();var shoulders=CarBodies.ShoulderWidth(body);var length=CarBodies.Length(body);
+            if(shoulders.HasValue){size.x=shoulders.Value;envelope.center=new Vector3(0,envelope.center.y,envelope.center.z);}if(length.HasValue)size.z=length.Value;
+            if(float.TryParse(RaceTrial.Arg("--collider-width"),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float width))size.x=width;
+            return (envelope.center,size);
+        }
+        void FixedUpdate(){long start=System.Diagnostics.Stopwatch.GetTimestamp();try{Step();}finally{FrameCost.Cars+=System.Diagnostics.Stopwatch.GetTimestamp()-start;}}
+        void Step()
         {
             if(race==null || !race.running) return;
             if(ground!=null)ground.Sample();
             float recoveryDatum=ground==null?0:race.track.At(pathDistance).y;
-            if(race.freeRoam&&body.position.y<recoveryDatum-3){TryRecover();return;}
+            // Free roam spans the island and the mainland: only the sea counts as falling out of the world.
+            if(race.freeRoam&&body.position.y<(FreeRoamRoads.Count>0?CoastalLandscape.SeaLevel+1:recoveryDatum-3)){TryRecover();return;}
             Grip=0;
-            if(controlsBlocked){throttle=0;steering=0;speed=0;body.linearVelocity=Vector3.zero;body.angularVelocity=Vector3.zero;return;}
+            // Kinematic while carried (the castle zipline): the carrier poses it; velocity can't be set.
+            if(controlsBlocked){throttle=0;steering=0;speed=0;if(!body.isKinematic){body.linearVelocity=Vector3.zero;body.angularVelocity=Vector3.zero;}return;}
             Vector3 driveForward=DriveForward,driveRight=ground==null?transform.right:ground.right,driveUp=ground==null?Vector3.up:ground.normal;
             speed=Vector3.Dot(body.linearVelocity,driveForward);
             float beforeProgress=progress,beforeOffset=offset;
@@ -120,18 +145,19 @@ namespace LittleRoad
             float step=Mathf.Repeat(pathDistance-previousPath+race.track.length*.5f,race.track.length)-race.track.length*.5f;
             if(Mathf.Abs(step)<10)progress+=step;
             previousPath=pathDistance;
+            if(GateFirst&&!race.freeRoam&&race.elapsed>=0&&Mathf.Abs(step)<10)TrackGates(beforeProgress,beforeOffset);
             if(race.DraftingEnabled) {
                 var snapshot=race.DriverSnapshot;if(snapshot==null)throw new InvalidOperationException("Drafting requires a shared same-step observation.");
                 var self=snapshot.Entries[driverId];
                 DragReduction=DraftingModel.Reduction(in self,snapshot.Entries,out int leader,race.track.Length);DraftLeader=leader;
             }
             if(commandSource!=null){var command=commandSource(this);throttle=Mathf.Clamp(command.x,-1,1);steering=Mathf.Clamp(command.y,-1,1);}
-            else if(autonomous || finished) Plan(); else ReadInput();
+            else if(autonomous || finished){long planStart=System.Diagnostics.Stopwatch.GetTimestamp();Plan();long planTicks=System.Diagnostics.Stopwatch.GetTimestamp()-planStart;FrameCost.Plan+=planTicks;if(planTicks>FrameCost.PlanMax)FrameCost.PlanMax=planTicks;} else ReadInput();
             if(race.elapsed<0) {throttle=0;steering=0;body.linearVelocity=Vector3.zero;return;}
             race.MotionAudit?.Observe(this,race.elapsed);
             race.ApproachAudit?.Observe(this,race.elapsed);
             steerState=Mathf.MoveTowards(steerState,steering,tuning.response*Time.fixedDeltaTime);
-            float grip=Mathf.Abs(offset)<Circuit.Width*.5f?tuning.roadGrip:tuning.dirtGrip;Grip=grip;
+            float grip=Mathf.Abs(offset)<Circuit.Width*.5f||(race.freeRoam&&OnRoadSurface())?tuning.roadGrip:tuning.dirtGrip;Grip=grip;
             float yawRequest=steerState*tuning.yaw*Mathf.Clamp01(Mathf.Abs(speed)/3)*Mathf.Sign(speed==0?1:speed);
             DriveModel.Forces(tuning,speed,throttle,yawRequest,grip,0,out float acceleration,out float yaw,DragReduction);
             // PhysX gravity and ground contact already produce the along-grade
@@ -139,6 +165,8 @@ namespace LittleRoad
             requestedYaw=yaw;
             if(speed < -7 && acceleration<0)acceleration=0;
             bool supported=ground==null||ground.grounded;
+            // Diagnostic (elevated circuits): racing time with no drive, brake or cornering force applied.
+            if(!supported&&race.elapsed>0&&!finished)UnsupportedSeconds+=Time.fixedDeltaTime;
             if(supported)body.AddForce(driveForward*acceleration,ForceMode.Acceleration);
             // Steering changes heading; lateral tyre force moves velocity toward
             // that heading within the available grip, preserving collision impulses.
@@ -150,7 +178,7 @@ namespace LittleRoad
             if(ground!=null)ground.Align();
             if(tiltToGround)TiltToGround();
             if(!race.freeRoam) {
-                if(Mathf.Abs(step)<10)TrackGates(beforeProgress,beforeOffset);
+                if(!GateFirst&&Mathf.Abs(step)<10)TrackGates(beforeProgress,beforeOffset);
                 if(CheckpointMissed&&!wasCheckpointMissed) {
                     missedGates++;
                     Debug.Log($"CHECKPOINT_MISSED id={driverId} gate={nextGate} required={nextGateProgress:0.00} progress={progress:0.00} offset={offset:0.00} time={race.elapsed:0.00}");
@@ -166,6 +194,23 @@ namespace LittleRoad
             }
             wheelSpin+=speed/.425f*Mathf.Rad2Deg*Time.fixedDeltaTime;
             wheels.Pose(wheelSpin,steerState*25);
+        }
+        // Garage body swap (looks only): the new model's visuals replace this car's. The collider,
+        // mass and tuning stay, so only standard-envelope bodies (every one a body shop sells) qualify.
+        public void ReplaceBody(string asset,Color paint)
+        {
+            if(!CarBodies.UsesStandardEnvelope(asset)||GetComponent<StandardEnvelope>()==null)throw new InvalidOperationException("Only standard-envelope bodies swap in place: "+asset);
+            string current=name;var donor=TrialWorld.Car(asset,paint);
+            var old=new System.Collections.Generic.List<Transform>();foreach(Transform child in transform)if(child.name==current||child.name.StartsWith(current+"_lod"))old.Add(child);
+            foreach(var child in old){child.SetParent(null,false);child.gameObject.SetActive(false);Destroy(child.gameObject);}
+            var moved=new System.Collections.Generic.List<Transform>();foreach(Transform child in donor.transform)moved.Add(child);
+            foreach(var child in moved)child.SetParent(transform,false);
+            var donorGroup=donor.GetComponent<LODGroup>();var group=GetComponent<LODGroup>();
+            if(donorGroup!=null){if(group==null)group=gameObject.AddComponent<LODGroup>();group.SetLODs(donorGroup.GetLODs());group.RecalculateBounds();}
+            else if(group!=null)DestroyImmediate(group);
+            Destroy(donor);name=asset;
+            GetComponent<BodyMotion>()?.Collect(body);
+            wheels=new WheelVisuals(gameObject);GetComponent<VehicleLights>()?.Recollect();
         }
         bool tiltToGround;readonly RaycastHit[] tiltHits=new RaycastHit[8];
         // Averages the surface normal under the four corners and servos the car's up vector to
@@ -257,8 +302,23 @@ namespace LittleRoad
                 nextGateProgress+=race.track.length/12;
             }
         }
+        readonly RaycastHit[] surfaceHits=new RaycastHit[6];
+        // Free roam: tarmac off the Bayview loop (causeway, country roads) is marked with RoadSurface.
+        bool OnRoadSurface()
+        {
+            int count=Physics.RaycastNonAlloc(body.position+Vector3.up,Vector3.down,surfaceHits,2.6f,~0,QueryTriggerInteraction.Collide);
+            for(int i=0;i<count;i++)if(surfaceHits[i].collider.GetComponent<RoadSurface>()!=null)return true;
+            return false;
+        }
         public bool TryRecover()
         {
+            if(race.freeRoam&&FreeRoamRoads.Nearest(body.position,out var roadPoint,out var roadForward)) {
+                // Nearest road of any kind (Bayview loop, causeway, mainland), unless a car is parked on it.
+                Vector3 target=roadPoint+Vector3.up*.2f;
+                foreach(var other in race.cars)if(other!=this&&Vector3.Distance(other.body.position,target)<5)return false;
+                body.position=target;body.rotation=Quaternion.LookRotation(new Vector3(roadForward.x,0,roadForward.z));
+                body.linearVelocity=Vector3.zero;body.angularVelocity=Vector3.zero;stuckTime=0;recoveries++;return true;
+            }
             // Return behind the last clear on-course position. Never advance
             // ordered gates; wait if another car occupies the destination.
             float destination=race.freeRoam?race.track.Nearest(body.position,out _):Mathf.Min(lastSafeDistance-4,nextGateProgress-6);

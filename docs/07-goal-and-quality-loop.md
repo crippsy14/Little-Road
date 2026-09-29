@@ -1,5 +1,8 @@
 # Active goal and quality loop
 
+**Updated 29 September:** "12-hour campaign" means **at least** 12 hours; the campaign is open-ended and grows with content. See [doc 45](45-roadmap-and-feature-spec.md) for the current plan.
+
+
 Set on 16 September 2026 at the user's request. The application goal is active; this document makes the review criteria concrete.
 
 19 September scope expansion: the playable slice remains a milestone within the [12-hour campaign scope](17-scope-and-priorities.md). Finished-game acceptance additionally requires the [endurance/fuel/mass systems](18-endurance-fuel-and-mass.md) and [visual parts browser](19-parts-browser-reference-and-spec.md), retaining every earlier requirement. Passing the slice gate does not complete the expanded game. Planning has resumed; the latest review defects remain open.

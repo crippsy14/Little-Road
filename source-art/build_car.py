@@ -13,8 +13,8 @@ import itertools
 from mathutils import Vector, Matrix
 
 ROOT = Path(__file__).resolve().parents[1]
-VARIANT = sys.argv[sys.argv.index('--')+1] if '--' in sys.argv else 'compact'
-ASSET = {'compact':'little_car','utility':'utility_car','coupe':'coupe_car','formula':'formula_car'}[VARIANT]
+# The coupe, utility and formula variants were retired placeholders (2026-09-28).
+ASSET = 'little_car'
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
 
@@ -115,54 +115,6 @@ box('RearBumper',(0,-1.438,.46),(1.47,.18,.23),trim,.065)
 box('RearPlate',(0,-1.54,.48),(.43,.02,.11),plate,.015)
 box('HatchHandle',(0,-1.467,.90),(.22,.045,.05),trim,.02)
 box('RoofLip',(0,-.92,1.64),(1.25,.12,.06),paint,.035)
-
-# Secondary silhouette pass: original shapes, with functional parts independent
-# of body choice. Coupe is low and broad; utility is upright with a roof rack.
-if VARIANT == 'coupe':
-    for obj in list(bpy.context.scene.objects):
-        if obj.type != 'MESH': continue
-        for vertex in obj.data.vertices:
-            point=obj.matrix_world @ vertex.co
-            if point.z > .85:
-                point.z=.85+(point.z-.85)*.58
-                point.y+=.12*(point.z-.85)
-            vertex.co=obj.matrix_world.inverted() @ point
-    for side in [-1,1]:
-        box('SpoilerMount',(side*.47,-1.15,1.04),(.08,.16,.27),trim,.025)
-    box('RearAerofoil',(0,-1.22,1.21),(1.72,.38,.10),paint,.055)
-    box('BonnetStripe',(0,1.01,.925),(.22,.58,.02),plate,.01)
-elif VARIANT == 'utility':
-    for obj in list(bpy.context.scene.objects):
-        if obj.type != 'MESH': continue
-        for vertex in obj.data.vertices:
-            point=obj.matrix_world @ vertex.co
-            if point.z > .98: point.z=.98+(point.z-.98)*1.20
-            vertex.co=obj.matrix_world.inverted() @ point
-    for x in [-.57,.57]: box('RoofRackRail',(x,-.31,1.91),(.075,1.12,.085),trim,.025)
-    for y in [-.72,.10]: box('RoofRackBar',(0,y,1.91),(1.19,.075,.085),silver,.025)
-    box('UtilityLoad',(0,-.38,2.08),(.85,.65,.30),trim,.10)
-elif VARIANT == 'formula':
-    bpy.ops.object.select_all(action='SELECT')
-    bpy.ops.object.delete(use_global=False)
-    profiles=[(-1.40,.35,.35,.70),(-.80,.49,.32,.95),(.1,.32,.30,.85),(.85,.19,.33,.60),(1.48,.13,.39,.49)]
-    verts=[]
-    for y,w,lo,hi in profiles:
-        verts.extend([(-w,y,lo),(w,y,lo),(w*.8,y,hi),(-w*.8,y,hi)])
-    faces=[(3,2,1,0)]
-    for r in range(len(profiles)-1):
-        for i in range(4): faces.append((r*4+i,r*4+(i+1)%4,(r+1)*4+(i+1)%4,(r+1)*4+i))
-    faces.append(tuple(range(16,20)))
-    mesh('FormulaMonocoque',verts,faces,paint,.065)
-    box('Cockpit',(0,-.25,.94),(.44,.58,.09),rubber,.09)
-    box('DriverSeat',(0,-.38,.99),(.24,.22,.12),trim,.06)
-    cylinder('RollHoop',(0,-.62,1.09),.16,.32,trim)
-    for side in [-1,1]:
-        box('Sidepod',(side*.49,-.42,.56),(.40,1.05,.38),paint,.09)
-        box('Intake',(side*.49,.12,.58),(.30,.025,.20),rubber,.045)
-        for y in [.9,-.91]: box('Suspension',(side*.57,y,.40),(.60,.08,.06),trim,.01)
-        box('WingPylon',(side*.38,-1.25,.85),(.06,.17,.60),trim,.01)
-    box('FrontWing',(0,1.36,.36),(1.89,.36,.07),paint,.025)
-    box('RearWing',(0,-1.26,1.16),(1.63,.39,.085),paint,.035)
 
 # Wheel pivots are separate named empties; meshes parented with local transforms.
 for side,side_name in [(-1,'L'),(1,'R')]:

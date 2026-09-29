@@ -26,11 +26,27 @@ namespace LittleRoad
         double nextPlan,directionHoldUntil;
         bool planned,returningToGate,waitingForMovingTraffic;
 
+        // --rejoin-at-speed (off by default): a car only just past the 7.2 m edge trigger, still
+        // pointing up the road, unobstructed and at speed, steers back onto the tarmac while slowing
+        // instead of braking to a stop with the wheel straight (which slid r10 car 8 off the runoff
+        // at 34 m/s and stranded it). It falls back to the full stop if the excursion grows.
+        public static bool RejoinAtSpeed;
+        const float SteerBackEdge=10.5f,SteerBackHeading=45,SteerBackSeconds=4;
         public void Observe(in DriverObservation o,float progress,float gate,bool frontBlocked,bool waitingForTraffic=false)
         {
             if(o.finished)return;
             float heading=Vector3.Angle(o.self.forward,o.route.Forward(o.self.route));
             stalled=Mathf.Abs(o.self.speed)<.4f?stalled+o.stepSeconds:0;
+            if(RejoinAtSpeed&&!Active&&Mathf.Abs(o.self.offset)>7.2f&&Mathf.Abs(o.self.offset)<SteerBackEdge&&heading<35&&o.self.speed>6&&progress<=gate+.5f&&!frontBlocked) {
+                State="Steer back";episode=unproductive=turnCommitment=0;bestDistance=float.MaxValue;planned=true;waitingForMovingTraffic=false;AssistedReason=null;steerBackSeconds=0;steerBackSpeed=Mathf.Max(12,o.self.speed*.6f);
+            }
+            if(State=="Steer back") {
+                steerBackSeconds+=o.stepSeconds;activeSeconds+=o.stepSeconds;
+                if(Mathf.Abs(o.self.offset)<5.5f&&heading<22){State="Racing";completed++;stalled=0;planned=false;return;}
+                if(Mathf.Abs(o.self.offset)>=SteerBackEdge||heading>SteerBackHeading||steerBackSeconds>SteerBackSeconds||frontBlocked||progress>gate+.5f)
+                    {State="Stabilise";episode=unproductive=turnCommitment=0;bestDistance=float.MaxValue;planned=false;}
+                else return;
+            }
             // A queued car can legitimately wait while the rows ahead launch.
             // Still retain a bounded deadlock timeout and all geometric triggers.
             if(!Active&&(Mathf.Abs(o.self.offset)>7.2f||heading>65||progress>gate+.5f||frontBlocked||stalled>(waitingForTraffic?15:2.5f))) {
@@ -58,7 +74,8 @@ namespace LittleRoad
             float goal=returningToGate?gate-8:progress+12;
             return o.route.At(goal);
         }
-        public bool NeedsPlan(double time)=>Active&&(!planned||time>=nextPlan);
+        float steerBackSeconds,steerBackSpeed;
+        public bool NeedsPlan(double time)=>Active&&State!="Steer back"&&(!planned||time>=nextPlan);
         public void Plan(in DriverObservation o,float progress,float gate,ReadOnlySpan<RecoveryOption> options)
         {
             nextPlan=o.timestamp+.1;planned=true;
@@ -93,6 +110,14 @@ namespace LittleRoad
         }
         public DriveCommand Command(in DriverObservation o)
         {
+            if(State=="Steer back") {
+                // Aim at a point on the tarmac 4.5 m in from the edge, a speed-scaled distance ahead;
+                // shed speed to the target latched on entry (60%, at least 12 m/s) so the steering has grip.
+                float side=Mathf.Sign(o.self.offset),ahead=10+o.self.speed*.6f;
+                Vector3 target=o.route.At(o.self.route+ahead)+o.route.Right(o.self.route+ahead)*side*4.5f,delta=target-o.self.position;delta.y=0;
+                float steer=Mathf.Clamp(Vector3.SignedAngle(Vector3.ProjectOnPlane(o.self.forward,Vector3.up),delta,Vector3.up)/25,-1,1);
+                return new DriveCommand(o.self.speed>steerBackSpeed+.5f?-.45f:0,steer,steerBackSpeed,o.self.offset,0);
+            }
             float speed=o.self.speed,pedal;
             if(selectedSpeed==0)pedal=speed>.12f?-1:speed<-.12f?.35f:0;
             else if(selectedSpeed<0)pedal=speed>selectedSpeed+.08f?-1:0;

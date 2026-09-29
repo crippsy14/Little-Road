@@ -24,6 +24,28 @@ namespace LittleRoad
             text.fontSize=80;text.characterSize=size;text.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");text.fontStyle=FontStyle.Bold;text.color=Color.white;
             go.GetComponent<Renderer>().sharedMaterial=text.font.material;go.AddComponent<WorldText>();
         }
+        // Terrain for an elevated circuit: inverse-distance blend of the road heights (smooth hills
+        // between the sections), pulled exactly to the road within 12 m and sunk 0.3 m beyond the
+        // runoff so the support mesh is always the surface cars meet near the road.
+        static void HillGround(Circuit track,Material grass)
+        {
+            const float cell=4;var samples=new System.Collections.Generic.List<Vector3>();for(float d=0;d<track.length;d+=6)samples.Add(track.At(d));
+            float x0=float.MaxValue,x1=float.MinValue,z0=float.MaxValue,z1=float.MinValue;foreach(var s in samples){x0=Mathf.Min(x0,s.x);x1=Mathf.Max(x1,s.x);z0=Mathf.Min(z0,s.z);z1=Mathf.Max(z1,s.z);}
+            x0-=260;x1+=260;z0-=260;z1+=260;int nx=Mathf.CeilToInt((x1-x0)/cell)+1,nz=Mathf.CeilToInt((z1-z0)/cell)+1;
+            var v=new Vector3[nx*nz];var uv=new Vector2[v.Length];
+            for(int j=0;j<nz;j++)for(int i=0;i<nx;i++) {
+                float x=x0+i*cell,z=z0+j*cell;double wSum=0,hSum=0;float nearest=float.MaxValue,nearestY=0;
+                foreach(var s in samples){float dx=s.x-x,dz=s.z-z,d2=dx*dx+dz*dz;if(d2<nearest){nearest=d2;nearestY=s.y;}double w=1/(Mathf.Pow(d2+400,2));wSum+=w;hSum+=w*s.y;}
+                float blend=(float)(hSum/wSum),d=Mathf.Sqrt(nearest);
+                float h=Mathf.Lerp(nearestY-.3f,blend-.3f,Mathf.SmoothStep(0,1,Mathf.InverseLerp(12,60,d)));
+                v[j*nx+i]=new Vector3(x,h,z);uv[j*nx+i]=new Vector2(x,z)*.2f;
+            }
+            var t=new int[(nx-1)*(nz-1)*6];int k=0;
+            for(int j=0;j<nz-1;j++)for(int i=0;i<nx-1;i++){int a=j*nx+i;t[k++]=a;t[k++]=a+nx;t[k++]=a+1;t[k++]=a+1;t[k++]=a+nx;t[k++]=a+nx+1;}
+            var mesh=new Mesh{name="Hill ground",indexFormat=IndexFormat.UInt32,vertices=v,uv=uv,triangles=t};mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject("Continuous hill ground",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.GetComponent<MeshFilter>().sharedMesh=mesh;
+            go.GetComponent<MeshRenderer>().sharedMaterial=grass;go.GetComponent<MeshCollider>().sharedMesh=mesh;
+        }
         public static void Create(TechnicalCircuit course)
         {
             var track=course.track;
@@ -45,7 +67,13 @@ namespace LittleRoad
             // speculative CCD treating coplanar road-mesh seams as side impacts.
             // Rendering keeps its small layering biases; race width, dirt grip,
             // car contacts and all steering/engine forces are unchanged.
-            if(track.hasElevation)throw new System.InvalidOperationException("Cedar's planar support requires a level circuit.");
+            if(track.hasElevation) {
+                // Cedar Hills: the ground is a height field shaped round the road; the road, shoulder
+                // and runoff are one continuous RoadSupport mesh that follows the circuit's height.
+                HillGround(track,grass);
+                Ribbon(track,"Runoff",0,24,.011f,runoff);Ribbon(track,"16 metre asphalt",0,Circuit.Width,.025f,asphalt);
+                new GameObject("Continuous drivable support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
+            } else {
             bool tessellated=RaceTrial.Has("--tessellated-cedar-support");
             var ground=Box("Continuous test ground",new Vector3(-50,-.5f,0),new Vector3(1200,1,1000),grass,Quaternion.identity,tessellated);ground.tag="Untagged";
             Ribbon(track,"Runoff",0,24,.011f,runoff);Ribbon(track,"16 metre asphalt",0,Circuit.Width,.025f,asphalt);
@@ -54,6 +82,7 @@ namespace LittleRoad
             else {
                 support.transform.position=new Vector3(-50,-.475f,0);
                 support.AddComponent<BoxCollider>().size=new Vector3(1200,1,1000);
+            }
             }
             foreach(int side in new[]{-1,1}) {
                 Ribbon(track,"Road boundary",side*7.7f,.16f,.039f,white);

@@ -40,11 +40,15 @@ namespace LittleRoad
             }
             var model=new PlanarDrivePrediction(initial.self.position,initial.self.velocity,initial.self.forward,initial.self.yawRate,initial.ownSteeringState);
             float lastRoute=initial.self.route;Count=steps+1;DriveCommand command=default;float dragReduction=0;
+            // Grade-aware: the forecast rides at the road's height (keeping the car's current height
+            // above it) and feels gravity along the grade. Off (or level road): unchanged.
+            bool graded=GradeModel.Enabled&&road.hasElevation;float lift=graded?initial.self.position.y-road.At(initial.self.route).y:0,slope=0;
             for(int i=0;i<=steps;i++) {
                 long stamp=measure?Stamp():0;
                 float route=road.Nearest(model.position,out float offset);
                 if(measure)cost.projectionMs+=Ms(stamp);
                 path.consumed+=Mathf.Max(0,Mathf.Repeat(route-lastRoute+road.Length*.5f,road.Length)-road.Length*.5f);lastRoute=route;
+                if(graded){model.position.y=road.At(route).y+lift;slope=GradeModel.Slope(road,route,model.forward);}
                 // Only forecast controls are held. Projection, body checks and physical
                 // integration retain the native step; the real follower is unchanged.
                 if(i%controlSteps==0) {
@@ -64,7 +68,7 @@ namespace LittleRoad
                 float bodyOffset=adaptiveEnvelope?float.PositiveInfinity:model.MaxBodyOffset(road,centre,half);
                 if(measure)cost.bodyMs+=Ms(stamp);
                 samples[i]=new Sample{state=model,command=command,time=i*dt,route=route,bodyOffset=bodyOffset};
-                if(i<steps){if(measure)stamp=Stamp();model.Step(initial.tuning,command.pedal,command.steering,dt,dragReduction);if(measure)cost.physicsMs+=Ms(stamp);}
+                if(i<steps){if(measure)stamp=Stamp();model.Step(initial.tuning,command.pedal,command.steering,dt,dragReduction,-1,slope);if(measure)cost.physicsMs+=Ms(stamp);}
             }
             if(adaptiveEnvelope) {
                 long stamp=measure?Stamp():0;

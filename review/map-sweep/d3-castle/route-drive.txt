@@ -1,0 +1,4 @@
+ROUTE_DRIVE arrived=False seconds=400.0 gate=46.1 square=-1.0 castleClimb=353.9 roadGripShare=0.13 recoveries=0 lowestY=0.0 final=(129.31, 6.97, -910.09)
+Quay road@(109.08, 6.98, -903.06)
+Stone plinth@(124.83, 6.96, -909.98)
+Collision_Pole@(129.29, 6.98, -909.93)

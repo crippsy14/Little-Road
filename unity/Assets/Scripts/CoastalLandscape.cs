@@ -6,9 +6,10 @@ namespace LittleRoad
 {
     // Authored height fields, masonry and planted areas for the actual route.
     // The road stays at its established datum; a real mesh deck crosses the inlet.
-    public sealed class CoastalLandscape
+    public sealed partial class CoastalLandscape
     {
         public const float SeaLevel=-11.8f;
+        public static bool ValleyDetail=true;
         public readonly float bridgeDistance;
         readonly Circuit track;
         readonly Transform root;
@@ -16,9 +17,11 @@ namespace LittleRoad
         readonly Material grass,dryGrass,rock,lightRock,stone,cap,wood,leaf,leafLight;
         readonly CoastalMasonry masonry;
         readonly Material mortar;
+        // The island landscape of the current world (the grass layer asks it where grass may grow).
+        public static CoastalLandscape Current {get;private set;}
         public CoastalLandscape(Circuit circuit)
         {
-            track=circuit;bridgeDistance=track.Nearest(new Vector3(-117,0,9),out _);
+            Current=this;track=circuit;bridgeDistance=track.Nearest(new Vector3(-117,0,9),out _);
             bridgePoint=track.At(bridgeDistance);bridgeForward=track.Forward(bridgeDistance);bridgeRight=track.Right(bridgeDistance);
             post=track.At(track.length*.46f)-track.Right(track.length*.46f)*16;
             root=new GameObject("Bayview coast / authored landforms").transform;
@@ -29,7 +32,7 @@ namespace LittleRoad
             // cube UVs stretch a single image over their full twelve-metre height.
             stone=TerrainMaterial("World-mapped bridge limestone",new Color(.35f,.43f,.24f),new Color(.60f,.56f,.46f));
             stone.SetFloat("_RockOnly",1);stone.SetFloat("_RockScale",1.15f);stone.SetFloat("_NormalStrength",.25f);stone.SetColor("_RockColor",new Color(1.18f,1.20f,1.19f));
-            stone.SetFloat("_Stylise",.35f);stone.SetFloat("_Bands",0);stone.SetColor("_ToyRockA",new Color(.95f,.86f,.68f));
+            WorldLook.Terrain(stone,WorldLook.MasonryStylise);stone.SetFloat("_Bands",0);
             cap=new Material(stone){name="Pale cut bridge voussoirs"};cap.SetColor("_RockColor",new Color(1.28f,1.29f,1.27f));
             wood=Surface("Coast tree bark",new Color(.29f,.23f,.14f));leaf=Surface("Cypress deep foliage",new Color(.16f,.29f,.17f));leafLight=Surface("Olive silver green",new Color(.34f,.43f,.24f));
             mortar=Surface("Recessed warm limestone mortar",new Color(.63f,.60f,.52f));
@@ -51,6 +54,7 @@ namespace LittleRoad
             }
             return nearest<float.MaxValue;
         }
+        float farmPadY=float.NaN;
         public float Height(float x,float z)
         {
             var p=new Vector3(x,0,z);float road=track.Nearest(p,out _);float routeDistance=FlatDistance(p,track.At(road));
@@ -71,8 +75,15 @@ namespace LittleRoad
                 (Mathf.PerlinNoise(x*.075f+19,z*.075f+71)-.5f)*3);
             height=Mathf.Lerp(height,0,1-Blend(0,14,VillageDistance(p)));
             height=Mathf.Lerp(height,0,1-Blend(18,26,FlatDistance(p,post)));
+            // Farm: level ground for the yard and fields (never inside the race shoulder).
+            float farm=(1-Blend(30,46,FlatDistance(p,BayviewCountryside.Farm)))*Blend(27,34,routeDistance);
+            if(farm>0&&!float.IsNegativeInfinity(farmPadY)) {
+                if(float.IsNaN(farmPadY)){farmPadY=float.NegativeInfinity;farmPadY=Height(BayviewCountryside.Farm.x,BayviewCountryside.Farm.z);}
+                height=Mathf.Lerp(height,farmPadY,farm);
+            }
             Vector3 delta=p-bridgePoint;float along=Vector3.Dot(delta,bridgeForward),across=Vector3.Dot(delta,bridgeRight);
-            float inlet=(1-Blend(15,25,Mathf.Abs(along)))*Blend(-32,-18,across);
+            float wobble=(Mathf.PerlinNoise(x*.08f+3,z*.08f+8)-.5f)*9;
+            float inlet=(1-Blend(15+wobble*.6f,25+wobble*.6f,Mathf.Abs(along)))*Blend(-32+wobble,-18+wobble*.4f,across);
             height=Mathf.Lerp(height,Mathf.Min(height,-15.5f),inlet);
             // Harbour: the village pad ends at a sea wall (face z -134.4) above a shallow basin.
             // Deep sea stays deep; the cut hides inside the wall's 1.2 m core.
@@ -80,7 +91,19 @@ namespace LittleRoad
             // Keep the promenade flat right up to the wall (the coast's natural fall leaked in).
             height=Mathf.Lerp(height,0,harbourX*Blend(118,126,-z)*(1-Blend(133.8f,135.2f,-z)));
             height=Mathf.Lerp(height,Mathf.Min(height,-14.5f),harbourX*Blend(133.8f,135.2f,-z));
-            return height;
+            // Bayview Halt quay: flat out to its sea walls (the drop hides in the wall cores), deep
+            // water beyond them; its north side runs into the island.
+            float quay=Blend(HillcrestRoute.QuayWest-.8f,HillcrestRoute.QuayWest+.6f,x)*(1-Blend(HillcrestRoute.QuayEast-.6f,HillcrestRoute.QuayEast+.8f,x))
+                *Blend(HillcrestRoute.QuaySouth-.8f,HillcrestRoute.QuaySouth+.6f,z)*(1-Blend(HillcrestRoute.QuayNorth-4,HillcrestRoute.QuayNorth+8,z));
+            float apron=Blend(HillcrestRoute.QuayWest-12,HillcrestRoute.QuayWest-10,x)*(1-Blend(HillcrestRoute.QuayEast+10,HillcrestRoute.QuayEast+12,x))
+                *Blend(HillcrestRoute.QuaySouth-12,HillcrestRoute.QuaySouth-10,z)*(1-Blend(HillcrestRoute.QuayNorth-4,HillcrestRoute.QuayNorth+8,z));
+            height=Mathf.Lerp(height,Mathf.Min(height,-14.5f),apron*(1-quay)*(1-Blend(-4,-1,height)));
+            // The shore round the quay settles to quay level (no knolls towering over the forecourt).
+            float shore=Blend(HillcrestRoute.QuayWest-26,HillcrestRoute.QuayWest-4,x)*(1-Blend(HillcrestRoute.QuayEast+4,HillcrestRoute.QuayEast+26,x))
+                *Blend(HillcrestRoute.QuaySouth-26,HillcrestRoute.QuaySouth-4,z)*(1-Blend(HillcrestRoute.QuayNorth-2,HillcrestRoute.QuayNorth+10,z));
+            height=Mathf.Lerp(height,Mathf.Min(height,0),shore);
+            height=Mathf.Lerp(height,0,quay);
+            return CausewayCut(x,z,height);
         }
         Material Surface(string name,Color color)
         {
@@ -132,7 +155,7 @@ namespace LittleRoad
             material.SetTexture("_NoiseTex",grass.mainTexture);
             material.SetColor("_GrassColor",new Color(meadow.r/.35f,meadow.g/.43f*1.18f,meadow.b/.24f*.82f));
             material.SetColor("_RockColor",new Color(stoneColour.r/.60f,stoneColour.g/.56f,stoneColour.b/.46f));
-            material.SetColor("_DryColor",new Color(1.16f,1.13f,.86f));material.SetFloat("_Stylise",1);return material;
+            material.SetColor("_DryColor",new Color(1.16f,1.13f,.86f));WorldLook.Terrain(material);return material;
         }
         void DistantHeadland()
         {
@@ -157,7 +180,7 @@ namespace LittleRoad
             distant.SetColor("_GrassColor",new Color(.40f,.65f,.60f));
             distant.SetColor("_DryColor",new Color(.51f,.70f,.76f));
             distant.SetColor("_ToyGrassA",new Color(.42f,.66f,.50f));distant.SetColor("_ToyGrassB",new Color(.33f,.56f,.48f));
-            distant.SetColor("_ToyRockA",new Color(.55f,.62f,.62f));distant.SetColor("_ToyRockB",new Color(.48f,.56f,.60f));distant.SetFloat("_Flowers",0);distant.SetFloat("_Bands",0);
+            distant.SetColor("_ToyRockA",new Color(.55f,.62f,.62f));distant.SetColor("_ToyRockB",new Color(.48f,.56f,.60f));distant.SetFloat("_Flowers",0);distant.SetFloat("_Bands",0);distant.SetFloat("_Stylise",1);
             MeshObject("Distant layered headland",mesh,new[]{distant},true);
         }
         void Bridge()
@@ -250,8 +273,10 @@ namespace LittleRoad
         }
         void Roadside()
         {
+            // Adventure only: an opening where the Hillcrest mainline leaves the loop (races keep the wall).
+            float junction=ValleyDetail?track.Nearest(HillcrestRoute.Mainline.line[0],out _):-999;
             for(float d=105;d<track.length-25;d+=3.6f) {
-                if(Mathf.Abs(d-bridgeDistance)<29)continue;
+                if(Mathf.Abs(d-bridgeDistance)<29||Mathf.Abs(d-junction)<8)continue;
                 // Intermittent outer stone walls frame the coast, with open
                 // shoulders at signed turnouts and postcard approaches.
                 bool opening=false;
@@ -285,7 +310,7 @@ namespace LittleRoad
             for(int i=0;i<520;i++) {
                 float x=(float)rng.NextDouble()*310-155,z=(float)rng.NextDouble()*235-118;var p=new Vector3(x,0,z);
                 float d=track.Nearest(p,out float lateral),distance=FlatDistance(p,track.At(d));
-                if(distance<18||VillageDistance(p)<7||FlatDistance(p,post)<24||BayviewCountryside.Reserved(p))continue;
+                if(distance<18||VillageDistance(p)<7||FlatDistance(p,post)<24||BayviewCountryside.Reserved(p)||NearCauseway(p))continue;
                 float h=Height(x,z);if(h<-.1f||Mathf.Abs(Height(x+1,z)-h)>1||Mathf.Abs(Height(x,z+1)-h)>1)continue;
                 float size=5+(float)rng.NextDouble()*5;
                 if(!SurfacePoint(p,out var surface)||surface.normal.y<.62f)continue;p=surface.point;
@@ -311,7 +336,7 @@ namespace LittleRoad
                 if(Mathf.Abs(d-bridgeDistance)<31)continue;
                 foreach(int side in new[]{-1,1}) {
                     Vector3 p=track.At(d)+track.Right(d)*side*(17+(float)rng.NextDouble()*6);
-                    if(VillageDistance(p)<8||FlatDistance(p,post)<23)continue;
+                    if(VillageDistance(p)<8||FlatDistance(p,post)<23||NearCauseway(p))continue;
                     if(!SurfacePoint(p,out var hit)||hit.normal.y<.65f)continue;p=hit.point;if(p.y< -2)continue;
                     float size=.7f+(float)rng.NextDouble()*1.1f;
                     var boulder=Piece("Roadside weathered limestone",p-hit.normal*size*.16f,new Vector3(size*1.6f,size*.8f,size),iMaterial(d),true,PrimitiveType.Sphere);
@@ -323,7 +348,7 @@ namespace LittleRoad
                 float along=d+(float)rng.NextDouble()*4-2;
                 float offset=15.7f+(float)rng.NextDouble()*17;
                 Vector3 p=track.At(along)+track.Right(along)*side*offset;
-                if(!SolidClearance(p)||BayviewCountryside.Reserved(p)||Mathf.PerlinNoise(p.x*.06f+18,p.z*.06f+53)<.43f)continue;
+                if(!SolidClearance(p)||BayviewCountryside.Reserved(p)||NearCauseway(p)||Mathf.PerlinNoise(p.x*.06f+18,p.z*.06f+53)<.43f)continue;
                 bool nearFind=false;
                 for(int find=0;find<5;find++) {
                     float fd=track.length*(.12f+find*.17f);Vector3 fp=track.At(fd)+track.Right(fd)*(find%2==0?13:-13);
@@ -344,22 +369,35 @@ namespace LittleRoad
         }
         Material iMaterial(float d)=>((int)d%3)==0?rock:lightRock;
         void Sea(){CoastalWater.Create(root);}
-        public void Build()
+        // Load timing (every race entry and return rebuilds the world): LITTLE_ROAD_LOAD_STEP lines.
+        static System.Diagnostics.Stopwatch stepClock;
+        static void Step(string name){if(stepClock!=null)Debug.Log($"LITTLE_ROAD_LOAD_STEP {name} ms={stepClock.ElapsedMilliseconds}");stepClock=System.Diagnostics.Stopwatch.StartNew();}
+        // Progress for the loading card (fraction of the usual build time, next step's label).
+        static void Next(float done,string label)=>LoadingScreen.Progress(done,label);
+        public void Build()=>TrialWorld.RunNow(BuildRoutine());
+        public System.Collections.IEnumerator BuildRoutine()
         {
-            LandMesh();DistantHeadland();Bridge();Roadside();masonry.Finish();
+            stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.Placed.Clear();Step("start");Next(0,"Shaping the island");yield return null;
+            LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;
+            Mainland();Step("mainland");Next(.33f,"Building the bridge");yield return null;
+            Bridge();Roadside();masonry.Finish();Step("bridge-roadside-masonry");Next(.35f,"Carving the cliffs");yield return null;
             var cliffMaterial=TerrainMaterial("Weathered cliff limestone",new Color(.35f,.43f,.24f),new Color(.60f,.56f,.46f));cliffMaterial.SetFloat("_RockOnly",1);
-            new CoastalCliffs(this,root,cliffMaterial).Build();
+            new CoastalCliffs(this,root,cliffMaterial).Build();Step("cliffs");Next(.53f,"Planting Bayview");yield return null;
             if(RaceTrial.Has("--cliff-study"))CoastalCliffStudy.Build(this,cliffMaterial);
-            Physics.SyncTransforms();Planting();
+            Physics.SyncTransforms();Planting();Step("planting");
             if(BayviewKit.Has("windmill")) {
                 var hill=new Vector3(-24,0,12);hill.y=Height(hill.x,hill.z)-.4f;
                 BayviewKit.Spawn("windmill",hill,200,BayviewKit.AnimatedRoot,new BayviewKit.Tint(Color.white,Toy.Hex(0x3a7bd5),Toy.Hex(0xff4d5e),Toy.Hex(0x3a7bd5)));
             }
-            new BayviewCountryside(this,track,root).Build();
+            new BayviewCountryside(this,track,root).Build();Step("countryside");
+            Physics.SyncTransforms();ValleyRoads();ValleyWater();Step("valley-roads-water");Next(.6f,"Laying the railway and Hillcrest");yield return null;
+            // The town, railway and woods sit behind the headland ridge, out of sight of the Bayview
+            // circuit: Bayview races skip them (ValleyDetail false) and keep their frame cost.
+            if(ValleyDetail){Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");Next(.93f,"Filling the sea");yield return null;}RegisterRoads();
             // Runtime static batching converts combined geometry to 16-bit
             // chunks. Keep the large grass mesh and displaced sea independent.
-            StaticBatchingUtility.Combine(root.gameObject);
-            Sea();new CoastalGroundCover(this,track,root).Build();
+            StaticBatchingUtility.Combine(root.gameObject);Step("static-batching");
+            Sea();new CoastalGroundCover(this,track,root).Build();Step("sea-ground-cover");
             GroundCoverGeometryAudit.Record("after-batching",root);
             Debug.Log("LITTLE_ROAD_LANDSCAPE_READY bridgeDistance="+bridgeDistance+" sea="+SeaLevel);
         }

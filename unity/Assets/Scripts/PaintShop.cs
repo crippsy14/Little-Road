@@ -26,7 +26,7 @@ namespace LittleRoad
     public sealed class PaintShop:MonoBehaviour
     {
         Canvas canvas;AdventureStore store;PartPreviewStage stage;Action<int> painted;Action back;
-        RawImage carImage;Text wallet,swatchName,price,status;readonly List<Button> swatches=new();readonly List<ToyShape> rings=new();int focus=-1;
+        RawImage carImage;Text wallet,swatchName,price,status,hint;readonly List<Button> swatches=new();readonly List<ToyShape> rings=new();int focus=-1;
         public bool IsOpen=>canvas!=null&&canvas.gameObject.activeSelf;
         public int LastCloseFrame {get;private set;}=-1;
         public void Open(AdventureStore inventory,Action<int> onPainted,Action onBack)
@@ -40,7 +40,7 @@ namespace LittleRoad
         void Build()
         {
             var root=new GameObject("Paint shop",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));root.transform.SetParent(transform,false);root.layer=Toy.MenuLayer;
-            canvas=root.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.planeDistance=.7f;canvas.sortingOrder=30;
+            canvas=root.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=30;
             var scaler=root.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1920,1080);scaler.matchWidthOrHeight=.5f;
             var bg=Toy.Rect(root.transform,"Paint shop backdrop",new Vector2(1920,1080),Vector2.zero);bg.gameObject.AddComponent<RectMask2D>();
             Toy.Sunburst(bg,new Vector2(2600,2600),new Vector2(0,40),Toy.Pink,Toy.Hex(0xffa6da),30,2);
@@ -76,7 +76,7 @@ namespace LittleRoad
             price=Toy.Label(tag.transform,"Swatch price","",30,new Vector2(220,80),new Vector2(180,0),Toy.Sun,TextAnchor.MiddleRight,true);
             status=Toy.Label(bg,"Paint status","",26,new Vector2(900,40),new Vector2(470,-380),Toy.Navy,TextAnchor.MiddleCenter,true);
             Toy.Candy(bg,"BACK TO THE ROAD","BACK","O",new Vector2(260,90),new Vector2(-740,-465),Toy.Red,Leave);
-            Toy.Label(bg,"Paint hint","D-pad / stick: choose   ·   Cross: paint it!   ·   Circle: back",22,new Vector2(900,40),new Vector2(160,-465),Toy.Navy,TextAnchor.MiddleCenter,true);
+            hint=Toy.Label(bg,"Paint hint",string.Empty,22,new Vector2(900,40),new Vector2(160,-465),Toy.Navy,TextAnchor.MiddleCenter,true);
             canvas.gameObject.SetActive(false);
         }
         void Focus(int index)
@@ -97,6 +97,7 @@ namespace LittleRoad
         void Update()
         {
             if(!IsOpen)return;
+            hint.text=InputGlyphs.Prompts(("browse","choose"),("select","paint it!"),("back","back"));
             var k=Keyboard.current;var pad=Gamepad.current;
             if(k?.escapeKey.wasPressedThisFrame==true||pad?.buttonEast.wasPressedThisFrame==true)Leave();
             var selected=EventSystem.current?.currentSelectedGameObject;

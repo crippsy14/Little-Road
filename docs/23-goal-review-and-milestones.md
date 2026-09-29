@@ -1,5 +1,8 @@
 # Goal review and milestone policy
 
+**Updated 29 September:** "at least 12 hours" is a floor; the campaign is open-ended. Milestones now follow [doc 45](45-roadmap-and-feature-spec.md) Phases 0–5.
+
+
 21 September 2026. The user approved this objective and authorised resuming development. This is the governing project objective. The user subsequently edited the app's persisted objective to the three paragraphs below; the goal update was received and its status verified as active. Its earlier wording is preserved at the end for historical context only.
 
 ## Assessment

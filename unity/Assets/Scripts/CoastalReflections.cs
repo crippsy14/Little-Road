@@ -25,7 +25,9 @@ namespace LittleRoad
             var go=new GameObject(name);go.transform.SetParent(transform);go.transform.position=position;
             var probe=go.AddComponent<ReflectionProbe>();probe.mode=ReflectionProbeMode.Realtime;probe.refreshMode=ReflectionProbeRefreshMode.ViaScripting;
             probe.timeSlicingMode=ReflectionProbeTimeSlicingMode.AllFacesAtOnce;probe.resolution=resolution;probe.size=size;probe.importance=importance;
-            probe.boxProjection=box;probe.blendDistance=box?1.5f:30;probe.intensity=.85f;probe.nearClipPlane=.25f;probe.farClipPlane=900;probe.hdr=true;
+            probe.boxProjection=box;probe.blendDistance=box?1.5f:30;probe.intensity=.85f;probe.nearClipPlane=.25f;probe.farClipPlane=700;probe.hdr=true;
+            // Small props don't show in a reflection; leaving them out makes each capture cheaper.
+            probe.cullingMask=~((1<<BayviewKit.DetailLayer)|(1<<BayviewKit.MediumLayer));
             return probe;
         }
     }

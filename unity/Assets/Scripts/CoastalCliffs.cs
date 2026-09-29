@@ -66,8 +66,9 @@ namespace LittleRoad
                 float y=baseHeight+(t*.82f+bedTilt*t+(broad-.5f)*.11f)*size.y+relief*.3f;
                 // Every foot follows the local slope, including the downhill
                 // side. A buried centre alone leaves the outer mass hovering.
-                float buried=Mathf.Min(y,land.Height(x,z)-1.2f);
-                y=Mathf.Lerp(buried,y,Mathf.SmoothStep(0,1,Mathf.InverseLerp(0,.58f,t)));
+                // (Above 58% of the height the foot blend is 1: skip the terrain query, same result.)
+                float footBlend=Mathf.SmoothStep(0,1,Mathf.InverseLerp(0,.58f,t));
+                if(footBlend<1){float buried=Mathf.Min(y,land.Height(x,z)-1.2f);y=Mathf.Lerp(buried,y,footBlend);}
                 rings[ring*sides+side]=new Vector3(x,y,z);
             }
             var vertices=new List<Vector3>(rings);var tris=new List<int>();
@@ -96,7 +97,9 @@ namespace LittleRoad
             }
             var mesh=new Mesh{name="Weathered fractured limestone "+seed,indexFormat=IndexFormat.UInt32};mesh.SetVertices(faceted);mesh.SetTriangles(faceIndices,0);mesh.SetNormals(smoothNormals);mesh.RecalculateBounds();
             var go=new GameObject("Layered coastal outcrop "+seed,typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(parent,false);go.tag="Respawn";
-            go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;go.GetComponent<MeshCollider>().sharedMesh=mesh;
+            go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;// The collider cooks the shared-vertex shell (same surface, ~6x fewer vertices than the faceted render mesh).
+            var shell=new Mesh{name="Outcrop collision "+seed,indexFormat=IndexFormat.UInt32};shell.SetVertices(vertices);shell.SetTriangles(tris,0);shell.RecalculateBounds();
+            go.GetComponent<MeshCollider>().sharedMesh=shell;
             return true;
         }
         static float Noise(float x,float z,float y,int seed)

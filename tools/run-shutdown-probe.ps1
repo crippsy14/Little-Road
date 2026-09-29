@@ -15,7 +15,7 @@ $probeReport=Join-Path $probeRoot 'race.json';$probeLog=Join-Path $probeRoot 'ru
 $probeArguments=@('--trial-auto','--trial-track','cedar','--trial-setup','club','--trial-cars','2','--trial-opponents','stock','--trial-laps','1',
     '--trial-timescale',$PlaybackRate.ToString([Globalization.CultureInfo]::InvariantCulture),'--driver-policy','traffic','--traffic-case','pass','--physical-recovery','--racing-line','cedar-smooth-v2',
     '--trial-report',('"'+$probeReport+'"'),'-logFile',('"'+$probeLog+'"'),'-screen-width','1600','-screen-height','900')
-if($Display -eq 'fullscreen'){$probeArguments+='--start-fullscreen'}else{$probeArguments+=@('--start-windowed','-screen-fullscreen','0')}
+if($Display -eq 'fullscreen'){$probeArguments+='--start-fullscreen'}else{$probeArguments+=@('--start-windowed','-screen-fullscreen','0','-monitor','1')}
 if($Rendering -eq 'direct'){$probeArguments+='-force-gfx-direct'}
 $probeProcess=Start-Process -FilePath $probeExe -ArgumentList $probeArguments -WindowStyle Normal -PassThru
 $probeStarted=[DateTime]::UtcNow;$probeReportAt=$null;$probeForced=$false;$probeReason=$null

@@ -176,6 +176,7 @@ class Car:
         ys=[G['yr0']+(G['yf0']-G['yr0'])*i/20 for i in range(21)]
         G['belt']=min(self.surface_z(G['wb'],y) for y in ys)-.012
         self.roofmat=self.M['cream'] if G.get('two_tone') else self.M['paint']
+        self.grooves=[]
 
     # Shell geometry --------------------------------------------------
     def section(self,y):
@@ -239,13 +240,30 @@ class Car:
         if normals[len(pts)//2].y*(1 if front else -1)<0:normals=[-v for v in normals]
         return [p+nm*offset for p,nm in zip(pts,normals)],normals
 
+    ARCH_GAP,FENDER=.095,.13   # arch opening and fender radius beyond the tyre (3.5 cm apart: near-coincident surfaces break the exact boolean)
+    def fender(self,p,clear=FENDER,soft=.03):
+        """Wings bulge over the wheels: the outer shell above each axle is pushed out (a soft maximum,
+        so the surface stays smooth) to at least wheel radius + clear from the wheel centre. Without it
+        the arch cut sliced flat shelves through low bonnets and wings."""
+        x,y,z=p;wx=max(0,min(1,(abs(x)-(self.track-.44))/.24));wx=wx*wx*(3-2*wx)
+        if wx<=0:return p
+        need=self.wr+clear
+        for cy in (self.fa,self.ra):
+            dy=y-cy;dz=z-self.wr;d=math.hypot(dy,dz)
+            if d<1e-4 or d>need+.3:continue
+            up=max(0,min(1,(dz+.02)/.14));up=up*up*(3-2*up)
+            if up<=0:continue
+            target=need+soft*math.log1p(math.exp((d-need)/soft))       # smooth max(d, need)
+            nd=d+(target-d)*wx*up;y=cy+dy/d*nd;z=self.wr+dz/d*nd
+        return (x,y,z)
+
     def shell(self):
-        P=self.P;M=self.M;v=[];f=[];ny=84;nr=56
+        P=self.P;M=self.M;v=[];f=[];ny=150;nr=88   # dense enough that boolean arch/lamp edges stay smooth
         for j in range(ny):
             y=P[0][0]+(P[-1][0]-P[0][0])*j/(ny-1);w,lo,hi=self.section(y)
             for k in range(nr):
                 a=k*math.tau/nr;c=math.cos(a);s=math.sin(a)
-                v.append((w*math.copysign(abs(c)**self.px,c),y,(lo+hi)*.5+(hi-lo)*.5*math.copysign(abs(s)**self.pz,s)))
+                v.append(self.fender((w*math.copysign(abs(c)**self.px,c),y,(lo+hi)*.5+(hi-lo)*.5*math.copysign(abs(s)**self.pz,s))))
         for j in range(ny-1):
             for k in range(nr):f.append((j*nr+k,j*nr+(k+1)%nr,(j+1)*nr+(k+1)%nr,(j+1)*nr+k))
         f.extend([tuple(range(nr-1,-1,-1)),tuple((ny-1)*nr+k for k in range(nr))])
@@ -255,7 +273,7 @@ class Car:
         ref=body.copy();ref.data=body.data.copy();bpy.context.collection.objects.link(ref)
         for side in [-1,1]:
             for y in [self.fa,self.ra]:
-                bpy.ops.mesh.primitive_cylinder_add(vertices=64,radius=self.wr+.06,depth=.70,location=(side*(self.track+.16),y,self.wr),rotation=(0,math.pi/2,0))
+                bpy.ops.mesh.primitive_cylinder_add(vertices=96,radius=self.wr+self.ARCH_GAP,depth=.70,location=(side*(self.track+.16),y,self.wr),rotation=(0,math.pi/2,0))
                 c=bpy.context.object;c.data.materials.append(M['trim']);cut(body,c,'Actual wheel arch opening')
         self.lamp_apertures(body)
         t=body.modifiers.new('Continuous panel reflections','DATA_TRANSFER');t.object=ref;t.use_loop_data=True
@@ -270,17 +288,29 @@ class Car:
         cut(body,c,'Open passenger cabin')
         self.body=body
 
+    def lamp_span(self,tree,side,x):
+        """How far the real (fendered) shell sits behind/ahead of the lamp's plane round its rim, along
+        the lamp axis: (back, front). Curved noses vary by several cm; the barrel and cut follow it."""
+        L=self.R['lamps'];z=L['z'];y=self.end_y(x,z);yw=self.yaw(side*x,z);r=L['r']+.03
+        d=Vector((-math.sin(yw),math.cos(yw),0));u=Vector((math.cos(yw),math.sin(yw),0));c=Vector((side*x,y,z));ts=[]
+        for k in range(24):
+            a=k*math.tau/24;p=c+u*(math.cos(a)*r)+Vector((0,0,math.sin(a)*r))
+            hit,_,_,_=tree.ray_cast(p+d*.5,-d,1.0)
+            if hit is not None:ts.append((hit-c).dot(d))
+        return (min(ts),max(ts)) if ts else (-.02,.02)
     def lamp_apertures(self,body):
-        L=self.R['lamps'];M=self.M
+        L=self.R['lamps'];M=self.M;self.spans={}
+        if L['style'] in ('round','quad'):
+            from mathutils.bvhtree import BVHTree
+            tree=BVHTree.FromObject(body,bpy.context.evaluated_depsgraph_get())
+            for side in [-1,1]:
+                for x in [L['x']]+([L['x2']] if L['style']=='quad' else []):self.spans[(side,x)]=self.lamp_span(tree,side,x)
         for side in [-1,1]:
-            spots=[]
-            if L['style'] in ('round','quad'):
-                xs=[L['x']]+([L['x2']] if L['style']=='quad' else [])
-                for x in xs:
-                    y=self.end_y(x,L['z']);bpy.ops.mesh.primitive_cylinder_add(vertices=64,radius=L['r']+.014,depth=.34,location=(side*x,y,L['z']),rotation=(math.pi/2,0,self.yaw(side*x,L['z'])))
-                    c=bpy.context.object;c.data.materials.append(M['trim']);cut(body,c,'Recessed headlamp aperture')
-            elif L['style']=='rect':
-                y=self.end_y(L['x'],L['z']);c=box('Lamp cutter',(side*L['x'],y,L['z']),(L['w']+.03,.34,L['h']+.03),M['trim'],.03,rot=(0,0,self.yaw(side*L['x'],L['z'])));apply_all(c)
+            # Round lamps are not cut in: on curved noses the aperture's walls showed as shards and black
+            # wedges. They sit in a cowl on the panel instead (headlamps()).
+            if L['style']=='rect':
+                y=self.end_y(L['x'],L['z']);c=box('Lamp cutter',(side*L['x'],y-.05,L['z']),(L['w']+.03,.18,L['h']+.03),M['trim'],.03);apply_all(c)
+                self.place(c,(side*L['x'],y,L['z']),self.yaw(side*L['x'],L['z']));apply_all(c)
                 cut(body,c,'Recessed headlamp aperture')
 
     # Greenhouse -------------------------------------------------------
@@ -405,10 +435,13 @@ class Car:
                 xs=[L['x']]+([L['x2']] if s=='quad' else [])
                 for x in xs:
                     y=self.end_y(x,L['z']);r=L['r'];yw=self.yaw(side*x,L['z']);pv=(side*x,y,L['z'])
-                    self.place(cylinder('Lamp recess',(side*x,y-.035,L['z']),r+.016,.05,M['trim'],'Y',40),pv,yw)
-                    self.place(cylinder('Lamp chrome lip',(side*x,y-.004,L['z']),r+.004,.04,M['chrome'],'Y',40),pv,yw)
-                    self.place(sphere('Convex headlamp lens',(side*x,y+.012,L['z']),(r*.9,.03,r*.9),M['lamp']),pv,yw)
-                    for k in range(3):self.place(box('Lamp lens flute',(side*x,y+.036,L['z']-r*.4+k*r*.4),(r*1.3,.004,.006),M['lamp'],0),pv,yw)
+                    # Body-colour cowl sunk into the panel (up to 8 cm behind the lamp plane) and reaching the
+                    # most forward point of the shell round the rim, so the lamp face is never buried.
+                    t0,t1=self.spans.get((side,x),(-.02,.02));t1=min(t1,.06);back=max(t0,-.08)-.02;f=y+t1
+                    self.place(cylinder('Headlamp cowl',(side*x,y+(back+t1-.006)*.5,L['z']),r+.03,t1-.006-back,M['paint'],'Y',48,.012),pv,yw)
+                    self.place(cylinder('Lamp chrome lip',(side*x,f-.004,L['z']),r+.004,.04,M['chrome'],'Y',40),pv,yw)
+                    self.place(sphere('Convex headlamp lens',(side*x,f+.012,L['z']),(r*.9,.03,r*.9),M['lamp']),pv,yw)
+                    for k in range(3):self.place(box('Lamp lens flute',(side*x,f+.036,L['z']-r*.4+k*r*.4),(r*1.3,.004,.006),M['lamp'],0),pv,yw)
             elif s=='rect':
                 y=self.end_y(L['x'],L['z']);w,h=L['w'],L['h'];yw=self.yaw(side*L['x'],L['z']);pv=(side*L['x'],y,L['z'])
                 self.place(box('Lamp recess',(side*L['x'],y-.05,L['z']),(w+.03,.06,h+.03),M['trim'],.02),pv,yw)
@@ -477,7 +510,7 @@ class Car:
             pts=[]
             for i in range(25):
                 t=i/24;y=yF-.05-(yF-.05-yc)*t;x=side*(.30+.20*t);pts.append((x,y,self.surface_z(x,y)+.003))
-            curve('Bonnet shut line',pts,M['seam'],.0035,poly=True)
+            self.groove(pts,width=.006)
         if 'ribs' in self.R['extras']:
             for k in range(-3,4):
                 pts=[]
@@ -538,7 +571,7 @@ class Car:
         for side in [-1,1]:
             for d in doors:
                 pts=[(side*(self.surface_x(y,z)+.008),y,z) for y,z in d]
-                curve('Door shut line',pts,M['seam'],.006)
+                self.groove(pts)
                 hy=d[-1][0]+.16 if d is doors[0] else d[0][0]-.16;hz=top-.10
                 box('Recessed door handle pocket',(side*(self.surface_x(hy,hz)+.002),hy,hz),(.018,.20,.06),M['seam'],.02)
                 box('Door handle',(side*(self.surface_x(hy,hz)+.014),hy,hz+.004),(.025,.16,.03),M['chrome'] if R['bumper']['front']=='chrome' else M['trim'],.012)
@@ -547,7 +580,7 @@ class Car:
             if side>0:
                 fy=ra+r+.1 if R['doors']==2 else (ra-.05 if ra-.05>yR+.3 else ra+r+.1);fz=b-.14
                 loop=[(0,fy+.1,fz-.07),(0,fy-.1,fz-.07),(0,fy-.1,fz+.07),(0,fy+.1,fz+.07)]
-                curve('Fuel filler door seam',[(self.surface_x(p.y,p.z)+.009,p.y,p.z) for p in rounded_loop(loop,.25)],M['seam'],.0045,True)
+                self.groove([(self.surface_x(p.y,p.z),p.y,p.z) for p in rounded_loop(loop,.25)],cyclic=True,width=.006)
             # Mirrors
             my=G['yf0']-.12;mz=b+.07;mx=self.surface_x(my,b-.02)
             if R['mirrors']=='round':
@@ -559,16 +592,55 @@ class Car:
                 curve('Mirror stem',[(side*(mx-.05),my+.02,mz),(side*(mx+.12),my,mz+.02)],M['trim'],.026)
                 box('Rounded mirror housing',(side*(mx+.2),my-.02,mz+.04),(.2,.17,.12),M['paint'],.042)
                 box('Mirror reflective insert',(side*(mx+.2),my-.108,mz+.04),(.15,.012,.08),M['alloy'],.025)
-        # Arch mouldings / flares
+        # Arch mouldings / flares, laid on the real (fendered, cut) body: each vertex is ray-cast onto
+        # the shell from outside. The analytic surface_x collapsed above the shell top and laid the
+        # moulding flat across low bonnets.
+        from mathutils.bvhtree import BVHTree
+        tree=BVHTree.FromObject(self.body,bpy.context.evaluated_depsgraph_get())
+        def shell_x(side,y,z):
+            hit,nrm,_,_=tree.ray_cast(Vector((side*3,y,z)),Vector((-side,0,0)),3)
+            # Only the wing's side counts: hits far inboard (bonnet, bumper) or on a surface facing up
+            # (the top of the fender, which a horizontal ray only grazes) would lay the lip flat.
+            if hit is None or not self.track-.26<=abs(hit.x)<=self.track+.3 or abs(nrm.x)<.45:return None
+            return abs(hit.x)
+        def settle(xs):
+            # Bridge one- or two-point gaps, then smooth each continuous run so the lip runs clean.
+            xs=list(xs)
+            for i in range(len(xs)):
+                if xs[i] is None:
+                    lo=next((j for j in range(i-1,max(-1,i-3),-1) if xs[j] is not None),None);hi=next((j for j in range(i+1,min(len(xs),i+3)) if xs[j] is not None),None)
+                    if lo is not None and hi is not None:xs[i]=xs[lo]+(xs[hi]-xs[lo])*(i-lo)/(hi-lo)
+            for _ in range(3):
+                xs=[x if x is None or i in (0,len(xs)-1) or xs[i-1] is None or xs[i+1] is None else (xs[i-1]+2*x+xs[i+1])*.25 for i,x in enumerate(xs)]
+            return xs
         for side in [-1,1]:
             for cy in [fa,ra]:
-                flare=R['arches']=='flare';paint=R['arches'] in ('paint','flare');av=[];af=[];rin=r+.058;rout=r+(.19 if flare else .13 if paint else .108)
-                for k in range(41):
-                    a=-.10+(math.pi+.20)*k/40
-                    for rr in [rin,rout]:
-                        y=cy+rr*math.cos(a);z=r+rr*math.sin(a);sxv=self.surface_x(y,max(z,self.section(y)[1]+.01))
-                        av.append((side*(sxv+(.07 if flare else .03 if paint else .022)*(1 if rr==rin else .4)),y,z))
-                for k in range(40):af.append((k*2,k*2+1,k*2+3,k*2+2))
+                flare=R['arches']=='flare';paint=R['arches'] in ('paint','flare');av=[];af=[];rin=r+self.FENDER+.004;rout=rin+(.13 if flare else .075 if paint else .055)
+                angles=[-.10+(math.pi+.20)*k/40 for k in range(41)]
+                rings={rr:settle([shell_x(side,cy+rr*math.cos(a),r+rr*math.sin(a)) for a in angles]) for rr in [rin,rout]}
+                # Continuous runs of at least six segments (short stubs read as broken trim); each run
+                # tapers to nothing over its last four segments so the lip fades into the wing.
+                ok=[all(rings[rr][q] is not None for rr in (rin,rout) for q in (k,k+1)) and all(abs(rings[rin][q]-rings[rout][q])<.06 for q in (k,k+1)) for k in range(40)];k=0
+                lift=(.07 if flare else .03 if paint else .022);runs=[]
+                while k<40:
+                    if not ok[k]:k+=1;continue
+                    e=k
+                    while e<40 and ok[e]:e+=1
+                    if e-k>=6:runs.append((k,e))
+                    k=e
+                # One unbroken lip round most of the arch, or none: split runs left loose fins hanging
+                # either side of an up-facing wing top.
+                if len(runs)!=1 or runs[0][1]-runs[0][0]<28:runs=[]
+                for k,e in runs:
+                    if True:
+                        base=len(av)
+                        for q in range(k,e+1):
+                            f=min(1,(q-k)/4,(e-q)/4);a=angles[q];ro=rin+(rout-rin)*max(f,.08)
+                            xo=rings[rin][q]+(rings[rout][q]-rings[rin][q])*max(f,.08)
+                            av.append((side*(rings[rin][q]+lift*max(f,.3)),cy+rin*math.cos(a),r+rin*math.sin(a)))
+                            av.append((side*(xo+lift*.4*max(f,.3)),cy+ro*math.cos(a),r+ro*math.sin(a)))
+                        for q in range(e-k):af.append((base+q*2,base+q*2+1,base+q*2+3,base+q*2+2))
+                if not af:continue
                 arch=mesh('Moulded wheel arch',av,af,M['paint'] if paint else M['trim']);sol=arch.modifiers.new('Trim wall','SOLIDIFY');sol.thickness=.03 if paint else .025
                 bevel(arch,.009,2)
         # Hatch / boot shut lines
@@ -580,7 +652,7 @@ class Car:
                 if sd==1:
                     for i in range(1,24):
                         x=xs+.04-2*(xs+.04)*i/24;z=.62;pts.append((x,self.end_y(x,z,False)-.009,z))
-            curve('Recessed tailgate shut line',pts,M['seam'],.005,poly=True)
+            self.groove(pts)
             box('Hatch release',(0,self.end_y(0,.90,False)-.02,.90),(.22,.04,.04),M['trim'],.016)
         elif R['rear']=='boot':
             xs=self.surface_x(G['yr0']-.1,b-.02)-.14;yl=G['yr0']-.08;pts=[]
@@ -595,7 +667,7 @@ class Car:
                 t=i/8;z=zl+(self.surface_z(-xs,yR+.05)-zl)*t;y=self.end_y(-xs,z,False);pts.append((-xs,y-.008,z))
             for i in range(9):
                 t=1-i/8;y=yl+(yR+.05-yl)*t;pts.append((-xs,y,self.surface_z(-xs,y)+.003))
-            curve('Boot lid shut line',pts,M['seam'],.004,True)
+            self.groove(pts,cyclic=True,width=.007)
             box('Boot lock',(0,self.end_y(0,.86,False)-.012,.86),(.08,.02,.04),M['chrome'],.01)
 
     def interior(self):
@@ -629,14 +701,28 @@ class Car:
     def extras(self):
         E=self.R['extras'];M=self.M;G=self.G;b=G['belt'];r=G['roof'];wr=G['wr'];yF=self.P[-1][0];yR=self.P[0][0]
         sill=self.section(0)[1]
-        def side_line(z,y0,y1,off,prof,mat,name):
+        from mathutils.bvhtree import BVHTree
+        tree=BVHTree.FromObject(self.body,bpy.context.evaluated_depsgraph_get())
+        def real_x(side,y,z,facing=.3):
+            # The fendered, cut shell (the analytic surface_x misses the wing bulges).
+            # Outward-facing hits on this side only: through a wheel opening the ray meets the far side's
+            # inner wall, which abs() used to fold back into a strip floating across the arch.
+            hit,nrm,_,_=tree.ray_cast(Vector((side*3,y,z)),Vector((-side,0,0)),3)
+            return abs(hit.x) if hit is not None and hit.x*side>.3 and nrm.x*side>facing else None
+        def side_line(z,y0,y1,off,prof,mat,name,facing=.3):
+            # Runs only where there is body: a trim line breaks at wheel arches instead of bridging them.
             for side in [-1,1]:
-                pts=[Vector((side*(self.surface_x(y,z)+off),y,z)) for y in [y1+(y0-y1)*i/30 for i in range(31)]]
-                sweep(name,pts,[Vector((side,0,0))]*len(pts),prof,mat)
+                run=[]
+                for y in [y1+(y0-y1)*i/60 for i in range(61)]+[None]:
+                    x=real_x(side,y,z,facing) if y is not None else None
+                    if x is None:
+                        if len(run)>=4:sweep(name,run,[Vector((side,0,0))]*len(run),prof,mat)
+                        run=[]
+                    else:run.append(Vector((side*(x+off),y,z)))
         if 'belt_chrome' in E:side_line(b-.035,yR+.12,yF-.12,.0,rrect(.012,.014,.006,2),M['chrome'],'Chrome belt moulding')
-        if 'side_spear' in E:side_line(.66,self.ra+self.wr+.12,self.fa-self.wr-.06,.0,rrect(.014,.02,.008,2),M['chrome'],'Chrome side spear')
-        if 'rubbing_strip' in E:side_line(.62,self.ra+self.wr+.1,self.fa-self.wr-.1,.0,rrect(.025,.05,.018,2),M['trim'],'Side rubbing strip')
-        if 'stripe' in E:side_line(b-.1,yR+.08,yF-.08,-.004,[(0,-.035),(.008,-.035),(.008,.035),(0,.035)],M['cream'],'Painted side stripe')
+        if 'side_spear' in E:side_line(.66,self.ra+self.wr+.23,self.fa-self.wr-.23,.0,rrect(.014,.02,.008,2),M['chrome'],'Chrome side spear')
+        if 'rubbing_strip' in E:side_line(.62,self.ra+self.wr+.23,self.fa-self.wr-.23,.0,rrect(.025,.05,.018,2),M['trim'],'Side rubbing strip')
+        if 'stripe' in E:side_line(b-.1,yR+.08,yF-.08,-.004,[(0,-.035),(.008,-.035),(.008,.035),(0,.035)],M['cream'],'Painted side stripe',.85)
         if 'signwriting' in E:
             for side in [-1,1]:
                 # Cream side panel band with a fish logo on the van's load area.
@@ -697,10 +783,37 @@ class Car:
                 box('Rear window louvre',(a+c)*.5+nrm*.03,((a-c).length,.07,.012),M['trim'],.004,rot=(-tilt+.25,0,0))
             for sd in [-1,1]:
                 a=Vector(q[0 if sd>0 else 1]);c=Vector(q[3 if sd>0 else 2]);box('Louvre side rail',(a+c)*.5+nrm*.025,(.03,(c-a).length,.02),M['trim'],.006,rot=(-tilt,0,0))
+        if 'taxi_sign' in E:
+            z0=r+G['crown']*.25;y=(G['yf1']+G['yr1'])*.5
+            box('Taxi sign',(0,y,z0+.13),(.62,.22,.2),M['cream'],.04)
+            for sd in[-1,1]:box('Taxi sign face',(0,y+sd*.115,z0+.13),(.5,.01,.12),M['amber'],.01)
+            box('Taxi sign base',(0,y,z0+.02),(.5,.18,.04),M['trim'],.01)
+            side_line(.74,self.ra+self.wr+.23,self.fa-self.wr-.23,-.004,[(0,-.045),(.008,-.045),(.008,.045),(0,.045)],M['trim'],'Taxi chequer band')
+        if 'cone' in E:
+            z0=r+G['crown']*.25;y=(G['yf1']+G['yr1'])*.5-.1
+            bpy.ops.mesh.primitive_cone_add(vertices=20,radius1=.02,radius2=.26,depth=.62,location=(0,y,z0+.36));o=bpy.context.object;finish(o,'Giant cone',M['wood'])
+            for k,(dz,sc,mat) in enumerate([(.72,.30,M['cream']),(.94,.24,M['livery']),(1.1,.14,M['cream'])]):sphere('Ice cream scoop',(0,y,z0+dz),(sc,sc,sc*.9),mat)
+            cylinder('Cherry',(0,y,z0+1.24),.05,.08,M['red'],'Z',12)
+            for sd in[-1,1]:
+                x=sd*(G['wb']+.02);y0,y1=self.ra-self.wr,self.G['pillars'][0]-.12;zc=(b+r)*.5
+                box('Serving hatch',(x,(y0+y1)*.5,zc+.05),(.02,(y1-y0)*.62,.42),M['cream'],.03)
+                box('Hatch awning',(x+sd*.14,(y0+y1)*.5,zc+.32),(.3,(y1-y0)*.66,.03),M['livery'],.01,rot=(0,sd*.35,0))
+        if 'poptop' in E:
+            z0=r+G['crown']*.25;ya,yb=G['yr1']+.2,G['yf1']-.1
+            box('Pop-top roof',(0,(ya+yb)*.5,z0+.28),(2*wr-.06,yb-ya,.1),M['cream'],.04,rot=(-.06,0,0))
+            box('Pop-top canvas',(0,(ya+yb)*.5-.06,z0+.13),(2*wr-.12,yb-ya-.1,.24),M['canvas'],.02)
+            for sd in[-1,1]:box('Canvas window',(sd*(wr-.06),(ya+yb)*.5,z0+.14),(.01,.5,.12),M['glass'],.01)
+        if 'post_horn' in E:
+            for sd in[-1,1]:
+                y0,y1=self.ra-self.wr-.02,self.G['pillars'][0]-.1;zc=(b+r)*.5+.02
+                x=sd*(G['wb']+(G['wr']-G['wb'])*(zc-b)/(r-b)+.03)
+                cylinder('Post horn',(x,(y0+y1)*.5,zc),.16,.012,M['amber'],'X',24);cylinder('Post horn hole',(x+sd*.008,(y0+y1)*.5,zc),.08,.012,M['paint'],'X',20)
+                box('Post horn bell',(x,(y0+y1)*.5+.22,zc-.06),(.012,.12,.1),M['amber'],.02)
+                box('Mail stripe',(x,(y0+y1)*.5,zc-.3),(.012,(y1-y0)*.95,.06),M['amber'],.01)
         if 'splitter' in E:
             B=self.R['bumper'];p,nm=self.outline(B['z']-B['h']*.5-.02,True,.0,span=90)
             sweep('Front splitter',p,nm,[(a,b) for a,b in rrect(.10,.025,.01,2)],M['trim'])
-        if 'skirts' in E:side_line(sill+.12,self.ra+self.wr+.1,self.fa-self.wr-.1,.0,rrect(.05,.10,.035,3),M['paint'],'Side skirt')
+        if 'skirts' in E:side_line(sill+.12,self.ra+self.wr+.23,self.fa-self.wr-.23,.0,rrect(.05,.10,.035,3),M['paint'],'Side skirt')
         if 'wing' in E:
             yw=yR+.22;zd=self.surface_z(.5,yw);h=.26 if self.R['rear']=='boot' else .20
             for side in [-1,1]:box('Wing upright',(side*.52,yw,zd+h*.5),(.05,.16,h),M['trim'],.015)
@@ -846,9 +959,53 @@ class Car:
         pivot=bpy.data.objects.new(name,None);bpy.context.collection.objects.link(pivot);pivot.location=(cx,cy,cz)
         bpy.context.view_layer.update();mw=w.matrix_world.copy();w.parent=pivot;w.matrix_world=mw
 
+    # Panel gaps ------------------------------------------------------
+    def groove(self,pts,cyclic=False,width=.008):
+        """A real shut line: recorded here, cut into the body by cut_grooves() so doors, bonnet, boot
+        and fuel flap read as separate panels (tubes laid on the paint floated off it like pipes)."""
+        self.grooves.append(([Vector(p) for p in pts],cyclic,width))
+    def cut_grooves(self):
+        if not self.grooves:return
+        from mathutils.bvhtree import BVHTree
+        tree=BVHTree.FromObject(self.body,bpy.context.evaluated_depsgraph_get());v=[];f=[]
+        for P,cyclic,w in self.grooves:
+            dense=[]
+            for a,b in zip(P,P[1:]+([P[0]] if cyclic else [])):
+                n=max(1,int((b-a).length/.012))
+                for i in range(n):dense.append(a.lerp(b,i/n))
+            if not cyclic:dense.append(P[-1])
+            ring=[]
+            for p in dense:
+                loc,nrm,_,dist=tree.find_nearest(p)
+                ring.append(None if loc is None or dist>.04 else (loc,nrm.normalized()))
+            runs=[];cur=[]
+            for x in ring+[None]:
+                if x is None:
+                    if len(cur)>1:runs.append(cur)
+                    cur=[]
+                else:cur.append(x)
+            closed=cyclic and len(runs)==1 and len(runs[0])==len(ring)
+            for run in runs:
+                base=len(v);m=len(run)
+                for i,(loc,nrm) in enumerate(run):
+                    a=run[(i-1)%m if closed else max(0,i-1)][0];b=run[(i+1)%m if closed else min(m-1,i+1)][0]
+                    s=(b-a).cross(nrm).normalized()
+                    for sx,out in [(-1,.006),(1,.006),(1,-.011),(-1,-.011)]:v.append(loc+s*(w*.5*sx)+nrm*out)
+                for i in range(m if closed else m-1):
+                    j=(i+1)%m
+                    for k in range(4):f.append((base+i*4+k,base+i*4+(k+1)%4,base+j*4+(k+1)%4,base+j*4+k))
+                if not closed:f.append(tuple(base+k for k in range(4)));f.append(tuple(base+(m-1)*4+k for k in range(3,-1,-1)))
+        if not f:return
+        cutter=mesh('Panel gap cutter',v,f,self.M['seam'],smooth=False)
+        mod=self.body.modifiers.new('Panel gaps','BOOLEAN');mod.operation='DIFFERENCE';mod.solver='EXACT';mod.object=cutter;mod.use_self=True
+        try:mod.material_mode='TRANSFER'
+        except Exception:pass
+        bpy.context.view_layer.objects.active=self.body;bpy.ops.object.modifier_apply(modifier=mod.name)
+        bpy.data.objects.remove(cutter,do_unlink=True)
+
     def build(self):
         self.shell();self.greenhouse();self.bumper(True);self.bumper(False);self.headlamps();self.grille();self.tail()
-        self.body_details();self.interior();self.extras()
+        self.body_details();self.interior();self.extras();self.cut_grooves()
         if '--profile' in args:
             dg=bpy.context.evaluated_depsgraph_get();tally={}
             for o in bpy.context.scene.objects:
@@ -901,13 +1058,17 @@ def render(cid,paint,out):
     d=bpy.data.cameras.new('Cam');cam=bpy.data.objects.new('Cam',d);scene.collection.objects.link(cam);scene.camera=cam;d.type='ORTHO';d.ortho_scale=5.2
     scene.view_settings.view_transform='AgX'
     out.mkdir(parents=True,exist_ok=True)
-    for label,loc in [('front',(4.4,6.1,3.0)),('rear',(-4.6,-6.0,2.9)),('side',(7,0,1.3))]:
-        cam.location=loc;cam.rotation_euler=(Vector((0,0,.85))-cam.location).to_track_quat('-Z','Y').to_euler()
+    # Close-ups (--closeups) catch surface faults: the nose/bonnet and a front wheel arch.
+    views=[('front',(4.4,6.1,3.0),(0,0,.85),5.2),('rear',(-4.6,-6.0,2.9),(0,0,.85),5.2),('side',(7,0,1.3),(0,0,.85),5.2)]
+    if '--closeups' in args:views+=[('nose',(2.2,5.2,2.4),(0,1.3,.7),2.0),('arch',(4.0,2.6,1.2),(.8,1.0,.55),1.6),('top',(.4,1.0,5.0),(0,.4,.8),3.4)]
+    for label,loc,aim,scale in views:
+        cam.location=loc;d.ortho_scale=scale;cam.rotation_euler=(Vector(aim)-cam.location).to_track_quat('-Z','Y').to_euler()
         scene.render.filepath=str(out/f'{cid}-{label}.png');bpy.ops.render.render(write_still=True)
 
 PAINTS={'pebble':(.85,.30,.25),'tallboy':(.95,.75,.20),'marlow':(.20,.35,.70),'dover':(.15,.45,.40),'heron':(.55,.12,.12),
         'bramble':(.30,.55,.20),'picnic':(.40,.65,.85),'kipper':(.90,.45,.15),'doodle':(.55,.75,.70),'otter':(.60,.35,.10),
-        'sprint':(.85,.85,.82),'comet':(.10,.12,.14),'rally':(.15,.30,.75),'roadster':(.75,.08,.08),'zenith':(.05,.20,.55),'puddle':(.08,.56,.49)}
+        'sprint':(.85,.85,.82),'comet':(.10,.12,.14),'rally':(.15,.30,.75),'roadster':(.75,.08,.08),'zenith':(.05,.20,.55),'puddle':(.08,.56,.49),
+        'bubble':(.95,.55,.70),'beetle':(.45,.70,.90),'taxi':(.98,.78,.10),'camper':(.35,.70,.55),'gelato':(.98,.85,.88),'minibus':(.95,.62,.15),'ritz':(.12,.18,.30),'postvan':(.80,.06,.05)}
 report={}
 for cid in ONLY:
     clear_scene();car=Car(cid,RECIPES[cid]);car.build();info=stats(cid)

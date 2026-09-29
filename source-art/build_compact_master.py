@@ -7,11 +7,13 @@ from pathlib import Path
 import json, math, sys
 import bpy, bmesh
 from mathutils import Vector
+GROOVES=[]   # real shut lines, cut into the body before the join (see cut_grooves)
 
 ROOT=Path(__file__).resolve().parents[1]
 RECIPE=json.loads((ROOT/'source-art/masters/compact_v1.recipe.json').read_text())
 args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
-OUT=Path(args[args.index('--review-output')+1]) if '--review-output' in args else ROOT/'review/unity-03'
+# Review renders default to their own folder (they used to land in, and overwrite, study review/unity-03).
+OUT=Path(args[args.index('--review-output')+1]) if '--review-output' in args else ROOT/'review/cars/compact-master'
 OUT=OUT.resolve()
 OUT.mkdir(parents=True,exist_ok=True)
 TARGET=ROOT/'unity/Assets/Resources/Cars'
@@ -230,7 +232,7 @@ for side in [-1,1]:
     mesh('Flat satin B pillar',[(sx(1.079)+side*.004,-.39,1.079),(sx(1.079)+side*.004,-.29,1.079),
         (sx(1.576)+side*.004,-.29,1.576),(sx(1.576)+side*.004,-.39,1.576)],[(0,1,2,3)],trim,False)
     door=[(.49,1.027),(.39,.86),(.29,.52),(.20,.395),(-.23,.397),(-.37,.53),(-.55,.88),(-.59,1.055)]
-    curve('Door shut line',[(side*(surface_x(y,z)+.008),y,z) for y,z in door],seam,.006)
+    GROOVES.append(([(side*surface_x(y,z),y,z) for y,z in door],False,.008))
     box('Recessed door handle pocket',(side*.911,-.42,.985),(.018,.24,.065),seam,.022)
     box('Satin door handle',(side*.925,-.42,.988),(.025,.18,.032),trim,.012)
     curve('Mirror stem',[(side*.755,.44,1.06),(side*.924,.43,1.075)],trim,.029)
@@ -283,7 +285,7 @@ for side in [1,-1]:
     if side==1:
         for i in range(1,24):
             x=.575-1.15*i/24;z=.625-.035*(1-(x/.575)**2);hatch.append((x,rear_surface_y(x,z),z))
-curve('Recessed tailgate shut line',hatch,seam,.005,poly=True)
+GROOVES.append((hatch,False,.008))
 box('Rear bumper inset',(0,-1.541,.445),(.90,.018,.19),bumper_insert,.055)
 box('Hatch badge',(0,rear_surface_y(0,.875)-.007,.875),(.065,.018,.063),alloy,.018)
 for side in [-1,1]:
@@ -292,14 +294,14 @@ for side in [-1,1]:
 fuel=[]
 for p in rounded_loop([(0,-.63,.865),(0,-.90,.865),(0,-.90,1.008),(0,-.63,1.008)],.2):
     fuel.append((surface_x(p.y,p.z)+.009,p.y,p.z))
-curve('Fuel filler door seam',fuel,seam,.0045,True)
+GROOVES.append(([(p[0]-.009,p[1],p[2]) for p in fuel],True,.006))
 for side in [-1,1]:
     bonnet=[]
     for i in range(33):
         t=i/32;y=1.48-.86*t;x=side*(.30+.25*t);w,lo,hi=section(y)
         z=(lo+hi)*.5+(hi-lo)*.5*max(0,1-(abs(x)/w)**(2/.40))**(.48/2)
         bonnet.append((x,y,z+.003))
-    curve('Bonnet shut line',bonnet,seam,.0035,poly=True)
+    GROOVES.append(([(x,y,z-.003) for x,y,z in bonnet],False,.006))
 cylinder('Exhaust chrome outlet',(-.43,-1.508,.278),.063,.13,alloy,'Y',32)
 cylinder('Exhaust dark bore',(-.43,-1.578,.278),.048,.008,trim,'Y',32)
 box('Underbody',(0,-.04,.319),(1.35,2.48,.055),trim,.04)
@@ -384,6 +386,43 @@ for side,letter in [(-1,'L'),(1,'R')]:
         make_wheel(side,cy,'Wheel_'+end+letter)
         box('Fixed brake caliper',(side*(RECIPE['wheel_half_track']+.091),cy-.19,.425),(.055,.085,.19),bumper_insert,.026)
 
+# Panel gaps: each shut line is swept as a narrow square cutter along the real surface and cut into
+# the shell, so doors, bonnet, tailgate and fuel flap are separate panels, not tubes on the paint.
+def cut_grooves(body):
+    from mathutils.bvhtree import BVHTree
+    tree=BVHTree.FromObject(body,bpy.context.evaluated_depsgraph_get());v=[];f=[]
+    for P,cyclic,w in GROOVES:
+        P=[Vector(p) for p in P];dense=[]
+        for a,b in zip(P,P[1:]+([P[0]] if cyclic else [])):
+            n=max(1,int((b-a).length/.012))
+            for i in range(n):dense.append(a.lerp(b,i/n))
+        if not cyclic:dense.append(P[-1])
+        ring=[]
+        for p in dense:
+            loc,nrm,_,dist=tree.find_nearest(p);ring.append(None if loc is None or dist>.04 else (loc,nrm.normalized()))
+        runs=[];cur=[]
+        for x in ring+[None]:
+            if x is None:
+                if len(cur)>1:runs.append(cur)
+                cur=[]
+            else:cur.append(x)
+        closed=cyclic and len(runs)==1 and len(runs[0])==len(ring)
+        for run in runs:
+            base=len(v);m=len(run)
+            for i,(loc,nrm) in enumerate(run):
+                a=run[(i-1)%m if closed else max(0,i-1)][0];b=run[(i+1)%m if closed else min(m-1,i+1)][0]
+                s=(b-a).cross(nrm).normalized()
+                for sx,out in [(-1,.006),(1,.006),(1,-.011),(-1,-.011)]:v.append(loc+s*(w*.5*sx)+nrm*out)
+            for i in range(m if closed else m-1):
+                j=(i+1)%m
+                for k in range(4):f.append((base+i*4+k,base+i*4+(k+1)%4,base+j*4+(k+1)%4,base+j*4+k))
+            if not closed:f.append(tuple(base+k for k in range(4)));f.append(tuple(base+(m-1)*4+k for k in range(3,-1,-1)))
+    cutter=mesh('Panel gap cutter',v,f,seam,False)
+    mod=body.modifiers.new('Panel gaps','BOOLEAN');mod.operation='DIFFERENCE';mod.solver='EXACT';mod.object=cutter;mod.use_self=True
+    try:mod.material_mode='TRANSFER'
+    except Exception:pass
+    bpy.context.view_layer.objects.active=body;bpy.ops.object.modifier_apply(modifier=mod.name);bpy.data.objects.remove(cutter,do_unlink=True)
+cut_grooves(body)
 # Join stationary pieces after applying modifiers, retaining material slots.
 bpy.ops.object.select_all(action='DESELECT')
 parts=[o for o in bpy.context.scene.objects if o.type in {'MESH','CURVE'} and o.parent is None]

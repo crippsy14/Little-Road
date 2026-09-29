@@ -1,0 +1,6 @@
+reveal mean=8.54ms p95=9.14ms
+vista mean=8.07ms p95=8.60ms
+square mean=5.61ms p95=6.08ms
+castle mean=5.62ms p95=6.03ms
+quay mean=5.72ms p95=6.10ms
+bayview mean=4.26ms p95=4.81ms

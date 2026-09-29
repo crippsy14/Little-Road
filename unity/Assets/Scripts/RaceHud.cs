@@ -35,7 +35,7 @@ namespace LittleRoad
         }
         void Build()
         {
-            canvas=CoastUI.Canvas(transform,"Clear race instruments",25);
+            canvas=CoastUI.Canvas(transform,"Clear race instruments",4);
             var posRoot=CoastUI.Rect(canvas.transform,"Position",new Vector2(180,75),Vector2.zero);Anchor(posRoot,0,1,new Vector2(127,-73));
             Readout(posRoot,"Caption","POSITION",14,new Vector2(180,23),new Vector2(0,31),true);
             position=Readout(posRoot,"Place","",39,new Vector2(185,55),new Vector2(0,-3),true);
@@ -72,7 +72,7 @@ namespace LittleRoad
             steerPip=CoastUI.Panel(dash,"Steering input",new Vector2(4,9),new Vector2(0,62),Accent,0);
             totalTime=Readout(canvas.transform,"Race time","",19,new Vector2(330,32),Vector2.zero);Anchor(totalTime.rectTransform,0,0,new Vector2(207,69));
             notice=Readout(canvas.transform,"Race notice","",29,new Vector2(920,60),Vector2.zero,true,TextAnchor.MiddleCenter);Anchor(notice.rectTransform,.5f,1,new Vector2(0,-146));
-            compactHint=Readout(canvas.transform,"HUD controls","H / L3: compact  ·  Q / Triangle: rear view",14,new Vector2(500,28),Vector2.zero);Anchor(compactHint.rectTransform,0,0,new Vector2(292,32));
+
         }
         RectTransform Meter(Transform parent,string label,Vector2 pos,Color color)
         {

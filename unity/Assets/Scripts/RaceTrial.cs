@@ -33,7 +33,7 @@ namespace LittleRoad
         int careerReward;
         TechnicalCircuit technical;
         TechnicalCircuitReview technicalReview;
-        bool overview,wasLookingBehind;
+        bool overview,wasLookingBehind;Vector3 chaseLag;
         CollisionAudit collisionAudit;
         bool career;
         public int requiredLaps=3;
@@ -57,9 +57,9 @@ namespace LittleRoad
         string gridMode="pack";
         string[] opponentSetups;
         float nextSample,sampleInterval=1;
-        GUIStyle title,label,small;
+        GUIStyle title,label,small;string reportTrack="bayview";
         [Serializable] public class DriverRosterEvidence {public int schema=1;public string mode;public DriverIdentity.Record[] drivers;}
-        [Serializable] public class CarResult {public int id,laps,nextGate,place,contacts,recoveries,missedGates,physicalRecoveries;public string equipment;public bool finished;public float time,progress,offset,bestLap,maxImpact,maxPenetration,physicalRecoverySeconds,recoveryWaitSeconds,recoveryReverseSeconds;public int planReversals,passCommits,passCompleted,passAborted,abortTarget,abortTimeout,abortUnaccepted,lateBrakeTicks,gapCandidates,gapSelections;}
+        [Serializable] public class CarResult {public int id,laps,nextGate,place,contacts,recoveries,missedGates,physicalRecoveries;public string equipment;public bool finished;public float time,progress,offset,bestLap,maxImpact,maxPenetration,unsupportedSeconds,physicalRecoverySeconds,recoveryWaitSeconds,recoveryReverseSeconds;public int planReversals,passCommits,passCompleted,passAborted,abortTarget,abortTimeout,abortUnaccepted,lateBrakeTicks,gapCandidates,gapSelections;}
         [Serializable] public class MotionSample {public int id,nextGate,laps;public float time,speed,targetSpeed,throttle,steering,offset,progress,headingError,nextGateProgress,predictedOffset,lateralSpeed,requestedYaw,actualYaw,chosenLane;}
         [Serializable] public class ImpactSample {public int id,other;public string otherName;public float time,relativeSpeed,penetration,progress,offset;}
         [Serializable] public class RecoverySample {public int id,gateBefore,gateAfter,rejectedDestinations;public string reason;public float time,progressBefore,progressAfter;public Vector3 positionBefore,positionAfter;}
@@ -67,6 +67,10 @@ namespace LittleRoad
         [Serializable] public class Report {public string engine,stage,utc,graphics,equipment,gridMode,collisionMode,trackId,trackVersion,driverPolicy,observationMode;public int seed,carCount,finished,requiredLaps,overlapSampledSteps,overlapQuerySaturations;public float simSeconds,wallSeconds,trackLength,trackWidth,meanFrameMs,p95FrameMs,physicsStepSeconds,maxCarPoseOverlap,maxEnvironmentPoseOverlap;public bool autonomous;public CarResult[] cars;public MotionSample[] motion;public DraftSample[] draftingSamples;public ImpactSample[] impacts;public RecoverySample[] assistedRecoveries;public CheckpointSample[] checkpointPassages;public CollisionAudit.Peak[] overlapPeaks;}
         public static string Arg(string key,string fallback=null) {var args=Environment.GetCommandLineArgs();int i=Array.IndexOf(args,key);return i>=0&&i+1<args.Length?args[i+1]:RaceAiPreset.Value(key,fallback);}
         public static bool Has(string key)=>Array.IndexOf(Environment.GetCommandLineArgs(),key)>=0||RaceAiPreset.Enabled(key);
+        // Load timing: every race entry and exit reloads this scene and rebuilds the world at runtime.
+        public static float SceneStart;
+        public static string LoadTime=>$"load={Time.realtimeSinceStartup-SceneStart:0.00}s sinceLaunch={Time.realtimeSinceStartup:0.00}s";
+        void Awake()=>SceneStart=Time.realtimeSinceStartup;
         IEnumerator Start()
         {
             if(Has("--performance-trial")){enabled=false;gameObject.AddComponent<PerformanceTrial>();yield break;}
@@ -74,7 +78,7 @@ namespace LittleRoad
             career=AdventureSession.Racing;
             if(!career&&!Has("--trial-auto")&&!Has("--trial-race")){freeRoam=true;gameObject.AddComponent<AdventureGame>();yield break;}
             sampleInterval=Arg("--traffic-case","").StartsWith("draft-")?1f/120:1;
-            automation=Has("--trial-auto")||AdventureSession.Smoke;int.TryParse(Arg("--trial-cars","24"),out field);field=Mathf.Clamp(field,1,24);
+            automation=Has("--trial-auto")||AdventureSession.Smoke||(career&&Has("--valley-race-review"));int.TryParse(Arg("--trial-cars","24"),out field);field=Mathf.Clamp(field,1,24);
             float.TryParse(Arg("--trial-duration","240"),out duration);int.TryParse(Arg("--trial-seed","1709"),out seed);
             int.TryParse(Arg("--trial-laps","3"),out requiredLaps);requiredLaps=Mathf.Max(1,requiredLaps);
             setup=Arg("--trial-setup","stock");reportPath=Arg("--trial-report");captureFolder=Arg("--trial-captures");
@@ -83,24 +87,40 @@ namespace LittleRoad
                 if(captureFolder!=null)captureFolder=Path.Combine(captureFolder,"race-"+AdventureSession.RaceSerial);
             }
             if(reportPath!=null)DriverAudit=new DriverFrameAudit();
-            if(career){field=24;requiredLaps=3;setup="owned equipment";seed=1709+AdventureSession.RaceSerial*11;careerUI=gameObject.AddComponent<AdventureUI>();}
+            if(career){field=24;requiredLaps=AdventureSession.EnteredRoster?.Laps??3;setup="owned equipment";seed=1709+AdventureSession.RaceSerial*11;careerUI=gameObject.AddComponent<AdventureUI>();}
             gridMode=Arg("--trial-grid","pack");opponentSetups=Arg("--trial-opponents","").Split(',',StringSplitOptions.RemoveEmptyEntries);
             if(gridMode!="pack"&&gridMode!="line")throw new ArgumentException("Unknown trial grid: "+gridMode);
             QualitySettings.vSyncCount=0;Application.targetFrameRate=120;Time.fixedDeltaTime=1f/120;Time.maximumDeltaTime=.15f;
+            // A player's race follows their Frame rate setting (VSync by default): the uncapped 120 fps target
+            // presented unevenly on 60/144 Hz displays (judder; frame-cost-127). The drivers step at a fixed
+            // 120 Hz either way. Automated trials keep the old timing.
+            if(career&&!automation&&!Application.isBatchMode)GraphicsOptions.ApplyRacePacing();
+            // Races keep the 120 fps target they were tuned at: the drivers plan per rendered frame
+            // cadence, and a vSync cap (60 Hz, or a throttled hidden window) jammed the smoke race's start.
             Application.runInBackground=true;
-            string trackId=career?"bayview":Arg("--trial-track","bayview");
+            string trackId=career?AdventureSession.EnteredRoster?.Track??"bayview":Arg("--trial-track","bayview");
             if(trackId=="cedar") {technical=new TechnicalCircuit();track=technical.track;TechnicalCircuitWorld.Create(technical);}
-            else if(trackId=="bayview"){track=new Circuit();TrialWorld.Create(track);}
+            // Cedar Hills: Cedar's layout with 23 m of elevation (the grade-aware driver test circuit).
+            else if(trackId=="cedar-hills") {technical=new TechnicalCircuit("cedar-hills");track=technical.track;TechnicalCircuitWorld.Create(technical);}
+            else if(trackId=="bayview"){track=new Circuit();yield return TrialWorld.CreateRoutine(track);}
+            // Hillcrest Raceway: the valley circuit (built with the mainland); the island loop is scenery.
+            else if(trackId=="hillcrest"){yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(HillcrestRoute.Circuit);RenderSettings.fogDensity=.00026f;}
             else throw new ArgumentException("Unknown trial track: "+trackId);
+            reportTrack=trackId;
+            // The elevated Hillcrest Raceway always races grade-aware (its context drivers could not race it
+            // otherwise; the model is exactly neutral on level circuits, study 124). Elsewhere it is opt-in.
+            GradeModel.Enabled=Has("--grade-aware")||(trackId=="hillcrest"&&track.hasElevation);GradeModel.Physics=GradeModel.Enabled&&!Has("--grade-no-physics");
+            RoadCar.GateFirst=Has("--gate-first");PhysicalRecovery.RejoinAtSpeed=Has("--rejoin-at-speed");
+            if(track.hasElevation&&Arg("--driver-policy","legacy")!="legacy"&&!GradeModel.Enabled&&!career)Debug.LogWarning("Elevated circuit without --grade-aware: context forecasts will refuse it.");
             bool connectedModern=career&&AdventureSession.EnteredRoster?.Modern==true;
             string policy=career?(connectedModern?"context":"legacy"):Arg("--driver-policy","legacy");
             if(Has("--dynamic-rejoin")&&((career&&!connectedModern)||policy!="context"||(field!=1&&!Has("--dynamic-traffic"))||!Has("--road-feasibility")))throw new ArgumentException("Dynamic rejoin requires declared context fixtures and physical road checks.");
             bool bayviewStudy=Has("--bayview-transfer-study")||connectedModern;
-            if(bayviewStudy&&((career&&!connectedModern)||trackId!="bayview"||(policy!="legacy"&&policy!="context")||!((field==24&&Arg("--traffic-case")=="field")||(field==1&&Arg("--traffic-case")=="standing-solo"))))throw new ArgumentException("Bayview transfer requires explicit standalone legacy/context standing-solo or24-car field.");
+            if(bayviewStudy&&((career&&!connectedModern)||(trackId!="bayview"&&trackId!="hillcrest")||(policy!="legacy"&&policy!="context")||!((field==24&&Arg("--traffic-case")=="field")||(field==RaceGrid.ClassSortCars&&Arg("--traffic-case")=="class-sort")||(field==1&&Arg("--traffic-case")=="standing-solo"))))throw new ArgumentException("Bayview transfer requires explicit standalone legacy/context standing-solo or24-car field.");
             bool dynamicFieldStudy=Has("--dynamic-field-study");
             if(Has("--dynamic-blocking-target")&&!Has("--dynamic-traffic"))throw new ArgumentException("Dynamic blocking targets require the dynamic traffic study.");
             if(Has("--dynamic-traffic-fallback")&&!Has("--dynamic-traffic"))throw new ArgumentException("Dynamic traffic fallback requires the dynamic traffic study.");
-            if(dynamicFieldStudy&&((career&&!connectedModern)||(trackId!="cedar"&&!bayviewStudy)||policy!="context"||Arg("--traffic-case")!="field"||!Has("--dynamic-traffic")))throw new ArgumentException("Dynamic field study requires the explicit Cedar context field fixture and dynamic traffic.");
+            if(dynamicFieldStudy&&((career&&!connectedModern)||(trackId!="cedar"&&trackId!="cedar-hills"&&!bayviewStudy)||policy!="context"||(Arg("--traffic-case")!="field"&&Arg("--traffic-case")!="class-sort")||!Has("--dynamic-traffic")))throw new ArgumentException("Dynamic field study requires the explicit Cedar context field fixture and dynamic traffic.");
             if(Has("--dynamic-traffic")&&(!Has("--dynamic-rejoin")||!Has("--local-origin-curvature")||!Has("--traffic-path-check")||(field>3&&!dynamicFieldStudy)))throw new ArgumentException("Dynamic traffic requires corrected local envelopes, moving-traffic checks and an explicit field-study opt-in above three cars.");
             if(Has("--local-origin-curvature")&&!Has("--dynamic-rejoin"))throw new ArgumentException("Local-origin curvature is currently part of the solo dynamic-rejoin study.");
             DraftingEnabled=Has("--light-drafting");
@@ -108,8 +128,12 @@ namespace LittleRoad
             if(policy=="reference"||policy=="traffic"||policy=="context") {
                 bool referenceRearControl=Arg("--traffic-case")=="rear-control"&&field==2;
                 if((technical==null&&!bayviewStudy)||(policy=="reference"&&field!=1&&!Has("--recovery-case")&&!referenceRearControl)||(policy=="traffic"&&!Has("--traffic-case")))throw new ArgumentException("New drivers require their declared Cedar development fixtures.");
-                if(policy=="context"&&Array.IndexOf(new[]{"draft-straight","draft-pullout","solo","standing-solo","pace-solo","rear-control","rear-control-left","rear-control-right","follow","pass","crossing-pass","brake-leader","brake-probe","queue","no-room","field","merge-left","merge-right","merge-witness-left","merge-witness-right","corner-solo-left","corner-solo-middle","corner-solo-right","corner-solo-deep","corner-pair-left","corner-pair-right","corner-three"},Arg("--traffic-case"))<0)throw new ArgumentException("Context prototype requires a declared supported development fixture.");
-                ReferenceLine=new RacingLine(track,Arg("--racing-line","cedar-mincurve-v1"),technical==null?"bayview":technical.definition.id,technical==null?"bayview-v1":technical.definition.version);DriverPolicyId=policy=="traffic"?"traffic-v1":policy=="context"?"context-v1":"reference-v1";
+                if(policy=="context"&&Array.IndexOf(new[]{"draft-straight","draft-pullout","solo","standing-solo","pace-solo","rear-control","rear-control-left","rear-control-right","follow","pass","crossing-pass","brake-leader","brake-probe","queue","no-room","field","class-sort","merge-left","merge-right","merge-witness-left","merge-witness-right","corner-solo-left","corner-solo-middle","corner-solo-right","corner-solo-deep","corner-pair-left","corner-pair-right","corner-three"},Arg("--traffic-case"))<0)throw new ArgumentException("Context prototype requires a declared supported development fixture.");
+                // Hillcrest's line is baked from the live circuit (same method as the Bayview/Cedar seeds).
+                // Cedar Hills reuses Cedar's authored line (same layout), so only the elevation differs.
+                ReferenceLine=trackId=="cedar-hills"?new RacingLine(track,RacingLine.Transfer(track,"cedar-smooth-v2","cedar-hills")):
+                    trackId=="hillcrest"?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+"-smooth-v1",trackId)):
+                    new RacingLine(track,Arg("--racing-line","cedar-mincurve-v1"),technical==null?"bayview":technical.definition.id,technical==null?"bayview-v1":technical.definition.version);DriverPolicyId=policy=="traffic"?"traffic-v1":policy=="context"?"context-v1":"reference-v1";
             }else if(policy!="legacy")throw new ArgumentException("Unknown driver policy: "+policy);
             if(Has("--driver-roster")&&((career&&!connectedModern)||policy!="context"))throw new ArgumentException("Driver roster currently requires standalone context comparisons.");
             if(Has("--driver-form")&&!Has("--driver-roster"))throw new ArgumentException("Driver form needs declared identities.");
@@ -131,21 +155,27 @@ namespace LittleRoad
             if(Has("--path-probe"))gameObject.AddComponent<PathPredictionFixture>().Setup(this,technical);
             if((!career||connectedModern)&&(Has("--shared-driver-snapshot")||ReferenceLine!=null||Has("--physical-recovery"))){DriverSnapshot=gameObject.AddComponent<RaceWorldSnapshot>();DriverSnapshot.Setup(this);}
             if(ReferenceLine!=null&&!career&&!RaceHud.Requested&&!Has("--clean-view"))gameObject.AddComponent<RacingLineOverlay>().Setup(this,cars[0].referenceProfile);
-            chase=new GameObject("Chase camera").AddComponent<Camera>();chase.tag="MainCamera";chase.fieldOfView=52;chase.nearClipPlane=.12f;chase.farClipPlane=1800;
-            chase.gameObject.AddComponent<AudioListener>();var cameraData=chase.GetUniversalAdditionalCameraData();cameraData.renderPostProcessing=true;
-            cameraData.antialiasing=AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+            chase=new GameObject("Chase camera").AddComponent<Camera>();chase.tag="MainCamera";chase.fieldOfView=52;chase.nearClipPlane=.12f;chase.farClipPlane=trackId=="hillcrest"?6000:1800;
+            chase.gameObject.AddComponent<AudioListener>();WorldLook.Camera(chase);
+            if(GrassField.Wanted)gameObject.AddComponent<GrassField>().Setup(chase);
+            if(!Application.isBatchMode)WorldLook.RaceBlur();
+            // Dust, tyre smoke and tyre marks for every car in a rendered race (visual only).
+            if(!Application.isBatchMode&&!freeRoam)foreach(var raceCar in cars)raceCar.gameObject.AddComponent<DustTrail>().Setup(raceCar);
             if(reportPath!=null){collisionAudit=gameObject.AddComponent<CollisionAudit>();collisionAudit.Setup(this);}
-            if(technical!=null||bayviewStudy){technicalReview=gameObject.AddComponent<TechnicalCircuitReview>();technicalReview.Setup(this,technical??new TechnicalCircuit(track),reportPath);}
+            if(technical!=null||bayviewStudy){technicalReview=gameObject.AddComponent<TechnicalCircuitReview>();technicalReview.Setup(this,technical??new TechnicalCircuit(track,trackId),reportPath);}
             if(Has("--motion-audit"))MotionAudit=new MotionPredictionAudit(Arg("--motion-audit"),Time.fixedDeltaTime,cars.Count);
             if(Has("--capture-path-approach"))ApproachAudit=new PathApproachAudit(int.Parse(Arg("--capture-path-approach")),cars.Count);
-            UpdateCamera(true);wallStart=Time.realtimeSinceStartup;running=true;
+            // Rendered races warm up behind the loading card, like free roam (AdventureGame.WarmUp): look along
+            // the lap and force LOD cross-fades both ways so shaders and their fade variants compile now.
+            if(!Application.isBatchMode&&!Has("--no-warm-up"))yield return WarmUpLap();
+            UpdateCamera(true);CameraShake.Reset();if(cars.Count>0){CameraShake.Watch(cars[0]);if(!freeRoam)FrameProbe.Attach(cars[0].transform);}wallStart=Time.realtimeSinceStartup;running=true;
             manualStart=new ManualRaceStart(!career&&!automation&&Has("--trial-human")&&!Has("--race-preview")&&!Has("--race-preview-review"));
             if(WaitingForReady){Time.timeScale=0;Debug.Log("LITTLE_ROAD_MANUAL_WAITING countdown=-3");}
             RaceGrid.Capture(this,captureFolder);
             if(bayviewStudy&&captureFolder==null&&reportPath!=null)RaceGrid.Capture(this,Path.GetDirectoryName(Path.GetFullPath(reportPath)));
-            if(Arg("--traffic-case")=="standing-solo"&&captureFolder==null&&reportPath!=null)RaceGrid.Capture(this,Path.GetDirectoryName(Path.GetFullPath(reportPath)));
+            if((Arg("--traffic-case")=="standing-solo"||Arg("--traffic-case")=="class-sort")&&captureFolder==null&&reportPath!=null)RaceGrid.Capture(this,Path.GetDirectoryName(Path.GetFullPath(reportPath)));
             if(Has("--vertical-audit"))gameObject.AddComponent<VerticalMotionAudit>().Setup(this);
-            Debug.Log("LITTLE_ROAD_UNITY_READY cars="+cars.Count+" width="+Circuit.Width+" length="+track.length);
+            Debug.Log("LITTLE_ROAD_UNITY_READY cars="+cars.Count+" width="+Circuit.Width+" length="+track.length+" "+LoadTime);LoadingScreen.Ready();
             if((career&&!Has("--no-race-hud"))||RaceHud.Requested){Hud=gameObject.AddComponent<RaceHud>();Hud.Setup(this);}
             if(!career&&(Has("--race-preview")||Has("--race-preview-review"))) {
                 float resume=Time.timeScale;Time.timeScale=0;racePreview=gameObject.AddComponent<RacePreviewUI>();
@@ -156,7 +186,8 @@ namespace LittleRoad
             if(captureFolder!=null) {Directory.CreateDirectory(captureFolder);yield return new WaitForSeconds(2);yield return Capture("01-grid");
                 yield return new WaitForSeconds(15);yield return Capture("02-race");}
         }
-        void FixedUpdate(){if(running&&!freeRoam) {
+        void FixedUpdate(){long start=System.Diagnostics.Stopwatch.GetTimestamp();FrameCost.Steps++;try{RaceStep();}finally{FrameCost.Race+=System.Diagnostics.Stopwatch.GetTimestamp()-start;}}
+        void RaceStep(){if(running&&!freeRoam) {
             elapsed+=Time.fixedDeltaTime;
             if(elapsed>=nextSample) {nextSample+=sampleInterval;
                 foreach(var c in cars)motion.Add(new MotionSample{id=c.driverId,time=elapsed,speed=c.speed,targetSpeed=c.targetSpeed,
@@ -180,9 +211,10 @@ namespace LittleRoad
             if(Keyboard.current?.escapeKey.wasPressedThisFrame==true || (career&&Gamepad.current?.startButton.wasPressedThisFrame==true)) {if(career){AdventureSession.Notice=cars[0].finished?"Back in Bayview. Your result and reward are saved.":"Race retired · no payout. Your equipment is unchanged.";AdventureSession.ReturnToTown();}else{WriteReport();Application.Quit();}}
             if(career) {
                 careerUI.SetHudVisible(Hud==null&&!careerUI.IsOpen);
-                int place=LivePlace(cars[0]);
+                // Only while it shows (the race HUD normally replaces it): rebuilding it every frame cost time.
+                if(Hud==null){int place=LivePlace(cars[0]);
                 careerUI.HUD($"BAYVIEW COAST / CLASS C   ·   {place}/24   ·   Lap {Mathf.Min(cars[0].laps+1,requiredLaps)}/3   ·   {Mathf.RoundToInt(Mathf.Abs(cars[0].speed)*2.237f)} mph\n{(elapsed<0?"START IN "+Mathf.CeilToInt(-elapsed):"Race time "+(cars[0].finished?cars[0].finishTime:elapsed).ToString("0.0")+"s")}   ·   {AdventureSession.Store.Data.credits} credits",
-                    PlayerRecoveryPending?"RECOVERY REQUESTED — waiting for a clear space on the road":cars[0].CheckpointMissed?cars[0].CheckpointMessage:"WASD / arrows or stick + R2/L2: drive     Hold Q / Triangle: look behind     R / D-pad Down: recover     Esc / Options: return to town (unfinished races pay nothing)");
+                    PlayerRecoveryPending?"RECOVERY REQUESTED — waiting for a clear space on the road":cars[0].CheckpointMissed?cars[0].CheckpointMessage:InputGlyphs.Race);}
             }
             if(automation && !reportWritten && (elapsed>=duration || finishOrder.Count==cars.Count)) {
                 WriteReport();
@@ -215,11 +247,21 @@ namespace LittleRoad
             Time.timeScale=1;wallStart=Time.realtimeSinceStartup;
             Debug.Log("LITTLE_ROAD_MANUAL_READY countdown="+elapsed);
         }
+        IEnumerator WarmUpLap()
+        {
+            float bias=QualitySettings.lodBias;
+            for(int i=0;i<10;i++) {
+                float d=track.length*i/10;var f=track.Forward(d);
+                chase.transform.position=track.At(d)-f*6+Vector3.up*(i%2==0?4:25);chase.transform.LookAt(track.At(d)+f*30);WorldLook.Cut(chase);
+                yield return null;QualitySettings.lodBias=bias*.2f;for(int k=0;k<3;k++)yield return null;QualitySettings.lodBias=bias;for(int k=0;k<3;k++)yield return null;
+            }
+            QualitySettings.lodBias=bias;
+        }
         void OnApplicationQuit(){if(running&&!freeRoam&&!career&&cars.Count>0)WriteReport();}
         void UpdateCamera(bool snap)
         {
             bool behind=DrivingViewInput.LookingBehind;
-            snap|=behind!=wasLookingBehind;wasLookingBehind=behind;
+            bool flip=behind!=wasLookingBehind;snap|=flip;wasLookingBehind=behind;if(snap)WorldLook.Cut(chase);
             if(technical!=null&&overview&&!behind) {
                 chase.orthographic=true;chase.orthographicSize=230;
                 chase.transform.SetPositionAndRotation(new Vector3(-50,700,-8),Quaternion.Euler(90,0,0));return;
@@ -227,8 +269,15 @@ namespace LittleRoad
             chase.orthographic=false;
             var car=cars[0];var viewingForward=car.transform.forward*(behind?-1:1);
             Vector3 goal=car.transform.position-viewingForward*5.8f+Vector3.up*3.1f;
-            chase.transform.position=snap?goal:Vector3.Lerp(chase.transform.position,goal,1-Mathf.Exp(-Time.deltaTime*8));
+            // Looking back the camera is locked 5.8 m ahead of the car; flipping back restores the forward
+            // view where it was trailing (no snap-then-drift zoom). The cut also skips motion blur and TAA history.
+            if(behind)chase.transform.position=goal;
+            else if(flip)chase.transform.position=goal+car.transform.TransformVector(chaseLag);
+            else if(snap){chase.transform.position=goal;chaseLag=Vector3.zero;}
+            else{chase.transform.position=Vector3.Lerp(chase.transform.position,goal,1-Mathf.Exp(-Time.deltaTime*8));chaseLag=car.transform.InverseTransformVector(chase.transform.position-goal);}
             chase.transform.LookAt(car.transform.position+viewingForward*3+Vector3.up*.8f);
+            float fov=WorldLook.SpeedFov(52+GraphicsOptions.FovOffset,car.speed);chase.fieldOfView=snap?fov:Mathf.Lerp(chase.fieldOfView,fov,1-Mathf.Exp(-Time.deltaTime*3));
+            if(!snap)CameraShake.Apply(chase);
         }
         IEnumerator Capture(string name)
         {
@@ -247,9 +296,11 @@ namespace LittleRoad
         {
             int place=finishOrder.IndexOf(cars[0])+1;
             try {
-                int reward=AdventureSession.Store.FinishRace(AdventureSession.RaceSerial,place);
-                careerReward=reward;
-                AdventureSession.Notice=$"Finished {place}/24 · +{reward} credits. Visit Mara to buy and fit parts.";
+                bool valley=Roster?.Track=="hillcrest";string openBefore=RaceCalendar.Open(AdventureSession.Store.Data);
+                int reward=AdventureSession.Store.FinishRace(AdventureSession.RaceSerial,place,valley?"hillcrest":"bayview");
+                careerReward=reward;string openNow=RaceCalendar.Open(AdventureSession.Store.Data);
+                AdventureSession.Notice=openNow!=openBefore?$"Finished {place}/24 · +{reward} credits · Class {openBefore} complete! Class {openNow} is open.":
+                    $"Finished {place}/24 · +{reward} credits. "+(valley?"Gio at Hillcrest Motors has valley parts.":"Visit Mara to buy and fit parts.");
                 ShowCareerResult();
             }catch(Exception e){Debug.LogError(e);careerUI.Show("Reward not saved yet",e.Message,new(){new("Retry saving this result",SettleCareer)});}
         }
@@ -317,7 +368,7 @@ namespace LittleRoad
             GetComponent<PathPredictionFixture>()?.Save();
             ApproachAudit?.Save(reportPath);
             var sorted=frameTimes.OrderBy(x=>x).ToArray();var r=new Report {engine=Application.unityVersion,stage=career?"Connected adventure race":"Standalone race trial",utc=DateTime.UtcNow.ToString("O"),
-                trackId=technical==null?"bayview":technical.definition.id,trackVersion=technical==null?"bayview-v1":technical.definition.version,
+                trackId=technical==null?reportTrack:technical.definition.id,trackVersion=technical==null?reportTrack+"-v1":technical.definition.version,
                 driverPolicy=DriverPolicyId,observationMode=DriverSnapshot==null?"legacy cached order":"shared pre-controller snapshot",
                 collisionMode=cars[0].body.collisionDetectionMode.ToString(),graphics=SystemInfo.graphicsDeviceName,equipment=setup,gridMode=gridMode,seed=seed,carCount=cars.Count,finished=finishOrder.Count,requiredLaps=requiredLaps,simSeconds=elapsed,
                 wallSeconds=Time.realtimeSinceStartup-wallStart,trackLength=track.length,trackWidth=Circuit.Width,autonomous=automation,physicsStepSeconds=Time.fixedDeltaTime,
@@ -328,7 +379,7 @@ namespace LittleRoad
                 cars=cars.Select(c=>new CarResult {id=c.driverId,laps=c.laps,nextGate=c.nextGate,place=finishOrder.IndexOf(c)+1,equipment=c.equipment,finished=c.finished,time=c.finishTime,
                     progress=c.progress,offset=c.offset,bestLap=c.bestLap==float.MaxValue?0:c.bestLap,contacts=c.contacts,recoveries=c.recoveries,maxImpact=c.maxImpact,
                     missedGates=c.missedGates,maxPenetration=c.maxPenetration,physicalRecoveries=c.physicalRecovery?.completed??0,
-                    physicalRecoverySeconds=c.physicalRecovery?.activeSeconds??0,recoveryWaitSeconds=c.physicalRecovery?.waitSeconds??0,recoveryReverseSeconds=c.physicalRecovery?.reverseSeconds??0,planReversals=c.contextPolicy?.PlanReversals??0,passCommits=c.contextPolicy?.PassCommits??0,passCompleted=c.contextPolicy?.PassCompleted??0,passAborted=c.contextPolicy?.PassAborted??0,abortTarget=c.contextPolicy?.AbortTarget??0,abortTimeout=c.contextPolicy?.AbortTimeout??0,abortUnaccepted=c.contextPolicy?.AbortUnaccepted??0,lateBrakeTicks=c.contextPolicy?.LateBrakeTicks??0,gapCandidates=c.contextPolicy?.DynamicRejoin?.GapCandidatesAdded??0,gapSelections=c.contextPolicy?.DynamicRejoin?.GapSelections??0}).ToArray(),motion=motion.ToArray(),draftingSamples=draftingSamples.ToArray(),impacts=impacts.ToArray(),assistedRecoveries=assistedRecoveries.ToArray(),checkpointPassages=checkpointPassages.ToArray()};
+                    unsupportedSeconds=c.UnsupportedSeconds,physicalRecoverySeconds=c.physicalRecovery?.activeSeconds??0,recoveryWaitSeconds=c.physicalRecovery?.waitSeconds??0,recoveryReverseSeconds=c.physicalRecovery?.reverseSeconds??0,planReversals=c.contextPolicy?.PlanReversals??0,passCommits=c.contextPolicy?.PassCommits??0,passCompleted=c.contextPolicy?.PassCompleted??0,passAborted=c.contextPolicy?.PassAborted??0,abortTarget=c.contextPolicy?.AbortTarget??0,abortTimeout=c.contextPolicy?.AbortTimeout??0,abortUnaccepted=c.contextPolicy?.AbortUnaccepted??0,lateBrakeTicks=c.contextPolicy?.LateBrakeTicks??0,gapCandidates=c.contextPolicy?.DynamicRejoin?.GapCandidatesAdded??0,gapSelections=c.contextPolicy?.DynamicRejoin?.GapSelections??0}).ToArray(),motion=motion.ToArray(),draftingSamples=draftingSamples.ToArray(),impacts=impacts.ToArray(),assistedRecoveries=assistedRecoveries.ToArray(),checkpointPassages=checkpointPassages.ToArray()};
             if(reportPath!=null){Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(reportPath)));File.WriteAllText(reportPath,JsonUtility.ToJson(r,true));DriverAudit?.Save(reportPath);MotionAudit?.Save(reportPath);}
             Debug.Log("LITTLE_ROAD_TRIAL_REPORT finished="+r.finished+"/"+r.carCount+" time="+r.simSeconds+" file="+reportPath);
         }

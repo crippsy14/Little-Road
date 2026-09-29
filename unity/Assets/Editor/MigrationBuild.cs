@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
@@ -41,13 +42,14 @@ public static class MigrationBuild
         GraphicsSettings.defaultRenderPipeline=pipeline;QualitySettings.renderPipeline=pipeline;
         PlayerSettings.companyName="Little Road Project";PlayerSettings.productName="Little Road Unity Trial";
         PlayerSettings.defaultScreenWidth=1600;PlayerSettings.defaultScreenHeight=900;PlayerSettings.fullScreenMode=FullScreenMode.Windowed;
-        PlayerSettings.runInBackground=true;PlayerSettings.colorSpace=ColorSpace.Linear;
+        PlayerSettings.runInBackground=true;PlayerSettings.enableFrameTimingStats=true;PlayerSettings.colorSpace=ColorSpace.Linear;
         EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
         new GameObject("Little Road migration trial").AddComponent<RaceTrial>();
         Directory.CreateDirectory("Assets/Scenes");EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(),"Assets/Scenes/CoastalTrial.unity");
         EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene("Assets/Scenes/CoastalTrial.unity",true)};
         Check(pipeline!=null,"URP pipeline assigned",evidence);
-        Check(EquipmentCatalog.All.parts.Length==21 && EquipmentCatalog.All.slots.Length==7,"Preserved 21 parts across seven slots",evidence);
+        Check(EquipmentCatalog.All.parts.Count(p=>p.shop!="hillcrest")==21 && EquipmentCatalog.All.slots.Length==7,"Preserved 21 parts across seven slots",evidence);
+        Check(EquipmentCatalog.All.parts.Count(p=>p.shop=="hillcrest")==8,"Hillcrest Motors stocks eight valley parts",evidence);
         var stockFit=EquipmentCatalog.StockLoadout();
         foreach(var part in EquipmentCatalog.All.parts) {
             var fit=new Dictionary<string,string>(stockFit);fit[part.slot]=part.id;var stats=EquipmentCatalog.Stats(fit);
@@ -55,10 +57,15 @@ public static class MigrationBuild
         }
         Check(EquipmentCatalog.Reward(24)==100&&EquipmentCatalog.Reward(1)==500&&EquipmentCatalog.Reward(0)==0,"All valid finishers retain C-class reward schedule",evidence);
         Directory.CreateDirectory("Assets/Resources/ShaderReferences");
-        foreach(string shaderName in new[]{"Universal Render Pipeline/Lit","Skybox/Procedural","LittleRoad/CoastalSky","LittleRoad/CoastalTerrain","LittleRoad/CoastalFoliage","LittleRoad/CoastalWater","LittleRoad/WorldText"}) {
+        foreach(string shaderName in new[]{"Universal Render Pipeline/Lit","Skybox/Procedural","LittleRoad/CoastalSky","LittleRoad/DaySky","LittleRoad/Bunting","LittleRoad/Minimap","LittleRoad/CoastalTerrain","LittleRoad/CoastalFoliage","LittleRoad/CoastalWater","LittleRoad/WorldText","LittleRoad/Distant","LittleRoad/Wheat","LittleRoad/Kit","LittleRoad/InlandWater","LittleRoad/Grass","LittleRoad/SkidMark","LittleRoad/LightTrail"}) {
             var shader=Shader.Find(shaderName);Check(shader!=null,"Required shader "+shaderName,evidence);
+            // Find succeeds for a shader that failed to compile (it renders pink): fail the build instead.
+            Check(!ShaderUtil.ShaderHasError(shader),"Shader compiles without errors "+shaderName,evidence);
             string path="Assets/Resources/ShaderReferences/"+shaderName.Replace('/','_')+".mat";
             if(AssetDatabase.LoadAssetAtPath<Material>(path)==null)AssetDatabase.CreateAsset(new Material(shader),path);
+            // Grass is drawn only with Graphics.RenderMeshInstanced: builds strip instancing variants
+            // no included material enables, which left every clump collapsed at the origin.
+            if(shaderName=="LittleRoad/Grass"){var reference=AssetDatabase.LoadAssetAtPath<Material>(path);if(!reference.enableInstancing){reference.enableInstancing=true;EditorUtility.SetDirty(reference);AssetDatabase.SaveAssets();}}
         }
         const string lampReference="Assets/Resources/ShaderReferences/VehicleLamp.mat";
         var lampMaterial=AssetDatabase.LoadAssetAtPath<Material>(lampReference);
@@ -78,8 +85,8 @@ public static class MigrationBuild
         Check(corner<straight && yaw<1,"Turning and poor grip restrict usable power",evidence);
         var circuit=new Circuit();Check(circuit.length>600 && Circuit.Width==16,"Wide continuous circuit: "+circuit.length.ToString("0.0")+"m x16m",evidence);
         for(float d=0;d<circuit.length;d+=31) {float near=circuit.Nearest(circuit.At(d),out float offset);Check(Mathf.Abs(offset)<.01f&&Mathf.Abs(near-d)<.05f,"Track projection "+d,evidence);}
-        var imported=new List<string>{"little_car","coupe_car","utility_car","formula_car","compact_v1","compact_v1_lod1","compact_v1_lod2"};
-        var generated=new List<string>(CarBodies.Family);generated.AddRange(CarBodies.Sporty);generated.Add(CarBodies.Flagship);generated.Add(CarBodies.Starter);
+        var imported=new List<string>{"little_car","compact_v1","compact_v1_lod1","compact_v1_lod2"};
+        var generated=new List<string>(CarBodies.Family);generated.AddRange(CarBodies.Sporty);generated.Add(CarBodies.Flagship);generated.Add(CarBodies.Starter);generated.AddRange(CarBodies.Townsfolk);
         foreach(string body in generated)imported.AddRange(new[]{body,body+"_lod1",body+"_lod2"});
         foreach(string name in imported) {
             var model=Resources.Load<GameObject>("Cars/"+name);Check(model!=null,"Imported "+name,evidence);
@@ -87,7 +94,8 @@ public static class MigrationBuild
             foreach(var r in instance.GetComponentsInChildren<Renderer>()){if(first){bounds=r.bounds;first=false;}else bounds.Encapsulate(r.bounds);}
             foreach(var f in instance.GetComponentsInChildren<MeshFilter>())verts+=f.sharedMesh.vertexCount;
             evidence.models.Add(name+" bounds="+bounds.size+" center="+bounds.center+" verts="+verts);
-            Check(bounds.size.x>1.5f&&bounds.size.x<2.5f&&bounds.size.z>2.5f&&bounds.size.z<4,"Metre scale and upright "+name,evidence);
+            bool longBody=Array.IndexOf(CarBodies.Townsfolk,name.Replace("_lod1","").Replace("_lod2",""))>=0;
+            Check(bounds.size.x>1.5f&&bounds.size.x<2.5f&&bounds.size.z>2.5f&&bounds.size.z<(longBody?4.8f:4),"Metre scale and upright "+name,evidence);
             if(name.StartsWith("compact_v1_lod"))Check(GlassTriangles(model)==GlassTriangles(Resources.Load<GameObject>("Cars/compact_v1")),"Glazing triangles preserved in "+name,evidence);
             var wheels=new WheelVisuals(instance);
             Check(wheels.pivots.Length==4,"Four animated axle pivots in imported "+name,evidence);
@@ -111,6 +119,10 @@ public static class MigrationBuild
         CollisionEnvelopeReview.Run(Path.Combine(root,"review/unity-01/collision-envelope.json"));
         evidence.checks.AddRange(VehicleLightChecks.Run());
         evidence.checks.AddRange(CheckpointChecks.Run());
+        evidence.checks.AddRange(ClassSortChecks.Run());
+        evidence.checks.AddRange(RecoveryRejoinChecks.Run());
+        evidence.checks.AddRange(WorldLookChecks.Run());
+        evidence.checks.AddRange(GradeModelChecks.Run());
         evidence.checks.AddRange(RaceGridChecks.Run());
         evidence.checks.AddRange(ManualRaceStartChecks.Run());
         evidence.checks.AddRange(OpeningCaptureChecks.Run());
@@ -163,6 +175,10 @@ public static class MigrationBuild
         evidence.checks.AddRange(TrafficPolicyChecks.Run());
         evidence.checks.AddRange(SweptGeometryReuseChecks.Run());
         evidence.checks.AddRange(AdventureChecks.Run(Path.Combine(root,"review/unity-04")));
+        evidence.checks.AddRange(PitStopChecks.Run(Path.Combine(root,"review/unity-04")));
+        evidence.checks.AddRange(ZipLineChecks.Run());
+        evidence.checks.AddRange(PresentationChecks.Run());
+        evidence.checks.AddRange(InterfaceChecks.Run());
         Directory.CreateDirectory(Path.Combine(root,"review/unity-01"));
         File.WriteAllText(Path.Combine(root,"review/unity-01/editor-checks.json"),JsonUtility.ToJson(evidence,true));
         AssetDatabase.SaveAssets();

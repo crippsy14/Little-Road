@@ -20,40 +20,49 @@ namespace LittleRoad
         public void Build()
         {
             if(!BayviewKit.Has("barn"))return;
-            FarmYard();Campsite();LookoutPoint();Roadside();
+            FarmYard();Campsite();LookoutPoint();Tracks();Roadside();
         }
+        // A little farm on a levelled pad: house and barn facing across an earth yard, the
+        // tractor and a bale stack, a drive-through wheat field and a lavender plot, all fenced.
         void FarmYard()
         {
             var f=Farm;
-            Put("house_a",f+new Vector3(-9,0,8),200,T(0xfff3dc,0x2e9e5b,0xff4d5e,0x2e9e5b));
-            Put("barn",f+new Vector3(8,0,10),160,T(0xd94040,0xffffff,0xffffff,0xd94040));
-            Put("tractor",f+new Vector3(1,0,1),35);
-            foreach(var (x,z) in new[]{(12f,2f),(13.6f,2.4f),(12.8f,.4f),(16f,5f)})Put("hay_bale",f+new Vector3(x,0,z),x*40);
-            Field(f+new Vector3(-14,0,-10),new Vector2(18,12),12,Toy.Hex(0x9a7be0),Toy.Hex(0x5c9e45));
-            Field(f+new Vector3(8,0,-12),new Vector2(16,11),-8,Toy.Hex(0xf2c94c),Toy.Hex(0xe0a93a));
-            Field(f+new Vector3(-2,0,-24),new Vector2(20,9),4,Toy.Hex(0x4caf50),Toy.Hex(0x8d5a34));
-            // Picket fence along the yard's road-facing side.
-            for(int i=0;i<6;i++)Put("fence",f+new Vector3(-17+i*6,0,15),0);
+            var yard=GameObject.CreatePrimitive(PrimitiveType.Cube);yard.name="Farmyard earth";yard.transform.SetParent(root);Object.Destroy(yard.GetComponent<Collider>());
+            yard.transform.position=Ground(f+new Vector3(0,0,6))+Vector3.up*.03f;yard.transform.localScale=new Vector3(34,.05f,12);yard.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Farmyard earth",new Color(.62f,.52f,.38f),0,.08f);
+            Put("house_a",f+new Vector3(-11,0,16),180,T(0xfff3dc,0x2e9e5b,0xff4d5e,0x2e9e5b));
+            Put("barn",f+new Vector3(10,0,17),180,T(0xd94040,0xffffff,0xffffff,0xd94040),1.15f);
+            Put("tractor",f+new Vector3(-2,0,7),70);
+            foreach(var (x,y) in new[]{(19f,0f),(20.3f,0f),(21.6f,0f),(19.65f,1.25f),(20.95f,1.25f),(20.3f,2.45f)}){var b=Put("hay_bale",f+new Vector3(x,0,8),0);b.transform.position+=Vector3.up*y;}
+            // Wheat: 30 x 18 m of car-high crop to plough through.
+            var wheat=f+new Vector3(-7,0,-11);WheatField.Create("Bayview farm wheat",root,wheat,new Vector2(30,18),0,(x,z)=>Ground(new Vector3(x,0,z)).y,77);
+            for(float x=-21;x<=9;x+=6)if(x<-10||x>-4)Put("fence",f+new Vector3(x,0,-1.2f),0);
+            for(float x=-21;x<=9;x+=6)Put("fence",f+new Vector3(x,0,-20.8f),0);
+            foreach(float z in new[]{-17f,-11f,-5f})Put("fence",f+new Vector3(-23.2f,0,z),90);
+            // Lavender beside it.
+            if(BayviewKit.Has("lavender_row"))for(int r=0;r<7;r++)Put("lavender_row",f+new Vector3(24f,0,-18+r*2.3f),0,null,1,false);
+            foreach(float z in new[]{-17f,-11f,-5f})Put("fence",f+new Vector3(9.2f,0,z),90);
         }
-        // Crop rows draped on the terrain: alternating strips in two colours, no collider.
-        void Field(Vector3 centre,Vector2 size,float yaw,Color crop,Color gap)
+        // Dirt tracks off the inside of the loop: to the farmyard, the campsite and the lookout.
+        void Tracks()
         {
-            var rotation=Quaternion.Euler(0,yaw,0);int rows=Mathf.RoundToInt(size.y/1.1f),cells=Mathf.CeilToInt(size.x/1.5f);
-            var meshes=new[]{new List<Vector3>(),new List<Vector3>()};var tris=new[]{new List<int>(),new List<int>()};
-            for(int r=0;r<rows;r++) {
-                int k=r%2;float z0=-size.y/2+r*size.y/rows,z1=z0+size.y/rows;
-                int start=meshes[k].Count;
-                for(int c=0;c<=cells;c++) {
-                    float x=-size.x/2+c*size.x/cells;
-                    foreach(float z in new[]{z0,z1}){var p=Ground(centre+rotation*new Vector3(x,0,z));meshes[k].Add(p+Vector3.up*(k==0?.12f:.06f));}
-                }
-                for(int c=0;c<cells;c++){int a=start+c*2;tris[k].AddRange(new[]{a,a+1,a+2,a+2,a+1,a+3});}
+            var dirt=TrialWorld.Material("Farm track dirt",new Color(.72f,.62f,.45f),0,.08f);var verge=TrialWorld.Material("Farm track verge",new Color(.58f,.60f,.34f),0,.06f);
+            foreach(var to in new[]{Farm+new Vector3(-3,0,8),Camp+new Vector3(-13,0,2),Lookout+new Vector3(6,0,4)}) {
+                float d=track.Nearest(to,out _);var edge=track.At(d);var dir=to-edge;dir.y=0;dir.Normalize();
+                var start=edge+dir*8.4f;var control=new[]{start,start+dir*6,Vector3.Lerp(start+dir*6,to,.5f)+Vector3.Cross(Vector3.up,dir)*3,to};
+                var line=HillcrestRoute.Dense(control,1.2f);
+                Strip("Farm track verge",line,4.6f,.035f,verge);Strip("Farm track",line,3.0f,.06f,dirt);
             }
-            for(int k=0;k<2;k++) {
-                var mesh=new Mesh{name="Field rows"};mesh.SetVertices(meshes[k]);mesh.SetTriangles(tris[k],0);mesh.RecalculateNormals();
-                var go=new GameObject(k==0?"Field crop":"Field furrow",typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root);
-                go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=TrialWorld.Material(go.name,k==0?crop:gap,0,.1f);
+        }
+        void Strip(string name,Vector3[] line,float width,float lift,Material material)
+        {
+            var v=new List<Vector3>();var t=new List<int>();
+            for(int i=0;i<line.Length;i++) {
+                var f=line[Mathf.Min(line.Length-1,i+1)]-line[Mathf.Max(0,i-1)];f.y=0;f.Normalize();var r=Vector3.Cross(Vector3.up,f);
+                foreach(int s in new[]{-1,1})v.Add(Ground(line[i]+r*s*width*.5f)+Vector3.up*lift);
+                if(i<line.Length-1){int a=i*2;t.AddRange(new[]{a,a+2,a+1,a+1,a+2,a+3});}
             }
+            var mesh=new Mesh{name=name};mesh.SetVertices(v);mesh.SetTriangles(t,0);mesh.RecalculateNormals();
+            var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root);go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;
         }
         void Campsite()
         {
@@ -66,7 +75,7 @@ namespace LittleRoad
             var car=TrialWorld.Car("doodle",Toy.Hex(0xffd23f));car.transform.SetPositionAndRotation(Ground(c+new Vector3(-10.5f,0,-1))+Vector3.up*.02f,Quaternion.Euler(0,20,0));
             car.transform.SetParent(root);
             var box=car.AddComponent<BoxCollider>();box.center=CarBodies.Envelope.center;box.size=CarBodies.Envelope.size;car.tag="Respawn";
-            var chatter=car.AddComponent<NpcChatter>();chatter.speaker="Camper Jo";chatter.colour=Toy.Sun;
+            var chatter=car.AddComponent<NpcChatter>();chatter.speaker="Camper Jo";chatter.title="Bayview campsite";car.AddComponent<ResidentIdle>();chatter.colour=Toy.Sun;
             chatter.lines=new[]{"Shh! Someone's napping in the tent!","Marshmallows are nearly ready!","Oi! This is a campsite, not a car park!"};
         }
         void LookoutPoint()

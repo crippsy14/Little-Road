@@ -26,6 +26,8 @@ namespace LittleRoad
             }
             SetState(false,false);
         }
+        // After a garage body swap: collect the new model's lamp materials.
+        public void Recollect(){collected=false;initialized=false;brake.Clear();reverse.Clear();Initialize();}
         void LateUpdate()
         {
             if(driver==null)driver=GetComponent<RoadCar>();

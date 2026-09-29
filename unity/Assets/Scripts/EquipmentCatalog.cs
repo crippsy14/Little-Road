@@ -10,7 +10,8 @@ namespace LittleRoad
     {
         [Serializable] public sealed class Part
         {
-            public string id,slot,name,hint;
+            public string id,slot,name,hint,shop;
+            public string tier; // race class bracket (RaceCalendar): C, B, A or S; empty means C
             public int price;
             public float power,torque,accel,power_limit,road,dirt,ceiling,pull,braking,response,yaw,mass;
         }
@@ -35,7 +36,7 @@ namespace LittleRoad
             var index=new Dictionary<string,Part>(StringComparer.Ordinal);
             var slots=new HashSet<string>(candidate.slots,StringComparer.Ordinal);
             foreach(var p in candidate.parts) {
-                if(string.IsNullOrEmpty(p.id)||!slots.Contains(p.slot)||string.IsNullOrEmpty(p.name)||p.price<0||index.ContainsKey(p.id))
+                if(string.IsNullOrEmpty(p.id)||!slots.Contains(p.slot)||string.IsNullOrEmpty(p.name)||p.price<0||index.ContainsKey(p.id)||RaceCalendar.Rank(p.tier)<0)
                     throw new InvalidOperationException("Invalid or duplicate part: "+p.id);
                 index.Add(p.id,p);
             }
@@ -61,6 +62,10 @@ namespace LittleRoad
             } else if(name=="club") {
                 fit["engine"]="engine_club";fit["turbo"]="turbo_club";fit["tyres"]="tyres_sport";
                 fit["transmission"]="transmission_long";fit["brakes"]="brakes_race";
+                fit["steering"]="steering_precision";fit["chassis"]="chassis_light";
+            } else if(name=="valley") {
+                fit["engine"]="engine_valley";fit["turbo"]="turbo_club";fit["tyres"]="tyres_grip";
+                fit["transmission"]="transmission_long";fit["brakes"]="brakes_ceramic";
                 fit["steering"]="steering_precision";fit["chassis"]="chassis_light";
             } else throw new ArgumentException("Unknown test loadout: "+name);
             return fit;

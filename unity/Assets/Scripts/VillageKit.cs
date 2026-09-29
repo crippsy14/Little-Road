@@ -181,18 +181,18 @@ namespace LittleRoad
         void Street()
         {
             BayviewKit.Tint T(int wall,int shutter,int awning,int door)=>new(Toy.Hex(wall),Toy.Hex(shutter),Toy.Hex(awning),Toy.Hex(door));
-            BayviewKit.Spawn("cafe",new Vector3(-49,0,-110),0,root,T(0xffd9b8,0x2bb5a8,0xff4d5e,0x1d6fa8),"THE DAILY MILE");
-            BayviewKit.Spawn("post_office",new Vector3(-36,0,-110),0,root,T(0xfff0a8,0x3a7bd5,0x3a7bd5,0xd94040),"POST OFFICE");
-            BayviewKit.Spawn("shop",new Vector3(-23,0,-110),0,root,T(0xc8f0dc,0x1f8a70,0x1fa37a,0x1f6b8a),"TIDES & TYRES");
-            BayviewKit.Spawn("house_b",new Vector3(-12,0,-110.5f),0,root,T(0xffc8d2,0x2e9e5b,0xff4d5e,0x2e7bd6));
-            BayviewKit.Spawn("shop",new Vector3(-1,0,-111),0,root,T(0xbfe0ff,0xff7ac8,0xff7ac8,0x315fbf),"BAYVIEW PAINTS");
-            BayviewKit.Spawn("house_a",new Vector3(12,0,-112),0,root,T(0xfff3dc,0x3a7bd5,0xff4d5e,0x3a7bd5));
-            BayviewKit.Spawn("house_a",new Vector3(25,0,-117),-12,root,T(0xffd2b0,0x2bb5a8,0xff4d5e,0xc0392b));
+            BayviewKit.Spawn("cafe",new Vector3(-49,0,-110),0,root,T(0xe89a6a,0x2bb5a8,0xff4d5e,0x1d6fa8),"THE DAILY MILE");
+            BayviewKit.Spawn("post_office",new Vector3(-36,0,-110),0,root,T(0xe8c24e,0x3a7bd5,0x3a7bd5,0xd94040),"POST OFFICE");
+            BayviewKit.Spawn("shop",new Vector3(-23,0,-110),0,root,T(0x8fc4ad,0x1f8a70,0x1fa37a,0x1f6b8a),"TIDES & TYRES");
+            BayviewKit.Spawn("house_b",new Vector3(-12,0,-110.5f),0,root,T(0xd98b8b,0x2e9e5b,0xff4d5e,0x2e7bd6));
+            BayviewKit.Spawn("shop",new Vector3(-1,0,-111),0,root,T(0x7fa9cf,0xff7ac8,0xff7ac8,0x315fbf),"BAYVIEW PAINTS");
+            BayviewKit.Spawn("house_a",new Vector3(12,0,-112),0,root,T(0xece0c4,0x3a7bd5,0xff4d5e,0x3a7bd5));
+            BayviewKit.Spawn("house_a",new Vector3(25,0,-117),-12,root,T(0xdc9562,0x2bb5a8,0xff4d5e,0xc0392b));
             BayviewKit.Spawn("fountain",new Vector3(-29.5f,0,-103.2f),0,root);
-            foreach(float x in new[]{-77f,-56f,-44f,-16.5f,-6f,6f})BayviewKit.Spawn("lamp_post",new Vector3(x,0,-103.6f),0,root,T(0xfff3dc,0x1d6fa8,0xff4d5e,0x1d6fa8));
+            foreach(float x in new[]{-44f,-16.5f,-6f,6f})BayviewKit.Spawn("lamp_post",new Vector3(x,0,-103.6f),0,root,T(0xfff3dc,0x1d6fa8,0xff4d5e,0x1d6fa8));
             foreach(float x in new[]{-35f,-24f,5f})BayviewKit.Spawn("bench",new Vector3(x,0,-103.4f),180,root);
-            foreach(var (x,z) in new[]{(-80f,-104f),(-56.5f,-110f),(-5.5f,-106f),(19f,-107f),(33f,-110f)})BayviewKit.Spawn("tree_round",new Vector3(x,0,z),x*7,root);
-            foreach(var (x,z) in new[]{(-58f,-116f),(-42f,-117f),(-17f,-117f),(4f,-118f)})BayviewKit.Spawn("tree_cypress",new Vector3(x,0,z),0,root);
+            foreach(var (x,z) in new[]{(-80f,-104f),(-5.5f,-106f),(19f,-107f),(36f,-119f)})BayviewKit.Spawn("tree_round",new Vector3(x,0,z),x*7,root);
+            foreach(var (x,z) in new[]{(-42f,-117f),(-17f,-117f),(4f,-118f)})BayviewKit.Spawn("tree_cypress",new Vector3(x,0,z),0,root);
             foreach(var (x,z) in new[]{(-74f,-117f),(-52f,-120f),(-30f,-119f),(-7f,-120f),(10f,-122f)})BayviewKit.Spawn("bush",new Vector3(x,0,z),x*13,root);
         }
         // Sea wall along the pad's southern edge, promenade railing (its colliders keep cars on
@@ -230,7 +230,7 @@ namespace LittleRoad
                 if(i==4)continue;
                 var car=TrialWorld.Car(parked[i],paints[i]);car.name="Parked "+parked[i];car.transform.SetPositionAndRotation(new Vector3(x,.02f,-101.5f),Quaternion.Euler(0,i%2==0?180:0,0));
                 var box=car.AddComponent<BoxCollider>();box.center=CarBodies.Envelope.center;box.size=CarBodies.Envelope.size;car.tag="Respawn";
-                var chatter=car.AddComponent<NpcChatter>();chatter.speaker=new[]{"Wren","Monty","Priya","Gus"}[i];chatter.colour=paints[i];
+                car.AddComponent<ResidentIdle>();var chatter=car.AddComponent<NpcChatter>();chatter.speaker=new[]{"Wren","Monty","Priya","Gus"}[i];chatter.title="Bayview car park";chatter.colour=paints[i];
             }
         }
         void LegacyStreet()
@@ -267,6 +267,7 @@ namespace LittleRoad
             for(int i=0;i<4;i++)Piece("Bench seat plank",p+new Vector3(0,.72f,-.3f+i*.18f),new Vector3(2,.1f,.14f),wood,true);
             for(int i=0;i<3;i++)Piece("Bench back plank",p+new Vector3(0,.95f+i*.17f,-.36f),new Vector3(2,.13f,.09f),wood,true);
         }
+        public static readonly Vector3 PitStopSite=new(-66,0,-110);
         public static void Create()
         {
             var kit=new VillageKit();kit.Build();
@@ -280,11 +281,14 @@ namespace LittleRoad
                 Piece("Forecourt paving seam",new Vector3(x,.017f,z),new Vector3(.025f,.006f,2.97f),wood);
                 Piece("Forecourt paving seam",new Vector3(x+1.5f,.017f,z+1.5f),new Vector3(2.97f,.006f,.025f),wood);
             }
-            Garage(new Vector3(-65,0,-109));
+            // Bayview's Pit Stop (garage + parts; the tutorial town has no body shop) replaces the
+            // old Harbour Garage at the west end of the strip, pylon on the open western side.
+            // Outside `root`: the village is statically batched and the pylon tyre turns.
+            if(BayviewKit.Has("pit_stop_2"))PitStop.Build("bayview",false,PitStopSite,0,null);else Garage(new Vector3(-65,0,-109));
             if(BayviewKit.Has("cafe"))Street();else LegacyStreet();
             if(BayviewKit.Has("sea_wall"))Harbour();
             if(BayviewKit.Has("kiosk"))GreenAndCarPark();
-            var sign=Piece("Village welcome board",new Vector3(-84,1.2f,-96),new Vector3(2.5f,2.4f,.20f),wood,true);
+            var sign=Piece("Village welcome board",new Vector3(-88.5f,1.2f,-96),new Vector3(2.5f,2.4f,.20f),wood,true);
             Sign("BAYVIEW\nSmall cars\nBright roads",sign.transform.position+Vector3.forward*.12f,.048f,new Color(1,.94f,.74f));
             // All architectural pieces share a small material palette. Static
             // batching combines render work without removing editable modules.

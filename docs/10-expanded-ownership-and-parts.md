@@ -1,5 +1,13 @@
 # Meaningful car ownership: expanded specification
 
+**Updated 29 September:**
+- **Chassis:** splits into a **Platform**, the class gate that decides which bodies and parts fit, and a **Frame**, the in-class weight ladder.
+- **Bodies:** kit versions carry favourite bodies up the classes, so a favourite car stays viable.
+- **Teammate cars:** from class A they need their own parts (one copy per car).
+
+See [doc 44](44-parts-tiers-and-progression.md) and [doc 45](45-roadmap-and-feature-spec.md) F7/F3. Fuel tanks and endurance parts arrive with class A (F8).
+
+
 16 September 2026. Replaces every earlier reference to a two-upgrade limit. The six-slot implementation milestone is a foundation, not the complete equipment ambition.
 
 19 September expansion: fuel tanks are required functional equipment, with independent capacity, empty mass and starting fuel load. Powerful engines consume fuel according to demand and efficiency; fuel mass affects the shared driving model as it burns. Endurance tyre life and pit strategy are required campaign systems, specified in [document 18](18-endurance-fuel-and-mass.md). Ownership presentation must use the researched category list and 3D part carousel in [document 19](19-parts-browser-reference-and-spec.md). The current implementation has seven slots including turbo; earlier six-slot language below describes an intermediate minimum.

@@ -1,5 +1,15 @@
 # Driver personality, teammate growth and track familiarity
 
+**Updated 29 September:** this is now specified in [doc 45](45-roadmap-and-feature-spec.md).
+- **F1:** one persistent Racer record for rivals, recruits and teammates.
+- **F2:** six abilities shown as a radar chart (Braking, Consistency, Line, Control, Racecraft, Strategy), with Aggression and Patience as personality tags; "risk" becomes Aggression.
+- **F3:** teams from class A, you plus up to 2, one team per class, with Call to re-add any racer you've found, keeping their experience.
+- **F4:** XP toward a per-ability potential cap.
+- **F5:** racers found around the world, some with "prove yourself" requirements.
+
+The principles below (only show real abilities, car and driver kept separate, no scripted results) still hold.
+
+
 **23 September implemented first slice:**86–88 add stable identities, causal preferred passing clearance from risk, braking judgement and small immutable race-form variation; the preview shows only these active traits. Equipment capability remains independent.40 physical form runs across20 paired seeds show a tiny lap-time spread for the variable setting, not established finishing-rank variety. Broader abilities, teammate learning and track familiarity remain unimplemented. See [document38](38-driver-personalities-and-adventure-milestone.md) for current evidence and limitations. The user's next focus is [visual UI work](39-driving-hud-and-playful-ui.md).
 
 **Latest moving review,23September:** the user likes the progress but classifies prototype43's current style as **risk0/10**, not the desired average racer. Aim for an average around5: recognise smaller usable gaps across the continuous road width, carry an equipment advantage into active pass attempts, and commit rather than matching slower traffic indefinitely. Risk10 should overcommit readily and may crash; low-risk characters can preserve the current cautious style. Risk is separate from car performance and driver skill, so a fast car can still have a cautious driver. Occasional contact is a permitted racing consequence, not a random crash quota or permission for clipping. Priority on resume is an assertive risk5 comparison and evidence of released pace/passing opportunities, ahead of further early-braking personality tuning. Preserve0 as the recorded comparison. Player review is positive about progress, but rejects current caution as average racecraft acceptance.

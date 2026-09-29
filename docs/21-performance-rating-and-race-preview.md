@@ -1,5 +1,8 @@
 # Car performance rating and pre-race comparison
 
+**Updated 29 September:** the preview adds each racer's **ability radar and driver rating** beside the car rating ([doc 45](45-roadmap-and-feature-spec.md) F2). Car rating and driver rating always stay separate.
+
+
 **23 September implementation:**87–88 share one immutable entry roster between the full24-car preview and spawning, including actual fitted parts, model/paint, grid position and implemented driver traits. Equipment-only dry-road-v1 gives stock100, street128 and club177; it weights attainable speed, usable pull, dry grip, braking and yaw relative to stock. It is an initial estimate with broader fixture calibration still open. Previewing does not reroll form or consume an entry; confirmation freezes the fitted setup.88 also previews retries and preserves paid results on cancel. Functional connected tests pass through two races and a separate-process reload; a prolonged recovery cluster remains an AI issue. Physical controller and player usability review remain open. [Review](../review/unity-35/race-preview-88-review.md); next visual scope is [document39](39-driving-hud-and-playful-ui.md).
 
 19 September original request. The user referenced Gran Turismo as inspiration for an understandable overall performance-points metric, not a request to reproduce its formula or interface.

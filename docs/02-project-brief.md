@@ -1,5 +1,8 @@
 # Project brief
 
+**Updated 29 September:** the campaign is **at least 12 hours and open-ended**. 12 hours is a floor, not a cap, and the game grows as content is added. The plan of record for classes, racers, teams and world growth is [doc 45](45-roadmap-and-feature-spec.md), with the parts ladder in [doc 44](44-parts-tiers-and-progression.md).
+
+
 Working title: Little Road. Version: 0.4, 19 September 2026.
 
 Current scope and work order: [12-hour campaign and priorities](17-scope-and-priorities.md). New required systems: [endurance, fuel, tyre service and changing vehicle mass](18-endurance-fuel-and-mass.md), and [visual parts selection](19-parts-browser-reference-and-spec.md). These expand the finished-game scope; the introductory slice below remains an intermediate milestone.

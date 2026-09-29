@@ -13,7 +13,7 @@ namespace LittleRoad
             var root=new GameObject(part.id+" display model");root.transform.SetParent(parent,false);
             Material Make(string name,Color color,float metal=.6f){var m=TrialWorld.Material(name,color,metal,.38f);materials.Add(m);return m;}
             var alloy=Make("Display alloy",new Color(.56f,.64f,.65f));var dark=Make("Display rubber",new Color(.045f,.065f,.07f),0);
-            var accent=Make("Display equipment finish",part.id.Contains("club")||part.id.Contains("race")?new Color(.86f,.31f,.15f):new Color(.10f,.46f,.43f));
+            var accent=Make("Display equipment finish",part.shop=="hillcrest"?new Color(.52f,.26f,.78f):part.id.Contains("club")||part.id.Contains("race")?new Color(.86f,.31f,.15f):new Color(.10f,.46f,.43f));
             GameObject Primitive(PrimitiveType type,string name,Vector3 position,Vector3 scale,Material material,Vector3 rotation=default)
             {var go=GameObject.CreatePrimitive(type);go.name=name;go.transform.SetParent(root.transform,false);go.transform.localPosition=position;go.transform.localScale=scale;go.transform.localEulerAngles=rotation;go.GetComponent<Renderer>().sharedMaterial=material;return go;}
             void Box(string name,Vector3 p,Vector3 s,Material m,Vector3 rotation=default)=>Primitive(PrimitiveType.Cube,name,p,s,m,rotation);

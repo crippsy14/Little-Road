@@ -18,7 +18,9 @@ namespace LittleRoad
         const float RoundoffPadding=.002f;
         public void Evaluate(Circuit road,ContextPathPrediction.Sample[] samples,int count,Vector3 centre,Vector3 half,float limit)
         {
-            if(!road.hasConstantHeight||count<2||count>distance.Length)throw new ArgumentException("Envelope requires 2..361 level-road states.");
+            // Distance is measured horizontally, which also holds on hills for circuits that never
+            // pass over themselves; elevated roads are accepted only by grade-aware drivers.
+            if((!road.hasConstantHeight&&!GradeModel.Enabled)||count<2||count>distance.Length)throw new ArgumentException("Envelope requires 2..361 level-road states.");
             this.road=road;this.samples=samples;this.centre=centre;this.half=half;this.limit=limit;
             Queries=0;FirstUncertainTime=-1;MaximumBound=0;travel[0]=0;
             float radius=new Vector2(Mathf.Abs(centre.x)+half.x,Mathf.Abs(centre.z)+half.z).magnitude;

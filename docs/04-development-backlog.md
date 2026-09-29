@@ -1,5 +1,8 @@
 # Development backlog
 
+**Updated 29 September:** the order of work is now set by [doc 45](45-roadmap-and-feature-spec.md), in Phases 0–5. The campaign is at least 12 hours and open-ended; 12 hours is a floor, not a cap.
+
+
 Updated 19 September 2026. Checked means implemented with the stated evidence, not final polish. [Document 17](17-scope-and-priorities.md) is the current scope and priority order; older progress entries below are historical. The goal remains unfinished.
 
 ## Current priorities after the evening review

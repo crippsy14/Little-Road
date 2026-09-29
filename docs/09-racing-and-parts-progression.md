@@ -1,5 +1,14 @@
 # Racing, parts and earning progression
 
+**Updated 29 September:** superseded in part.
+- **Class ladder, part steps and reward multipliers:** now in [doc 44](44-parts-tiers-and-progression.md): C Street, B Tuner, A Touring, S Racing, E Endurance, with 3 steps per slot plus sidegrades, and multipliers B ×2.8, A ×6, S ×11, E ×19.
+- **Unlocks:** class B opens globally when class C is complete.
+- **Tracks:** Quarry Link and Ridge Run are now class C events in region 3 of [doc 45](45-roadmap-and-feature-spec.md).
+- **Grid:** 11 m rows with the pole car on the line (study 128).
+
+The earning principles below (every finish pays, stock struggles, no rubber-banding) still hold.
+
+
 16 September 2026. User-directed scope change, researched before implementation. This supersedes the earlier three-opponent/two-upgrade scope. The existing 0.1 executable is an engineering prototype and does not yet satisfy this revision.
 
 ## Binding direction

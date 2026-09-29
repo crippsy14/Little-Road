@@ -1,3 +1,9 @@
+
+**Updated 29 September (Richard):**
+- **Length:** the campaign is **at least 12 hours and open-ended**. 12 hours was a working figure, not a cap; the game should grow as content is added, and longer is welcome. The 720-minute budget below is a minimum mix, not a ceiling.
+- **Order of work:** now [doc 45](45-roadmap-and-feature-spec.md), Phases 0–5: foundations; class C campaign; B; A with teams, fuel, tyres and pits; S; E.
+- **Classes and parts:** [doc 44](44-parts-tiers-and-progression.md).
+
 **23 September next visual milestone, explicitly requested:** finish the personality/preview/adventure integration, then build a virtual driving dashboard, a live player-relative race-order panel with up to11 entrants, and a playful, artistic redesign across the actual game UI. [Document39](39-driving-hud-and-playful-ui.md) defines scope, data semantics and visual/controller acceptance. Preserve the full campaign scope and open frame/controller/progression gates.
 
 The preceding bounded work is [driver personalities into adventure](38-driver-personalities-and-adventure-milestone.md).85 improves AI cost without changing recorded racing;86 adds the first causal risk/braking/form slice;87–88 connect the actual roster, preview and modern AI to adventure. Connected tests complete two24-car races and preserve rewards/reload, but the second event exposes prolonged recovery of a small group. Record that defect separately from the user-accepted marginal edge excursions; it is not a clean racing acceptance. Move to the requested visual milestone without another indefinite baseline AI tuning loop.

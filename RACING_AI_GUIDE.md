@@ -211,7 +211,7 @@ For a new change, hold build/track/line/grid/parts/seed/roster/flags fixed, decl
 - [41: research and next pace pass](docs/41-racing-ai-research-and-next-pace-pass.md): primary sources including F1 context steering, racing track representation, local trajectory planning and GT Sophy testing lessons. This is an original implementation inspired by published approaches, not imported F1 AI.
 - [32: ground truth and implementation](docs/32-racing-ai-ground-truth-and-implementation.md), [33: physical feasibility](docs/33-physical-motion-and-path-feasibility.md), [37: dynamic trajectories](docs/37-dynamic-local-racing-trajectories.md).
 - [38: personalities and adventure](docs/38-driver-personalities-and-adventure-milestone.md), [20: future driver/team progression](docs/20-driver-personality-and-teammate-progression.md).
-- [17: full scope](docs/17-scope-and-priorities.md): twelve-hour campaign, exploration, ownership, content, endurance/fuel/tyres/pits and teammate progression remain required. This AI milestone does not complete the game.
+- [17: full scope](docs/17-scope-and-priorities.md): campaign of at least twelve hours (open-ended; plan of record in doc 45), exploration, ownership, content, endurance/fuel/tyres/pits and teammate progression remain required. This AI milestone does not complete the game.
 
 On resumption, finish the 111 evidence review and investigate why the supported moving return rejects the actual Bayview recovery state. Preserve the user-liked urgency, drafting, smoother presentation and the existing field baseline. The extra candidate remains rejected. Connected second-race recovery, broader frame tails, meaningful personality variance, physical-controller/small-window acceptance and the wider game remain open.
 

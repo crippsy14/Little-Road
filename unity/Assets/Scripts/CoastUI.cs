@@ -39,7 +39,7 @@ namespace LittleRoad
         }
         public static Canvas Canvas(Transform parent,string name,int order)
         {
-            var r=Rect(parent,name,new Vector2(1920,1080),Vector2.zero);var c=r.gameObject.AddComponent<Canvas>();c.renderMode=RenderMode.ScreenSpaceCamera;c.worldCamera=Camera.main;c.planeDistance=.65f;c.sortingOrder=order;
+            var r=Rect(parent,name,new Vector2(1920,1080),Vector2.zero);var c=r.gameObject.AddComponent<Canvas>();c.renderMode=RenderMode.ScreenSpaceOverlay;c.sortingOrder=order;r.gameObject.layer=Toy.MenuLayer;
             var s=r.gameObject.AddComponent<CanvasScaler>();s.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;s.referenceResolution=new Vector2(1920,1080);s.matchWidthOrHeight=1;return c;
         }
     }

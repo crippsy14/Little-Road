@@ -56,7 +56,7 @@ namespace LittleRoad
             if(EventSystem.current==null){var go=new GameObject("Race menu input",typeof(EventSystem),typeof(InputSystemUIInputModule));go.transform.SetParent(transform,false);go.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();}
             var move=EventSystem.current.GetComponent<InputSystemUIInputModule>()?.move?.action;
             if(move!=null)for(int i=0;i<move.bindings.Count;i++)if(move.bindings[i].path?.StartsWith("<Gamepad>/rightStick")==true)move.ApplyBindingOverride(i,"");
-            canvas=CoastUI.Canvas(transform,"Race day",50);canvas.planeDistance=.6f;canvas.GetComponent<CanvasScaler>().matchWidthOrHeight=.5f;
+            canvas=CoastUI.Canvas(transform,"Race day",50);canvas.GetComponent<CanvasScaler>().matchWidthOrHeight=.5f;
             canvas.gameObject.layer=Toy.MenuLayer;canvas.gameObject.AddComponent<GraphicRaycaster>();
             var root=Toy.Rect(canvas.transform,"Race day root",new Vector2(1920,1080),Vector2.zero);root.gameObject.AddComponent<RectMask2D>();
             Toy.Sunburst(root,new Vector2(2600,2600),new Vector2(0,-120),Toy.Sky,Toy.SkyLight,32,3);

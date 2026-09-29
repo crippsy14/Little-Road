@@ -1,0 +1,272 @@
+[
+  {
+    "part_id": "tyres_stock",
+    "triangles": 6820,
+    "materials": [
+      "PartCast",
+      "PartChrome",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "tyres_touring",
+    "triangles": 21748,
+    "materials": [
+      "PartAlloy",
+      "PartChrome",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "tyres_trail",
+    "triangles": 18400,
+    "materials": [
+      "PartCast",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "tyres_sport",
+    "triangles": 5668,
+    "materials": [
+      "PartAlloy",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "tyres_grip",
+    "triangles": 13108,
+    "materials": [
+      "PartBrass",
+      "PartChrome",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "tyres_rally",
+    "triangles": 18888,
+    "materials": [
+      "PartAlloy",
+      "PartChrome",
+      "PartRubber",
+      "PartWhite"
+    ]
+  },
+  {
+    "part_id": "brakes_stock",
+    "triangles": 3704,
+    "materials": [
+      "PartAlloy",
+      "PartBrass",
+      "PartCast",
+      "PartChrome",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "brakes_sport",
+    "triangles": 19824,
+    "materials": [
+      "PartAlloy",
+      "PartBrass",
+      "PartCast",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "brakes_race",
+    "triangles": 5824,
+    "materials": [
+      "PartAlloy",
+      "PartBrass",
+      "PartCast",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "brakes_ceramic",
+    "triangles": 21344,
+    "materials": [
+      "PartAlloy",
+      "PartBrass",
+      "PartCarbon",
+      "PartCast",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "turbo_stock",
+    "triangles": 4516,
+    "materials": [
+      "PartAlloy",
+      "PartCast",
+      "PartChrome",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "turbo_street",
+    "triangles": 7684,
+    "materials": [
+      "PartAlloy",
+      "PartCast",
+      "PartChrome",
+      "PartCover"
+    ]
+  },
+  {
+    "part_id": "turbo_club",
+    "triangles": 8568,
+    "materials": [
+      "PartAlloy",
+      "PartCast",
+      "PartChrome",
+      "PartCover"
+    ]
+  },
+  {
+    "part_id": "turbo_twin",
+    "triangles": 15932,
+    "materials": [
+      "PartAlloy",
+      "PartCast",
+      "PartChrome",
+      "PartCover"
+    ]
+  },
+  {
+    "part_id": "transmission_stock",
+    "triangles": 3152,
+    "materials": [
+      "PartAlloy",
+      "PartCast",
+      "PartChrome",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "transmission_close",
+    "triangles": 3368,
+    "materials": [
+      "PartAlloy",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "transmission_long",
+    "triangles": 3328,
+    "materials": [
+      "PartAlloy",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "transmission_six",
+    "triangles": 3740,
+    "materials": [
+      "PartAlloy",
+      "PartBrass",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "steering_stock",
+    "triangles": 7316,
+    "materials": [
+      "PartAlloy",
+      "PartCast",
+      "PartChrome",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "steering_quick",
+    "triangles": 7652,
+    "materials": [
+      "PartAlloy",
+      "PartCast",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "steering_precision",
+    "triangles": 7760,
+    "materials": [
+      "PartAlloy",
+      "PartCast",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "steering_rally",
+    "triangles": 8140,
+    "materials": [
+      "PartAlloy",
+      "PartBrass",
+      "PartCarbon",
+      "PartCast",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "chassis_stock",
+    "triangles": 4048,
+    "materials": [
+      "PartAlloy",
+      "PartCast",
+      "PartCover"
+    ]
+  },
+  {
+    "part_id": "chassis_light",
+    "triangles": 10368,
+    "materials": [
+      "PartAlloy",
+      "PartChrome",
+      "PartCover",
+      "PartRubber"
+    ]
+  },
+  {
+    "part_id": "chassis_carbon",
+    "triangles": 2300,
+    "materials": [
+      "PartAlloy",
+      "PartCarbon",
+      "PartCover"
+    ]
+  },
+  {
+    "part_id": "engine_valley",
+    "triangles": 11016,
+    "materials": [
+      "PartAlloy",
+      "PartBrass",
+      "PartCast",
+      "PartCover",
+      "PartRubber"
+    ]
+  }
+]

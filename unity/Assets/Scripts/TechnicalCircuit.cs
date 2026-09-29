@@ -11,24 +11,26 @@ namespace LittleRoad
         [Serializable] public sealed class Knot
         {
             public string name;
-            public float x,z,dx,dz,incoming,outgoing;
-            public Vector3 Position=>new Vector3(x,0,z);
-            public Vector3 Tangent=>new Vector3(dx,0,dz).normalized;
+            // y and dy (grade, rise per horizontal metre) are optional: level circuits omit them.
+            public float x,z,dx,dz,incoming,outgoing,y,dy;
+            public Vector3 Position=>new Vector3(x,y,z);
+            public Vector3 Tangent=>new Vector3(dx,0,dz).normalized+Vector3.up*dy;
         }
         [Serializable] public sealed class Definition {public string id,version,title;public Knot[] knots;}
         public readonly Definition definition;
         public readonly Circuit track;
         public readonly float[] regionStarts;
         // Observation adapter: no change to the actual Bayview road or scenery.
-        public TechnicalCircuit(Circuit bayview)
+        public TechnicalCircuit(Circuit bayview,string id="bayview")
         {
-            track=bayview;definition=new Definition{id="bayview",version="bayview-v1",title="Bayview transfer study",knots=new Knot[12]};regionStarts=new float[12];
+            track=bayview;definition=new Definition{id=id,version=id+"-v1",title=id=="bayview"?"Bayview transfer study":"Hillcrest Raceway",knots=new Knot[12]};regionStarts=new float[12];
             for(int i=0;i<12;i++){regionStarts[i]=track.length*i/12;definition.knots[i]=new Knot{name="sector-"+i};}
         }
-        public TechnicalCircuit()
+        // cedar-technical (level) or cedar-hills (the same layout with elevation, for grade-aware drivers).
+        public TechnicalCircuit(string assetName="cedar-technical")
         {
-            var asset=Resources.Load<TextAsset>("Tracks/cedar-technical");
-            if(asset==null)throw new InvalidOperationException("Missing Cedar technical circuit asset.");
+            var asset=Resources.Load<TextAsset>("Tracks/"+assetName);
+            if(asset==null)throw new InvalidOperationException("Missing technical circuit asset: "+assetName);
             definition=JsonUtility.FromJson<Definition>(asset.text);
             if(definition.knots==null||definition.knots.Length<4)throw new ArgumentException("Circuit needs at least four authored knots.");
             var points=new List<Vector3>();var indices=new List<int>();

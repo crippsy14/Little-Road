@@ -53,9 +53,12 @@ namespace LittleRoad
         public static RaceRoster Trial(int count,int laps,int seed,string track,string setup,string[] opponents,string scenario,string driverMode,bool form,string replayBody=null)
         {
             var entries=new RaceEntrant[count];
+            // Car 0 keeps the compact master; the rest come from the generated field by equipment tier,
+            // all inside the one standard envelope so shape never changes pace.
+            var family=CarBodies.Deal(CarBodies.Family,count,seed);var sporty=CarBodies.Deal(CarBodies.Sporty,count,seed+1);int f=0,s=0;
             for(int i=0;i<count;i++) {
-                string body=replayBody??(i%3==1?"coupe_car":i%3==2?"utility_car":"compact_v1");
-                string equipment=i==0?setup:i-1<opponents.Length?opponents[i-1]:i%4==0?"club":"street";
+                string equipment=scenario=="class-sort"?RaceGrid.ClassSortEquipment(i):i==0?setup:i-1<opponents.Length?opponents[i-1]:i%4==0?"club":"street";
+                string body=replayBody??(i==0?"compact_v1":equipment=="street"||equipment=="stock"?family[f++]:sporty[s++]);
                 var paint=i==0?new Color(.08f,.56f,.49f):Color.HSVToRGB(Mathf.Repeat(i*.173f,.999f),.64f,.84f);
                 entries[i]=new RaceEntrant(i,RaceGrid.TrialSlot(i,count,scenario),body,paint,equipment,EquipmentCatalog.TestLoadout(equipment),
                     driverMode==null?null:DriverIdentity.ForRace(i,seed,driverMode,form));
@@ -78,6 +81,22 @@ namespace LittleRoad
             }
             entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver);
             return new RaceRoster(seed,3,"bayview","BAYVIEW COAST / CLASS C",modern,entries);
+        }
+        // The Valley Cup at Hillcrest Raceway: Class C (a quicker field than Bayview's), two laps, context drivers (hillcrest-race r5: legacy
+        // needed ~350 contacts a race); street and
+        // club kit through the field and the pole-sitter on Hillcrest Motors' valley parts.
+        public static RaceRoster AdventureHillcrest(AdventureProgress save,bool modern=true)
+        {
+            save.Validate();int seed=1709+(save.raceSerial+1)*11;
+            var trial=Trial(24,2,seed,"hillcrest","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
+            var entries=new RaceEntrant[24];
+            var family=CarBodies.Deal(CarBodies.Family,24,seed);var sporty=CarBodies.Deal(CarBodies.Sporty,24,seed+1);int f=0,s=0;
+            for(int i=1;i<24;i++){
+                var e=trial.Entries[i];string kit=e.Slot==0?"valley":i%3==0?"club":"street";
+                entries[i]=new RaceEntrant(e.Id,e.Slot,e.Slot==0?CarBodies.Flagship:kit=="street"?family[f++]:sporty[s++],e.Slot==0?FlagshipPaint:e.Paint,kit,EquipmentCatalog.TestLoadout(kit),e.Driver);
+            }
+            entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver);
+            return new RaceRoster(seed,2,"hillcrest","HILLCREST RACEWAY / CLASS C",modern,entries);
         }
         public bool MatchesPlayer(AdventureProgress save)
         {
@@ -104,7 +123,7 @@ namespace LittleRoad
         static bool Active=>AdventureSession.Racing&&AdventureSession.EnteredRoster?.Modern==true||CommandLineValue("--ai-preset")=="field";
         static string CommandLineValue(string key){var args=Environment.GetCommandLineArgs();int i=Array.IndexOf(args,key);return i>=0&&i+1<args.Length?args[i+1]:null;}
         static bool Dropped(string key){var args=Environment.GetCommandLineArgs();for(int i=0;i+1<args.Length;i++)if(args[i]=="--preset-without"&&args[i+1]==key)return true;return false;}
-        static readonly HashSet<string> switches=new(StringComparer.Ordinal){"--stagger-context-plans","--physical-recovery","--traffic-diagnostics","--road-feasibility","--prepared-path","--guide-path-fallback","--compare-continuation","--traffic-aware-progress","--following-feasibility-fallback","--shared-observed-traffic","--parallel-continuation-forecast","--rear-pressure-filter","--light-drafting","--coast-within-envelope","--no-gap-centres","--traffic-path-check","--anticipate-passing-space","--traffic-coast-continuation","--parallel-road-forecasts","--dynamic-rejoin","--dynamic-traffic","--local-origin-curvature","--dynamic-field-study","--dynamic-blocking-target","--dynamic-traffic-fallback","--parallel-dynamic-forecast","--open-space-priority","--driver-roster","--driver-form"};
+        static readonly HashSet<string> switches=new(StringComparer.Ordinal){"--stagger-context-plans","--physical-recovery","--traffic-diagnostics","--road-feasibility","--prepared-path","--guide-path-fallback","--compare-continuation","--traffic-aware-progress","--following-feasibility-fallback","--shared-observed-traffic","--parallel-continuation-forecast","--rear-pressure-filter","--light-drafting","--coast-within-envelope","--no-gap-centres","--traffic-path-check","--anticipate-passing-space","--traffic-coast-continuation","--parallel-road-forecasts","--dynamic-rejoin","--dynamic-traffic","--local-origin-curvature","--dynamic-field-study","--dynamic-blocking-target","--dynamic-traffic-fallback","--parallel-dynamic-forecast","--open-space-priority","--driver-roster","--driver-form","--gate-first"};
         public static bool Enabled(string key)=>Active&&switches.Contains(key)&&!Dropped(key);
         public static string Value(string key,string fallback)
         {

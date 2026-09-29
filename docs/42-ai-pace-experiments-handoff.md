@@ -35,3 +35,5 @@ Also checked: using more road width for the racing line (currently about ±5 m o
 
 ## State
 112–115 committed on `ai-pace-experiments`. Next action: step 3 (one speed decision), measured against the 115 default.
+
+**Field change (28 September, graphics work).** The placeholder coupe, utility and formula bodies were removed. Trial fields (`RaceRoster.Trial`) now race the compact master as car 0 and the generated family (street/stock kit) and sporty (club kit) bodies elsewhere, all inside the one standard envelope. Before this, cars 1, 4, 7… raced the coupe and 2, 5, 8… the utility, each with its own collider. Keep/reject stays valid because each study compares flag off against flag on in the same build. Runs from before this change are not comparable with runs after it, so re-run the baseline arm before comparing against any older study.

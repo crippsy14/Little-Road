@@ -6,9 +6,10 @@ namespace LittleRoad
 {
     public static class TrialWorld
     {
-        public static Material Material(string name,Color color,float metal=0,float smooth=.2f)
+        // Every colour goes through WorldLook.Surface (the art-direction limits) unless graded=false.
+        public static Material Material(string name,Color color,float metal=0,float smooth=.2f,bool graded=true)
         {
-            var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name=name,color=color};
+            var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name=name,color=graded?WorldLook.Surface(color):color};
             m.SetFloat("_Metallic",metal);m.SetFloat("_Smoothness",smooth);m.enableInstancing=true;return m;
         }
         // Shared by runtime assembly and the build's retained shader reference.
@@ -34,39 +35,67 @@ namespace LittleRoad
             var o=GameObject.CreatePrimitive(PrimitiveType.Cube);o.name=name;o.transform.position=position;o.transform.localScale=scale;
             o.GetComponent<Renderer>().sharedMaterial=material;if(!collision)Object.Destroy(o.GetComponent<Collider>());else o.tag="Respawn";return o;
         }
+        // Rubber laid down along the racing line: two soft dark tyre tracks and a faint broad band either
+        // side of the smoothed line, drawn with the multiply SkidMark shader over the asphalt.
+        public static void RubberedLine(Circuit track,Transform parent=null,float lift=.03f)
+        {
+            var shader=Shader.Find("LittleRoad/SkidMark");if(shader==null||RaceTrial.Has("--no-rubber-line"))return;
+            var line=new RacingLine(track,RacingLine.BakeSmooth(track,"rubber-line","bayview"));
+            var v=new System.Collections.Generic.List<Vector3>();var uv=new System.Collections.Generic.List<Vector2>();var col=new System.Collections.Generic.List<Color>();var t=new System.Collections.Generic.List<int>();
+            void Strip(float across,float width,Color tint,float strength)
+            {
+                int start=v.Count,n=Mathf.CeilToInt(track.length/2);
+                for(int i=0;i<=n;i++){
+                    float d=i*track.length/n,o=line.Offset(d)+across;var p=track.At(d);var r=track.Right(d);
+                    // Rubber builds up where cars brake and turn: stronger on the bends, a hint on the straights.
+                    float bend=Mathf.Clamp01(Mathf.Abs(Vector3.SignedAngle(track.Forward(d-6),track.Forward(d+6),Vector3.up))/14f);
+                    var c=tint;c.a=strength*Mathf.Lerp(.45f,1,bend);
+                    v.Add(p+r*(o-width*.5f)+Vector3.up*lift);v.Add(p+r*(o+width*.5f)+Vector3.up*lift);uv.Add(new Vector2(0,0));uv.Add(new Vector2(1,0));col.Add(c);col.Add(c);
+                    if(i<n){int a=start+i*2;t.AddRange(new[]{a,a+2,a+1,a+1,a+2,a+3});}
+                }
+            }
+            Strip(0,3.6f,new Color(.82f,.83f,.85f),.55f);
+            foreach(float side in new[]{-.78f,.78f})Strip(side,.62f,new Color(.55f,.56f,.58f),.5f);
+            var mesh=new Mesh{name="Rubbered racing line"};mesh.SetVertices(v);mesh.SetUVs(0,uv);mesh.SetColors(col);mesh.SetTriangles(t,0);mesh.RecalculateBounds();
+            var go=new GameObject("Rubbered racing line",typeof(MeshFilter),typeof(MeshRenderer));if(parent!=null)go.transform.SetParent(parent);go.GetComponent<MeshFilter>().sharedMesh=mesh;
+            var r2=go.GetComponent<MeshRenderer>();r2.sharedMaterial=new Material(shader){name="Rubbered line"};r2.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+        }
         static void Ribbon(Circuit track,string name,float center,float width,float height,Material mat,bool collision=false)
         {
             var o=new GameObject(name);o.AddComponent<MeshFilter>().sharedMesh=track.Ribbon(center,width,height);o.AddComponent<MeshRenderer>().sharedMaterial=mat;
             if(collision)o.AddComponent<MeshCollider>().sharedMesh=o.GetComponent<MeshFilter>().sharedMesh;
         }
-        public static void Create(Circuit track,bool racing=true)
+        // Synchronous build (reviews, fixtures). Play code yields CreateRoutine so the loading card
+        // animates its progress between steps instead of freezing on one ~7 s frame.
+        public static void Create(Circuit track,bool racing=true)=>RunNow(CreateRoutine(track,racing));
+        public static void RunNow(System.Collections.IEnumerator routine)
         {
-            RenderSettings.ambientMode=AmbientMode.Trilight;RenderSettings.ambientSkyColor=new Color(.64f,.79f,.91f);
-            RenderSettings.ambientEquatorColor=new Color(.56f,.60f,.55f);RenderSettings.ambientGroundColor=new Color(.25f,.30f,.25f);
+            var stack=new System.Collections.Generic.Stack<System.Collections.IEnumerator>();stack.Push(routine);
+            while(stack.Count>0){var top=stack.Peek();if(top.MoveNext()){if(top.Current is System.Collections.IEnumerator inner)stack.Push(inner);}else stack.Pop();}
+        }
+        public static System.Collections.IEnumerator CreateRoutine(Circuit track,bool racing=true)
+        {
+            // Light, grade and clouds all come from WorldLook (see docs/art-direction.md).
+            WorldLook.Lighting();
             // The scene is assembled at runtime and has no baked probes. Supply
             // diffuse sky fill explicitly so workshop shadows retain colour.
             var ambient=new SphericalHarmonicsL2();ambient.AddAmbientLight(new Color(.25f,.29f,.31f));RenderSettings.ambientProbe=ambient;
             RenderSettings.fog=true;RenderSettings.fogColor=new Color(.64f,.81f,.86f);RenderSettings.fogMode=FogMode.ExponentialSquared;RenderSettings.fogDensity=.0014f;
-            Vector3 sunDirection=CoastalSky.Apply();
-            var sun=new GameObject("Late afternoon sun").AddComponent<Light>();sun.type=LightType.Directional;sun.intensity=2.2f;sun.color=new Color(1,.91f,.77f);
-            sun.transform.rotation=Quaternion.LookRotation(-sunDirection);sun.shadows=LightShadows.Soft;RenderSettings.sun=sun;
-            var fill=new GameObject("Cool open-sky fill").AddComponent<Light>();fill.type=LightType.Directional;fill.intensity=.38f;fill.color=new Color(.70f,.84f,1);fill.transform.rotation=Quaternion.Euler(28,145,0);fill.shadows=LightShadows.None;
-            var volume=new GameObject("Coastal colour and bloom").AddComponent<Volume>();volume.isGlobal=true;volume.profile=ScriptableObject.CreateInstance<VolumeProfile>();
-            // Neutral keeps the toy palette bright and saturated; ACES greyed it down.
-            var tone=volume.profile.Add<Tonemapping>();tone.mode.Override(TonemappingMode.Neutral);
-            var bloom=volume.profile.Add<Bloom>();bloom.intensity.Override(.15f);bloom.threshold.Override(1.2f);
-            var color=volume.profile.Add<ColorAdjustments>();color.postExposure.Override(.10f);color.saturation.Override(8);color.contrast.Override(8);
-            var asphalt=Material("Warm aggregate asphalt",new Color(.23f,.27f,.29f));
-            var texture=new Texture2D(128,128);var pixels=new Color[128*128];var rng=new System.Random(83);
-            for(int i=0;i<pixels.Length;i++){float n=.84f+(float)rng.NextDouble()*.25f;pixels[i]=new Color(n,n,n);}
-            texture.SetPixels(pixels);texture.Apply();texture.wrapMode=TextureWrapMode.Repeat;asphalt.mainTexture=texture;asphalt.mainTextureScale=new Vector2(8,4);
+            Vector3 sunDirection=TimeOfDay.Install(); // procedural day/night sky (TimeOfDay)
+            WorldLook.Sun(sunDirection,racing);WorldLook.Fill();
+            var volume=new GameObject("World colour grade").AddComponent<Volume>();volume.isGlobal=true;volume.profile=ScriptableObject.CreateInstance<VolumeProfile>();
+            WorldLook.Grade(volume.profile);
+            // The kit asphalt pattern (aggregate, old repair patches, hairline cracks), as on the valley roads;
+            // per-pixel noise here blurred to a flat slab under TAA.
+            var asphalt=WorldLook.Kit("Warm aggregate asphalt",new Color(.17f,.19f,.20f),WorldLook.Pattern.Asphalt,0,.22f,true);
             var sand=CoastalSurfaces.Runoff();
             var white=Material("Ivory paint",new Color(.91f,.91f,.80f));var coral=Material("Coral kerb",new Color(.79f,.27f,.18f));
-            new CoastalLandscape(track).Build();
+            CoastalLandscape.ValleyDetail=!racing;yield return new CoastalLandscape(track).BuildRoutine();
             // Both road and shoulder have actual matching mesh surfaces across
             // the inlet. The bridge is not a road painted on an invisible island.
             Ribbon(track,"Generous limestone runoff",0,24,.011f,sand);
             Ribbon(track,"16 metre race surface",0,Circuit.Width,.025f,asphalt);
+            RubberedLine(track);
             new GameObject("Continuous road and shoulder support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
             foreach(int side in new[]{-1,1}) {Ribbon(track,"Edge paint",side*7.7f,.16f,.037f,white);
                 if(racing)for(float d=0;d<track.length;d+=4) {// Coral blocks stand 6 mm prouder: on curves neighbouring blocks overlap and equal tops z-fought.
@@ -79,6 +108,7 @@ namespace LittleRoad
             var shutter=Material("Teal joinery",new Color(.12f,.38f,.37f));
             VillageKit.Create();
             new GameObject("Coastal reflected light").AddComponent<CoastalReflections>();
+            TimeOfDay.Apply(); // light, sky, fog and valley mist for the chosen time of day
             if(racing){
                 for(int side=-1;side<=1;side+=2)Box("Start gantry post",track.At(0)+track.Right(0)*side*9+Vector3.up*3.5f,new Vector3(.4f,7,.4f),shutter,true);
                 var beam=Box("Start gantry",track.At(0)+Vector3.up*6.7f,new Vector3(18,.8f,.4f),shutter);beam.transform.rotation=Quaternion.LookRotation(track.Forward(0));
@@ -92,7 +122,7 @@ namespace LittleRoad
             // Bodies exported with reduced meshes (compact master, family field) get LOD groups.
             if(Resources.Load<GameObject>("Cars/"+asset+"_lod1")!=null) {
                 var lod1=CarVisual(root,asset+"_lod1",paint,materials);var lod2=CarVisual(root,asset+"_lod2",paint,materials);
-                var group=root.AddComponent<LODGroup>();group.SetLODs(new[]{
+                var group=root.AddComponent<LODGroup>();group.fadeMode=LODFadeMode.CrossFade;group.animateCrossFading=true;group.SetLODs(new[]{
                     new LOD(.18f,visual.GetComponentsInChildren<Renderer>()),
                     new LOD(.045f,lod1.GetComponentsInChildren<Renderer>()),
                     new LOD(.008f,lod2.GetComponentsInChildren<Renderer>())});group.RecalculateBounds();
@@ -129,10 +159,11 @@ namespace LittleRoad
                     float metal=chrome?.9f:alloySurface?.7f:name.Contains("BrakeMetal")?.55f:paintSurface?.05f:0;
                     float smooth=chrome?.8f:alloySurface?.42f:paintSurface?.56f:name.Contains("Rubber")?.15f:
                         name.Contains("Headlamp")||name.Contains("TailLight")||name.Contains("ReverseLight")||name.Contains("Amber")?.6f:.25f;
-                    converted[i]=Material(name,c,metal,smooth);
+                    converted[i]=Material(name,c,metal,smooth,!paintSurface);
                     if(name.Contains("TailLight")||name.Contains("ReverseLight")) {
                         converted[i].EnableKeyword("_EMISSION");converted[i].SetColor("_EmissionColor",Color.black);
                     }
+                    if(name.Contains("Headlamp"))NightLights.Headlamp(converted[i]); // lit at night
                     // Prototype glazing consists of single-sided polygons. glTF
                     // rendered both sides; preserve that intent in the FBX port.
                     if(name.Contains("Glass"))converted[i].SetFloat("_Cull",0);

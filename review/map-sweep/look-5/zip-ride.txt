@@ -1,0 +1,2 @@
+down=True seconds=23.0 arrivalMiss=0.05
+down=False seconds=27.9 arrivalMiss=0.01

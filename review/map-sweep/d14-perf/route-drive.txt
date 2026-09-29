@@ -1,0 +1,5 @@
+ROUTE_DRIVE arrived=True seconds=110.0 gate=45.8 square=89.7 castleClimb=64.2 roadGripShare=1.00 recoveries=0 lowestY=-0.1 final=(202.46, 52.03, -1125.72)
+Quay road@(109.79, 6.98, -902.77)
+Via Crest@(256.87, 7.04, -920.36)
+Quay road@(257.33, 7.07, -920.45)
+Via Crest@(257.33, 7.07, -920.45)

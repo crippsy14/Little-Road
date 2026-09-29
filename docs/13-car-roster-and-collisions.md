@@ -1,5 +1,10 @@
 # Car bodies, race identity and forgiving collisions
 
+**Updated 29 September:**
+- **Bodies:** tied to chassis platforms, one per class, with kit versions of earlier favourites ([doc 45](45-roadmap-and-feature-spec.md) F7).
+- **Collision boxes:** now per body, fitted to each model's length and its shoulder-and-tyre width without mirrors (`CarBodies.ShoulderWidth` / `Length`; `--contact-review`). The single shared envelope described below is retired.
+
+
 Added 16 September 2026 from the user's request for varied bodies from ordinary road cars to F1-style cars, class-appropriate race fields, visible collision integrity and meaningful but recoverable crashes.
 
 ## Body roster
@@ -51,3 +56,5 @@ The original prototype uses one compact body and a simple fixed speed reduction 
 # Evening prototype update — 17 September 2026
 
 Four original Blender bodies now exist: compact, upright utility with roof load, low coupe with spoiler, and an open-wheel study. The Class C field uses compact/utility/coupe bodies. The open-wheel asset is a model study for later-class content, not an unlocked class or player body selector. Six initial body families and the broader roster remain target scope. Each body has its own small conservative convex collision hull, including front-wheel steering extremes. Contact penetration, impact timing and recovery acceptance remain unverified; do not read the existence of those hulls as a no-clipping certification.
+
+**Update (28 September 2026).** The coupe, utility and formula prototype bodies above have been removed (models, sources and checks). Older saves that owned one move to the Puddle starter. The racing fields now use the 24 generated bodies from `source-art/build_family_cars.py`, all inside the standard envelope (`CarBodies.Envelope`). New bodies should come from that generator.

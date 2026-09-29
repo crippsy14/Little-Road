@@ -94,7 +94,7 @@ namespace LittleRoad
         // It bounds the magnitude of the signed road-offset projection.
         public float FlatDistance(Vector3 p)
         {
-            if(!hasConstantHeight)throw new System.InvalidOperationException("Flat-distance envelope requires a level circuit.");
+            if(!hasConstantHeight&&!GradeModel.Enabled)throw new System.InvalidOperationException("Flat-distance envelope requires a level circuit.");
             projection.Nearest(p,out var closest);var delta=p-closest;delta.y=0;return delta.magnitude;
         }
         public Mesh Ribbon(float center, float width, float height)
