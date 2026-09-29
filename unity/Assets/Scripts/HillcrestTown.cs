@@ -423,7 +423,8 @@ namespace LittleRoad
             }
             Put("map_board",l-face*3-side*4,Yaw(l,l-face),null,"SILVER FALLS");Put("telescope",l+face*7.5f,Yaw(l,falls));
             Put("picnic_table",l-face*2+side*6,Yaw(l,falls));Put("picnic_table",l+face*3+side*7,Yaw(l,falls)+20);
-            Spots["lookout"]=(l+side*5+face*4,Yaw(l,falls)+90);
+            // Clear of both tables (it used to sit 2 m from one, so the resident's car parked through it).
+            Spots["lookout"]=(l+side*3+face*1,Yaw(l,falls)+90);
         }
         void Raceway()
         {

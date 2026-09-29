@@ -56,7 +56,7 @@ public static class MigrationBuild
         }
         Check(EquipmentCatalog.Reward(24)==100&&EquipmentCatalog.Reward(1)==500&&EquipmentCatalog.Reward(0)==0,"All valid finishers retain C-class reward schedule",evidence);
         Directory.CreateDirectory("Assets/Resources/ShaderReferences");
-        foreach(string shaderName in new[]{"Universal Render Pipeline/Lit","Skybox/Procedural","LittleRoad/CoastalSky","LittleRoad/DaySky","LittleRoad/Bunting","LittleRoad/Minimap","LittleRoad/CoastalTerrain","LittleRoad/CoastalFoliage","LittleRoad/CoastalWater","LittleRoad/WorldText","LittleRoad/Distant","LittleRoad/Wheat","LittleRoad/Kit","LittleRoad/InlandWater","LittleRoad/Grass","LittleRoad/SkidMark","LittleRoad/LightTrail"}) {
+        foreach(string shaderName in new[]{"Universal Render Pipeline/Lit","Skybox/Procedural","LittleRoad/CoastalSky","LittleRoad/DaySky","LittleRoad/Bunting","LittleRoad/Minimap","LittleRoad/CoastalTerrain","LittleRoad/CoastalFoliage","LittleRoad/CoastalWater","LittleRoad/WorldText","LittleRoad/Distant","LittleRoad/Wheat","LittleRoad/Kit","LittleRoad/InlandWater","LittleRoad/Grass","LittleRoad/SkidMark","LittleRoad/LightTrail","LittleRoad/Waterfall"}) {
             var shader=Shader.Find(shaderName);Check(shader!=null,"Required shader "+shaderName,evidence);
             // Find succeeds for a shader that failed to compile (it renders pink): fail the build instead.
             Check(!ShaderUtil.ShaderHasError(shader),"Shader compiles without errors "+shaderName,evidence);

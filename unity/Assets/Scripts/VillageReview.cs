@@ -139,6 +139,9 @@ namespace LittleRoad
             yield return V("v08-square",sq+new Vector3(-34,12,-8),sq+new Vector3(10,2,0));
             yield return V("v09-castle",new Vector3(110,85,-990),new Vector3(200,52,-1110));
             yield return V("v10-falls",HillcrestRoute.Lookout+new Vector3(-2,5,-6),HillcrestRoute.FallsHead+new Vector3(10,-6,20));
+            // The drop itself, from the gorge below (the lookout sits above the lip).
+            {var river=HillcrestRoute.River.line;int fall=System.Array.FindIndex(river,q=>q.y<.9f);var foot=river[Mathf.Min(river.Length-1,fall+4)];var down=river[Mathf.Min(river.Length-1,fall+14)];
+             var back=down-foot;back.y=0;back.Normalize();yield return V("v10b-falls-below",down+back*6+Vector3.up*7,foot+Vector3.up*5);}
             yield return V("v11-raceway",new Vector3(-280,55,-980),new Vector3(-450,10,-1260));
             yield return V("v12-station",new Vector3(420,45,-930),new Vector3(505,9,-1035));
             yield return V("v13-mountains",new Vector3(150,14,-1320),new Vector3(150,260,-3600));

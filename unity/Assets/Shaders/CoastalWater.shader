@@ -117,6 +117,13 @@ Shader "LittleRoad/CoastalWater"
                 float wash=.5+.5*sin(depth*5-t*1.8+noise*3);
                 half foam=(1-smoothstep(.05,.95,depth))*smoothstep(.50,.91,noise+wash*.28);
                 foam*=smoothstep(0,.08,depth);
+                // Contact foam where the sea meets anything upright (sea walls, pier legs, hulls, rocks): the gap
+                // between the water surface and what sits behind it along the view, broken up by the same noise
+                // and faded out with distance, where the depth buffer is too coarse.
+                float surfaceEye=LinearEyeDepth(input.positionCS.z,_ZBufferParams),sceneEye=LinearEyeDepth(SampleSceneDepth(uv),_ZBufferParams);
+                float gap=max(0,sceneEye-surfaceEye);
+                half contact=((1-smoothstep(.0,1.1,gap))*smoothstep(.26,.70,noise+.18*sin(t*2.1+p.x*.7+p.z*.5))+(1-smoothstep(0,.3,gap))*.75)*(1-smoothstep(60,140,surfaceEye));
+                foam=max(foam,saturate(contact));
                 colour=lerp(colour,half3(.70,.84,.80)*shade*lit,foam*.88);
                 return half4(ApplyHeightFog(MixFog(colour,input.fog),input.positionWS),1);
             }

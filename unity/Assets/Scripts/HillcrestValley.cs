@@ -220,6 +220,37 @@ namespace LittleRoad
             var beam=Piece("Raceway gantry",s0+Vector3.up*7.0f,new Vector3(19.4f,1.3f,.5f),post);beam.transform.rotation=Quaternion.LookRotation(fw);
             var banner=Piece("Raceway gantry banner",s0+Vector3.up*7.0f-fw*.28f,new Vector3(12,.9f,.06f),TrialWorld.Material("Gantry banner",Toy.Hex(0xffd23f),0,.3f));banner.transform.rotation=Quaternion.LookRotation(fw);
         }
+        // Silver Falls (30 September): water leaves the lip and falls in an arc. Two translucent sheets of
+        // streaked water scroll at different speeds (a bluer body behind, white streaks in front), the sheet
+        // spreads and its edges wobble as it falls, rocks break both sides and the lip, spray churns at the foot.
+        void Cascade(Vector3 top,Vector3 bottom,float width,Transform holder)
+        {
+            var dir=bottom-top;dir.y=0;float run=Mathf.Max(1,dir.magnitude);dir/=run;var across=Vector3.Cross(Vector3.up,dir);float drop=Mathf.Max(1,top.y-bottom.y);
+            Vector3 Sheet(float s,float u,float back,float wobble)=>top+dir*(run*u+back+wobble*u)+across*(s*width*(1+.2f*u))+Vector3.down*(drop*u*u);
+            var shader=Shader.Find("LittleRoad/Waterfall");
+            for(int layer=0;layer<2;layer++) {
+                // A glassy blue body behind, a faster white streak sheet in front (LittleRoad/Waterfall).
+                var mat=shader!=null?new Material(shader){name=layer==0?"Falls body":"Falls streaks"}:TrialWorld.Material("Falls",new Color(.9f,.95f,1));
+                if(shader!=null){mat.SetColor("_Water",layer==0?new Color(.36f,.60f,.76f,.72f):new Color(.62f,.80f,.90f,.12f));mat.SetColor("_Foam",layer==0?new Color(.86f,.93f,.97f,.85f):new Color(1,1,1,.95f));
+                    mat.SetFloat("_Speed",layer==0?.8f:1.35f);mat.SetFloat("_Layer",layer);mat.renderQueue=3000+layer;}
+                const int rows=18,cols=12;var v=new Vector3[rows*cols];var uv=new Vector2[rows*cols];var t=new List<int>();
+                for(int r=0;r<rows;r++)for(int c=0;c<cols;c++) {
+                    float u=r/(rows-1f),s=c/(cols-1f)-.5f;
+                    v[r*cols+c]=Sheet(s,u,layer==0?-.4f:0,Mathf.Sin(c*1.9f+layer*2.1f)*.4f);uv[r*cols+c]=new Vector2(s+.5f,u*drop);
+                    if(r<rows-1&&c<cols-1){int a=r*cols+c;t.AddRange(new[]{a,a+cols,a+1,a+1,a+cols,a+cols+1});}
+                }
+                var mesh=new Mesh{name="Silver Falls sheet",vertices=v,uv=uv};mesh.SetTriangles(t,0);mesh.RecalculateNormals();mesh.RecalculateBounds();
+                var go=new GameObject(layer==0?"Silver Falls body":"Silver Falls streaks",typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(holder);
+                go.GetComponent<MeshFilter>().sharedMesh=mesh;var mr=go.GetComponent<MeshRenderer>();mr.sharedMaterial=mat;mr.shadowCastingMode=ShadowCastingMode.Off;
+            }
+            if(!BayviewKit.Has("rock_cluster"))return;
+            // Rocks down both edges and along the lip, so the sheet never shows a straight side.
+            for(int side=-1;side<=1;side+=2)for(int k=0;k<5;k++) {
+                float u=k/4f;var p=Sheet(side*.5f,u,0,0)+across*side*(1.2f+u*1.4f);
+                BayviewKit.Spawn(k%2==0?"rock_cluster":"rock_b",p+Vector3.down*1.2f,k*67+side*40,holder,solid:false,scale:2.4f+k*.35f);
+            }
+            foreach(float s in new[]{-.36f,.05f,.4f})BayviewKit.Spawn("rock_a",Sheet(s,0,-.8f,0)+Vector3.down*.9f,s*300,holder,solid:false,scale:1.1f);
+        }
         GameObject Ribbon(string name,Vector3[] line,float width,float lift,Transform parent,Material material,bool drivable,bool closed=false)
         {
             int n=line.Length,count=closed?n+1:n;var v=new Vector3[count*2];var uv=new Vector2[count*2];var t=new List<int>();float run=0;
@@ -702,19 +733,25 @@ namespace LittleRoad
             var calm=new List<Vector3>();var steep=new List<Vector3>();
             // Foam only over the drop (~16 m); blue water again down the gorge to the sea.
             var gorge=new List<Vector3>();int lip=falls+4;
+            // The ground drops into the gorge before the water surface does (the river overhung the cliff by ~10 m):
+            // end the calm river at the real edge and fall from there to where the river meets the gorge pool.
+            int edge=falls;for(int i=Mathf.Max(1,falls-20);i<=falls;i++)if(ValleyField.Height(river.line[i].x,river.line[i].z)<river.line[i].y-3.5f){edge=i;break;}
+            int pool=System.Array.FindIndex(river.line,edge,q=>q.y<river.line[edge].y-10);if(pool<0)pool=lip;
+            falls=edge;lip=pool;
             for(int i=0;i<river.line.Length;i++){if(i<=falls)calm.Add(river.line[i]);if(i>=falls-1&&i<=lip)steep.Add(river.line[i]);if(i>=lip)gorge.Add(river.line[i]);}
             // River and lake use the depth-aware inland water (shallows, foam at the banks).
             WorldLook.EnsureNoise();var inland=Shader.Find("LittleRoad/InlandWater");
             Material Inland(string name,float flow,float fade){if(inland==null)return water;var m=new Material(inland){name=name};m.SetFloat("_Flow",flow);m.SetFloat("_DepthFade",fade);return m;}
             var riverWater=Inland("Silver river water",.14f,2.2f);var lakeWater=Inland("Lake water",.015f,2.8f);var gorgeWater=Inland("Gorge water",.35f,1.8f);
             var r1=Ribbon("Silver river",calm.ToArray(),river.width,-.05f,holder,riverWater,false);r1.GetComponent<MeshRenderer>().shadowCastingMode=ShadowCastingMode.Off;
-            var r2=Ribbon("Hillcrest falls",steep.ToArray(),river.width*.8f,.05f,holder,foam,false);r2.AddComponent<FlowingWater>().speed=.9f;r2.GetComponent<MeshRenderer>().shadowCastingMode=ShadowCastingMode.Off;
+            // The drop is a curved, layered cascade (it was a flat opaque ribbon down the slope).
+            Cascade(river.line[falls],river.line[lip],river.width*1.04f,holder);
             var r3=Ribbon("Gorge water",gorge.ToArray(),river.width*.9f,-.05f,holder,gorgeWater,false);r3.GetComponent<MeshRenderer>().shadowCastingMode=ShadowCastingMode.Off;
             // Foam puffs churning at the foot of the falls.
-            var foot=river.line[Mathf.Min(river.line.Length-1,falls+4)];var foamPuff=TrialWorld.Material("Falls foam puff",new Color(.96f,.99f,1),0,.35f);
+            var foot=river.line[lip];var foamPuff=TrialWorld.Material("Falls foam puff",new Color(.96f,.99f,1),0,.35f);
             for(int k=0;k<14;k++) {
                 var puff=GameObject.CreatePrimitive(PrimitiveType.Sphere);Object.Destroy(puff.GetComponent<Collider>());puff.name="Foam puff";puff.transform.SetParent(holder);
-                puff.transform.position=foot+new Vector3(Mathf.Sin(k*2.4f)*6,-.4f+(k%3)*.3f,Mathf.Cos(k*2.4f)*4);puff.transform.localScale=Vector3.one*(1.4f+(k%4)*.5f);
+                puff.transform.position=foot+new Vector3(Mathf.Sin(k*2.4f)*6,.25f+(k%3)*.35f,Mathf.Cos(k*2.4f)*4);puff.transform.localScale=Vector3.one*(1.4f+(k%4)*.5f);
                 puff.GetComponent<Renderer>().sharedMaterial=foamPuff;puff.AddComponent<FoamPuff>().phase=k*.7f;
             }
             // Lake: a disc at LakeY; the shore hides its rim.

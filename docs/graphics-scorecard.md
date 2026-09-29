@@ -61,6 +61,24 @@ Bugs found along the way:
 - Async world build for real load-time cuts.
 - A pickup flourish for collectibles.
 
+## Progress: fourth pass (30 September 2026)
+
+Bayview was catching up with Hillcrest (Richard: "it feels a little left out"), then the weakest spots elsewhere.
+
+Evidence:
+- `review/map-sweep/bayview-before` against `bayview-after-2` (town, green, hills);
+- `water-foam-1` / `water-foam-2` (harbour, bridge);
+- `valley-fix-7` (`v10b-falls-below`, a new review view looking up at the falls).
+
+| # | Aspect | Was | Now | What changed |
+|---|---|---|---|---|
+| 3 | Bayview town | 6 | 7 | The high street is a continuous run of two- and three-storey terraces in the seaside palette, with a surf shack and a chip shop, bunting lamp to lamp and café parasols. Frontages step back to clear the race shoulder. |
+| 22 | Ground cover (Bayview) | 5.5 | 6.5 | Meadow grass now grows on Bayview's verges and village green (it was excluded 13.5 m from the circuit and across the whole village). |
+| 21 | Trees (Bayview) | 5 | 6 | Olive groves, blossom and poplars join the pines and cypress (640 trees); lavender and vine plots on open slopes. |
+| 27 | Water | 5 | 6.5 | Contact foam wherever the sea meets something upright (sea walls, pier legs, hulls, rocks). Silver Falls rebuilt: the river now ends at the real cliff edge (it overhung the gorge by 10 m) and falls in an arc of translucent streaked water (`LittleRoad/Waterfall`), framed by rocks, into churning foam. |
+
+Frame cost: the free-roam drive benchmark is 4.9 ms mean and 8.1 ms p95. Its one long frame (0.75 s) is the world-map bake behind the loading card.
+
 ## Progress: third pass (28–29 September 2026)
 
 **Overall: 6.8 → 7.4.** The work follows the research audit in `docs/visual-quality-audit.md`.
