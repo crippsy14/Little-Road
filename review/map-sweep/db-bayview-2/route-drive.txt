@@ -1,0 +1,8 @@
+ROUTE_DRIVE arrived=True seconds=125.6 gate=52.8 square=-1.0 castleClimb=72.8 roadGripShare=1.00 reversals=0 recoveries=0 lowestY=-0.1 final=(203.48, 52.11, -1125.58)
+Valley road@(109.32, 7.05, -902.68)
+Road end ramp@(109.90, 7.04, -903.28)
+Road end ramp@(112.30, 7.01, -905.18)
+Road shoulder@(122.09, 7.03, -908.43)
+Via Crest@(256.49, 7.09, -920.95)
+Road shoulder@(266.94, 7.22, -947.31)
+Road shoulder@(218.54, 51.26, -1157.54)

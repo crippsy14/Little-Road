@@ -68,8 +68,10 @@ namespace LittleRoad
             mesh.RecalculateNormals();mesh.RecalculateBounds();return mesh;
         }
         // Where grass may grow: open meadow, not road, verge paving, buildings, water or reserved plots.
+        static bool onGreen;
         static bool Open(float x,float z,bool nearRiver)
         {
+            onGreen=false;
             if(z<-380) {
                 if(ValleyField.RoadDistance(x,z)<8.5f||HillcrestTown.Reserved(x,z))return false;
                 if(Vector2.Distance(new(x,z),HillcrestRoute.Lake)<HillcrestRoute.LakeRadius+4)return false;
@@ -77,7 +79,7 @@ namespace LittleRoad
                 return true;
             }
             if(HillcrestRoute.OnHaltQuay(new Vector3(x,0,z),4))return false;
-            var land=CoastalLandscape.Current;return land!=null&&land.SolidClearance(new Vector3(x,0,z));
+            var land=CoastalLandscape.Current;return land!=null&&land.GrassClearance(new Vector3(x,0,z),out onGreen);
         }
         void Begin(Vector2Int key)
         {
@@ -102,6 +104,7 @@ namespace LittleRoad
                 if(top==null){refusedMiss++;continue;}var hit=top.Value;
                 if(hit.normal.y<.7f||hit.collider.isTrigger||hit.collider.CompareTag("Respawn")||hit.collider.GetComponent<RoadSurface>()!=null||hit.collider.GetComponent<RoadSupport>()!=null){refusedSurface++;if(refusedSurface<6)Debug.Log($"LITTLE_ROAD_GRASS refused surface {hit.collider.name} trigger={hit.collider.isTrigger} normalY={hit.normal.y:0.00} at={hit.point}");continue;}
                 if(hit.point.y<CoastalLandscape.SeaLevel+2.5f){refusedLow++;continue;} // beaches and the tide line
+                if(onGreen&&hit.point.y>.35f){refusedSurface++;continue;} // the village green's lawn, not its tables or beds
                 var m=Matrix4x4.TRS(hit.point-hit.normal*.02f,Quaternion.FromToRotation(Vector3.up,Vector3.Lerp(Vector3.up,hit.normal,.6f))*Quaternion.Euler(0,yaw,0),Vector3.one*scale);
                 // Wildflower drifts: long soft patches of flowering clumps.
                 bool drift=Mathf.PerlinNoise(x*.021f+3.3f,z*.021f+8.1f)>.55f;

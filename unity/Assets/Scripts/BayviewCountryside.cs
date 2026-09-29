@@ -10,7 +10,20 @@ namespace LittleRoad
     {
         public static readonly Vector3 Farm=new(40,0,2),Camp=new(-58,0,-22),Lookout=new(-24,0,12);
         // Tree planting keeps these clear.
-        public static bool Reserved(Vector3 p)=>Flat(p,Farm)<30||Flat(p,Camp)<14||Flat(p,Lookout)<12;
+        public static bool Reserved(Vector3 p){if(Flat(p,Farm)<30||Flat(p,Camp)<14||Flat(p,Lookout)<12)return true;foreach(var plot in Plots)if(Flat(p,plot)<PlotHalf+4)return true;return false;}
+        // Mediterranean crop plots on the island's gentle slopes (30 September): lavender and vines, like
+        // Hillcrest's patchwork, so Bayview's hills are not one flat green. Chosen before tree planting.
+        public static readonly List<Vector3> Plots=new();const float PlotHalf=16;
+        public static void ChoosePlots(CoastalLandscape land)
+        {
+            Plots.Clear();var candidates=new List<(Vector3 p,float slope)>();
+            for(float x=-140;x<=140;x+=8)for(float z=-70;z<=105;z+=8) {
+                var p=new Vector3(x,0,z);if(Reserved(p)||!land.PlotGround(p,PlotHalf))continue;
+                float gx=land.Height(x+4,z)-land.Height(x-4,z),gz=land.Height(x,z+4)-land.Height(x,z-4);candidates.Add((p,gx*gx+gz*gz));
+            }
+            candidates.Sort((a,b)=>a.slope.CompareTo(b.slope));
+            foreach(var c in candidates){bool apart=true;foreach(var q in Plots)if(Flat(c.p,q)<PlotHalf*2+22)apart=false;if(apart)Plots.Add(c.p);if(Plots.Count==4)break;}
+        }
         static float Flat(Vector3 a,Vector3 b)=>new Vector2(a.x-b.x,a.z-b.z).magnitude;
         readonly CoastalLandscape land;readonly Circuit track;readonly Transform root;
         public BayviewCountryside(CoastalLandscape landscape,Circuit circuit,Transform parent){land=landscape;track=circuit;root=parent;}
@@ -20,7 +33,7 @@ namespace LittleRoad
         public void Build()
         {
             if(!BayviewKit.Has("barn"))return;
-            FarmYard();Campsite();LookoutPoint();Tracks();Roadside();
+            FarmYard();Campsite();LookoutPoint();Tracks();Roadside();CropPlots();
         }
         // A little farm on a levelled pad: house and barn facing across an earth yard, the
         // tractor and a bale stack, a drive-through wheat field and a lavender plot, all fenced.
@@ -63,6 +76,17 @@ namespace LittleRoad
             }
             var mesh=new Mesh{name=name};mesh.SetVertices(v);mesh.SetTriangles(t,0);mesh.RecalculateNormals();
             var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root);go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;
+        }
+        // Rows along the contour (across the slope), alternating lavender and vines, with a flowering edge.
+        void CropPlots()
+        {
+            for(int k=0;k<Plots.Count;k++) {
+                var c=Plots[k];float gx=land.Height(c.x+4,c.z)-land.Height(c.x-4,c.z),gz=land.Height(c.x,c.z+4)-land.Height(c.x,c.z-4);
+                float yaw=Mathf.Atan2(gx,gz)*Mathf.Rad2Deg+90;var rot=Quaternion.Euler(0,yaw,0);string id=k%2==0?"lavender_row":"vine_row";
+                for(int r=0;r<11;r++)for(int col=-1;col<=1;col++)Put(id,c+rot*new Vector3(col*11.5f,0,-PlotHalf+2+r*2.8f),yaw,null,1,false);
+                for(int e=-2;e<=2;e++)Put("flower_bush",c+rot*new Vector3(e*6.5f,0,-PlotHalf-.5f),e*40,null,.8f,false);
+            }
+            Debug.Log("LITTLE_ROAD_BAYVIEW_PLOTS count="+Plots.Count);
         }
         void Campsite()
         {

@@ -45,6 +45,24 @@ namespace LittleRoad
             float d=track.Nearest(new Vector3(p.x,0,p.z),out _);
             return FlatDistance(p,track.At(d))>13.5f&&VillageDistance(p)>5&&FlatDistance(p,post)>22;
         }
+        // Where Bayview's meadow grass may grow: up to the verge (9.5 m from the circuit centre, like Hillcrest's
+        // 8.5 m from its roads), and in the village only on the green between the shops and the promenade.
+        // Open, gentle ground for a crop plot: well off the circuit, the village and the causeway.
+        public bool PlotGround(Vector3 p,float half)
+        {
+            if(RoadDistance(p)<half+24||VillageDistance(p)<half+18||FlatDistance(p,post)<half+22||NearCauseway(p))return false;
+            float h=Height(p.x,p.z),low=h,high=h;
+            for(int i=0;i<8;i++){float a=i*Mathf.PI*.25f;float s=Height(p.x+Mathf.Cos(a)*half,p.z+Mathf.Sin(a)*half);low=Mathf.Min(low,s);high=Mathf.Max(high,s);}
+            return h>1.5f&&high-low<4.5f;
+        }
+        public float RoadDistance(Vector3 p){float d=track.Nearest(new Vector3(p.x,0,p.z),out _);return FlatDistance(p,track.At(d));}
+        public bool GrassClearance(Vector3 p,out bool villageGreen)
+        {
+            villageGreen=false;float d=track.Nearest(new Vector3(p.x,0,p.z),out _);
+            if(FlatDistance(p,track.At(d))<9.5f||FlatDistance(p,post)<22)return false;
+            if(VillageDistance(p)>5)return true;
+            villageGreen=p.x>-80&&p.x<24&&p.z<-118.5f&&p.z>-128.5f;return villageGreen;
+        }
         public bool SurfacePoint(Vector3 p,out RaycastHit surface,bool includeTalus=true)
         {
             surface=default;float nearest=float.MaxValue;
@@ -307,7 +325,7 @@ namespace LittleRoad
             // Keep them outside the terrain's static-combine hierarchy.
             var vegetationRoot=new GameObject("Bayview shared foliage / unbatched").transform;
             var rng=new System.Random(7341);bool kitTrees=BayviewKit.Has("tree_round");
-            for(int i=0;i<520;i++) {
+            for(int i=0;i<640;i++) {
                 float x=(float)rng.NextDouble()*310-155,z=(float)rng.NextDouble()*235-118;var p=new Vector3(x,0,z);
                 float d=track.Nearest(p,out float lateral),distance=FlatDistance(p,track.At(d));
                 if(distance<18||VillageDistance(p)<7||FlatDistance(p,post)<24||BayviewCountryside.Reserved(p)||NearCauseway(p))continue;
@@ -326,9 +344,12 @@ namespace LittleRoad
                 }
                 if(!supported)continue;p.y=lowest-.06f*scale;
                 if(kitTrees) {
-                    // Toy-kit trees: cypress, umbrella pine, round broadleaf. Keep the windmill hilltop open.
+                    // Toy-kit trees, a Mediterranean island mix: umbrella pine and cypress, olive groves (where the
+                    // ground noise says so), blossom, round broadleaf and the odd poplar. Keep the windmill hilltop open.
                     if(FlatDistance(p,new Vector3(-24,0,12))<10)continue;
-                    BayviewKit.Spawn(species==0?"tree_cypress":species==1?"tree_pine":"tree_round",p+Vector3.down*.1f,i*47,vegetationRoot,scale:.75f+size/14);
+                    bool grove=Mathf.PerlinNoise(x*.018f+5,z*.018f+9)>.58f;int pick=i%10;
+                    string id=grove?(pick<7?"olive_tree":"tree_cypress"):pick<2?"tree_cypress":pick<5?"tree_pine":pick<6?"tree_blossom":pick<8?"tree_round":pick<9?"tree_poplar":"olive_tree";
+                    BayviewKit.Spawn(id,p+Vector3.down*.1f,i*47,vegetationRoot,scale:(id=="olive_tree"?.6f:.75f)+size/14);
                 }
                 else vegetation.Plant(vegetationRoot,p,scale,species,i%3);
             }
@@ -383,7 +404,7 @@ namespace LittleRoad
             Bridge();Roadside();masonry.Finish();Step("bridge-roadside-masonry");Next(.35f,"Carving the cliffs");yield return null;
             var cliffMaterial=TerrainMaterial("Weathered cliff limestone",new Color(.35f,.43f,.24f),new Color(.60f,.56f,.46f));cliffMaterial.SetFloat("_RockOnly",1);
             new CoastalCliffs(this,root,cliffMaterial).Build();Step("cliffs");Next(.53f,"Planting Bayview");yield return null;
-            Physics.SyncTransforms();Planting();Step("planting");
+            Physics.SyncTransforms();BayviewCountryside.ChoosePlots(this);Planting();Step("planting");
             if(BayviewKit.Has("windmill")) {
                 var hill=new Vector3(-24,0,12);hill.y=Height(hill.x,hill.z)-.4f;
                 BayviewKit.Spawn("windmill",hill,200,BayviewKit.AnimatedRoot,new BayviewKit.Tint(Color.white,Toy.Hex(0x3a7bd5),Toy.Hex(0xff4d5e),Toy.Hex(0x3a7bd5)));

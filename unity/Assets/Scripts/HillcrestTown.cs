@@ -177,7 +177,9 @@ namespace LittleRoad
         }
         // Flag bunting: little triangles on a sagging line between two points.
         static Material buntingMaterial;
-        void Bunting(Vector3 a,Vector3 b,float sag)
+        void Bunting(Vector3 a,Vector3 b,float sag)=>BuntingLine(root,a,b,sag);
+        // Shared with Bayview's high street.
+        public static GameObject BuntingLine(Transform parent,Vector3 a,Vector3 b,float sag)
         {
             // LittleRoad/Bunting: vertex alpha is how free a vertex is, so pennant tips sway and flutter.
             if(buntingMaterial==null)buntingMaterial=new Material(Shader.Find("LittleRoad/Bunting")){name="Bunting"};
@@ -192,8 +194,8 @@ namespace LittleRoad
             var w=new Color(.95f,.95f,.9f,0);
             for(int i=0;i<24;i++){Vector3 p0=P(i/24f),p1=P((i+1)/24f);int s=v.Count;v.AddRange(new[]{p0,p1,p1+Vector3.down*.04f,p0+Vector3.down*.04f});col.AddRange(new[]{w,w,w,w});t.AddRange(new[]{s,s+1,s+2,s,s+2,s+3,s,s+2,s+1,s,s+3,s+2});}
             var mesh=new Mesh{name="Bunting"};mesh.SetVertices(v);mesh.SetColors(col);mesh.SetTriangles(t,0);var up=new Vector3[v.Count];for(int i=0;i<up.Length;i++)up[i]=Vector3.up;mesh.normals=up;
-            var go=new GameObject("Bunting",typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root);go.GetComponent<MeshFilter>().sharedMesh=mesh;
-            var r=go.GetComponent<MeshRenderer>();r.sharedMaterial=buntingMaterial;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+            var go=new GameObject("Bunting",typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(parent);go.GetComponent<MeshFilter>().sharedMesh=mesh;
+            var r=go.GetComponent<MeshRenderer>();r.sharedMaterial=buntingMaterial;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;return go;
         }
         // ---------------------------------------------------------------- castle
         void Castle()
