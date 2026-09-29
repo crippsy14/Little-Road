@@ -9,7 +9,7 @@ $folder=Join-Path $root "review/hillcrest-race/$Name"
 if(Test-Path -LiteralPath $folder){throw "Valley race review $Name already exists"}
 New-Item -ItemType Directory -Path $folder | Out-Null
 $exe=[IO.Path]::GetFullPath((Join-Path $root '../little-road-dev-build/Little Road Unity.exe'))
-$save=Join-Path $folder 'save.json';Copy-Item (Join-Path $root 'review/watch-cars/save.json') $save
+$save=Join-Path $folder 'save.json';Copy-Item (Join-Path $root 'tools/fixtures/watch-cars-save.json') $save
 $log=Join-Path $folder 'player.log'
 $run=Start-Process -FilePath $exe -WindowStyle Hidden -PassThru -ArgumentList @('-batchmode','--valley-race-review','--adventure-save',('"'+$save+'"'),'-logFile',('"'+$log+'"'))
 $deadline=(Get-Date).AddSeconds($TimeoutSeconds)

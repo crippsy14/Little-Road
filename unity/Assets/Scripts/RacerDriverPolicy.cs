@@ -25,7 +25,7 @@ namespace LittleRoad
         readonly uint seed;
         readonly float halfWidth,halfLength;
         readonly float[] heat=new float[Bins],smooth=new float[Bins];
-        readonly float[] allowed=new float[160],raw=new float[200],path=new float[160+2*Span];
+        readonly float[] allowed=new float[160],raw=new float[220],path=new float[220+2*Span];
         // Lateral bending is measured over +-Span samples (about 8 m): the steering look-ahead rounds off
         // shorter kinks, such as where a planned line meets the road edge.
         const int Span=4;
@@ -134,6 +134,11 @@ namespace LittleRoad
             float pedal=wheel>=0?wheel/Mathf.Max(.01f,DriveModel.EngineForce(tuning,v)):wheel/tuning.braking;
             // Below the limit line, full power: the braking recursion guarantees we can still slow in time.
             if(reason==Reason.Limit&&(limitSpeed>v+.5f||limitSpeed>=tuning.AttainableSpeed-.15f))pedal=1;
+            // Braking: a cautious driver lifts and coasts well before a corner that needs slowing for.
+            if(pedal>0&&reason==Reason.Limit&&ability.CoastDistance>1) {
+                int kc=Mathf.Min(allowedCount,Mathf.RoundToInt(ability.CoastDistance/track.Step));
+                for(int k=0;k<=kc;k++)if(allowed[k]<v-1){pedal=0;break;}
+            }
             // Control: a less assured driver feeds the throttle in gently while still turning.
             if(pedal>0&&Mathf.Abs(track.LineCurvature(track.Index(s)))>1/90f)pedal=Mathf.Min(pedal,ability.CornerThrottle);
             // Following: small slowdowns lift and coast (drag alone is ~4 m/s^2 at speed) rather than dab the brakes.
@@ -161,8 +166,8 @@ namespace LittleRoad
             // Bending is read from the planned line itself; the short correction from where the car is back
             // onto it is the steering's job, not a corner.
             // Braking skill: a cautious braker wants to be down to a corner's speed `margin` metres before it.
-            int margin=Mathf.Min(Span,Mathf.RoundToInt(ability.BrakeMargin/step));
-            for(int k=-Span;k<=count+Span;k++)path[k+Span]=PathTarget(s,k*step,edge);
+            int margin=Mathf.Min(40,Mathf.RoundToInt(ability.BrakeMargin/step));
+            for(int k=-Span;k<=count+margin+Span;k++)path[k+Span]=PathTarget(s,k*step,edge);
             float span=Span*step;
             for(int k=count+margin;k>=0;k--) {
                 float x=k*step;int i=track.Index(s+x);

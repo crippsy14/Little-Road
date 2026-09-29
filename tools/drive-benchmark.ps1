@@ -10,7 +10,7 @@ if(Test-Path -LiteralPath $folder){throw "Drive benchmark $Name already exists"}
 New-Item -ItemType Directory -Path $folder | Out-Null
 $exe=[IO.Path]::GetFullPath((Join-Path $root '../little-road-dev-build/Little Road Unity.exe'))
 # A stock car with the Precision rack (steady, repeatable pace), from the watch-cars save.
-$save=Get-Content (Join-Path $root 'review/watch-cars/save.json') -Raw | ConvertFrom-Json
+$save=Get-Content (Join-Path $root 'tools/fixtures/watch-cars-save.json') -Raw | ConvertFrom-Json
 foreach($f in $save.fitted){$f.id=$f.slot+'_stock'};($save.fitted | Where-Object {$_.slot -eq 'steering'}).id='steering_precision'
 if($save.owned -notcontains 'steering_precision'){$save.owned+= 'steering_precision'}
 [IO.File]::WriteAllText((Join-Path $folder 'save.json'),($save | ConvertTo-Json -Depth 5))

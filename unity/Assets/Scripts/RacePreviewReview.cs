@@ -20,7 +20,8 @@ namespace LittleRoad
         void Error(string message,string stack,LogType type){if(type==LogType.Exception)Application.Quit(2);}
         void Check(bool ok,string why){if(!ok)throw new Exception("Race preview review: "+why);checks.Add(why);}
         IEnumerator Pulse(GamepadButton button)
-        {InputSystem.QueueStateEvent(pad,new GamepadState().WithButton(button));yield return new WaitForSecondsRealtime(.12f);InputSystem.QueueStateEvent(pad,new GamepadState());yield return new WaitForSecondsRealtime(.12f);}
+        // A connected DualSense streams motion data and keeps becoming Gamepad.current; the virtual pad must be current.
+        {pad.MakeCurrent();InputSystem.QueueStateEvent(pad,new GamepadState().WithButton(button));yield return new WaitForSecondsRealtime(.12f);InputSystem.QueueStateEvent(pad,new GamepadState());yield return new WaitForSecondsRealtime(.12f);}
         IEnumerator PressKey(UnityEngine.InputSystem.Key key)
         {InputSystem.QueueStateEvent(keyboard,new KeyboardState(key));yield return new WaitForSecondsRealtime(.12f);InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return new WaitForSecondsRealtime(.12f);}
         IEnumerator Run()
@@ -53,6 +54,13 @@ namespace LittleRoad
             ui.SelectEntry(0);yield return Pulse(GamepadButton.DpadUp);Check(ui.SelectedEntrant!=0,"D-pad navigation inspects a different driver");
             yield return Pulse(GamepadButton.RightShoulder);Check(ui.Page==0,"R1 wraps last roster page to first");
             ui.Capture(Path.Combine(folder,"02-rival.png"));
+            // Driver rating and radar (docs/45 F2): DR beside PP; holding Triangle shows the radar.
+            var rival=race.Roster.Entries[ui.SelectedEntrant];
+            Check(rival.Driver==null||ui.DisplayedDriverRating==RacerRadar.DriverRating(RacerAbilities.From(rival.Driver)).ToString(),"Driver rating shown matches the rival's abilities");
+            pad.MakeCurrent();InputSystem.QueueStateEvent(pad,new GamepadState().WithButton(GamepadButton.North));yield return null;pad.MakeCurrent();yield return new WaitForSecondsRealtime(.25f);
+            Check(ui.RadarShown,"Holding Triangle shows the driver radar");ui.Capture(Path.Combine(folder,"05-driver-radar.png"));
+            InputSystem.QueueStateEvent(pad,new GamepadState());yield return new WaitForSecondsRealtime(.2f);
+            Check(!ui.RadarShown,"Releasing Triangle hides the radar");
             yield return Pulse(GamepadButton.LeftShoulder);Check(ui.Page==2,"L1 returns to previous roster page");
             yield return PressKey(UnityEngine.InputSystem.Key.PageDown);Check(ui.Page==0,"Keyboard PageDown browses roster pages");
             ui.FocusStart();yield return Pulse(GamepadButton.South);

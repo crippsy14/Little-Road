@@ -23,7 +23,14 @@ namespace LittleRoad
         const int Rows=24;
         Canvas canvas;RaceRoster roster;RaceEntrant[] grid;PartPreviewStage stage;
         Action confirm,cancel;Text driverName,gridLabel,rating,bodyLabel,bubble,speedValue,accelValue,rankValue;
-        RectTransform speedBar,accelBar,rankBar;RawImage car;readonly Button[] rows=new Button[Rows];readonly ToyShape[] ratingPills=new ToyShape[Rows];
+        RectTransform speedBar,accelBar,rankBar;RawImage car;readonly Button[] rows=new Button[Rows];readonly ToyShape[] ratingPills=new ToyShape[Rows],driverPills=new ToyShape[Rows];
+        // Driver rating (DR, 1-20, the mean of the racing abilities) beside PP; its radar shows on hover
+        // (mouse) or while Triangle / R is held.
+        Text driverRating;RacerRadarCard radarCard;bool radarHover;
+        public bool RadarShown=>radarCard!=null&&radarCard.root.activeSelf;
+        public string DisplayedDriverRating=>driverRating.text;
+        static bool HasDriver(RaceEntrant e)=>e.Id!=0&&e.Driver!=null;
+        static RacerAbilities Abilities(RaceEntrant e)=>RacerAbilities.From(e.Driver);
         Button start,back,inspect,tourButton;int selected;float nextSpin,tourStart,maxSpeed,bestSprint;bool touring;
         readonly Text[] partNames=new Text[7];
         RacePaddockInspector inspector;
@@ -81,6 +88,10 @@ namespace LittleRoad
             for(int i=0;i<Rows;i++){
                 int slot=i;int column=i/12,row=i%12;var tile=Tile(board.transform,new Vector2(398,40),new Vector2(-204+column*410,222-row*44),slot);rows[i]=tile;
             }
+            for(int column=0;column<2;column++){
+                Toy.Label(board.transform,"DR heading","DR",15,new Vector2(52,20),new Vector2(-204+column*410+104,258),Toy.Soft,TextAnchor.MiddleCenter,true);
+                Toy.Label(board.transform,"PP heading","PP",15,new Vector2(56,20),new Vector2(-204+column*410+162,258),Toy.Soft,TextAnchor.MiddleCenter,true);
+            }
             for(int i=0;i<Rows;i++){
                 int column=i/12,row=i%12;
                 rows[i].navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnUp=row>0?rows[i-1]:null,selectOnDown=row<11?rows[i+1]:null,selectOnLeft=column==1?rows[i-12]:null,selectOnRight=column==0?rows[i+12]:null};
@@ -100,6 +111,10 @@ namespace LittleRoad
             var rosette=Toy.Card(panel.transform,"Rating rosette",new Vector2(160,160),new Vector2(120,212),Toy.Red,80,7,7);rosette.rectTransform.localRotation=Quaternion.Euler(0,0,-8);
             rating=Toy.Title(rosette.transform,"Rating",string.Empty,58,new Vector2(160,86),new Vector2(0,12),Toy.White,TextAnchor.MiddleCenter);
             Toy.Label(rosette.transform,"PP","PP",22,new Vector2(160,30),new Vector2(0,-40),Toy.White,TextAnchor.MiddleCenter,true);
+            var drRosette=Toy.Card(panel.transform,"Driver rosette",new Vector2(140,140),new Vector2(292,206),Toy.Blue,70,7,7);drRosette.rectTransform.localRotation=Quaternion.Euler(0,0,6);drRosette.raycastTarget=true;
+            driverRating=Toy.Title(drRosette.transform,"Driver rating",string.Empty,52,new Vector2(140,76),new Vector2(0,10),Toy.White,TextAnchor.MiddleCenter);
+            Toy.Label(drRosette.transform,"DR","DR",22,new Vector2(140,30),new Vector2(0,-36),Toy.White,TextAnchor.MiddleCenter,true);
+            var hover=drRosette.gameObject.AddComponent<HoverArea>();hover.entered=()=>radarHover=true;hover.exited=()=>radarHover=false;
             speedValue=StatBar(panel.transform,"TOP SPEED",new Vector2(300,82),Toy.Red,out speedBar);
             accelValue=StatBar(panel.transform,"ACCEL 0-30",new Vector2(300,14),Toy.Mint,out accelBar);
             rankValue=StatBar(panel.transform,"RATING RANK",new Vector2(300,-54),Toy.Pink,out rankBar);
@@ -118,8 +133,9 @@ namespace LittleRoad
             inspect=Toy.Candy(root,"EXPLORE PADDOCK","PADDOCK","[]",new Vector2(310,96),new Vector2(-470,-448),Toy.Blue,OpenInspector);
             tourButton=Toy.Candy(root,"TOUR GRID","TOUR GRID",null,new Vector2(250,84),new Vector2(-160,-448),Toy.Sky,()=>SetTour(!touring));
             start=Toy.Candy(root,"START RACE","START RACE!","X",new Vector2(560,116),new Vector2(640,-440),Toy.Gold,()=>Leave(true),true);
-            Toy.Label(root,"Controls","D-pad: browse the grid\nL1 / R1: jump 8 places",19,new Vector2(300,60),new Vector2(170,-448),Toy.Navy,TextAnchor.MiddleLeft,true);
+            Toy.Label(root,"Controls","D-pad: browse the grid\nL1 / R1: jump 8 places\nHold Triangle / R: driver radar",19,new Vector2(300,84),new Vector2(170,-448),Toy.Navy,TextAnchor.MiddleLeft,true);
             foreach(var b in new[]{back,inspect,tourButton,start})b.navigation=new Navigation{mode=Navigation.Mode.Automatic};
+            radarCard=new RacerRadarCard(panel.transform,new Vector2(250,-30));
         }
         Button Tile(Transform parent,Vector2 size,Vector2 position,int slot)
         {
@@ -128,8 +144,9 @@ namespace LittleRoad
             var number=Toy.Card(shape.transform,"Slot",new Vector2(32,32),new Vector2(-176,0),Toy.Navy,16,0,0);
             Toy.Label(number.transform,"Slot number",(slot+1).ToString(),17,new Vector2(32,32),Vector2.zero,Toy.White,TextAnchor.MiddleCenter,true);
             Toy.Car(shape.transform,"Car",new Vector2(44,29),new Vector2(-128,0),Color.white);
-            Toy.Label(shape.transform,"Name",string.Empty,21,new Vector2(210,40),new Vector2(10,0),Toy.Navy,TextAnchor.MiddleLeft,true);
-            ratingPills[slot]=Toy.Pill(shape.transform,"Rating","",17,new Vector2(64,28),new Vector2(158,0),Toy.White,Toy.Navy);
+            Toy.Label(shape.transform,"Name",string.Empty,21,new Vector2(172,40),new Vector2(-9,0),Toy.Navy,TextAnchor.MiddleLeft,true);
+            driverPills[slot]=Toy.Pill(shape.transform,"Driver rating","",17,new Vector2(52,28),new Vector2(104,0),Toy.SkyLight,Toy.Navy);
+            ratingPills[slot]=Toy.Pill(shape.transform,"Rating","",17,new Vector2(56,28),new Vector2(162,0),Toy.White,Toy.Navy);
             shape.gameObject.AddComponent<RacePreviewRow>().selected=()=>SelectEntry(grid[slot].Id);
             shape.gameObject.AddComponent<PaddockHover>().entered=()=>{SetTour(false);EventSystem.current.SetSelectedGameObject(shape.gameObject);};
             button.onClick.AddListener(FocusStart);
@@ -152,6 +169,7 @@ namespace LittleRoad
                 var e=grid[i];var tile=rows[i];tile.name="Entrant "+e.Id;
                 tile.transform.Find("Car").GetComponent<ToyCarIcon>().color=e.Paint;
                 tile.transform.Find("Name").GetComponent<Text>().text=e.Id==0?"YOU":e.Driver?.Name??"Driver "+e.Id;
+                driverPills[i].GetComponentInChildren<Text>().text=HasDriver(e)?RacerRadar.DriverRating(Abilities(e)).ToString():"-";
                 var pill=ratingPills[i];pill.GetComponentInChildren<Text>().text=e.Rating.ToString();pill.SetFill(e.Rating<own?Toy.Slower:e.Rating>own?Toy.Faster:Toy.White);
                 tile.GetComponent<ToyTile>().Player=e.Id==0;
             }
@@ -163,6 +181,8 @@ namespace LittleRoad
             var e=roster.Entries[id];selected=id;bool you=id==0;
             driverName.text=you?"YOU":(e.Driver?.Name??"Driver "+id).ToUpperInvariant();gridLabel.text="GRID "+(e.Slot+1);
             rating.text=e.Rating.ToString();
+            driverRating.text=HasDriver(e)?RacerRadar.DriverRating(Abilities(e)).ToString():"-";
+            radarCard.Hide();
             float speed=e.Tuning.AttainableSpeed,sprint=PartsBrowser.Sprint(e.Tuning);
             int rank=1+roster.Entries.Count(o=>o.Rating>e.Rating);
             speedValue.text=$"{speed*2.237f:0.0} mph";SetBar(speedBar,speed/Mathf.Max(.01f,maxSpeed));
@@ -200,21 +220,26 @@ namespace LittleRoad
         }
         void Update()
         {
-            if(!IsOpen)return;var k=Keyboard.current;var p=Gamepad.current;
+            if(!IsOpen)return;var k=Keyboard.current;
             if(inspector!=null&&(inspector.IsOpen||inspector.LastCloseFrame==Time.frameCount))return;
-            if(k?.iKey.wasPressedThisFrame==true||p?.buttonWest.wasPressedThisFrame==true){OpenInspector();return;}
+            if(k?.iKey.wasPressedThisFrame==true||Pad(g=>g.buttonWest)){OpenInspector();return;}
+            bool wantRadar=HasDriver(roster.Entries[selected])&&(radarHover||k?.rKey.isPressed==true||Gamepad.all.Any(g=>g.buttonNorth.isPressed));
+            if(wantRadar&&!radarCard.root.activeSelf){var e=roster.Entries[selected];radarCard.Show(e.Driver.Name.ToUpperInvariant(),Abilities(e));}
+            else if(!wantRadar&&radarCard.root.activeSelf)radarCard.Hide();
             if(Time.unscaledTime>=nextSpin){nextSpin=Time.unscaledTime+.067f;stage?.RotateCar(.8f);}
             // Tour: step through the grid every 0.75 s, a "page" (eight places) every 6 s.
             if(touring){
                 float phase=Time.unscaledTime-tourStart;int slot=(int)(roster.Entries[selected].Slot/8*8+Mathf.Min(7,phase/.75f));
                 if(phase>=6){slot=(int)Mathf.Repeat(roster.Entries[selected].Slot/8*8+8,Rows);tourStart=Time.unscaledTime;}
                 if(grid[slot].Id!=selected)SelectRow(slot);
-                if(k?.upArrowKey.wasPressedThisFrame==true||k?.downArrowKey.wasPressedThisFrame==true||p?.dpad.ReadValue().sqrMagnitude>0)SetTour(false);
+                if(k?.upArrowKey.wasPressedThisFrame==true||k?.downArrowKey.wasPressedThisFrame==true||Gamepad.all.Any(g=>g.dpad.ReadValue().sqrMagnitude>0))SetTour(false);
             }
-            if(k?.escapeKey.wasPressedThisFrame==true||p?.buttonEast.wasPressedThisFrame==true){Leave(false);return;}
-            if(k?.pageUpKey.wasPressedThisFrame==true||p?.leftShoulder.wasPressedThisFrame==true)TurnPage(-1);
-            if(k?.pageDownKey.wasPressedThisFrame==true||p?.rightShoulder.wasPressedThisFrame==true)TurnPage(1);
+            if(k?.escapeKey.wasPressedThisFrame==true||Pad(g=>g.buttonEast)){Leave(false);return;}
+            if(k?.pageUpKey.wasPressedThisFrame==true||Pad(g=>g.leftShoulder))TurnPage(-1);
+            if(k?.pageDownKey.wasPressedThisFrame==true||Pad(g=>g.rightShoulder))TurnPage(1);
         }
+        // Any connected pad counts: a second controller (or a DualSense streaming motion data) must not steal input.
+        static bool Pad(Func<Gamepad,UnityEngine.InputSystem.Controls.ButtonControl> button)=>Gamepad.all.Any(g=>button(g).wasPressedThisFrame);
         public void Hide(){LastCloseFrame=Time.frameCount;inspector?.Hide();if(canvas!=null)canvas.gameObject.SetActive(false);stage?.Dispose();stage=null;StopAllCoroutines();if(EventSystem.current!=null)EventSystem.current.SetSelectedGameObject(null);}
         void Leave(bool begin){Hide();(begin?confirm:cancel)?.Invoke();}
         public void Confirm()=>Leave(true);

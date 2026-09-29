@@ -213,3 +213,21 @@ All abilities at 0: 72.1 s. At 0.5: 69.4 s. At 1: 68.3 s (5.6% spread). `--racer
 Study 206 (same build; `--first-ai` for the benchmark): v2 Cedar 6,375.5 against 6,345.0 (+30.5); Bayview 2,383.2 against 2,510.2 (−127.0). All 24 finish, no assisted resets. That's 16.1 s better per race. The slower lower-rated drivers cost v2 a little pace, as intended.
 
 **The first AI is not repeatable under heavy parallel load.** Its 8 forecast worker threads made Bayview 1709 finish 23/24 with 2 resets when six races ran at once, but 919.0 s alone, as always. `run-pace-parallel.ps1` now races any `--first-ai` run on its own. v2 is single-threaded and repeatable in parallel.
+
+### A 1/20 to 20/20 spread (study 207)
+
+Richard asked for the worst-to-best gap to be about 50%, so a teammate trained from 1s to 20s, or a field in identical cars, shows it clearly. Shortfalls now count to the power 1.5, so the top of the scale stays close and the bottom opens up:
+
+| All abilities | Solo Cedar club lap | vs best |
+|---|---|---|
+| 0 (1/20) | 101.6 s | +49% |
+| 0.25 | 82.0 s | +20% |
+| 0.5 | 73.3 s | +7% |
+| 0.75 | 69.2 s | +1.4% |
+| 1 (20/20) | 68.3 s | — |
+
+On their own at 0: Braking +8.7 s (lift-and-coast up to 90 m early, corner speed up to 43 m early, brake use down to 47%), Line +8.4 s (corner grip down to 40%), Control +4.6 s (throttle held to 25% while turning).
+
+Study 207 (same build, `--first-ai` benchmark): Bayview 2,418.2 against 2,510.2; Cedar 6,445.9 against 6,345.0. All 24 finish, no resets. That's 1.5 s per race behind overall, because the lower-rated racers in the current roster (abilities 0.5–0.85) are now genuinely slower. The driving itself is unchanged. Phase 0's racer records will set each racer's radar deliberately.
+
+**Race preview:** each racer's DR (driver rating, 1–20, the mean of the five racing abilities) sits beside PP on the grid and on a blue rosette. Hovering the rosette, or holding Triangle / R, shows the radar with each ability out of 20, plus aggression and patience. Preview and paddock input now accept any connected pad: a DualSense streaming motion data kept taking over `Gamepad.current` and made the review's virtual presses vanish.

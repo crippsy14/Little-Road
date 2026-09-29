@@ -53,16 +53,22 @@ namespace LittleRoad
         }
 
         // How the abilities turn into driving numbers. Kept together so checks and tuning see one table.
-        public float CornerUse=>.8f+.15f*line;               // share of the steady cornering limit
-        public float BrakeUse=>.86f+.11f*braking;            // share of brake/tyre deceleration
+        // Shortfalls count to the power 1.5: a 0.8 driver is only a little off the best, a 0.5 driver clearly slower,
+        // and a novice at 0 up to ~50% slower over a lap (docs/46, "abilities that show"). The rating shown to
+        // players is 1 + 19 x ability, so 1/20 to 20/20.
+        static float Short(float ability)=>Mathf.Pow(1-Mathf.Clamp01(ability),1.5f);
+        public float CornerUse=>.95f-.55f*Short(line);       // share of the steady cornering limit
+        public float BrakeUse=>.97f-.5f*Short(braking);      // share of brake/tyre deceleration
         public float ApexError=>1.2f*(1-line);               // metres of seeded lateral error per corner
-        public float BrakeMargin=>8*(1-braking);             // metres early a driver wants to be at corner speed
-        public float CornerThrottle=>.55f+.45f*control;      // throttle limit while still turning
+        public float BrakeMargin=>8*(1-braking)+35*Short(braking); // metres early a driver wants to be at corner speed
+        public float CoastDistance=>90*Short(braking);       // metres of lift-and-coast before slowing for a corner
+        public float CornerThrottle=>1-.75f*Short(control);  // throttle limit while still turning
         public float BrakeScatter=>.05f*(1-braking);         // +- share of BrakeUse, seeded per corner
-        public float PedalRise=>3+6*control;                 // pedal units per second when getting back on power
-        public float LateralRate=>1.6f+1.6f*control;         // metres per second of deliberate lateral movement
+        public float PedalRise=>9-7.5f*Short(control);       // pedal units per second when getting back on power
+        public float LateralRate=>3.2f-1.8f*Short(control);  // metres per second of deliberate lateral movement
         public float LaunchDelay=>.06f+.22f*(1-control);     // seconds after the lights
-        public float SpellDip=>.01f+.06f*(1-consistency);    // grip/brake use lost during an off spell
+        public float SpellDip=>.01f+.15f*Short(consistency); // grip/brake use lost during an off spell
+        public static int Rating(float ability)=>1+Mathf.RoundToInt(19*Mathf.Clamp01(ability));
         public float Reaction=>.25f-.13f*racecraft;          // Gipps reaction time in traffic, seconds
         public float Standstill=>1.3f-.7f*aggression;        // metres kept behind a car at low speed
         public float Clearance=>.85f-.55f*aggression;        // metres of side room wanted when passing

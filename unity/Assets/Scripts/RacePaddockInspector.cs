@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -108,11 +109,11 @@ namespace LittleRoad
         }
         void Update()
         {
-            if(!IsOpen)return;var k=Keyboard.current;var pad=Gamepad.current;
-            if(k?.escapeKey.wasPressedThisFrame==true||pad?.buttonEast.wasPressedThisFrame==true){Hide();return;}
-            if(k?.leftArrowKey.wasPressedThisFrame==true||pad?.leftShoulder.wasPressedThisFrame==true)SelectPart(selected-1);
-            if(k?.rightArrowKey.wasPressedThisFrame==true||pad?.rightShoulder.wasPressedThisFrame==true)SelectPart(selected+1);
-            float turn=pad?.rightStick.x.ReadValue()??0;
+            if(!IsOpen)return;var k=Keyboard.current;
+            if(k?.escapeKey.wasPressedThisFrame==true||Gamepad.all.Any(g=>g.buttonEast.wasPressedThisFrame)){Hide();return;}
+            if(k?.leftArrowKey.wasPressedThisFrame==true||Gamepad.all.Any(g=>g.leftShoulder.wasPressedThisFrame))SelectPart(selected-1);
+            if(k?.rightArrowKey.wasPressedThisFrame==true||Gamepad.all.Any(g=>g.rightShoulder.wasPressedThisFrame))SelectPart(selected+1);
+            float turn=0;foreach(var g in Gamepad.all)if(Mathf.Abs(g.rightStick.x.ReadValue())>Mathf.Abs(turn))turn=g.rightStick.x.ReadValue();
             if(Time.unscaledTime<nextFrame)return;nextFrame=Time.unscaledTime+.05f;
             if(animate||Mathf.Abs(turn)>.1f){stage.RotateCar(Mathf.Abs(turn)>.1f?turn*3:.65f);if(animate){orbitAngle=Mathf.Repeat(orbitAngle+.38f,360);RenderScene();stage.Rotate(.6f);}}
         }
