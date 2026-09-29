@@ -1,8 +1,0 @@
-{
-  "export": "outputs/little-road-context-25-review/Little Road Unity.exe",
-  "assemblyHash": "700C8B64BA4E6A4692024A914CAA2EB4CC1E59D2E757D576C9752FB423021A6F",
-  "buildChecks": 280,
-  "change": "Opt-in live road-feasibility candidate qualification, actual collider geometry, 0.10m uncertainty allowance and fresh velocity-matched paths. Six-candidate planning cap; explicit unresolved states; existing traffic and braking constraints retained.",
-  "acceptance": "NOT retained for promotion. Main field 11/11, all 13 checkpoint deadlines, 24 finish, zero sampled road departures/recoveries/overlap failure. Total 2221.678986 car-s. New no-unresolved contract FAILS: 936 sampled unresolved car-states, 22886 forecast calls. Contacts remain worse than passing baseline12; performance unaccepted.",
-  "remaining": "Distinguish longitudinal followers from side occupancy; investigate remaining infeasible candidates and contact encounters; reduce/stagger forecast cost; full regression and visible performance/feel acceptance still required."
-}

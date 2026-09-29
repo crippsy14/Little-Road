@@ -1,8 +1,0 @@
-{
-  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-15-review\\Little Road Unity.exe",
-  "assemblyHash": "D9CAD467097CD6C2423B3779314777D24A68AA1EF00ECE715A17C0BD6DE2C7D2",
-  "policyHash": "F5E0BE4DA4FCE81FE88E359D42E36EB2A88D1E1A4CE52B0FD5EC6DC8C657277C",
-  "change": "Observation-only planar physics calibration; no driving policy or force changes",
-  "acceptance": "Physical-state calibration useful, but centred body proxies fail the explicit actual-collider geometry gate. Recorded failed-field parity exact.",
-  "buildChecks": 273
-}

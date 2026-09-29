@@ -1,3 +1,4 @@
+# Needs matplotlib for its plots: py -m pip install matplotlib (no longer vendored in tools/).
 """Summarise actual Unity proving-ground telemetry; retain missing/failed cases.
 
 Expectations describe conditional part effects, not a ranking of every price.

@@ -1,9 +1,0 @@
-# Shared roster and first connected adventure87
-
-488 build checks;153 frozen source/script inputs. Both standalone mixed fields match86 exactly for stored motion, checkpoint events, contacts, recovery, context samples and race results. The preview passes200 synthetic input/data checks, including all24 actual seven-part loadouts, equipment-only ratings, actual spawned tuning/driver agreement, paused countdown, pages and confirmation. Player and rival1920×1080 captures were inspected: information is readable without clipping; part-name columns are uneven and the block styling is intentionally superseded by the next visual milestone.
-
-The isolated connected adventure completes delivery, two finds, engine purchase/fitting, preview,24-car three-lap modern race, payout and return to town. All24 finish; automated player is18th in93.782509s, receives130 credits with the workshop engine retained. One rival uses physical recovery; two participant contact records, maximum impact4.807916m/s. No assisted teleport recovery. Reload inside the session rejects duplicate delivery/race payment.
-
-Code review after this run found Race again would be blocked by the new running-entry guard.87 is therefore not promoted.88 corrects the guard for settled events and adds a retry preview/cancel/confirm plus separate-process reload test. The87 initial flow remains useful evidence but does not establish retry acceptance.
-
-No physical DualSense, subjective personality or integrated rendering-performance acceptance is claimed. Accelerated smoke frame times are not performance benchmarks. Equipment rating is a crude versioned dry-road estimate; broader calibration, stock connected racing and varied-loadout balance remain open. Desktop shortcuts are unchanged. See document39 for the user-requested dashboard, live relative standings and complete playful UI redesign.

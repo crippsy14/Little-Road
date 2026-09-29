@@ -1,8 +1,0 @@
-{
-  "export": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road-context-17-review\\Little Road Unity.exe",
-  "assemblyHash": "4E03F393CF1EAA7A3586498D8056D731E075E9D33C70DBFDCC32271596CB6BD5",
-  "policyHash": "F5E0BE4DA4FCE81FE88E359D42E36EB2A88D1E1A4CE52B0FD5EC6DC8C657277C",
-  "change": "Observation-only planar physics calibration; no driving policy or force changes",
-  "acceptance": "All selection now uses actual field size. Corrected stock calibration passes with exact recorded race parity versus 16. Default driver remains failed-field prototype 14; not a race fix or promotion.",
-  "buildChecks": 273
-}

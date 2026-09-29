@@ -1,1 +1,0 @@
-Excluded from driving comparison: user did not see the game window and requested another attempt. Preserve raw files.

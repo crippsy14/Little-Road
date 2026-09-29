@@ -1,9 +1,0 @@
-# Prototype 81: first exploratory dynamic-path field comparison
-
-Declared before running: preserve prototype 80's planner unchanged. The only runtime change permits an explicit Cedar context field fixture to opt into dynamic traffic above three cars. Use the original 71 mixed street/club grid, club car 0 starting at the rear, seed 1709, one standing-start lap, light drafting and open-space priority enabled in both arms. Do not override opponent equipment.
-
-Compare feature off/on within the same 81 executable, and check off against 71's accepted-for-comparison field motion and results. Keep any post-finish telemetry tail discrepancy explicit. Baseline 71: all 24 finish; collective 2209.831879 car-seconds; preview 90.483315 seconds, seventh, CP1 rank 22; 10 impact participant records and 781 unresolved plan samples.
-
-Report collective official times only when all 24 finish. Also report preview time/place/CP1 and sustained passing, checkpoint counts/deadlines, departures, recoveries, missed gates, contacts/severity, unresolved planning, braking/coasting and whole AI timing/allocation. Seek lower collective and preview times without a field-flow failure or increased incident severity. The 80-second preview is an aim, not a fabricated pass criterion or promised result. Zero measured warm driver allocation remains required; rendered p95/p99 targets remain 16.7/33.3 ms and cannot be certified by hidden timing.
-
-This is exploratory, not promotion. Prototype 80 retains one controlled unresolved sample and two strict pass-confirmation deadline failures. The 24-car study does not erase those failures. Do not change the planner shortlist during this first comparison. If all cars finish and the run is useful to review, show a separately labelled windowed replay, preserving the desktop shortcut and adventure build.

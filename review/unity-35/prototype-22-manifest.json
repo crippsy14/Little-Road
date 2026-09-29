@@ -1,7 +1,0 @@
-{
-  "export": "outputs/little-road-context-22-review/Little Road Unity.exe",
-  "assemblyHash": "106D19DB7564F0A7D1DFE11A6B486B19C455993ADF90278CADDEB008FD7D3E7B",
-  "buildChecks": 280,
-  "change": "Read-only field approach capture, separate state-restored path witnesses, unavailable adaptive dense offsets fail closed.",
-  "acceptance": "NOT accepted: witnesses 53/61 because restored Rigidbody/Transform headings differed initially. Full field parity also fails additional paired contact 5/6; car 16 results and recorded field motion/input samples match 14. Preserve source capture and all failed reports."
-}

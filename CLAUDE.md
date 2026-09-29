@@ -1,10 +1,10 @@
 # Little Road — notes for Claude
 
-Unity 6000.6.1f1 / C# / URP racing-adventure prototype. Start with `RACING_AI_GUIDE.md` (code map, baselines, build/run commands). The Godot project in `game/` is a preserved older prototype.
+Unity 6000.6.1f1 / C# / URP racing-adventure prototype. Start with `README.md` (layout, build and test commands) and `docs/45-roadmap-and-feature-spec.md` (plan of record). The Godot project in `game/` is a preserved older prototype.
 
 ## Current work
 Plan of record: `docs/45-roadmap-and-feature-spec.md`. It sets the order of work in Phases 0–5 (foundations; class C campaign; B; A with teams, fuel, tyres and pits; S; E), and the parts ladder is in `docs/44-parts-tiers-and-progression.md`. The campaign is at least 12 hours and open-ended. Latest status is in `docs/next-steps.md`.
-Racing-AI work stays on branch `ai-pace-experiments` (branched from `main` 2586b2fd). Read `docs/42-ai-pace-experiments-handoff.md` before changing AI behaviour; the current baselines are study 128 and `review/class-sort/grid29-*`.
+The racing AI is being rebuilt from the ground up (the six-ability design in doc 45 F2) on branch `racing-ai-v2`. The first AI's classes stay in the code as the benchmark to race against; its notes are archived in `docs/archive/racing-ai-v1/`. Its old study output was removed on 29 September; set fresh baselines when comparing.
 
 ## Working rules
 - Windows PC; use PowerShell from the project root. Close the Unity editor before batch builds.

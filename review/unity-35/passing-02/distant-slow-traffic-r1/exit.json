@@ -1,9 +1,0 @@
-{
-  "name": "distant-slow-traffic-r1",
-  "case": "distant-slow",
-  "repeat": 1,
-  "policy": "traffic",
-  "pid": 35644,
-  "exitCode": 0,
-  "folder": "C:\\Users\\cripp\\Documents\\Codex\\2026-09-16\\hey\\outputs\\little-road\\review\\unity-35\\passing-02\\distant-slow-traffic-r1"
-}

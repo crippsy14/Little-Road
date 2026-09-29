@@ -1,8 +1,0 @@
-{
-  "scope": "Supplemental race-active comparison only; original raw motion gate remains unchanged.",
-  "lastFinish": 103.68842315673828,
-  "baselineRows": 2520,
-  "candidateRows": 2496,
-  "commonPrefixExact": true,
-  "motionThroughLastFinishExact": true
-}

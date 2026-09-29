@@ -1,4 +1,0 @@
-{
-  "note": "The inherited build check still wrote its fixed75 filename during build76. The regenerated raw witness was copied to76; preserved75 summary comparison is recorded. Future builds must parameterize the output path. No runtime trial data or frozen source archive was overwritten.",
-  "preserved75SummaryEquals76": true
-}

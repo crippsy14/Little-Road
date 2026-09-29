@@ -1,9 +1,0 @@
-{
-  "export": "outputs/little-road-context-24-review/Little Road Unity.exe",
-  "assemblyHash": "E41C3CCDCD911D64C4E5D333F92ABBF867817205F9283213F985258C2526F976",
-  "buildChecks": 280,
-  "change": "Refine uncertain native intervals by up to four geometric bisections. No change to forecast physics, follower, real controls or road boundary.",
-  "evidence": "refinement-24-comparison.json",
-  "acceptance": "79/79 captured-approach checks and 72/72 original-probe checks, all twelve normal exits. Exact comparison-sample parity to preceding versions. Preserve 23-fast's 77/79 failure; thresholds unchanged.",
-  "remaining": "Geometric prediction bounds do not cover physical model error; measured fast body underestimate reaches 0.050219 m on recorded approaches. Live use requires an explicit uncertainty allowance, coherent traffic/path validity, full-field regression and runtime budget. No production promotion."
-}

@@ -1,7 +1,0 @@
-# Passing geometry diagnostic
-
-The60 retained-path experiment is not promoted. Before another live behaviour change, replay car0's captured retained trajectories during the15 seconds after its earliest captured decision. This is a selected/capped60 sample, not an unbiased baseline population. Require exact reproduction of each original accepted nominal prediction's road bound, progress, end speed and recorded state before using alternative scores.
-
-Compare the captured path, freshly anchored paths to the same destination with fixed blend multipliers0.5,0.75,1,1.25, and holding current offset. These values bracket the existing geometry to diagnose sensitivity; they are not release settings selected by a tuning sweep. Each alternative uses the existing nominal physical road/corridor/moving-side-entry checks, then a separate2-second prediction with the shared live following controller and owned observed rival rollout. Record physical acceptance/rejection, road containment under following, forward gain, exit speed and achieved lateral offset. Report all alternatives and failures, not just winners.
-
-No runtime policy, physics, hitbox, safety, risk or road-limit changes. Static scenery, immediate emergency control, contact impulses, repeated decisions and opponents' future inputs are outside this replay. A promising score requires controlled live confirmation, full-field comparison and performance/player review before promotion. If no useful advantage appears, do not tune the live blend merely because it is easy to change.

@@ -1,1 +1,0 @@
-Player requested retaining this first attempt. Reported unexpectedly large hitboxes and hitting a couple of cars; believes winning may be possible and requested an unchanged retry. Collision geometry review remains open.

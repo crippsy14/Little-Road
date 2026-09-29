@@ -1,3 +1,4 @@
+# Needs matplotlib for its plots: py -m pip install matplotlib (no longer vendored in tools/).
 """Validate actual graded-road runs, gravity controls and conditional upgrades."""
 import argparse
 import json

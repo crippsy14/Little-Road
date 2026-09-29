@@ -1,8 +1,0 @@
-{
-  "export": "outputs/little-road-context-30-review/Little Road Unity.exe",
-  "assemblyHash": "F70D140C69D7317F4DBF225B4FC0934AD7E56FAA409BCFA413370BFD680D762E",
-  "buildChecks": 286,
-  "change": "Opt-in prepared forecast geometry; disabled by default. Approximate 0.5m table rebuilt per prediction, exact fallback outside table. Actual car follower remains exact.",
-  "acceptance": "Compile and existing editor checks only. No prepared-mode physical simulations or live race/performance evidence yet. Not accepted or promoted. User requested pausing before performance tests.",
-  "next": "Paired original and captured-state probes with/without PreparedPath, ControlSteps 3 and AdaptiveEnvelope. Validate error and total cost including preparation, then held-out coverage before live use."
-}
