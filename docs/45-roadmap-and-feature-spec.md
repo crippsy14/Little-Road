@@ -161,11 +161,18 @@ Viewpoints (big reveals), activities (time trials, deliveries, photo spots), col
 
 Each phase ends with a playable build Richard can feel, the smoke and pace tests passing, and a short review doc.
 
+**Now, before Phase 0: Racing AI v2** (Richard, 29 September). The first AI grew by bolting things on, and it pauses a lot. It's being replaced by a racing AI designed from scratch, on branch `racing-ai-v2`:
+1. Research AI racing design properly.
+2. Design and build the new AI with all six abilities (F2) built into its structure from day one, even where they start simple.
+3. Iterate by racing it against the first AI as the benchmark: two AIs, same build, same tracks and seeds. Keep what's measurably better and fits the design.
+
+The first AI's classes stay in the code for that comparison, and its old study output has been cleared. The launch fix and F2's Line and Control abilities fold into this work.
+
 **Phase 0: Foundations** (fixes the expensive-to-change things, small):
 1. **World grid:** the per-tile map bake and explored mask (F9 first slice).
 2. **Racer records:** `racers.json`, and the 24 identities converted to named Racers (F1 first slice).
 3. **Radar chart** in the race preview and results, showing only the 3 real abilities (F2 first slice).
-4. **Launch fix:** a traffic-aware AI launch (or a tighter grid) against study 128's start hits (flagged study).
+4. **Launch fix:** covered by Racing AI v2 (a traffic-aware launch is part of its design).
 5. **Save and IDs:** a versioned save for racers (found, XP, abilities) and platforms, with migration tests.
 6. **Track standards:** as editor checks.
 
