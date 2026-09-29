@@ -1,5 +1,0 @@
-ROUTE_DRIVE arrived=False seconds=400.0 gate=-1.0 square=-1.0 castleClimb=401.0 roadGripShare=0.12 recoveries=0 lowestY=0.0 final=(108.56, 7.19, -816.68)
-Valley traffic 6@(93.10, 8.48, -805.61)
-Valley traffic 6@(91.31, 8.56, -803.55)
-Hillcrest mainland collider@(98.06, 8.37, -802.38)
-Collision_Trunk@(106.24, 7.58, -814.98)

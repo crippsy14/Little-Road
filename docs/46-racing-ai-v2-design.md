@@ -1,6 +1,6 @@
 # 46: Racing AI v2: research and design
 
-29 September 2026, branch `racing-ai-v2`. Richard asked for a new racing AI built from the ground up around the six driver abilities, and compared with the first AI as a benchmark. This doc records the research and the design. The first AI's notes are in `docs/archive/racing-ai-v1/`. Its code stays in the game, so the two can race side by side.
+29 September 2026, branch `racing-ai-v2`. Richard asked for a new racing AI built from the ground up around the six driver abilities, and compared with the first AI as a benchmark. This doc records the research and the design. The first AI's notes were archived and later removed; they are in git history. Its code stays in the game, so the two can race side by side.
 
 ## Why start again
 
@@ -36,7 +36,7 @@ The first AI (`ContextDriverPolicy` and about 40 helper classes) is physically h
 | Jimenez, [The Pure Advantage](https://www.gamedeveloper.com/design/the-pure-advantage-advanced-racing-game-ai) (Black Rock, 2009) | Continuous skills from 0 to 1. Balance the race by adjusting skill toward target points, with a boost at the start that fades, and no AI improvement in the last 20% so the player can catch up. This is a later difficulty and balance layer, not part of the driving itself. |
 | iRacing [AI roster attributes](https://www.iracing.com/ai-rosters/) | A commercial sim splits driver quality into separate skill (corner speed and line), aggression (spacing and willingness to overtake), optimism (braking and throttle confidence), smoothness (steering) and age (reaction time). This is close to our six abilities. |
 | rFactor 2 AI settings ([discussion](https://www.overtake.gg/threads/what-dictates-ai-strength-in-rf2.157655/)) | Strength sets brake power, brake grip and corner grip usage. The AI limiter cycles drivers between optimal and weaker spells, which is the source of mistakes. |
-| Sony AI, GT Sophy (in [doc 41](archive/racing-ai-v1/41-racing-ai-research-and-next-pace-pass.md)) | Test starts, corner battles and slipstream passes on purpose. Penalising all contact made drivers timid, and loose fault rules made them exploit gaps. Judge pace and etiquette together. |
+| Sony AI, GT Sophy ([How to Train Your Race Car](https://ai.sony/blog/how-to-train-your-race-car); first AI's doc 41) | Test starts, corner battles and slipstream passes on purpose. Penalising all contact made drivers timid, and loose fault rules made them exploit gaps. Judge pace and etiquette together. |
 | Gipps car-following model (traffic engineering) | A safe following speed that assumes the car ahead might brake hard: you follow closely at speed without lifting, and only brake when the gap truly runs out. |
 
 ## Design

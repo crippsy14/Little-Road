@@ -1,7 +1,0 @@
-{
-    "scope": "Static car-sized clearance samples, not a continuous collision or driving test",
-    "roadSamples": 171,
-    "garageSamples": 11,
-    "obstructions": [],
-    "passed": true
-}

@@ -383,7 +383,6 @@ namespace LittleRoad
             Bridge();Roadside();masonry.Finish();Step("bridge-roadside-masonry");Next(.35f,"Carving the cliffs");yield return null;
             var cliffMaterial=TerrainMaterial("Weathered cliff limestone",new Color(.35f,.43f,.24f),new Color(.60f,.56f,.46f));cliffMaterial.SetFloat("_RockOnly",1);
             new CoastalCliffs(this,root,cliffMaterial).Build();Step("cliffs");Next(.53f,"Planting Bayview");yield return null;
-            if(RaceTrial.Has("--cliff-study"))CoastalCliffStudy.Build(this,cliffMaterial);
             Physics.SyncTransforms();Planting();Step("planting");
             if(BayviewKit.Has("windmill")) {
                 var hill=new Vector3(-24,0,12);hill.y=Height(hill.x,hill.z)-.4f;

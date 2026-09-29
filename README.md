@@ -4,7 +4,6 @@ An original car adventure inspired by Road Trip Adventure / Choro Q HG 2: explor
 
 - **Engine:** Unity 6000.6.1f1, URP, C#, in `unity/`.
 - **Art tools:** Blender 5.2, with scripts in `source-art/`.
-- **Older prototype:** the Godot version is preserved in `game/`.
 
 ## Where things are
 
@@ -15,7 +14,6 @@ An original car adventure inspired by Road Trip Adventure / Choro Q HG 2: explor
 | `docs/next-steps.md` | Latest status and what's next |
 | `docs/ui-design.md`, `docs/art-direction.md` | How the UI and the world should look and behave |
 | `docs/46-racing-ai-v2-design.md` | The racing AI: research, design, the six abilities, and every study result |
-| `docs/archive/racing-ai-v1/` | The first racing AI's design notes (superseded; kept as reading) |
 | `unity/Assets/Scripts` | Game code (`AdventureGame`, `RaceTrial`, `RoadCar`, UI, world builders) |
 | `unity/Assets/Editor` | Build script (`MigrationBuild`) and the editor checks that run on every build |
 | `source-art/` | Blender build scripts for the town kit, cars and part models |

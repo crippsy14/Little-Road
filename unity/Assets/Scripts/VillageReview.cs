@@ -51,7 +51,6 @@ namespace LittleRoad
             yield return Frame("12-distant-water-time-1-6",coast,Quaternion.LookRotation(coastForward).eulerAngles.y,coast-coastForward*10+Vector3.up*4,coast+coastForward*10+Vector3.up);
             water.Surface.SetFloat("_ReviewTime",-1);
             if(RaceTrial.Has("--map-views"))yield return MapViews(world);
-            if(RaceTrial.Has("--cliff-study"))yield return Frame("13-cliff-driving-distance",world.track.At(bridge),Quaternion.LookRotation(forward).eulerAngles.y,new Vector3(-115,3.5f,-16),new Vector3(-97,7,-7));
             }
             var evidence=new Evidence();Physics.SyncTransforms();
             var lane=GameObject.Find("Lighthouse lane");

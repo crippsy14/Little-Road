@@ -20,7 +20,6 @@ namespace LittleRoad
                 (new(-92,109),new(14,15,12)),(new(0,107),new(15,18,13)),(new(75,89),new(12,17,12))};
             int accepted=0;
             for(int i=0;i<forms.Length;i++) {
-                if(i==1&&RaceTrial.Has("--cliff-study"))continue;
                 if(Outcrop(forms[i].p,forms[i].size,i*19))accepted++;
                 Vector2 offset=new Vector2(Mathf.Cos(i*2.3f),Mathf.Sin(i*2.3f))*forms[i].size.x*.5f;
                 if(Outcrop(forms[i].p+offset,Vector3.Scale(forms[i].size,new Vector3(.65f,.70f,.8f)),i*19+7))accepted++;

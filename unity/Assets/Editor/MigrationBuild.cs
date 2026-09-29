@@ -18,7 +18,6 @@ public static class MigrationBuild
         // Ordinary review builds do not need the development PlayerConnection network listener.
         bool developmentBuild=RaceTrial.Has("--development-build");
         var evidence=new Evidence{engine=Application.unityVersion,developmentBuild=developmentBuild};
-        CliffStudyImport.Prepare();
         BayviewTransferBake.Prepare();
         foreach(string surfacePath in Directory.GetFiles("Assets/Resources/Surfaces","*",SearchOption.AllDirectories)) {
             if(surfacePath.EndsWith(".meta"))continue;

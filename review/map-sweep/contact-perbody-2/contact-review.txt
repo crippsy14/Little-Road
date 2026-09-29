@@ -1,7 +1,0 @@
-collider width default 2.05
-puddle   box 1.97 x 3.19 m  body 1.97 x 3.18 m   nose-to-tail gap 1 cm   side gap (incl. mirrors) 0 cm   side gap at the shoulders and tyres 2 cm
-pebble   box 2.03 x 3.17 m  body 2.03 x 3.16 m   nose-to-tail gap 1 cm   side gap (incl. mirrors) 0 cm   side gap at the shoulders and tyres 2 cm
-marlow   box 2.02 x 3.66 m  body 2.31 x 3.65 m   nose-to-tail gap 1 cm   side gap (incl. mirrors) -29 cm   side gap at the shoulders and tyres 2 cm
-sprint   box 2.10 x 3.33 m  body 2.32 x 3.32 m   nose-to-tail gap 1 cm   side gap (incl. mirrors) -22 cm   side gap at the shoulders and tyres 2 cm
-rally    box 2.15 x 3.73 m  body 2.36 x 3.72 m   nose-to-tail gap 1 cm   side gap (incl. mirrors) -21 cm   side gap at the shoulders and tyres 2 cm
-heron    box 2.09 x 3.74 m  body 2.33 x 3.73 m   nose-to-tail gap 1 cm   side gap (incl. mirrors) -24 cm   side gap at the shoulders and tyres 2 cm
