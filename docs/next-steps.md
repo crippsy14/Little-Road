@@ -1,6 +1,26 @@
-# Next steps (paused 28 September 2026, evening)
+# Next steps (30 September 2026)
 
 **Plan of record (29 September):** [doc 45](45-roadmap-and-feature-spec.md) sets the order of work, Phases 0–5; the parts ladder is in [doc 44](44-parts-tiers-and-progression.md). The campaign is at least 12 hours and open-ended. Next is **Phase 0**: world grid with per-tile map and fog, Racer records, radar chart, a traffic-aware launch, save and IDs, and track standards.
+
+**Update, 30 September: Racing AI v2, clean-up, Bayview and Silver Falls.** All on branch `racing-ai-v2` (not merged).
+
+1. **Racing AI v2** (`RacerDriverPolicy`; research, design and every study in [doc 46](46-racing-ai-v2-design.md)) is the default driver. `--first-ai` races the first AI.
+   - Beat the first AI in the keep/reject study (205): all 24 finish, no resets, about 20 s better per race.
+   - After the ability spread was widened it's about level (207), because the roster's weaker drivers are now genuinely slower.
+   - Abilities: all-worst is 49% slower than all-best on a solo lap; each ability counts.
+2. **Race preview:** DR (driver rating 1–20) beside PP on every grid tile and a DR rosette. Hover it, or hold Triangle / R, for the radar.
+3. **Clean-up:** the Godot prototype, the Cowork runner, 19 obsolete tools, 17 superseded docs and old evidence are gone (all in git history). `review/` went from 7.8 GB to about 0.3 GB. `cleanup.ps1` keeps it that way.
+4. **Bayview:**
+   - a seaside high street of terraces with bunting and café parasols;
+   - meadow grass on the verges and green;
+   - olives, blossom and poplars on the hills;
+   - lavender and vine plots.
+5. **Water:** sea contact foam at walls, piers, hulls and rocks. **Silver Falls** rebuilt as a real cascade (`LittleRoad/Waterfall`); the river no longer overhangs the gorge.
+6. **Parallel races:** `tools/run-pace-parallel.ps1` runs six at once. First-AI races run alone because its worker threads aren't repeatable under load.
+
+**Next** (Richard's order):
+- AI polish: club cars in Cedar's crowded back half; fewer light side-by-side touches; a calm two-car defend test to watch.
+- Then the world expansion and the parts expansion (doc 45 Phase 0 onwards, doc 44).
 
 **Update, 29 September, night: seven fixes before the parts doc.**
 
