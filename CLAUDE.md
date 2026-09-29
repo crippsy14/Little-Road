@@ -4,7 +4,7 @@ Unity 6000.6.1f1 / C# / URP racing-adventure prototype. Start with `README.md` (
 
 ## Current work
 Plan of record: `docs/45-roadmap-and-feature-spec.md`. It sets the order of work in Phases 0–5 (foundations; class C campaign; B; A with teams, fuel, tyres and pits; S; E), and the parts ladder is in `docs/44-parts-tiers-and-progression.md`. The campaign is at least 12 hours and open-ended. Latest status is in `docs/next-steps.md`.
-The racing AI is being rebuilt from the ground up (the six-ability design in doc 45 F2) on branch `racing-ai-v2`. The first AI's classes stay in the code as the benchmark to race against; its notes are archived in `docs/archive/racing-ai-v1/`. Its old study output was removed on 29 September; set fresh baselines when comparing.
+Racing AI v2 (`RacerDriverPolicy`, the six-ability design; `docs/46-racing-ai-v2-design.md`) is the default driver since study 205, on branch `racing-ai-v2`. The first AI stays in the code as the benchmark: `--first-ai` races it. Its notes are archived in `docs/archive/racing-ai-v1/`. Use `tools/run-pace-parallel.ps1` for keep/reject races (six at once; results are deterministic) and `tools/summarize-racer.py` to compare.
 
 ## Working rules
 - Windows PC; use PowerShell from the project root. Close the Unity editor before batch builds.

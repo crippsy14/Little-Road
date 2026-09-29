@@ -179,6 +179,7 @@ public static class MigrationBuild
         evidence.checks.AddRange(ZipLineChecks.Run());
         evidence.checks.AddRange(PresentationChecks.Run());
         evidence.checks.AddRange(InterfaceChecks.Run());
+        evidence.checks.AddRange(RacerChecks.Run());
         Directory.CreateDirectory(Path.Combine(root,"review/unity-01"));
         File.WriteAllText(Path.Combine(root,"review/unity-01/editor-checks.json"),JsonUtility.ToJson(evidence,true));
         AssetDatabase.SaveAssets();

@@ -31,6 +31,8 @@ namespace LittleRoad
         // instead of braking to a stop with the wheel straight (which slid r10 car 8 off the runoff
         // at 34 m/s and stranded it). It falls back to the full stop if the excursion grows.
         public static bool RejoinAtSpeed;
+        // Off-road distance that starts a recovery. Racing AI v2 handles short excursions itself (docs/46).
+        public float OffsetTrigger=7.2f;
         const float SteerBackEdge=10.5f,SteerBackHeading=45,SteerBackSeconds=4;
         public void Observe(in DriverObservation o,float progress,float gate,bool frontBlocked,bool waitingForTraffic=false)
         {
@@ -49,7 +51,7 @@ namespace LittleRoad
             }
             // A queued car can legitimately wait while the rows ahead launch.
             // Still retain a bounded deadlock timeout and all geometric triggers.
-            if(!Active&&(Mathf.Abs(o.self.offset)>7.2f||heading>65||progress>gate+.5f||frontBlocked||stalled>(waitingForTraffic?15:2.5f))) {
+            if(!Active&&(Mathf.Abs(o.self.offset)>OffsetTrigger||heading>65||progress>gate+.5f||frontBlocked||stalled>(waitingForTraffic?15:2.5f))) {
                 State="Stabilise";episode=unproductive=turnCommitment=0;bestDistance=float.MaxValue;planned=false;waitingForMovingTraffic=false;AssistedReason=null;
             }
             if(!Active)return;

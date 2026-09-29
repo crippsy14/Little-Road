@@ -87,3 +87,9 @@ review/class-sort/*/*.json
 review/map-sweep/**/*.json
 review/unity-35/frame-cost-*/**/probe/
 source-art/__pycache__/
+# Racing AI v2 studies (docs/46): per-run JSON from frame-cost-200 on; the results live in docs/46.
+review/unity-35/frame-cost-2[0-9][0-9]/
+# Editor-check scratch output written by every build.
+review/unity-01/
+review/unity-04/bodies-*/
+review/unity-04/profiles-*/

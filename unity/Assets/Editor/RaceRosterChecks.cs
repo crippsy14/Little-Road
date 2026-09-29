@@ -67,11 +67,14 @@ public static class RaceRosterChecks
         var oldRoster=AdventureSession.EnteredRoster;bool oldRacing=AdventureSession.Racing;
         try {
             AdventureSession.EnteredRoster=roster;AdventureSession.Racing=true;
-            Require(RaceAiPreset.Enabled("--parallel-dynamic-forecast")&&RaceAiPreset.Value("--driver-policy",null)=="context"&&RaceAiPreset.Value("--racing-line",null)=="bayview-smooth-v1"
-                &&RaceAiPreset.Enabled("--stagger-context-plans")&&RaceAiPreset.Value("--context-plan-groups",null)=="3","modern adventure missing retained package");
+            // Racing AI v2 is the default (docs/46): it keeps recovery, drafting and the roster, and none of the
+            // first AI's planners ("context" in the preset is the driver slot RaceTrial fills with v2).
+            Require(RaceAiPreset.RacerV2&&RaceAiPreset.Enabled("--physical-recovery")&&RaceAiPreset.Enabled("--light-drafting")&&RaceAiPreset.Enabled("--driver-roster")
+                &&!RaceAiPreset.Enabled("--parallel-dynamic-forecast")&&!RaceAiPreset.Enabled("--stagger-context-plans")
+                &&RaceAiPreset.Value("--driver-policy",null)=="context"&&RaceAiPreset.Value("--racing-line",null)=="bayview-smooth-v1","modern adventure missing retained package");
             AdventureSession.Racing=false;Require(!RaceAiPreset.Enabled("--dynamic-rejoin")&&RaceAiPreset.Value("--driver-policy","legacy")=="legacy","race preset leaks into exploration");
         }finally{AdventureSession.EnteredRoster=oldRoster;AdventureSession.Racing=oldRacing;}
-        checks.Add("Connected race reuses the retained driver package (including three-group staggered planning, as tested); driver flags stop applying on return to exploration");
+        checks.Add("Connected race uses Racing AI v2 with recovery, drafting and the roster, and none of the first AI's planners; driver flags stop applying on return to exploration");
         return checks;
     }
 }

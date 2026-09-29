@@ -14,7 +14,8 @@ An original car adventure inspired by Road Trip Adventure / Choro Q HG 2: explor
 | `docs/44-parts-tiers-and-progression.md` | Classes (C Street, B Tuner, A Touring, S Racing, E Endurance), parts ladder, economy |
 | `docs/next-steps.md` | Latest status and what's next |
 | `docs/ui-design.md`, `docs/art-direction.md` | How the UI and the world should look and behave |
-| `docs/archive/racing-ai-v1/` | The first racing AI's design notes (superseded by the new AI; kept as reading) |
+| `docs/46-racing-ai-v2-design.md` | The racing AI: research, design, the six abilities, and every study result |
+| `docs/archive/racing-ai-v1/` | The first racing AI's design notes (superseded; kept as reading) |
 | `unity/Assets/Scripts` | Game code (`AdventureGame`, `RaceTrial`, `RoadCar`, UI, world builders) |
 | `unity/Assets/Editor` | Build script (`MigrationBuild`) and the editor checks that run on every build |
 | `source-art/` | Blender build scripts for the town kit, cars and part models |
@@ -39,7 +40,7 @@ Run `Launch Little Road Unity.cmd`, or `../little-road-dev-build/Little Road Uni
 | `capture-adventure.ps1 -Name smokeN` | Smoke test: quest, delivery, finds, buy and fit, a 24-car race and payout, reload |
 | `run-parts-review.ps1 -Name x` | Parts shop and fitting bay with a virtual gamepad |
 | `capture-map.ps1 -Name x -Rendered -Flags '--pause-review'` | Other flags: `--minimap-review`, `--climb-review`, `--contact-review`, `--car-audit`, `--edge-audit`, `--world-review` |
-| `run-pace-study.ps1`, `run-class-sort.ps1` | Racing comparisons (24-car pace; overtaking by class); two AIs can be raced side by side |
+| `run-pace-parallel.ps1`, `run-pace-study.ps1`, `run-class-sort.ps1` | Racing comparisons (24-car pace, flag off vs on, six races at once; overtaking by class). `--first-ai` races the first AI as the benchmark; `summarize-racer.py` tabulates results |
 | `run-frame-cost.ps1 -Rendered -Extra @('--frame-probe','probe')` | Rendered race frame timing (CPU, GPU, AI, physics per frame) |
 | `drive-benchmark.ps1`, `route-drive.ps1` | Free-roam frame cost and an autopilot drive to the castle |
 | `cleanup.ps1` | Prunes old evidence to the Recycle Bin (dry run without arguments) |

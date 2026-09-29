@@ -124,7 +124,13 @@ namespace LittleRoad
         static string CommandLineValue(string key){var args=Environment.GetCommandLineArgs();int i=Array.IndexOf(args,key);return i>=0&&i+1<args.Length?args[i+1]:null;}
         static bool Dropped(string key){var args=Environment.GetCommandLineArgs();for(int i=0;i+1<args.Length;i++)if(args[i]=="--preset-without"&&args[i+1]==key)return true;return false;}
         static readonly HashSet<string> switches=new(StringComparer.Ordinal){"--stagger-context-plans","--physical-recovery","--traffic-diagnostics","--road-feasibility","--prepared-path","--guide-path-fallback","--compare-continuation","--traffic-aware-progress","--following-feasibility-fallback","--shared-observed-traffic","--parallel-continuation-forecast","--rear-pressure-filter","--light-drafting","--coast-within-envelope","--no-gap-centres","--traffic-path-check","--anticipate-passing-space","--traffic-coast-continuation","--parallel-road-forecasts","--dynamic-rejoin","--dynamic-traffic","--local-origin-curvature","--dynamic-field-study","--dynamic-blocking-target","--dynamic-traffic-fallback","--parallel-dynamic-forecast","--open-space-priority","--driver-roster","--driver-form","--gate-first"};
-        public static bool Enabled(string key)=>Active&&switches.Contains(key)&&!Dropped(key);
+        // Racing AI v2 (docs/46) is the default driver since study 205 (29 September); --first-ai races the
+        // first (context) AI instead, as the benchmark. v2 keeps only the preset switches that are not part of
+        // the first AI (recovery, drafting physics, the roster and gate crediting). --racer-v2 is accepted
+        // for old commands and changes nothing.
+        public static bool RacerV2=>Array.IndexOf(Environment.GetCommandLineArgs(),"--first-ai")<0;
+        static readonly HashSet<string> racerSwitches=new(StringComparer.Ordinal){"--physical-recovery","--light-drafting","--driver-roster","--driver-form","--gate-first"};
+        public static bool Enabled(string key)=>Active&&switches.Contains(key)&&!Dropped(key)&&(!RacerV2||racerSwitches.Contains(key));
         public static string Value(string key,string fallback)
         {
             if(!Active)return fallback;

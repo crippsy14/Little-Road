@@ -48,6 +48,12 @@ namespace LittleRoad
         public PhysicalRecovery physicalRecovery {get;private set;}
         public TrafficDriverPolicy trafficPolicy {get;private set;}
         public ContextDriverPolicy contextPolicy {get;private set;}
+        public RacerDriverPolicy racerPolicy {get;private set;}
+        // Pedal use while racing (both AIs, for comparisons): braking, lifting (partial throttle above
+        // walking pace) and stopped (under 2 m/s: the pauses of docs/46).
+        public float BrakeSeconds {get;private set;}
+        public float LiftSeconds {get;private set;}
+        public float StoppedSeconds {get;private set;}
         public Vector3 CollisionHalf {get;private set;}
         public Vector3 CollisionCentre {get;private set;}
         // Lowest point of the car's physical contact shape, in local space.
@@ -83,10 +89,11 @@ namespace LittleRoad
             var collider=gameObject.AddComponent<BoxCollider>();collider.center=boxCentre;collider.size=size;
             CollisionHalf=size*.5f;CollisionCentre=boxCentre;
             if(!Application.isBatchMode)gameObject.AddComponent<LightTrails>().Setup(this,boxCentre,CollisionHalf);
-            if(RaceTrial.Has("--physical-recovery")||owner.DriverPolicyId=="traffic-v1"||owner.DriverPolicyId=="context-v1")recoverySensor=new RecoverySensor(body,collider);
+            if(RaceTrial.Has("--physical-recovery")||owner.DriverPolicyId=="traffic-v1"||owner.DriverPolicyId=="context-v1"||owner.DriverPolicyId=="racer-v2")recoverySensor=new RecoverySensor(body,collider);
             if(RaceTrial.Has("--physical-recovery"))physicalRecovery=new PhysicalRecovery();
             if(owner.DriverPolicyId=="traffic-v1"){trafficPolicy=new TrafficDriverPolicy(referenceProfile,recoverySensor);driverPolicy=trafficPolicy;}
             if(owner.DriverPolicyId=="context-v1"){contextPolicy=new ContextDriverPolicy(referenceProfile,recoverySensor,collider.center,collider.size*.5f);driverPolicy=contextPolicy;}
+            if(owner.DriverPolicyId=="racer-v2"){racerPolicy=new RacerDriverPolicy(owner.ReferenceLine,RacerAbilities.From(identity),id,owner.Roster?.Seed??seed,collider.size*.5f);driverPolicy=racerPolicy;if(physicalRecovery!=null)physicalRecovery.OffsetTrigger=13;}
             // Tyre/rolling resistance is already calculated by DriveModel.
             // Sliding a box with the default contact friction adds an unintended
             // ground brake, disproportionately affecting stock equipment.
@@ -155,6 +162,7 @@ namespace LittleRoad
             else if(autonomous || finished){long planStart=System.Diagnostics.Stopwatch.GetTimestamp();Plan();long planTicks=System.Diagnostics.Stopwatch.GetTimestamp()-planStart;FrameCost.Plan+=planTicks;if(planTicks>FrameCost.PlanMax)FrameCost.PlanMax=planTicks;} else ReadInput();
             if(race.elapsed<0) {throttle=0;steering=0;body.linearVelocity=Vector3.zero;return;}
             race.MotionAudit?.Observe(this,race.elapsed);
+            if(autonomous&&!finished&&race.elapsed>0){float dt=Time.fixedDeltaTime;if(throttle<-.05f)BrakeSeconds+=dt;else if(throttle<.9f&&speed>3)LiftSeconds+=dt;if(speed<2)StoppedSeconds+=dt;}
             race.ApproachAudit?.Observe(this,race.elapsed);
             steerState=Mathf.MoveTowards(steerState,steering,tuning.response*Time.fixedDeltaTime);
             float grip=Mathf.Abs(offset)<Circuit.Width*.5f||(race.freeRoam&&OnRoadSurface())?tuning.roadGrip:tuning.dirtGrip;Grip=grip;
@@ -274,11 +282,12 @@ namespace LittleRoad
                 self=new ObservedCar(driverId,body.position,body.linearVelocity,transform.forward,transform.right,pathDistance,offset,speed);
             }
             var observation=new DriverObservation(timestamp,Time.fixedDeltaTime,self,observed,race.track,tuning,pace,preferredOffset,finished,steerState,race.DraftingEnabled);
+            if(racerPolicy!=null)racerPolicy.Elapsed=race.elapsed;
             DriveCommand command;
             if(physicalRecovery!=null&&race.elapsed>=0&&!finished) {
                 string previous=physicalRecovery.State;
-                bool blocked=((trafficPolicy==null&&contextPolicy==null)||physicalRecovery.Active)&&recoverySensor.FrontBlocked(in observation,physicalRecovery.Active,referenceProfile?.line);
-                physicalRecovery.Observe(in observation,progress,nextGateProgress,blocked,trafficPolicy?.WaitingForTraffic??contextPolicy?.WaitingForTraffic??false);
+                bool blocked=((trafficPolicy==null&&contextPolicy==null&&racerPolicy==null)||physicalRecovery.Active)&&recoverySensor.FrontBlocked(in observation,physicalRecovery.Active,referenceProfile?.line);
+                physicalRecovery.Observe(in observation,progress,nextGateProgress,blocked,trafficPolicy?.WaitingForTraffic??contextPolicy?.WaitingForTraffic??racerPolicy?.WaitingForTraffic??false);
                 if(physicalRecovery.NeedsPlan(timestamp)) {
                     physicalRecovery.Plan(in observation,progress,nextGateProgress,recoverySensor.Sample(in observation,steerState));
                 }
