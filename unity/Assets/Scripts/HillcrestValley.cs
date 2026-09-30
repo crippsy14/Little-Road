@@ -184,6 +184,15 @@ namespace LittleRoad
             // Drivable gravel shoulders where the road runs on the ground (not on the causeway, in the tunnel or over the river).
             var gravel=WorldLook.Kit("Road verge gravel",new Color(.58f,.54f,.46f),WorldLook.Pattern.Rock,0,.1f,true);
             Shoulders(main.line,main.width*.5f,.03f,HillcrestRoute.PortalSouthRun+4,false,holder,gravel);
+            // The mainline across the Bayview Halt quay (Richard, 30 Sep: onto the station grass, you couldn't get back
+            // on). The island ground there sits 11 cm under the road (CausewayCut keeps it below the deck) and the
+            // valley field doesn't reach the island, so it had no ramps: the car's nose stopped dead at the edge from
+            // every angle (0 of 32 test runs got back on). Ramps to the island's own surface, up to the causeway.
+            float quayEnd=0;for(int i=1;i<main.line.Length&&main.line[i].z>HillcrestRoute.QuaySouth+1;i++)quayEnd+=Vector3.Distance(main.line[i],main.line[i-1]);
+            // (Its top edge meets the road as built: across the quay the ribbon follows the island down to -0.14 m.)
+            Physics.SyncTransforms();
+            float RoadTop(Vector3 q){foreach(var hit in Physics.RaycastAll(new Vector3(q.x,20,q.z),Vector3.down,60))if(hit.collider.GetComponent<RoadSurface>()!=null)return hit.point.y;return float.NaN;}
+            Shoulders(main.line,main.width*.5f,.03f,0,false,holder,gravel,"Road shoulder",quayEnd,q=>SurfacePoint(q,out var hit,false)?hit.point.y:-30,RoadTop);
             Shoulders(valleyRoad,valleyWidth*.5f,.024f,0,false,holder,gravel);Shoulders(stationRoad,stationWidth*.5f,.018f,0,false,holder,gravel);Shoulders(crest.line,crest.width*.5f,.018f,0,false,holder,gravel);
             foreach(var m in mouths)JunctionDressing(m,holder);
             RacewayCircuit(holder);
@@ -294,15 +303,17 @@ namespace LittleRoad
         // car that runs wide can drive straight back on. Road ribbons sit ~0.17 m proud of the
         // ground (the corridor is stamped 0.14 m below the road) and the car's box collider
         // cannot climb that step. Skipped where the ground falls away (guardrails) or over water.
-        void Shoulders(Vector3[] line,float halfWidth,float lift,float from,bool closed,Transform parent,Material material,string name="Road shoulder")
+        void Shoulders(Vector3[] line,float halfWidth,float lift,float from,bool closed,Transform parent,Material material,string name="Road shoulder",float to=float.MaxValue,System.Func<Vector3,float> ground=null,System.Func<Vector3,float> roadTop=null)
         {
+            ground??=q=>ValleyField.Height(q.x,q.z);
             const float span=1.8f;int n=line.Length;var run=new float[n];for(int i=1;i<n;i++)run[i]=run[i-1]+Vector3.Distance(line[i],line[i-1]);
             foreach(int side in new[]{-1,1}) {
                 var v=new List<Vector3>();var t=new List<int>();int prev=-1;
                 for(int k=0;k<=(closed?n:n-1);k++) {
-                    int i=k%n;if(!closed&&run[i]<from){prev=-1;continue;}
+                    int i=k%n;if(!closed&&(run[i]<from||run[i]>to)){prev=-1;continue;}
                     Vector3 f=closed?line[(i+1)%n]-line[(i+n-1)%n]:line[Mathf.Min(n-1,i+1)]-line[Mathf.Max(0,i-1)];f.y=0;f.Normalize();var r=Vector3.Cross(Vector3.up,f)*side;
-                    var inner=line[i]+r*halfWidth+Vector3.up*(lift-.004f);var outer=line[i]+r*(halfWidth+span);float g=ValleyField.Height(outer.x,outer.z);
+                    var inner=line[i]+r*halfWidth+Vector3.up*(lift-.004f);var outer=line[i]+r*(halfWidth+span);float g=ground(outer);
+                    if(roadTop!=null){float top=roadTop(line[i]+r*(halfWidth-.2f));if(!float.IsNaN(top))inner.y=top-.004f;}
                     bool ok=g>inner.y-.9f&&g<inner.y+1.2f&&!RiverBelow(outer)&&!NearMouth(outer,1);
                     if(!ok){prev=-1;continue;}
                     outer.y=g-.02f;int s0=v.Count;v.Add(inner);v.Add(outer);

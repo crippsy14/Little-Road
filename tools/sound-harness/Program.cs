@@ -21,6 +21,7 @@ static class Program
         if(filter.StartsWith("layers:"))return Layers(root,filter.Substring(7));
         if(filter.StartsWith("grains:"))return Grains(root,filter.Substring(7));
         if(filter=="recorded")return Recorded(root);
+if(filter.StartsWith("tone:"))return Tone(root,filter.Substring(5));
         if(filter=="ambience")return AmbienceRender(root);
         using var doc=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"unity","Assets","Resources","Data","parts.json")));
         var parts=doc.RootElement.GetProperty("parts").EnumerateArray().ToList();
@@ -155,6 +156,45 @@ static class Program
             Console.WriteLine($"{(ok?"ok  ":"FAIL")} {id,-20} {sound,-11} ({bank.cylinders} cyl) at {at:0} rpm: firing {expected:0} Hz, found {found:0}; stretched x{grains.TopStretch:0.00} at the redline; rms {rms:0.000}");
         }
         return failures==0?0:1;
+    }
+
+    // tone:<engine id>: the recorded engine's grains alone, held at full load at 30-100% of the redline (1.2 s each),
+    // squeezed with and without the tone correction (GrainSynth.ToneCorrection) to review/sound/tone/<engine>-<way>.wav, with each step's
+    // level, body (share of energy below 2.5x the firing rate) and brightness (spectral centroid).
+    static int Tone(string root,string id)
+    {
+        using var doc=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"unity","Assets","Resources","Data","parts.json")));
+        var e=doc.RootElement.GetProperty("parts").EnumerateArray().First(p=>p.GetProperty("id").GetString()==id);
+        string sound=e.GetProperty("sound").GetString()!;var spec=SpecFor(root,id);
+        var bank=GrainBank.Read(File.ReadAllBytes(Path.Combine(root,"unity","Assets","Resources","Engines",sound+".bytes")));
+        string dir=Path.Combine(root,"review","sound","tone");Directory.CreateDirectory(dir);
+        Console.WriteLine($"{id} on {sound}: recording pulls to {bank.Top:0} rpm, engine revs to {spec.redline:0}");
+        foreach(bool pulses in new[]{false,true}) {
+            GrainSynth.ToneCorrection=pulses;var g=new GrainSynth(bank,Fs,7,spec.idle,spec.redline);var all=new List<float>();
+            Console.WriteLine(pulses?" squeezed, tone corrected":" squeezed");
+            for(float f=.3f;f<=1.001f;f+=.1f) {
+                float rpm=spec.redline*f;var x=new float[(int)(Fs*1.2f)];for(int i=0;i<x.Length;i++)x[i]=g.Next(rpm,1,false);all.AddRange(x);
+                int n=16384,start=x.Length-n;var re=new double[n];for(int i=0;i<n;i++)re[i]=x[start+i]*(.5-.5*Math.Cos(2*Math.PI*i/n));
+                var power=Spectrum(re);double tot=1e-12,low=0,cen=0;float firing=rpm/120f*bank.cylinders;
+                for(int k=1;k<power.Length;k++){double hz=k*(double)Fs/n;tot+=power[k];cen+=power[k]*hz;if(hz<2.5*firing)low+=power[k];}
+                double rms=Math.Sqrt(x.Skip(start).Average(v=>v*v));
+                float found=Pitch(x.Skip(x.Length-Fs/2).ToArray(),0,firing);
+                // Periodicity: normalised autocorrelation at one pulse, one crank turn and one engine cycle.
+                double Corr(double lagSamples){int lag=(int)Math.Round(lagSamples);double s=0,e0=0;for(int i=start;i<x.Length-lag;i++){s+=x[i]*x[i+lag];e0+=x[i]*x[i];}return s/Math.Max(1e-9,e0);}
+                double pulse=Fs/firing;
+                Console.WriteLine($"  {rpm,5:0} rpm (x{Math.Max(1,rpm/bank.TopOf(true)):0.00})  rms {rms:0.000}  centroid {cen/tot,5:0} Hz  firing {firing:0} Hz, found {found:0}  corr pulse {Corr(pulse):0.00} turn {Corr(pulse*bank.cylinders/2):0.00} cycle {Corr(pulse*bank.cylinders):0.00}");
+            }
+            WriteWav(Path.Combine(dir,$"{id}-{(pulses?"corrected":"squeezed")}.wav"),all);
+        }
+        GrainSynth.ToneCorrection=true;return 0;
+    }
+    // Power spectrum (radix-2 FFT, length a power of two).
+    static double[] Spectrum(double[] re)
+    {
+        int n=re.Length;var im=new double[n];
+        for(int i=1,j=0;i<n;i++){int bit=n>>1;for(;(j&bit)!=0;bit>>=1)j^=bit;j^=bit;if(i<j){(re[i],re[j])=(re[j],re[i]);}}
+        for(int len=2;len<=n;len<<=1){double ang=-2*Math.PI/len;for(int i=0;i<n;i+=len)for(int k=0;k<len/2;k++){double wr=Math.Cos(ang*k),wi=Math.Sin(ang*k);int a=i+k,b=a+len/2;double xr=re[b]*wr-im[b]*wi,xi=re[b]*wi+im[b]*wr;re[b]=re[a]-xr;im[b]=im[a]-xi;re[a]+=xr;im[a]+=xi;}}
+        var p=new double[n/2];for(int k=0;k<n/2;k++)p[k]=re[k]*re[k]+im[k]*im[k];return p;
     }
 
     // World ambience: 20 s of each generator to review/sound/ambience/, with levels.

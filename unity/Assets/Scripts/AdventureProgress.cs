@@ -151,13 +151,16 @@ namespace LittleRoad
         public static Vector3? ReturnSpot;public static float ReturnYaw;
         static bool smokeHooked;
         public static bool Smoke=>RaceTrial.Has("--adventure-smoke")||RaceTrial.Has("--adventure-verify-save");
+        // A different slot chosen mid-game (the pause menu's Save into another slot): the store follows it.
+        public static void Reopen(string path){Store=new AdventureStore(path);}
         public static void Load()
         {
             if(Smoke&&!smokeHooked){smokeHooked=true;Application.logMessageReceived+=(message,stack,type)=>{if(type==LogType.Exception)Application.Quit(2);};}
             if(Store!=null)return;
             string path=RaceTrial.Arg("--adventure-save");
             if(Smoke&&string.IsNullOrEmpty(path))throw new InvalidOperationException("Smoke test requires its own --adventure-save path.");
-            Store=new AdventureStore(path??Path.Combine(Application.persistentDataPath,"little-road-unity-save-v1.json"));
+            if(path==null)SaveSlots.Migrate();
+            Store=new AdventureStore(path??SaveSlots.LivePath);
         }
         public static void StartRace()
         {

@@ -27,6 +27,17 @@ namespace LittleRoad
             Common(fs,f,q,out float c,out float a);float g=MathF.Pow(10,db/40);
             Set(1+a*g,-2*c,1-a*g,1+a/g,-2*c,1-a/g);
         }
+        // Shelves (slope 1): gain in dB above (high) or below (low) the corner.
+        public void SetHighShelf(float fs,float f,float db)
+        {
+            Common(fs,f,.7071f,out float c,out float a);float A=MathF.Pow(10,db/40),r=2*MathF.Sqrt(A)*a;
+            Set(A*((A+1)+(A-1)*c+r),-2*A*((A-1)+(A+1)*c),A*((A+1)+(A-1)*c-r),(A+1)-(A-1)*c+r,2*((A-1)-(A+1)*c),(A+1)-(A-1)*c-r);
+        }
+        public void SetLowShelf(float fs,float f,float db)
+        {
+            Common(fs,f,.7071f,out float c,out float a);float A=MathF.Pow(10,db/40),r=2*MathF.Sqrt(A)*a;
+            Set(A*((A+1)-(A-1)*c+r),2*A*((A-1)-(A+1)*c),A*((A+1)-(A-1)*c-r),(A+1)+(A-1)*c+r,-2*((A-1)+(A+1)*c),(A+1)+(A-1)*c-r);
+        }
         public float Process(float x)
         {
             float y=b0*x+z1;z1=b1*x-a1*y+z2;z2=b2*x-a2*y;

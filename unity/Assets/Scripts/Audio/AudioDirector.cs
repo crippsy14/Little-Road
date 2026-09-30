@@ -58,10 +58,10 @@ namespace LittleRoad
         public static void Register(CarAudio car){cars.Add(car);Ensure();}
         public static void Unregister(CarAudio car){cars.Remove(car);}
         public static void Attach(RoadCar car,bool player){if(Enabled)car.gameObject.AddComponent<CarAudio>().Setup(car,player);}
-        static void Ensure()
+        public static void Ensure()
         {
-            if(instance!=null)return;
-            var go=new GameObject("Audio director");DontDestroyOnLoad(go);instance=go.AddComponent<AudioDirector>();Ambience.Ensure();
+            if(instance!=null||!Enabled)return;
+            var go=new GameObject("Audio director");DontDestroyOnLoad(go);instance=go.AddComponent<AudioDirector>();Ambience.Ensure();Music.Ensure();
             Apply();
         }
         // Settings changed (or first start): master on the listener, the rest per voice.

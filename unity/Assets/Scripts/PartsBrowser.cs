@@ -61,9 +61,10 @@ namespace LittleRoad
         {
             slot=newSlot;notice="";
             var list=EquipmentCatalog.All.parts.Where(p=>p.slot==slot&&(Shop=="hillcrest"||p.shop!="hillcrest"));
-            // Shops show the open class and a locked peek at the next one, not the whole ladder.
-            int open=RaceCalendar.Rank(RaceCalendar.Open(store.Data));
-            list=mode==Mode.Fit?list.Where(p=>store.Data.owned.Contains(p.id)):list.Where(p=>p.price>0&&RaceCalendar.Rank(p.tier)<=open+1);
+            // Only the open class and below (Richard, 30 Sep: keep the next tier hidden until it's unlocked). The
+            // fitting bay shows owned parts the same way, plus whatever is on the car now.
+            int open=RaceCalendar.Rank(RaceCalendar.Open(store.Data));string onCar=store.Data.Loadout()[slot];
+            list=mode==Mode.Fit?list.Where(p=>store.Data.owned.Contains(p.id)&&(RaceCalendar.Rank(p.tier)<=open||p.id==onCar)):list.Where(p=>p.price>0&&RaceCalendar.Rank(p.tier)<=open);
             parts=list.OrderBy(p=>RaceCalendar.Rank(p.tier)).ThenBy(p=>p.price).ToArray();
             string fittedId=store.Data.Loadout()[slot];
             string want=mode==Mode.Fit?fittedId:remembered.TryGetValue(slot,out var r)?r:parts.FirstOrDefault(p=>!store.Data.owned.Contains(p.id))?.id;

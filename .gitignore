@@ -97,3 +97,6 @@ review/unity-04/profiles-*/
 review/sound/
 # Grain-bank rev-tracking check images (tools/engine-grains.py): regenerated.
 review/grains/
+
+# Music previews (tools/music/compose.py): regenerated.
+review/music/

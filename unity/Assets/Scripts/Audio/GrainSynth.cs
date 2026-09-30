@@ -74,6 +74,7 @@ namespace LittleRoad
             return best;
         }
         public float Top {get {float t=0;foreach(var r in rpm)t=Math.Max(t,r);return t;}}
+        public float TopOf(bool pulling){float t=0;for(int i=0;i<rpm.Length;i++)if((load[i]==1)==pulling)t=Math.Max(t,rpm[i]);return t;}
         public float Bottom {get {float t=float.MaxValue;foreach(var r in rpm)t=Math.Min(t,r);return t;}}
     }
 
@@ -88,17 +89,27 @@ namespace LittleRoad
         // between pulling and coasting sweeps (with hysteresis, through the tail crossfade), and part throttle only
         // shapes that one voice's level and brightness.
         readonly Stream stream=new();bool pullingMode;float bright,lpState;
+        Biquad toneHigh,toneLow;float toneAt=-1,toneGain=1,levelIn,levelOut;bool toneOn;
+        public static bool ToneCorrection=true;   // (the sound harness compares with and without)
         // Each grain plays at its own recorded revs where the recording covers them (the most natural sound);
         // above the recording's top the top grains are stretched to our exact cycle length.
-        readonly float redline,srcLow,srcHigh;
+        // Each kind has its own top (Richard, 30 Sep: the Tuner V6 thinned out in the top half of every gear). The
+        // Skyline's pulls reach 3760 rpm and its lifts 3825: clamping a pull to 3825 found no pulling sweep there and
+        // played the lift-off recording for the whole top half of the rev range.
+        readonly float redline,srcLow,pullHigh,coastHigh;
         public GrainSynth(GrainBank grains,float sampleRate,uint seed,float targetIdle=0,float targetRedline=0)
         {
             bank=grains;fs=sampleRate;rng=new Noise(seed+99);
-            srcLow=grains.Bottom;srcHigh=grains.Top;redline=targetRedline>0?targetRedline:srcHigh;
+            // (A recorded pull's last few cycles are the driver lifting for the next gear, quieter and thinner: the
+            // Escort's fell from 0.159 to 0.105. Above the pull the stretch starts from just below them.)
+            srcLow=grains.Bottom;pullHigh=grains.TopOf(true)*.97f;coastHigh=grains.TopOf(false);
+            if(pullHigh<=0)pullHigh=coastHigh;if(coastHigh<=0)coastHigh=pullHigh;
+            redline=targetRedline>0?targetRedline:pullHigh;
         }
-        float Source(float rpm)=>Math.Clamp(rpm,srcLow,srcHigh);
-        // How far above the recording this engine revs (1 = covered); the checks report it.
-        public float TopStretch=>Math.Max(1,redline/srcHigh);
+        float Top(bool pulling)=>pulling?pullHigh:coastHigh;
+        float Source(float rpm,bool pulling)=>Math.Clamp(rpm,Math.Min(srcLow,Top(pulling)),Top(pulling));
+        // How far above the recording's pulls this engine revs (1 = covered); the checks report it.
+        public float TopStretch=>Math.Max(1,redline/pullHigh);
         // One sample at these revs; load 0..1 blends overrun into pulling; cut mutes (limiter, shift cut).
         public float Next(float rpm,float load,bool cut,bool shifting=false)
         {
@@ -107,6 +118,23 @@ namespace LittleRoad
             // to the coasting one there sounded like the engine stopping dead between gears.)
             if(!shifting){if(pullingMode&&l<.2f)pullingMode=false;else if(!pullingMode&&l>.4f)pullingMode=true;}
             float x=Play(stream,rpm,pullingMode);
+            // Above the recording's top revs the grains are squeezed shorter, which lifts the exhaust's resonances
+            // with the note (Richard, 30 Sep: the Tuner V6, its Skyline recording pulling only to 3760 rpm, went thin in
+            // the top half of each gear). A real engine's pipes stay put, so the lift is taken back out: a shelf cut
+            // above 1.5x the firing note, 7 dB per doubling, and 3 dB of weight back below it; then its level is matched to
+            // the squeezed sound's (the cut alone lost 4 dB on the Skyline, and quieter read as thinner; a fixed make-up
+            // overshot on the Viper, whose high firing note sits mostly below the shelf). (Laying the recorded
+            // pulses closer together instead, pitch-synchronous overlap-add, kept the tone but lost the rhythm:
+            // pulse-to-pulse correlation 0.6 against the recording's 0.93.)
+            float over=rpm/Top(pullingMode);
+            if(Math.Abs(over-toneAt)>.005f) {
+                toneAt=over;float octaves=MathF.Log(Math.Max(1,over),2),firing=rpm/120f*bank.cylinders;
+                toneHigh.SetHighShelf(fs,firing*1.5f,-7*octaves);toneLow.SetLowShelf(fs,firing*.75f,3*octaves);toneOn=ToneCorrection&&octaves>.002f;
+            }
+            float shaped=toneLow.Process(toneHigh.Process(x));
+            levelIn+=(x*x-levelIn)*.0001f;levelOut+=(shaped*shaped-levelOut)*.0001f;
+            toneGain+=(Math.Clamp(MathF.Sqrt(levelIn/Math.Max(1e-9f,levelOut)),.5f,2.5f)-toneGain)*.0005f;
+            if(toneOn)x=shaped*toneGain;
             // Part load: quieter and darker (a one-pole low-pass opening from ~1.5 kHz to fully open with load).
             bright+=((pullingMode?.35f+.65f*l:.5f)-bright)*.0005f;
             float k=Math.Clamp(bright*bright,.05f,1);lpState+=(x-lpState)*k;
@@ -115,7 +143,7 @@ namespace LittleRoad
         }
         float Play(Stream s,float rpm,bool on)
         {
-            float src=Source(rpm);
+            float src=Source(rpm,on);
             if(s.cur<0){s.cur=bank.Next(-1,src,on,ref rng);s.pos=0;}
             var g=bank.samples[s.cur];int length=bank.cycle[s.cur];
             // Stretch the grain so one cycle lasts exactly as long as the target revs' cycle.

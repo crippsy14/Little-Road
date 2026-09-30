@@ -58,6 +58,7 @@ namespace LittleRoad
         string[] opponentSetups;
         float nextSample,sampleInterval=1;
         GUIStyle title,label,small;string reportTrack="bayview";
+        public string TrackId=>reportTrack;
         [Serializable] public class DriverRosterEvidence {public int schema=1;public string mode;public DriverIdentity.Record[] drivers;}
         [Serializable] public class CarResult {public int id,laps,nextGate,place,contacts,recoveries,missedGates,physicalRecoveries;public string equipment;public bool finished;public float time,progress,offset,bestLap,maxImpact,maxPenetration,unsupportedSeconds,physicalRecoverySeconds,recoveryWaitSeconds,recoveryReverseSeconds;public int planReversals,passCommits,passCompleted,passAborted,abortTarget,abortTimeout,abortUnaccepted,lateBrakeTicks,gapCandidates,gapSelections,defendMoves;public float brakeSeconds,liftSeconds,stoppedSeconds,trafficSeconds,trafficBrakeSeconds,guardSeconds;}
         [Serializable] public class MotionSample {public int id,nextGate,laps;public float time,speed,targetSpeed,throttle,steering,offset,progress,headingError,nextGateProgress,predictedOffset,lateralSpeed,requestedYaw,actualYaw,chosenLane;public int reason=-1,intent=-1;}
@@ -301,10 +302,11 @@ namespace LittleRoad
         {
             int place=finishOrder.IndexOf(cars[0])+1;
             try {
-                bool valley=Roster?.Track=="hillcrest";string openBefore=RaceCalendar.Open(AdventureSession.Store.Data);
+                bool valley=Roster?.Track=="hillcrest";var data=AdventureSession.Store.Data;string openBefore=RaceCalendar.Open(data);bool doneBefore=RaceCalendar.Complete(data,openBefore);
                 int reward=AdventureSession.Store.FinishRace(AdventureSession.RaceSerial,place,valley?"hillcrest":"bayview");
                 careerReward=reward;string openNow=RaceCalendar.Open(AdventureSession.Store.Data);
                 AdventureSession.Notice=openNow!=openBefore?$"Finished {place}/24 · +{reward} credits · Class {openBefore} complete! Class {openNow} is open.":
+                    !doneBefore&&RaceCalendar.Complete(AdventureSession.Store.Data,openBefore)?$"Finished {place}/24 · +{reward} credits · Class {openBefore} complete! New races and parts are on the way.":
                     $"Finished {place}/24 · +{reward} credits. "+(valley?"Gio at Hillcrest Motors has valley parts.":"Visit Mara to buy and fit parts.");
                 ShowCareerResult();
             }catch(Exception e){Debug.LogError(e);careerUI.Show("Reward not saved yet",e.Message,new(){new("Retry saving this result",SettleCareer)});}
