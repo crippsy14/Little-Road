@@ -19,7 +19,7 @@ namespace LittleRoad
         readonly List<ToyShape> chips=new();readonly List<Text> chipTexts=new();string shownHud,shownControls;
         // Free-roam HUD (docs/ui-design.md): the race speed dash at bottom centre; the objective and the
         // controls hint fade in only when they're useful.
-        RectTransform dash;Text dashSpeed,dashDrive;CanvasGroup objectiveFade,controlsFade;bool roaming;
+        RectTransform dash;Text dashSpeed,dashDrive;GearDisplay dashGears;CanvasGroup objectiveFade,controlsFade;bool roaming;
         // Interaction prompt ("act" tier): button glyph + verb + name, role in the character's colour.
         ToyShape interaction,glyph;Text interactionTitle,interactionRole,glyphLetter;GameObject glyphCross;float interactionShown;string shownInteraction;InputGlyphs.Family shownFamily;
         RaceResultScreen result;ToyToaster toaster;
@@ -65,7 +65,8 @@ namespace LittleRoad
             DashText(dash,"Speed unit","mph",15,new Vector2(150,25),new Vector2(-42,-39),TextAnchor.MiddleRight);
             CoastUI.Panel(dash,"Separator",new Vector2(1,66),new Vector2(52,0),new Color(1,1,1,.6f),0);
             dashDrive=DashText(dash,"Drive selector","D",54,new Vector2(75,70),new Vector2(90,7),TextAnchor.MiddleCenter);
-            DashText(dash,"Transmission","AUTO",13,new Vector2(76,23),new Vector2(90,-38),TextAnchor.MiddleCenter);
+            var dashMode=DashText(dash,"Transmission","AUTO",13,new Vector2(76,23),new Vector2(90,-38),TextAnchor.MiddleCenter);
+            dashGears=new GearDisplay(dashDrive,dashMode,dash,220,46);
             dash.gameObject.SetActive(false);
 
             toaster=Toy.Rect(root.transform,"Toasts",new Vector2(1920,1080),Vector2.zero).gameObject.AddComponent<ToyToaster>();
@@ -87,10 +88,10 @@ namespace LittleRoad
         }
         // Free roam: speed dash, the objective pill top left and the controls hint bottom left, each shown
         // only when asked (they fade). Conversations hide the dash and always show the menu controls.
-        public void Roam(string goal,bool showGoal,string controls,bool showControls,float speed,string drive)
+        public void Roam(string goal,bool showGoal,string controls,bool showControls,RoadCar car)
         {
             if(!roaming){roaming=true;foreach(var c in chips)c.gameObject.SetActive(false);shownHud=null;shownControls=null;objectiveFade.alpha=0;controlsFade.alpha=0;}
-            dash.gameObject.SetActive(!IsOpen&&topBar.gameObject.activeSelf);dashSpeed.text=Mathf.RoundToInt(Mathf.Abs(speed)*2.2369363f).ToString();dashDrive.text=drive;
+            dash.gameObject.SetActive(!IsOpen&&topBar.gameObject.activeSelf);dashSpeed.text=Mathf.RoundToInt(Mathf.Abs(car.speed)*2.2369363f).ToString();dashGears.Show(car);
             if(goal!=shownHud) {
                 shownHud=goal;objective.text=goal??string.Empty;
                 float w=Mathf.Clamp(Mathf.Ceil(objective.preferredWidth)+110,300,1300);objectivePill.rectTransform.sizeDelta=new Vector2(w,56);objectivePill.rectTransform.anchoredPosition=new Vector2(-920+w*.5f,20);

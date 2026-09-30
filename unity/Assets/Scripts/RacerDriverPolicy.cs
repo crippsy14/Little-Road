@@ -297,7 +297,15 @@ namespace LittleRoad
             // Roll downhill from where we are heading now; a car alongside is a wall we cannot cross.
             int from=Bin(held),lo=from,hi=from;
             // Boxed in (a car's predicted body covers our spot): step out to the nearest free side first.
-            if(smooth[from]>=Wall)for(int r=1;r<Bins;r++){if(from-r>=0&&smooth[from-r]<Wall){from-=r;break;}if(from+r<Bins&&smooth[from+r]<Wall){from+=r;break;}}
+            // Boxed hold (study 210): only a sidestep (2.5 m); further is a dive through or across that car
+            // (Bayview 1710, studies 208-209: 10 m across the road into the bridge corner). With no free spot
+            // that close, hold the line; following and braking deal with the car.
+            bool boxedHold=false;
+            if(smooth[from]>=Wall) {
+                int limit=BoxedHold?BoxedStepBins:Bins-1,start=from;
+                for(int r=1;r<=limit;r++){if(from-r>=0&&smooth[from-r]<Wall){from-=r;break;}if(from+r<Bins&&smooth[from+r]<Wall){from+=r;break;}}
+                boxedHold=BoxedHold&&from==start;
+            }
             lo=hi=from;
             if(smooth[from]<Wall){while(lo>0&&smooth[lo-1]<Wall)lo--;while(hi<Bins-1&&smooth[hi+1]<Wall)hi++;}else{lo=0;hi=Bins-1;}
             // Settle into the bottom of our own valley; jump to a different valley only for a clear gain.
@@ -305,6 +313,7 @@ namespace LittleRoad
             while(true){int next=local;if(local>lo&&smooth[local-1]<smooth[next])next=local-1;if(local<hi&&smooth[local+1]<smooth[next])next=local+1;if(next==local)break;local=next;}
             int best=local;for(int i=lo;i<=hi;i++)if(smooth[i]<smooth[best])best=i;
             if(best!=local&&smooth[best]>smooth[local]-.8f)best=local;
+            if(boxedHold)best=from;
             // Committed through a corner: once braking for it or turning in, keep the chosen line (a metre of
             // adjustment) unless a car's body is in the way.
             bool cornering=corner.found&&corner.brakeStart<v*.5f||Mathf.Abs(track.LineCurvature(track.Index(s)))>1/60f;
@@ -356,7 +365,7 @@ namespace LittleRoad
                         // and each pull-out and abort costs time); patience decides how long a small edge must wait.
                         float edgeNeeded=2.4f-1.2f*ability.aggression;
                         bool want=closing>edgeNeeded||(closing>edgeNeeded*.4f&&followingSince>=0&&clock-followingSince>ability.FollowBeforeTrying&&(corners||straightDraft));
-                        if(want&&PickSide(ahead,corner,edge,out float chosenSide)) {
+                        if(want&&PickSide(ahead,corner,edge,me.offset,v,out float chosenSide)) {
                             target=ahead.id;side=chosenSide;sideClosedSince=-1;Attacks++;Enter(Intent.Attack,clock);return;
                         }
                     }
@@ -395,15 +404,26 @@ namespace LittleRoad
         void Enter(Intent next,float clock){if(next!=Intent.Attack)target=-1;State=next;intentSince=clock;}
 
         // Attack the inside of the next corner; on a straight, the side with more room.
-        bool PickSide(in ObservedCar car,in Corner corner,float edge,out float chosen)
+        // Pass reach guard (study 209, default; --no-pass-reach-guard): only a side the car can move across to
+        // before the braking point. Boxed hold (study 210, default; --no-boxed-hold): see Plan.
+        public static readonly bool PassReachGuard=!RaceTrial.Has("--no-pass-reach-guard");
+        public static readonly bool BoxedHold=!RaceTrial.Has("--no-boxed-hold");
+        public const int BoxedStepBins=10; // 2.5 m
+        public const float PassLateralRate=2.5f;
+        public static bool CanReachSide(float cross,float brakeStart,float speed)=>cross<=1.5f+PassLateralRate*Mathf.Max(0,brakeStart)/Mathf.Max(speed,1);
+        bool PickSide(in ObservedCar car,in Corner corner,float edge,float myOffset,float speed,out float chosen)
         {
             float need=halfWidth*2+.15f;
             float right=edge-(car.offset+car.halfWidth),left=(car.offset-car.halfWidth)+edge;
+            bool guard=PassReachGuard&&corner.found&&corner.distance<150;float brakeStart=corner.brakeStart,carOffset=car.offset,carHalf=car.halfWidth;
+            bool Reach(float side){if(!guard)return true;
+                float lane=side>0?carOffset+carHalf+halfWidth+.3f:carOffset-carHalf-halfWidth-.3f;
+                return CanReachSide(Mathf.Abs(lane-myOffset),brakeStart,speed);}
             chosen=corner.found&&corner.distance<150?corner.sign:(right>=left?1:-1);
             float room=chosen>0?right:left;
-            if(room>=need)return true;
+            if(room>=need&&Reach(chosen))return true;
             chosen=-chosen;room=chosen>0?right:left;
-            return room>=need+.4f&&!(corner.found&&corner.distance<60);
+            return room>=need+.4f&&!(corner.found&&corner.distance<60)&&Reach(chosen);
         }
 
         float DefendOffset(in Corner corner,float edge)=>Mathf.Clamp(corner.sign*Mathf.Min(3.2f,edge-1),-edge,edge);

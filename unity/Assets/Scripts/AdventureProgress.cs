@@ -26,6 +26,14 @@ namespace LittleRoad
             return false;
         }
     }
+    // A gearbox tune (docs/48): the final drive (0.80-1.25; above 1 shortens every gear) and, on boxes that allow it,
+    // each gear's own multiplier (0.85-1.15). Saved per gearbox; a gearbox without one runs its defaults.
+    [Serializable] public sealed class GearTune
+    {
+        public string transmission;public float final=1;public float[] gears;
+        public const float FinalMin=.8f,FinalMax=1.25f,GearMin=.85f,GearMax=1.15f;
+        public bool Valid=>!string.IsNullOrEmpty(transmission)&&final>=FinalMin&&final<=FinalMax&&(gears==null||gears.Length<=8&&gears.All(g=>g>=GearMin&&g<=GearMax));
+    }
     [Serializable] public sealed class AdventureProgress
     {
         public int version,credits,questStage,paintIndex,raceSerial,settledSerial,bestPlace,raceWins;
@@ -38,12 +46,16 @@ namespace LittleRoad
         public List<string> podiums;
         // Fog of war (ExploredMap: base64 bit mask) and the places whose "discovered" card has been shown.
         public string explored;public List<string> discovered;
+        // Gearbox tunes from the tuning shop (docs/48). Older saves have none.
+        public List<GearTune> tunes;
+        public GearTune Tune(){var box=fitted?.Find(f=>f.slot=="transmission")?.id;return box==null?null:tunes?.Find(t=>t.transmission==box);}
         public static AdventureProgress New()=>new AdventureProgress {version=1,bodyId=CarBodies.Starter,podiums=new List<string>(),discovered=new List<string>(),
             owned=EquipmentCatalog.StockLoadout().Values.ToList(),collected=new List<string>(),bodies=new List<string>{CarBodies.Starter},
             fitted=EquipmentCatalog.StockLoadout().Select(p=>new FittedPart{slot=p.Key,id=p.Value}).ToList()};
         public Dictionary<string,string> Loadout()=>fitted.ToDictionary(p=>p.slot,p=>p.id);
         public void Validate()
         {
+            if(tunes!=null&&(tunes.Any(t=>t==null||!t.Valid)||tunes.Select(t=>t.transmission).Distinct().Count()!=tunes.Count))throw new InvalidDataException("A gearbox tune is invalid or repeated.");
             if(version!=1||credits<0||credits>10000000||questStage<0||questStage>3||paintIndex<0||paintIndex>=PaintCatalog.All.Length||
                 raceSerial<0||settledSerial<0||settledSerial>raceSerial||raceWins<0||raceWins>settledSerial||bestPlace<0||bestPlace>24)
                 throw new InvalidDataException("Save version or progression values are invalid.");
@@ -112,6 +124,10 @@ namespace LittleRoad
         public bool Discover(string place)=>Change(p=>{if(p.discovered.Contains(place))return false;p.discovered.Add(place);return true;});
         public bool SaveExplored(string mask)=>Change(p=>{if(p.explored==mask)return false;p.explored=mask;return true;});
         public bool Buy(string id)=>Change(p=>{var part=EquipmentCatalog.Get(id);if(p.owned.Contains(id)||p.credits<part.price)return false;p.credits-=part.price;p.owned.Add(id);return true;});
+        // The tuning shop (docs/48): replace the fitted gearbox's tune (null returns it to its defaults).
+        public bool SetTune(GearTune tune)=>Change(p=>{
+            var box=p.Loadout()["transmission"];if(tune!=null&&(tune.transmission!=box||!tune.Valid))return false;
+            p.tunes??=new List<GearTune>();p.tunes.RemoveAll(t=>t.transmission==box);if(tune!=null)p.tunes.Add(tune);return true;});
         public bool Fit(string id)=>Change(p=>{var part=EquipmentCatalog.Get(id);if(!p.owned.Contains(id))return false;var item=p.fitted.Find(f=>f.slot==part.slot);if(item.id==id)return false;item.id=id;return true;});
         public int BeginRace(){Change(p=>{p.raceSerial++;return true;});return Data.raceSerial;}
         // Pays a finished race once (by serial). The class's base prize is scaled for the venue, and a podium

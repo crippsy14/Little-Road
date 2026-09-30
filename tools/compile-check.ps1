@@ -16,7 +16,11 @@ if(-not (Test-Path $library)){Write-Output 'COMPILE_CHECK skipped: no Library/Sc
 $refs=@(Join-Path $data 'NetStandard\ref\2.1.0\netstandard.dll')
 # Managed\UnityEngine holds the engine modules and the editor modules; game scripts may only see the engine.
 $modules=Get-ChildItem (Join-Path $data 'Managed\UnityEngine') -Filter *.dll
-$refs+=$modules|Where-Object{$_.Name -notlike 'UnityEditor*'}|ForEach-Object FullName
+# Optional engine modules the project hasn't enabled (Packages/manifest.json) are left out, as Unity's own build does
+# (ScreenCapture passed here once and failed the real build).
+$manifest=Get-Content (Join-Path $root 'unity\Packages\manifest.json') -Raw
+$optional=@{'UnityEngine.ScreenCaptureModule.dll'='com.unity.modules.screencapture';'UnityEngine.VRModule.dll'='com.unity.modules.vr';'UnityEngine.XRModule.dll'='com.unity.modules.xr';'UnityEngine.ClothModule.dll'='com.unity.modules.cloth';'UnityEngine.VehiclesModule.dll'='com.unity.modules.vehicles';'UnityEngine.WindModule.dll'='com.unity.modules.wind';'UnityEngine.VideoModule.dll'='com.unity.modules.video'}
+$refs+=$modules|Where-Object{$_.Name -notlike 'UnityEditor*' -and -not ($optional.ContainsKey($_.Name) -and $manifest -notmatch [regex]::Escape($optional[$_.Name]))}|ForEach-Object FullName
 $editorModules=$modules|Where-Object{$_.Name -like 'UnityEditor*'}|ForEach-Object FullName
 # Package assemblies: runtime scripts see runtime packages only; editor scripts see all.
 $packages=Get-ChildItem $library -Filter *.dll|Where-Object{$_.Name -notlike 'Assembly-CSharp*'}

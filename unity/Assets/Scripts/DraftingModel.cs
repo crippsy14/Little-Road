@@ -52,7 +52,7 @@ namespace LittleRoad
         public static float Resistance(float speed,float mass,float reduction)
         {
             if(reduction<=0)return DriveModel.Resistance(speed,mass); // Exact old arithmetic at zero.
-            return (.25f+.006f*speed*speed*(1-Mathf.Min(MaximumReduction,reduction)))/mass;
+            return (.25f+DriveModel.DragK*speed*speed*(1-Mathf.Min(MaximumReduction,reduction)))/mass;
         }
     }
 }

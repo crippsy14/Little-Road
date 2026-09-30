@@ -81,4 +81,12 @@ namespace LittleRoad
             urp.mainLightShadowmapResolution=ShadowScale<1?2048:4096;
         }
     }
+
+    // Driving settings beside the graphics ones (same PlayerPrefs pattern). Gears: automatic by default; manual
+    // shifts on R2/L2 (Left Shift/Left Ctrl) with throttle and brake on the right stick (docs/47 stage 3).
+    public static class DrivingOptions
+    {
+        public static readonly GraphicsOptions.Option Gears=new("gears","Gears",0,"Automatic","Manual");
+        public static bool Manual=>Gears.Index==1||RaceTrial.Has("--manual-gears");
+    }
 }

@@ -93,3 +93,7 @@ review/unity-35/frame-cost-2[0-9][0-9]/
 review/unity-01/
 review/unity-04/bodies-*/
 review/unity-04/profiles-*/
+# Sound harness renders (tools/sound-harness.ps1): regenerated in seconds.
+review/sound/
+# Grain-bank rev-tracking check images (tools/engine-grains.py): regenerated.
+review/grains/

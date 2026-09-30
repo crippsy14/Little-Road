@@ -12,7 +12,7 @@ namespace LittleRoad
     [DefaultExecutionOrder(900)]
     public sealed class RaceHud:MonoBehaviour
     {
-        RaceTrial race;RaceTiming timing;Canvas canvas;RectTransform board;Text speed,gear,lap,clock,position,notice,compactHint,totalTime,bestLap;
+        RaceTrial race;RaceTiming timing;Canvas canvas;RectTransform board;GearDisplay gears;Text speed,gear,lap,clock,position,notice,compactHint,totalTime,bestLap;
         Text[] names=new Text[11],places=new Text[11],gaps=new Text[11];CoastPanel[] strips=new CoastPanel[11];GameObject[] rows=new GameObject[11];
         RectTransform gasFill,brakeFill,steerPip;float nextRefresh;bool compact;
         readonly RaceLapHistory lapHistory=new();Text[] recentLaps=new Text[3];Text lapHistoryTitle;RaceMapCars mapCars;float finalLapUntil=-1;
@@ -66,7 +66,8 @@ namespace LittleRoad
             Readout(dash,"Speed unit","mph",15,new Vector2(160,25),new Vector2(-51,-39),false,TextAnchor.MiddleRight);
             CoastUI.Panel(dash,"Separator",new Vector2(1,66),new Vector2(49,0),new Color(1,1,1,.60f),0);
             gear=Readout(dash,"Drive selector","D",54,new Vector2(75,70),new Vector2(96,7),false,TextAnchor.MiddleCenter);
-            Readout(dash,"Transmission","AUTO",13,new Vector2(76,23),new Vector2(96,-38),false,TextAnchor.MiddleCenter);
+            var mode=Readout(dash,"Transmission","AUTO",13,new Vector2(76,23),new Vector2(96,-38),false,TextAnchor.MiddleCenter);
+            gears=new GearDisplay(gear,mode,dash,330,46);
             gasFill=Meter(dash,"THR",new Vector2(210,0),White);brakeFill=Meter(dash,"BRK / R",new Vector2(-210,0),new Color(1,.32f,.27f));
             CoastUI.Panel(dash,"Steering input rail",new Vector2(150,1),new Vector2(0,62),new Color(1,1,1,.45f),0);
             steerPip=CoastUI.Panel(dash,"Steering input",new Vector2(4,9),new Vector2(0,62),Accent,0);
@@ -95,7 +96,7 @@ namespace LittleRoad
         }
         public void Refresh()
         {
-            var player=race.cars[0];timing.Sort();speed.text=Mathf.RoundToInt(Mathf.Abs(player.speed)*2.2369363f).ToString();gear.text=DriveIndicator(player.speed,player.throttle);steerPip.anchoredPosition=new Vector2(Mathf.Clamp(player.steering,-1,1)*75,62);
+            var player=race.cars[0];timing.Sort();speed.text=Mathf.RoundToInt(Mathf.Abs(player.speed)*2.2369363f).ToString();gears.Show(player);steerPip.anchoredPosition=new Vector2(Mathf.Clamp(player.steering,-1,1)*75,62);
             gasFill.sizeDelta=new Vector2(12,62*Mathf.Clamp01(player.throttle));brakeFill.sizeDelta=new Vector2(12,62*Mathf.Clamp01(-player.throttle));
             int rank=timing.Rank(0);position.text=rank+" / "+race.cars.Count;lap.text=$"{Mathf.Min(player.laps+1,race.requiredLaps)} / {race.requiredLaps}";
             float t=Mathf.Max(0,player.finished?player.finishTime:race.elapsed);totalTime.text=$"TOTAL  {(int)t/60:00}:{t%60:00.0}";float lapTime=player.CurrentLapTime;clock.text=player.nextGateProgress<=0?"—":$"{(int)lapTime/60:0}:{lapTime%60:00.000}";bestLap.text=player.bestLap==float.MaxValue?"":$"BEST  {(int)player.bestLap/60:0}:{player.bestLap%60:00.000}";

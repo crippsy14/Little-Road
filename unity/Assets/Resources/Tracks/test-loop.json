@@ -1,0 +1,61 @@
+{
+  "id": "test-loop",
+  "version": "test-loop-v1",
+  "title": "Test loop",
+  "knots": [
+    {
+      "name": "Straight A (1 mile)",
+      "x": 131.0,
+      "z": 0,
+      "dx": 0,
+      "dz": 1,
+      "incoming": 72.3513,
+      "outgoing": 536.4333333333333
+    },
+    {
+      "name": "Turn 1 entry",
+      "x": 131.0,
+      "z": 1609.3,
+      "dx": 0,
+      "dz": 1,
+      "incoming": 536.4333333333333,
+      "outgoing": 72.3513
+    },
+    {
+      "name": "Turn 1",
+      "x": 0,
+      "z": 1740.3,
+      "dx": -1,
+      "dz": 0,
+      "incoming": 72.3513,
+      "outgoing": 72.3513
+    },
+    {
+      "name": "Straight B (1 mile)",
+      "x": -131.0,
+      "z": 1609.3,
+      "dx": 0,
+      "dz": -1,
+      "incoming": 72.3513,
+      "outgoing": 536.4333333333333
+    },
+    {
+      "name": "Turn 2 entry",
+      "x": -131.0,
+      "z": 0,
+      "dx": 0,
+      "dz": -1,
+      "incoming": 536.4333333333333,
+      "outgoing": 72.3513
+    },
+    {
+      "name": "Turn 2",
+      "x": 0,
+      "z": -131.0,
+      "dx": 1,
+      "dz": 0,
+      "incoming": 72.3513,
+      "outgoing": 72.3513
+    }
+  ]
+}

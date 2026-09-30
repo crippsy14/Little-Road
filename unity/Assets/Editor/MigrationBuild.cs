@@ -47,7 +47,10 @@ public static class MigrationBuild
         Directory.CreateDirectory("Assets/Scenes");EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(),"Assets/Scenes/CoastalTrial.unity");
         EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene("Assets/Scenes/CoastalTrial.unity",true)};
         Check(pipeline!=null,"URP pipeline assigned",evidence);
-        Check(EquipmentCatalog.All.parts.Count(p=>p.shop!="hillcrest")==21 && EquipmentCatalog.All.slots.Length==7,"Preserved 21 parts across seven slots",evidence);
+        // Schema 2 (docs/47): every class stocks every slot, and every part id a pre-ladder save can hold survives.
+        var savedIds=new[]{"brakes_race","brakes_sport","brakes_stock","chassis_light","chassis_stock","engine_club","engine_stock","engine_workshop","steering_precision","steering_quick","steering_stock","transmission_close","transmission_long","transmission_stock","turbo_club","turbo_stock","turbo_street","tyres_sport","tyres_stock","tyres_touring","tyres_trail","engine_valley","turbo_twin","tyres_grip","tyres_rally","brakes_ceramic","steering_rally","chassis_carbon","transmission_six"};
+        Check(EquipmentCatalog.All.slots.Length==7&&savedIds.All(id=>EquipmentCatalog.All.parts.Any(p=>p.id==id)),"Seven slots; all 29 pre-ladder part ids preserved",evidence);
+        Check(EquipmentCatalog.All.slots.All(slot=>RaceCalendar.Classes.All(c=>EquipmentCatalog.All.parts.Count(p=>p.slot==slot&&p.tier==c)>=3)),"Every class stocks at least three parts per slot",evidence);
         Check(EquipmentCatalog.All.parts.Count(p=>p.shop=="hillcrest")==8,"Hillcrest Motors stocks eight valley parts",evidence);
         var stockFit=EquipmentCatalog.StockLoadout();
         foreach(var part in EquipmentCatalog.All.parts) {
@@ -75,10 +78,13 @@ public static class MigrationBuild
         if(glassMaterial==null){glassMaterial=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(glassMaterial,glassReference);}
         TrialWorld.ConfigureMasterGlass(glassMaterial);EditorUtility.SetDirty(glassMaterial);
         float stock=TimeTo20(CarTuning.Stock),club=TimeTo20(CarTuning.Club);
-        Check(stock>4 && stock<8,"Stock acceleration is gradual: 0â€“20m/s "+stock.ToString("0.00")+"s",evidence);
+        // Grounded class C (Richard, 1 Oct: upgrades felt like a Le Mans prototype): a stock car takes 7-11 s to
+        // 20 m/s and club kit clearly improves on it (the best class C kit about halves it).
+        Check(stock>7 && stock<11,"Stock acceleration is gradual: 0-20 m/s "+stock.ToString("0.00")+" s",evidence);
         Check(club<stock*.7f,"Club equipment improves acceleration: "+club.ToString("0.00")+"s",evidence);
         var longStock=CarTuning.Stock;longStock.gearCeiling=34;
-        Check(Mathf.Abs(longStock.AttainableSpeed-24)<.02f,"Long gearing does not invent engine power",evidence);
+        float engineTop=longStock.drivetrain!=null?longStock.drivetrain.topSpeed:24;
+        Check(Mathf.Abs(longStock.AttainableSpeed-engineTop)<.05f,"Long gearing does not invent engine power: "+engineTop.ToString("0.0")+"m/s",evidence);
         DriveModel.Forces(CarTuning.Stock,18,1,0,7,0,out float straight,out _);
         DriveModel.Forces(CarTuning.Stock,18,1,1,3.5f,0,out float corner,out float yaw);
         Check(corner<straight && yaw<1,"Turning and poor grip restrict usable power",evidence);
@@ -179,6 +185,8 @@ public static class MigrationBuild
         evidence.checks.AddRange(PresentationChecks.Run());
         evidence.checks.AddRange(InterfaceChecks.Run());
         evidence.checks.AddRange(RacerChecks.Run());
+        evidence.checks.AddRange(DrivetrainChecks.Run());
+        evidence.checks.AddRange(SoundChecks.Run());
         Directory.CreateDirectory(Path.Combine(root,"review/unity-01"));
         File.WriteAllText(Path.Combine(root,"review/unity-01/editor-checks.json"),JsonUtility.ToJson(evidence,true));
         AssetDatabase.SaveAssets();
@@ -197,6 +205,7 @@ public static class MigrationBuild
         }
         return count;
     }
-    static float TimeTo20(CarTuning t){float speed=0,time=0;while(speed<20&&time<60){DriveModel.Forces(t,speed,1,0,t.roadGrip,0,out float a,out _);speed+=a/60;time+=1f/60;}return time;}
+    // Real gears and shift cuts when the car has a drivetrain (docs/47), as the player feels it.
+    static float TimeTo20(CarTuning t){var box=t.drivetrain!=null?new GearState(t.drivetrain):null;float speed=0,time=0;while(speed<20&&time<60){float engine=box!=null?box.Step(speed,1,1f/60):-1;DriveModel.Forces(t,speed,1,0,t.roadGrip,0,out float a,out _,engineAccel:engine);speed+=a/60;time+=1f/60;}return time;}
     static void Check(bool value,string name,Evidence e){if(!value)throw new Exception("Migration check failed: "+name);e.checks.Add(name);}
 }

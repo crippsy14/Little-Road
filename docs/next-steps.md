@@ -2,6 +2,136 @@
 
 **Plan of record (29 September):** [doc 45](45-roadmap-and-feature-spec.md) sets the order of work, Phases 0–5; the parts ladder is in [doc 44](44-parts-tiers-and-progression.md). The campaign is at least 12 hours and open-ended. Next is **Phase 0**: world grid with per-tile map and fog, Racer records, radar chart, a traffic-aware launch, save and IDs, and track standards.
 
+**Update, 30 September, evening: parts for every class, real gears, manual shifting, engine sound.** Design and results in [doc 47](47-parts-drivetrain-and-sound.md). On branch `racing-ai-v2` (not committed yet).
+
+1. **Parts ladder:** 129 parts across C, B, A, S and E, plus five platforms. Every engine is a real engine (layout, cylinders, revs, torque curve and sound fingerprint). All 29 older part ids are kept, so saves still load.
+2. **Real gears:** `Drivetrain` solves each build's ratios so top gear reaches its top speed; `GearState` drives the car in a real gear with shift cuts, revs, boost and a limiter.
+   - `DrivetrainChecks` passes all 322 engine × induction × gearbox combinations: each reaches top speed in top gear and uses every gear.
+   - **Launch limit:** it caps net acceleration in every gear. A first-gear-only cap made second gear out-pull first, and the automatic box looped shift/snap on the line.
+   - **Study 208** (gears against `--legacy-drivetrain`): the field is faster (Cedar about 9%), and all 24 finish in every race.
+3. **Automatic or manual** (Settings > Gears):
+   - **Pad:** R2/L2 shift, right stick up/down for throttle/brake.
+   - **Keyboard:** Left Shift / Left Ctrl shift.
+   - **Dash:** both dashes show the gear, AUTO/MANUAL, and a 16-lamp rev strip with a shift light.
+   - A recovery puts the box back in first.
+4. **Engine sound, synthesised live:**
+   - firing pulses at the real crank angles through per-bank pipes and mufflers;
+   - intake, turbo whistle, blow-off or flutter, anti-lag bangs, overrun pops, the limiter;
+   - the hybrid motor, straight-cut whine and shift clunks;
+   - tyres, surfaces, wind and impacts.
+
+   The eight nearest cars have a voice, and there are volume settings. `tools/sound-harness.ps1` renders every engine's drive to `review/sound/*.wav` and checks its pitch against its firing frequency. The engines are measured, not yet listened to: **Richard's ears are the test.**
+5. **AI fixes from the studies:**
+   - **Boxed hold** (study 210): a boxed-in car sidesteps at most 2.5 m. It used to jump 10 m across the road, which put a car into Bayview's bridge.
+   - **Pass reach guard** (study 209): no dive to a side the car can't reach before braking.
+
+   Both met the keep rule, by margins near noise, and are now on by default (`--no-boxed-hold`, `--no-pass-reach-guard`).
+6. **Still open (AI):**
+   - At Bayview's bridge corner (progress 330–345), a car on a lane far off the racing line can get its target speed too late and run wide (study 210, seed 1709).
+   - The physical recovery then reverses along the road for 15–30 s instead of turning round.
+
+**Update, 1 October, evening: Richard's fourth listen.**
+1. **Engine sound follows refits.** It used to change only after a loading screen.
+2. **Turbo:** the whoosh swells only while boost builds, with a faint whine then; nearly silent at steady boost. Turbo cars are slightly muffled.
+3. **Race start:** silent until the countdown, then a 1.5 s fade-in. Countdown beeps: three short, then a long higher GO.
+4. **Birds:** real field recordings (forest and river beds, stereo), very faint and gone above about 12 m/s. Night crickets are synthesised individuals; the recorded chorus sounded like a marching band.
+5. **Limiter:** a real 75 ms fuel cut that bounces.
+6. **Automatic box:** no more 4th-5th hunting near top speed (the 60 mph stutter). It needs 1.2 s after an upshift, 85% rev room and 15% more pull before a downshift.
+7. **Launch revs** climb with the car as the clutch slips; they used to sit flat until 10 mph.
+8. **Shifts:** the pulling recording carries on through a gearshift, quieter, instead of cutting to the coasting one.
+9. **Test loop** (`test-loop.ps1`): 2.5 miles with two 1-mile straights. Richard's club kit shifts cleanly to 5th at 55 mph and tops out at 67.6 mph.
+
+**Update, 1 October, night: gearing v2 and the tuning shop** (doc 47 "Gearing v2", doc 48).
+1. **Fixed ratios per gearbox** (km/h per 1,000 rpm in top gear). Top speed is the best gear's, where drive meets drag or the redline.
+   - A weak engine never reaches the top-gear limiter; a strong one bounces on it and needs a longer box. For example, the Valley V6 with a club turbo reaches 106 km/h on the stock box and 125 km/h on the six-speed.
+   - A long box on a weak engine tops out a gear down, and the automatic holds that gear on the limiter.
+   - **Study 213:** all 24 finish with no resets, and pace is neutral.
+2. **Tuning shop:** "Tune gearbox" at Mara's and Gio's garages.
+   - **Tune:** the final drive (0.80–1.25) on every box, and each gear on the sport boxes and up. Auto-tune has three presets (acceleration, balanced, top speed).
+   - **Screen:** GT-style gear chart, power and torque curve, and the car's numbers (top speed and its gear, 0–60, 0–100 km/h), with a verdict: on the limiter, over-geared or well matched.
+   - **Test drive:** a timed lap of the town's circuit (lap time, top speed, 0–60), then back to the screen.
+   - **Storage:** tunes save per gearbox; AI rivals race their box's defaults.
+3. **Compile check:** it now leaves out engine modules the project hasn't enabled (Screen Capture passed the quick check once and failed the real build).
+
+**Known issue (parked, Richard 1 Oct):** a strange engine note around 61–62 mph on the club motor with the Street turbo. It persists after the gearbox-hunting fix, and it's still to be diagnosed with `test-loop.ps1 -Capture`.
+
+**Next:** the gearing model (fixed ratios per gearbox, where power decides whether the car reaches the limiter), then the tuning shop with test drives.
+
+**Update, 1 October, afternoon: sound polish, a grounded class C, world ambience.**
+1. **Engine sound, third listen fixes:**
+   - **Loudness:** each recording is levelled to a smooth curve (pulling rises 2x from low to high revs, coasting at 65%). The Escort's pulls had run 19x quieter at low revs than at the top. Engine levels are raised and Master now defaults to 100%. A captured race now holds 0.18–0.23 RMS pulling across the revs, with no clipping.
+   - **Lift-off:** the old sound was "like a bus's air brakes". The Street turbo is now recirculating (a soft, dark whoosh). Blow-off valves on the bigger turbos give a short "pssh" whose tone falls, at a quarter of the old level.
+2. **Grounded class C** (doc 47, "Balance"):
+   - Launch pull, turbo multipliers, frame weight savings and tyre grip are all compressed. Stock takes 8.4 s to 20 m/s, the pack 6.4 s, club kit 5.6 s, the pole car 4.4 s and the best class C kit 4.1 s (they were 5.9 / 3.3 / 2.2 / 1.6 / 1.4 s).
+   - Top speeds run 89–126 km/h (were 89–170). Gears last 1.1–2.7 s (were 0.6–1.5).
+   - **Study 212:** all 24 finish with no resets, fewer contacts and a much tighter pack (winner to last at Bayview about 10 s, was 13–18 s).
+3. **World ambience** (`AmbienceSynth`, `Ambience`):
+   - surf by the sea, its level from sampling the ground in a ring around the listener;
+   - gusting wind, stronger high up;
+   - the Silver Falls roar at the river's steepest drop;
+   - river babble that follows the nearest stretch of the Silver river;
+   - gulls near the sea and songbirds inland, quiet at night.
+
+   `sound-harness.ps1 -Filter ambience` writes 20 s of each to `review/sound/ambience/`.
+
+**Next (with Richard):** music, tyre squeal and the other effects.
+
+**Update, 1 October, morning: Richard's sound notes, first pass.**
+1. **Whine:** this was the turbo whistle. Richard's car had the Street turbo, and the whistle was a near-pure tone climbing to 8.8 kHz. It carried 14× the high-frequency energy of the engine itself (a layer audit with `sound-harness.ps1 -Filter layers:<engine>+<turbo>`). The turbo is now mostly a spool whoosh with a faint whistle under 3.5 kHz, and the energy above 4 kHz is down about 7×.
+2. **Reverse:**
+   - **Manual:** reverse is a gear, as in GT7 and real cars. Down from first at a standstill selects R; in R the throttle drives backwards and the brake brakes. In a forward gear the brake holds the car at a stop.
+   - **All modes:** the forward pedal now brakes a car that is rolling backwards. It used to do nothing, which is also why AI recoveries reversed for 15–30 s.
+   - **Study 211** (`--legacy-reverse` A/B): identical except the one race with a recovery, Bayview 1709. Its last car finishes at 42.2 s instead of 74.6 s and the total is 32 s better. Kept.
+3. **Listening test:**
+   - **In the game:** Settings > Engine sound test, or `--sound-bench <engine id>`. Pick any engine and induction; Cross / Space runs the test (idle, pull to max revs, hold on the limiter, lift back to idle); R2 / F revs it freely.
+   - **Harness:** `sound-harness.ps1` writes the same test for every engine to `review/sound/`.
+4. **Realism: done with real recordings (1 October, midday).**
+   - **Downloads:** 15 engine recordings (about 1.2 GB) from Sonniss' official GDC 2021-2023 zips. `tools/fetch-sonniss.py` reads each zip's index with range requests and pulls single files. They sit in `../little-road-audio-sources/`, outside the repo.
+   - **Banks:** `tools/engine-grains.py --config tools/engine-banks.json` turns them into 12 grain banks, about 30 MB, in `unity/Assets/Resources/Engines`. Check images for each recording are in `review/grains/`.
+   - **Rev tracker:**
+     - harmonic sum plus a Viterbi path;
+     - quiet stretches (engine off) are untrusted;
+     - on the V8, V10 and flat-12 it follows the bank pulse line (`trackCylinders`).
+   - **Mapping:** each part names its recording (`parts.json` `sound`). Class C is now five different cars: Citroen C2, Golf, Escort RS1800, S2000 and Skyline. S and E rev past every road recording (stretched 1.6-2.6× at the redline), so they need race recordings later.
+   - **In the game:** the recording replaces the modelled exhaust; the part's exhaust type tones it (road, sport, race); the turbo, blow-off, shift and hybrid layers stay synthesised. `--synth-engines` brings back the old model for comparison.
+   - **Checks:** `SoundChecks` loads and plays every bank. `sound-harness.ps1 -Filter recorded` writes every engine's listening test to `review/sound/recorded/`.
+   - **Richard's second listen (1 October):** much better, and coasting sounds natural. Revving up "flickered between two rev noises at once" and sounded distorted. Four causes, all fixed:
+     1. **Two engines at once.** At part throttle, pulling and coasting grains came from two separate streams, played together. There is now one stream, switching sweeps with hysteresis; part load shapes its level and brightness.
+     2. **Crossfade overlap.** Every cycle join overlapped two different stretches of audio. Grains now carry a tail (the recorded start of the next cycle), so a join to the recorded successor reproduces the recording.
+     3. **Scattered cycles.** Banks were thinned to scattered cycles per 50 rpm. They are now whole sweeps (version 3 format), and playback steps through consecutive cycles.
+     4. **Distortion.** The player's ×1.7 boost sat before the soft limiter. It is now the speaker volume.
+   - **`--audio-capture <file.wav>`** records the player's engine as synthesised, with revs, gear and throttle every 10 ms, to show exactly what was heard. It found cause 1, because the throttle is mostly partial while pulling.
+   - **Lesson:** batch-mode checks run without sound. After any sound change, run a windowed race with sound before handing over. A setup crash (volume set before the source existed) gave Richard a black screen.
+5. **Earlier plan for the realism work (superseded by item 4): granular synthesis from real recordings.** This is the racing-game standard.
+   - `tools/engine-grains.py` tracks the revs through a recording and cuts one-cycle grains into a bank.
+   - `GrainSynth` plays the bank at any revs. It replaces the modelled exhaust; the turbo, shift and hybrid layers stay procedural.
+   - Tested end to end on a synthetic source (`sound-harness.ps1 -Filter grains:<bank>:<engine>`).
+   - **Source:** the free Sonniss GDC archive (royalty-free, no attribution, no AI training) has Pole Position Production car recordings. The Citroen C2, Golf, Escort RS1800, Honda S2000, Skyline R33, Skoda Fabia R5, Audi RS4 V8, Viper V10, Testarossa, Kia Niro Hybrid and sprint cars cover the ladder.
+   - **Needs Richard to download them.**
+5. **Parts sounding alike:** with recordings, each engine step maps to a different car's engine.
+
+**Richard's first listen (30 September, evening). Fix these before any more sound work:**
+1. **A very high-pitched noise rises with acceleration.** It's piercing (it bothered the dog).
+   - **Suspects:**
+     - the turbo whistle (1.6–8.8 kHz with boost);
+     - the intake hiss (it grows with revs squared);
+     - the valve-train tick (high-passed at 3.5 kHz);
+     - pipe-comb resonances;
+     - aliasing from very short pulses at high revs.
+   - **Next step:** solo each layer in the harness and measure the energy above 4 kHz.
+2. **The first three C engines (stock, workshop, club) sound the same** when swapped in the save. The differences need to be clearly audible: displacement, exhaust, cams, intake.
+3. **They don't sound like engines:** "more like a PS1/PS2-era kart game". The sound needs to be guttural and real.
+   - **Next step:** research better approaches:
+     - a physically modelled exhaust (waveguides, as in engine-sim);
+     - granular or loop-based synthesis from CC0 engine recordings (Richard approves downloads);
+     - hybrid layering.
+
+   Rethink the model rather than tweak it.
+4. **Manual gears into reverse:** with the brake and the downshift on the same trigger (L2), you can't brake without shifting. Study how GT7 handles reverse and braking on a pad and wheel, and copy it.
+5. **Wanted: a listening test.** Pick any engine and hear it rev from low to high, hold a few seconds at max revs, then come back down, so Richard can sense-check engines as they change. It should run in-game and play through the game's own audio, plus the harness WAVs.
+
+**Next (after the fixes above):** ambience, UI sounds and the location music (doc 47 stage 4), then the parts screen (stage 5), then map expansion.
+
 **Update, 30 September: Racing AI v2, clean-up, Bayview and Silver Falls.** All on branch `racing-ai-v2` (not merged).
 
 1. **Racing AI v2** (`RacerDriverPolicy`; research, design and every study in [doc 46](46-racing-ai-v2-design.md)) is the default driver. `--first-ai` races the first AI.

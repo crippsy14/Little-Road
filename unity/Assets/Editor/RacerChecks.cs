@@ -57,10 +57,16 @@ public static class RacerChecks
         Check((follower.Binding==RacerDriverPolicy.Reason.Follow||follower.Binding==RacerDriverPolicy.Reason.Guard)&&behind.pedal<0,
             "Closing fast on a slower car in our lane: traffic sets the speed and the car brakes");
 
+        Check(RacerDriverPolicy.BoxedHold&&RacerDriverPolicy.PassReachGuard&&RacerDriverPolicy.BoxedStepBins*.25f<=2.5f,"Boxed hold and pass reach guard on by default: a boxed-in car sidesteps at most 2.5 m");
+        // Pass reach guard: a dive across the road just before braking is out of reach; set up early, it is not.
+        Check(!RacerDriverPolicy.CanReachSide(10,8,25)&&RacerDriverPolicy.CanReachSide(10,120,25)&&RacerDriverPolicy.CanReachSide(1,0,25),
+            "Pass reach guard: no 10 m dive a third of a second before braking; fine with the braking point five seconds away");
+
         var cruiser=new RacerDriverPolicy(line,RacerAbilities.Default,0,1709,half);cruiser.Elapsed=20;
         var gap=new[]{Car(0,straight,0,24),Car(1,straight+70,0,24)};
         DriveCommand free=default;for(int i=0;i<90;i++)free=Step(cruiser,gap);
-        Check(cruiser.Binding==RacerDriverPolicy.Reason.Limit&&free.pedal>.9f,"A car far ahead at the same speed does not make us lift (no pausing): "+cruiser.Binding+" pedal "+free.pedal.ToString("0.00"));
+        // (The geared stock car tops 24.8 m/s, so the car ahead at 24 may bind as Follow; what matters is no lift.)
+        Check((cruiser.Binding==RacerDriverPolicy.Reason.Limit||cruiser.Binding==RacerDriverPolicy.Reason.Follow)&&free.pedal>.9f,"A car far ahead at the same speed does not make us lift (no pausing): "+cruiser.Binding+" pedal "+free.pedal.ToString("0.00"));
 
         var squeezed=new RacerDriverPolicy(line,RacerAbilities.Default,0,1709,half);squeezed.Elapsed=20;
         float lineHere=track.LineOffset(straight+20);

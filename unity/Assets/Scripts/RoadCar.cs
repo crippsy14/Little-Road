@@ -49,6 +49,11 @@ namespace LittleRoad
         public TrafficDriverPolicy trafficPolicy {get;private set;}
         public ContextDriverPolicy contextPolicy {get;private set;}
         public RacerDriverPolicy racerPolicy {get;private set;}
+        // The live gearbox (docs/47): gear, revs, boost and shifts for the physics and the sound.
+        int gearRecoveries;
+        public GearState gears {get;private set;}
+        // The player drives a manual box when Settings > Gears says so; everything autonomous stays automatic.
+        public bool ManualGears=>!autonomous&&DrivingOptions.Manual;
         // Pedal use while racing (both AIs, for comparisons): braking, lifting (partial throttle above
         // walking pace) and stopped (under 2 m/s: the pauses of docs/46).
         public float BrakeSeconds {get;private set;}
@@ -110,6 +115,8 @@ namespace LittleRoad
             pathDistance=race.track.Nearest(transform.position,out offset);previousPath=pathDistance;
             progress=pathDistance>race.track.length*.8f?pathDistance-race.track.length:pathDistance;
             nextGate=0;nextGateProgress=0;lastSafeDistance=progress;
+            // Sound (docs/47 stage 4): car 0 is the one the camera follows, heard as the player's.
+            if(GetComponent<CarAudio>()==null)AudioDirector.Attach(this,id==0);
         }
         // Timed for the frame probe (FrameCost.Cars): every car's driving and AI step.
         // The physical box for a car body, fitted to that body: its model's length and height, and its
@@ -133,6 +140,14 @@ namespace LittleRoad
             if(shoulders.HasValue){size.x=shoulders.Value;envelope.center=new Vector3(0,envelope.center.y,envelope.center.z);}if(length.HasValue)size.z=length.Value;
             if(float.TryParse(RaceTrial.Arg("--collider-width"),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float width))size.x=width;
             return (envelope.center,size);
+        }
+        // Manual shifts are presses, so read them every frame (FixedUpdate can miss or double a press).
+        void Update()
+        {
+            if(controlsBlocked||gears==null||!gears.Manual)return;
+            var k=Keyboard.current;var p=Gamepad.current;
+            if(k!=null){if(k.leftShiftKey.wasPressedThisFrame)gears.RequestShift(1);if(k.leftCtrlKey.wasPressedThisFrame)gears.RequestShift(-1);}
+            if(p!=null){if(p.rightTrigger.wasPressedThisFrame)gears.RequestShift(1);if(p.leftTrigger.wasPressedThisFrame)gears.RequestShift(-1);}
         }
         void FixedUpdate(){long start=System.Diagnostics.Stopwatch.GetTimestamp();try{Step();}finally{FrameCost.Cars+=System.Diagnostics.Stopwatch.GetTimestamp()-start;}}
         void Step()
@@ -167,7 +182,15 @@ namespace LittleRoad
             steerState=Mathf.MoveTowards(steerState,steering,tuning.response*Time.fixedDeltaTime);
             float grip=Mathf.Abs(offset)<Circuit.Width*.5f||(race.freeRoam&&OnRoadSurface())?tuning.roadGrip:tuning.dirtGrip;Grip=grip;
             float yawRequest=steerState*tuning.yaw*Mathf.Clamp01(Mathf.Abs(speed)/3)*Mathf.Sign(speed==0?1:speed);
-            DriveModel.Forces(tuning,speed,throttle,yawRequest,grip,0,out float acceleration,out float yaw,DragReduction);
+            float engineAccel=-1;
+            if(tuning.drivetrain!=null) {
+                if(gears==null||gears.train!=tuning.drivetrain)gears=new GearState(tuning.drivetrain);
+                gears.Manual=ManualGears;
+                // A recovery puts the car back on the road at rest: back into first (a manual box too).
+                if(gearRecoveries!=recoveries){gearRecoveries=recoveries;gears.Reset();}
+                engineAccel=gears.Step(speed,throttle,Time.fixedDeltaTime);
+            } else gears=null;
+            DriveModel.Forces(tuning,speed,throttle,yawRequest,grip,0,out float acceleration,out float yaw,DragReduction,engineAccel);
             // PhysX gravity and ground contact already produce the along-grade
             // component. Passing an explicit slope here would count it twice.
             requestedYaw=yaw;
@@ -245,9 +268,19 @@ namespace LittleRoad
             var k=Keyboard.current;var p=Gamepad.current;float gas=0,brake=0;steering=0;
             if(k!=null) {gas=k.wKey.isPressed||k.upArrowKey.isPressed?1:0;brake=k.sKey.isPressed||k.downArrowKey.isPressed?1:0;
                 steering=(k.dKey.isPressed||k.rightArrowKey.isPressed?1:0)-(k.aKey.isPressed||k.leftArrowKey.isPressed?1:0);}
-            if(p!=null) {gas=Mathf.Max(gas,p.rightTrigger.ReadValue());brake=Mathf.Max(brake,p.leftTrigger.ReadValue());
+            // Manual gears on a pad: the triggers shift (Update), so the right stick is throttle (up) and brake (down).
+            bool manualPad=gears!=null&&gears.Manual;
+            if(p!=null&&manualPad) {float stick=p.rightStick.y.ReadValue();if(stick>.08f)gas=Mathf.Max(gas,stick);else if(stick< -.08f)brake=Mathf.Max(brake,-stick);
+                if(Mathf.Abs(p.leftStick.x.ReadValue())>.12f)steering=p.leftStick.x.ReadValue();}
+            else if(p!=null) {gas=Mathf.Max(gas,p.rightTrigger.ReadValue());brake=Mathf.Max(brake,p.leftTrigger.ReadValue());
                 if(Mathf.Abs(p.leftStick.x.ReadValue())>.12f)steering=p.leftStick.x.ReadValue();}
             throttle=gas-brake;
+            // Manual box: in reverse the throttle drives backwards and the brake brakes (it never drives);
+            // in a forward gear the brake holds the car at a stop instead of reversing.
+            if(gears!=null&&gears.Manual) {
+                if(gears.Gear<0||gears.TargetGear<0)throttle=brake>.05f?(speed< -.1f?brake:0):-gas;
+                else if(throttle<0&&speed<=.1f)throttle=0;
+            }
         }
         void Plan()
         {

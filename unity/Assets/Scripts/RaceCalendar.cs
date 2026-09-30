@@ -9,7 +9,7 @@ namespace LittleRoad
     // own parts). A class with no races yet can't be completed, so the ladder stops there until they exist.
     public static class RaceCalendar
     {
-        public static readonly string[] Classes={"C","B","A","S"};
+        public static readonly string[] Classes={"C","B","A","S","E"};
         public readonly struct Event
         {
             public readonly string id,venue,raceClass;public readonly float rewardScale;

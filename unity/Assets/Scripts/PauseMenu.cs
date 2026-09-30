@@ -180,7 +180,8 @@ namespace LittleRoad
         // ---------------------------------------------------------------- CONTROLS
         // Every binding in one place (the HUD no longer shows button hints while driving).
         static readonly (string action,string keys,string xbox,string ps)[] Bindings={
-            ("Accelerate","W / Up","RT","R2"),("Brake / reverse","S / Down","LT","L2"),("Steer","A D / Left Right","Left stick","Left stick"),
+            ("Accelerate","W / Up","RT","R2"),("Brake / reverse","S / Down","LT","L2"),
+            ("Manual gears: up / down","L Shift / L Ctrl","RT / LT","R2 / L2"),("Manual: throttle / brake","W / S","Right stick","Right stick"),("Steer","A D / Left Right","Left stick","Left stick"),
             ("Look behind (hold)","Q","Y","Triangle"),("Recover to the road","R","D-pad down","D-pad down"),("Talk / use","E","A","Cross"),
             ("Map","M","View","Create"),("Pause menu","Esc","Menu","Options"),("Race HUD size","H","L3","L3"),
             ("Menus: select","Enter / Space","A","Cross"),("Menus: back","Esc","B","Circle"),("Menus: tabs","Q / E","LB / RB","L1 / R1"),
@@ -235,7 +236,7 @@ namespace LittleRoad
         // ---------------------------------------------------------------- input
         void Update()
         {
-            if(!IsOpen)return;
+            if(!IsOpen||EngineBench.Showing)return;
             if(ctx.minimap!=null&&(ctx.minimap.FullOpen||ctx.minimap.LastCloseFrame==Time.frameCount))return; // the full map has the input
             if(Time.unscaledTime-openedAt<.1f)return;
             var k=Keyboard.current;var pad=Gamepad.current;

@@ -13,21 +13,23 @@ public static class DraftingIntegrationChecks
         foreach(float pedal in new[]{-1f,-.35f,0f,.5f,1f})foreach(float speed in new[]{12f,26f,36f}) {
             DriveModel.Forces(tuning,speed,pedal,.08f,tuning.roadGrip,0,out float oldA,out float oldY);
             DriveModel.Forces(tuning,speed,pedal,.08f,tuning.roadGrip,0,out float newA,out float newY,DraftingModel.MaximumReduction);
-            float expected=.006f*speed*speed*DraftingModel.MaximumReduction/tuning.mass;
+            float expected=DriveModel.DragK*speed*speed*DraftingModel.MaximumReduction/tuning.mass;
             Require(Mathf.Abs((newA-oldA)-expected)<.00001f&&oldY==newY,"force changes beyond aerodynamic loss");
         }
         checks.Add("Powered, coasting and braking acceleration differs only by the lost aerodynamic drag; steering grip is unchanged");
-        var solo=new PlanarDrivePrediction(Vector3.zero,Vector3.forward*26,Vector3.forward,0,0);var tow=solo;
+        // From 70% to 88% of the car's own top speed (the grounded class C club car tops out near 32 m/s).
+        float top=tuning.drivetrain!=null?tuning.drivetrain.ReachableTop:tuning.AttainableSpeed,from=top*.7f,to=top*.88f;
+        var solo=new PlanarDrivePrediction(Vector3.zero,Vector3.forward*from,Vector3.forward,0,0);var tow=solo;
         float soloTime=-1,towTime=-1;
-        for(int i=0;i<360;i++){
+        for(int i=0;i<1440;i++){
             solo.Step(tuning,1,0,1f/120);tow.Step(tuning,1,0,1f/120,DraftingModel.MaximumReduction);
-            if(soloTime<0&&solo.velocity.z>=32)soloTime=(i+1)/120f;
-            if(towTime<0&&tow.velocity.z>=32)towTime=(i+1)/120f;
+            if(soloTime<0&&solo.velocity.z>=to)soloTime=(i+1)/120f;
+            if(towTime<0&&tow.velocity.z>=to)towTime=(i+1)/120f;
         }
         float gain=tow.velocity.z-solo.velocity.z;
-        Require(towTime>0&&soloTime-towTime>.01f&&soloTime-towTime<.25f&&tow.position.z>solo.position.z,"fixed-wake acceleration benefit missing/excessive: times="+soloTime+","+towTime);
+        Require(towTime>0&&soloTime-towTime>.01f&&soloTime-towTime<soloTime*.15f&&tow.position.z>solo.position.z,"fixed-wake acceleration benefit missing/excessive: times="+soloTime+","+towTime);
         Require(tow.velocity.z<tuning.gearCeiling+.15f,"draft bypasses gearing");
-        checks.Add("Constant-wake 26 to 32 m/s: solo "+soloTime.ToString("F4",System.Globalization.CultureInfo.InvariantCulture)+" s, tow "+towTime.ToString("F4",System.Globalization.CultureInfo.InvariantCulture)+" s; gearing remains enforced");
+        checks.Add($"Constant-wake {from:0} to {to:0} m/s: solo "+soloTime.ToString("F4",System.Globalization.CultureInfo.InvariantCulture)+" s, tow "+towTime.ToString("F4",System.Globalization.CultureInfo.InvariantCulture)+" s; gearing remains enforced");
         var own=Car(0,0);var leader=Car(1,9);var traffic=new[]{own,leader};
         var branch=new ObservedCar(1,leader.position,leader.velocity,leader.forward,leader.right,500,0,30,1.2f,2.3f);
         Require(DraftingModel.Reduction(in own,new[]{branch},out _,1000)==0,"parallel track branch grants tow");

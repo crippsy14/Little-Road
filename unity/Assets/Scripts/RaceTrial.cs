@@ -102,6 +102,9 @@ namespace LittleRoad
             if(trackId=="cedar") {technical=new TechnicalCircuit();track=technical.track;TechnicalCircuitWorld.Create(technical);}
             // Cedar Hills: Cedar's layout with 23 m of elevation (the grade-aware driver test circuit).
             else if(trackId=="cedar-hills") {technical=new TechnicalCircuit("cedar-hills");track=technical.track;TechnicalCircuitWorld.Create(technical);}
+            // The test loop: two 1-mile straights and two wide turns (2.5 miles) for gearing, top speed and sound
+            // tests up to class E (Richard, 1 Oct). Run it with --trial-duration: a slow car takes a while.
+            else if(trackId=="test-loop") {technical=new TechnicalCircuit("test-loop");track=technical.track;TechnicalCircuitWorld.Create(technical);}
             else if(trackId=="bayview"){track=new Circuit();yield return TrialWorld.CreateRoutine(track);}
             // Hillcrest Raceway: the valley circuit (built with the mainland); the island loop is scenery.
             else if(trackId=="hillcrest"){yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(HillcrestRoute.Circuit);RenderSettings.fogDensity=.00026f;}
@@ -134,7 +137,7 @@ namespace LittleRoad
                 // Hillcrest's line is baked from the live circuit (same method as the Bayview/Cedar seeds).
                 // Cedar Hills reuses Cedar's authored line (same layout), so only the elevation differs.
                 ReferenceLine=trackId=="cedar-hills"?new RacingLine(track,RacingLine.Transfer(track,"cedar-smooth-v2","cedar-hills")):
-                    trackId=="hillcrest"?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+"-smooth-v1",trackId)):
+                    trackId=="hillcrest"||trackId=="test-loop"?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+"-smooth-v1",trackId)):
                     new RacingLine(track,Arg("--racing-line","cedar-mincurve-v1"),technical==null?"bayview":technical.definition.id,technical==null?"bayview-v1":technical.definition.version);DriverPolicyId=policy=="traffic"?"traffic-v1":policy=="context"?"context-v1":policy=="racer"?"racer-v2":"reference-v1";
             }else if(policy!="legacy")throw new ArgumentException("Unknown driver policy: "+policy);
             if(Has("--driver-roster")&&((career&&!connectedModern)||(policy!="context"&&policy!="racer")))throw new ArgumentException("Driver roster currently requires standalone context comparisons.");

@@ -61,7 +61,9 @@ namespace LittleRoad
         {
             slot=newSlot;notice="";
             var list=EquipmentCatalog.All.parts.Where(p=>p.slot==slot&&(Shop=="hillcrest"||p.shop!="hillcrest"));
-            list=mode==Mode.Fit?list.Where(p=>store.Data.owned.Contains(p.id)):list.Where(p=>p.price>0);
+            // Shops show the open class and a locked peek at the next one, not the whole ladder.
+            int open=RaceCalendar.Rank(RaceCalendar.Open(store.Data));
+            list=mode==Mode.Fit?list.Where(p=>store.Data.owned.Contains(p.id)):list.Where(p=>p.price>0&&RaceCalendar.Rank(p.tier)<=open+1);
             parts=list.OrderBy(p=>RaceCalendar.Rank(p.tier)).ThenBy(p=>p.price).ToArray();
             string fittedId=store.Data.Loadout()[slot];
             string want=mode==Mode.Fit?fittedId:remembered.TryGetValue(slot,out var r)?r:parts.FirstOrDefault(p=>!store.Data.owned.Contains(p.id))?.id;

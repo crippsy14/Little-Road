@@ -39,6 +39,9 @@ Run `Launch Little Road Unity.cmd`, or `../little-road-dev-build/Little Road Uni
 | `run-parts-review.ps1 -Name x` | Parts shop and fitting bay with a virtual gamepad |
 | `capture-map.ps1 -Name x -Rendered -Flags '--pause-review'` | Other flags: `--minimap-review`, `--climb-review`, `--contact-review`, `--car-audit`, `--edge-audit`, `--world-review` |
 | `run-pace-parallel.ps1`, `run-pace-study.ps1`, `run-class-sort.ps1` | Racing comparisons (24-car pace, flag off vs on, six races at once; overtaking by class). `--first-ai` races the first AI as the benchmark; `summarize-racer.py` tabulates results |
+| `sound-harness.ps1 [-Filter id\|recorded\|layers:<engine>]` | Offline listening and checks for the game's sound code (no Unity, seconds): every engine's rev test (idle, pull, hold at max revs, lift) to `review/sound/`, `recorded` for the real-engine grain banks, `layers:` to measure each layer (doc 47) |
+| `test-loop.ps1 [-Kit club] [-Auto] [-Minutes 3] [-Capture name]` | Drive (or watch) the 2.5-mile test loop: two 1-mile straights for gearing, top speed, limiter and engine sound up to class E; `-Capture` records the engine sound and revs |
+| `fetch-sonniss.py`, `engine-grains.py --config tools/engine-banks.json` | Real engines: pull single recordings from Sonniss' official GDC zips into `../little-road-audio-sources/` (outside the repo), then cut them into the grain banks in `Resources/Engines` (doc 47) |
 | `run-frame-cost.ps1 -Rendered -Extra @('--frame-probe','probe')` | Rendered race frame timing (CPU, GPU, AI, physics per frame) |
 | `drive-benchmark.ps1`, `route-drive.ps1` | Free-roam frame cost and an autopilot drive to the castle |
 | `cleanup.ps1` | Prunes old evidence to the Recycle Bin (dry run without arguments) |

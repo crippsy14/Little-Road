@@ -30,7 +30,7 @@ public static class AdventureChecks
         store=new AdventureStore(store.path);Check(store.FinishRace(serial,24)==0&&store.Data.credits==100&&store.Data.bestPlace==24,"Race reward and record survive reload without duplicate payment");
         // Class ladder: every current race is Class C; podiums at both open Class B (which has no races yet, so
         // the ladder stops there). Hillcrest pays 1.5x Bayview for the same place.
-        Check(RaceCalendar.All.All(e=>e.raceClass=="C")&&EquipmentCatalog.All.parts.All(p=>RaceCalendar.Rank(p.tier)==0),"Every race and part is Class C for now");
+        Check(RaceCalendar.All.All(e=>e.raceClass=="C")&&EquipmentCatalog.All.parts.All(p=>RaceCalendar.Rank(p.tier)>=0)&&RaceCalendar.Classes.All(c=>EquipmentCatalog.All.parts.Any(p=>p.tier==c)),"Every race is Class C for now; the parts ladder covers all five classes");
         Check(RaceCalendar.Open(store.Data)=="C"&&!store.Data.podiums.Contains("bayview"),"A 24th place is no podium; Class C is open");
         int s2=store.BeginRace();Check(store.FinishRace(s2,3,"bayview")==330&&store.Data.podiums.SequenceEqual(new[]{"bayview"})&&RaceCalendar.Open(store.Data)=="C","A Bayview podium pays 330 and counts one of two Class C podiums");
         int s3=store.BeginRace();Check(store.FinishRace(s3,2,"hillcrest")==600&&RaceCalendar.Complete(store.Data,"C")&&RaceCalendar.Open(store.Data)=="B","A Hillcrest podium pays 1.5x and completes Class C, opening Class B");

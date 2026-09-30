@@ -75,13 +75,17 @@ namespace LittleRoad
                 new GameObject("Continuous drivable support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
             } else {
             bool tessellated=RaceTrial.Has("--tessellated-cedar-support");
-            var ground=Box("Continuous test ground",new Vector3(-50,-.5f,0),new Vector3(1200,1,1000),grass,Quaternion.identity,tessellated);ground.tag="Untagged";
+            // Ground: Cedar's 1200 x 1000 m slab, or, for a larger course (the 2.5-mile test loop), one sized to it.
+            Vector3 groundCentre=new(-50,0,0),groundSize=new(1200,1,1000);
+            {float x0=float.MaxValue,x1=float.MinValue,z0=float.MaxValue,z1=float.MinValue;for(float d=0;d<track.length;d+=10){var q=track.At(d);x0=Mathf.Min(x0,q.x);x1=Mathf.Max(x1,q.x);z0=Mathf.Min(z0,q.z);z1=Mathf.Max(z1,q.z);}
+             if(x0<-640||x1>540||z0<-490||z1>490){groundCentre=new((x0+x1)*.5f,0,(z0+z1)*.5f);groundSize=new(x1-x0+600,1,z1-z0+600);}}
+            var ground=Box("Continuous test ground",groundCentre+Vector3.down*.5f,groundSize,grass,Quaternion.identity,tessellated);ground.tag="Untagged";
             Ribbon(track,"Runoff",0,24,.011f,runoff);Ribbon(track,"16 metre asphalt",0,Circuit.Width,.025f,asphalt);
             var support=new GameObject("Continuous drivable support",typeof(RoadSupport));
             if(tessellated)support.AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
             else {
-                support.transform.position=new Vector3(-50,-.475f,0);
-                support.AddComponent<BoxCollider>().size=new Vector3(1200,1,1000);
+                support.transform.position=groundCentre+Vector3.down*.475f;
+                support.AddComponent<BoxCollider>().size=groundSize;
             }
             }
             foreach(int side in new[]{-1,1}) {
@@ -97,9 +101,12 @@ namespace LittleRoad
                 Sign(i==0?"START / FINISH":"GATE "+i,p+track.Right(d)*10+Vector3.up*2,rotation,.065f);
             }
             for(int i=0;i<16;i++)for(int j=0;j<2;j++)Box("Timing checker",track.At(j*.55f)+track.Right(0)*(-7.5f+i)+Vector3.up*.052f,new Vector3(1,.01f,.55f),(i+j)%2==0?white:asphalt,Quaternion.LookRotation(track.Forward(0)));
-            foreach(int corner in new[]{1,4,7,11,14}) {
+            // Braking boards: Cedar's authored corners; elsewhere before each "... entry" knot, further out for speed.
+            bool cedar=course.definition.id.StartsWith("cedar");var corners=new System.Collections.Generic.List<int>();
+            if(cedar)corners.AddRange(new[]{1,4,7,11,14});else for(int i=0;i<course.definition.knots.Length;i++)if(course.definition.knots[i].name.Contains("entry"))corners.Add(i);
+            foreach(int corner in corners) {
                 float entry=course.regionStarts[corner];
-                foreach(int metres in new[]{100,50}) {
+                foreach(int metres in cedar?new[]{100,50}:new[]{300,200,100}) {
                     float d=entry-metres;var rotation=Quaternion.LookRotation(track.Forward(d));var p=track.At(d)+track.Right(d)*11+Vector3.up*1.25f;
                     Box("Braking distance board",p,new Vector3(2,1.5f,.12f),teal,rotation);Sign(metres.ToString(),p-track.Forward(d)*.08f,rotation,.13f);
                 }

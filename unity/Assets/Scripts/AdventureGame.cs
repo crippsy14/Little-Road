@@ -13,7 +13,7 @@ namespace LittleRoad
 {
     public sealed class AdventureGame:MonoBehaviour
     {
-        RaceTrial world;RoadCar player;Camera cameraView;AdventureUI ui;PartsBrowser browser;RacePreviewUI racePreview;
+        RaceTrial world;RoadCar player;Camera cameraView;AdventureUI ui;PartsBrowser browser;RacePreviewUI racePreview;TuningScreen tuning;TestDrive testDrive;
         readonly Dictionary<string,Vector3> residents=new();readonly Dictionary<string,float> residentYaw=new();string shop="bayview";
         readonly Dictionary<string,GameObject> finds=new();
         Minimap minimap;readonly List<Minimap.Mark> mapMarks=new();PauseMenu pause;bool wasPaused;
@@ -39,7 +39,7 @@ namespace LittleRoad
         bool reviewing,wasLookingBehind;Vector3 chaseLag; // forward camera trail, car-local
         IEnumerator Start()
         {
-            ui=gameObject.AddComponent<AdventureUI>();browser=gameObject.AddComponent<PartsBrowser>();racePreview=gameObject.AddComponent<RacePreviewUI>();
+            ui=gameObject.AddComponent<AdventureUI>();browser=gameObject.AddComponent<PartsBrowser>();racePreview=gameObject.AddComponent<RacePreviewUI>();tuning=gameObject.AddComponent<TuningScreen>();testDrive=gameObject.AddComponent<TestDrive>();
             paintShop=gameObject.AddComponent<PaintShop>();bodyShop=gameObject.AddComponent<BodyShop>();bubbles=gameObject.AddComponent<SpeechBubbles>();
             try{AdventureSession.Load();}catch(Exception e){ui.Show("Your save needs attention",e.Message+"\nThe existing save has been left intact.",new List<AdventureUI.Choice>{new("Quit",()=>Application.Quit())});yield break;}
             WorldLook.PlayPacing();Time.fixedDeltaTime=1f/120;
@@ -55,7 +55,7 @@ namespace LittleRoad
             CreatePlaces();
             var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));
             if(AdventureSession.ReturnSpot is Vector3 back)car.transform.SetPositionAndRotation(back+Vector3.up*.15f,Quaternion.Euler(0,AdventureSession.ReturnYaw,0));
-            player=car.AddComponent<RoadCar>();player.Setup(world,0,EquipmentCatalog.Stats(Store.Data.Loadout()),false,1709,"owned equipment");world.cars.Add(player);world.running=true;FrameProbe.Attach(player.transform);CameraShake.Reset();CameraShake.Watch(player);
+            player=car.AddComponent<RoadCar>();player.Setup(world,0,EquipmentCatalog.Stats(Store.Data.Loadout(),Store.Data.Tune()),false,1709,"owned equipment");world.cars.Add(player);world.running=true;FrameProbe.Attach(player.transform);CameraShake.Reset();CameraShake.Watch(player);
             player.Bumped+=(other,speed)=>{if(speed>1f&&!ui.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen)other.GetComponentInParent<NpcChatter>()?.TrySay(bubbles);};
             if(RaceTrial.Has("--vertical-audit"))gameObject.AddComponent<VerticalMotionAudit>().Setup(world);
             if(RaceTrial.Has("--ambient-traffic"))AmbientTraffic();
@@ -101,6 +101,10 @@ namespace LittleRoad
             // Opt-in: enter the Valley Cup straight away (with --trial-auto the player's car drives itself).
             if(RaceTrial.Has("--valley-race-review")&&!AdventureSession.Racing&&Store.Data.settledSerial==Store.Data.raceSerial){yield return new WaitForSeconds(.5f);PreviewRace("hillcrest");yield return new WaitForSeconds(.5f);racePreview.Confirm();yield break;}
             if(RaceTrial.Has("--parts-browser-review")){OpenParts("bayview",PartsBrowser.Mode.Shop,Sid);gameObject.AddComponent<PartsBrowserReview>().Setup(browser,Store,player,ui,m=>OpenParts("bayview",m,m==PartsBrowser.Mode.Shop?Sid:Mara));yield break;}
+            if(RaceTrial.Has("--sound-bench"))EngineBench.Show(RaceTrial.Arg("--sound-bench"));
+            // Review: the tuning screen, captured (docs/48).
+            if(RaceTrial.Has("--tuning-review")){reviewing=true;OpenTuning("bayview",Mara);yield return new WaitForSeconds(1.5f);
+                string shot=RaceTrial.Arg("--tuning-review");ui.Capture(shot);yield return new WaitForSeconds(1);Debug.Log("LITTLE_ROAD_TUNING_REVIEW "+shot);Application.Quit();yield break;}
             yield return null;if(AdventureSession.Smoke)StartCoroutine(Smoke());
         }
         GameObject Block(string name,Vector3 p,Vector3 scale,Color color,bool solid=false,PrimitiveType shape=PrimitiveType.Cube)
@@ -294,6 +298,7 @@ namespace LittleRoad
         {
             if(minimap!=null&&(minimap.FullOpen||minimap.LastCloseFrame==Time.frameCount))return;
             if(pause!=null&&(pause.IsOpen||pause.LastCloseFrame==Time.frameCount)){if(player!=null)player.controlsBlocked=pause.IsOpen||riding||ui.IsOpen;return;}
+            if(tuning.IsOpen||tuning.LastCloseFrame==Time.frameCount||testDrive.Active)return;
             if(player==null||reviewing||browser.IsOpen||racePreview.IsOpen||paintShop.IsOpen||bodyShop.IsOpen||racePreview.LastCloseFrame==Time.frameCount||browser.LastCloseFrame==Time.frameCount||paintShop.LastCloseFrame==Time.frameCount||bodyShop.LastCloseFrame==Time.frameCount)return;
             var k=Keyboard.current;var pad=Gamepad.current;
             // Esc / Start pause; in a conversation Esc / B go back one level (the menu's own Back choice).
@@ -376,15 +381,18 @@ namespace LittleRoad
             string goal=GoalText(false);if(goal!=lastGoal&&climbStart<0){lastGoal=goal;goalUntil=now+8;}
             if(Mathf.Abs(player.speed)<=1.2f){if(stoppedSince<0)stoppedSince=now;}else stoppedSince=-1;
             float stopped=stoppedSince<0?0:now-stoppedSince;
-            ui.Roam(GoalText(true),climbStart>=0||now<goalUntil||stopped>1.5f,null,false,player.speed,RaceHud.DriveIndicator(player.speed,player.throttle));
+            ui.Roam(GoalText(true),climbStart>=0||now<goalUntil||stopped>1.5f,null,false,player);
         }
         // Pause hub > Settings: each row cycles its option and applies it straight away.
         List<(string label,Action act)> SettingsItems()
         {
             var items=new List<(string,Action)>{
+                ("Gears · "+DrivingOptions.Gears.Value,()=>GraphicsOptions.Cycle(DrivingOptions.Gears)),
+                ("Engine sound test",()=>EngineBench.Show(Store.Data.Loadout().TryGetValue("engine",out var e)?e:null)),
                 ("Quality preset · "+GraphicsOptions.PresetName,()=>{GraphicsOptions.NextPreset();ApplyGraphics(GraphicsOptions.AntiAliasing);ApplyGraphics(GraphicsOptions.Shadows);ApplyGraphics(GraphicsOptions.Grass);}),
                 ("Resolution · "+GraphicsOptions.ResolutionName,GraphicsOptions.NextResolution),
                 ("Display · "+GraphicsOptions.ModeName,GraphicsOptions.NextMode)};
+            foreach(var option in AudioOptions.All){var o=option;items.Add((o.label+" · "+o.Value,()=>{GraphicsOptions.Cycle(o);AudioDirector.Apply();}));}
             foreach(var option in GraphicsOptions.All){var o=option;items.Add((o.label+" · "+o.Value,()=>{GraphicsOptions.Cycle(o);ApplyGraphics(o);}));}
             return items;
         }
@@ -473,7 +481,7 @@ namespace LittleRoad
             // Leaving the pause hub always hands the car back (Update may already have run this frame, so
             // it can't be left to Update: that race left the car blocked after closing the hub).
             if(paused!=wasPaused){wasPaused=paused;ui.SetHudVisible(!paused);if(!paused&&player!=null)player.controlsBlocked=riding||ui.IsOpen||(minimap!=null&&minimap.FullOpen);}
-            minimap?.SetShown(!reviewing&&!paused&&!ui.IsOpen&&!browser.IsOpen&&!racePreview.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen);
+            minimap?.SetShown(!reviewing&&!paused&&!ui.IsOpen&&!browser.IsOpen&&!tuning.IsOpen&&!racePreview.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen);
             if(!reviewing&&player!=null&&cameraView!=null)CameraPose(false);
             PromptFrame();
             // Clearer air over the mainland so the valley and ranges read at distance.
@@ -573,13 +581,14 @@ namespace LittleRoad
             if(stage==2)choices.Add(new("Collect 350 credits",()=>Attempt(()=>{Store.ClaimDelivery();Mara();})));
             if(stage>=3)choices.Add(new("Race Bayview Coast · C",()=>PreviewRace("bayview",Mara)));
             choices.Add(new("Fit parts",()=>OpenParts("bayview",PartsBrowser.Mode.Fit,Mara)));
+            choices.Add(new("Tune gearbox",()=>OpenTuning("bayview",Mara)));
             if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Mara)));
             choices.Add(new("Back to the road",Close));
             Show("Mara / Pit Stop Garage",stage==0?"Pip needs a parcel at the lighthouse. Take the coast road and look for the red lantern cap. I'll have 350 credits for you when you return.":stage==1?"Pip is by the lighthouse on the far side of the loop. There are postcards beside the road if you take a detour.":stage==2?"Pip sent word! The parcel arrived safely. Here's something towards making this car your own.":"A good car becomes your own, one improvement at a time. What shall we work on?",choices);
         }
         void Gio()
         {
-            var choices=new List<AdventureUI.Choice>{new("Race the Valley Cup · B",()=>PreviewRace("hillcrest",Gio)),new("Fit parts",()=>OpenParts("hillcrest",PartsBrowser.Mode.Fit,Gio))};
+            var choices=new List<AdventureUI.Choice>{new("Race the Valley Cup · B",()=>PreviewRace("hillcrest",Gio)),new("Fit parts",()=>OpenParts("hillcrest",PartsBrowser.Mode.Fit,Gio)),new("Tune gearbox",()=>OpenTuning("hillcrest",Gio))};
             if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Gio)));
             choices.Add(new("Back to the road",Close));
             Show("Gio / Pit Stop Garage","Benvenuto to the Pit Stop! Sign up for the Valley Cup right here, fit anything you own, or swap to another of your bodies. Rosa next door sells the parts, Lina the new rides.",choices);
@@ -698,6 +707,16 @@ namespace LittleRoad
         static Vector3 GarageForecourt((Vector3 at,float yaw) host)=>host.at+Quaternion.Euler(0,host.yaw,0)*new Vector3(-3,0,1);
         // Pit Stop parts screens: buy at the parts bay (Sid, Rosa), fit what you own at the garage bay
         // (Mara, Gio). Back returns to whoever opened it.
+        // The tuning shop (docs/48): the gearbox tune, with a timed test lap of the town's circuit.
+        void OpenTuning(string where,Action host)
+        {
+            ui.Close();ui.SetVisible(false);player.controlsBlocked=true;
+            tuning.Open(Store,where,ApplyEquipment,()=>{ui.SetVisible(true);host();},()=>{
+                var circuit=where=="hillcrest"?new Circuit(HillcrestRoute.Circuit):world.track;
+                testDrive.Begin(player,circuit,where=="hillcrest"?"Hillcrest Raceway":"Bayview Coast",result=>{
+                    if(result!=null)TuningScreen.LastTestDrive=result;player.controlsBlocked=true;OpenTuning(where,host);});
+            });
+        }
         void OpenParts(string where,PartsBrowser.Mode mode,Action host,string slot="engine")
         {
             shop=where;browser.Shop=where;ui.Close();ui.SetVisible(false);player.controlsBlocked=true;
@@ -705,7 +724,7 @@ namespace LittleRoad
         }
         void ApplyEquipment()
         {
-            player.tuning=EquipmentCatalog.Stats(Store.Data.Loadout());player.body.mass=850*player.tuning.mass;
+            player.tuning=EquipmentCatalog.Stats(Store.Data.Loadout(),Store.Data.Tune());player.body.mass=850*player.tuning.mass;
             foreach(var renderer in player.GetComponentsInChildren<Renderer>())foreach(var material in renderer.sharedMaterials)if(material.name.Contains("BodyPaint"))material.color=Paints[Store.Data.paintIndex];
         }
         void Place(Vector3 p){player.body.position=p+Vector3.up*.15f;player.body.linearVelocity=Vector3.zero;player.body.angularVelocity=Vector3.zero;player.speed=0;CameraPose(true);}

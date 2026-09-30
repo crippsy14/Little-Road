@@ -26,12 +26,12 @@ namespace LittleRoad
         public readonly DriverIdentity Driver;
         public readonly CarTuning Tuning;
         public readonly IReadOnlyDictionary<string,string> Parts;
-        public RaceEntrant(int id,int slot,string body,Color paint,string label,IReadOnlyDictionary<string,string> parts,DriverIdentity driver)
+        public RaceEntrant(int id,int slot,string body,Color paint,string label,IReadOnlyDictionary<string,string> parts,DriverIdentity driver,GearTune tune=null)
         {
             if(id<0||id>=24||slot<0||slot>=24)throw new ArgumentOutOfRangeException(nameof(id));
             if(!CarBodies.IsKnown(body))throw new ArgumentException("Unknown body: "+body);
             var owned=new Dictionary<string,string>();foreach(var item in parts)owned.Add(item.Key,item.Value);
-            Tuning=EquipmentCatalog.Stats(owned);Id=id;Slot=slot;Body=body;Paint=paint;EquipmentLabel=label;Driver=driver;
+            Tuning=EquipmentCatalog.Stats(owned,tune);Id=id;Slot=slot;Body=body;Paint=paint;EquipmentLabel=label;Driver=driver;
             Parts=new ReadOnlyDictionary<string,string>(owned);Rating=CarPerformanceRating.Calculate(Tuning);
         }
     }
@@ -79,7 +79,7 @@ namespace LittleRoad
                 if(e.Slot==0)entries[i]=new RaceEntrant(e.Id,e.Slot,CarBodies.Flagship,FlagshipPaint,"club",EquipmentCatalog.TestLoadout("club"),e.Driver);
                 else entries[i]=new RaceEntrant(e.Id,e.Slot,e.EquipmentLabel=="club"?sporty[s++]:family[f++],e.Paint,e.EquipmentLabel,e.Parts,e.Driver);
             }
-            entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver);
+            entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
             return new RaceRoster(seed,3,"bayview","BAYVIEW COAST / CLASS C",modern,entries);
         }
         // The Valley Cup at Hillcrest Raceway: Class C (a quicker field than Bayview's), two laps, context drivers (hillcrest-race r5: legacy
@@ -95,7 +95,7 @@ namespace LittleRoad
                 var e=trial.Entries[i];string kit=e.Slot==0?"valley":i%3==0?"club":"street";
                 entries[i]=new RaceEntrant(e.Id,e.Slot,e.Slot==0?CarBodies.Flagship:kit=="street"?family[f++]:sporty[s++],e.Slot==0?FlagshipPaint:e.Paint,kit,EquipmentCatalog.TestLoadout(kit),e.Driver);
             }
-            entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver);
+            entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
             return new RaceRoster(seed,2,"hillcrest","HILLCREST RACEWAY / CLASS C",modern,entries);
         }
         public bool MatchesPlayer(AdventureProgress save)

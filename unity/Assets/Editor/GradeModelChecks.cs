@@ -33,8 +33,9 @@ public static class GradeModelChecks
             float downhillSlower=0,downhillFaster=0;
             for(int i=0;i<line.Count;i++){var d=line.points[(i+1)%line.Count]-line.points[i];float g=d.y/Mathf.Max(.01f,new Vector2(d.x,d.z).magnitude);
                 if(g<-.03f&&flat.acceleration[i]<-.5f){downhillSlower+=Mathf.Max(0,flat.speed[i]-graded.speed[i]);downhillFaster+=Mathf.Max(0,graded.speed[i]-flat.speed[i]);}}
-            // (Dips add grip, so a few points in a braking zone can be faster; the zone overall is slower.)
-            Check(downhillSlower>1&&downhillFaster<downhillSlower*.5f,$"Downhill braking zones plan lower speeds overall ({downhillSlower:0.0} m/s lower, {downhillFaster:0.0} higher at dips)");
+            // (Dips add grip, so a few points in a braking zone can be faster; the zone overall is slower.
+            // The geared engine envelope, docs/47, arrives faster and moves the zones: net slower, not 2:1.)
+            Check(downhillSlower>1&&downhillFaster<downhillSlower*.95f,$"Downhill braking zones plan lower speeds overall ({downhillSlower:0.0} m/s lower, {downhillFaster:0.0} higher at dips)");
             Check(graded.predictedLapTime>flat.predictedLapTime,"Hills cost lap time in the plan");
             // Forecast physics: uphill slows, downhill speeds a full-throttle car.
             PlanarDrivePrediction Run(float slope){var p=new PlanarDrivePrediction(Vector3.zero,Vector3.forward*15,Vector3.forward,0,0);for(int k=0;k<240;k++)p.Step(CarTuning.Club,1,0,1f/120,0,-1,slope);return p;}
