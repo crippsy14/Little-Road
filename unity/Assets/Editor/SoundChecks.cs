@@ -38,7 +38,21 @@ public static class SoundChecks
             synth.Set(spec.redline*.6f,1,0,25,false,false,2,0,0);float rms=synth.Render(buffer,0,buffer.Length);
             Check(buffer.All(float.IsFinite)&&buffer.Max(Math.Abs)<=1&&rms>.03f,$"{engine.id} plays its recording ({engine.sound}, rms {rms:0.000})");recorded++;
         }
+        // Above a recording's top pulling revs the pull is stretched, not swapped for the lift-off recording (Richard,
+        // 30 Sep: the Tuner V6 went thin in the top half of every gear), and it stays as loud as at the top of the pull.
+        foreach(string sound in all.Where(p=>p.slot=="engine").Select(p=>p.sound).Distinct()) {
+            var bank=EngineBanks.Get(sound);if(bank==null)continue;float top=bank.TopOf(true)*.97f;
+            float Level(float rpm){var g=new GrainSynth(bank,fs,3,bank.idle,top*2);double sum=0;int count=fs/2;for(int i=0;i<count;i++){float x=g.Next(rpm,1,false);if(i>=count/2)sum+=x*x;}return (float)Math.Sqrt(sum/(count/2));}
+            float at=Level(top*.98f),above=Level(top*1.8f);
+            Check(above>at*.75f&&above<at*1.5f,$"{sound}: pulling above its recording ({top:0} rpm) holds its level ({at:0.000} -> {above:0.000} at 1.8x)");
+        }
         checks.Add($"All {recorded} engines play recorded grain banks");
+        // Music (docs/49): every loop loads in stereo; each race's lift stem matches its base loop sample for sample.
+        foreach(string place in new[]{"bayview","hillcrest"}) {
+            var explore=Resources.Load<AudioClip>("Music/"+place+"-explore");var raceLoop=Resources.Load<AudioClip>("Music/"+place+"-race");var liftLoop=Resources.Load<AudioClip>("Music/"+place+"-race-lift");
+            Check(explore!=null&&explore.channels==2&&explore.length>20,$"Music: {place} theme loads ({explore?.length??0:0} s)");
+            Check(raceLoop!=null&&liftLoop!=null&&raceLoop.samples==liftLoop.samples,$"Music: {place} race loop and its last-lap lift are in step ({raceLoop?.length??0:0} s)");
+        }
         foreach(string bed in new[]{"forest-birds","river-birds"}){var clip=Resources.Load<AudioClip>("Ambience/"+bed);Check(clip!=null&&clip.length>15&&clip.channels==2,$"Ambience bed {bed} loads (stereo, {clip?.length??0:0} s)");}
         // World ambience generators: finite, audible, under full scale.
         {

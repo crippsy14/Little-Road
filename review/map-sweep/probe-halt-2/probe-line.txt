@@ -1,0 +1,169 @@
+  0.00 (70.00,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  0.25 (70.25,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  0.50 (70.50,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  0.75 (70.75,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  1.00 (71.00,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  1.25 (71.25,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  1.50 (71.50,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  1.75 (71.75,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  2.00 (72.00,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  2.25 (72.25,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  2.50 (72.50,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  2.75 (72.75,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  3.00 (73.00,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  3.25 (73.25,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  3.50 (73.50,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  3.75 (73.75,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  4.00 (74.00,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  4.25 (74.25,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  4.50 (74.50,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  4.75 (74.75,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  5.00 (75.00,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  5.25 (75.25,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  5.50 (75.50,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  5.75 (75.75,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  6.00 (76.00,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  6.25 (76.25,-130.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  6.50 (76.50,-130.00) -0.080 Continuous sculpted island collider n.y=1.00
+  6.75 (76.75,-130.00) -0.080 Continuous sculpted island collider n.y=1.00
+  7.00 (77.00,-130.00) -0.080 Continuous sculpted island collider n.y=1.00
+  7.25 (77.25,-130.00) -0.080 Continuous sculpted island collider n.y=1.00
+  7.50 (77.50,-130.00) -0.080 Continuous sculpted island collider n.y=1.00
+  7.75 (77.75,-130.00) -0.080 Continuous sculpted island collider n.y=1.00
+  8.00 (78.00,-130.00) -0.080 Continuous sculpted island collider n.y=1.00
+  8.25 (78.25,-130.00) -0.079 Continuous sculpted island collider n.y=1.00
+  8.50 (78.50,-130.00) -0.078 Continuous sculpted island collider n.y=1.00
+  8.75 (78.75,-130.00) -0.077 Continuous sculpted island collider n.y=1.00
+  9.00 (79.00,-130.00) -0.075 Continuous sculpted island collider n.y=1.00
+  9.25 (79.25,-130.00) -0.074 Continuous sculpted island collider n.y=1.00
+  9.50 (79.50,-130.00) -0.073 Continuous sculpted island collider n.y=1.00
+  9.75 (79.75,-130.00) -0.070 Continuous sculpted island collider n.y=1.00
+ 10.00 (80.00,-130.00) -0.067 Continuous sculpted island collider n.y=1.00
+ 10.25 (80.25,-130.00) -0.064 Continuous sculpted island collider n.y=1.00
+ 10.50 (80.50,-130.00) -0.061 Continuous sculpted island collider n.y=1.00
+ 10.75 (80.75,-130.00) -0.058 Continuous sculpted island collider n.y=1.00
+ 11.00 (81.00,-130.00) -0.055 Continuous sculpted island collider n.y=1.00
+ 11.25 (81.25,-130.00) -0.051 Continuous sculpted island collider n.y=1.00
+ 11.50 (81.50,-130.00) -0.048 Continuous sculpted island collider n.y=1.00
+ 11.75 (81.75,-130.00) -0.044 Continuous sculpted island collider n.y=1.00
+ 12.00 (82.00,-130.00) -0.040 Continuous sculpted island collider n.y=1.00
+ 12.25 (82.25,-130.00) -0.037 Continuous sculpted island collider n.y=1.00
+ 12.50 (82.50,-130.00) -0.033 Continuous sculpted island collider n.y=1.00
+ 12.75 (82.75,-130.00) -0.030 Continuous sculpted island collider n.y=1.00
+ 13.00 (83.00,-130.00) -0.026 Continuous sculpted island collider n.y=1.00
+ 13.25 (83.25,-130.00) -0.023 Continuous sculpted island collider n.y=1.00
+ 13.50 (83.50,-130.00) -0.019 Continuous sculpted island collider n.y=1.00
+ 13.75 (83.75,-130.00) -0.016 Continuous sculpted island collider n.y=1.00
+ 14.00 (84.00,-130.00) -0.013 Continuous sculpted island collider n.y=1.00
+ 14.25 (84.25,-130.00) -0.011 Continuous sculpted island collider n.y=1.00
+ 14.50 (84.50,-130.00) -0.009 Continuous sculpted island collider n.y=1.00
+ 14.75 (84.75,-130.00) -0.007 Continuous sculpted island collider n.y=1.00
+ 15.00 (85.00,-130.00) -0.005 Continuous sculpted island collider n.y=1.00
+ 15.25 (85.25,-130.00) -0.003 Continuous sculpted island collider n.y=1.00
+ 15.50 (85.50,-130.00) -0.001 Continuous sculpted island collider n.y=1.00
+ 15.75 (85.75,-130.00) -0.001 Continuous sculpted island collider n.y=1.00
+ 16.00 (86.00,-130.00) -0.001 Continuous sculpted island collider n.y=1.00
+ 16.25 (86.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 16.50 (86.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 16.75 (86.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 17.00 (87.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 17.25 (87.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 17.50 (87.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 17.75 (87.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 18.00 (88.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 18.25 (88.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 18.50 (88.50,-130.00) 1.000 Collision_Bench n.y=1.00 | 0.000 Continuous sculpted island collider n.y=1.00
+ 18.75 (88.75,-130.00) 1.000 Collision_Bench n.y=1.00 | 0.000 Continuous sculpted island collider n.y=1.00
+ 19.00 (89.00,-130.00) 1.000 Collision_Bench n.y=1.00 | 0.000 Continuous sculpted island collider n.y=1.00
+ 19.25 (89.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 19.50 (89.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 19.75 (89.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 20.00 (90.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 20.25 (90.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 20.50 (90.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 20.75 (90.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 21.00 (91.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 21.25 (91.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 21.50 (91.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 21.75 (91.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 22.00 (92.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 22.25 (92.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 22.50 (92.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 22.75 (92.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 23.00 (93.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 23.25 (93.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 23.50 (93.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 23.75 (93.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 24.00 (94.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 24.25 (94.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 24.50 (94.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 24.75 (94.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 25.00 (95.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 25.25 (95.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 25.50 (95.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 25.75 (95.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 26.00 (96.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 26.25 (96.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 26.50 (96.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 26.75 (96.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 27.00 (97.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 27.25 (97.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 27.50 (97.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 27.75 (97.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 28.00 (98.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 28.25 (98.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 28.50 (98.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 28.75 (98.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 29.00 (99.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 29.25 (99.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 29.50 (99.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 29.75 (99.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 30.00 (100.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 30.25 (100.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 30.50 (100.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 30.75 (100.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 31.00 (101.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 31.25 (101.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 31.50 (101.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 31.75 (101.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 32.00 (102.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 32.25 (102.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 32.50 (102.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 32.75 (102.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 33.00 (103.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 33.25 (103.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 33.50 (103.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 33.75 (103.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 34.00 (104.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 34.25 (104.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 34.50 (104.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 34.75 (104.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 35.00 (105.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 35.25 (105.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 35.50 (105.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 35.75 (105.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 36.00 (106.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 36.25 (106.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 36.50 (106.50,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 36.75 (106.75,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 37.00 (107.00,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 37.25 (107.25,-130.00) 0.000 Continuous sculpted island collider n.y=1.00
+ 37.50 (107.50,-130.00) 0.000 Collision_Wall n.y=1.00 | 0.000 Continuous sculpted island collider n.y=1.00
+ 37.75 (107.75,-130.00) 0.000 Collision_Wall n.y=1.00 | 0.000 Continuous sculpted island collider n.y=1.00
+ 38.00 (108.00,-130.00) 0.000 Collision_Wall n.y=1.00 | 0.000 Continuous sculpted island collider n.y=1.00
+ 38.25 (108.25,-130.00) 0.000 Collision_Wall n.y=1.00 | -4.143 Continuous sculpted island collider n.y=0.06
+ 38.50 (108.50,-130.00) 1.370 Collision_Rail n.y=1.00 | 0.000 Collision_Wall n.y=1.00 | -8.285 Continuous sculpted island collider n.y=0.06
+ 38.75 (108.75,-130.00) -12.428 Continuous sculpted island collider n.y=0.06
+ 39.00 (109.00,-130.00) -16.570 Continuous sculpted island collider n.y=0.06
+ 39.25 (109.25,-130.00) -20.713 Continuous sculpted island collider n.y=0.06
+ 39.50 (109.50,-130.00) -24.856 Continuous sculpted island collider n.y=0.06
+ 39.75 (109.75,-130.00) -24.856 Continuous sculpted island collider n.y=1.00
+ 40.00 (110.00,-130.00) -24.856 Continuous sculpted island collider n.y=1.00
+ 40.25 (110.25,-130.00) -24.856 Continuous sculpted island collider n.y=1.00
+ 40.50 (110.50,-130.00) -24.856 Continuous sculpted island collider n.y=1.00
+ 40.75 (110.75,-130.00) -24.856 Continuous sculpted island collider n.y=1.00
+ 41.00 (111.00,-130.00) -24.856 Continuous sculpted island collider n.y=1.00
+ 41.25 (111.25,-130.00) -24.856 Continuous sculpted island collider n.y=1.00
+ 41.50 (111.50,-130.00) -24.856 Continuous sculpted island collider n.y=1.00
+ 41.75 (111.75,-130.00) -24.856 Continuous sculpted island collider n.y=1.00
+ 42.00 (112.00,-130.00) -24.856 Continuous sculpted island collider n.y=1.00

@@ -359,6 +359,29 @@ namespace LittleRoad
             foreach(var road in HillcrestRoute.All())if(road!=mainline)Corridor(road.line,0,road.line.Length-1,road.inner,road.outer,false);
             Corridor(HillcrestRoute.Circuit,0,HillcrestRoute.Circuit.Length,11,32,true);
             for(int k=0;k<h.Length;k++)if(nearest[k]<outer[k])h[k]=Mathf.Lerp(h[k],nearestY[k]-.14f,1-Blend(inner[k],outer[k],nearest[k]));
+            // Embankments (Richard, 30 Sep: roads you can't get back onto after leaving them). The corridors above blend
+            // to the ground over a fixed width however high the road runs, so the mainline's descent from the tunnel sat
+            // on a ridge with 55-66° banks up to 16 m deep. Where a road runs above the ground its fill now spreads until
+            // the bank is about 1 in 4 (under ~21° at the steepest), like a real road on an embankment: only ever
+            // raising the ground, measured from the natural ground. Not the raceway (its run-off is designed), the town
+            // hill, the lake or the gorge.
+            var fillNearest=new float[NX*NZ];var fillY=new float[NX*NZ];var fillInner=new float[NX*NZ];
+            for(int k=0;k<fillNearest.Length;k++)fillNearest[k]=1e6f;
+            void Fill(Vector3[] line,int from,int to,float a)
+            {
+                for(int s=from;s<to&&s+1<line.Length;s++){Vector3 p=line[s],q=line[s+1];
+                    Segment(p,q,FillReach,(k,d,t)=>{if(d<fillNearest[k]){fillNearest[k]=d;fillY[k]=Mathf.Lerp(p.y,q.y,t);fillInner[k]=a;}});}
+            }
+            Fill(mainline.line,portalS,mainline.line.Length-1,mainline.inner);
+            foreach(var road in HillcrestRoute.All())if(road!=mainline)Fill(road.line,0,road.line.Length-1,road.inner);
+            for(int j=0;j<NZ;j++)for(int i=0;i<NX;i++) {
+                int k=j*NX+i;if(fillNearest[k]>=FillReach)continue;
+                float x=X0+i*Cell,z=Z0+j*Cell;
+                if(Vector2.Distance(new(x,z),HillcrestRoute.HillCentre)<230||Vector2.Distance(new(x,z),HillcrestRoute.Lake)<HillcrestRoute.LakeRadius+30||GorgeDistance(x,z)<60)continue;
+                float road=fillY[k]-.14f,rise=road-before[k];if(rise<=.5f)continue;
+                float reach=Mathf.Min(FillReach,fillInner[k]+rise/FillSlope);if(fillNearest[k]>=reach)continue;
+                h[k]=Mathf.Max(h[k],Mathf.Lerp(before[k],road,1-Blend(fillInner[k],reach,fillNearest[k])));
+            }
             // Causeway approach: keep the cliff foot below the deck; railway cuttings.
             Cut(mainline.line,0,portalN,7,14,4);
             Cut(HillcrestRoute.Rail.line,0,HillcrestRoute.Rail.line.Length-1,3.5f,11,.35f);
@@ -400,6 +423,7 @@ namespace LittleRoad
             }
             Debug.Log($"LITTLE_ROAD_VALLEY_FIELD cells={h.Length} ms={clock.ElapsedMilliseconds}");
         }
+        const float FillSlope=.25f,FillReach=80;
         // Portal shelf height above the road: just over the bore (the terrain hole ends below it).
         public const float PortalShelf=10;
         static void Face(float[] before,Vector3 mouth,Vector3 inward,float halfWidth)

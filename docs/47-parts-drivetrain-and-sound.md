@@ -387,3 +387,21 @@ The rev drop and blip come from the gearbox's own revs.
   - **Silver Falls:** shimmering A lydian arpeggios.
   - **Garage and menus:** a lounge groove.
 
+
+## Above the recording: keeping the top half meaty (30 September, late)
+
+Richard: the bottom half of the revs in each gear sounded much meatier than the top half, most of all on the Tuner V6 3.0.
+
+1. **The top half was playing the lift-off recording.**
+   - The Skyline recording, which the Valley straight-six, the Tuner V6 and the S and E V6s all play, pulls only to 3,760 rpm; its lift-off cycles reach 3,825 rpm.
+   - Above the pull, `GrainSynth` asked for 3,825 rpm. No pulling sweep covers that, so it fell back to the coasting grains: quieter, and off-throttle.
+   - Each kind of recording now has its own top (`GrainBank.TopOf`).
+   - The stretch starts from 97% of the pull's top, because a recorded pull's last few cycles are the driver lifting for the next gear. The Escort's fell from a level of 0.159 to 0.105.
+2. **Squeezing a cycle shorter lifts the exhaust's resonances with the note.** Real pipes stay put.
+   - Above the recording, a high shelf takes 7 dB per doubling off above 1.5× the firing note, and a low shelf puts 3 dB of weight back below it.
+   - The output level is then matched to the squeezed sound, following both levels. A fixed make-up gain overshot on the Viper, whose firing note sits mostly under the shelf.
+   - On the Tuner V6 at 7,600 rpm (2× past its recording), the brightness (spectral centroid) is 613 Hz instead of 738 Hz. The level holds at 0.152 all the way up, and the cycle-to-cycle rhythm holds (pulse correlation 0.94).
+   - I tried pitch-synchronous overlap-add first, laying the recorded pulses closer together. It kept the tone but lost the rhythm: pulse correlation fell from the recording's 0.93 to 0.6 or below. So it was dropped.
+3. **Tools and checks.**
+   - `sound-harness.ps1 -Filter tone:<engine id>` renders the grains alone at 30–100% of the redline, with and without the correction, to `review/sound/tone/`. It prints level, brightness, pitch and periodicity for each step.
+   - `SoundChecks` fails the build if any bank's pull loses or gains more than 25–50% of its level above its recording.

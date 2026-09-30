@@ -22,7 +22,7 @@ namespace LittleRoad
         }
         static readonly string[] Tabs={"MAP","COLLECTION","CAR","CONTROLS","SETTINGS"};const int Settings=4;
         Context ctx;Canvas canvas;RectTransform root,body;Text areaText,creditText,footer,objectiveText;readonly List<(ToyShape pill,Text text)> tabPills=new();
-        int tab;bool confirmQuit;float openedAt;readonly Text[] tabGlyphs=new Text[2];
+        int tab;bool subPage;float openedAt;readonly Text[] tabGlyphs=new Text[2];
         public bool IsOpen{get;private set;}
         public int LastCloseFrame{get;private set;}=-1;
         // Map tab state.
@@ -65,7 +65,7 @@ namespace LittleRoad
             if(!IsOpen)return;IsOpen=false;LastCloseFrame=Time.frameCount;canvas.gameObject.SetActive(false);ClearBody();
             Time.timeScale=1;AudioListener.pause=false;EventSystem.current?.SetSelectedGameObject(null);
         }
-        void ClearBody(){stage?.Dispose();stage=null;for(int i=body.childCount-1;i>=0;i--)Destroy(body.GetChild(i).gameObject);mapRect=null;regions=null;mapMarks=null;cursor=null;confirmQuit=false;}
+        void ClearBody(){stage?.Dispose();stage=null;for(int i=body.childCount-1;i>=0;i--)Destroy(body.GetChild(i).gameObject);mapRect=null;regions=null;mapMarks=null;cursor=null;subPage=false;}
         public void ShowTab(int i,int focus=0)
         {
             settingsFocus=focus;
@@ -206,26 +206,60 @@ namespace LittleRoad
         void BuildSettings()
         {
             rows.Clear();var items=ctx.settings();
+            if(AdventureSession.Store!=null)items.Insert(0,("Save game",()=>AskSave()));
             items.Add(("Quit game",()=>AskQuit()));
             float h=Mathf.Min(70,660f/items.Count),top=320;
             for(int i=0;i<items.Count;i++){var (label,act)=items[i];int row=i;
                 string shown=label.Contains(" · ")?label.Replace(" · ","    ‹ ")+" ›":label;   // "Shadows  ‹ High ›": the row cycles its value
-                var b=Toy.Candy(body,"Choice "+label,shown,null,new Vector2(900,h-10),new Vector2(0,top-i*h),i==items.Count-1?Toy.Red:Toy.Blue,()=>{act();if(IsOpen&&!confirmQuit){ShowTab(Settings,row);StartCoroutine(Rebuild(row));}});
+                var b=Toy.Candy(body,"Choice "+label,shown,null,new Vector2(900,h-10),new Vector2(0,top-i*h),i==items.Count-1?Toy.Red:Toy.Blue,()=>{act();if(IsOpen&&!subPage){ShowTab(Settings,row);StartCoroutine(Rebuild(row));}});
                 var cap=b.GetComponentInChildren<Text>();cap.fontSize=Mathf.RoundToInt(Mathf.Min(30,h*.45f));rows.Add(b);}
             Focus(rows,settingsFocus);
         }
         // Resolution and window changes land a frame or two later; relabel once they have.
-        System.Collections.IEnumerator Rebuild(int row){yield return null;yield return null;if(IsOpen&&tab==Settings&&!confirmQuit)ShowTab(Settings,row);}
+        System.Collections.IEnumerator Rebuild(int row){yield return null;yield return null;if(IsOpen&&tab==Settings&&!subPage)ShowTab(Settings,row);}
         // Reviews: put the map cursor over a world point.
         public void PointAt(Vector3 world){cursorAt=MapPoint(world);UpdateMap();}
         public void AskQuit()
         {
-            ClearBody();confirmQuit=true;rows.Clear();
+            ClearBody();subPage=true;rows.Clear();
             Toy.Title(body,"Quit title","QUIT LITTLE ROAD?",56,new Vector2(1000,80),new Vector2(0,160),Toy.Sun,TextAnchor.MiddleCenter);
-            Toy.Label(body,"Quit note","Your progress is saved after every race, purchase and find.",26,new Vector2(1000,40),new Vector2(0,90),Toy.Navy,TextAnchor.MiddleCenter,true);
+            Toy.Label(body,"Quit note",$"Your progress autosaves{(SaveSlots.Current>0?" to slot "+SaveSlots.Current:"")} after every race, purchase and find.",26,new Vector2(1000,40),new Vector2(0,90),Toy.Navy,TextAnchor.MiddleCenter,true);
             rows.Add(Toy.Candy(body,"Choice Keep playing","Keep playing",null,new Vector2(520,84),new Vector2(0,-20),Toy.Mint,()=>ShowTab(Settings)));
             rows.Add(Toy.Candy(body,"Choice Quit","Quit to desktop",null,new Vector2(520,84),new Vector2(0,-120),Toy.Red,()=>ctx.quit()));
             Focus(rows);footer.text=InputGlyphs.Footer(false,true,"back");
+        }
+        // Save game (docs/50): the game as it stands into a slot's saved game. Saving into another slot moves the game
+        // there, autosave and all; a slot holding a different game asks first.
+        public void ShowSave()=>AskSave();   // (reviews)
+        void AskSave(int confirm=0,string note=null)
+        {
+            ClearBody();subPage=true;rows.Clear();int current=SaveSlots.Current;
+            if(confirm>0) {
+                Toy.Title(body,"Save title",$"SAVE OVER SLOT {confirm}?",56,new Vector2(1000,80),new Vector2(0,170),Toy.Sun,TextAnchor.MiddleCenter);
+                Toy.Label(body,"Save note","That slot holds another game. It is replaced by this one (a backup copy is kept on disk).",26,new Vector2(1100,40),new Vector2(0,100),Toy.Navy,TextAnchor.MiddleCenter,true);
+                rows.Add(Toy.Candy(body,"Choice Keep","Keep that game",null,new Vector2(560,84),new Vector2(0,-10),Toy.Mint,()=>AskSave()));
+                rows.Add(Toy.Candy(body,"Choice Save over","Save over it",null,new Vector2(560,84),new Vector2(0,-110),Toy.Red,()=>SaveInto(confirm)));
+                Focus(rows);footer.text=InputGlyphs.Footer(false,true,"back");return;
+            }
+            Toy.Title(body,"Save title","SAVE GAME",60,new Vector2(1000,80),new Vector2(0,250),Toy.Sun,TextAnchor.MiddleCenter);
+            Toy.Label(body,"Save note",note??"The game also autosaves to its slot after every race, purchase and find.",26,new Vector2(1200,40),new Vector2(0,185),Toy.Navy,TextAnchor.MiddleCenter,true);
+            for(int s=1;s<=SaveSlots.Count;s++) {
+                int slot=s;var info=SaveSlots.Read(SaveSlots.Manual(s));var auto=SaveSlots.Read(SaveSlots.Auto(s));
+                string label=s==current?$"Slot {s} (this game)  ·  {(info.exists?"saved "+info.When:"not saved yet")}":
+                    $"Slot {s}  ·  {(info.exists||auto.exists?(info.exists?info:auto).summary:"empty")}";
+                var b=Toy.Candy(body,"Choice Slot "+s,label,null,new Vector2(1100,78),new Vector2(0,90-(s-1)*96),s==current?Toy.Mint:Toy.Blue,
+                    ()=>{if(slot!=current&&SaveSlots.Occupied(slot))AskSave(slot);else SaveInto(slot);});
+                b.GetComponentInChildren<Text>().fontSize=26;rows.Add(b);
+            }
+            rows.Add(Toy.Candy(body,"Choice Back","Back",null,new Vector2(360,70),new Vector2(0,-230),Toy.Red,()=>ShowTab(Settings)));
+            Focus(rows,Mathf.Max(0,current-1));footer.text=InputGlyphs.Footer(false,true,"back");
+        }
+        void SaveInto(int slot)
+        {
+            string note;
+            try{bool moved=slot!=SaveSlots.Current;SaveSlots.SaveTo(AdventureSession.Store,slot);if(moved)AdventureSession.Reopen(SaveSlots.LivePath);note=$"Saved to slot {slot}.";}
+            catch(System.Exception e){Debug.LogException(e);note="Couldn't save: "+e.Message;}
+            AskSave(0,note);
         }
         void Focus(List<Button> list,int first=0)
         {
@@ -242,7 +276,7 @@ namespace LittleRoad
             var k=Keyboard.current;var pad=Gamepad.current;
             bool back=k?.escapeKey.wasPressedThisFrame==true||pad?.buttonEast.wasPressedThisFrame==true;
             bool start=pad?.startButton.wasPressedThisFrame==true;
-            if(back||start){if(confirmQuit&&!start)ShowTab(Settings);else Close();return;}
+            if(back||start){if(subPage&&!start)ShowTab(Settings);else Close();return;}
             bool left=pad?.leftShoulder.wasPressedThisFrame==true||k?.qKey.wasPressedThisFrame==true,right=pad?.rightShoulder.wasPressedThisFrame==true||k?.eKey.wasPressedThisFrame==true;
             if(left){ShowTab(tab-1);return;}if(right){ShowTab(tab+1);return;}
             if(tab==0) {

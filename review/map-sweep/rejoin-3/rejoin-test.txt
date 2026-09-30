@@ -1,0 +1,49 @@
+rejoin runs=48 ok=40
+ok   from station side at 90° throttle 0.35 z -117: on the road after 3.3 s
+ok   from station side at 90° throttle 0.35 z -134: on the road after 3.7 s
+FAIL from station side at 90° throttle 0.35 z -150: stuck on scenery at (58.24,0.070,-151.13) stalled 4.4 s, speed 0.0
+ok   from station side at 90° throttle 1.00 z -117: on the road after 1.8 s
+ok   from station side at 90° throttle 1.00 z -134: on the road after 2.1 s
+FAIL from station side at 90° throttle 1.00 z -150: stuck on scenery at (78.71,-0.112,-150.06) stalled 10.5 s, speed 0.0
+ok   from station side at 60° throttle 0.35 z -117: on the road after 3.5 s
+ok   from station side at 60° throttle 0.35 z -134: on the road after 3.5 s
+ok   from station side at 60° throttle 0.35 z -150: on the road after 4.8 s
+ok   from station side at 60° throttle 1.00 z -117: on the road after 1.9 s
+ok   from station side at 60° throttle 1.00 z -134: on the road after 2.0 s
+ok   from station side at 60° throttle 1.00 z -150: on the road after 2.7 s
+ok   from station side at 35° throttle 0.35 z -117: on the road after 4.4 s
+ok   from station side at 35° throttle 0.35 z -134: on the road after 4.4 s
+ok   from station side at 35° throttle 0.35 z -150: on the road after 4.3 s
+ok   from station side at 35° throttle 1.00 z -117: on the road after 2.4 s
+ok   from station side at 35° throttle 1.00 z -134: on the road after 2.5 s
+ok   from station side at 35° throttle 1.00 z -150: on the road after 2.4 s
+ok   from station side at 20° throttle 0.35 z -117: on the road after 5.8 s
+ok   from station side at 20° throttle 0.35 z -134: on the road after 6.6 s
+FAIL from station side at 20° throttle 0.35 z -150: stuck on scenery at (79.43,-0.110,-155.27) stalled 8.9 s, speed 0.0
+ok   from station side at 20° throttle 1.00 z -117: on the road after 3.3 s
+ok   from station side at 20° throttle 1.00 z -134: on the road after 4.1 s
+FAIL from station side at 20° throttle 1.00 z -150: stuck on scenery at (79.08,-0.102,-155.29) stalled 9.9 s, speed 0.0
+ok   from sea side at 90° throttle 0.35 z -117: on the road after 3.2 s
+ok   from sea side at 90° throttle 0.35 z -134: on the road after 3.1 s
+FAIL from sea side at 90° throttle 0.35 z -150: stuck on scenery at (87.76,0.069,-149.75) stalled 5.3 s, speed 0.0
+ok   from sea side at 90° throttle 1.00 z -117: on the road after 1.7 s
+ok   from sea side at 90° throttle 1.00 z -134: on the road after 1.7 s
+FAIL from sea side at 90° throttle 1.00 z -150: stuck on scenery at (87.76,0.070,-149.87) stalled 7.8 s, speed 0.0
+ok   from sea side at 60° throttle 0.35 z -117: on the road after 3.5 s
+ok   from sea side at 60° throttle 0.35 z -134: on the road after 3.3 s
+ok   from sea side at 60° throttle 0.35 z -150: on the road after 4.5 s
+ok   from sea side at 60° throttle 1.00 z -117: on the road after 1.8 s
+ok   from sea side at 60° throttle 1.00 z -134: on the road after 1.8 s
+ok   from sea side at 60° throttle 1.00 z -150: on the road after 2.6 s
+ok   from sea side at 35° throttle 0.35 z -117: on the road after 4.3 s
+ok   from sea side at 35° throttle 0.35 z -134: on the road after 4.0 s
+ok   from sea side at 35° throttle 0.35 z -150: on the road after 5.0 s
+ok   from sea side at 35° throttle 1.00 z -117: on the road after 2.3 s
+ok   from sea side at 35° throttle 1.00 z -134: on the road after 2.2 s
+ok   from sea side at 35° throttle 1.00 z -150: on the road after 2.5 s
+ok   from sea side at 20° throttle 0.35 z -117: on the road after 5.6 s
+ok   from sea side at 20° throttle 0.35 z -134: on the road after 6.7 s
+FAIL from sea side at 20° throttle 0.35 z -150: stuck AT THE ROAD EDGE at (66.08,-0.112,-156.09) stalled 8.6 s, speed 0.0
+ok   from sea side at 20° throttle 1.00 z -117: on the road after 3.0 s
+ok   from sea side at 20° throttle 1.00 z -134: on the road after 4.1 s
+FAIL from sea side at 20° throttle 1.00 z -150: stuck AT THE ROAD EDGE at (66.00,-0.110,-156.13) stalled 10.0 s, speed 0.0

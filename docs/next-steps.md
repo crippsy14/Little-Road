@@ -2,6 +2,20 @@
 
 **Plan of record (29 September):** [doc 45](45-roadmap-and-feature-spec.md) sets the order of work, Phases 0–5; the parts ladder is in [doc 44](44-parts-tiers-and-progression.md). The campaign is at least 12 hours and open-ended. Next is **Phase 0**: world grid with per-tile map and fog, Racer records, radar chart, a traffic-aware launch, save and IDs, and track standards.
 
+**Update, 30 September, night: Richard's fixes after the music round.** See [doc 50](50-title-saves-and-class-gating.md) and [doc 47](47-parts-drivetrain-and-sound.md) (last section).
+
+1. **Engine top half.** Above a recording's top revs, the engine played the lift-off recording. It now stretches the pull and takes the extra brightness back out.
+2. **Bayview Halt.** You couldn't get back onto the road from the station grass (0 of 32 test runs). It now has ramps (43 of 48; the rest ran into scenery). The mainline's descent from the tunnel now sits on a gentle embankment.
+3. **Class gating.** Shops show only your class and below, and Class B stays shut until it has races.
+4. **Title screen with three save slots.** Each slot has its own autosave and saved game; save from the pause menu.
+5. **Valley activities: on hold.** Richard has a better idea to share next.
+
+Open:
+- One full-throttle start from rest stalled on the Halt's gravel ramp (it passes at part throttle).
+- The 61–62 mph engine note.
+
+**Update, 30 September, late: music.** There is a theme for each area (Bayview and Hillcrest) and a race version of each; the race version has a last-lap lift. See [doc 49](49-music.md). The work is on branch `music` and not committed yet. The next sound work is effects (tyre squeal and others) and the parked 61–62 mph engine note (club motor with the Street turbo).
+
 **Update, 30 September, evening: parts for every class, real gears, manual shifting, engine sound.** Design and results in [doc 47](47-parts-drivetrain-and-sound.md). On branch `racing-ai-v2` (not committed yet).
 
 1. **Parts ladder:** 129 parts across C, B, A, S and E, plus five platforms. Every engine is a real engine (layout, cylinders, revs, torque curve and sound fingerprint). All 29 older part ids are kept, so saves still load.

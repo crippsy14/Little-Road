@@ -33,8 +33,26 @@ public static class AdventureChecks
         Check(RaceCalendar.All.All(e=>e.raceClass=="C")&&EquipmentCatalog.All.parts.All(p=>RaceCalendar.Rank(p.tier)>=0)&&RaceCalendar.Classes.All(c=>EquipmentCatalog.All.parts.Any(p=>p.tier==c)),"Every race is Class C for now; the parts ladder covers all five classes");
         Check(RaceCalendar.Open(store.Data)=="C"&&!store.Data.podiums.Contains("bayview"),"A 24th place is no podium; Class C is open");
         int s2=store.BeginRace();Check(store.FinishRace(s2,3,"bayview")==330&&store.Data.podiums.SequenceEqual(new[]{"bayview"})&&RaceCalendar.Open(store.Data)=="C","A Bayview podium pays 330 and counts one of two Class C podiums");
-        int s3=store.BeginRace();Check(store.FinishRace(s3,2,"hillcrest")==600&&RaceCalendar.Complete(store.Data,"C")&&RaceCalendar.Open(store.Data)=="B","A Hillcrest podium pays 1.5x and completes Class C, opening Class B");
-        store=new AdventureStore(store.path);Check(RaceCalendar.Open(store.Data)=="B"&&store.Data.podiums.Count==2,"Podiums and the open class survive reload");
+        int s3=store.BeginRace();Check(store.FinishRace(s3,2,"hillcrest")==600&&RaceCalendar.Complete(store.Data,"C")&&RaceCalendar.Open(store.Data)=="C","A Hillcrest podium pays 1.5x and completes Class C; Class B stays shut until it has races");
+        store=new AdventureStore(store.path);Check(RaceCalendar.Complete(store.Data,"C")&&store.Data.podiums.Count==2,"Podiums and the completed class survive reload");
+        Check(!EquipmentCatalog.All.parts.Any(p=>RaceCalendar.Rank(p.tier)>0&&RaceCalendar.PartOpen(store.Data,p)),"Parts above Class C stay locked while Class B has no races");
+        // Save slots (docs/50): the pre-slot save becomes slot 1's autosave; a new game, a save into another slot and
+        // loading each land where they should; a slot's summary reads its class and credits.
+        {
+            string slots=Path.Combine(folder,"slots");Directory.CreateDirectory(slots);SaveSlots.Folder=slots;
+            try {
+                File.Copy(store.path,SaveSlots.Legacy);SaveSlots.Migrate();
+                Check(File.Exists(SaveSlots.Auto(1))&&SaveSlots.Current==1&&SaveSlots.Read(SaveSlots.Auto(1)).summary.StartsWith("Class C")&&SaveSlots.Read(SaveSlots.Auto(1)).summary.Contains("CR"),"Save slots: the old save becomes slot 1's autosave");
+                SaveSlots.NewGame(2);Check(SaveSlots.Current==2&&new AdventureStore(SaveSlots.LivePath).Data.credits==0&&!File.Exists(SaveSlots.Manual(2)),"Save slots: a new game starts fresh in its own slot");
+                var live=new AdventureStore(SaveSlots.LivePath);live.Collect("postcard_2");SaveSlots.SaveTo(live,2);
+                Check(new AdventureStore(SaveSlots.Manual(2)).Data.credits==50,"Save slots: Save writes the slot's saved game");
+                SaveSlots.SaveTo(live,3);Check(SaveSlots.Current==3&&File.Exists(SaveSlots.Manual(3))&&File.Exists(SaveSlots.Auto(3))&&SaveSlots.Newest()==3,"Save slots: saving into another slot moves the game there");
+                live=new AdventureStore(SaveSlots.Auto(2));live.Collect("postcard_3");SaveSlots.Load(2,true);
+                Check(SaveSlots.Current==2&&new AdventureStore(SaveSlots.Auto(2)).Data.credits==50&&File.Exists(SaveSlots.Auto(2)+".bak"),"Save slots: loading a saved game restores it over the autosave, keeping a backup");
+                SaveSlots.NewGame(1);Check(new AdventureStore(SaveSlots.Auto(1)).Data.credits==0&&File.Exists(SaveSlots.Auto(1)+".bak"),"Save slots: starting over keeps the old game as a backup");
+            }
+            finally{SaveSlots.Folder=null;}
+        }
         store.Change(p=>{p.podiums.Clear();return true;});
         string before=File.ReadAllText(store.path);bool rejected=false;
         try{store.Change(p=>{p.owned.Add("unknown-part");return true;});}catch(ArgumentException){rejected=true;}

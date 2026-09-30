@@ -346,7 +346,7 @@ namespace LittleRoad
         }
         readonly RaycastHit[] surfaceHits=new RaycastHit[6];
         // Free roam: tarmac off the Bayview loop (causeway, country roads) is marked with RoadSurface.
-        bool OnRoadSurface()
+        public bool OnRoadSurface()
         {
             int count=Physics.RaycastNonAlloc(body.position+Vector3.up,Vector3.down,surfaceHits,2.6f,~0,QueryTriggerInteraction.Collide);
             for(int i=0;i<count;i++)if(surfaceHits[i].collider.GetComponent<RoadSurface>()!=null)return true;

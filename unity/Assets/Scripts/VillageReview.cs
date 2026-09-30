@@ -24,7 +24,56 @@ namespace LittleRoad
             yield return new WaitForSeconds(.3f);ui.Capture(Path.Combine(folder,"01-default-chase.png"));
             ui.SetVisible(false);
             if(RaceTrial.Has("--world-map")){yield return WorldMap.Capture(cameraView,folder,GetComponent<AdventureGame>().ResidentDirectory(),world.track);Application.Quit(0);yield break;}
-            if(RaceTrial.Has("--edge-audit")){File.WriteAllText(Path.Combine(folder,"edge-audit.txt"),PlacementAudit.Edges());Application.Quit(0);yield break;}
+            if(RaceTrial.Has("--edge-audit")){File.WriteAllText(Path.Combine(folder,"edge-audit.txt"),PlacementAudit.Edges(world.track));Application.Quit(0);yield break;}
+            // --rejoin-test (Richard, 30 Sep: at Bayview Halt, once on the station grass you can't get back onto the
+            // road): the car starts on the grass either side of the mainline, pointing at it at several angles, and
+            // drives at it; each run reports whether it got onto the tarmac, and where and how it stopped if not.
+            if(RaceTrial.Has("--rejoin-test")) {
+                var sb=new System.Text.StringBuilder();int passed=0,runs=0;player.controlsBlocked=false;
+                foreach(float side in new[]{1f,-1f})foreach(float angle in new[]{90f,60f,35f,20f})foreach(float throttle in new[]{.35f,1f})foreach(float z in new[]{-117f,-134f,-150f}) {
+                    // The road runs roughly north-south at x 68-76 here; start 5 m out on the grass, clear of the palms,
+                    // benches, lamps, map board and parked cars.
+                    float x=side>0?81.5f:63.5f;float yaw=(side>0?270:90)+(side>0?-1:1)*(90-angle);
+                    player.body.isKinematic=true;player.body.position=new Vector3(x,.3f,z);player.body.rotation=Quaternion.Euler(0,yaw,0);player.body.isKinematic=false;
+                    player.body.linearVelocity=Vector3.zero;player.body.angularVelocity=Vector3.zero;player.speed=0;
+                    float t=0;player.commandSource=_=>new Vector2(throttle,0);bool onRoad=false;float worstStall=0;Vector3 stallAt=default;string touching="";
+                    while(t<12){yield return new WaitForFixedUpdate();t+=Time.fixedDeltaTime;
+                        var p=player.body.position;if(p.x>68.3f&&p.x<75.8f&&player.OnRoadSurface()){onRoad=true;break;}   // (the road dips to -0.14 m at the south end)
+                        if(t>1.5f&&Mathf.Abs(player.speed)<.4f){worstStall+=Time.fixedDeltaTime;stallAt=p;if(!string.IsNullOrEmpty(player.observedContactSurface))touching=$"{player.observedContactSurface} ({player.observedContactDeltaV:0.00} m/s)";}player.observedContactSurface=null;player.observedContactDeltaV=0;}
+                    player.commandSource=null;runs++;if(onRoad)passed++;
+                    if(!onRoad){var c=player.body.position;var f=player.transform.forward;cameraView.transform.position=c-f*5+Vector3.up*2.2f+player.transform.right*2.5f;cameraView.transform.LookAt(c+f*1.5f);yield return null;ui.Capture(Path.Combine(folder,$"rejoin-fail-{runs:00}.png"));}
+                    var end=player.body.position;
+                    sb.AppendLine($"{(onRoad?"ok  ":"FAIL")} from {(side>0?"station side":"sea side")} at {angle,2:0}° throttle {throttle:0.00} z {z}: {(onRoad?$"on the road after {t:0.0} s":$"stuck {(Mathf.Abs(end.x-72)<6.5f?"AT THE ROAD EDGE":"on scenery")} at ({end.x:0.00},{end.y:0.000},{end.z:0.00}) stalled {worstStall:0.0} s, speed {player.speed:0.0}, touching {touching}, grip {player.Grip:0.0}")}");
+                }
+                sb.Insert(0,$"rejoin runs={runs} ok={passed}\n");File.WriteAllText(Path.Combine(folder,"rejoin-test.txt"),sb.ToString());Debug.Log("LITTLE_ROAD_REJOIN "+passed+"/"+runs);
+                Application.Quit(0);yield break;
+            }
+            // --probe-line "x0,z0,x1,z1": every solid surface under a line, every 0.25 m (which collider, how high).
+            if(RaceTrial.Has("--probe-line")) {
+                var sb=new System.Text.StringBuilder();Physics.SyncTransforms();
+                foreach(var probe in RaceTrial.Arg("--probe-line").Split(';')){
+                var v=probe.Split(',').Select(s=>float.Parse(s,System.Globalization.CultureInfo.InvariantCulture)).ToArray();
+                Vector3 a=new(v[0],0,v[1]),b=new(v[2],0,v[3]);float length=Vector3.Distance(a,b);sb.AppendLine("line "+probe);
+                for(float s=0;s<=length;s+=.25f) {
+                    var p=Vector3.Lerp(a,b,s/length);var hits=Physics.RaycastAll(p+Vector3.up*60,Vector3.down,120).Where(h=>!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null).OrderByDescending(h=>h.point.y).ToArray();
+                    sb.AppendLine($"{s,6:0.00} ({p.x:0.00},{p.z:0.00}) "+string.Join(" | ",hits.Take(3).Select(h=>$"{h.point.y:0.000} {h.collider.name}{(h.collider.GetComponentInParent<RoadSurface>()!=null?" [road]":"")} n.y={h.normal.y:0.00}")));
+                }}
+                File.WriteAllText(Path.Combine(folder,"probe-line.txt"),sb.ToString());Application.Quit(0);yield break;
+            }
+            // --spot-views "x,z,yaw;x,z,yaw;...": the car parked at each spot, seen from 14 m up and 22 m back, and
+            // from straight above (road edges, banks and lips, in context).
+            if(RaceTrial.Has("--spot-views")) {
+                int n=0;
+                foreach(var spot in RaceTrial.Arg("--spot-views").Split(';')) {
+                    var v=spot.Split(',');float x=float.Parse(v[0],System.Globalization.CultureInfo.InvariantCulture),z=float.Parse(v[1],System.Globalization.CultureInfo.InvariantCulture),yaw=v.Length>2?float.Parse(v[2],System.Globalization.CultureInfo.InvariantCulture):0;
+                    float y=float.MinValue;foreach(var h in Physics.RaycastAll(new Vector3(x,200,z),Vector3.down,400))if(!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null)y=Mathf.Max(y,h.point.y);if(y==float.MinValue)y=0;
+                    float up=v.Length>3?float.Parse(v[3],System.Globalization.CultureInfo.InvariantCulture):45;
+                    var at=new Vector3(x,y+.1f,z);var back=Quaternion.Euler(0,yaw,0)*Vector3.back;n++;
+                    yield return Frame($"spot-{n:00}-side",at,yaw,at+back*up*.5f+Vector3.up*up*.32f,at);
+                    yield return Frame($"spot-{n:00}-top",at,yaw,at+Vector3.up*up+back*.01f,at);
+                }
+                Application.Quit(0);yield break;
+            }
             if(RaceTrial.Has("--car-audit")){yield return new WaitForSeconds(1);File.WriteAllText(Path.Combine(folder,"car-audit.txt"),StationarySpot.Audit());Application.Quit(0);yield break;}
             if(RaceTrial.Has("--placement-audit")){File.WriteAllText(Path.Combine(folder,"placement-audit.txt"),PlacementAudit.Run());Application.Quit(0);yield break;}
             if(RaceTrial.Has("--zip-survey")){File.WriteAllText(Path.Combine(folder,"zip-survey.txt"),ZipLine.Survey());Application.Quit(0);yield break;}

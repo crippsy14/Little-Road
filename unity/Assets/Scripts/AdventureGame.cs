@@ -41,6 +41,8 @@ namespace LittleRoad
         {
             ui=gameObject.AddComponent<AdventureUI>();browser=gameObject.AddComponent<PartsBrowser>();racePreview=gameObject.AddComponent<RacePreviewUI>();tuning=gameObject.AddComponent<TuningScreen>();testDrive=gameObject.AddComponent<TestDrive>();
             paintShop=gameObject.AddComponent<PaintShop>();bodyShop=gameObject.AddComponent<BodyShop>();bubbles=gameObject.AddComponent<SpeechBubbles>();
+            // The title screen (save slots) once per launch, before the world builds.
+            TitleScreen title=null;if(TitleScreen.Wanted){title=gameObject.AddComponent<TitleScreen>();yield return title.Run();}
             try{AdventureSession.Load();}catch(Exception e){ui.Show("Your save needs attention",e.Message+"\nThe existing save has been left intact.",new List<AdventureUI.Choice>{new("Quit",()=>Application.Quit())});yield break;}
             WorldLook.PlayPacing();Time.fixedDeltaTime=1f/120;
             LoadingScreen.Begin("Little Road");
@@ -67,7 +69,7 @@ namespace LittleRoad
             // keep their validated mode). --free-roam-speculative restores it for comparison.
             if(!RaceTrial.Has("--free-roam-speculative"))player.body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
             cameraView=new GameObject("Adventure camera").AddComponent<Camera>();cameraView.tag="MainCamera";cameraView.fieldOfView=55;cameraView.nearClipPlane=.15f;cameraView.farClipPlane=6000;
-            cameraView.gameObject.AddComponent<AudioListener>();WorldLook.Camera(cameraView);
+            if(title!=null)title.Dismiss();cameraView.gameObject.AddComponent<AudioListener>();WorldLook.Camera(cameraView);
             if(GrassField.Wanted)gameObject.AddComponent<GrassField>().Setup(cameraView);
             CameraPose(true);if(!string.IsNullOrEmpty(AdventureSession.Notice)){Notify(AdventureSession.Notice);AdventureSession.Notice=null;}
             else if(Store.Data.questStage==0)Notify("Welcome to Bayview · Mara has a parcel for the lighthouse");
@@ -468,6 +470,7 @@ namespace LittleRoad
             string[] names={"p3-collection","p4-car","p5-controls","p6-settings"};
             for(int i=1;i<=4;i++){pause.ShowTab(i);yield return new WaitForSecondsRealtime(.5f);Toy.Capture(Path.Combine(folder,names[i-1]+".png"));}
             pause.AskQuit();yield return new WaitForSecondsRealtime(.3f);Toy.Capture(Path.Combine(folder,"p7-quit-confirm.png"));
+            pause.ShowSave();yield return new WaitForSecondsRealtime(.3f);Toy.Capture(Path.Combine(folder,"p7b-save-game.png"));
             pause.Close();yield return null;yield return null;
             if(player.controlsBlocked){Debug.LogError("LITTLE_ROAD_PAUSE_REVIEW car still blocked after closing the pause hub");Application.Quit(3);yield break;}
             Debug.Log("LITTLE_ROAD_PAUSE_REVIEW controls restored after close");
