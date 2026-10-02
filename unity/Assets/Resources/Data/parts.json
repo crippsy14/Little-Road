@@ -969,7 +969,7 @@
       "spread": 3.3,
       "shiftTime": 0.04,
       "shiftType": "P",
-      "kmhPer1000": 25.9,
+      "kmhPer1000": 33.0,
       "lsd": true,
       "ceiling": 90,
       "pull": 1.1
@@ -985,7 +985,7 @@
       "spread": 3.3,
       "shiftTime": 0.015,
       "shiftType": "SL",
-      "kmhPer1000": 25.9,
+      "kmhPer1000": 33.0,
       "lsd": true,
       "ceiling": 90,
       "pull": 1.1
@@ -1001,7 +1001,7 @@
       "spread": 3.3,
       "shiftTime": 0.02,
       "shiftType": "SL",
-      "kmhPer1000": 25.9,
+      "kmhPer1000": 33.0,
       "lsd": true,
       "ceiling": 90,
       "pull": 1.1
@@ -1017,7 +1017,7 @@
       "spread": 3.6,
       "shiftTime": 0.04,
       "shiftType": "P",
-      "kmhPer1000": 28.5,
+      "kmhPer1000": 36.0,
       "lsd": true,
       "ceiling": 90,
       "pull": 1.1
@@ -1752,7 +1752,8 @@
       "price": 0,
       "kg": 850,
       "drag": 1.0,
-      "downforce": 0
+      "downforce": 0,
+      "firm": 0
     },
     {
       "id": "platform_b",
@@ -1761,7 +1762,8 @@
       "price": 9100,
       "kg": 880,
       "drag": 0.95,
-      "downforce": 0
+      "downforce": 0,
+      "firm": 0.25
     },
     {
       "id": "platform_a",
@@ -1770,7 +1772,8 @@
       "price": 18900,
       "kg": 950,
       "drag": 0.9,
-      "downforce": 0
+      "downforce": 0,
+      "firm": 0.65
     },
     {
       "id": "platform_s",
@@ -1778,8 +1781,9 @@
       "name": "Racing platform",
       "price": 35000,
       "kg": 780,
-      "drag": 0.8,
-      "downforce": 0.0012
+      "drag": 0.7,
+      "downforce": 0.0025,
+      "firm": 2.3
     },
     {
       "id": "platform_e",
@@ -1787,8 +1791,9 @@
       "name": "Endurance platform",
       "price": 59500,
       "kg": 850,
-      "drag": 0.75,
-      "downforce": 0.0012
+      "drag": 0.6,
+      "downforce": 0.003,
+      "firm": 3
     }
   ]
 }

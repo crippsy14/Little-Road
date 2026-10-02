@@ -53,6 +53,30 @@ public static class AdventureChecks
             }
             finally{SaveSlots.Folder=null;}
         }
+        // Speed traps (docs/51): seven cameras on straight road, marks rising from what the stock car can reach to
+        // what the best Class C kit can; a record keeps the best and pays each star once.
+        {
+            var traps=SpeedTraps.Plan(new Circuit());
+            Check(traps.Select(t=>t.id).SequenceEqual(SpeedTraps.Ids),$"Speed traps: all {SpeedTraps.Ids.Length} cameras placed ({string.Join(", ",traps.Select(t=>$"{t.id} {t.marks[0]}/{t.marks[1]}/{t.marks[2]}"))} mph)");
+            Check(traps.All(t=>t.marks[0]>=35&&t.marks[0]<t.marks[1]&&t.marks[1]<t.marks[2]&&t.marks[2]<=160),"Speed traps: marks rise from the stock car's reach to the best Class C kit's");
+            var trapStore=new AdventureStore(Path.Combine(folder,"traps.json"));int c0=trapStore.Data.credits;
+            int paid=trapStore.RecordTrap("quay",60,2,SpeedTraps.Prizes);int again=trapStore.RecordTrap("quay",58,2,SpeedTraps.Prizes);int third=trapStore.RecordTrap("quay",80,3,SpeedTraps.Prizes);
+            trapStore=new AdventureStore(trapStore.path);var rec=SpeedTraps.Record(trapStore.Data,"quay");
+            Check(paid==SpeedTraps.Prizes[0]+SpeedTraps.Prizes[1]&&again==0&&third==SpeedTraps.Prizes[2]&&rec.best==80&&rec.stars==3&&trapStore.Data.credits==c0+SpeedTraps.Prizes.Sum(),"Speed traps: each star pays once and the best speed is kept");
+            bool bad=false;try{trapStore.Change(p=>{p.traps.Add(new TrapRecord{id="moon",best=1,stars=1});return true;});}catch(InvalidDataException){bad=true;}
+            Check(bad,"Speed traps: an unknown trap in a save is rejected");
+        }
+        // Beat the Train (docs/51): the road route joins the two forecourts; the stock car's ideal time is sane; a win
+        // pays once and keeps the lowest time.
+        {
+            var route=TrainRace.Route(true);float length=SpeedProfile.Length(route),stock=TrainRace.StockTime(true),back=TrainRace.StockTime(false);
+            Check(length>1200&&length<5000&&Vector3.Distance(route[0],CoastalLandscape.HaltArrival)<1&&Vector3.Distance(route[^1],HillcrestRoute.StationYard)<8,$"Beat the Train: road route {length:0} m from Bayview Halt to Hillcrest station");
+            Check(stock>60&&stock<600&&back>60&&back<600,$"Beat the Train: stock car's ideal {stock:0} s there, {back:0} s back");
+            var raceStore=new AdventureStore(Path.Combine(folder,"train.json"));int c0=raceStore.Data.credits;
+            int first=raceStore.RecordTime("train-hillcrest",150,TrainRace.Prize),slower=raceStore.RecordTime("train-hillcrest",160,TrainRace.Prize),faster=raceStore.RecordTime("train-hillcrest",140,TrainRace.Prize);
+            raceStore=new AdventureStore(raceStore.path);var r=SpeedTraps.Record(raceStore.Data,"train-hillcrest");
+            Check(first==TrainRace.Prize&&slower==0&&faster==0&&r.best==140&&raceStore.Data.credits==c0+TrainRace.Prize,"Beat the Train: the first win pays once; the best time is the lowest");
+        }
         store.Change(p=>{p.podiums.Clear();return true;});
         string before=File.ReadAllText(store.path);bool rejected=false;
         try{store.Change(p=>{p.owned.Add("unknown-part");return true;});}catch(ArgumentException){rejected=true;}

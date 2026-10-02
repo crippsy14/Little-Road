@@ -1,6 +1,55 @@
-# Next steps (30 September 2026)
+# Next steps (2 October 2026)
 
 **Plan of record (29 September):** [doc 45](45-roadmap-and-feature-spec.md) sets the order of work, Phases 0–5; the parts ladder is in [doc 44](44-parts-tiers-and-progression.md). The campaign is at least 12 hours and open-ended. Next is **Phase 0**: world grid with per-tile map and fog, Racer records, radar chart, a traffic-aware launch, save and IDs, and track standards.
+
+**Update, 2 October, evening: the engine scorecard** ([doc 55](55-engine-scorecard.md); [listening page](https://claude.ai/artifact/8zpJcfKs294HWgpAee59PW), private).
+- **The method:** every recorded engine is driven along its real recording's own drive (revs, throttle and gearchanges read from it) and scored 0–10 on pitch, tone, character, lift-off, gearchanges and rise with revs.
+- **Round one:** the average went from 5.8 to 6.5. Lift-offs now fade by each engine's measured drop instead of falling 6–8 dB at once; the low rumble is back; the made-up roar and gearchange thump are gone over recordings.
+- **Next round:** Fabia clicks on flat-shifts; per-engine fade times (Skyline); the Escort's level clamps; better exhaust or external references (downloads need Richard's go-ahead).
+
+**Update, 2 October: the Duke's Challenge** ([doc 54](54-dukes-challenge.md); `claude-additions`, not committed).
+- **The final boss.** Race Duke Rolo 1v1, three laps of Hillcrest Raceway, against the Regale on the measured maximum build. The first win pays 50,000 credits and gives you the Regale.
+- **Aero grip for S/E cars.** Downforce now loads the tyres (×1.86 grip at 75 m/s). The AI's braking plan for aero cars keeps a 30% lateral reserve. The Duke now laps in 30.7–31.1 s, cleanly on nine seeds.
+- **Test drives.** Two new desktop shortcuts: Max Build Hot Laps (timed laps of the raceway) and Max Build Test Drive (free roam on a save copy, by the Duke).
+- **After Richard's first drive** (his best lap 28.02 s, against the AI's 30.7 s):
+  - Platform drag is now real, and the E boxes are taller: 332 km/h on the long box.
+  - Race platforms sit on stiff springs, so no more nose lift.
+  - Turbo and hybrid-whine sounds are off (`--turbo-sound` / `--hybrid-sound` bring them back).
+  - **S gearing is still short** (the S V8 tops out at its limiter around 218 km/h): retune it with the class S phase.
+- **Parked.** The Duke's drive (`--duke-drive`) waits for a traffic overhaul that can handle a car at pace.
+- **For later:**
+  - (a) New, professional-looking tracks for classes A and up, for higher speeds and real cornering (Richard: a Le Mans car on Tsukuba).
+  - (b) E-class AI for weaker drivers: they still crash at E speeds, see doc 54.
+  - (c) Peak and floor: the maximum build is gear-limited at 76 m/s, and a slower stock car would make early upgrades feel bigger. Both are keep/reject questions once Richard has driven it.
+  - (d) Possibly the aero cars' braking reserve for every car, as a keep/reject study.
+
+**Update, 1 October: Richard's play-test fixes** (doc 51, "Richard's first play-test"; still on `claude-additions`, not committed).
+- Speed traps no longer stop the car.
+- Valley junctions come from a road network (doc 52).
+- Photo mode opens on D-pad Up.
+- Crickets are muted, and the fireworks wait for full dark and announce themselves.
+- The car is held but revs through the train and castle countdowns.
+- Glowing finish beacons for both events.
+- The engine above the recording is reworked: a walked sustain loop, and pulse overlap-add above 1.5× (doc 47, last section).
+- **The Regale** (doc 53): Duke Rolo's prototype, a sculpted toy Le Mans car with a painted purple-and-gold livery (in-world sponsors), parked at the castle as a teaser of the top classes.
+
+**Resolved, not a bug:** the game was on screen 2, which was switched off. The title screen was simply waiting for input, which matches the log ending before `ADVENTURE_READY`. The small bug in the last bullet below (ambience at the title) still stands. The original note is kept below for the record.
+
+**(Was) Open first next time: the game hung at launch (30 September, 19:06).** Richard's normal launch (title screen, 2560×1440 borderless fullscreen) stopped responding.
+- **What the log shows.** Player.log ends at `LITTLE_ROAD_DISPLAY applied=FullScreenWindow size=2560x1440`, with no `ADVENTURE_READY` and no exceptions. After 39 minutes the process had used about 4 cores flat out (10,287 s of CPU). The audio thread kept playing the ambience.
+- **What that rules in.** It hung either on the title screen or in the world build after Continue. The tests never ran that path at full length: `--title-review` quits after 3 s, and every other run skips the title.
+- **A clue, and a small bug.** At the title the ambience runs with no world under it, so every sea-probe ray misses and it reports "all sea" (the loud waves). The title should mute it, or the ambience should wait for the world.
+- **How to reproduce.** Launch with no flags at native fullscreen, then press Continue. If needed, add logging around `TitleScreen.Run`, `AdventureSession.Load`, and each setup step in `AdventureGame.Start` (the new parts: `SpeedTraps.Setup`, `Fireworks.Setup`, `TrainRace`, `PhotoMode`).
+
+**Update, 30 September, late night: Claude's own additions.** Richard: "go to town adding whatever you like". Details in [doc 51](51-claudes-additions.md), on branch `claude-additions` (not committed yet).
+
+- **Speed traps:** seven cameras, with star marks computed from each road and the parts ladder.
+- **A horn** (H / L3): folk answer, traffic beeps back, and Bert's train whistles.
+- **Beat the Train:** race the real train between the stations.
+- **Photo mode** (P / D-pad Up): five looks, depth of field and a postcard frame.
+- **Pip's photo requests:** six sights to photograph.
+- **Fireworks** over Bayview harbour at night.
+- **A RECORDS tab** in the pause menu for all of the above.
 
 **Update, 30 September, night: Richard's fixes after the music round.** See [doc 50](50-title-saves-and-class-gating.md) and [doc 47](47-parts-drivetrain-and-sound.md) (last section).
 

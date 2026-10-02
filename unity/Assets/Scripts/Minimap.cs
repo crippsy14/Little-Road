@@ -12,7 +12,7 @@ namespace LittleRoad
     // pad's View/Select button opens the whole map, north up, with every place name (the atlas labels).
     public sealed class Minimap:MonoBehaviour
     {
-        public enum Shape{Dot,Service,Zip,Objective}
+        public enum Shape{Dot,Service,Zip,Objective,Trap}
         public struct Mark{public Vector3 at;public Color colour;public Shape shape;public Mark(Vector3 a,Color c,Shape s){at=a;colour=c;shape=s;}}
         public const float Diameter=330,NearRadius=150,FarRadius=330;
         Transform car;RoadCar driver;RenderTexture map;Func<List<Mark>> marks;Func<List<WorldMap.Label>> labels;
@@ -137,6 +137,7 @@ namespace LittleRoad
                     switch(shape) {
                         case Shape.Service:Square(vh,at,size+3,Toy.Navy);Square(vh,at,size,colour);break;
                         case Shape.Zip:Diamond(vh,at,size+3,Toy.Navy);Diamond(vh,at,size,colour);break;
+                        case Shape.Trap:ToyMesh.Circle(vh,at,size+3,Toy.Navy,16);ToyMesh.Circle(vh,at,size,colour,16);Square(vh,at,size*.42f,Toy.White);break;
                         case Shape.Objective:Star(vh,at,size+4,Toy.Navy);Star(vh,at,size,colour);break;
                         default:ToyMesh.Circle(vh,at,size+2.5f,Toy.Navy,16);ToyMesh.Circle(vh,at,size,colour,16);break;
                     }

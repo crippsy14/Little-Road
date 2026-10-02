@@ -28,6 +28,7 @@ namespace LittleRoad
         // Optional input policy for proving-ground maneuvers. It supplies only
         // pedal/steering requests; all forces, grip and contacts stay below.
         [System.NonSerialized] public System.Func<RoadCar,Vector2> commandSource;
+        [System.NonSerialized] public bool holdStill;
         public RoadGrounding ground;
         public Vector3 DriveForward=>ground==null?transform.forward:ground.forward;
         float steerState, previousPath, stuckTime,lapStart,lastSafeDistance;
@@ -175,12 +176,18 @@ namespace LittleRoad
             }
             if(commandSource!=null){var command=commandSource(this);throttle=Mathf.Clamp(command.x,-1,1);steering=Mathf.Clamp(command.y,-1,1);}
             else if(autonomous || finished){long planStart=System.Diagnostics.Stopwatch.GetTimestamp();Plan();long planTicks=System.Diagnostics.Stopwatch.GetTimestamp()-planStart;FrameCost.Plan+=planTicks;if(planTicks>FrameCost.PlanMax)FrameCost.PlanMax=planTicks;} else ReadInput();
+            // Held for a free-roam countdown (Beat the Train, the Castle Climb; docs/51): planted, but the engine revs.
+            if(holdStill) {
+                if(tuning.drivetrain!=null&&(gears==null||gears.train!=tuning.drivetrain))gears=new GearState(tuning.drivetrain);
+                if(gears!=null){gears.Held=true;gears.Step(0,throttle,Time.fixedDeltaTime);gears.Held=false;}
+                body.linearVelocity=new Vector3(0,Mathf.Min(0,body.linearVelocity.y),0);body.angularVelocity=Vector3.zero;speed=0;return;
+            }
             if(race.elapsed<0) {throttle=0;steering=0;body.linearVelocity=Vector3.zero;return;}
             race.MotionAudit?.Observe(this,race.elapsed);
             if(autonomous&&!finished&&race.elapsed>0){float dt=Time.fixedDeltaTime;if(throttle<-.05f)BrakeSeconds+=dt;else if(throttle<.9f&&speed>3)LiftSeconds+=dt;if(speed<2)StoppedSeconds+=dt;}
             race.ApproachAudit?.Observe(this,race.elapsed);
             steerState=Mathf.MoveTowards(steerState,steering,tuning.response*Time.fixedDeltaTime);
-            float grip=Mathf.Abs(offset)<Circuit.Width*.5f||(race.freeRoam&&OnRoadSurface())?tuning.roadGrip:tuning.dirtGrip;Grip=grip;
+            float grip=Mathf.Abs(offset)<Circuit.Width*.5f||(race.freeRoam&&OnRoadSurface())?tuning.roadGrip:tuning.dirtGrip;grip*=DriveModel.AeroGrip(tuning,speed);Grip=grip;
             float yawRequest=steerState*tuning.yaw*Mathf.Clamp01(Mathf.Abs(speed)/3)*Mathf.Sign(speed==0?1:speed);
             float engineAccel=-1;
             if(tuning.drivetrain!=null) {
@@ -199,6 +206,10 @@ namespace LittleRoad
             // Diagnostic (elevated circuits): racing time with no drive, brake or cornering force applied.
             if(!supported&&race.elapsed>0&&!finished)UnsupportedSeconds+=Time.fixedDeltaTime;
             if(supported)body.AddForce(driveForward*acceleration,ForceMode.Acceleration);
+            // Downforce (S and E platforms; docs/47, 54): a push into the road with the square of the speed, so the crests
+            // that threw the maximum build into the air at 60-75 m/s keep it planted. Near the road only (1.5 m).
+            if(tuning.downforce>0&&(ground==null||ground.hasSupport&&ground.clearance<1.5f))
+                body.AddForce(-(ground!=null&&ground.hasSupport?ground.normal:transform.up)*tuning.downforce*speed*speed,ForceMode.Acceleration);
             // Steering changes heading; lateral tyre force moves velocity toward
             // that heading within the available grip, preserving collision impulses.
             lateralSpeed=Vector3.Dot(body.linearVelocity,driveRight);
@@ -223,7 +234,7 @@ namespace LittleRoad
                 else if(!race.freeRoam&&progress>nextGateProgress+10)TryRecover();
                 else if(stuckTime>6 || Mathf.Abs(offset)>32 || transform.position.y< -2)TryRecover();
             }
-            wheelSpin+=speed/.425f*Mathf.Rad2Deg*Time.fixedDeltaTime;
+            wheelSpin+=speed/wheels.Radius*Mathf.Rad2Deg*Time.fixedDeltaTime;   // (rolling: the tyre's edge moves with the road)
             wheels.Pose(wheelSpin,steerState*25);
         }
         // Garage body swap (looks only): the new model's visuals replace this car's. The collider,

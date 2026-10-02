@@ -30,6 +30,8 @@ namespace LittleRoad
                 "Opportunist"=>(.6f,.6f,.8f,.35f),
                 "Patient"=>(.65f,.7f,.6f,.9f),
                 "Precise"=>(.85f,.7f,.5f,.6f),
+                // Duke Rolo, the final boss (docs/54): the best line and car control in the game.
+                "Duke"=>(1f,.95f,.75f,.6f),
                 _=>(.7f,.7f,.6f,.5f)
             };
             return a;

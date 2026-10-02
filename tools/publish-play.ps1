@@ -1,0 +1,36 @@
+# Usage (from project root): .\tools\publish-play.ps1
+# Richard's play copy: copies the current dev build (../little-road-dev-build, overwritten by every build) to
+# ../little-road-play, which changes only when this runs, and points the "Little Road" desktop shortcut at it.
+# Run it only after a build has passed its checks and smoke tests. The shortcut opens on the main screen
+# (-monitor 1); saves are shared with every build (they live in the user's AppData), so nothing is lost either way.
+$ErrorActionPreference='Stop'
+$root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$from=[IO.Path]::GetFullPath((Join-Path $root '../little-road-dev-build'))
+$to=[IO.Path]::GetFullPath((Join-Path $root '../little-road-play'))
+$exe='Little Road Unity.exe'
+if(-not (Test-Path (Join-Path $from $exe))){throw "No dev build at $from"}
+if(Get-Process 'Little Road Unity' -ErrorAction SilentlyContinue){throw 'Close the game first (it is running).'}
+robocopy $from $to /MIR /NFL /NDL /NJH /NJS /NP | Out-Null
+if($LASTEXITCODE -ge 8){throw "Copy failed (robocopy $LASTEXITCODE)"}
+$git='-c',"safe.directory=$($root -replace '\\','/')"
+$branch=git -C $root @git branch --show-current;$commit=git -C $root @git log -1 --format='%h %s';$dirty=(git -C $root @git status --short --untracked-files=no|Measure-Object).Count
+Set-Content -Encoding utf8 (Join-Path $to 'BUILD.txt') @"
+Little Road play copy
+Published: $(Get-Date -Format 'yyyy-MM-dd HH:mm')
+Built from: branch $branch, commit $commit$(if($dirty){" (plus $dirty uncommitted changed files)"})
+Dev build time: $((Get-Item (Join-Path $from $exe)).LastWriteTime.ToString('yyyy-MM-dd HH:mm'))
+"@
+$shell=New-Object -ComObject WScript.Shell
+$link=$shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Desktop')) 'Little Road.lnk'))
+$link.TargetPath=Join-Path $to $exe;$link.Arguments='-monitor 1';$link.WorkingDirectory=$to;$link.IconLocation=(Join-Path $to $exe)+',0'
+$link.Description="Little Road (play copy, $branch $(($commit -split ' ')[0]))";$link.Save()
+# Max build test drives (docs/54): the fastest car in the game, for feeling the top of the ladder. Hot laps is a
+# timed session on Hillcrest Raceway (5 laps, lap times on screen); Test Drive is free roam on a copy of the
+# live save with the maximum build fitted, by the Duke (race him from there). Neither writes the real slots.
+foreach($extra in @(
+  @{Name='Little Road - Max Build Hot Laps';Args='-monitor 1 --trial-race --trial-track hillcrest --trial-human --hide-racing-line --trial-cars 1 --trial-laps 5 --trial-duration 1800 --trial-setup max --trial-body regale --sweep-contacts';What='Hot laps of Hillcrest Raceway in the maximum build'},
+  @{Name='Little Road - Max Build Test Drive';Args='-monitor 1 --max-build-test';What='Free roam with the maximum build, by the Duke (a copy of your save)'})){
+  $l=$shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Desktop')) ($extra.Name+'.lnk')))
+  $l.TargetPath=Join-Path $to $exe;$l.Arguments=$extra.Args;$l.WorkingDirectory=$to;$l.IconLocation=(Join-Path $to $exe)+',0';$l.Description=$extra.What;$l.Save()
+}
+Write-Output "Published to $to ($branch $commit); desktop shortcuts 'Little Road', 'Little Road - Max Build Hot Laps' and 'Little Road - Max Build Test Drive' updated."

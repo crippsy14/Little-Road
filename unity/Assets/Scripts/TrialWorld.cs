@@ -150,16 +150,22 @@ namespace LittleRoad
                         name.Contains("BumperInsert")?new Color(.22f,.25f,.26f):
                         name.Contains("Amber")?new Color(1,.38f,.02f):name.Contains("Plate")?new Color(.9f,.89f,.75f):
                         name.Contains("PanelSeam")?new Color(.024f,.054f,.051f):name.Contains("BrakeMetal")?new Color(.08f,.095f,.10f):
-                        name.Contains("Cloth")?new Color(.065f,.088f,.094f):name.Contains("Cream")?new Color(.93f,.90f,.80f):name.Contains("Livery")?new Color(.85f,.10f,.08f):
-                        name.Contains("Wood")?new Color(.45f,.27f,.13f):new Color(.055f,.073f,.08f);
+                        name.Contains("Cloth")?new Color(.065f,.088f,.094f):name.Contains("Cream")?new Color(.93f,.90f,.80f):name.Contains("Livery")&&!name.Contains("LiveryMap")?new Color(.85f,.10f,.08f):
+                        name.Contains("Wood")?new Color(.45f,.27f,.13f):
+                        // The Regale (Duke Rolo's prototype, docs/53): a painted livery, carbon, gold, red calipers, smoked canopy.
+                        name.Contains("LiveryMap")?Color.white:name.Contains("CarbonFibre")?new Color(.03f,.033f,.036f):
+                        name.Contains("GoldTrim")?new Color(.83f,.62f,.24f):name.Contains("CaliperRed")?new Color(.72f,.08f,.06f):
+                        name.Contains("CanopyGlass")?new Color(.012f,.016f,.022f):new Color(.055f,.073f,.08f);
                     // Plastic seals and trim should not inherit glossy metallic
                     // paint. Preserve readable material separation at race distance.
                     bool paintSurface=name.Contains("BodyPaint"),alloySurface=name.Contains("Alloy");
-                    bool chrome=name.Contains("Chrome");
-                    float metal=chrome?.9f:alloySurface?.7f:name.Contains("BrakeMetal")?.55f:paintSurface?.05f:0;
-                    float smooth=chrome?.8f:alloySurface?.42f:paintSurface?.56f:name.Contains("Rubber")?.15f:
+                    bool chrome=name.Contains("Chrome"),livery=name.Contains("LiveryMap"),gold=name.Contains("GoldTrim");
+                    float metal=chrome?.9f:gold?.85f:alloySurface?.7f:name.Contains("BrakeMetal")?.55f:name.Contains("CarbonFibre")?.25f:paintSurface||livery?.05f:0;
+                    float smooth=chrome?.8f:gold?.66f:livery?.74f:name.Contains("CanopyGlass")?.9f:name.Contains("CarbonFibre")?.55f:alloySurface?.42f:paintSurface?.56f:name.Contains("Rubber")?.15f:
                         name.Contains("Headlamp")||name.Contains("TailLight")||name.Contains("ReverseLight")||name.Contains("Amber")?.6f:.25f;
-                    converted[i]=Material(name,c,metal,smooth,!paintSurface);
+                    converted[i]=Material(name,c,metal,smooth,!paintSurface&&!livery);
+                    // The livery texture sits beside the model: Cars/<body>_livery (its colours are graded when painted).
+                    if(livery){var art=Resources.Load<Texture2D>("Cars/"+asset.Replace("_lod1","").Replace("_lod2","")+"_livery");if(art!=null)converted[i].SetTexture("_BaseMap",art);}
                     if(name.Contains("TailLight")||name.Contains("ReverseLight")) {
                         converted[i].EnableKeyword("_EMISSION");converted[i].SetColor("_EmissionColor",Color.black);
                     }

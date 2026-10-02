@@ -164,7 +164,7 @@ namespace LittleRoad
                 lateralVelocity=Vector3.Dot(car.body.linearVelocity,car.transform.right),requestedYaw=car.requestedYaw,actualYaw=car.body.angularVelocity.y});
             var sample=samples[^1];sample.routeHeight=course.track.At(route).y;sample.grade=course.track.Forward(route).y;
             if(car.ground!=null){sample.grounded=car.ground.grounded;sample.groundClearance=car.ground.hasSupport?car.ground.clearance:1;sample.alignmentDegrees=car.ground.alignmentDegrees;}
-            sample.expectedCoastAcceleration=-DriveModel.Resistance(speed,car.tuning.mass)+Vector3.Dot(Physics.gravity,car.DriveForward);
+            sample.expectedCoastAcceleration=-DriveModel.Resistance(car.tuning,speed)+Vector3.Dot(Physics.gravity,car.DriveForward);
         }
         void Finish(bool complete,string failure)
         {

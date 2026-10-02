@@ -158,7 +158,7 @@ namespace LittleRoad
                 for(int tick=1;tick<=PredictionSteps;tick++) {
                     while(segment<Count-2&&path.distance[segment+1]<travelled)segment++;
                     float target=path.speed[segment+1];
-                    float force=DriveModel.EngineForce(o.tuning,speed)-DriveModel.Resistance(speed,o.tuning.mass);
+                    float force=DriveModel.EngineForce(o.tuning,speed)-DriveModel.Resistance(o.tuning,speed);
                     float acceleration=Mathf.Clamp((target-speed)*3,-o.tuning.braking*.8f,force);
                     float next=Mathf.Max(0,speed+acceleration*PredictionStep);
                     travelled+=(speed+next)*.5f*PredictionStep;speed=next;
@@ -317,7 +317,7 @@ namespace LittleRoad
             int next=Mathf.Min(Count-1,nearest+1);
             float feedforward=(chosen.speed[next]*chosen.speed[next]-chosen.speed[nearest]*chosen.speed[nearest])/(2*Mathf.Max(.01f,chosen.distance[next]-chosen.distance[nearest]));
             if(emergencyBraking){target=0;feedforward=0;}
-            float force=feedforward+(target-o.self.speed)*3+DriveModel.Resistance(o.self.speed,o.tuning.mass);
+            float force=feedforward+(target-o.self.speed)*3+DriveModel.Resistance(o.tuning,o.self.speed);
             float pedal=force>=0?force/Mathf.Max(.01f,DriveModel.EngineForce(o.tuning,o.self.speed)):force/o.tuning.braking;
             return new DriveCommand(pedal,steer,target,o.self.offset,selectedReference?profile.line.Offset(d):selectedOffset);
         }

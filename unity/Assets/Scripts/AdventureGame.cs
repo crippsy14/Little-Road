@@ -55,13 +55,24 @@ namespace LittleRoad
             foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
             residents["post"]=world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
             CreatePlaces();
+            if(AdventureSession.MaxBuildTest&&!AdventureSession.TestPlaced){AdventureSession.TestPlaced=true;FaceDuke();}
             var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));
             if(AdventureSession.ReturnSpot is Vector3 back)car.transform.SetPositionAndRotation(back+Vector3.up*.15f,Quaternion.Euler(0,AdventureSession.ReturnYaw,0));
             player=car.AddComponent<RoadCar>();player.Setup(world,0,EquipmentCatalog.Stats(Store.Data.Loadout(),Store.Data.Tune()),false,1709,"owned equipment");world.cars.Add(player);world.running=true;FrameProbe.Attach(player.transform);CameraShake.Reset();CameraShake.Watch(player);
+            playerHorn=Horn.Attach(car,Horn.PitchFor(Store.Data.bodyId),player:true);
             player.Bumped+=(other,speed)=>{if(speed>1f&&!ui.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen)other.GetComponentInParent<NpcChatter>()?.TrySay(bubbles);};
             if(RaceTrial.Has("--vertical-audit"))gameObject.AddComponent<VerticalMotionAudit>().Setup(world);
             if(RaceTrial.Has("--ambient-traffic"))AmbientTraffic();
             if(!RaceTrial.Has("--no-valley-life"))gameObject.AddComponent<ValleyLife>().Setup(player);
+            // Fireworks over Bayview harbour at night (docs/51).
+            var fireworks=gameObject.AddComponent<Fireworks>();fireworks.Setup();fireworks.Announce=Notify;
+            // Speed traps on seven roads (docs/51).
+            trainRace=gameObject.AddComponent<TrainRace>();trainRace.Setup(player,()=>Store,Notify,(title,detail)=>ui.Card(title,detail,Toy.Red,"BEAT THE TRAIN"));
+            // (After the player's car exists.) The Duke's drive (DukeDrive, docs/51) is parked behind --duke-drive (Richard, 2 Oct:
+            // the town traffic isn't built for a car at pace; it returns with a traffic overhaul). He stays at the castle.
+            var duke=GameObject.Find("Resident castle");
+            if(duke!=null&&player!=null&&(RaceTrial.Has("--duke-drive")||RaceTrial.Has("--duke-drive-review")))duke.AddComponent<DukeDrive>().Setup(player,()=>climbStart<0&&(trainRace==null||!trainRace.Active)&&!reviewing,Notify,()=>Store,(title,detail)=>ui.Card(title,detail,Toy.Pink,"THE DUKE'S DRIVE"));
+            gameObject.AddComponent<SpeedTraps>().Setup(player,world.track,()=>Store,(title,detail)=>ui.Card(title,detail,Toy.Orange,"SPEED TRAP"));
             if(RaceTrial.Has("--drive-trace"))gameObject.AddComponent<DriveTrace>().Setup(player,RaceTrial.Arg("--drive-trace"));
             if(RaceTrial.Has("--drive-replay"))gameObject.AddComponent<DriveReplay>().Setup(player,RaceTrial.Arg("--drive-replay"));
             // Speculative contacts snag internal road-mesh edges while the car yaws: a one-step
@@ -70,6 +81,10 @@ namespace LittleRoad
             if(!RaceTrial.Has("--free-roam-speculative"))player.body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
             cameraView=new GameObject("Adventure camera").AddComponent<Camera>();cameraView.tag="MainCamera";cameraView.fieldOfView=55;cameraView.nearClipPlane=.15f;cameraView.farClipPlane=6000;
             if(title!=null)title.Dismiss();cameraView.gameObject.AddComponent<AudioListener>();WorldLook.Camera(cameraView);
+            photo=gameObject.AddComponent<PhotoMode>();photo.Setup(cameraView,player.transform,ui,()=>AreaBanner.Area(player.transform.position),Notify,show=>ui.SetHudVisible(show));
+            // Pip's photo requests (docs/51): each sight pays once, the first photo that shows it.
+            photo.Photographed=cam=>{foreach(var r in PhotoRequests.Seen(cam))Attempt(()=>{if(Store.ClaimTrial(r.id,PhotoRequests.Prize)){int got=0;foreach(var id in PhotoRequests.Ids)if(Store.Data.collected.Contains(id))got++;
+                ui.Card($"PHOTO FOR PIP: {r.name.ToUpperInvariant()}",$"{got} of {PhotoRequests.Ids.Length} requests  ·  +{PhotoRequests.Prize} credits",Toy.Pink,"POSTCARD PHOTO");}});};
             if(GrassField.Wanted)gameObject.AddComponent<GrassField>().Setup(cameraView);
             CameraPose(true);if(!string.IsNullOrEmpty(AdventureSession.Notice)){Notify(AdventureSession.Notice);AdventureSession.Notice=null;}
             else if(Store.Data.questStage==0)Notify("Welcome to Bayview · Mara has a parcel for the lighthouse");
@@ -91,8 +106,13 @@ namespace LittleRoad
             if(RaceTrial.Has("--geometry-audit-only")){Application.Quit();yield break;}
             if(RaceTrial.Has("--minimap-review")){reviewing=true;yield return MinimapReview();yield break;}
             if(RaceTrial.Has("--pause-review")){yield return PauseReview();yield break;}
+            // --photo-review: photo mode's five looks (docs/51) to --trial-captures, framed and unframed.
+            if(RaceTrial.Has("--photo-review")){reviewing=true;var main=HillcrestRoute.Mainline;float s=main.Nearest(new Vector3(95,0,-300),out _);player.body.rotation=Quaternion.LookRotation(-main.Forward(s));Place(main.At(s));
+                yield return new WaitForSeconds(1.5f);CameraPose(true);cameraView.transform.position=player.transform.position+player.transform.right*5.5f+player.transform.forward*4+Vector3.up*1.6f;yield return null;photo.Open();string folder=RaceTrial.Arg("--trial-captures");
+                for(int l=0;l<5;l++)yield return photo.Review(Path.Combine(folder,$"photo-{l}.png"),l,l!=1);photo.Close();Application.Quit(0);yield break;}
             if(RaceTrial.Has("--contact-review")){reviewing=true;yield return ContactReview.Run(RaceTrial.Arg("--trial-captures"));Application.Quit(0);yield break;}
             if(RaceTrial.Has("--climb-review")){yield return ClimbReview();yield break;}
+            if(RaceTrial.Has("--duke-drive-review")){yield return DukeDriveReview();yield break;}
             if(RaceTrial.Has("--world-review")){RefreshHUD();reviewing=true;player.controlsBlocked=true;gameObject.AddComponent<VillageReview>();yield break;}
             if(RaceTrial.Has("--vehicle-lights-review")){reviewing=true;gameObject.AddComponent<VehicleLightReview>();yield break;}
             if(RaceTrial.Has("--evening-route-review")){gameObject.AddComponent<EveningRouteReview>();yield break;}
@@ -101,6 +121,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--paint-shop-review")){reviewing=true;yield return PaintShopReview();yield break;}
             if(RaceTrial.Has("--body-shop-review")){reviewing=true;yield return BodyShopReview();yield break;}
             // Opt-in: enter the Valley Cup straight away (with --trial-auto the player's car drives itself).
+            if(RaceTrial.Has("--duke-race-review")&&!AdventureSession.Racing&&Store.Data.settledSerial==Store.Data.raceSerial){yield return new WaitForSeconds(.5f);StartDukeRace(RaceRoster.DukeChallenge(Store.Data));yield break;}
             if(RaceTrial.Has("--valley-race-review")&&!AdventureSession.Racing&&Store.Data.settledSerial==Store.Data.raceSerial){yield return new WaitForSeconds(.5f);PreviewRace("hillcrest");yield return new WaitForSeconds(.5f);racePreview.Confirm();yield break;}
             if(RaceTrial.Has("--parts-browser-review")){OpenParts("bayview",PartsBrowser.Mode.Shop,Sid);gameObject.AddComponent<PartsBrowserReview>().Setup(browser,Store,player,ui,m=>OpenParts("bayview",m,m==PartsBrowser.Mode.Shop?Sid:Mara));yield break;}
             if(RaceTrial.Has("--sound-bench"))EngineBench.Show(RaceTrial.Arg("--sound-bench"));
@@ -142,7 +163,7 @@ namespace LittleRoad
             ["hillcafe"]=("tallboy",Toy.Hex(0x3ee6a4),"FERN / BELLA VISTA","Fern",Toy.Mint,new[]{"Careful, the espresso's still hot!","You drove up that hill in THAT?","Save the bumping for the raceway!"}),
             ["raceway"]=("rally",Toy.Hex(0xff4d5e),"VITO / RACEWAY","Vito",Toy.Red,new[]{"Whoa! Save that for the Valley Cup!","You call that a bump? Wait till turn one!","Sign up, then we'll see who's bumping who!"}),
             ["station"]=("heron",Toy.Hex(0x2e9e5b),"STELLA / STATION","Stella",Toy.Mint,new[]{"Mind the gap! And my bonnet!","The 3:15 is never late. Unlike you!","Tickets, please! Oh, you're a car."}),
-            ["castle"]=("zenith",Toy.Hex(0x9b6bd9),"DUKE ROLO / CASTLE","Duke Rolo",Toy.Pink,new[]{"How dare you! I am a DUKE!","Guards! Oh... I don't have guards.","Mind the ancient cobbles, young racer!"}),
+            ["castle"]=(CarBodies.Prototype,Toy.Hex(0x9b6bd9),"DUKE ROLO / CASTLE","Duke Rolo",Toy.Pink,new[]{"How dare you! I am a DUKE!","Guards! Oh... I don't have guards.","Mind the ancient cobbles, young racer!"}),
             ["vista"]=("doodle",Toy.Hex(0x5ec8ff),"WREN / VIEWPOINT","Wren",Toy.Sky,new[]{"Hey! You're in my photo!","Isn't it the BEST view?","Careful, don't knock me over the edge!"}),
             ["bayhalt"]=("minibus",Toy.Hex(0x1d6fa8),"STANLEY / BAYVIEW HALT","Stanley",Toy.Sky,new[]{"Mind the platform edge! And my wing mirror!","All aboard! Well... not you, you're a car.","The 4:10 to Hillcrest is running early!"}),
             ["lookout"]=("bramble",Toy.Hex(0x3ee6a4),"MOSS / FALLS","Moss",Toy.Mint,new[]{"Shh! You'll scare the fish!","Oof. That's the third bump today.","Mind the drop, it's a long way down!"}),
@@ -173,10 +194,10 @@ namespace LittleRoad
             // Keep the landmark behind its resident, away from the nearest
             // carriageway; a world-Z offset can move it into a curved road.
             float road=world.track.Nearest(post,out _);Vector3 a=world.track.At(road);
-            Vector3 tower=post+(post-a).normalized*9;
+            Vector3 tower=post+(post-a).normalized*9;PhotoRequests.Setup(tower);
             if(BayviewKit.Has("lighthouse")) {
                 var facing=Quaternion.LookRotation(Vector3.ProjectOnPlane(post-tower,Vector3.up)).eulerAngles.y;
-                BayviewKit.Spawn("lighthouse",tower,facing,null,new BayviewKit.Tint(Color.white,Toy.Hex(0x2bb5a8),Toy.Hex(0xff4d5e),Toy.Hex(0x1d6fa8)));
+                    BayviewKit.Spawn("lighthouse",tower,facing,null,new BayviewKit.Tint(Color.white,Toy.Hex(0x2bb5a8),Toy.Hex(0xff4d5e),Toy.Hex(0x1d6fa8)));
             } else {
             Block("Lighthouse footing",tower+Vector3.up*.3f,new Vector3(9,.6f,9),stone,true,PrimitiveType.Cylinder);
             Block("Lighthouse tower",tower+Vector3.up*5,new Vector3(4,5,4),stone,true,PrimitiveType.Cylinder);
@@ -299,6 +320,7 @@ namespace LittleRoad
         void Update()
         {
             if(minimap!=null&&(minimap.FullOpen||minimap.LastCloseFrame==Time.frameCount))return;
+            if(photo!=null&&(photo.Active||photo.LastCloseFrame==Time.frameCount))return;
             if(pause!=null&&(pause.IsOpen||pause.LastCloseFrame==Time.frameCount)){if(player!=null)player.controlsBlocked=pause.IsOpen||riding||ui.IsOpen;return;}
             if(tuning.IsOpen||tuning.LastCloseFrame==Time.frameCount||testDrive.Active)return;
             if(player==null||reviewing||browser.IsOpen||racePreview.IsOpen||paintShop.IsOpen||bodyShop.IsOpen||racePreview.LastCloseFrame==Time.frameCount||browser.LastCloseFrame==Time.frameCount||paintShop.LastCloseFrame==Time.frameCount||bodyShop.LastCloseFrame==Time.frameCount)return;
@@ -312,7 +334,7 @@ namespace LittleRoad
             // Residents within 7 m count at any speed (so the prompt can ask you to slow down); you can
             // talk once stopped. Otherwise the nearest valley local or chatty parked car, once stopped.
             bool stopped=Mathf.Abs(player.speed)<=1.2f;string inRange=null;float nearestDistance=7;
-            foreach(var p in residents){float d=Vector3.Distance(player.body.position,p.Value);if(d<=nearestDistance){nearestDistance=d;inRange=p.Key;}}
+            foreach(var p in residents){if(p.Key=="castle"&&DukeDrive.Away)continue;float d=Vector3.Distance(player.body.position,p.Value);if(d<=nearestDistance){nearestDistance=d;inRange=p.Key;}}
             nearest=stopped?inRange:null;
             nearFolk=null;nearChat=null;
             if(inRange==null&&stopped){
@@ -329,6 +351,11 @@ namespace LittleRoad
             }
             if(Time.unscaledTime>interactionReadyTime&&(k?.eKey.wasPressedThisFrame==true||pad?.buttonSouth.wasPressedThisFrame==true)){if(nearest!=null)Interact(nearest);else if(nearZip!=null)StartCoroutine(RideZip(nearZip==zip.top));else if(nearFolk!=null)TalkFolk(nearFolk);else if(nearChat!=null)TalkChatter(nearChat);}
             if(k?.rKey.wasPressedThisFrame==true||pad?.dpad.down.wasPressedThisFrame==true)player.TryRecover();
+            // The horn (H / L3, docs/51): folk nearby answer, some traffic beeps back, the train whistles.
+            bool honk=k?.hKey.isPressed==true||pad?.leftStickButton.isPressed==true;playerHorn?.Hold(honk&&!player.controlsBlocked);
+            if(honk&&!honking&&!player.controlsBlocked)HornHeard();honking=honk;
+            // Photo mode (P / D-pad Up, docs/51).
+            if(!player.controlsBlocked&&(k?.pKey.wasPressedThisFrame==true||pad?.dpad.up.wasPressedThisFrame==true)){photo.Open();return;}
             foreach(var pair in finds.ToArray()) {
                 pair.Value.transform.Rotate(0,35*Time.deltaTime,0,Space.World);
                 if(pair.Value.transform.childCount>0)pair.Value.transform.GetChild(0).localPosition=Vector3.up*(.12f*Mathf.Sin(Time.time*2.2f+pair.Key.Length*1.7f+pair.Key[^1]));
@@ -338,6 +365,9 @@ namespace LittleRoad
                         int got=0;bool stamp=Collectibles.IsStamp(pair.Key);foreach(string c in Store.Data.collected)if(stamp?Collectibles.IsStamp(c):Collectibles.IsPostcard(c))got++;
                         Notify(stamp?$"Hillcrest stamp {got} of {Collectibles.Stamps} found · +50 credits":$"Bayview postcard {got} of {Collectibles.Postcards} found · +50 credits");}});
             }
+            // Countdowns hold the car still but let it rev (Richard, 1 Oct).
+            player.holdStill=climbStart>=0&&Time.time<climbStart||trainRace!=null&&trainRace.Holding;
+
             UpdateClimb();UpdateVisit();RefreshHUD();
         }
         // Runs every frame (from LateUpdate), reviews included: they capture the prompt and badges.
@@ -345,7 +375,7 @@ namespace LittleRoad
         {
             if(player==null||ui==null)return;
             bool stopped=Mathf.Abs(player.speed)<=1.2f;string inRange=null;float best=7;
-            foreach(var p in residents){float d=Vector3.Distance(player.body.position,p.Value);if(d<=best){best=d;inRange=p.Key;}}
+            foreach(var p in residents){if(p.Key=="castle"&&DukeDrive.Away)continue;float d=Vector3.Distance(player.body.position,p.Value);if(d<=best){best=d;inRange=p.Key;}}
             UpdatePrompt(inRange,stopped);
         }
         void UpdatePrompt(string inRange,bool stopped)
@@ -374,6 +404,7 @@ namespace LittleRoad
             bool mainland=player.transform.position.z<-452;
             string[] objectives={"Visit Mara at the Pit Stop garage","Deliver Mara's parcel to Pip at the lighthouse","Return to Mara for 350 credits",mainland?"Explore Hillcrest Valley · Vito runs the Valley Cup at the raceway":"Race Rowan, or cross the causeway to Hillcrest Valley"};
             string target=Store.Data.questStage==1?"post":Store.Data.questStage<3?"garage":mainland&&residents.ContainsKey("raceway")?"raceway":"cafe";objectiveResident=target;
+            if(trainRace!=null&&trainRace.Active)return trainRace.Goal_Text(player.transform.position,distance);
             if(climbStart>=0)return (Time.time<climbStart?"Castle Climb · get ready!":$"Castle Climb · {Time.time-climbStart:0.0} s · par {ClimbPar:0} s · to the castle")+(distance?$"  ·  {Vector3.Distance(player.transform.position,HillcrestRoute.CastleCourt):0} m":"");
             return objectives[Store.Data.questStage]+(distance?$"  ·  {Vector3.Distance(player.transform.position,residents[target]):0} m":"");
         }
@@ -415,7 +446,9 @@ namespace LittleRoad
             foreach(var r in residents)if(!PitHosts.Contains(r.Key)&&People.TryGetValue(r.Key,out var who)&&ExploredMap.Seen(r.Value))mapMarks.Add(new(r.Value,who.bubble,Minimap.Shape.Dot));
             foreach(var site in PitStop.Sites.Values)if(ExploredMap.Seen(site))mapMarks.Add(new(site,PitStop.Brand,Minimap.Shape.Service));
             if(ZipLine.Active!=null){foreach(var bay in new[]{ZipLine.Active.top.bay,ZipLine.Active.bottom.bay})if(ExploredMap.Seen(bay))mapMarks.Add(new(bay,Toy.Sun,Minimap.Shape.Zip));}
-            if(climbStart>=0)mapMarks.Add(new(HillcrestRoute.CastleCourt,Toy.Sun,Minimap.Shape.Objective));
+            foreach(var trap in SpeedTraps.All)if(ExploredMap.Seen(trap.at))mapMarks.Add(new(trap.at,(SpeedTraps.Record(Store.Data,trap.id)?.stars??0)>=3?Toy.Mint:Toy.Orange,Minimap.Shape.Trap));
+            if(trainRace!=null&&trainRace.Active)mapMarks.Add(new(trainRace.Goal,Toy.Red,Minimap.Shape.Objective));
+            else if(climbStart>=0)mapMarks.Add(new(HillcrestRoute.CastleCourt,Toy.Sun,Minimap.Shape.Objective));
             else if(objectiveResident!=null&&residents.TryGetValue(objectiveResident,out var goal))mapMarks.Add(new(goal,Toy.Sun,Minimap.Shape.Objective));
             return mapMarks;
         }
@@ -447,16 +480,38 @@ namespace LittleRoad
         void SaveExplored(){if(ExploredMap.Loaded&&ExploredMap.Dirty)Attempt(()=>Store.SaveExplored(ExploredMap.Save()));}
         void OnApplicationQuit()=>SaveExplored();
         // --climb-review: the Hard Castle Climb set up, seen from the start line and three points up the route.
+        // --duke-drive-review [--duke-shadow]: the Duke's drive from departure to parking, a chase shot every 10 s and a log
+        // line every 5; with --duke-shadow the player's car follows 20 m behind him (the Shadow the Duke payout).
+        IEnumerator DukeDriveReview()
+        {
+            string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);reviewing=true;
+            var duke=DukeDrive.Instance;if(duke==null){Debug.LogError("LITTLE_ROAD_DUKE_REVIEW no duke");Application.Quit(2);yield break;}
+            bool shadow=RaceTrial.Has("--duke-shadow");player.body.isKinematic=true;
+            if(!shadow)player.body.position=HillcrestRoute.CastleCourt+new Vector3(0,30,0);
+            duke.Depart();float t=0,nextShot=0,nextLog=0;int shot=0;
+            while(duke.Driving&&t<400) {
+                yield return new WaitForFixedUpdate();t+=Time.fixedDeltaTime;
+                if(shadow){var back=duke.transform.position-duke.transform.forward*20;back.y+=.4f;player.body.MovePosition(back);player.body.MoveRotation(duke.transform.rotation);}
+                if(t>=nextLog){nextLog+=5;Debug.Log($"LITTLE_ROAD_DUKE_REVIEW t={t:0} s={duke.Along:0}/{duke.Length:0} speed={duke.Speed:0.0} gear={duke.Gear} rpm={duke.Rpm:0} at=({duke.transform.position.x:0},{duke.transform.position.y:0.0},{duke.transform.position.z:0})");}
+                if(t>=nextShot){nextShot+=10;var d=duke.transform;cameraView.transform.position=d.position-d.forward*9+d.right*2.5f+Vector3.up*3.2f;cameraView.transform.LookAt(d.position+Vector3.up*.6f);
+                    yield return null;Toy.Capture(Path.Combine(folder,$"d{shot++:00}-t{t:000}.png"));}
+            }
+            Debug.Log($"LITTLE_ROAD_DUKE_REVIEW done t={t:0.0} driving={duke.Driving} max={duke.MaxSpeed:0.0} toots={duke.Toots} folder={folder}");
+            Application.Quit(duke.Driving?3:0);
+        }
         IEnumerator ClimbReview()
         {
             string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);
-            StartClimb(true);yield return new WaitForSeconds(1.5f);Toy.Capture(Path.Combine(folder,"c1-start.png"));
+            StartClimb(true);var held=player.body.position;float rpm=0;player.commandSource=c=>{if(c.gears!=null)rpm=Mathf.Max(rpm,c.gears.Rpm);return new Vector2(1,0);};   // floored through "get ready": held still, revving
+            yield return new WaitForSeconds(1.5f);Toy.Capture(Path.Combine(folder,"c1-start.png"));yield return new WaitForSeconds(1.2f);
+            var moved=player.body.position-held;moved.y=0;player.commandSource=null;string hold=$"countdown moved {moved.magnitude:0.00} m, revved {rpm:0} rpm";
             var line=CastleClimb.Line;int shot=2;
-            foreach(float f in new[]{.3f,.5f,.7f,.86f}) {
+            foreach(float f in new[]{.3f,.5f,.7f,.86f,.97f}) {
                 int i=Mathf.Clamp(Mathf.RoundToInt(line.Count*f),1,line.Count-2);var ahead=line[i+1]-line[i-1];ahead.y=0;
                 player.body.rotation=Quaternion.LookRotation(ahead);Place(line[i]);yield return new WaitForSeconds(1.4f);Toy.Capture(Path.Combine(folder,$"c{shot++}-route-{Mathf.RoundToInt(f*100)}.png"));
             }
-            Debug.Log($"LITTLE_ROAD_CLIMB_REVIEW bollards={climbEvent.Bollards} obstacles={climbEvent.Obstacles} moved={climbEvent.Moved} folder={folder}");
+            {var court=HillcrestRoute.CastleCourt;reviewing=true;cameraView.transform.position=court+new Vector3(-70,30,-80);cameraView.transform.LookAt(court+Vector3.up*8);yield return new WaitForSeconds(.3f);Toy.Capture(Path.Combine(folder,$"c{shot++}-finish-beacon.png"));reviewing=false;}
+            Debug.Log($"LITTLE_ROAD_CLIMB_REVIEW {hold} bollards={climbEvent.Bollards} obstacles={climbEvent.Obstacles} moved={climbEvent.Moved} folder={folder}");
             EndClimb();Application.Quit(0);
         }
         // --pause-review: the driving HUD, then every pause-hub tab (and the map hovering another region).
@@ -467,8 +522,8 @@ namespace LittleRoad
             CameraPose(true);yield return new WaitForSeconds(2f);Toy.Capture(Path.Combine(folder,"p0-driving-hud.png"));
             Pause();yield return new WaitForSecondsRealtime(.5f);Toy.Capture(Path.Combine(folder,"p1-map.png"));
             pause.PointAt(new Vector3(-40,0,-100));yield return new WaitForSecondsRealtime(.3f);Toy.Capture(Path.Combine(folder,"p2-map-hover-bayview.png"));
-            string[] names={"p3-collection","p4-car","p5-controls","p6-settings"};
-            for(int i=1;i<=4;i++){pause.ShowTab(i);yield return new WaitForSecondsRealtime(.5f);Toy.Capture(Path.Combine(folder,names[i-1]+".png"));}
+            string[] names={"p3-collection","p4-car","p4b-records","p5-controls","p6-settings"};
+            for(int i=1;i<=5;i++){pause.ShowTab(i);yield return new WaitForSecondsRealtime(.5f);Toy.Capture(Path.Combine(folder,names[i-1]+".png"));}
             pause.AskQuit();yield return new WaitForSecondsRealtime(.3f);Toy.Capture(Path.Combine(folder,"p7-quit-confirm.png"));
             pause.ShowSave();yield return new WaitForSecondsRealtime(.3f);Toy.Capture(Path.Combine(folder,"p7b-save-game.png"));
             pause.Close();yield return null;yield return null;
@@ -484,9 +539,14 @@ namespace LittleRoad
             // Leaving the pause hub always hands the car back (Update may already have run this frame, so
             // it can't be left to Update: that race left the car blocked after closing the hub).
             if(paused!=wasPaused){wasPaused=paused;ui.SetHudVisible(!paused);if(!paused&&player!=null)player.controlsBlocked=riding||ui.IsOpen||(minimap!=null&&minimap.FullOpen);}
-            minimap?.SetShown(!reviewing&&!paused&&!ui.IsOpen&&!browser.IsOpen&&!tuning.IsOpen&&!racePreview.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen);
-            if(!reviewing&&player!=null&&cameraView!=null)CameraPose(false);
-            PromptFrame();
+            minimap?.SetShown(!reviewing&&!paused&&photo?.Active!=true&&!ui.IsOpen&&!browser.IsOpen&&!tuning.IsOpen&&!racePreview.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen);
+            if(!reviewing&&player!=null&&cameraView!=null&&photo?.Active!=true)CameraPose(false);
+            // The finish beacon (Richard, 1 Oct: you had to guess where the finish was).
+            // (The castle's: 6 m from the court's centre towards the gate, on open paving clear of the donjon, its 10 m ring
+            // wholly inside the 16 m finish.)
+            Vector3? finish=trainRace!=null&&trainRace.Active?trainRace.Goal:climbStart>=0?HillcrestRoute.CastleCourt+Quaternion.Euler(0,172,0)*Vector3.forward*6:null;
+            if(finish!=beaconAt){beaconAt=finish;beacon??=new GameObject("Finish beacon").AddComponent<FinishBeacon>();if(finish is Vector3 f)beacon.Show(f,trainRace!=null&&trainRace.Active?15:10);else beacon.Hide();}
+            if(photo?.Active==true)ui.Interaction(null,null,Toy.Sun,false);else PromptFrame();
             // Clearer air over the mainland so the valley and ranges read at distance.
             if(cameraView!=null)RenderSettings.fogDensity=Mathf.Lerp(.0014f,.00026f,Mathf.InverseLerp(-300,-600,cameraView.transform.position.z));
         }
@@ -512,6 +572,21 @@ namespace LittleRoad
             if(!snap&&!riding)CameraShake.Apply(cameraView);
         }
         void Notify(string value)=>ui.Toast(value);
+        Horn playerHorn;bool honking;TrainRace trainRace;PhotoMode photo;FinishBeacon beacon;Vector3? beaconAt;
+        // Reviews (--horn-test): one honk and its answers.
+        public void TestHonk(){playerHorn?.Toot(.35f,0);HornHeard();}
+        void HornHeard()
+        {
+            var at=player.body.position;int answered=0;
+            foreach(var c in NpcChatter.All.OrderBy(c=>c==null?1e9f:(c.transform.position-at).sqrMagnitude).ToArray()) {
+                if(c==null||c.transform==player.transform)continue;float d=Vector3.Distance(c.transform.position,at);if(d>26||answered>=2)break;
+                var train=ValleyTrain.Instance;if(train!=null&&c.transform.IsChildOf(train.transform))continue;
+                if(c.TrySay(bubbles,NpcChatter.HornReplies))answered++;
+                var cruiser=c.GetComponent<RoadCruiser>();if(cruiser!=null&&UnityEngine.Random.value<.6f)cruiser.TootBack();
+            }
+            var t=ValleyTrain.Instance;
+            if(t!=null&&t.Loco!=null&&t.Visible&&Vector3.Distance(t.Loco.position,at)<110){t.Whistle();t.Loco.GetComponent<NpcChatter>()?.TrySay(bubbles,new[]{"TOOT TOOT! Hello down there!","Whooo-whoo! Wave to Bert!","TOOT! Race you to the station!"});}
+        }
         // Behind the loading card, show the camera the world's main views for a frame each, so shaders and
         // pipeline states are prepared now rather than the first time you see them (drive benchmark db3:
         // 40-55 ms hitches on first sight of the valley and at the start).
@@ -632,8 +707,24 @@ namespace LittleRoad
         List<AdventureUI.Choice> Tickets(string here)
         {
             var choices=new List<AdventureUI.Choice>();
+            // Beat the Train (docs/51): once the line is open both ways.
+            bool toHillcrest=here=="bayview";
+            if(trainRace!=null&&trainRace.CanStart&&climbStart<0&&Store.Data.collected.Contains(Collectibles.VisitHillcrest)) {
+                var rec=SpeedTraps.Record(Store.Data,TrainRace.Id(toHillcrest));
+                choices.Add(new($"Race the train to {(toHillcrest?"Hillcrest":"Bayview Halt")}"+(rec!=null&&rec.best>0?$" · best {rec.best:0.0} s":$" · {TrainRace.Prize} cr"),()=>StartCoroutine(RaceTheTrain(toHillcrest))));
+            }
             foreach(var st in TrainNetwork.All())if(st.id!=here&&st.open(Store.Data)){var s=st;choices.Add(new($"Ticket to {s.name} · {TrainNetwork.Fare} cr",()=>Attempt(()=>Travel(s)),Store.Data.credits>=TrainNetwork.Fare));}
             choices.Add(new("Back to the road",Close));return choices;
+        }
+        // Stanley or Stella radios Bert; if the train is out on the line it's at the platform after a moment's fade.
+        IEnumerator RaceTheTrain(bool toHillcrest)
+        {
+            Close();var train=ValleyTrain.Instance;int from=toHillcrest?ValleyTrain.BayviewStop:ValleyTrain.HillcrestStop;
+            if(train!=null&&!train.WaitingAt(from)) {
+                player.controlsBlocked=true;var fade=Fade.Get(transform);yield return fade.To(1,.5f);
+                train.Hold(from,6);yield return new WaitForSeconds(.3f);yield return fade.To(0,.5f);player.controlsBlocked=false;
+            }
+            trainRace.Begin(toHillcrest);
         }
         void Travel(TrainNetwork.Station to)
         {
@@ -646,16 +737,47 @@ namespace LittleRoad
             player.body.rotation=Quaternion.Euler(0,to.yaw,0);Place(to.arrival);yield return new WaitForSeconds(.4f);
             yield return fade.To(0,.6f);player.controlsBlocked=false;Notify("All change! · Welcome to "+to.name);
         }
-        void Duke()=>Show("Duke Rolo / Hillcrest Castle","Welcome to my humble castle! Fancy the Castle Climb? From the town gate, along the quay and up Via Crest to my courtyard, with the road closed and the whole town cheering. "+
+        void Duke()=>Show("Duke Rolo / Hillcrest Castle","Welcome to my humble castle! Admiring my Regale? A prototype, darling: carbon, gold and a wing like a drawbridge, and the finest part money can buy in every slot. "+
+            (Store.Data.collected.Contains(Collectibles.DukeBeaten)?"You beat me fair and square, and she's yours now. I still race a spare, mind. Rematch any time! ":"Race me round the raceway, if you dare. Beat me and she's yours. ")+
+            "Now, fancy the Castle Climb? From the town gate, along the quay and up Via Crest to my courtyard, with the road closed and the whole town cheering. "+
+            "Now, fancy the Castle Climb? From the town gate, along the quay and up Via Crest to my courtyard, with the road closed and the whole town cheering. "+
             $"Beat {NormalPar:0} seconds for {NormalPrize} credits. Brave enough for Hard? Hay bales and cones on the road, {HardPar:0} seconds, {HardPrize} credits. Each prize pays once!",
-            new(){new($"Castle Climb · par {NormalPar:0} s",()=>StartClimb(false)),new($"Hard Castle Climb · par {HardPar:0} s",()=>StartClimb(true)),new("Back to the road",Close)});
+            new(){new("The Duke's Challenge · 3 laps, you against the Regale",DukeChallenge),new($"Castle Climb · par {NormalPar:0} s",()=>StartClimb(false)),new($"Hard Castle Climb · par {HardPar:0} s",()=>StartClimb(true)),new("Back to the road",Close)});
+        // The Duke's Challenge (docs/54; Richard, 2 Oct: "a great full circle moment at the end of the game... to be able
+        // to come back and beat him like a final boss"). Open from the start: early on it shows how fast cars get.
+        void DukeChallenge()
+        {
+            var roster=RaceRoster.DukeChallenge(Store.Data);var you=roster.Entries[0];var duke=roster.Entries[1];
+            float yours=EquipmentCatalog.RacewayLapTime(you.Parts),his=EquipmentCatalog.RacewayLapTime(duke.Parts);
+            bool won=Store.Data.collected.Contains(Collectibles.DukeBeaten);
+            string verdict=his>=yours-.05f?"On paper we're level. It comes down to the driver, darling.":
+                yours>his*1.6f?"Frankly, I could stop for tea halfway round and still win. But do come and see what a real car does!":
+                yours>his*1.15f?"A spirited little car. She'll need a good deal more before she can live with the Regale.":"Ooh, close. Very close. This should be fun!";
+            Show("The Duke's Challenge / Hillcrest Raceway",
+                $"Three laps of my raceway, just you and me. I start on pole.\nYour car: rating {you.Rating}, an ideal lap of {yours:0.0} s.\nThe Regale: rating {duke.Rating}, an ideal lap of {his:0.0} s.\n{verdict}\n"+
+                (won?"Rematches are for honour only.":$"Beat me and the Regale is yours, with {AdventureStore.DukePrize:N0} credits for your trouble. Lose, and it costs you nothing."),
+                new(){new("Race the Duke",()=>Attempt(()=>StartDukeRace(roster))),new("Not today",Duke)});
+        }
+        void StartDukeRace(RaceRoster roster)
+        {
+            Close();player.controlsBlocked=true;
+            FaceDuke();   // back to the castle courtyard afterwards
+            SaveExplored();AdventureSession.StartRace(roster);
+        }
+        // The castle courtyard, facing the Duke.
+        void FaceDuke()
+        {
+            if(!residents.TryGetValue("castle",out var at))return;
+            var court=HillcrestRoute.CastleCourt;var toward=at-court;toward.y=0;var spot=court+toward.normalized*Mathf.Max(4,toward.magnitude-9);
+            spot.y=at.y;AdventureSession.ReturnSpot=spot;AdventureSession.ReturnYaw=Quaternion.LookRotation(at-spot).eulerAngles.y;
+        }
         // Castle Climb: a timed run from the Hillcrest town gate to the castle courtyard on a closed road
         // (CastleClimb lines it with bollards and moves the town behind them). Hard adds obstacles.
         const float NormalPar=85,HardPar=80;const int NormalPrize=300,HardPrize=750;float climbStart=-1;bool climbHard;CastleClimb climbEvent;
         float ClimbPar=>climbHard?HardPar:NormalPar;
         void StartClimb(bool hard)
         {
-            Close();climbHard=hard;var main=HillcrestRoute.Mainline;float d=main.Length-26;var start=main.At(d);
+            Close();climbHard=hard;DukeDrive.Instance?.Recall();var main=HillcrestRoute.Mainline;float d=main.Length-26;var start=main.At(d);
             player.body.rotation=Quaternion.LookRotation(main.Forward(d));Place(start);
             if(climbEvent==null)climbEvent=gameObject.AddComponent<CastleClimb>();climbEvent.Begin(hard,player.transform,bubbles);
             climbStart=Time.time+3;Notify((hard?"Hard Castle Climb":"Castle Climb")+" · Ready... GO in 3!");
@@ -689,7 +811,10 @@ namespace LittleRoad
         void Pip()
         {
             var choices=new List<AdventureUI.Choice>();if(Store.Data.questStage==1)choices.Add(new("Deliver Mara's parcel",()=>Attempt(()=>{Store.Deliver();Close();Notify("Delivery complete. Return to Mara for your reward.");})));
-            choices.Add(new("Back to the road",Close));Show("Pip / Lighthouse Post","You found the lighthouse! Some drivers only see the road. Others find the little places beside it. Keep an eye out for Bayview postcards.",choices);
+            // Pip's photo requests (docs/51).
+            var wanted=PhotoRequests.All.FindAll(r=>!Store.Data.collected.Contains(r.id)).ConvertAll(r=>r.name.ToLowerInvariant());
+            string photos=wanted.Count==0?" And thank you for all the photos! Every one's on a postcard now.":$" I'm making new postcards, too: take photos for me ({(InputGlyphs.Current==InputGlyphs.Family.Keyboard?"P":"D-pad Up")}, photo mode) of {string.Join(", ",wanted)}. {PhotoRequests.Prize} credits each!";
+            choices.Add(new("Back to the road",Close));Show("Pip / Lighthouse Post","You found the lighthouse! Some drivers only see the road. Others find the little places beside it. Keep an eye out for Bayview postcards."+photos,choices);
         }
         void Rowan()=>Show("Rowan / The Daily Mile","Bayview Coast · Class C · 24 cars · 3 laps\nEvery valid finish pays 100–500 credits. Rival equipment stays fixed as you improve your car. Across the causeway, Hillcrest Raceway's Valley Cup is a quicker Class C race for bigger prizes.\n"+RaceCalendar.Progress(Store.Data),new(){new("Race Bayview Coast · C",()=>PreviewRace("bayview")),new("Back to the road",Close)});
         void PreviewRace(string track)=>PreviewRace(track,track=="hillcrest"?Vito:Rowan);

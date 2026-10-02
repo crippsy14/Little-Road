@@ -25,7 +25,7 @@ namespace LittleRoad
                 const float dt=.25f;
                 // Equipment defines reachable longitudinal progress. No bonus
                 // force or promised future rival input enters this estimate.
-                float acceleration=DriveModel.EngineForce(o.tuning,speed)-DraftingModel.Resistance(speed,o.tuning.mass,o.dragReduction);
+                float acceleration=DriveModel.EngineForce(o.tuning,speed)-DraftingModel.Resistance(speed,o.tuning.mass,o.dragReduction,o.tuning.DragFactor);
                 speed=Mathf.Min(Mathf.Max(speed,desiredSpeed),Mathf.Max(0,speed+acceleration*dt));
                 distance+=speed*dt;
                 distances[step-1]=distance;

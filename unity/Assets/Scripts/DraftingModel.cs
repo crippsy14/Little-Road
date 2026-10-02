@@ -49,10 +49,11 @@ namespace LittleRoad
             }
             return best;
         }
-        public static float Resistance(float speed,float mass,float reduction)
+        // dragFactor: the car's low-drag bodywork (CarTuning.DragFactor, docs/54); 1 keeps the old arithmetic exactly.
+        public static float Resistance(float speed,float mass,float reduction,float dragFactor=1)
         {
-            if(reduction<=0)return DriveModel.Resistance(speed,mass); // Exact old arithmetic at zero.
-            return (.25f+DriveModel.DragK*speed*speed*(1-Mathf.Min(MaximumReduction,reduction)))/mass;
+            if(reduction<=0)return (.25f+DriveModel.DragK*dragFactor*speed*speed)/mass; // Exact old arithmetic at zero (x1).
+            return (.25f+DriveModel.DragK*dragFactor*speed*speed*(1-Mathf.Min(MaximumReduction,reduction)))/mass;
         }
     }
 }

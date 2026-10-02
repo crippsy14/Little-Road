@@ -578,7 +578,7 @@ namespace LittleRoad
             if(staticStopDistance<999) {
                 float remaining=Mathf.Max(0,staticStopDistance-Mathf.Max(0,Gap(staticCheckedRoute,o.self.route,o.route.Length))-2);
                 StaticLimit=Mathf.Sqrt(2*Mathf.Min(o.tuning.braking,o.tuning.roadGrip*1.65f)*.7f*remaining);
-                float force=(StaticLimit-o.self.speed)*3+DraftingModel.Resistance(o.self.speed,o.tuning.mass,o.dragReduction);
+                float force=(StaticLimit-o.self.speed)*3+DraftingModel.Resistance(o.self.speed,o.tuning.mass,o.dragReduction,o.tuning.DragFactor);
                 float pedal=force>=0?force/Mathf.Max(.01f,DriveModel.EngineForce(o.tuning,o.self.speed)):force/o.tuning.braking;
                 command=new DriveCommand(Mathf.Min(command.pedal,pedal),command.steering,Mathf.Min(command.targetSpeed,StaticLimit),command.predictedOffset,command.chosenLane);
                 Reason="Stopping-distance limit before blocked scenery";

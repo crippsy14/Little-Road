@@ -14,11 +14,13 @@ namespace LittleRoad
     {
         public const int Postcards=5,Stamps=8;
         public const string VisitHillcrest="visit_hillcrest",CastleTrial="trial_castle",CastleTrialHard="trial_castle_hard";
+        // Beating Duke Rolo in the Duke's Challenge (docs/54): the Regale and the prize, once.
+        public const string DukeBeaten="duke_beaten";
         public static string Postcard(int i)=>"postcard_"+i;
         public static string Stamp(int i)=>"stamp_"+i;
         public static bool IsPostcard(string id)=>Indexed(id,"postcard_",Postcards);
         public static bool IsStamp(string id)=>Indexed(id,"stamp_",Stamps);
-        public static bool Known(string id)=>IsPostcard(id)||IsStamp(id)||id==VisitHillcrest||id==CastleTrial||id==CastleTrialHard;
+        public static bool Known(string id)=>IsPostcard(id)||IsStamp(id)||id==VisitHillcrest||id==CastleTrial||id==CastleTrialHard||id==DukeBeaten||PhotoRequests.Known(id);
         static bool Indexed(string id,string prefix,int count)
         {
             if(id==null||!id.StartsWith(prefix,StringComparison.Ordinal))return false;
@@ -34,6 +36,9 @@ namespace LittleRoad
         public const float FinalMin=.8f,FinalMax=1.25f,GearMin=.85f,GearMax=1.15f;
         public bool Valid=>!string.IsNullOrEmpty(transmission)&&final>=FinalMin&&final<=FinalMax&&(gears==null||gears.Length<=8&&gears.All(g=>g>=GearMin&&g<=GearMax));
     }
+    // A speed trap's record (SpeedTraps): the best speed through it (mph) and the stars already paid. Beat the Train
+    // (TrainRace) keeps its best time (s) the same way, stars 1 once won.
+    [Serializable] public sealed class TrapRecord {public string id;public float best;public int stars;}
     [Serializable] public sealed class AdventureProgress
     {
         public int version,credits,questStage,paintIndex,raceSerial,settledSerial,bestPlace,raceWins;
@@ -48,6 +53,8 @@ namespace LittleRoad
         public string explored;public List<string> discovered;
         // Gearbox tunes from the tuning shop (docs/48). Older saves have none.
         public List<GearTune> tunes;
+        // Speed traps (SpeedTraps). Older saves have none.
+        public List<TrapRecord> traps;
         public GearTune Tune(){var box=fitted?.Find(f=>f.slot=="transmission")?.id;return box==null?null:tunes?.Find(t=>t.transmission==box);}
         public static AdventureProgress New()=>new AdventureProgress {version=1,bodyId=CarBodies.Starter,podiums=new List<string>(),discovered=new List<string>(),
             owned=EquipmentCatalog.StockLoadout().Values.ToList(),collected=new List<string>(),bodies=new List<string>{CarBodies.Starter},
@@ -55,12 +62,14 @@ namespace LittleRoad
         public Dictionary<string,string> Loadout()=>fitted.ToDictionary(p=>p.slot,p=>p.id);
         public void Validate()
         {
+            if(traps!=null&&(traps.Any(t=>t==null||!(SpeedTraps.Known(t.id)||TrainRace.Known(t.id)||DukeDrive.Known(t.id))||t.stars<0||t.stars>3||t.best<0||t.best>500)||traps.Select(t=>t.id).Distinct().Count()!=traps.Count))throw new InvalidDataException("A speed trap record is invalid or repeated.");
             if(tunes!=null&&(tunes.Any(t=>t==null||!t.Valid)||tunes.Select(t=>t.transmission).Distinct().Count()!=tunes.Count))throw new InvalidDataException("A gearbox tune is invalid or repeated.");
             if(version!=1||credits<0||credits>10000000||questStage<0||questStage>3||paintIndex<0||paintIndex>=PaintCatalog.All.Length||
                 raceSerial<0||settledSerial<0||settledSerial>raceSerial||raceWins<0||raceWins>settledSerial||bestPlace<0||bestPlace>24)
                 throw new InvalidDataException("Save version or progression values are invalid.");
             if(!CarBodies.Ownable(bodyId))throw new InvalidDataException("Unknown body.");
             if(bodies==null||bodies.Distinct().Count()!=bodies.Count||!bodies.Contains(bodyId)||bodies.Any(b=>!CarBodies.Ownable(b)))throw new InvalidDataException("Owned bodies are missing, duplicated or unknown.");
+            if(bodies.Contains(CarBodies.Prototype)&&collected?.Contains(Collectibles.DukeBeaten)!=true)throw new InvalidDataException("The Regale is only won from the Duke.");
             if(owned==null||collected==null||fitted==null||owned.Distinct().Count()!=owned.Count||collected.Distinct().Count()!=collected.Count)
                 throw new InvalidDataException("Missing or duplicate inventory entries.");
             foreach(string id in owned)EquipmentCatalog.Get(id);
@@ -129,7 +138,41 @@ namespace LittleRoad
             var box=p.Loadout()["transmission"];if(tune!=null&&(tune.transmission!=box||!tune.Valid))return false;
             p.tunes??=new List<GearTune>();p.tunes.RemoveAll(t=>t.transmission==box);if(tune!=null)p.tunes.Add(tune);return true;});
         public bool Fit(string id)=>Change(p=>{var part=EquipmentCatalog.Get(id);if(!p.owned.Contains(id))return false;var item=p.fitted.Find(f=>f.slot==part.slot);if(item.id==id)return false;item.id=id;return true;});
+        // Speed trap: keeps the best speed, pays each newly reached star once (prizes by star). Returns credits paid.
+        public int RecordTrap(string id,float mph,int stars,int[] prizes)
+        {
+            int paid=0;
+            Change(p=>{
+                p.traps??=new List<TrapRecord>();var r=p.traps.Find(t=>t.id==id);if(r==null){r=new TrapRecord{id=id};p.traps.Add(r);}
+                bool better=mph>r.best+.05f;int earned=0;for(int s=r.stars;s<stars&&s<prizes.Length;s++)earned+=prizes[s];
+                if(!better&&earned==0)return false;
+                if(better)r.best=Mathf.Round(mph*10)/10;if(stars>r.stars)r.stars=stars;p.credits+=earned;paid=earned;return true;});
+            return paid;
+        }
+        // A timed win (Beat the Train): keeps the best (lowest) time, pays the prize the first time. Returns credits paid.
+        public int RecordTime(string id,float seconds,int prize)
+        {
+            int paid=0;
+            Change(p=>{
+                p.traps??=new List<TrapRecord>();var r=p.traps.Find(t=>t.id==id);if(r==null){r=new TrapRecord{id=id};p.traps.Add(r);}
+                bool better=r.best<=0||seconds<r.best-.05f;int earned=r.stars<1?prize:0;
+                if(!better&&earned==0)return false;
+                if(better)r.best=Mathf.Round(seconds*10)/10;r.stars=1;p.credits+=earned;paid=earned;return true;});
+            return paid;
+        }
         public int BeginRace(){Change(p=>{p.raceSerial++;return true;});return Data.raceSerial;}
+        // The Duke's Challenge (docs/54): settled once by serial like any race. The first win pays DukePrize and gives
+        // you the Regale; later wins count as wins; a loss costs nothing.
+        public const int DukePrize=50000;
+        public int FinishDukeRace(int serial,int place)
+        {
+            int paid=0;
+            Change(p=>{if(serial!=p.raceSerial||serial<=p.settledSerial)return false;
+                p.settledSerial=serial;
+                if(place==1){p.raceWins++;if(!p.collected.Contains(Collectibles.DukeBeaten)){p.collected.Add(Collectibles.DukeBeaten);p.credits+=DukePrize;paid=DukePrize;if(!p.bodies.Contains(CarBodies.Prototype))p.bodies.Add(CarBodies.Prototype);}}
+                return true;});
+            return paid;
+        }
         // Pays a finished race once (by serial). The class's base prize is scaled for the venue, and a podium
         // is recorded towards completing the class.
         public int FinishRace(int serial,int place,string eventId="bayview")
@@ -153,6 +196,15 @@ namespace LittleRoad
         public static bool Smoke=>RaceTrial.Has("--adventure-smoke")||RaceTrial.Has("--adventure-verify-save");
         // A different slot chosen mid-game (the pause menu's Save into another slot): the store follows it.
         public static void Reopen(string path){Store=new AdventureStore(path);}
+        // Max build test drive (--max-build-test; Richard, 2 Oct: "a version where I can control the maxed out car"):
+        // a copy of the live save, taken fresh each launch, with the maximum build bought and fitted, starting in the
+        // castle courtyard by the Duke. It writes only its own file, so the real slots never see it.
+        public static bool MaxBuildTest=>RaceTrial.Has("--max-build-test");
+        public static string MaxBuildTestPath=>Path.Combine(SaveSlots.Folder,"little-road-max-build-test.json");
+        public static bool TestPlaced;
+        public static void FitMaxBuild(AdventureStore store)=>store.Change(p=>{
+            foreach(var kv in EquipmentCatalog.MaxBuild()){if(!p.owned.Contains(kv.Value))p.owned.Add(kv.Value);var item=p.fitted.Find(f=>f.slot==kv.Key);if(item!=null)item.id=kv.Value;}
+            return true;});
         public static void Load()
         {
             if(Smoke&&!smokeHooked){smokeHooked=true;Application.logMessageReceived+=(message,stack,type)=>{if(type==LogType.Exception)Application.Quit(2);};}
@@ -160,6 +212,12 @@ namespace LittleRoad
             string path=RaceTrial.Arg("--adventure-save");
             if(Smoke&&string.IsNullOrEmpty(path))throw new InvalidOperationException("Smoke test requires its own --adventure-save path.");
             if(path==null)SaveSlots.Migrate();
+            if(MaxBuildTest) {
+                if(path==null){path=MaxBuildTestPath;if(File.Exists(SaveSlots.LivePath))File.Copy(SaveSlots.LivePath,path,true);else if(File.Exists(path))File.Delete(path);}
+                Store=new AdventureStore(path);FitMaxBuild(Store);
+                Notice="Test drive: the maximum build is fitted. The Duke is right here; nothing you do is saved to your slots.";
+                return;
+            }
             Store=new AdventureStore(path??SaveSlots.LivePath);
         }
         public static void StartRace()

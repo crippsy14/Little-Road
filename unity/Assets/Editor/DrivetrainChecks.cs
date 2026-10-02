@@ -118,6 +118,10 @@ public static class DrivetrainChecks
             Check(stopping>5,$"Forward pedal while rolling backwards brakes ({stopping:0.0} m/s2)");
             DriveModel.Forces(stock,0,-.5f,0,7,0,out float halfReverse,out _);DriveModel.Forces(stock,0,-1,0,7,0,out float fullReverse,out _);
             Check(halfReverse<0&&halfReverse>fullReverse*.6f,"Reverse drive follows the pedal");
+            // Held on a countdown (docs/51): the revs follow the throttle to the limiter, nothing reaches the wheels.
+            var held=new GearState(train){Held=true};float drive=0,peak=0;for(int i=0;i<240;i++){drive=Mathf.Max(drive,held.Step(0,1,dt));peak=Mathf.Max(peak,held.Rpm);}
+            for(int i=0;i<360;i++)held.Step(0,0,dt);
+            Check(drive==0&&peak>train.redline*.95f&&held.Rpm<train.idle*1.1f,$"Held on a countdown: revs to {peak:0} rpm with no drive, back to idle off the throttle");
         }
         return checks;
     }

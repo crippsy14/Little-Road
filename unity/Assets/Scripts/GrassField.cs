@@ -79,6 +79,9 @@ namespace LittleRoad
                 return true;
             }
             if(HillcrestRoute.OnHaltQuay(new Vector3(x,0,z),4))return false;
+            // The causeway: its deck is road (refused) so the top surface there was a parapet or lamp: tufts floated
+            // at railing height over the sea (seen in photo mode, docs/51).
+            if(HillcrestRoute.Distance(HillcrestRoute.Causeway,x,z,out _)<13)return false;
             var land=CoastalLandscape.Current;return land!=null&&land.GrassClearance(new Vector3(x,0,z),out onGreen);
         }
         void Begin(Vector2Int key)

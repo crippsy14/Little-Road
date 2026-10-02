@@ -166,20 +166,32 @@ namespace LittleRoad
             var valleyRoad=Chain(Reverse(HillcrestRoute.RacewayAccess.line),HillcrestRoute.Quay.line,HillcrestRoute.Falls.line);
             var stationRoad=Chain(HillcrestRoute.StationSpur.line,HillcrestRoute.FarmLane.line);
             var crest=HillcrestRoute.Crest;const float valleyWidth=8,stationWidth=7;
-            mouths.Clear();
-            Mouth(valleyRoad,valleyWidth,main.line[^1],main.line,true,main.width,.021f);
-            Mouth(valleyRoad,valleyWidth,crest.line[0],crest.line,false,crest.width,.016f);
-            Mouth(valleyRoad,valleyWidth,stationRoad[0],stationRoad,false,stationWidth,.016f);
-            { var start=main.line[0];float d=track.Nearest(start,out _);var at=track.At(d);at.y=start.y;Mouth(new[]{at-track.Forward(d)*20,at,at+track.Forward(d)*20},Circuit.Width,at,main.line,false,main.width,.02f,true); }
-            Ribbon(main.name,main.line,main.width,.03f,holder,asphaltMainland,true);
-            Stripes(main.line,main.width,2,valleyWidth*.5f+FilletRadius,holder,false);
+            // The road network (docs/52): junctions are nodes, roads are trimmed back to rounded corners and each
+            // junction gets one surface at the roads' heights, so edges, kerbs and lines meet (Richard, 1 Oct: the joins
+            // had gaps and markings that didn't line up).
+            var net=network=new RoadNetwork{Fillet=FilletRadius};
+            var nMain=net.Add(main.line[^1]);var nCrest=net.Add(crest.line[0]);var nStation=net.Add(stationRoad[0]);
+            var nIsland=net.Add(main.line[0]);
+            { float d=track.Nearest(main.line[0],out _);var at=track.At(d);nIsland.at=new Vector3(at.x,main.line[0].y,at.z);var f=track.Forward(d);
+              net.External(nIsland,f,Circuit.Width*.5f,main.line[0].y+.02f);net.External(nIsland,-f,Circuit.Width*.5f,main.line[0].y+.02f); }
+            var valleyPieces=net.Through("Valley road",valleyRoad,valleyWidth,.024f,nMain,nCrest,nStation);
+            var mainRoad=net.Connect(main.name,main.line,main.width,.03f,nIsland,nMain,minorStart:true,minorEnd:true);
+            var crestRoad=net.Connect(crest.name,crest.line,crest.width,.018f,nCrest,null,minorStart:true,noCentre:crest.width<7.6f);
+            var stationNet=net.Connect("Station road",stationRoad,stationWidth,.018f,nStation,null,minorStart:true,noCentre:true);
+            net.Solve();
+            foreach(var n in net.nodes)Debug.Log($"LITTLE_ROAD_JUNCTION at=({n.at.x:0},{n.at.z:0}) arms={n.arms.Count} radius={n.Radius:0.0} trims={string.Join("/",n.arms.ConvertAll(a=>a.trim.ToString("0.0")))}");
+            Ribbon(main.name,mainRoad.trimmed,main.width,.03f,holder,asphaltMainland,true,false,false,false);
+            Stripes(mainRoad.trimmed,main.width,0,0,holder,false);
             Causeway(main,north,holder);
             Tunnel(main,north,south);
             Guardrails(main.line,main.width,holder,System.Array.FindIndex(main.line,p=>p.z<HillcrestRoute.PortalSouth.z-6));
-            foreach(var (line,width,name,lift,trimStart,trimEnd) in new[]{(valleyRoad,valleyWidth,"Valley road",.024f,3f,3f),(stationRoad,stationWidth,"Station road",.018f,valleyWidth*.5f+FilletRadius,3f),(crest.line,crest.width,crest.name,.018f,valleyWidth*.5f+FilletRadius,6f)}) {
-                Ribbon(name,line,width,lift,holder,asphaltMainland,true);Stripes(line,width,trimStart,trimEnd,holder,width<7.6f);
-                Guardrails(line,width,holder,0);
+            foreach(var r in net.roads) {
+                if(r==mainRoad)continue;
+                // Free ends (the road just stops) get their gravel ramps and leave 3 m of paint off; junction ends meet the surface.
+                Ribbon(r.name,r.trimmed,r.width,r.lift,holder,asphaltMainland,true,false,r.start==null,r.end==null);
+                Stripes(r.trimmed,r.width,r.start==null?3:0,r.end==null?(r==crestRoad?6:3):0,holder,r.noCentre);
             }
+            foreach(var (line,width) in new[]{(valleyRoad,valleyWidth),(stationRoad,stationWidth),(crest.line,crest.width)})Guardrails(line,width,holder,0);
             foreach(var road in HillcrestRoute.All())RiverBridges(road,holder);
             // Drivable gravel shoulders where the road runs on the ground (not on the causeway, in the tunnel or over the river).
             var gravel=WorldLook.Kit("Road verge gravel",new Color(.58f,.54f,.46f),WorldLook.Pattern.Rock,0,.1f,true);
@@ -194,7 +206,7 @@ namespace LittleRoad
             float RoadTop(Vector3 q){foreach(var hit in Physics.RaycastAll(new Vector3(q.x,20,q.z),Vector3.down,60))if(hit.collider.GetComponent<RoadSurface>()!=null)return hit.point.y;return float.NaN;}
             Shoulders(main.line,main.width*.5f,.03f,0,false,holder,gravel,"Road shoulder",quayEnd,q=>SurfacePoint(q,out var hit,false)?hit.point.y:-30,RoadTop);
             Shoulders(valleyRoad,valleyWidth*.5f,.024f,0,false,holder,gravel);Shoulders(stationRoad,stationWidth*.5f,.018f,0,false,holder,gravel);Shoulders(crest.line,crest.width*.5f,.018f,0,false,holder,gravel);
-            foreach(var m in mouths)JunctionDressing(m,holder);
+            foreach(var n in net.nodes)if(n.arms.Count>1)JunctionSurface(n,holder);
             RacewayCircuit(holder);
         }
         // Hillcrest Raceway: 16 m asphalt with runoff, edge paint, corner kerbs, start line and gantry.
@@ -260,7 +272,7 @@ namespace LittleRoad
             }
             foreach(float s in new[]{-.36f,.05f,.4f})BayviewKit.Spawn("rock_a",Sheet(s,0,-.8f,0)+Vector3.down*.9f,s*300,holder,solid:false,scale:1.1f);
         }
-        GameObject Ribbon(string name,Vector3[] line,float width,float lift,Transform parent,Material material,bool drivable,bool closed=false)
+        GameObject Ribbon(string name,Vector3[] line,float width,float lift,Transform parent,Material material,bool drivable,bool closed=false,bool rampStart=true,bool rampEnd=true)
         {
             int n=line.Length,count=closed?n+1:n;var v=new Vector3[count*2];var uv=new Vector2[count*2];var t=new List<int>();float run=0;
             for(int k=0;k<count;k++) {
@@ -273,7 +285,7 @@ namespace LittleRoad
             var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(parent);
             go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;
             if(drivable){go.AddComponent<MeshCollider>().sharedMesh=mesh;go.AddComponent<RoadSurface>();}
-            if(drivable&&!closed){EndRamp(line[0],line[0]-line[1],width,lift,go.transform);EndRamp(line[^1],line[^1]-line[^2],width,lift,go.transform);}
+            if(drivable&&!closed){if(rampStart)EndRamp(line[0],line[0]-line[1],width,lift,go.transform);if(rampEnd)EndRamp(line[^1],line[^1]-line[^2],width,lift,go.transform);}
             return go;
         }
         // Where a road stops, a 3 m gravel ramp from its end down to the ground: the ~0.17 m step off the
@@ -329,60 +341,68 @@ namespace LittleRoad
         // Edge lines and centre dashes, left off `trimStart`/`trimEnd` metres at junctions.
         // ---------------------------------------------------------------- junctions
         const float FilletRadius=6;
-        sealed class Junction{public Vector3 at,into,along;public float mainHalf,sideHalf,lift;public bool island;}
-        readonly List<Junction> mouths=new();
         static Vector3[] Reverse(Vector3[] line){var r=(Vector3[])line.Clone();System.Array.Reverse(r);return r;}
         static Vector3[] Chain(params Vector3[][] parts){var all=new List<Vector3>(parts[0]);for(int k=1;k<parts.Length;k++)for(int i=1;i<parts[k].Length;i++)all.Add(parts[k][i]);return all.ToArray();}
-        // A T-junction where `side` (its start, or its end if atEnd) meets `through` at `at`.
-        void Mouth(Vector3[] through,float throughWidth,Vector3 at,Vector3[] side,bool atEnd,float sideWidth,float lift,bool island=false)
-        {
-            int i=HillcrestRoute.Index(through,at);var along=through[Mathf.Min(through.Length-1,i+1)]-through[Mathf.Max(0,i-1)];along.y=0;along.Normalize();
-            var far=atEnd?side[Mathf.Max(0,side.Length-5)]:side[Mathf.Min(side.Length-1,4)];var into=far-at;into.y=0;into.Normalize();
-            float angle=Vector3.Angle(along,into);Debug.Log($"LITTLE_ROAD_JUNCTION at=({at.x:0},{at.z:0}) angle={angle:0}");
-            mouths.Add(new Junction{at=at,into=into,along=along,mainHalf=throughWidth*.5f,sideHalf=sideWidth*.5f,lift=lift,island=island});
-        }
-        // Inside a junction mouth on the side road's side of the through road (edge lines, shoulders and rails stop here).
-        bool NearMouth(Vector3 p,float pad)
-        {
-            foreach(var m in mouths){var d=p-m.at;d.y=0;float a=Mathf.Abs(Vector3.Dot(d,Vector3.Cross(Vector3.up,m.into))),b=Vector3.Dot(d,m.into);
-                if(a<m.sideHalf+FilletRadius+pad&&b>.3f&&b<m.mainHalf+FilletRadius+pad)return true;}
-            return false;
-        }
+        // Inside a junction (shoulders and guardrails stop here); the road network (docs/52) knows where they are.
+        RoadNetwork network;
+        bool NearMouth(Vector3 p,float pad)=>network!=null&&network.NearJunction(p,pad);
         // Corner fillets (drivable asphalt), give-way lines across the approach lane, a give-way sign.
-        void JunctionDressing(Junction m,Transform parent)
+        // A junction (docs/52): its surface (for a node with an external road, just the corner pieces), edge lines along
+        // its kerbs and round the corners, and give-way lines and a sign on every arm that gives way.
+        void JunctionSurface(RoadNetwork.Node n,Transform parent)
         {
-            var v=new List<Vector3>();var t=new List<int>();var sx=Vector3.Cross(Vector3.up,m.into);float y=m.at.y+m.lift;const float R=FilletRadius;
-            foreach(int s in new[]{-1,1}) {
-                // Along the through road: its edge direction on this side (projected so skewed junctions still close).
-                var edge=m.along*Mathf.Sign(Vector3.Dot(m.along,sx*s));
-                var corner=m.at+sx*s*m.sideHalf+m.into*m.mainHalf;var centre=corner+edge*R+m.into*R;
-                int c0=v.Count;v.Add(new Vector3(corner.x,y,corner.z));
-                for(int k=0;k<=10;k++){float a=k/10f*Mathf.PI*.5f;var p=centre-m.into*R*Mathf.Cos(a)-edge*R*Mathf.Sin(a);v.Add(new Vector3(p.x,y,p.z));}
-                for(int k=0;k<10;k++){int a=c0+1+k,b=c0+2+k;var n=Vector3.Cross(v[a]-v[c0],v[b]-v[c0]);if(n.y>0)t.AddRange(new[]{c0,a,b});else t.AddRange(new[]{c0,b,a});}
+            var v=new List<Vector3>();var t=new List<int>();
+            void Fan(Vector3 centre,List<Vector3> rim,bool closed)
+            {
+                int c0=v.Count;v.Add(centre);foreach(var p in rim)v.Add(p);
+                int count=rim.Count,last=closed?count:count-1;
+                for(int k=0;k<last;k++){int a=c0+1+k,b=c0+1+(k+1)%count;var nrm=Vector3.Cross(v[a]-v[c0],v[b]-v[c0]);if(nrm.y>0)t.AddRange(new[]{c0,a,b});else t.AddRange(new[]{c0,b,a});}
             }
-            // (The Bayview loop has its own flush runoff band at the mouth, so no fillet there.)
-            if(!m.island) {
-                var mesh=new Mesh{name="Junction fillet"};mesh.SetVertices(v);mesh.SetTriangles(t,0);mesh.RecalculateNormals();
-                var go=new GameObject("Junction fillet",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(parent);
+            if(!n.HasExternal){float y=0;foreach(var p in n.polygon)y+=p.y;var centre=n.at;centre.y=y/n.polygon.Count;Fan(centre,n.polygon,true);}
+            else foreach(var piece in n.corners)Fan(piece[0],piece.GetRange(1,piece.Count-1),false);
+            if(t.Count>0) {
+                // World-space texture coordinates (the ribbons' scale): the asphalt pattern carries on across the junction.
+                var mesh=new Mesh{name="Junction"};mesh.SetVertices(v);mesh.SetUVs(0,v.ConvertAll(p=>new Vector2(p.x/8,p.z/5)));mesh.SetTriangles(t,0);mesh.RecalculateNormals();
+                var go=new GameObject("Junction",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(parent);
                 go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=asphaltMainland;go.GetComponent<MeshCollider>().sharedMesh=mesh;go.AddComponent<RoadSurface>();
             }
-            // Give-way: two dashed transverse lines across the approach lane (traffic keeps right).
-            var approachRight=-sx;var lines=new List<Vector3>();var lt=new List<int>();
-            foreach(float b in new[]{m.mainHalf+.45f,m.mainHalf+1.0f})
-                for(float l=.25f;l<m.sideHalf-.3f;l+=.9f) {
-                    var p=m.at+m.into*b+approachRight*(l+.3f);p.y=m.at.y+.049f;int s0=lines.Count;
-                    lines.Add(p-approachRight*.3f-m.into*.1f);lines.Add(p+approachRight*.3f-m.into*.1f);lines.Add(p-approachRight*.3f+m.into*.1f);lines.Add(p+approachRight*.3f+m.into*.1f);
-                    var n=Vector3.Cross(lines[s0+1]-lines[s0],lines[s0+2]-lines[s0]);if(n.y>0)lt.AddRange(new[]{s0,s0+1,s0+2,s0+1,s0+3,s0+2});else lt.AddRange(new[]{s0,s0+2,s0+1,s0+1,s0+2,s0+3});
+            // Edge lines 0.35 m in from every kerb (only round the corners where an external road keeps its own paint).
+            var lv=new List<Vector3>();var lt=new List<int>();
+            void Line(List<Vector3> pts)
+            {
+                for(int k=0;k+1<pts.Count;k++) {
+                    Vector3 a=pts[k],b=pts[k+1],f=b-a;f.y=0;if(f.sqrMagnitude<1e-4f)continue;f.Normalize();var r=Vector3.Cross(Vector3.up,f);
+                    var mid=(a+b)*.5f;if(Vector3.Dot(n.at-mid,r)<0)r=-r;   // inward, towards the junction's middle
+                    int s=lv.Count;foreach(var q in new[]{a,b})foreach(float o in new[]{.28f,.42f})lv.Add(q+r*o+Vector3.up*.047f);
+                    var nrm=Vector3.Cross(lv[s+2]-lv[s],lv[s+1]-lv[s]);if(nrm.y>0)lt.AddRange(new[]{s,s+2,s+1,s+1,s+2,s+3});else lt.AddRange(new[]{s,s+1,s+2,s+1,s+3,s+2});
                 }
-            if(lines.Count>0){var lm=new Mesh{name="Give way lines"};lm.SetVertices(lines);lm.SetTriangles(lt,0);lm.RecalculateNormals();var lg=new GameObject("Give way lines",typeof(MeshFilter),typeof(MeshRenderer));lg.transform.SetParent(parent);lg.GetComponent<MeshFilter>().sharedMesh=lm;lg.GetComponent<MeshRenderer>().sharedMaterial=roadPaint;}
-            // Give-way sign on the approach side, facing oncoming traffic.
-            var foot=m.at+m.into*(m.mainHalf+R+1.5f)+approachRight*(m.sideHalf+1.6f);foot.y=m.island?0:ValleyField.Height(foot.x,foot.z);
+            }
+            if(!n.HasExternal)foreach(var kerb in n.kerbs)Line(kerb);
+            else foreach(var piece in n.corners)Line(piece.GetRange(1,piece.Count-1));
+            // Give-way: two dashed lines across the approach lane (traffic keeps right) just inside each minor mouth.
+            foreach(var arm in n.arms) {
+                if(!arm.minor||arm.external)continue;var right=Vector3.Cross(Vector3.up,arm.dir);var approach=-right;
+                foreach(float b in new[]{arm.trim+.45f,arm.trim+1.0f})
+                    for(float l=.25f;l<arm.half-.3f;l+=.9f) {
+                        var p=n.at+arm.dir*b+approach*(l+.3f);p.y=arm.Height(b)+.023f;int s0=lv.Count;
+                        lv.Add(p-approach*.3f-arm.dir*.1f);lv.Add(p+approach*.3f-arm.dir*.1f);lv.Add(p-approach*.3f+arm.dir*.1f);lv.Add(p+approach*.3f+arm.dir*.1f);
+                        var nrm=Vector3.Cross(lv[s0+1]-lv[s0],lv[s0+2]-lv[s0]);if(nrm.y>0)lt.AddRange(new[]{s0,s0+1,s0+2,s0+1,s0+3,s0+2});else lt.AddRange(new[]{s0,s0+2,s0+1,s0+1,s0+2,s0+3});
+                    }
+                GiveWaySign(n.at+arm.dir*(arm.trim+1.5f)+approach*(arm.half+1.6f),arm.dir,n.HasExternal,parent);
+            }
+            if(lv.Count>0){var lm=new Mesh{name="Junction paint",indexFormat=lv.Count>65000?IndexFormat.UInt32:IndexFormat.UInt16};lm.SetVertices(lv);lm.SetTriangles(lt,0);lm.RecalculateNormals();
+                var lg=new GameObject("Junction paint",typeof(MeshFilter),typeof(MeshRenderer));lg.transform.SetParent(parent);lg.GetComponent<MeshFilter>().sharedMesh=lm;lg.GetComponent<MeshRenderer>().sharedMaterial=roadPaint;}
+        }
+        // The give-way sign beside an approach, facing oncoming traffic.
+        void GiveWaySign(Vector3 foot,Vector3 face,bool island,Transform parent)
+        {
+            foot.y=island?0:ValleyField.Height(foot.x,foot.z);
             var grey=TrialWorld.Material("Sign post",new Color(.55f,.57f,.6f),.4f,.4f);
-            var post=GameObject.CreatePrimitive(PrimitiveType.Cylinder);Object.Destroy(post.GetComponent<Collider>());post.name="Give way post";post.transform.SetParent(parent);
+            var post=GameObject.CreatePrimitive(PrimitiveType.Cylinder);Object.DestroyImmediate(post.GetComponent<Collider>());post.name="Give way post";post.transform.SetParent(parent);
             post.transform.position=foot+Vector3.up*1.1f;post.transform.localScale=new Vector3(.08f,1.1f,.08f);post.GetComponent<Renderer>().sharedMaterial=grey;
-            var sv=new List<Vector3>();var st=new List<int>();var sc=new List<Color>();Vector3 top=foot+Vector3.up*2.55f;var face=m.into;var side2=Vector3.Cross(Vector3.up,face);
+            var sv=new List<Vector3>();var st=new List<int>();var sc=new List<Color>();Vector3 top=foot+Vector3.up*2.55f;var side2=Vector3.Cross(Vector3.up,face);
             void Tri(float size,float lift2,bool front,Color c){int s0=sv.Count;var off=face*lift2;sv.Add(top+off-side2*size*.58f);sv.Add(top+off+side2*size*.58f);sv.Add(top+off+Vector3.down*size);sc.Add(c);sc.Add(c);sc.Add(c);
-                var n=Vector3.Cross(sv[s0+1]-sv[s0],sv[s0+2]-sv[s0]);bool facesOut=Vector3.Dot(n,face)>0;if(facesOut==front)st.AddRange(new[]{s0,s0+1,s0+2});else st.AddRange(new[]{s0,s0+2,s0+1});}
+                var nrm=Vector3.Cross(sv[s0+1]-sv[s0],sv[s0+2]-sv[s0]);bool facesOut=Vector3.Dot(nrm,face)>0;if(facesOut==front)st.AddRange(new[]{s0,s0+1,s0+2});else st.AddRange(new[]{s0,s0+2,s0+1});}
             Tri(.9f,.01f,true,new Color(.78f,.16f,.16f));Tri(.55f,.025f,true,new Color(.93f,.93f,.9f));Tri(.9f,0,false,new Color(.55f,.57f,.6f));
             var sm=new Mesh{name="Give way sign"};sm.SetVertices(sv);sm.SetColors(sc);sm.SetTriangles(st,0);sm.RecalculateNormals();
             var sg=new GameObject("Give way sign",typeof(MeshFilter),typeof(MeshRenderer));sg.transform.SetParent(parent);sg.GetComponent<MeshFilter>().sharedMesh=sm;
@@ -402,7 +422,6 @@ namespace LittleRoad
             for(int i=0;i<line.Length-1;i++) {
                 run+=Vector3.Distance(line[i],line[i+1]);if(run<from||run>to||(dash>0&&Mathf.Repeat(run,dash*2)>dash))continue;
                 Vector3 a=line[i],b=line[i+1],f=b-a;f.y=0;f.Normalize();var r=Vector3.Cross(Vector3.up,f);int s=v.Count;
-                if(offset!=0&&NearMouth(a+r*offset,.5f))continue;
                 v.Add(a+r*(offset-width*.5f)+Vector3.up*.047f);v.Add(a+r*(offset+width*.5f)+Vector3.up*.047f);v.Add(b+r*(offset-width*.5f)+Vector3.up*.047f);v.Add(b+r*(offset+width*.5f)+Vector3.up*.047f);
                 t.AddRange(new[]{s,s+2,s+1,s+1,s+2,s+3});
             }

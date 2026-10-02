@@ -405,3 +405,67 @@ Richard: the bottom half of the revs in each gear sounded much meatier than the 
 3. **Tools and checks.**
    - `sound-harness.ps1 -Filter tone:<engine id>` renders the grains alone at 30–100% of the redline, with and without the correction, to `review/sound/tone/`. It prints level, brightness, pitch and periodicity for each step.
    - `SoundChecks` fails the build if any bank's pull loses or gains more than 25–50% of its level above its recording.
+
+## Above the recording, round two (1 October)
+
+Richard played the Tuner V6 (single turbo, long box) and reported two things in turn:
+- "going up in revs sounded like two different noises combined";
+- later: "the revs sound great up to about 80% of max and then after it goes very high pitch and changes to be weird".
+
+The raw Skyline recording was re-tracked to check its range. The driver short-shifts at about 4,300 rpm every time, so nothing above that exists to cut. Everything above 3,650 rpm (97% of the pull's top) is the top of the recording, played faster.
+
+1. **A sustain loop, not "the nearest cycle".**
+   - At a held rpm above the recording, picking the nearest cycle ping-ponged between two or three cycles. That put a flutter at half the cycle rate, 9–10 dB over the cycle line. It sounded like two engines at once.
+   - Playing the top cycles in recorded order fixed the flutter. But a capture of the game's own audio (`--audio-capture` on a copy of Richard's save, train race) then showed the loop's seam: the level swung about 4 dB twice a second at 6,500 rpm.
+   - **What it does now.** The loop is the sweep's top 12–33 cycles (from 88% of its top revs), less the odd ones out. A cycle goes if it is more than 15% brighter or darker than the median, or if it's a revs spike. On the Skyline 5 of 33 go, including the last cycle, which reads 3,760 rpm among 3,550s.
+   - `GrainSynth` walks the loop back and forth a cycle at a time. It turns at the ends, or at random, but never twice within four cycles. Each cycle plays at the loop's mean level.
+   - **Result.** In the game's capture, the spread of 50 ms levels at full throttle fell from 3.3 to 1.6 dB at 70–80% of the redline, and from 4.0 to 2.3 dB at 80–90%.
+2. **Pulse overlap-add above 1.5×.**
+   - At 80% of the V6's redline the Skyline's cycles play 1.67× fast, and at the redline 2×. The shelf correction (above) takes some of the lift back out, but not all. Richard said 80% was where it turned.
+   - Now nothing changes up to 1.5×. Beyond it a grain is sped up only 1.5×, and its firing pulses are laid closer together for the rest.
+   - Each pulse is a Hann window two target periods long, centred on the pulse's peak. `GrainBank.Marks` finds the peaks: the comb offset that catches the most energy, then each peak within a quarter period. Neighbours therefore overlap only in pairs.
+   - The stream plays 256 samples (5 ms) late, so the pulses, which need a period of lead-in, line up with it. That lets the two crossfade cleanly over the first 8% above 1.5×.
+   - Overlapping pulses come from different moments, so their crossfades sum below unity (the Citroen C2 lost 3 dB at 1.8×). The pulses are held at the stretched stream's level, the way the tone correction holds its own. Pulling only: the coasting sound Richard called "epic, perfect" is untouched.
+   - Why it works this time. The first try at overlap-add (above, 30 September) applied it from 1× with windows two source periods long, and lost the rhythm.
+
+   | Tuner V6, 7,600 rpm (2.02×) | Stretched | Pulses above 1.5× |
+   |---|---|---|
+   | Level | 0.156 | 0.154 |
+   | Brightness (centroid, one window) | 476 Hz | 425 Hz |
+   | Pitch found / firing | 378 / 380 Hz | 381 / 380 Hz |
+   | Pulse correlation | 0.62 | 0.59 |
+
+   - On the E-class V6 at 2–2.8× the centroid drops 60–90 Hz. The Viper V10 barely changes, because its firing note sits above the resonances anyway.
+3. **Tools and checks.**
+   - `tone:` now renders 2.4 s per step (long enough for a loop to come round) and adds wobble (the 10–90% spread of 30 ms levels) and a whole-run brightness. It A/Bs `GrainSynth.PulseOverlap`.
+   - `layers:<engine>[+turbo]@<fraction>` breaks the voice into its layers at any point of the rev range. From 80% to 98% on the Tuner V6 with its turbo, every layer stays steady; nothing switches on at the top.
+   - `SoundChecks` has a new check: at the Tuner V6's redline, the pulsed Skyline is darker than the stretched one (difference brightness at most 92% of it). The level check now also covers the pulsed path.
+
+## The static above the recording (1 October, late)
+
+Richard: the engines "seem to have some low pitched static noise mixed into it, otherwise it sounds great".
+
+**Measuring it.** `sound-harness.ps1 -Filter static:<engine>[+turbo]` splits sound below 600 Hz into energy on the engine's harmonics (multiples of the cycle rate, rpm/120) and energy between them. It does this for each layer and for the car-noise synth at idle, cruise, pull and lift, then for the grains alone across the revs with each stage of `GrainSynth` switched off in turn.
+
+On the Tuner V6:
+
+| Source | Noise between harmonics, below the note |
+|---|---|
+| Synthetic roar | about 20 dB quieter than the grains' noise |
+| Road and wind | about 20 dB quieter than the grains' noise |
+| Grains, within the recording's own range | 20-30 dB under |
+| Grains, above the recording (from 1.3× its top) | only 4-6 dB under |
+
+So the static came from the grains above the recording.
+
+**The cause.** The version 2 sustain loop walked back and forth through the recorded cycles. Each grain's tail is the next recorded cycle's start, so a forward step joins seamlessly, but every backward step joined unrelated cycles. The odd-cycle filter also left gaps in the run, which joined unrelated cycles at every gap.
+
+**The fix.** The loop is now one unbroken run of recorded cycles, played forwards, so every join but the wrap is the recording's own. The run is chosen from 12-40 cycles at 85% or more of the highest pulling sweep's top revs. Each candidate is scored on its wrap (the last cycle's tail against the first cycle's start, correlated, with a penalty for a level step), and odd cycles count a quarter against it. Per-cycle level matching is gone, because it modulated the level on every cycle.
+
+**The C2's loop.** It used to come from the widest sweep, which tops out at 2,300 rpm, so above 3,400 rpm it stretched 2,000 rpm cycles. It now comes from the sweep that reaches highest.
+
+**Results.**
+- **Grains alone, above the recording:** the Skyline (Tuner V6, Valley six, S and E V6s) is 17-18 dB under, close to the recording's own 20. The C2 is 7-8 dB under, its recording's own texture at the top.
+- **Level wobble:** 0.5-1.0 dB, down from 1.3-2.1.
+- **In game** (`--audio-capture` on Richard's car, 70-100% of the redline at steady full throttle): the noise between harmonics is 14-15 dB under, against 10-11 before. What remains is mostly road roar, which at speed is now about as loud as the engine's own noise.
+- **Check:** `SoundChecks` requires the Skyline at 1.4× and 1.8× its recording to stay at least 12 dB under.

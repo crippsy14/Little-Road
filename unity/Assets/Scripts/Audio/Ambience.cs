@@ -97,7 +97,8 @@ namespace LittleRoad
             float nearRiver=riverTarget!=Vector3.zero?Mathf.Clamp01(1-Vector3.Distance(at,riverTarget)/70):0;
             forest.volume=Mathf.MoveTowards(forest.volume,.12f*day*(1-.8f*SeaNear)*(1-nearRiver)*calm,Time.unscaledDeltaTime*.5f);
             riverBirds.volume=Mathf.MoveTowards(riverBirds.volume,.15f*day*nearRiver*calm,Time.unscaledDeltaTime*.5f);
-            crickets.level=.5f*TimeOfDay.Night*(1-.8f*SeaNear)*slow*effects;
+            // Crickets off for now (Richard, 1 Oct: the crickets and birds sounded wrong together around dusk).
+            crickets.level=0;
         }
 
         // How near the sea is (ground below sea level, or no ground, in a ring of samples) and how exposed the

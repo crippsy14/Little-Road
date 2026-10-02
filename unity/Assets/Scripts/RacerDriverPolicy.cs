@@ -57,6 +57,13 @@ namespace LittleRoad
         static readonly float? Hold=float.TryParse(RaceTrial.Arg("--racer-hold"),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float hold)?hold:null;
         // Tuning sweeps (--racer-corner-scale, --racer-brake-scale): multiply every driver's grip and brake use.
         static float Scale(string key){return float.TryParse(RaceTrial.Arg(key),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float v)?v:1;}
+        // Aero cars (S and E, docs/54): at 60-75 m/s a car a little over its plan into a turning braking zone steers
+        // the tyres' whole budget away from the brakes (the yaw takes up to 95% of grip) and the overspeed snowballs
+        // into the run-off. Their plan keeps a reserve when braking and turning together: the lateral load counts
+        // (1 + reserve) times, so trail braking leaves the brakes some grip. Straight-line braking is unchanged.
+        // --aero-reserve <r> (default 0.3; 0 = none) for A/B. Class C-B-A cars have no downforce: untouched.
+        static readonly float AeroReserve=float.TryParse(RaceTrial.Arg("--aero-reserve"),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float aeroReserve)?aeroReserve:.3f;
+        static readonly float AeroCornerUse=Scale("--aero-corner-use");
         // --racer-debug <id>: log that driver's speed decision four times a second.
         static readonly int DebugId=int.TryParse(RaceTrial.Arg("--racer-debug"),out int debugId)?debugId:-1;
         static readonly float CornerScale=Scale("--racer-corner-scale"),BrakeScale=Scale("--racer-brake-scale"),ReactionScale=Scale("--racer-reaction-scale"),GapScale=Scale("--racer-gap-scale"),LeaderBrakeScale=Scale("--racer-leader-brake-scale");
@@ -90,7 +97,7 @@ namespace LittleRoad
             float brakeUse=ability.BrakeUse*BrakeScale*spell*(1+ability.BrakeScatter*Sample(3,Mathf.FloorToInt(Mathf.Repeat(s,track.Length)/50)));
             if(State==Intent.Attack&&OverlapInside(in observation))brakeUse+=ability.LateBrake;
             brakeUse=Mathf.Min(brakeUse,.995f);
-            float cornerUse=ability.CornerUse*CornerScale*spell;
+            float cornerUse=ability.CornerUse*CornerScale*spell*(tuning.downforce>0?AeroCornerUse:1);
             bool offRoad=Mathf.Abs(o)>HalfRoad;
             float preview=1+v*.12f;
             float limitSpeed=LimitSpeed(tuning,s,o,v,edge,lateralDistance,budget,cornerUse,brakeUse,offRoad,preview,out float allowedHere);
@@ -130,7 +137,7 @@ namespace LittleRoad
             float steering=Mathf.Clamp(curve*Mathf.Max(v,3)*1.09f/tuning.yaw,-1,1);
             if(Mathf.Abs(angle)>.9f){steering=Mathf.Sign(angle);accel=Mathf.Min(accel,(8-v)*2);}
 
-            float wheel=accel+DriveModel.Resistance(v,tuning.mass);
+            float wheel=accel+DriveModel.Resistance(tuning,v);
             float pedal=wheel>=0?wheel/Mathf.Max(.01f,DriveModel.EngineForce(tuning,v)):wheel/tuning.braking;
             // Below the limit line, full power: the braking recursion guarantees we can still slow in time.
             if(reason==Reason.Limit&&(limitSpeed>v+.5f||limitSpeed>=tuning.AttainableSpeed-.15f))pedal=1;
@@ -172,14 +179,14 @@ namespace LittleRoad
             for(int k=count+margin;k>=0;k--) {
                 float x=k*step;int i=track.Index(s+x);
                 float kappa=track.OffLineCurvature(i,s+x,PathOffset(s,o,x,edge,lateralDistance),(path[Mathf.Min(k+2*Span,path.Length-1)]-2*path[k+Span]+path[k])/(span*span),span);
-                float grip=budget*track.Load(i,k>count?attainable:next);
+                float grip=budget*track.Load(i,k>count?attainable:next),aero=DriveModel.Aero(tuning);
                 if(offRoad&&x<12)grip*=tuning.dirtGrip/Mathf.Max(.01f,tuning.roadGrip);
-                raw[k]=Mathf.Min(attainable,CornerSpeed(grip,cornerUse,kappa));
+                raw[k]=Mathf.Min(attainable,CornerSpeed(grip,cornerUse,kappa,aero));
                 if(k>count)continue;
                 float corner=raw[k];for(int j=1;j<=margin;j++)corner=Mathf.Min(corner,raw[k+j]);
-                float lateral=next*next*Mathf.Abs(kappa);
+                float lateral=next*next*Mathf.Abs(kappa)*(aero>0?1+AeroReserve:1);grip*=1+aero*next*next;
                 float traction=Mathf.Sqrt(Mathf.Max(0,grip*grip-lateral*lateral));
-                float decel=Mathf.Max(.5f,Mathf.Min(tuning.braking,traction)*brakeUse+DriveModel.Resistance(next,tuning.mass)+track.Gravity(i));
+                float decel=Mathf.Max(.5f,Mathf.Min(tuning.braking,traction)*brakeUse+DriveModel.Resistance(tuning,next)+track.Gravity(i));
                 float value=Mathf.Min(corner,Mathf.Sqrt(next*next+2*decel*step));
                 allowed[k]=value;next=value;
             }
@@ -449,7 +456,7 @@ namespace LittleRoad
             float reference=Mathf.Max(v,12);
             for(float x=0;x<260;x+=track.Step*2) {
                 int i=track.Index(s+x);float kappa=track.LineCurvature(i);
-                float limit=CornerSpeed(grip,ability.CornerUse,kappa);
+                float limit=CornerSpeed(grip,ability.CornerUse,kappa,DriveModel.Aero(tuning));
                 if(limit<reference*.92f) {
                     result.found=true;result.distance=x;result.sign=Mathf.Sign(kappa);result.speed=limit;
                     result.brakeStart=x-Mathf.Max(0,v*v-limit*limit)/(2*brake);return result;
@@ -460,10 +467,12 @@ namespace LittleRoad
 
         // Fastest steady speed on curvature `kappa`. The car's yaw is capped at 95% of grip, and its steering
         // servo settles about 0.045 rad/s short of the request (angular damping), which costs 0.045*v of
-        // lateral grip: v^2*k = use*(0.95*grip - 0.045*v).
-        static float CornerSpeed(float grip,float use,float kappa)
+        // lateral grip: v^2*k = use*(0.95*grip - 0.045*v). With aero grip (grip x (1+aero*v^2), docs/54) the
+        // v^2 term on the grip side moves across: v^2*(k - use*0.95*grip*aero) = ... (none at all once it covers k).
+        static float CornerSpeed(float grip,float use,float kappa,float aero=0)
         {
-            float k=Mathf.Max(.00001f,Mathf.Abs(kappa)),b=use*.045f,c=use*.95f*grip;
+            float k=Mathf.Abs(kappa)-use*.95f*grip*aero;if(k<=.00001f)return 999;
+            float b=use*.045f,c=use*.95f*grip;
             return (-b+Mathf.Sqrt(b*b+4*k*c))/(2*k);
         }
 

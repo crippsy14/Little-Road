@@ -8,7 +8,7 @@ namespace LittleRoad
     public static class CarPerformanceRating
     {
         public const string Version="dry-road-v1";
-        static float Pull(CarTuning t)=>Mathf.Max(.01f,Mathf.Min(DriveModel.EngineForce(t,10),t.roadGrip*1.65f)-DriveModel.Resistance(10,t.mass));
+        static float Pull(CarTuning t)=>Mathf.Max(.01f,Mathf.Min(DriveModel.EngineForce(t,10),t.roadGrip*1.65f)-DriveModel.Resistance(t,10));
         public static int Calculate(CarTuning tuning)
         {
             var stock=CarTuning.Stock;
@@ -41,10 +41,13 @@ namespace LittleRoad
         [Serializable] public sealed class Evidence {public int schema=1,seed,laps;public string track,title,ratingVersion;public bool modern;public EntryRecord[] entries;}
         public readonly int Seed,Laps;
         public readonly string Track,Title;
+        // The event (RaceCalendar id, or DukeEvent); the track's id unless said otherwise.
+        public readonly string Event;
         public readonly bool Modern;
         public readonly IReadOnlyList<RaceEntrant> Entries;
-        public RaceRoster(int seed,int laps,string track,string title,bool modern,RaceEntrant[] entrants)
+        public RaceRoster(int seed,int laps,string track,string title,bool modern,RaceEntrant[] entrants,string eventId=null)
         {
+            Event=eventId??track;
             if(entrants==null||entrants.Length<1||entrants.Length>24||laps<1)throw new ArgumentException("Invalid race roster");
             var copy=(RaceEntrant[])entrants.Clone();var slots=new HashSet<int>();
             for(int i=0;i<copy.Length;i++)if(copy[i]==null||copy[i].Id!=i||!slots.Add(copy[i].Slot))throw new ArgumentException("Roster needs contiguous IDs and distinct grid slots");
@@ -63,9 +66,22 @@ namespace LittleRoad
                 entries[i]=new RaceEntrant(i,RaceGrid.TrialSlot(i,count,scenario),body,paint,equipment,EquipmentCatalog.TestLoadout(equipment),
                     driverMode==null?null:DriverIdentity.ForRace(i,seed,driverMode,form));
             }
-            return new RaceRoster(seed,laps,track,track=="bayview"?"BAYVIEW COAST":"CEDAR TECHNICAL",driverMode!=null,entries);
+            return new RaceRoster(seed,laps,track,track=="bayview"?"BAYVIEW COAST":track=="hillcrest"?"HILLCREST RACEWAY":"CEDAR TECHNICAL",driverMode!=null,entries);
         }
         public static readonly Color FlagshipPaint=new(.05f,.22f,.62f);
+        // The Duke's Challenge (docs/54; Richard, 2 Oct: "a great full circle moment at the end of the game... beat him
+        // like a final boss"): three laps of Hillcrest Raceway, you against Duke Rolo in the Regale on the maximum
+        // build. He starts on pole; the best driver in the game.
+        public const string DukeEvent="duke";public static readonly Color DukePaint=new(.36f,.20f,.62f);
+        static readonly DriverIdentity.Definition DukeDriver=new(){id="duke_rolo",name="Duke Rolo",style="Duke",braking=.75f,risk=6,consistency=1};
+        public static RaceRoster DukeChallenge(AdventureProgress save)
+        {
+            save.Validate();int seed=1709+(save.raceSerial+1)*11;
+            var entries=new[]{
+                new RaceEntrant(0,1,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),DriverIdentity.ForRace(0,seed,"mixed",true),save.Tune()),
+                new RaceEntrant(1,0,CarBodies.Prototype,DukePaint,"the maximum build",EquipmentCatalog.MaxBuild(),new DriverIdentity(DukeDriver,seed,false))};
+            return new RaceRoster(seed,3,"hillcrest","THE DUKE'S CHALLENGE / HILLCREST RACEWAY",true,entries,DukeEvent);
+        }
         public static RaceRoster Adventure(AdventureProgress save,bool modern=true)
         {
             save.Validate();int seed=1709+(save.raceSerial+1)*11;

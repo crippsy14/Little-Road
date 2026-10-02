@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ namespace LittleRoad
             public int gears;public float spread,shiftTime,kmhPer1000;public string shiftType;public bool lsd;
         }
         // A class gate (docs/44, 47): base mass, drag and downforce; which class's parts fit.
-        [Serializable] public sealed class Platform {public string id,tier,name;public int price;public float kg,drag,downforce;}
+        [Serializable] public sealed class Platform {public string id,tier,name;public int price;public float kg,drag,downforce,firm;}
         [Serializable] public sealed class Data
         {
             public int schemaVersion;
@@ -76,6 +77,7 @@ namespace LittleRoad
         {
             var fit=StockLoadout();
             if(name=="stock")return fit;
+            if(name=="max")return MaxBuild();   // the Duke's Challenge build (docs/54)
             // An exact kit for tests and captures: "engine=engine_club,turbo=turbo_street" over the stock car.
             if(name.Contains("=")){foreach(var pair in name.Split(',')){var kv=pair.Split('=');if(kv.Length!=2||!fit.ContainsKey(kv[0].Trim()))throw new ArgumentException("Bad kit entry: "+pair);fit[kv[0].Trim()]=kv[1].Trim();Get(kv[1].Trim());}return fit;}
             if(name=="street") {
@@ -92,6 +94,42 @@ namespace LittleRoad
             } else throw new ArgumentException("Unknown test loadout: "+name);
             return fit;
         }
+        // The maximum build (the Duke's Challenge, docs/54): the parts, of every class, that lap Hillcrest Raceway
+        // fastest by SpeedProfile (the ideal lap: grip, power, braking and drag, no driver). Coordinate descent from the
+        // dearest E-class part in each slot, a slot at a time, until nothing changes. "The best part" depends on the
+        // track (a long box or a short one, qualifiers or hard tyres), so it is measured, not picked by price.
+        static Dictionary<string,string> maxBuild;public static float MaxBuildLap{get;private set;}
+        public static Dictionary<string,string> MaxBuild()
+        {
+            if(maxBuild!=null)return new Dictionary<string,string>(maxBuild);
+            EnsureLoaded();
+            var fit=StockLoadout();
+            foreach(string slot in data.slots){var top=data.parts.Where(p=>p.slot==slot&&p.tier=="E").OrderByDescending(p=>p.price).FirstOrDefault();if(top!=null)fit[slot]=top.id;}
+            var lap=RacewayLap();float best=LapTime(lap,fit);
+            for(int round=0;round<4;round++) {
+                bool changed=false;
+                foreach(string slot in data.slots)foreach(var p in data.parts.Where(p=>p.slot==slot&&(p.tier=="E"||p.tier=="S"))) {
+                    if(fit[slot]==p.id)continue;var trial=new Dictionary<string,string>(fit){[slot]=p.id};float t=LapTime(lap,trial);
+                    if(t<best-.005f){best=t;fit=trial;changed=true;}
+                }
+                if(!changed)break;
+            }
+            maxBuild=fit;MaxBuildLap=best;return new Dictionary<string,string>(fit);
+        }
+        // Two laps of the raceway at 2 m; the second is timed (a flying lap).
+        static List<Vector3> RacewayLap()
+        {
+            var c=new Circuit(HillcrestRoute.Circuit);var path=new List<Vector3>();
+            for(int lapNo=0;lapNo<2;lapNo++)for(float d=0;d<c.length;d+=2)path.Add(c.At(d));
+            return path;
+        }
+        public static float LapTime(List<Vector3> path,IReadOnlyDictionary<string,string> fit)
+        {
+            var v=SpeedProfile.Speeds(path,Stats(fit));float t=0;int half=path.Count/2;
+            for(int i=half+1;i<path.Count;i++)t+=Vector3.Distance(path[i-1],path[i])/Mathf.Max(1,(v[i]+v[i-1])*.5f);
+            return t;
+        }
+        public static float RacewayLapTime(IReadOnlyDictionary<string,string> fit)=>LapTime(RacewayLap(),fit);
         public static CarTuning Stats(IReadOnlyDictionary<string,string> fit)=>Stats(fit,null);
         // With a gearbox tune (docs/48); a tune for another gearbox is ignored.
         public static CarTuning Stats(IReadOnlyDictionary<string,string> fit,GearTune tune)
@@ -101,16 +139,35 @@ namespace LittleRoad
                 if(!fit.TryGetValue(slot,out string id)||Get(id).slot!=slot)throw new ArgumentException("Missing or incompatible equipment: "+slot);
             var e=Get(fit["engine"]);var t=Get(fit["tyres"]);var g=Get(fit["transmission"]);
             var b=Get(fit["brakes"]);var s=Get(fit["steering"]);var c=Get(fit["chassis"]);var turbo=Get(fit["turbo"]);
-            if(LegacyDrivetrain)return CarTuning.Create(e.power_limit,e.accel,g.ceiling,g.pull,turbo.power,turbo.torque,t.road,t.dirt,b.braking,s.response,s.yaw,c.mass);
+            if(LegacyDrivetrain){var legacy=CarTuning.Create(e.power_limit,e.accel,g.ceiling,g.pull,turbo.power,turbo.torque,t.road,t.dirt,b.braking,s.response,s.yaw,c.mass);legacy.downforce=Downforce(c);legacy.dragSave=DragSave(c);legacy.firm=Firm(c);return legacy;}
             // Real gears (docs/47): no gearbox ceiling or pull; the gears come from the engine, turbo and box.
             var tuning=CarTuning.Create(e.power_limit,e.accel,999,1,turbo.power,turbo.torque,t.road,t.dirt,b.braking,s.response,s.yaw,c.mass);
             // Calibration: real gear gaps and shift cuts cost a stepped box some pace against the old gearless
             // curve; 10% more power keeps class C near its old standing-start times (docs/47).
-            tuning.power*=PowerCalibration;
+            tuning.power*=PowerCalibration;tuning.downforce=Downforce(c);tuning.dragSave=DragSave(c);tuning.firm=Firm(c);
             if(tune!=null&&(tune.transmission!=g.id||!tune.Valid))tune=null;
             string key=e.id+"|"+turbo.id+"|"+g.id+"|"+c.id+(tune==null?"":"|"+tune.final.ToString("0.000")+"|"+string.Join(",",tune.gears??new float[0]));
             if(!drivetrains.TryGetValue(key,out var train)){train=new Drivetrain(e,turbo,g,tuning,tune?.final??1,tune?.gears);drivetrains.Add(key,train);}
             tuning.drivetrain=train;tuning.gearCeiling=train.RedlineSpeed;return tuning;
+        }
+        // The chassis's class platform's downforce (S and E; none below). --no-downforce: none at all, for A/B runs.
+        public static float Downforce(Part chassis)
+        {
+            if(Array.IndexOf(Environment.GetCommandLineArgs(),"--no-downforce")>=0||data.platforms==null)return 0;
+            string tier=string.IsNullOrEmpty(chassis.tier)?"C":chassis.tier;foreach(var p in data.platforms)if(p.tier==tier)return p.downforce;return 0;
+        }
+        // The chassis's class platform's low-drag bodywork (docs/54): the share of drag it saves (0 for class C).
+        // --no-platform-drag: everyone on the street car's drag, for A/B.
+        public static float DragSave(Part chassis)
+        {
+            if(Array.IndexOf(Environment.GetCommandLineArgs(),"--no-platform-drag")>=0||data.platforms==null)return 0;
+            string tier=string.IsNullOrEmpty(chassis.tier)?"C":chassis.tier;foreach(var p in data.platforms)if(p.tier==tier)return Mathf.Clamp(1-p.drag,0,.6f);return 0;
+        }
+        // The platform's suspension firmness (docs/54): visual weight transfer only (BodyMotion), 0 for class C.
+        public static float Firm(Part chassis)
+        {
+            if(data.platforms==null)return 0;
+            string tier=string.IsNullOrEmpty(chassis.tier)?"C":chassis.tier;foreach(var p in data.platforms)if(p.tier==tier)return Mathf.Max(0,p.firm);return 0;
         }
         // One drivetrain per engine/turbo/box/frame, so repeated Stats() calls compare equal.
         static readonly Dictionary<string,Drivetrain> drivetrains=new(StringComparer.Ordinal);

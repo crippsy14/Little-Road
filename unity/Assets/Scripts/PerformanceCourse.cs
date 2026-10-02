@@ -80,7 +80,7 @@ namespace LittleRoad
             // Continuous pedal regulation avoids alternating full braking and
             // positive throttle around the race driver's overspeed deadband.
             // This is a controlled measurement driver; race form stays separate.
-            float demand=(target-speed)*10+DriveModel.Resistance(speed,car.tuning.mass);
+            float demand=(target-speed)*10+DriveModel.Resistance(car.tuning,speed);
             float pedal=demand>=0?demand/Mathf.Max(.01f,DriveModel.EngineForce(car.tuning,speed)):demand/car.tuning.braking;
             return new Vector2(Mathf.Clamp(pedal,-1,1),steer);
         }

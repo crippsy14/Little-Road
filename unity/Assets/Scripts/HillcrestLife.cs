@@ -150,6 +150,8 @@ namespace LittleRoad
     public sealed class RoadCruiser:MonoBehaviour
     {
         static readonly List<RoadCruiser> all=new();
+        // Others the cruisers give way to as they do to you (the Duke's Regale out for a drive).
+        public static readonly List<Transform> GiveWayTo=new();
         public static IReadOnlyList<RoadCruiser> All=>all;
         // Castle Climb: pulled over (stands still where it was put) until released.
         bool holding;public void Hold(){holding=true;speed=0;}public void Release(){holding=false;blocked=0;}
@@ -162,8 +164,10 @@ namespace LittleRoad
             body=gameObject.AddComponent<Rigidbody>();body.isKinematic=true;body.interpolation=RigidbodyInterpolation.Interpolate;
             var renderers=GetComponentsInChildren<Renderer>();var bounds=renderers[0].bounds;foreach(var x in renderers)bounds.Encapsulate(x.bounds);
             var box=gameObject.AddComponent<BoxCollider>();box.center=bounds.center-transform.position;box.size=bounds.size;gameObject.tag="Respawn";
-            all.Add(this);Place(0);
+            all.Add(this);Place(0);horn=Horn.Attach(gameObject,Random.Range(.88f,1.18f));
         }
+        Horn horn;bool tooted;
+        public void TootBack(){if(horn!=null&&!horn.Busy)horn.Toot(.1f,.09f,.14f,0);}
         void OnDestroy()=>all.Remove(this);
         Vector3 Heading=>(road.At(s+dir*2)-road.At(s-dir*2)).normalized;
         void Place(float dt)
@@ -178,7 +182,9 @@ namespace LittleRoad
             float dt=Time.fixedDeltaTime,target=cruise;Vector3 me=body.position,fwd=Heading;
             bool Blocking(Vector3 other){var d=other-me;float along=Vector3.Dot(d,fwd),side=Vector3.Dot(d,Vector3.Cross(Vector3.up,fwd));return along>0&&along<13&&Mathf.Abs(side)<3.2f;}
             // Held up by the player: wait a moment, then turn round rather than jam the road.
-            if(player!=null&&Blocking(player.body.position)){target=0;blocked+=dt;if(blocked>3){blocked=0;dir=-dir;}}else blocked=0;
+            // (A second in, a polite beep-beep: docs/51.)
+            bool held=player!=null&&Blocking(player.body.position);foreach(var t in GiveWayTo)if(t!=null&&Blocking(t.position))held=true;
+            if(held){target=0;blocked+=dt;if(blocked>1&&!tooted){tooted=true;TootBack();}if(blocked>3){blocked=0;dir=-dir;}}else{blocked=0;tooted=false;}
             foreach(var c in all)if(c!=this&&c.dir==dir&&Blocking(c.body.position)){target=Mathf.Min(target,c.speed*.8f);}
             if((dir>0&&s>to-14)||(dir<0&&s<from+14))target=Mathf.Min(target,3.5f);
             speed=Mathf.MoveTowards(speed,target,(target<speed?6:2.2f)*dt);
@@ -226,9 +232,28 @@ namespace LittleRoad
             for(int k=0;k<3;k++)Car("train_coach",-19.6f-k*12,new BayviewKit.Tint(Toy.Hex(coaches[k]),Toy.Hex(0xfff0c8),Toy.Hex(0xff4d5e),Color.white),"Passengers");
             chimney=new GameObject("Chimney").transform;chimney.SetParent(cars[0].car,false);chimney.localPosition=new Vector3(0,4.8f,4.3f);
             puffMaterial=TrialWorld.Material("Steam puff",new Color(.97f,.97f,.97f),0,.1f);
-            head=stops[0]+.5f;wait=6;nextStop=1;
+            head=stops[0]+.5f;wait=6;nextStop=1;whistle=Horn.Attach(cars[0].car.gameObject,1,true);
             Debug.Log($"LITTLE_ROAD_TRAIN path={run[^1]:0} stops={string.Join(",",stops.ConvertAll(x=>x.ToString("0")))}");
         }
+        // Beat the Train (docs/51): stop 0 is Hillcrest, stop 1 Bayview Halt.
+        public float MaxSpeed=13;public System.Action<int> Arrived;
+        public const int HillcrestStop=0,BayviewStop=1;
+        public bool WaitingAt(int stop)=>wait>0&&(nextStop+stops.Count-1)%stops.Count==stop;
+        // Brought to a stop's platform (from wherever it was), leaving in `seconds`.
+        public void Hold(int stop,float seconds){head=stops[stop]+.5f;wait=seconds;nextStop=stop+1;speed=0;FixedUpdate();}
+        // How long it takes from standing at one stop to standing at the next, at a given top speed.
+        public float TimeToNext(int stop,float top)
+        {
+            float total=run[^1],from=stops[stop],to=stops[(stop+1)%stops.Count],dist=to-from;if(dist<0)dist+=total;
+            float s=0,v=0,t=0,dt=.05f;
+            while(s<dist-.6f&&t<3000){float left=dist-s;float target=Mathf.Min(top,Mathf.Sqrt(2*.7f*left)+.4f);v=Mathf.MoveTowards(v,target,1.1f*dt);s+=v*dt;t+=dt;}
+            return t;
+        }
+        // The whistle: long-short as it pulls out of a station, and back at anyone who honks at it (docs/51).
+        Horn whistle;
+        public void Whistle(){if(whistle!=null&&!whistle.Busy&&Visible)whistle.Toot(.9f,.22f,.45f,0);}
+        public bool Visible=>cars.Count>0&&cars[0].renderers.Length>0&&cars[0].renderers[0].enabled;
+        public Transform Loco=>cars.Count>0?cars[0].car:null;
         void Car(string id,float offset,BayviewKit.Tint tint,string speaker)
         {
             var go=BayviewKit.Spawn(id,Vector3.down*200,0,transform,tint,solid:false);
@@ -243,11 +268,11 @@ namespace LittleRoad
         void FixedUpdate()
         {
             float dt=Time.fixedDeltaTime,total=run[^1];
-            if(wait>0){wait-=dt;speed=0;}
+            if(wait>0){wait-=dt;speed=0;if(wait<=0)Whistle();}
             else {
                 float stop=stops[nextStop%stops.Count],left=stop-head;if(left<0)left+=total;
-                float target=Mathf.Min(13,Mathf.Sqrt(2*.7f*left)+.4f);
-                if(left<.6f){wait=16;nextStop++;speed=0;}
+                float target=Mathf.Min(MaxSpeed,Mathf.Sqrt(2*.7f*left)+.4f);
+                if(left<.6f){wait=16;int arrived=nextStop%stops.Count;nextStop++;speed=0;Arrived?.Invoke(arrived);}
                 speed=Mathf.MoveTowards(speed,target,1.1f*dt);head=Mathf.Repeat(head+speed*dt,total);
             }
             foreach(var (car,offset,renderers) in cars) {
@@ -269,7 +294,7 @@ namespace LittleRoad
         }
         void Puff()
         {
-            var p=GameObject.CreatePrimitive(PrimitiveType.Sphere);Destroy(p.GetComponent<Collider>());p.name="Steam puff";p.transform.SetParent(transform);
+            var p=GameObject.CreatePrimitive(PrimitiveType.Sphere);DestroyImmediate(p.GetComponent<Collider>());p.name="Steam puff";p.transform.SetParent(transform);
             p.transform.position=chimney.position;p.GetComponent<Renderer>().sharedMaterial=puffMaterial;p.GetComponent<Renderer>().shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;puffs.Add((p.transform,0));
         }
     }
@@ -386,7 +411,7 @@ namespace LittleRoad
         }
         Transform Make()
         {
-            var go=GameObject.CreatePrimitive(PrimitiveType.Sphere);Destroy(go.GetComponent<Collider>());go.name="Puff";go.transform.SetParent(transform);
+            var go=GameObject.CreatePrimitive(PrimitiveType.Sphere);DestroyImmediate(go.GetComponent<Collider>());go.name="Puff";go.transform.SetParent(transform);   // (collider removed immediately: puffs spawn at the wheels)
             var r=go.GetComponent<Renderer>();r.sharedMaterial=material;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;return go.transform;
         }
         protected void Step(float dt)

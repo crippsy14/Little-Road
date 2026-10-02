@@ -131,7 +131,7 @@ namespace LittleRoad
         static (float,float,float) Measure(CarTuning car)
         {
             var box=new GearState(car.drivetrain);float v=0,t=0,to60=-1,to100=-1;const float dt=1f/60;float grip=car.roadGrip*1.65f;
-            while(t<40){float a=Mathf.Min(box.Step(v,1,dt),grip);v=Mathf.Max(0,v+(a-DriveModel.Resistance(v,car.mass))*dt);t+=dt;if(to60<0&&v>=26.82f)to60=t;if(to100<0&&v>=27.78f)to100=t;}
+            while(t<40){float a=Mathf.Min(box.Step(v,1,dt),grip);v=Mathf.Max(0,v+(a-DriveModel.Resistance(car,v))*dt);t+=dt;if(to60<0&&v>=26.82f)to60=t;if(to100<0&&v>=27.78f)to100=t;}
             return (to60,to100,v);
         }
 

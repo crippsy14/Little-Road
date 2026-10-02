@@ -108,7 +108,7 @@ namespace LittleRoad
                 float lateral=speed*speed*curvatures[Mathf.Max(1,i)];
                 float traction=Mathf.Sqrt(Mathf.Max(0,budget*budget-lateral*lateral));
                 float drive=speed>=o.tuning.gearCeiling?0:Mathf.Min(DriveModel.EngineForce(o.tuning,speed),traction);
-                float net=drive-DraftingModel.Resistance(speed,o.tuning.mass,o.dragReduction);
+                float net=drive-DraftingModel.Resistance(speed,o.tuning.mass,o.dragReduction,o.tuning.DragFactor);
                 float distance=distances[i+1]-distances[i];
                 float next=Mathf.Min(speeds[i+1],Mathf.Sqrt(Mathf.Max(0,speed*speed+2*net*distance)));
                 // Short observed-motion window only. This ranks delay on the
@@ -161,7 +161,7 @@ namespace LittleRoad
             float target=Mathf.Min(speeds[1],Mathf.Sqrt(budget*PaceMargins.Steering/Mathf.Max(.00001f,Mathf.Abs(curve))));
             if(o.finished)target=Mathf.Min(target,18);
             float feed=(speeds[1]*speeds[1]-speeds[0]*speeds[0])/(2*Mathf.Max(.01f,distances[1]));
-            float force=feed+(target-o.self.speed)*3+DraftingModel.Resistance(o.self.speed,o.tuning.mass,o.dragReduction);
+            float force=feed+(target-o.self.speed)*3+DraftingModel.Resistance(o.self.speed,o.tuning.mass,o.dragReduction,o.tuning.DragFactor);
             float pedal=force>=0?force/Mathf.Max(.01f,DriveModel.EngineForce(o.tuning,o.self.speed)):force/o.tuning.braking;
             // Shared by live following and prospective rollouts. Only the
             // follower's braking can coast; leader/scenery/emergency limits

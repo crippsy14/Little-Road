@@ -46,7 +46,54 @@ public static class SoundChecks
             float at=Level(top*.98f),above=Level(top*1.8f);
             Check(above>at*.75f&&above<at*1.5f,$"{sound}: pulling above its recording ({top:0} rpm) holds its level ({at:0.000} -> {above:0.000} at 1.8x)");
         }
+        // Above 1.5x the pulses are re-laid rather than sped up further (Richard, 1 Oct: the Tuner V6 went "very high
+        // pitch" past 80% of its revs): at its 7600 rpm redline on the Skyline the sound is darker than the stretched one.
+        // Brightness: the RMS of the first difference over the RMS, which rises with the spectrum's mean frequency.
+        {
+            var bank=EngineBanks.Get("skyline");float redline=7600;
+            float Bright(bool pulses){GrainSynth.PulseOverlap=pulses;var g=new GrainSynth(bank,fs,3,bank.idle,redline);double d=0,e=0;float last=0;int count=fs;for(int i=0;i<count;i++){float x=g.Next(redline,1,false);if(i>=count/2){d+=(x-last)*(x-last);e+=x*x;}last=x;}GrainSynth.PulseOverlap=true;return (float)Math.Sqrt(d/Math.Max(1e-12,e));}
+            float stretched=Bright(false),pulsed=Bright(true);
+            Check(pulsed<stretched*.92f,$"Skyline at the Tuner V6's redline (2x its recording): pulse overlap-add is darker than stretching (brightness {stretched:0.000} -> {pulsed:0.000})");
+        }
+        // Above the recording the sustain loop stays as clean as the recording (Richard, 1 Oct: "some low pitched static
+        // noise mixed into it"; a loop walked back and forth put noise between the harmonics only 4-6 dB under them).
+        // Below 600 Hz, the energy between the cycle-rate harmonics against the energy on them, at 1.4x and 1.8x.
+        {
+            var bank=EngineBanks.Get("skyline");float top=bank.TopOf(true);
+            foreach(float over in new[]{1.4f,1.8f}) {
+                float rpm=top*over;var g=new GrainSynth(bank,fs,7,bank.idle,7600);int fftN=16384;var x=new float[fs/2+fftN];for(int i=0;i<x.Length;i++)x[i]=g.Next(rpm,1,false);
+                var re=new double[fftN];var im=new double[fftN];for(int i=0;i<fftN;i++)re[i]=x[x.Length-fftN+i]*(.5-.5*Math.Cos(2*Math.PI*i/fftN));
+                for(int i=1,j=0;i<fftN;i++){int bit=fftN>>1;for(;(j&bit)!=0;bit>>=1)j^=bit;j^=bit;if(i<j){(re[i],re[j])=(re[j],re[i]);}}
+                for(int len=2;len<=fftN;len<<=1){double ang=-2*Math.PI/len;for(int i=0;i<fftN;i+=len)for(int k=0;k<len/2;k++){double wr=Math.Cos(ang*k),wi=Math.Sin(ang*k);int a=i+k,b=a+len/2;double xr=re[b]*wr-im[b]*wi,xi=re[b]*wi+im[b]*wr;re[b]=re[a]-xr;im[b]=im[a]-xi;re[a]+=xr;im[a]+=xi;}}
+                double cyc=rpm/120.0,tonal=0,between=0;
+                for(int k=1;k<fftN/2;k++){double hz=k*(double)fs/fftN;if(hz<25||hz>600)continue;double ph=hz/cyc,off=Math.Abs(ph-Math.Round(ph)),pw=re[k]*re[k]+im[k]*im[k];if(off<.12)tonal+=pw;else if(off>.25)between+=pw;}
+                double db=10*Math.Log10((between+1e-20)/(tonal+1e-20));
+                Check(db<-12,$"Skyline pulling at {over:0.0}x its recording: noise between the harmonics {db:0.0} dB under them (at most -12)");
+            }
+        }
         checks.Add($"All {recorded} engines play recorded grain banks");
+        // Lifting off (docs/55, the engine scorecard): every bank carries its recording's measured lift-off drop and
+        // rise with revs, and a lift fades rather than steps (real engines lose 1-2 dB in the first half second; the
+        // old voice dropped 6-8 dB at once).
+        foreach(string sound in all.Where(p=>p.slot=="engine").Select(p=>p.sound).Distinct()) {
+            var bank=EngineBanks.Get(sound);
+            Check(bank.liftDb>=3&&bank.liftDb<=12&&bank.riseDb>=3&&bank.riseDb<=12,$"{sound}: measured lift-off drop {bank.liftDb:0.0} dB and rise {bank.riseDb:0.0} dB per doubling of revs");
+        }
+        {
+            var bank=EngineBanks.Get("skyline");var g=new GrainSynth(bank,fs,5,bank.idle,6600);float at=bank.TopOf(true)*.9f;
+            double Rms(float load,int count){double e=0;for(int i=0;i<count;i++){float x=g.Next(at,load,false);e+=x*x;}return Math.Sqrt(e/count);}
+            Rms(1,fs);double pulling=Rms(1,fs/4),early=Rms(0,fs/4);Rms(0,fs*2);double late=Rms(0,fs/4);
+            double dEarly=20*Math.Log10(early/pulling),dLate=20*Math.Log10(late/pulling);
+            Check(dEarly>-4&&dLate<dEarly-2&&dLate>-bank.liftDb-4,$"Skyline lift-off fades: {dEarly:0.0} dB in the first quarter second, {dLate:0.0} dB after two seconds (measured drop {bank.liftDb:0.0} dB)");
+        }
+        // Turbo and hybrid-motor sounds are off unless asked for (Richard, 2 Oct: "remove the turbo noises all together").
+        {
+            var e12=all.First(p=>p.id=="engine_e_12h");var twin=all.First(p=>p.id=="turbo_e_twin");var spec=EngineSoundSpec.From(e12,twin,all.First(p=>p.id=="transmission_e_long"));
+            // (The second half only: the level calibration leaves a residue draining out of the DC blocker.)
+            float Layer(int solo){var synth=new EngineSynth(spec,fs,9){Solo=solo};var buffer=new float[fs];synth.Set(spec.redline*.8f,1,1,70,false,false,6,0,0);synth.Render(buffer,0,fs/2);return synth.Render(buffer,fs/2,fs/2);}
+            float turbo=Layer(4),motor=Layer(5);
+            Check(!EngineSynth.TurboSound&&!EngineSynth.HybridSound&&turbo<1e-4f&&motor<1e-4f,$"No turbo or hybrid-motor sound by default (rms {turbo:0.000000}, {motor:0.000000}; --turbo-sound, --hybrid-sound)");
+        }
         // Music (docs/49): every loop loads in stereo; each race's lift stem matches its base loop sample for sample.
         foreach(string place in new[]{"bayview","hillcrest"}) {
             var explore=Resources.Load<AudioClip>("Music/"+place+"-explore");var raceLoop=Resources.Load<AudioClip>("Music/"+place+"-race");var liftLoop=Resources.Load<AudioClip>("Music/"+place+"-race-lift");

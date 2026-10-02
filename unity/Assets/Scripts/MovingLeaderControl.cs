@@ -35,7 +35,7 @@ namespace LittleRoad
             }
             limited=limit<command.targetSpeed;
             if(!limited)return command;
-            float force=(limit-o.self.speed)*3+DraftingModel.Resistance(o.self.speed,o.tuning.mass,o.dragReduction);
+            float force=(limit-o.self.speed)*3+DraftingModel.Resistance(o.self.speed,o.tuning.mass,o.dragReduction,o.tuning.DragFactor);
             float pedal=force>=0?force/Mathf.Max(.01f,DriveModel.EngineForce(o.tuning,o.self.speed)):force/o.tuning.braking;
             return new DriveCommand(Mathf.Min(command.pedal,pedal),command.steering,limit,command.predictedOffset,command.chosenLane);
         }

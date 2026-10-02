@@ -60,7 +60,7 @@ namespace LittleRoad
                         target=Mathf.Min(target,limit);
                     }
                 }
-                float drag=DraftingModel.Resistance(speed,tuning.mass,dragReduction);
+                float drag=DraftingModel.Resistance(speed,tuning.mass,dragReduction,tuning.DragFactor);
                 float force=(target-speed)*3+drag;
                 float pedal=force>=0?force/Mathf.Max(.01f,DriveModel.EngineForce(tuning,speed)):force/tuning.braking;
                 DriveModel.Forces(tuning,speed,Mathf.Clamp(pedal,-1,1),0,tuning.roadGrip,0,out float acceleration,out _,dragReduction);

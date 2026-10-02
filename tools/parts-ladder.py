@@ -118,10 +118,12 @@ BOXES = [
     ('transmission_s_dog', 'Sequential dog box', 'Brutal, instant, loud.', None, 'S', None, 6, 3.0, 0.06, 'S', 21.2, True),
     ('transmission_s_paddle', 'Paddle shift', 'Seven gears on paddles.', None, 'S', None, 7, 3.2, 0.04, 'P', 22.3, True),
     ('transmission_s_seamless', 'Seamless shift', 'Two gears engaged at once: no gap in the drive.', None, 'S', None, 7, 3.2, 0.015, 'SL', 22.3, True),
-    ('transmission_e_paddle', 'Endurance paddle', 'Seven gears, built to last.', None, 'E', None, 7, 3.3, 0.04, 'P', 25.9, True),
-    ('transmission_e_seamless', 'Hybrid seamless', 'The e-motor fills every shift.', None, 'E', None, 7, 3.3, 0.015, 'SL', 25.9, True),
-    ('transmission_e_12h', 'Twelve-hour box', 'Seamless and unbreakable.', None, 'E', None, 7, 3.3, 0.02, 'SL', 25.9, True),
-    ('transmission_e_long', 'Low-drag long box', 'Sidegrade: tall top gear for long straights.', None, 'E', None, 7, 3.6, 0.04, 'P', 28.5, True),
+    # E boxes (docs/54, 2 Oct): geared for prototype top speeds (330+ km/h with the E platform's low drag); they were
+    # 25.9/28.5 km/h per 1000 rpm, which put every E car on its limiter near 250-275 km/h.
+    ('transmission_e_paddle', 'Endurance paddle', 'Seven gears, built to last.', None, 'E', None, 7, 3.3, 0.04, 'P', 33.0, True),
+    ('transmission_e_seamless', 'Hybrid seamless', 'The e-motor fills every shift.', None, 'E', None, 7, 3.3, 0.015, 'SL', 33.0, True),
+    ('transmission_e_12h', 'Twelve-hour box', 'Seamless and unbreakable.', None, 'E', None, 7, 3.3, 0.02, 'SL', 33.0, True),
+    ('transmission_e_long', 'Low-drag long box', 'Sidegrade: tall top gear for long straights.', None, 'E', None, 7, 3.6, 0.04, 'P', 36.0, True),
 ]
 BOX_BASE = 1000
 for b in BOXES:
@@ -229,12 +231,15 @@ simple('chassis', 1400, [
 ])
 
 # ---------------------------------------------------------------- platforms (a class gate, not a fitted slot yet)
+# drag: share of the street car's air drag (docs/54: the air feels it since 2 Oct; S .7 and E .6 for 300+ km/h).
+# firm: suspension firmness, how much stiffer than the street car's springs; the body leans 1/(1+firm) as much
+# (Richard, 2 Oct: the maximum build's nose lifted under power; race cars should feel glued down).
 PLATFORMS = [
-    {'id': 'platform_c', 'tier': 'C', 'name': 'Street platform', 'price': 0, 'kg': 850, 'drag': 1.0, 'downforce': 0},
-    {'id': 'platform_b', 'tier': 'B', 'name': 'Tuner platform', 'price': 9100, 'kg': 880, 'drag': .95, 'downforce': 0},
-    {'id': 'platform_a', 'tier': 'A', 'name': 'Touring platform', 'price': 18900, 'kg': 950, 'drag': .90, 'downforce': 0},
-    {'id': 'platform_s', 'tier': 'S', 'name': 'Racing platform', 'price': 35000, 'kg': 780, 'drag': .80, 'downforce': .0012},
-    {'id': 'platform_e', 'tier': 'E', 'name': 'Endurance platform', 'price': 59500, 'kg': 850, 'drag': .75, 'downforce': .0012},
+    {'id': 'platform_c', 'tier': 'C', 'name': 'Street platform', 'price': 0, 'kg': 850, 'drag': 1.0, 'downforce': 0, 'firm': 0},
+    {'id': 'platform_b', 'tier': 'B', 'name': 'Tuner platform', 'price': 9100, 'kg': 880, 'drag': .95, 'downforce': 0, 'firm': .25},
+    {'id': 'platform_a', 'tier': 'A', 'name': 'Touring platform', 'price': 18900, 'kg': 950, 'drag': .90, 'downforce': 0, 'firm': .65},
+    {'id': 'platform_s', 'tier': 'S', 'name': 'Racing platform', 'price': 35000, 'kg': 780, 'drag': .70, 'downforce': .0025, 'firm': 2.3},  # m/s2 of push into the road per (m/s)^2 (docs/54: 1.2 g at 70 m/s)
+    {'id': 'platform_e', 'tier': 'E', 'name': 'Endurance platform', 'price': 59500, 'kg': 850, 'drag': .60, 'downforce': .003, 'firm': 3},  # (1.5 g at 70 m/s: the raceway's crests threw the maximum build in the air without it)
 ]
 
 data = {'schemaVersion': 2, 'source': 'tools/parts-ladder.py (docs/47)',

@@ -29,10 +29,13 @@ namespace LittleRoad
             "Hey! Mind the paintwork!","Beep beep! Coming through?","Oof, my bumper!","Easy there, speedy!",
             "I only just washed this!","Nice little car you've got!","Are you racing today?","Have you tried the ice cream?",
             "Watch it, I'm parked here!","Honk honk! Lovely day for a drive!","You'll want Mara to look at that dent.","Heading down to the harbour?"};
-        public bool TrySay(SpeechBubbles bubbles)
+        // Answers to the player's horn (docs/51).
+        public static readonly string[] HornReplies={"Beep beep to you too!","HONK! Ha, two can play at that!","Hello! Lovely horn!","Oi! I heard you the first time!",
+            "Ooh, is that a race? You're on!","Parp parp!","Toot toot! Morning!","Was that for me? Aww!","Mind my ears, speedy!","Beep! Where are you off to?"};
+        public bool TrySay(SpeechBubbles bubbles,string[] from=null)
         {
             if(Time.unscaledTime<ready||bubbles==null)return false;
-            var pool=lines!=null&&lines.Length>0?lines:General;
+            var pool=from!=null&&from.Length>0?from:lines!=null&&lines.Length>0?lines:General;
             int pick=Random.Range(0,pool.Length);if(pool.Length>1&&pick==last)pick=(pick+1)%pool.Length;last=pick;
             bubbles.Show(transform,speaker,pool[pick],colour);ready=Time.unscaledTime+4f;LastSaid=Time.time;return true;
         }

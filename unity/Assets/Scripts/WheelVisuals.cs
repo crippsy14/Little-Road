@@ -10,13 +10,18 @@ namespace LittleRoad
     {
         public readonly Transform[] pivots;
         readonly Quaternion[] rest;
+        public static bool IsPivot(string name)=>name=="Wheel_FL"||name=="Wheel_FR"||name=="Wheel_RL"||name=="Wheel_RR";
+        // The wheels' rolling radius: the axles' height above the car's base (the models stand on y = 0), so each body
+        // turns its wheels at its own rate (the Regale's are 0.345 m, the family cars' 0.39-0.43).
+        public readonly float Radius=.425f;
         public WheelVisuals(GameObject car)
         {
             var selected=new List<Transform>();
             foreach(var t in car.GetComponentsInChildren<Transform>(true))
-                if(t.name=="Wheel_FL"||t.name=="Wheel_FR"||t.name=="Wheel_RL"||t.name=="Wheel_RR")selected.Add(t);
+                if(IsPivot(t.name))selected.Add(t);
             pivots=selected.ToArray();rest=new Quaternion[pivots.Length];
             for(int i=0;i<pivots.Length;i++)rest[i]=pivots[i].localRotation;
+            if(pivots.Length>0){float sum=0;foreach(var p in pivots)sum+=car.transform.InverseTransformPoint(p.position).y;Radius=Mathf.Clamp(sum/pivots.Length,.25f,.6f);}
         }
         public void Pose(float spinDegrees,float steerDegrees)
         {

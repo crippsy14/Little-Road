@@ -7,6 +7,14 @@ namespace LittleRoad
     public struct CarTuning
     {
         public float power, acceleration, mass, gearCeiling, braking, roadGrip, dirtGrip, response, yaw;
+        // Downforce (docs/47, 54): extra push into the road per (m/s)^2, from the chassis's class platform (S and E).
+        public float downforce;
+        // Low-drag bodywork (docs/54): the share of air drag the chassis's class platform saves (B .05, A .1, S .3,
+        // E .4; 0 for class C, whose arithmetic is exactly as before). The data always had it; now the air feels it.
+        public float dragSave;
+        public float DragFactor=>1-dragSave;
+        // Suspension firmness (visual only, BodyMotion): the body leans 1/(1+firm) as much as a street car's.
+        public float firm;
         // Real engine and gears (docs/47); null with --legacy-drivetrain.
         [NonSerialized] public Drivetrain drivetrain;
         public static CarTuning Stock => EquipmentCatalog.Stats(EquipmentCatalog.TestLoadout("stock"));
@@ -22,7 +30,7 @@ namespace LittleRoad
         public float AttainableSpeed
         {
             get {float low=0, high=gearCeiling; for(int i=0;i<24;i++) {float mid=(low+high)*.5f;
-                if((.25f+DriveModel.DragK*mid*mid)*mid<power) low=mid; else high=mid;} return (low+high)*.5f;}
+                if((.25f+DriveModel.DragK*DragFactor*mid*mid)*mid<power) low=mid; else high=mid;} return (low+high)*.5f;}
         }
     }
 
@@ -35,14 +43,24 @@ namespace LittleRoad
         // --legacy-drag restores 0.006 for A/B.
         public static readonly float DragK=RaceTrial.Has("--legacy-drag")?.006f:.0035f;
         public static float Resistance(float speed, float mass) => (.25f+DragK*speed*speed)/mass;
+        public static float Resistance(CarTuning t, float speed) => (.25f+DragK*t.DragFactor*speed*speed)/t.mass;
         // With real gears this is the best-gear envelope: what the AI and speed profiles plan with.
         public static float EngineForce(CarTuning t, float speed) => t.drivetrain!=null?t.drivetrain.Envelope(speed):Mathf.Min(t.acceleration,t.power/(Mathf.Max(Mathf.Abs(speed),1)*t.mass));
         public static float PedalForSpeed(CarTuning t, float speed, float target)
         {
             if(speed>target+.8f) return -1;
             if(target<.1f) return speed>.1f?-1:0;
-            return Mathf.Clamp01((Resistance(speed,t.mass)+(target-speed)*.8f)/Mathf.Max(EngineForce(t,speed),.01f));
+            return Mathf.Clamp01((Resistance(t,speed)+(target-speed)*.8f)/Mathf.Max(EngineForce(t,speed),.01f));
         }
+        // Aero grip (docs/54): downforce loads the tyres, so grip grows with the square of the speed. Tyres are load
+        // sensitive (twice the load is not twice the grip), so half the extra load counts. Only cars with downforce
+        // (the S and E platforms) see it; at the maximum build's 75 m/s it is 1.9x the static grip, which is what lets
+        // its E brakes (58 m/s^2) brake at their rating instead of at the tyres' 38. --no-aero-grip: downforce only
+        // pushes down, for A/B.
+        public const float AeroLoad=.5f;
+        public static readonly bool NoAeroGrip=RaceTrial.Has("--no-aero-grip");
+        public static float Aero(CarTuning t)=>t.downforce>0&&!NoAeroGrip?AeroLoad*t.downforce/9.81f:0;
+        public static float AeroGrip(CarTuning t,float speed)=>1+Aero(t)*speed*speed;
         public static readonly bool LegacyReverse=RaceTrial.Has("--legacy-reverse");
         public static void Forces(CarTuning t, float speed, float throttle, float yawRequest, float grip, float slope,
             out float acceleration, out float yaw,float dragReduction=0,float engineAccel=-1)
@@ -50,7 +68,7 @@ namespace LittleRoad
             float budget=Mathf.Max(.1f,grip*1.65f);
             yaw=Mathf.Clamp(yawRequest,-budget*.95f/Mathf.Max(Mathf.Abs(speed),1),budget*.95f/Mathf.Max(Mathf.Abs(speed),1));
             float lateral=Mathf.Abs(yaw*speed), traction=Mathf.Sqrt(Mathf.Max(0,budget*budget-lateral*lateral));
-            float drag=DraftingModel.Resistance(speed,t.mass,dragReduction);
+            float drag=DraftingModel.Resistance(speed,t.mass,dragReduction,t.DragFactor);
             // Rolling backwards on the forward pedal (a reversing car stopping, a recovery pulling away): it brakes
             // to a stop first. With real gears the engine gives nothing in reverse, so without this the car rolled
             // on backwards (recoveries reversed for 15-30 s). --legacy-reverse restores that for A/B.

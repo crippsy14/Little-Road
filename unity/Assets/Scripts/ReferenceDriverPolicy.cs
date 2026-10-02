@@ -24,7 +24,7 @@ namespace LittleRoad
             if(Mathf.Abs(angle)>.9f){steering=Mathf.Sign(angle);target=Mathf.Min(target,8);}
             if(observation.finished)target=Mathf.Min(target,18);
             float desiredAcceleration=profile.Acceleration(preview)+(target-car.speed)*3;
-            float wheelForce=desiredAcceleration+DriveModel.Resistance(car.speed,tuning.mass);
+            float wheelForce=desiredAcceleration+DriveModel.Resistance(tuning,car.speed);
             float pedal=wheelForce>=0?wheelForce/Mathf.Max(.01f,DriveModel.EngineForce(tuning,car.speed)):wheelForce/tuning.braking;
             if(target>=tuning.AttainableSpeed-.15f&&car.speed<target)pedal=1;
             float predicted=Vector3.Dot(car.position+car.velocity*.55f-observation.route.At(car.route+Mathf.Max(car.speed,0)*.55f),observation.route.Right(car.route+Mathf.Max(car.speed,0)*.55f));

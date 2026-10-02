@@ -63,8 +63,9 @@ namespace LittleRoad
         // The slot whose autosave (or, without one, manual save) was written last; 0 when there are none.
         public static int Newest()
         {
-            int best=0;DateTime when=DateTime.MinValue;
-            for(int s=1;s<=Count;s++)foreach(var path in new[]{Auto(s),Manual(s)})if(File.Exists(path)&&File.GetLastWriteTime(path)>when){when=File.GetLastWriteTime(path);best=s;}
+            // (Ties, two saves in one clock tick, go to the slot being played.)
+            int best=0,current=Current;DateTime when=DateTime.MinValue;
+            for(int s=1;s<=Count;s++)foreach(var path in new[]{Auto(s),Manual(s)}){if(!File.Exists(path))continue;var t=File.GetLastWriteTime(path);if(t>when||t==when&&s==current){when=t;best=s;}}
             return best;
         }
         public static bool Occupied(int slot)=>File.Exists(Auto(slot))||File.Exists(Manual(slot));

@@ -55,6 +55,8 @@ namespace LittleRoad
             else SceneFade=sceneStart<0?0:Mathf.Clamp01((Time.unscaledTime-sceneStart-.5f)/2f);
         }
 
+        // Interface beeps outside the countdown (speed trap flash, challenge starts).
+        public static void Beep(float hz,float seconds){if(instance!=null)instance.tones?.Play(hz,seconds);}
         public static void Register(CarAudio car){cars.Add(car);Ensure();}
         public static void Unregister(CarAudio car){cars.Remove(car);}
         public static void Attach(RoadCar car,bool player){if(Enabled)car.gameObject.AddComponent<CarAudio>().Setup(car,player);}

@@ -132,7 +132,7 @@ namespace LittleRoad
                 for(int i=n-1;i>=0;i--) {
                     int next=(i+1)%n;float lateral=speed[next]*speed[next]*Mathf.Max(Mathf.Abs(line.curvature[i]),Mathf.Abs(line.curvature[next]));
                     float g=Grip(i,speed[next]);float traction=Mathf.Sqrt(Mathf.Max(0,g*g-lateral*lateral));
-                    float braking=Mathf.Min(tuning.braking,traction)*PaceMargins.ProfileBrake*planning.ReferenceBrakeScale+DraftingModel.Resistance(speed[next],tuning.mass,drafting?DraftingModel.MaximumReduction:0);
+                    float braking=Mathf.Min(tuning.braking,traction)*PaceMargins.ProfileBrake*planning.ReferenceBrakeScale+DraftingModel.Resistance(speed[next],tuning.mass,drafting?DraftingModel.MaximumReduction:0,tuning.DragFactor);
                     if(graded)braking=Mathf.Max(.5f,braking+Gravity(i));
                     float value=Mathf.Min(speed[i],Mathf.Sqrt(speed[next]*speed[next]+2*braking*line.segmentLength[i]));change=Mathf.Max(change,speed[i]-value);speed[i]=value;
                 }
@@ -140,7 +140,7 @@ namespace LittleRoad
                     int next=(i+1)%n;float lateral=speed[i]*speed[i]*Mathf.Abs(line.curvature[i]);
                     float g=Grip(i,speed[i]);float traction=Mathf.Sqrt(Mathf.Max(0,g*g-lateral*lateral));
                     float force=speed[i]>=tuning.gearCeiling?0:Mathf.Min(DriveModel.EngineForce(tuning,speed[i]),traction);
-                    float net=force-DriveModel.Resistance(speed[i],tuning.mass)-Gravity(i);
+                    float net=force-DriveModel.Resistance(tuning,speed[i])-Gravity(i);
                     float value=Mathf.Min(speed[next],Mathf.Sqrt(Mathf.Max(.01f,speed[i]*speed[i]+2*net*line.segmentLength[i])));change=Mathf.Max(change,speed[next]-value);speed[next]=value;
                 }
                 if(change<.0001f)break;

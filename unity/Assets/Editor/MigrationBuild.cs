@@ -91,7 +91,7 @@ public static class MigrationBuild
         var circuit=new Circuit();Check(circuit.length>600 && Circuit.Width==16,"Wide continuous circuit: "+circuit.length.ToString("0.0")+"m x16m",evidence);
         for(float d=0;d<circuit.length;d+=31) {float near=circuit.Nearest(circuit.At(d),out float offset);Check(Mathf.Abs(offset)<.01f&&Mathf.Abs(near-d)<.05f,"Track projection "+d,evidence);}
         var imported=new List<string>{"little_car","compact_v1","compact_v1_lod1","compact_v1_lod2"};
-        var generated=new List<string>(CarBodies.Family);generated.AddRange(CarBodies.Sporty);generated.Add(CarBodies.Flagship);generated.Add(CarBodies.Starter);generated.AddRange(CarBodies.Townsfolk);
+        var generated=new List<string>(CarBodies.Family);generated.AddRange(CarBodies.Sporty);generated.Add(CarBodies.Flagship);generated.Add(CarBodies.Starter);generated.AddRange(CarBodies.Townsfolk);generated.AddRange(CarBodies.Teasers);
         foreach(string body in generated)imported.AddRange(new[]{body,body+"_lod1",body+"_lod2"});
         foreach(string name in imported) {
             var model=Resources.Load<GameObject>("Cars/"+name);Check(model!=null,"Imported "+name,evidence);
@@ -99,8 +99,10 @@ public static class MigrationBuild
             foreach(var r in instance.GetComponentsInChildren<Renderer>()){if(first){bounds=r.bounds;first=false;}else bounds.Encapsulate(r.bounds);}
             foreach(var f in instance.GetComponentsInChildren<MeshFilter>())verts+=f.sharedMesh.vertexCount;
             evidence.models.Add(name+" bounds="+bounds.size+" center="+bounds.center+" verts="+verts);
-            bool longBody=Array.IndexOf(CarBodies.Townsfolk,name.Replace("_lod1","").Replace("_lod2",""))>=0;
-            Check(bounds.size.x>1.5f&&bounds.size.x<2.5f&&bounds.size.z>2.5f&&bounds.size.z<(longBody?4.8f:4),"Metre scale and upright "+name,evidence);
+            string bodyId=name.Replace("_lod1","").Replace("_lod2","");bool longBody=Array.IndexOf(CarBodies.Townsfolk,bodyId)>=0;
+            // (Teasers of the top classes are true-to-type: the Regale is a 5 m Le Mans prototype, never raced yet.)
+            float maxLength=Array.IndexOf(CarBodies.Teasers,bodyId)>=0?5.2f:longBody?4.8f:4;
+            Check(bounds.size.x>1.5f&&bounds.size.x<2.5f&&bounds.size.z>2.5f&&bounds.size.z<maxLength,"Metre scale and upright "+name,evidence);
             if(name.StartsWith("compact_v1_lod"))Check(GlassTriangles(model)==GlassTriangles(Resources.Load<GameObject>("Cars/compact_v1")),"Glazing triangles preserved in "+name,evidence);
             var wheels=new WheelVisuals(instance);
             Check(wheels.pivots.Length==4,"Four animated axle pivots in imported "+name,evidence);
@@ -186,6 +188,11 @@ public static class MigrationBuild
         evidence.checks.AddRange(InterfaceChecks.Run());
         evidence.checks.AddRange(RacerChecks.Run());
         evidence.checks.AddRange(DrivetrainChecks.Run());
+        evidence.checks.AddRange(RoadNetworkChecks.Run());
+        evidence.checks.AddRange(PrototypeChecks.Run());
+        evidence.checks.AddRange(DukeDriveChecks.Run());
+        evidence.checks.AddRange(WheelChecks.Run());
+        evidence.checks.AddRange(DukeChallengeChecks.Run());
         evidence.checks.AddRange(SoundChecks.Run());
         Directory.CreateDirectory(Path.Combine(root,"review/unity-01"));
         File.WriteAllText(Path.Combine(root,"review/unity-01/editor-checks.json"),JsonUtility.ToJson(evidence,true));

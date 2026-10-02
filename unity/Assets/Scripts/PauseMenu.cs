@@ -20,7 +20,7 @@ namespace LittleRoad
             public Func<List<(string label,Action act)>> settings;public Action quit;
             public Func<(string body,Color paint,string paintName,List<string> parts,int rating,string ladder)> car_;
         }
-        static readonly string[] Tabs={"MAP","COLLECTION","CAR","CONTROLS","SETTINGS"};const int Settings=4;
+        static readonly string[] Tabs={"MAP","COLLECTION","CAR","RECORDS","CONTROLS","SETTINGS"};const int Settings=5;
         Context ctx;Canvas canvas;RectTransform root,body;Text areaText,creditText,footer,objectiveText;readonly List<(ToyShape pill,Text text)> tabPills=new();
         int tab;bool subPage;float openedAt;readonly Text[] tabGlyphs=new Text[2];
         public bool IsOpen{get;private set;}
@@ -39,12 +39,12 @@ namespace LittleRoad
             Toy.Card(root,"Hub card",new Vector2(1760,940),new Vector2(0,-6),Toy.Cream,44,7,12);
             // Header: tab pills with the bumper glyphs at either end, area and credits on the right.
             var header=Toy.Rect(root,"Header",new Vector2(1700,90),new Vector2(0,405));
-            float x=-700;
+            float x=-720;
             for(int i=0;i<Tabs.Length;i++) {
-                var pill=Toy.Card(header,"Tab "+Tabs[i],new Vector2(220,66),new Vector2(x+110,0),Toy.Navy,33,5,5);
-                var t=Toy.Label(pill.transform,"Tab text",Tabs[i],25,new Vector2(220,66),Vector2.zero,Toy.White,TextAnchor.MiddleCenter,true);
+                var pill=Toy.Card(header,"Tab "+Tabs[i],new Vector2(196,66),new Vector2(x+98,0),Toy.Navy,33,5,5);
+                var t=Toy.Label(pill.transform,"Tab text",Tabs[i],24,new Vector2(196,66),Vector2.zero,Toy.White,TextAnchor.MiddleCenter,true);
                 int index=i;var b=pill.gameObject.AddComponent<Button>();b.transition=Selectable.Transition.None;b.onClick.AddListener(()=>ShowTab(index));b.navigation=new Navigation{mode=Navigation.Mode.None};
-                pill.raycastTarget=true;tabPills.Add((pill,t));x+=232;
+                pill.raycastTarget=true;tabPills.Add((pill,t));x+=206;
             }
             tabGlyphs[0]=Toy.Label(header,"Tab glyph left",string.Empty,22,new Vector2(90,40),new Vector2(-760,0),Toy.Navy,TextAnchor.MiddleCenter,true);
             tabGlyphs[1]=Toy.Label(header,"Tab glyph right",string.Empty,22,new Vector2(90,40),new Vector2(x+24,0),Toy.Navy,TextAnchor.MiddleCenter,true);
@@ -74,7 +74,7 @@ namespace LittleRoad
             var sides=InputGlyphs.Name("tabs").Split('/');tabGlyphs[0].text=sides[0].Trim();tabGlyphs[1].text=sides[^1].Trim();
             var save=ctx.save();areaText.text=ctx.area().ToUpperInvariant();creditText.text=$"{save.credits:N0} CREDITS";
             string goal=ctx.objective();objectiveText.text=string.IsNullOrEmpty(goal)?"":"Next: "+goal;
-            switch(tab){case 0:BuildMap();break;case 1:BuildCollection(save);break;case 2:BuildCar(save);break;case 3:BuildControls();break;default:BuildSettings();break;}
+            switch(tab){case 0:BuildMap();break;case 1:BuildCollection(save);break;case 2:BuildCar(save);break;case 3:BuildRecords(save);break;case 4:BuildControls();break;default:BuildSettings();break;}
             footer.text=tab==0?InputGlyphs.Footer(true,true,"close")+"     Stick / mouse: look around":InputGlyphs.Footer(true,tab==Settings,"close");
         }
         // ---------------------------------------------------------------- MAP
@@ -158,6 +158,38 @@ namespace LittleRoad
                 Toy.Label(badge.transform,"Badge text",(has?"✓ ":"")+label,24,new Vector2(360,64),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter,true);bx+=400;
             }
         }
+        // ---------------------------------------------------------------- RECORDS
+        // Speed traps (docs/51): a card per camera with its best speed and stars (the map's star marks).
+        void BuildRecords(AdventureProgress save)
+        {
+            int total=SpeedTraps.All.Sum(t=>SpeedTraps.Record(save,t.id)?.stars??0);
+            Toy.Title(body,"Traps title",$"SPEED TRAPS  {total}/{SpeedTraps.All.Count*3}",40,new Vector2(1200,56),new Vector2(-180,300),Toy.Orange,TextAnchor.MiddleLeft);
+            Toy.Label(body,"Traps note",$"Each star pays once: {SpeedTraps.Prizes[0]}, {SpeedTraps.Prizes[1]} and {SpeedTraps.Prizes[2]} credits. Faster parts reach the higher marks.",22,new Vector2(1500,34),new Vector2(-30,252),Toy.Soft,TextAnchor.MiddleLeft,true);
+            for(int i=0;i<SpeedTraps.All.Count;i++) {
+                var trap=SpeedTraps.All[i];var r=SpeedTraps.Record(save,trap.id);bool seen=r!=null;int stars=r?.stars??0;
+                int row=i/4,col=i%4;int inRow=row==0?Mathf.Min(4,SpeedTraps.All.Count):SpeedTraps.All.Count-4;float cx=(col-(inRow-1)*.5f)*380;float cy=125-row*200;
+                var card=Toy.Card(body,"Trap "+trap.id,new Vector2(350,184),new Vector2(cx,cy),seen?Toy.White:new Color(.9f,.91f,.95f),26,5,6);
+                Toy.Title(card.transform,"Trap name",trap.name.ToUpperInvariant(),28,new Vector2(320,40),new Vector2(0,64),stars>=3?Toy.Mint:Toy.Orange,TextAnchor.MiddleCenter);
+                Toy.Label(card.transform,"Trap area",MapRegions.At(trap.at).name,18,new Vector2(320,26),new Vector2(0,36),Toy.Soft,TextAnchor.MiddleCenter,true);
+                Toy.Title(card.transform,"Trap best",seen?$"{r.best:0} MPH":"NO RECORD",seen?40:28,new Vector2(320,54),new Vector2(0,0),seen?Toy.Sun:Toy.Silver,TextAnchor.MiddleCenter);
+                var marks=Toy.Rect(card.transform,"Stars",new Vector2(200,40),new Vector2(0,-40)).gameObject.AddComponent<Minimap.MarkLayer>();marks.raycastTarget=false;marks.Begin();
+                for(int s=0;s<3;s++)marks.Add(new Vector2((s-1)*50,0),s<stars?Toy.Gold:new Color(.8f,.82f,.88f),Minimap.Shape.Objective,17);marks.End();
+                Toy.Label(card.transform,"Trap marks",$"{trap.marks[0]} · {trap.marks[1]} · {trap.marks[2]} mph",18,new Vector2(320,26),new Vector2(0,-72),Toy.Navy,TextAnchor.MiddleCenter,false);
+            }
+            // Beat the Train: best time each way.
+            float bx=-400;
+            foreach(bool toHillcrest in new[]{true,false}) {
+                var r=SpeedTraps.Record(save,TrainRace.Id(toHillcrest));bool won=r!=null&&r.stars>0;
+                var badge=Toy.Card(body,"Train record",new Vector2(760,60),new Vector2(bx,-230),won?Toy.Mint:Toy.Silver,36,5,5);
+                Toy.Label(badge.transform,"Train text",$"Beat the train to {(toHillcrest?"Hillcrest":"Bayview Halt")}  ·  "+(won?$"best {r.best:0.0} s":"not yet"),24,new Vector2(740,60),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter,true);bx+=800;
+            }
+            // Pip's photo requests: a chip per sight.
+            int taken=PhotoRequests.All.Count(p=>save.collected.Contains(p.id));
+            Toy.Label(body,"Photos title",$"PIP'S PHOTO REQUESTS  {taken}/{PhotoRequests.All.Count}",24,new Vector2(380,40),new Vector2(-640,-312),Toy.Pink,TextAnchor.MiddleLeft,true);
+            for(int p=0;p<PhotoRequests.All.Count;p++){var req=PhotoRequests.All[p];bool has=save.collected.Contains(req.id);
+                var chip=Toy.Card(body,"Photo "+req.id,new Vector2(184,48),new Vector2(-330+p*196,-312),has?Toy.Pink:Toy.Silver,24,4,4);
+                Toy.Label(chip.transform,"Photo text",(has?"✓ ":"")+req.name,18,new Vector2(176,48),Vector2.zero,has?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true);}
+        }
         // ---------------------------------------------------------------- CAR
         void BuildCar(AdventureProgress save)
         {
@@ -184,7 +216,7 @@ namespace LittleRoad
             ("Manual gears: up / down","L Shift / L Ctrl","RT / LT","R2 / L2"),("Manual: throttle / brake","W / S","Right stick","Right stick"),("Steer","A D / Left Right","Left stick","Left stick"),
             ("Look behind (hold)","Q","Y","Triangle"),("Recover to the road","R","D-pad down","D-pad down"),("Talk / use","E","A","Cross"),
             ("Map","M","View","Create"),("Pause menu","Esc","Menu","Options"),("Race HUD size","H","L3","L3"),
-            ("Menus: select","Enter / Space","A","Cross"),("Menus: back","Esc","B","Circle"),("Menus: tabs","Q / E","LB / RB","L1 / R1"),
+            ("Horn","H","L3","L3"),("Photo mode","P","D-pad Up","D-pad Up"),("Menus: select","Enter / Space","A","Cross"),("Menus: back","Esc","B","Circle"),("Menus: tabs","Q / E","LB / RB","L1 / R1"),
             ("Garage: spin a part","Z / X  or drag","Right stick","Right stick"),("Full screen / windowed","F11","",""),};
         void BuildControls()
         {
@@ -257,6 +289,7 @@ namespace LittleRoad
         void SaveInto(int slot)
         {
             string note;
+            if(AdventureSession.MaxBuildTest){AskSave(0,"Test drive: saving to slots is off (your real saves are untouched).");return;}
             try{bool moved=slot!=SaveSlots.Current;SaveSlots.SaveTo(AdventureSession.Store,slot);if(moved)AdventureSession.Reopen(SaveSlots.LivePath);note=$"Saved to slot {slot}.";}
             catch(System.Exception e){Debug.LogException(e);note="Couldn't save: "+e.Message;}
             AskSave(0,note);

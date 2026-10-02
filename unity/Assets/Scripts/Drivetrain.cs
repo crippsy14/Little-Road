@@ -38,11 +38,11 @@ namespace LittleRoad
             spoolStart=induction.spoolStart;spoolFull=Mathf.Max(induction.spoolFull,induction.spoolStart+.05f);lag=induction.lag;
             antilag=induction.antilag;electric=induction.electric;lsd=box.lsd;
             shiftTime=box.shiftTime>0?box.shiftTime:.4f;shiftType=string.IsNullOrEmpty(box.shiftType)?"H":box.shiftType;
-            massFactor=Mathf.Max(.01f,tuning.mass);naPowerPerMass=tuning.power/turboPower/massFactor;
+            massFactor=Mathf.Max(.01f,tuning.mass);dragFactor=tuning.DragFactor;naPowerPerMass=tuning.power/turboPower/massFactor;
             launchCap=tuning.acceleration*(lsd?1.05f:1);
             tauAtPower=Tau(powerRpm);
             // Drag-limited top speed with the full power (the tuning's AttainableSpeed without a gearbox cap).
-            float low=0,high=120;for(int i=0;i<32;i++){float mid=(low+high)*.5f;if((.25f+DriveModel.DragK*mid*mid)*mid<tuning.power)low=mid;else high=mid;}
+            float low=0,high=120;for(int i=0;i<32;i++){float mid=(low+high)*.5f;if((.25f+DriveModel.DragK*tuning.DragFactor*mid*mid)*mid<tuning.power)low=mid;else high=mid;}
             topSpeed=(low+high)*.5f;
             int gears=Mathf.Clamp(box.gears>0?box.gears:4,3,8);float spread=box.spread>0?box.spread:3.6f;
             // Top gear: the box's km/h per 1000 rpm (fixed ratios, docs/47 gearing v2), times the final-drive tune
@@ -81,7 +81,7 @@ namespace LittleRoad
             if(rpm>=redline)return 0;
             float tau=Tau(rpm)*(1+(turboPower-1)*boost);
             float accel=naPowerPerMass/(tauAtPower*powerRpm)*tau*ratio[g];
-            return Mathf.Min(launchCap+DriveModel.Resistance(speed,massFactor),accel);
+            return Mathf.Min(launchCap+Drag(speed),accel);
         }
         public float SteadyAccel(int gear,float speed)=>GearAccel(gear,speed,BoostTarget(Rpm(gear,speed)));
         // Best-gear envelope with steady boost: what the AI and speed profiles plan with.
@@ -96,8 +96,8 @@ namespace LittleRoad
         public float GearTop(int gear)
         {
             float low=0,high=redline/ratio[gear]*.999f;
-            if(SteadyAccel(gear,high)>DriveModel.Resistance(high,massFactor))return high;   // on the limiter
-            for(int i=0;i<30;i++){float mid=(low+high)*.5f;if(SteadyAccel(gear,mid)>DriveModel.Resistance(mid,massFactor))low=mid;else high=mid;}
+            if(SteadyAccel(gear,high)>Drag(high))return high;   // on the limiter
+            for(int i=0;i<30;i++){float mid=(low+high)*.5f;if(SteadyAccel(gear,mid)>Drag(mid))low=mid;else high=mid;}
             return (low+high)*.5f;
         }
         // The car's top speed: the best gear's (a long box on a weak engine tops out a gear down).
@@ -106,8 +106,9 @@ namespace LittleRoad
         float[] gearTops;
         public float GearTopCached(int gear){if(gearTops==null){var tops=new float[Gears];for(int g=0;g<Gears;g++)tops[g]=GearTop(g);gearTops=tops;}return gearTops[Mathf.Clamp(gear,0,Gears-1)];}
         // True when top gear runs into its limiter before drag stops it (time for a longer box or final drive).
-        public bool TopGearLimited=>SteadyAccel(Gears-1,RedlineSpeed*.999f)>DriveModel.Resistance(RedlineSpeed*.999f,massFactor);
-        readonly float massFactor;
+        public bool TopGearLimited=>SteadyAccel(Gears-1,RedlineSpeed*.999f)>Drag(RedlineSpeed*.999f);
+        readonly float massFactor,dragFactor;
+        float Drag(float speed)=>(.25f+DriveModel.DragK*dragFactor*speed*speed)/massFactor;
     }
 
     // One car's live gearbox: current gear, shifts, revs and boost. Automatic (AI and the default) or manual.
@@ -125,6 +126,9 @@ namespace LittleRoad
         public int Upshifts {get;private set;}
         public int Downshifts {get;private set;}
         public bool Manual;
+        // Held on a start line (free-roam countdowns, docs/51): clutch in, so the revs follow the throttle (limiter and
+        // all) but nothing reaches the wheels. Richard, 1 Oct: hold the car still for a countdown but let it rev.
+        public bool Held;
         float shiftLeft,hold;int target;
         public GearState(Drivetrain drivetrain){train=drivetrain;Rpm=drivetrain.idle;}
         public void RequestShift(int direction)
@@ -146,6 +150,14 @@ namespace LittleRoad
         public float Step(float speed,float throttle,float dt)
         {
             ShiftEvent=0;lastSpeed=speed;
+            if(Held) {
+                float rev=train.idle+Mathf.Clamp01(throttle)*(train.redline*1.01f-train.idle);
+                Rpm=Mathf.MoveTowards(Rpm,Mathf.Min(rev,train.redline*1.01f),train.redline*dt*(rev>Rpm?2.5f:1.6f));
+                if(limiterCut>0)limiterCut-=dt;else if(Rpm>=train.redline*.995f&&throttle>.1f)limiterCut=LimiterCut;
+                Limiter=limiterCut>0;if(Limiter)Rpm=Mathf.Min(Rpm,train.redline*(1-.035f*(1-limiterCut/LimiterCut)));
+                Boost=Mathf.MoveTowards(Boost,throttle>.2f?train.BoostTarget(Rpm)*.5f:0,dt*2);
+                return 0;
+            }
             // Automatic: holding the brake at a stop reverses; forward again once stopped.
             if(!Manual){if(speed< -.3f&&throttle<0){Gear=-1;}else if(Gear<0&&speed>-.1f&&!Shifting)Gear=0;}
             if(shiftLeft>0){shiftLeft-=dt;if(shiftLeft<=0){Gear=target;shiftLeft=0;}}

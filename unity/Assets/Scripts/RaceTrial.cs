@@ -79,7 +79,7 @@ namespace LittleRoad
             career=AdventureSession.Racing;
             if(!career&&!Has("--trial-auto")&&!Has("--trial-race")){freeRoam=true;gameObject.AddComponent<AdventureGame>();yield break;}
             sampleInterval=Arg("--traffic-case","").StartsWith("draft-")?1f/120:1;
-            automation=Has("--trial-auto")||AdventureSession.Smoke||(career&&Has("--valley-race-review"));int.TryParse(Arg("--trial-cars","24"),out field);field=Mathf.Clamp(field,1,24);
+            automation=Has("--trial-auto")||AdventureSession.Smoke||(career&&(Has("--valley-race-review")||Has("--duke-race-review")));int.TryParse(Arg("--trial-cars","24"),out field);field=Mathf.Clamp(field,1,24);
             float.TryParse(Arg("--trial-duration","240"),out duration);int.TryParse(Arg("--trial-seed","1709"),out seed);
             int.TryParse(Arg("--trial-laps","3"),out requiredLaps);requiredLaps=Mathf.Max(1,requiredLaps);
             setup=Arg("--trial-setup","stock");reportPath=Arg("--trial-report");captureFolder=Arg("--trial-captures");
@@ -88,7 +88,7 @@ namespace LittleRoad
                 if(captureFolder!=null)captureFolder=Path.Combine(captureFolder,"race-"+AdventureSession.RaceSerial);
             }
             if(reportPath!=null)DriverAudit=new DriverFrameAudit();
-            if(career){field=24;requiredLaps=AdventureSession.EnteredRoster?.Laps??3;setup="owned equipment";seed=1709+AdventureSession.RaceSerial*11;careerUI=gameObject.AddComponent<AdventureUI>();}
+            if(career){field=AdventureSession.EnteredRoster?.Entries.Count??24;requiredLaps=AdventureSession.EnteredRoster?.Laps??3;setup="owned equipment";seed=1709+AdventureSession.RaceSerial*11;careerUI=gameObject.AddComponent<AdventureUI>();}
             gridMode=Arg("--trial-grid","pack");opponentSetups=Arg("--trial-opponents","").Split(',',StringSplitOptions.RemoveEmptyEntries);
             if(gridMode!="pack"&&gridMode!="line")throw new ArgumentException("Unknown trial grid: "+gridMode);
             QualitySettings.vSyncCount=0;Application.targetFrameRate=120;Time.fixedDeltaTime=1f/120;Time.maximumDeltaTime=.15f;
@@ -122,7 +122,7 @@ namespace LittleRoad
             if(RaceAiPreset.RacerV2&&policy=="context")policy="racer";
             if(Has("--dynamic-rejoin")&&((career&&!connectedModern)||policy!="context"||(field!=1&&!Has("--dynamic-traffic"))||!Has("--road-feasibility")))throw new ArgumentException("Dynamic rejoin requires declared context fixtures and physical road checks.");
             bool bayviewStudy=Has("--bayview-transfer-study")||connectedModern;
-            if(bayviewStudy&&((career&&!connectedModern)||(trackId!="bayview"&&trackId!="hillcrest")||(policy!="legacy"&&policy!="context"&&policy!="racer")||!((field==24&&Arg("--traffic-case")=="field")||(field==RaceGrid.ClassSortCars&&Arg("--traffic-case")=="class-sort")||(field==1&&Arg("--traffic-case")=="standing-solo"))))throw new ArgumentException("Bayview transfer requires explicit standalone legacy/context standing-solo or24-car field.");
+            if(bayviewStudy&&((career&&!connectedModern)||(trackId!="bayview"&&trackId!="hillcrest")||(policy!="legacy"&&policy!="context"&&policy!="racer")||!((field==24&&Arg("--traffic-case")=="field")||(field==RaceGrid.ClassSortCars&&Arg("--traffic-case")=="class-sort")||(field==1&&Arg("--traffic-case")=="standing-solo")||(career&&connectedModern&&field==AdventureSession.EnteredRoster.Entries.Count))))throw new ArgumentException("Bayview transfer requires explicit standalone legacy/context standing-solo or24-car field.");
             bool dynamicFieldStudy=Has("--dynamic-field-study");
             if(Has("--dynamic-blocking-target")&&!Has("--dynamic-traffic"))throw new ArgumentException("Dynamic blocking targets require the dynamic traffic study.");
             if(Has("--dynamic-traffic-fallback")&&!Has("--dynamic-traffic"))throw new ArgumentException("Dynamic traffic fallback requires the dynamic traffic study.");
@@ -144,7 +144,7 @@ namespace LittleRoad
             if(Has("--driver-roster")&&((career&&!connectedModern)||(policy!="context"&&policy!="racer")))throw new ArgumentException("Driver roster currently requires standalone context comparisons.");
             if(Has("--driver-form")&&!Has("--driver-roster"))throw new ArgumentException("Driver form needs declared identities.");
             if(!career||AdventureSession.Smoke)Time.timeScale=Mathf.Clamp(float.Parse(Arg("--trial-timescale","1"),System.Globalization.CultureInfo.InvariantCulture),.25f,8);
-            Roster=career?AdventureSession.EnteredRoster:RaceRoster.Trial(field,requiredLaps,seed,trackId,setup,opponentSetups,Arg("--traffic-case"),Has("--driver-roster")?Arg("--driver-roster"):null,Has("--driver-form"),Has("--path-approach-file")?PathApproachAudit.Replay().bodyAsset:null);
+            Roster=career?AdventureSession.EnteredRoster:RaceRoster.Trial(field,requiredLaps,seed,trackId,setup,opponentSetups,Arg("--traffic-case"),Has("--driver-roster")?Arg("--driver-roster"):null,Has("--driver-form"),Has("--trial-body")?Arg("--trial-body"):Has("--path-approach-file")?PathApproachAudit.Replay().bodyAsset:null);
             if(Roster==null||Roster.Entries.Count!=field||Roster.Seed!=seed)throw new InvalidOperationException("Entered roster does not match this race.");
             foreach(var entrant in Roster.Entries) {
                 int i=entrant.Id;var go=TrialWorld.Car(entrant.Body,entrant.Paint);bool line=gridMode=="line";float grid=RaceGrid.Distance(entrant.Slot,line);
@@ -153,6 +153,8 @@ namespace LittleRoad
                 // The human's car in adventure races sweeps its contacts like free roam: speculative
                 // contacts snag Bayview road-mesh edges mid-corner. AI cars keep their validated mode.
                 if(career&&!car.autonomous&&!Has("--free-roam-speculative"))car.body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
+                // The Duke's car too: at 60-75 m/s speculative contacts snagged the road mesh edges violently (docs/54).
+                if(Roster.Event==RaceRoster.DukeEvent)car.body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
             }
             if(reportPath!=null)Roster.Save(Path.ChangeExtension(reportPath,"roster.json"));
             if(Has("--driver-roster")&&reportPath!=null){Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(reportPath)));File.WriteAllText(Path.ChangeExtension(reportPath,"drivers.json"),JsonUtility.ToJson(new DriverRosterEvidence{mode=Arg("--driver-roster"),drivers=cars.Select(c=>c.Driver.Export(c.driverId)).ToArray()},true));}
@@ -219,13 +221,13 @@ namespace LittleRoad
                 careerUI.SetHudVisible(Hud==null&&!careerUI.IsOpen);
                 // Only while it shows (the race HUD normally replaces it): rebuilding it every frame cost time.
                 if(Hud==null){int place=LivePlace(cars[0]);
-                careerUI.HUD($"BAYVIEW COAST / CLASS C   ·   {place}/24   ·   Lap {Mathf.Min(cars[0].laps+1,requiredLaps)}/3   ·   {Mathf.RoundToInt(Mathf.Abs(cars[0].speed)*2.237f)} mph\n{(elapsed<0?"START IN "+Mathf.CeilToInt(-elapsed):"Race time "+(cars[0].finished?cars[0].finishTime:elapsed).ToString("0.0")+"s")}   ·   {AdventureSession.Store.Data.credits} credits",
+                careerUI.HUD($"BAYVIEW COAST / CLASS C   ·   {place}/{cars.Count}   ·   Lap {Mathf.Min(cars[0].laps+1,requiredLaps)}/3   ·   {Mathf.RoundToInt(Mathf.Abs(cars[0].speed)*2.237f)} mph\n{(elapsed<0?"START IN "+Mathf.CeilToInt(-elapsed):"Race time "+(cars[0].finished?cars[0].finishTime:elapsed).ToString("0.0")+"s")}   ·   {AdventureSession.Store.Data.credits} credits",
                     PlayerRecoveryPending?"RECOVERY REQUESTED — waiting for a clear space on the road":cars[0].CheckpointMissed?cars[0].CheckpointMessage:InputGlyphs.Race);}
             }
             if(automation && !reportWritten && (elapsed>=duration || finishOrder.Count==cars.Count)) {
                 WriteReport();
                 if(career&&AdventureSession.Smoke){
-                    if(finishOrder.Count!=24)throw new Exception("Adventure race did not complete its field.");
+                    if(finishOrder.Count!=cars.Count)throw new Exception("Adventure race did not complete its field.");
                     StartCoroutine(FinishCareerSmoke());
                 }
                 else StartCoroutine(EndTrial());
@@ -301,6 +303,7 @@ namespace LittleRoad
         void SettleCareer()
         {
             int place=finishOrder.IndexOf(cars[0])+1;
+            if(Roster?.Event==RaceRoster.DukeEvent){SettleDuke(place);return;}
             try {
                 bool valley=Roster?.Track=="hillcrest";var data=AdventureSession.Store.Data;string openBefore=RaceCalendar.Open(data);bool doneBefore=RaceCalendar.Complete(data,openBefore);
                 int reward=AdventureSession.Store.FinishRace(AdventureSession.RaceSerial,place,valley?"hillcrest":"bayview");
@@ -311,12 +314,25 @@ namespace LittleRoad
                 ShowCareerResult();
             }catch(Exception e){Debug.LogError(e);careerUI.Show("Reward not saved yet",e.Message,new(){new("Retry saving this result",SettleCareer)});}
         }
+        // The Duke's Challenge (docs/54): the Regale and the prize on your first win.
+        void SettleDuke(int place)
+        {
+            try {
+                int paid=AdventureSession.Store.FinishDukeRace(AdventureSession.RaceSerial,place);careerReward=paid;
+                var duke=cars.Count>1?cars[1]:null;float gap=duke!=null&&duke.finished&&cars[0].finished?Mathf.Abs(cars[0].finishTime-duke.finishTime):0;
+                AdventureSession.Notice=place==1?(paid>0?$"You beat Duke Rolo! +{paid:N0} credits, and the Regale is yours: swap to it at any Pit Stop garage.":
+                        $"You beat Duke Rolo again, by {gap:0.0} s. \"Splendid! Same time next week?\""):
+                    $"Duke Rolo wins{(gap>0?$" by {gap:0.0} s":"")}. \"Come back when your car can keep up with the Regale!\"";
+                Debug.Log($"LITTLE_ROAD_DUKE_RACE place={place} paid={paid} gap={gap:0.0}");
+                ShowCareerResult();
+            }catch(Exception e){Debug.LogError(e);careerUI.Show("Result not saved yet",e.Message,new(){new("Retry saving this result",()=>SettleDuke(place))});}
+        }
         void ShowCareerResult()
         {
             var me=cars[0];var entrant=Roster?.Entries[me.driverId];
             var summary=new RaceResultSummary{place=finishOrder.IndexOf(me)+1,entrants=cars.Count,grid=entrant!=null?entrant.Slot+1:cars.Count,reward=careerReward,
                 wallet=AdventureSession.Store.Data.credits,laps=requiredLaps,finishTime=me.finishTime,bestLap=me.bestLap,standings=LiveStandings};
-            if(Roster!=null)summary.venue=Roster.Title.Split('/')[0].Trim()+" Cup";
+            if(Roster!=null)summary.venue=Roster.Event==RaceRoster.DukeEvent?"The Duke's Challenge":Roster.Title.Split('/')[0].Trim()+" Cup";
             summary.trace.Add(new Vector2(0,summary.grid));summary.trace.AddRange(playerTrace);summary.trace.Add(new Vector2(requiredLaps,summary.place));
             careerUI.ShowRaceResult(summary,AdventureSession.ReturnToTown,PreviewNextCareerRace);
         }
@@ -329,7 +345,10 @@ namespace LittleRoad
         }
         void PreviewNextCareerRace()
         {
-            var roster=RaceRoster.Adventure(AdventureSession.Store.Data);
+            var data=AdventureSession.Store.Data;
+            // A rematch with the Duke starts straight away (the race preview is the 24-car grid).
+            if(Roster?.Event==RaceRoster.DukeEvent){AdventureSession.StartRace(RaceRoster.DukeChallenge(data));return;}
+            var roster=Roster?.Event=="hillcrest"?RaceRoster.AdventureHillcrest(data):RaceRoster.Adventure(data);
             float resume=Time.timeScale;Time.timeScale=0;careerUI.Close();careerUI.SetVisible(false);
             if(racePreview==null)racePreview=gameObject.AddComponent<RacePreviewUI>();
             racePreview.Open(roster,()=>AdventureSession.StartRace(roster),()=>{Time.timeScale=resume;careerUI.SetVisible(true);ShowCareerResult();});
@@ -398,11 +417,13 @@ namespace LittleRoad
             label??=new GUIStyle(GUI.skin.label){fontSize=20,normal={textColor=Color.white}};
             small??=new GUIStyle(GUI.skin.label){fontSize=15,normal={textColor=new Color(.79f,.88f,.88f)}};
             GUI.color=new Color(.07f,.16f,.19f,.9f);GUI.DrawTexture(new Rect(20,20,480,148),Texture2D.whiteTexture);GUI.color=Color.white;
-            GUI.Label(new Rect(36,29,450,38),technical==null?"LITTLE ROAD / Coastal Circuit":"LITTLE ROAD / Cedar Technical",title);
+            GUI.Label(new Rect(36,29,450,38),"LITTLE ROAD / "+(Roster?.Title??"COASTAL CIRCUIT"),title);
             int place=LivePlace(cars[0]);
             GUI.Label(new Rect(36,69,450,30),$"{Mathf.RoundToInt(Mathf.Abs(cars[0].speed)*2.237f)} mph     {place}/{cars.Count}     Lap {Mathf.Min(cars[0].laps+1,requiredLaps)}/{requiredLaps}",label);
             GUI.Label(new Rect(36,103,450,24),$"{setup.ToUpperInvariant()}  ·  {(cars[0].autonomous?"AI driving":"You are driving")}  ·  {Mathf.Max(0,elapsed):0.0}s",small);
-            GUI.Label(new Rect(36,130,450,24),technical==null?"Unity migration trial — prototype art":technical.Region(cars[0].pathDistance)+"  ·  C: overview",small);
+            // Lap times (the max build hot laps, docs/54: how fast is the fastest car?).
+            string Lap(float t)=>t>0&&t<float.MaxValue?$"{(int)(t/60)}:{t%60:00.00}":"--";
+            GUI.Label(new Rect(36,130,450,24),$"This lap {Lap(cars[0].CurrentLapTime)}  ·  Last {Lap(cars[0].LastLapTime)}  ·  Best {Lap(cars[0].bestLap)}"+(technical!=null?"  ·  "+technical.Region(cars[0].pathDistance)+"  ·  C: overview":""),small);
             GUI.color=new Color(.07f,.16f,.19f,.9f);GUI.DrawTexture(new Rect(20,hud.height-60,hud.width-40,40),Texture2D.whiteTexture);GUI.color=Color.white;
             GUI.Label(new Rect(36,hud.height-53,hud.width-65,30),"WASD / arrows or stick + R2/L2     Hold Q / Triangle: look behind     R / D-pad Down: recover     Tab / Share: AI     F11: fullscreen     Esc: quit",small);
             if(GUI.Button(new Rect(hud.width-320,244,300,32),DisplaySettings.Fullscreen?"Switch to windowed (F11)":"Switch to fullscreen (F11)"))DisplaySettings.Toggle();

@@ -164,14 +164,29 @@ def build(sources, cylinders, idle, redline, out, report_base='', min_confidence
     # smooth target instead, pulling rising 2x from bottom to top revs and coasting at 65% of it. The correction
     # is smoothed over nine cycles so each cycle keeps its own texture.
     lo_r = min(k[0] for k in kept); hi_r = max(k[0] for k in kept); levelled = []
+    # What the levelling must keep (docs/55, the engine scorecard): how much louder the engine gets as the revs rise on
+    # the throttle, and how much quieter it is lifted than pulling at the same revs, both measured from the recording.
+    # (A fixed 6 dB rise and lifted at 65% of pulling dropped every lift-off 6-8 dB at once; real ones drop 1-4 dB.)
+    def db(g): return 20 * math.log10(math.sqrt(np.mean(g ** 2)) + 1e-6)
+    pull_bins, coast_bins = {}, {}
+    for r, load, g, rid, tail in kept: (pull_bins if load == 1 else coast_bins).setdefault(int(r // 250), []).append(db(g))
+    gaps = [np.median(pull_bins[k]) - np.median(coast_bins[k]) for k in pull_bins if k in coast_bins and len(pull_bins[k]) >= 4 and len(coast_bins[k]) >= 4]
+    # Floors: the game is heard from behind the car, by the exhaust. Exhaust microphones lift 4-10 dB (the Skyline 9.8,
+    # the sprint car 5.0) and gain 4-8 dB per doubling of revs; engine-bay microphones mostly hear the valve train,
+    # which barely changes with load (0 dB), and would leave the throttle inaudible.
+    contrast = float(np.clip(np.median(gaps), 3, 12)) if gaps else 4.0
+    pts = [(math.log2((k + 0.5) * 250), np.median(v)) for k, v in pull_bins.items() if len(v) >= 4]
+    rise = float(np.clip(np.polyfit([p[0] for p in pts], [p[1] for p in pts], 1)[0], 3, 12)) if len(pts) >= 3 else 6.0
+    # Both kinds are levelled alike; playback applies the lift-off drop as a gain from the header (coasting sweeps
+    # rarely cover every rev range, and pulling cycles stand in for them).
+    def target(r, load): return max(0.02, 0.16 * 10 ** (rise * math.log2(r / hi_r) / 20))
     for run in sorted({k[3] for k in kept}):
         idx = [i for i, k in enumerate(kept) if k[3] == run]
         rms = np.array([math.sqrt(np.mean(kept[i][2] ** 2)) + 1e-6 for i in idx]); lg = np.log(rms)
         smooth = np.array([np.median(lg[max(0, j - 4):j + 5]) for j in range(len(lg))])
         for j, i in enumerate(idx):
-            r, load, g, rid, tail = kept[i]; frac = (r - lo_r) / max(1, hi_r - lo_r)
-            target = 0.16 * (0.5 + 0.5 * frac) * (1 if load == 1 else 0.65)
-            gain = min(6, max(0.25, target / math.exp(smooth[j])))
+            r, load, g, rid, tail = kept[i]
+            gain = min(6, max(0.25, target(r, load) / math.exp(smooth[j])))
             levelled.append((r, load, g * gain, rid, tail * gain))
     kept = levelled
     # Headroom per cycle: a bang (the Fabia's anti-lag) is limited on its own, not by turning the whole bank down.
@@ -181,14 +196,15 @@ def build(sources, cylinders, idle, redline, out, report_base='', min_confidence
     kept = [limit(k) for k in kept]
     os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
     with open(out, 'wb') as f:
-        f.write(b'LRGB'); f.write(struct.pack('<iiiffi', 3, FS, cylinders, idle, redline, len(kept)))
+        # Version 4: the header also carries the measured lift-off drop and rev-rise (dB), which playback uses.
+        f.write(b'LRGB'); f.write(struct.pack('<iiiffi', 4, FS, cylinders, idle, redline, len(kept))); f.write(struct.pack('<ff', contrast, rise))
         for r, load, g, run, tail in kept:
             pcm = np.clip(np.round(np.concatenate([g, tail]) * 32767), -32768, 32767).astype('<i2')
             f.write(struct.pack('<fBHii', r, load, run, len(g), len(pcm))); f.write(pcm.tobytes())
     on = [g[0] for g in kept if g[1] == 1]; off = [g[0] for g in kept if g[1] == 0]
     print(f'ENGINE_GRAINS {os.path.basename(out)}: {len(kept)} grains in {run_id} sweeps ({os.path.getsize(out) / 1e6:.1f} MB) from {len(grains)} trusted cycles; '
           f'on load {len(on)} ({min(on) if on else 0:.0f}-{max(on) if on else 0:.0f} rpm), '
-          f'off load {len(off)} ({min(off) if off else 0:.0f}-{max(off) if off else 0:.0f} rpm); tracked '
+          f'off load {len(off)} ({min(off) if off else 0:.0f}-{max(off) if off else 0:.0f} rpm); rise {rise:.1f} dB per doubling, lifted {contrast:.1f} dB under; tracked '
           + ', '.join(f'{a:.0f}-{b:.0f} rpm (confidence {c:.2f})' for a, b, c in tracked))
 
 def main():

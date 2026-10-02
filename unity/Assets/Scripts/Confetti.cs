@@ -18,7 +18,9 @@ namespace LittleRoad
         void Build()
         {
             for(int i=0;i<Pieces;i++) {
-                var p=GameObject.CreatePrimitive(PrimitiveType.Quad);Destroy(p.GetComponent<Collider>());p.transform.SetParent(transform,false);
+                // DestroyImmediate: Destroy waits for the end of the frame, and bursts spawned in a physics step (a speed trap's
+                // star) left 46 quad colliders on the car for the rest of it: it stopped dead "like a crash" (Richard, 1 Oct).
+                var p=GameObject.CreatePrimitive(PrimitiveType.Quad);DestroyImmediate(p.GetComponent<Collider>());p.transform.SetParent(transform,false);
                 p.transform.localScale=new Vector3(.14f,.09f,1);var r=p.GetComponent<Renderer>();r.sharedMaterial=materials[i%materials.Length];r.shadowCastingMode=ShadowCastingMode.Off;
                 var dir=Random.onUnitSphere;dir.y=Mathf.Abs(dir.y)*1.4f+.4f;velocity[i]=dir.normalized*Random.Range(3.5f,6.5f);spin[i]=Random.insideUnitSphere*720;
                 p.transform.rotation=Random.rotation;pieces[i]=p.transform;
