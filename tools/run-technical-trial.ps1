@@ -111,7 +111,8 @@ $trialDuration=if($PSBoundParameters.ContainsKey('Duration')){$Duration}else{[Ma
 $trialArguments=@($trialMode,'--trial-track',$Track,'--trial-setup',$Loadout,'--trial-cars',$Cars.ToString(),'--trial-laps',$Laps.ToString(),
     '--trial-seed',$Seed.ToString(),'--trial-grid',$Grid,'--trial-duration',$trialDuration.ToString(),'--trial-report',('"'+(Join-Path $trialOutput 'race.json')+'"'),
     '-logFile',('"'+(Join-Path $trialOutput 'run.log')+'"'),'-screen-width',$Width.ToString(),'-screen-height',$Height.ToString())
-if(-not $Visible){$trialArguments=@('-batchmode')+$trialArguments}
+# Visible runs play silently (--silent: audio runs and can be captured, nothing reaches the speakers).
+if(-not $Visible){$trialArguments=@('-batchmode')+$trialArguments}else{$trialArguments=@('--silent')+$trialArguments}
 $trialRate=if($PSBoundParameters.ContainsKey('PlaybackRate')){$PlaybackRate}elseif($Visible){1}else{4}
 $trialArguments+=@('--trial-timescale',$trialRate.ToString([Globalization.CultureInfo]::InvariantCulture))
 if($Captures){$trialArguments+=@('--trial-captures',('"'+$trialOutput+'"'))}

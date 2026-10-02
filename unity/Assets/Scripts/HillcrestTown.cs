@@ -60,7 +60,7 @@ namespace LittleRoad
         public void Build()
         {
             if(!BayviewKit.Has("terrace_a"))return;
-            Spots.Clear();reserved.Clear();Homes.Clear();Chimneys.Clear();ZipTop=null;ZipLine.Active=null;
+            Spots.Clear();reserved.Clear();Homes.Clear();Chimneys.Clear();StreetLamps.Clear();ZipTop=null;ZipLine.Active=null;
             paving=WorldLook.Kit("Hillcrest paving",Toy.Hex(0xb3a68c),WorldLook.Pattern.Stone,0,.15f,true);plinth=WorldLook.Kit("Hillcrest stone plinth",Toy.Hex(0xc2b08e),WorldLook.Pattern.Stone,0,.12f,true);
             railWhite=TrialWorld.Material("Balustrade white",Toy.Hex(0xfff8ec),0,.25f);
             ReserveZipLanding();MarketSquare();Castle();LowerTown();Station();Streets();Vista();Lookout();Raceway();Countryside();HillSlopes();Patchwork();ZipLineBuild();TunnelFrame();
@@ -148,8 +148,27 @@ namespace LittleRoad
             for(float s=from;s<=to;s+=every,k++) {
                 int side=k%2==0?1:-1;Vector3 p=road.At(s)+road.Right(s)*side*(road.width*.5f+.7f);
                 bool clear=true;foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,p.x,p.z,out _)<other.width*.5f+1.2f){clear=false;break;}
-                if(clear)Put("lamp_post",new Vector3(p.x,road.At(s).y,p.z),0,T(0xffffff,0x2e5d3a,0xffffff,0xffffff),null,1,false);
+                if(clear){var lamp=new Vector3(p.x,road.At(s).y,p.z);Put("lamp_post",lamp,0,T(0xffffff,0x2e5d3a,0xffffff,0xffffff),null,1,false);StreetLamps.Add(lamp);}
             }
+        }
+        // Street lamps placed so far (cross-street bunting hangs from them where one stands at its end).
+        public static readonly List<Vector3> StreetLamps=new();
+        // Bunting across a street at run `s`, hung from a lamp post on each pavement (Richard, 2 Oct: runs across the
+        // Quay and Via Crest hung from nothing). The street's own lamps alternate sides, so a lamp is added at any end
+        // without one within 2.5 m; a run whose end would stand on another road is left out.
+        void StreetBunting(HillcrestRoute.Road road,float s)
+        {
+            var ends=new Vector3[2];
+            for(int i=0;i<2;i++) {
+                int side=i==0?1:-1;var p=road.At(s)+road.Right(s)*side*(road.width*.5f+.7f);
+                foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,p.x,p.z,out _)<other.width*.5f+1.2f)return;
+                p.y=road.At(s).y;ends[i]=p;
+            }
+            for(int i=0;i<2;i++) {
+                bool lit=false;foreach(var l in StreetLamps)if(Vector2.Distance(new(l.x,l.z),new(ends[i].x,ends[i].z))<2.5f){ends[i]=l;lit=true;break;}
+                if(!lit){Put("lamp_post",ends[i],0,T(0xffffff,0x2e5d3a,0xffffff,0xffffff),null,1,false);StreetLamps.Add(ends[i]);}
+            }
+            Bunting(ends[0]+Vector3.up*4.4f,ends[1]+Vector3.up*4.4f,.9f);
         }
         // ---------------------------------------------------------------- market square
         void MarketSquare()
@@ -194,8 +213,11 @@ namespace LittleRoad
         static Material buntingMaterial;
         void Bunting(Vector3 a,Vector3 b,float sag)=>BuntingLine(root,a,b,sag);
         // Shared with Bayview's high street.
+        // Every bunting line's two ends (the placement audit checks each hangs from something).
+        public static readonly List<(Vector3 a,Vector3 b)> BuntingEnds=new();
         public static GameObject BuntingLine(Transform parent,Vector3 a,Vector3 b,float sag)
         {
+            BuntingEnds.Add((a,b));
             // LittleRoad/Bunting: vertex alpha is how free a vertex is, so pennant tips sway and flutter.
             if(buntingMaterial==null)buntingMaterial=new Material(Shader.Find("LittleRoad/Bunting")){name="Bunting"};
             var v=new List<Vector3>();var col=new List<Color>();var t=new List<int>();float length=Vector3.Distance(a,b);int flags=Mathf.Max(2,(int)(length/.62f));
@@ -356,7 +378,7 @@ namespace LittleRoad
             // The rest of both sides: rows of houses and shops.
             Row(quay,1,Run(-80),quay.Length-6);Row(quay,-1,Run(-80),quay.Length-6,12.2f,.2f);
             Pavements(quay,6,quay.Length-6);Lamps(quay,8,quay.Length-8,22);
-            for(float x=-60;x<420;x+=64){float s=Run(x);var a=quay.At(s)+quay.Right(s)*(quay.width*.5f+.7f)+Vector3.up*4.4f;var b=quay.At(s)-quay.Right(s)*(quay.width*.5f+.7f)+Vector3.up*4.4f;Bunting(a,b,.9f);}
+            for(float x=-60;x<420;x+=64)StreetBunting(quay,Run(x));
             // Riverside promenade: benches and trees looking over the water.
             var river=HillcrestRoute.River;
             for(float x=-80;x<440;x+=18) {
@@ -410,7 +432,7 @@ namespace LittleRoad
             var crest=HillcrestRoute.Crest;
             Row(crest,1,14,crest.Length-60);Row(crest,-1,14,crest.Length-60,12.2f,.22f);
             Pavements(crest,4,crest.Length-50);Lamps(crest,10,crest.Length-40,26);
-            for(float s=60;s<crest.Length-60;s+=90){Vector3 a=crest.At(s)+crest.Right(s)*(crest.width*.5f+.7f),b=crest.At(s)-crest.Right(s)*(crest.width*.5f+.7f);Bunting(a+Vector3.up*4.4f,b+Vector3.up*4.4f,.9f);}
+            for(float s=60;s<crest.Length-60;s+=90)StreetBunting(crest,s);
         }
         // ---------------------------------------------------------------- viewpoints
         void Vista()

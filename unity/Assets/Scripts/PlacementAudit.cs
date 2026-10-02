@@ -38,8 +38,16 @@ namespace LittleRoad
                 if(bottom-highestGround>.3f)floating.Add($"{where} gap {bottom-highestGround:0.00} m");
                 else if(centreGround!=float.MinValue&&centreGround-bottom>1.2f&&centreGround<b.max.y)sunk.Add($"{where} buried {centreGround-bottom:0.00} m");
             }
+            // Bunting ends: each must touch a placed piece (lamp, flag pole, building, gate) within 0.8 m.
+            var loose=new List<string>();int ends=0;
+            foreach(var (a,b) in HillcrestTown.BuntingEnds)foreach(var e in new[]{a,b}) {
+                ends++;bool held=false;
+                foreach(var go in BayviewKit.Placed){if(go==null)continue;foreach(var r in go.GetComponentsInChildren<Renderer>()){var rb=r.bounds;rb.Expand(1.6f);if(rb.Contains(e)){held=true;break;}}if(held)break;}
+                if(!held)loose.Add($"bunting end at ({e.x:0},{e.y:0.0},{e.z:0})");
+            }
             var sb=new StringBuilder();
-            sb.AppendLine($"checked={checkedCount} floating={floating.Count} sunk={sunk.Count}");
+            sb.AppendLine($"checked={checkedCount} floating={floating.Count} sunk={sunk.Count} buntingEnds={ends} looseBunting={loose.Count}");
+            foreach(var l in loose)sb.AppendLine("  "+l);
             sb.AppendLine("floating (gap under the whole footprint):");foreach(var f in floating.OrderBy(s=>s))sb.AppendLine("  "+f);
             sb.AppendLine("sunk (centre below ground):");foreach(var s in sunk.OrderBy(s=>s))sb.AppendLine("  "+s);
             return sb.ToString();

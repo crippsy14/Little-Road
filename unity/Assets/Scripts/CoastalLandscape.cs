@@ -398,7 +398,7 @@ namespace LittleRoad
         public void Build()=>TrialWorld.RunNow(BuildRoutine());
         public System.Collections.IEnumerator BuildRoutine()
         {
-            stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.Placed.Clear();Step("start");Next(0,"Shaping the island");yield return null;
+            stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;
             LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;
             Mainland();Step("mainland");Next(.33f,"Building the bridge");yield return null;
             Bridge();Roadside();masonry.Finish();Step("bridge-roadside-masonry");Next(.35f,"Carving the cliffs");yield return null;

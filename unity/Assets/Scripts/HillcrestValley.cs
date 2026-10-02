@@ -206,7 +206,7 @@ namespace LittleRoad
             float RoadTop(Vector3 q){foreach(var hit in Physics.RaycastAll(new Vector3(q.x,20,q.z),Vector3.down,60))if(hit.collider.GetComponent<RoadSurface>()!=null)return hit.point.y;return float.NaN;}
             Shoulders(main.line,main.width*.5f,.03f,0,false,holder,gravel,"Road shoulder",quayEnd,q=>SurfacePoint(q,out var hit,false)?hit.point.y:-30,RoadTop);
             Shoulders(valleyRoad,valleyWidth*.5f,.024f,0,false,holder,gravel);Shoulders(stationRoad,stationWidth*.5f,.018f,0,false,holder,gravel);Shoulders(crest.line,crest.width*.5f,.018f,0,false,holder,gravel);
-            foreach(var n in net.nodes)if(n.arms.Count>1)JunctionSurface(n,holder);
+            foreach(var n in net.nodes)if(n.arms.Count>1){JunctionSurface(n,holder);if(!n.HasExternal)KerbShoulders(n,holder,gravel);}
             RacewayCircuit(holder);
         }
         // Hillcrest Raceway: 16 m asphalt with runoff, edge paint, corner kerbs, start line and gantry.
@@ -328,7 +328,9 @@ namespace LittleRoad
                     Vector3 f=closed?line[(i+1)%n]-line[(i+n-1)%n]:line[Mathf.Min(n-1,i+1)]-line[Mathf.Max(0,i-1)];f.y=0;f.Normalize();var r=Vector3.Cross(Vector3.up,f)*side;
                     var inner=line[i]+r*halfWidth+Vector3.up*(lift-.004f);var outer=line[i]+r*(halfWidth+span);float g=ground(outer);
                     if(roadTop!=null){float top=roadTop(line[i]+r*(halfWidth-.2f));if(!float.IsNaN(top))inner.y=top-.004f;}
-                    bool ok=g>inner.y-.9f&&g<inner.y+1.2f&&!RiverBelow(outer)&&!NearMouth(outer,1);
+                    // Junctions grow their own ramps round their kerbs (KerbShoulders): stop where this one would run onto
+                    // a junction's surface or start on its kerb.
+                    bool ok=g>inner.y-.9f&&g<inner.y+1.2f&&!RiverBelow(outer)&&!OnJunction(outer,.6f)&&!OnJunction(inner,.3f);
                     if(!ok){prev=-1;continue;}
                     outer.y=g-.02f;int s0=v.Count;v.Add(inner);v.Add(outer);
                     if(prev>=0){if(side>0)t.AddRange(new[]{prev,s0,prev+1,prev+1,s0,s0+1});else t.AddRange(new[]{prev,prev+1,s0,prev+1,s0+1,s0});}
@@ -348,6 +350,35 @@ namespace LittleRoad
         // Inside a junction (shoulders and guardrails stop here); the road network (docs/52) knows where they are.
         RoadNetwork network;
         bool NearMouth(Vector3 p,float pad)=>network!=null&&network.NearJunction(p,pad);
+        bool OnJunction(Vector3 p,float pad)=>network!=null&&network.OnJunction(p,pad);
+        // Gravel ramps round a junction's kerbs (its fillets and the far side of a T), as the road shoulders have
+        // along the roads: before these, a car on the grass by a junction met a 16 cm step it couldn't climb
+        // (edge audit, 2 Oct: lips 22 -> 60 after the junction rework skipped shoulders within its radius).
+        void KerbShoulders(RoadNetwork.Node n,Transform parent,Material material)
+        {
+            const float span=1.8f;var v=new List<Vector3>();var t=new List<int>();
+            foreach(var kerb in n.kerbs) {
+                var pts=new List<Vector3>();
+                for(int k=0;k+1<kerb.Count;k++){int steps=Mathf.Max(1,Mathf.CeilToInt(Vector3.Distance(kerb[k],kerb[k+1])/1f));for(int j=0;j<steps;j++)pts.Add(Vector3.Lerp(kerb[k],kerb[k+1],j/(float)steps));}
+                if(kerb.Count>0)pts.Add(kerb[^1]);
+                int prev=-1;
+                for(int i=0;i<pts.Count;i++) {
+                    var f=pts[Mathf.Min(pts.Count-1,i+1)]-pts[Mathf.Max(0,i-1)];f.y=0;if(f.sqrMagnitude<1e-6f){prev=-1;continue;}
+                    var r=Vector3.Cross(Vector3.up,f.normalized);var away=pts[i]-n.at;away.y=0;if(Vector3.Dot(r,away)<0)r=-r;
+                    var inner=pts[i]+Vector3.down*.004f;var outer=pts[i]+r*span;float g=ValleyField.Height(outer.x,outer.z);
+                    bool ok=g>inner.y-.9f&&g<inner.y+1.2f&&!RiverBelow(outer)&&!OnJunction(outer,.2f);
+                    foreach(var road in HillcrestRoute.All())if(HillcrestRoute.Distance(road.line,outer.x,outer.z,out _)<road.width*.5f+.2f){ok=false;break;}
+                    if(!ok){prev=-1;continue;}
+                    outer.y=g-.02f;int s0=v.Count;v.Add(inner);v.Add(outer);
+                    if(prev>=0){var nrm=Vector3.Cross(v[s0]-v[prev],v[prev+1]-v[prev]);if(nrm.y>0)t.AddRange(new[]{prev,s0,prev+1,prev+1,s0,s0+1});else t.AddRange(new[]{prev,prev+1,s0,prev+1,s0+1,s0});}
+                    prev=s0;
+                }
+            }
+            if(t.Count==0)return;
+            var mesh=new Mesh{name="Junction shoulder"};mesh.SetVertices(v);mesh.SetTriangles(t,0);mesh.RecalculateNormals();
+            var go=new GameObject("Junction shoulder",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(parent);
+            go.GetComponent<MeshFilter>().sharedMesh=mesh;var mr=go.GetComponent<MeshRenderer>();mr.sharedMaterial=material;mr.shadowCastingMode=ShadowCastingMode.Off;go.GetComponent<MeshCollider>().sharedMesh=mesh;
+        }
         // Corner fillets (drivable asphalt), give-way lines across the approach lane, a give-way sign.
         // A junction (docs/52): its surface (for a node with an external road, just the corner pieces), edge lines along
         // its kerbs and round the corners, and give-way lines and a sign on every arm that gives way.

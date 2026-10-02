@@ -12,6 +12,9 @@
 - **Castle gate.** The gatehouse now follows Via Crest, so the drawbridge lies under the road (it was 2.5 m off, across the road's edge, and floated 0.6 m up). The drawbridge rests on the slope and hangs on real chains.
 - **Road paint.** Edge lines no longer saw-tooth round tight bends, on every valley road.
 - **Houses, again.** Painted trompe-l'oeil windows on every house's side walls (no more blank row ends), and roof colours on the Bayview high street (two slate).
+- **Junction shoulders.** Gravel ramps round every valley junction. The edge audit's un-climbable lips went from 60 to 4.
+- **Bunting** across the Quay and Via Crest now hangs from lamp posts, and the placement audit checks every end.
+- **Silent test runs** (`--silent`): automated windowed runs no longer play through the speakers.
 - **Stock 1.2 sound:** the Renault R4, Morris Oxford and Fiat 500 recordings were tried and none beat the C2 (details in doc 56). It stays at 7.7, and a better recording is needed.
 - **High-comp 2.0 voice:** now the DS3 WRC, 8.9 in game (was 7.9), so 15 of 18 engines are at 8 or above. Works 2.0 and Hybrid V8 stay at 7.9; the Viper's 8.3 for the Hybrid V8 comes with a chipmunk score of 2.3, so it wasn't taken.
 - **Tools:** `--view-shots` takes a still from any camera position (`capture-map.ps1 -Rendered`).

@@ -129,10 +129,45 @@ Side walls were blank on every terrace and detached house. They show at every ro
 - **Frame time:** 5.01 ms mean, unchanged.
 - [Before](../review/map-sweep/db-houses-1/drive-090.png) and [after](../review/map-sweep/db-paint-2/drive-090.png), the same frame. The corner terrace at the junction is in [drive-070](../review/map-sweep/db-paint-1/drive-070.png).
 
+## 10. Junction shoulders (fixed)
+
+**Found by the edge audit** (`--edge-audit`): lips (road-edge steps a car's body can't climb back over) went from 22 on 30 September to 60 now. They sat within about 15 m of every T-junction: the quay at the mainline, Via Crest, and the station road.
+
+**Cause.** The 1 October junction rework (doc 52) skips road shoulders within each junction's radius, so they don't poke into its surface, but nothing replaced them round the junction itself. Grass met a road 16 cm higher.
+
+**Fix.**
+- `KerbShoulders` runs a gravel ramp round every junction kerb: the fillets and the far side of the T.
+- Road shoulders now stop only where they would actually run onto a junction's surface (`RoadNetwork.OnJunction`, a polygon test), not across its whole radius.
+
+**Result:** lips 60 → 4. The four left are 0.4–1.3 m drops at bridge ends, as before. Banks are unchanged at 204: sea walls and rail cuttings behind railings. [Before](../review/map-sweep/junction-views-1/top.png) and [after](../review/map-sweep/junction-views-2/top.png).
+
+## 11. Hillcrest bunting hung from lamps (fixed; Richard's report)
+
+**Problem.** The bunting across the Quay (every 64 m) and Via Crest (every 90 m) hung in mid-air, 0.7 m beyond each kerb, with nothing at either end. The street lamps alternate sides, so they never lined up with it.
+
+**Fix.**
+- `StreetBunting` hangs each run from a lamp post on both pavements, reusing a street lamp within 2.5 m and otherwise adding one.
+- A run whose end would stand on another road (by a junction) is left out.
+- The market square and zipline lane bunting already hung from lamps and flagpoles.
+
+**Check.** The placement audit now tests every bunting end: each must touch a placed piece within 0.8 m. The result is `buntingEnds=66 looseBunting=0`. [Close-up on the Quay](../review/map-sweep/bunting-views-1/quay-196.png).
+
+## 12. Silent test runs (Richard's request)
+
+**Problem.** Windowed test runs (smoke tests, map captures, benchmark drives, visible trials) played through the speakers.
+
+**Fix.**
+- `--silent` sets the listener volume to 0 from the first frame, and the volume settings keep it there.
+- Audio still runs, so frame timings stay comparable, and `--audio-capture` still records: it taps the synth before the listener.
+- It is passed by `capture-adventure`, `capture-map`, `drive-benchmark`, `review-body-shop` and visible `run-technical-trial` runs. `--audio-capture-silent` implies it.
+- `test-loop` and `valley-tour` stay audible, because they're for listening and watching.
+
+**Check.** `SoundChecks` confirms the game is audible unless the flag is passed.
+
 ## Release
 
 Each batch was built, smoke-tested, sound-checked and published to the play copy.
-- **Build:** 2812 editor checks.
-- **Smoke tests:** smoke28 (houses and contacts), smoke29 (gate and paint), smoke30 (High-comp voice) smoke31 (Bayview roofs) and smoke32 (painted side windows). Each passed: both 24-car races finished and the save reloads.
-- **Sound smokes** (`review/sound/smoke28`–`32`): about −12.5 dB with peaks of 0.79–0.81 and no exceptions.
+- **Build:** 2813 editor checks.
+- **Smoke tests:** smoke28 (houses and contacts), smoke29 (gate and paint), smoke30 (High-comp voice) smoke31 (Bayview roofs) smoke32 (painted side windows), smoke33 (junction shoulders) and smoke34 (bunting, silent runs). Each passed: both 24-car races finished and the save reloads.
+- **Sound smokes** (`review/sound/smoke28`–`34`): about −12.5 dB with peaks of 0.79–0.81 and no exceptions.
 - **Night views** of the new houses, roofs and gate look right ([Hillcrest](../review/map-sweep/night-1/hillcrest.png), [Bayview](../review/map-sweep/night-1/bayview.png)).

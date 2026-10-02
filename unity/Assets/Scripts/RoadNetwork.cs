@@ -179,5 +179,28 @@ namespace LittleRoad
         }
         // Inside a junction (with a margin): shoulders, guardrails and paint keep out.
         public bool NearJunction(Vector3 p,float pad){foreach(var n in nodes)if(n.arms.Count>1&&Flat(p-n.at).magnitude<n.Radius+pad)return true;return false;}
+        // On (or within `pad` of) a junction's own surface: its polygon after Solve, or its radius where it has none.
+        public bool OnJunction(Vector3 p,float pad)
+        {
+            foreach(var n in nodes) {
+                if(n.arms.Count<2)continue;
+                if(n.polygon.Count<3){if(Flat(p-n.at).magnitude<n.Radius+pad)return true;continue;}
+                if(Flat(p-n.at).magnitude>n.Radius+pad+4)continue;
+                if(Inside(n.polygon,p)||EdgeDistance(n.polygon,p)<pad)return true;
+            }
+            return false;
+        }
+        public static bool Inside(List<Vector3> poly,Vector3 p)
+        {
+            bool inside=false;
+            for(int i=0,j=poly.Count-1;i<poly.Count;j=i++){Vector3 a=poly[i],b=poly[j];if((a.z>p.z)!=(b.z>p.z)&&p.x<(b.x-a.x)*(p.z-a.z)/(b.z-a.z)+a.x)inside=!inside;}
+            return inside;
+        }
+        static float EdgeDistance(List<Vector3> poly,Vector3 p)
+        {
+            float best=float.MaxValue;var q=new Vector2(p.x,p.z);
+            for(int i=0,j=poly.Count-1;i<poly.Count;j=i++){Vector2 a=new(poly[j].x,poly[j].z),b=new(poly[i].x,poly[i].z),ab=b-a;float t=Mathf.Clamp01(Vector2.Dot(q-a,ab)/Mathf.Max(ab.sqrMagnitude,1e-6f));best=Mathf.Min(best,(a+ab*t-q).magnitude);}
+            return best;
+        }
     }
 }

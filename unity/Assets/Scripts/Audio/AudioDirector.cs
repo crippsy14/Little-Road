@@ -11,6 +11,11 @@ namespace LittleRoad
         // The engine sound test mutes every car while it plays.
         public static volatile bool Muted;
         public static bool Enabled=>!Application.isBatchMode&&!RaceTrial.Has("--no-audio");
+        // --silent: everything still plays and is captured (--audio-capture taps the synth before the listener), but nothing
+        // reaches the speakers. Every automated run passes it, so test runs don't sound over the player's PC (Richard, 2 Oct).
+        public static bool Silent=>RaceTrial.Has("--silent")||RaceTrial.Has("--audio-capture-silent");
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void MuteAtStart(){if(Silent)AudioListener.volume=0;}
         static AudioDirector instance;
         static readonly List<CarAudio> cars=new();
         readonly List<(float,CarAudio)> ranked=new();
@@ -69,7 +74,7 @@ namespace LittleRoad
         // Settings changed (or first start): master on the listener, the rest per voice.
         public static void Apply()
         {
-            AudioListener.volume=AudioOptions.Level(AudioOptions.Master);
+            AudioListener.volume=Silent?0:AudioOptions.Level(AudioOptions.Master);
             float effects=AudioOptions.Level(AudioOptions.Effects);
             foreach(var car in cars)car.SetVolumes(effects,effects);
         }
