@@ -105,7 +105,7 @@
       "exhaust": "sport",
       "intake": "cone",
       "hybrid": false,
-      "sound": "s2000"
+      "sound": "piazza"
     },
     {
       "id": "engine_valley",
@@ -130,7 +130,7 @@
       "exhaust": "sport",
       "intake": "box",
       "hybrid": false,
-      "sound": "skyline"
+      "sound": "citroen-c5"
     },
     {
       "id": "engine_b_twincam",
@@ -178,7 +178,7 @@
       "exhaust": "race",
       "intake": "cone",
       "hybrid": false,
-      "sound": "fabia"
+      "sound": "ds3-wrc"
     },
     {
       "id": "engine_b_v6",
@@ -202,7 +202,7 @@
       "exhaust": "sport",
       "intake": "cone",
       "hybrid": false,
-      "sound": "skyline"
+      "sound": "mclaren-720s"
     },
     {
       "id": "engine_a_touring",
@@ -250,7 +250,7 @@
       "exhaust": "race",
       "intake": "itb",
       "hybrid": false,
-      "sound": "s2000"
+      "sound": "ds3-wrc"
     },
     {
       "id": "engine_a_works",
@@ -274,7 +274,7 @@
       "exhaust": "race",
       "intake": "itb",
       "hybrid": false,
-      "sound": "fabia"
+      "sound": "xsara-wrc"
     },
     {
       "id": "engine_s_v6",
@@ -298,7 +298,7 @@
       "exhaust": "race",
       "intake": "trumpets",
       "hybrid": false,
-      "sound": "skyline"
+      "sound": "ds3-wrc"
     },
     {
       "id": "engine_s_v8",
@@ -322,7 +322,7 @@
       "exhaust": "race",
       "intake": "trumpets",
       "hybrid": false,
-      "sound": "sprint"
+      "sound": "ferrari-458"
     },
     {
       "id": "engine_s_v10",
@@ -370,7 +370,7 @@
       "exhaust": "race",
       "intake": "trumpets",
       "hybrid": true,
-      "sound": "skyline"
+      "sound": "puma-rally1"
     },
     {
       "id": "engine_e_v8",
@@ -394,7 +394,7 @@
       "exhaust": "race",
       "intake": "trumpets",
       "hybrid": true,
-      "sound": "rs4"
+      "sound": "mclaren-720s"
     },
     {
       "id": "engine_e_12h",
@@ -418,7 +418,7 @@
       "exhaust": "race",
       "intake": "trumpets",
       "hybrid": true,
-      "sound": "sprint"
+      "sound": "ferrari-458"
     },
     {
       "id": "engine_e_economy",
@@ -442,7 +442,7 @@
       "exhaust": "race",
       "intake": "trumpets",
       "hybrid": true,
-      "sound": "niro"
+      "sound": "citroen-c5"
     },
     {
       "id": "turbo_stock",
@@ -921,7 +921,7 @@
       "spread": 3.0,
       "shiftTime": 0.06,
       "shiftType": "S",
-      "kmhPer1000": 21.2,
+      "kmhPer1000": 29.0,
       "lsd": true,
       "ceiling": 90,
       "pull": 1.1
@@ -937,7 +937,7 @@
       "spread": 3.2,
       "shiftTime": 0.04,
       "shiftType": "P",
-      "kmhPer1000": 22.3,
+      "kmhPer1000": 30.0,
       "lsd": true,
       "ceiling": 90,
       "pull": 1.1
@@ -953,7 +953,7 @@
       "spread": 3.2,
       "shiftTime": 0.015,
       "shiftType": "SL",
-      "kmhPer1000": 22.3,
+      "kmhPer1000": 30.0,
       "lsd": true,
       "ceiling": 90,
       "pull": 1.1

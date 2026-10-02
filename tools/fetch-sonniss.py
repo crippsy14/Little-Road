@@ -7,11 +7,12 @@
 #   python tools/fetch-sonniss.py fetch <out dir> <name>...  # download exact entry names (as printed by list)
 import sys, os, struct, zlib, subprocess, json
 
-BASE = 'https://downloads.sonniss.com/Sonniss.com-GDC2023-GameAudioBundle{}of14.zip'
-PARTS = 14
+# Other years: SONNISS_YEAR=2024 SONNISS_PARTS=9 (each year has its own index cache).
+YEAR = os.environ.get('SONNISS_YEAR', '2023'); PARTS = int(os.environ.get('SONNISS_PARTS', '14'))
+BASE = 'https://downloads.sonniss.com/Sonniss.com-GDC' + YEAR + '-GameAudioBundle{}of' + str(PARTS) + '.zip'
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36',
            'Referer': 'https://sonniss.com/gameaudiogdc/'}
-CACHE = os.path.join(os.path.dirname(__file__), '..', 'review', 'tmp', 'sonniss-index.json')
+CACHE = os.path.join(os.path.dirname(__file__), '..', 'review', 'tmp', 'sonniss-index.json' if YEAR == '2023' else f'sonniss-index-{YEAR}.json')
 
 # curl, not urllib: the download host (Cloudflare) refuses Python's client.
 def curl(url, *extra):

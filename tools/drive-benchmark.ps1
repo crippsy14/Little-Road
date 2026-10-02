@@ -14,7 +14,8 @@ $save=Get-Content (Join-Path $root 'tools/fixtures/watch-cars-save.json') -Raw |
 foreach($f in $save.fitted){$f.id=$f.slot+'_stock'};($save.fitted | Where-Object {$_.slot -eq 'steering'}).id='steering_precision'
 if($save.owned -notcontains 'steering_precision'){$save.owned+= 'steering_precision'}
 [IO.File]::WriteAllText((Join-Path $folder 'save.json'),($save | ConvertTo-Json -Depth 5))
-$arguments=@('-screen-width','1920','-screen-height','1080','-screen-fullscreen','0','-monitor','1','--turn-review','--route-drive','--route-speed','20','--no-valley-life','--adventure-save',('"'+(Join-Path $folder 'save.json')+'"'),'--trial-captures',('"'+$folder+'"'),'--frame-probe',('"'+$folder+'"'),'-logFile',('"'+(Join-Path $folder 'player.log')+'"'))+$Flags
+# (--start-windowed: otherwise the player's saved display setting wins, and runs at 2560x1440 and 3840x2160 were compared as if alike: 2 Oct.)
+$arguments=@('--start-windowed','-screen-width','1920','-screen-height','1080','-screen-fullscreen','0','-monitor','1','--turn-review','--route-drive','--route-speed','20','--no-valley-life','--adventure-save',('"'+(Join-Path $folder 'save.json')+'"'),'--trial-captures',('"'+$folder+'"'),'--frame-probe',('"'+$folder+'"'),'-logFile',('"'+(Join-Path $folder 'player.log')+'"'))+$Flags
 $run=Start-Process -FilePath $exe -PassThru -ArgumentList $arguments
 $run.WaitForExit()
 Write-Output "exit=$($run.ExitCode)"

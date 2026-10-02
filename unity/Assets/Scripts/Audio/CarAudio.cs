@@ -29,14 +29,17 @@ namespace LittleRoad
             source.minDistance=player?12:7;source.maxDistance=320;source.priority=player?0:128;
             owner.Bumped+=(_,speed)=>{if(speed>1.5f){impacts++;impact=speed;}};
             AudioDirector.Register(this);
-            if(player&&CapturePath!=null)capture=new float[AudioSettings.outputSampleRate*120];
+            // (--audio-capture-seconds: longer runs for the in-game scorecard, docs/55; --audio-capture-silent: nothing reaches the
+            // speakers while capturing, for unattended runs.)
+            if(player&&CapturePath!=null){int seconds=int.TryParse(RaceTrial.Arg("--audio-capture-seconds"),out int cs)?cs:120;capture=new float[AudioSettings.outputSampleRate*seconds];captureEngine=new float[capture.Length];
+                if(RaceTrial.Has("--audio-capture-silent"))AudioListener.volume=0;}
         }
         void OnDestroy(){AudioDirector.Unregister(this);WriteCapture();}
         void OnApplicationQuit(){WriteCapture();}
         // --audio-capture <file.wav>: the player's engine and tyre signal as synthesised (before Unity's gains),
         // with revs, throttle, gear and load every 10 ms beside it (<file>.csv), to see exactly what was heard.
         static readonly string CapturePath=RaceTrial.Has("--audio-capture")?RaceTrial.Arg("--audio-capture"):null;
-        float[] capture;int captured;readonly System.Text.StringBuilder captureLog=new();float nextLog;bool written;
+        float[] capture,captureEngine;int captured;readonly System.Text.StringBuilder captureLog=new();float nextLog;bool written;
         void WriteCapture()
         {
             if(capture==null||written)return;written=true;int n=Mathf.Min(captured,capture.Length);
@@ -44,6 +47,12 @@ namespace LittleRoad
                 int fs=AudioSettings.outputSampleRate;w.Write("RIFF".ToCharArray());w.Write(36+n*2);w.Write("WAVE".ToCharArray());w.Write("fmt ".ToCharArray());
                 w.Write(16);w.Write((short)1);w.Write((short)1);w.Write(fs);w.Write(fs*2);w.Write((short)2);w.Write((short)16);w.Write("data".ToCharArray());w.Write(n*2);
                 for(int i=0;i<n;i++)w.Write((short)Mathf.Clamp(capture[i]*32767,-32768,32767));
+            }
+            // The engine voice alone (no tyres, wind or volume settings): what the in-game scorecard measures.
+            using(var w=new System.IO.BinaryWriter(System.IO.File.Create(System.IO.Path.ChangeExtension(CapturePath,null)+"-engine.wav"))) {
+                int fs=AudioSettings.outputSampleRate;w.Write("RIFF".ToCharArray());w.Write(36+n*2);w.Write("WAVE".ToCharArray());w.Write("fmt ".ToCharArray());
+                w.Write(16);w.Write((short)1);w.Write((short)1);w.Write(fs);w.Write(fs*2);w.Write((short)2);w.Write((short)16);w.Write("data".ToCharArray());w.Write(n*2);
+                for(int i=0;i<n;i++)w.Write((short)Mathf.Clamp(captureEngine[i]*32767,-32768,32767));
             }
             System.IO.File.WriteAllText(System.IO.Path.ChangeExtension(CapturePath,".csv"),"time,rpm,gear,throttle,speed,boost,shifting,limiter\n"+captureLog);
             Debug.Log("LITTLE_ROAD_AUDIO_CAPTURE "+CapturePath+" seconds="+(n/(float)AudioSettings.outputSampleRate).ToString("0.0"));
@@ -108,7 +117,7 @@ namespace LittleRoad
             float fade=AudioDirector.SceneFade,ev=engineVolume*fade,fv=effectsVolume*fade;var voice=engine;
             for(int i=0,k=0;i<frames;i++) {
                 float s=voice.Next()*ev+noise.Next()*fv;
-                if(record&&captured<capture.Length)capture[captured++]=s;
+                if(record&&captured<capture.Length){captureEngine[captured]=voice.Last;capture[captured++]=s;}
                 for(int c=0;c<channels;c++,k++){if(Probe)probeIn+=Mathf.Abs(data[k]);data[k]*=s;if(Probe)probeOut+=data[k]*data[k];}
             }
         }

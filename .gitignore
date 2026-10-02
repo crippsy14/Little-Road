@@ -100,3 +100,11 @@ review/grains/
 
 # Music previews (tools/music/compose.py): regenerated.
 review/music/
+
+# Engine scorecards (docs/55): generated pages, clips and captures; regenerate with tools/engine-compare*.{py,sh} and
+# tools/engine-ingame*.py. Duke race reviews (docs/54) and map-sweep runs likewise.
+review/engine-compare/
+review/engine-compare-baseline/
+review/engine-ingame/
+review/duke-race/
+review/map-sweep/*/

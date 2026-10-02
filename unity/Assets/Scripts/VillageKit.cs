@@ -184,8 +184,11 @@ namespace LittleRoad
             BayviewKit.Tint T(int wall,int shutter,int awning,int door)=>new(Toy.Hex(wall),Toy.Hex(shutter),Toy.Hex(awning),Toy.Hex(door));
             var land=CoastalLandscape.Current;
             // Stand a building with its frontage facing the road, stepping back until its front corners clear the shoulder.
+            // Roofs west to east: fresh terracotta mostly, weathered and darker tiles, and two grey Cornish slate.
+            int[] roofs={0,0xc4684c,0,0x5f6b7a,0,0xd98760,0,0xb04a2e,0x5f6b7a,0,0xc4684c};int fronts=0;
             void Front(string id,float x,float width,float depth,BayviewKit.Tint tint,string sign=null)
             {
+                int roof=roofs[fronts++%roofs.Length];if(roof!=0)tint.roof=Toy.Hex(roof);
                 float z=-106-depth*.5f;
                 for(int step=0;step<12;step++) {
                     bool clear=land==null||(land.RoadDistance(new Vector3(x-width*.5f,0,z+depth*.5f))>12.5f&&land.RoadDistance(new Vector3(x+width*.5f,0,z+depth*.5f))>12.5f);

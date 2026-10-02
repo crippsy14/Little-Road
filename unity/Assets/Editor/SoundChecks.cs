@@ -44,7 +44,10 @@ public static class SoundChecks
             var bank=EngineBanks.Get(sound);if(bank==null)continue;float top=bank.TopOf(true)*.97f;
             float Level(float rpm){var g=new GrainSynth(bank,fs,3,bank.idle,top*2);double sum=0;int count=fs/2;for(int i=0;i<count;i++){float x=g.Next(rpm,1,false);if(i>=count/2)sum+=x*x;}return (float)Math.Sqrt(sum/(count/2));}
             float at=Level(top*.98f),above=Level(top*1.8f);
-            Check(above>at*.75f&&above<at*1.5f,$"{sound}: pulling above its recording ({top:0} rpm) holds its level ({at:0.000} -> {above:0.000} at 1.8x)");
+            // (Since the in-game scorecard, docs/55, the level keeps rising above the recording at the recording's own
+            // rate, riseDb per doubling of revs, up to +12 dB: never thinner, and about as much louder as the real engine.)
+            float expect=bank.riseDb>0?Math.Min(4f,MathF.Pow(1.8f*.98f/.98f,bank.riseDb/6.0206f)):1;
+            Check(above>at*.75f*expect&&above<at*1.5f*expect,$"{sound}: pulling above its recording ({top:0} rpm) keeps its level rising ({at:0.000} -> {above:0.000} at 1.8x, expected x{expect:0.00})");
         }
         // Above 1.5x the pulses are re-laid rather than sped up further (Richard, 1 Oct: the Tuner V6 went "very high
         // pitch" past 80% of its revs): at its 7600 rpm redline on the Skyline the sound is darker than the stretched one.
@@ -72,6 +75,9 @@ public static class SoundChecks
             }
         }
         checks.Add($"All {recorded} engines play recorded grain banks");
+        // The in-game scorecard's tools (docs/55) change nothing unless asked: the scripted test drive is off, and the
+        // limiter's cut keeps its level.
+        Check(!SoundDrive.On&&Math.Abs(GrainSynth.CutLevel-.5f)<1e-6f,"In-game scorecard tools are off by default (--sound-drive, --audio-capture-silent)");
         // Lifting off (docs/55, the engine scorecard): every bank carries its recording's measured lift-off drop and
         // rise with revs, and a lift fades rather than steps (real engines lose 1-2 dB in the first half second; the
         // old voice dropped 6-8 dB at once).

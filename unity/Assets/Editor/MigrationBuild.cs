@@ -185,6 +185,7 @@ public static class MigrationBuild
         evidence.checks.AddRange(PitStopChecks.Run(Path.Combine(root,"review/unity-04")));
         evidence.checks.AddRange(ZipLineChecks.Run());
         evidence.checks.AddRange(PresentationChecks.Run());
+        evidence.checks.AddRange(ContactChecks.Run());
         evidence.checks.AddRange(InterfaceChecks.Run());
         evidence.checks.AddRange(RacerChecks.Run());
         evidence.checks.AddRange(DrivetrainChecks.Run());

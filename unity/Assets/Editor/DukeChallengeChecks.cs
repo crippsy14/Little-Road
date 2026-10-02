@@ -49,6 +49,10 @@ public static class DukeChallengeChecks
         // top-speed build for the bigger tracks to come.)
         float top=maxTune.drivetrain.ReachableTop;var longBox=EquipmentCatalog.Stats(new Dictionary<string,string>(max){["transmission"]="transmission_e_long"});float vmax=longBox.drivetrain.ReachableTop;
         Check(vmax>90&&vmax<97&&top>80,$"Top speed is a prototype's: {vmax:0.0} m/s ({vmax*3.6f:0} km/h) on the long box; the raceway build ({max["transmission"]}) {top:0.0} m/s ({top*3.6f:0} km/h)");
+        // Class S, with its platform's real drag, is geared to use it (2 Oct: its boxes put the V8 on the limiter near 218 km/h).
+        var sKit=new Dictionary<string,string>(EquipmentCatalog.StockLoadout()){["engine"]="engine_s_v8",["turbo"]="turbo_s_race",["tyres"]="tyres_s_hard",["transmission"]="transmission_s_dog",["brakes"]="brakes_s_sixpot",["steering"]="steering_s_race",["chassis"]="chassis_s_tub"};
+        float sTop=EquipmentCatalog.Stats(sKit).drivetrain.ReachableTop;
+        Check(sTop>74,$"A class S V8 on the dog box reaches {sTop*3.6f:0} km/h");
         Check(maxTune.firm>=2&&1/(1+maxTune.firm)<=.35f,$"The maximum build sits on race springs: it leans {100/(1+maxTune.firm):0}% as much as a street car");
         // The test drive (--max-build-test): the maximum build bought and fitted on a copy of a save.
         if(File.Exists(path))File.Delete(path);store=new AdventureStore(path);AdventureSession.FitMaxBuild(store);

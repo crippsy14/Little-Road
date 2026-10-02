@@ -30,14 +30,19 @@ def ladder_price(base, cls, step):
 # from tools/engine-banks.json; docs/47). Matching cylinder counts where the recordings allow; a bank shared
 # between classes gets a different exhaust treatment from the part's exhaust type.
 ENGINE_SOUND = {
-    # C: each step a different real car (Richard: the first three engines sounded the same).
-    'engine_stock': 'citroen-c2', 'engine_workshop': 'golf', 'engine_club': 'escort', 'engine_sport16': 's2000', 'engine_valley': 'skyline',
-    'engine_b_twincam': 'piazza', 'engine_b_highcomp': 'fabia', 'engine_b_v6': 'skyline',
-    'engine_a_touring': 'escort', 'engine_a_evo': 's2000', 'engine_a_works': 'fabia',
-    # S and E rev past any road recording (stretched 1.6-2.6x at the redline): race recordings later.
-    'engine_s_v6': 'skyline', 'engine_s_v8': 'sprint', 'engine_s_v10': 'viper',
-    'engine_e_v6': 'skyline', 'engine_e_v8': 'rs4', 'engine_e_12h': 'sprint', 'engine_e_economy': 'niro',
+    # Chosen by the in-game engine scorecard (docs/55): each engine's own test drive in the game, scored against how the
+    # real recording behaves, among recordings that reach the engine's revs. Within a class every engine has its own
+    # recording; V8s keep V8 recordings where one scores (the Twelve-hour, the Duke's car, is the Ferrari 458's V8).
+    # No high-revving six was found: the V6s take the Citroen C5 (a family car's engine, to 6,200 rpm; whether the
+    # recording is its four or its V6 is unclear), the McLaren 720S (twin-turbo V8) and the rally cars.
+    'engine_stock': 'citroen-c2', 'engine_workshop': 'golf', 'engine_club': 'escort', 'engine_sport16': 'piazza', 'engine_valley': 'citroen-c5',
+    'engine_b_twincam': 'piazza', 'engine_b_highcomp': 'ds3-wrc', 'engine_b_v6': 'mclaren-720s',
+    'engine_a_touring': 'escort', 'engine_a_evo': 'ds3-wrc', 'engine_a_works': 'xsara-wrc',
+    'engine_s_v6': 'ds3-wrc', 'engine_s_v8': 'ferrari-458', 'engine_s_v10': 'viper',
+    'engine_e_v6': 'puma-rally1', 'engine_e_v8': 'mclaren-720s', 'engine_e_12h': 'ferrari-458', 'engine_e_economy': 'citroen-c5',
 }
+
+
 
 ENGINES = [
     ('engine_stock', 'Stock 1.2', 'A modest, dependable starting motor.', 0, 'C', None, 24, 3.0, 'I4', 4, 1.2, 850, 3500, 5500, 6000, 68, 105, 'even', 'road', 'box', False),
@@ -115,9 +120,11 @@ BOXES = [
     ('transmission_a_close', 'Touring close six', 'Touring ratios, close and quick.', None, 'A', None, 6, 3.2, 0.12, 'H', 22.0, True),
     ('transmission_a_seq', 'Touring sequential', 'Sequential: pull back, push forward.', None, 'A', None, 6, 3.3, 0.08, 'S', 23.2, True),
     ('transmission_a_works', 'Works sequential', 'Dog engagement, flat shifts.', None, 'A', None, 6, 3.2, 0.06, 'S', 23.2, True),
-    ('transmission_s_dog', 'Sequential dog box', 'Brutal, instant, loud.', None, 'S', None, 6, 3.0, 0.06, 'S', 21.2, True),
-    ('transmission_s_paddle', 'Paddle shift', 'Seven gears on paddles.', None, 'S', None, 7, 3.2, 0.04, 'P', 22.3, True),
-    ('transmission_s_seamless', 'Seamless shift', 'Two gears engaged at once: no gap in the drive.', None, 'S', None, 7, 3.2, 0.015, 'SL', 22.3, True),
+    # S boxes (2 Oct, with the S platform's real drag): 21-22 km/h per 1000 rpm put the S V8 on its limiter at ~218 km/h
+    # and the V6 at ~234 against drag-limited tops near 290 and 270; now 29-30 (285-315 km/h at the V8's and V6's redlines).
+    ('transmission_s_dog', 'Sequential dog box', 'Brutal, instant, loud.', None, 'S', None, 6, 3.0, 0.06, 'S', 29.0, True),
+    ('transmission_s_paddle', 'Paddle shift', 'Seven gears on paddles.', None, 'S', None, 7, 3.2, 0.04, 'P', 30.0, True),
+    ('transmission_s_seamless', 'Seamless shift', 'Two gears engaged at once: no gap in the drive.', None, 'S', None, 7, 3.2, 0.015, 'SL', 30.0, True),
     # E boxes (docs/54, 2 Oct): geared for prototype top speeds (330+ km/h with the E platform's low drag); they were
     # 25.9/28.5 km/h per 1000 rpm, which put every E car on its limiter near 250-275 km/h.
     ('transmission_e_paddle', 'Endurance paddle', 'Seven gears, built to last.', None, 'E', None, 7, 3.3, 0.04, 'P', 33.0, True),

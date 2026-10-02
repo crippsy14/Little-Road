@@ -105,13 +105,17 @@ namespace LittleRoad
         // listener is (height above the sea), and the nearest river point.
         void Survey(Vector3 at)
         {
-            float sea=0,weight=0;
+            float sea=0,weight=0;int hits=0;
             foreach(float radius in new[]{20f,55f,120f})for(int k=0;k<12;k++) {
                 float a=k*Mathf.PI/6+radius*.01f;var p=at+new Vector3(Mathf.Cos(a)*radius,0,Mathf.Sin(a)*radius);float w=1/radius;weight+=w;
-                bool water=!Physics.Raycast(new Vector3(p.x,at.y+150,p.z),Vector3.down,out var hit,400,~0,QueryTriggerInteraction.Ignore)||hit.point.y<CoastalLandscape.SeaLevel+.4f;
+                bool ground=Physics.Raycast(new Vector3(p.x,at.y+150,p.z),Vector3.down,out var hit,400,~0,QueryTriggerInteraction.Ignore);if(ground)hits++;
+                bool water=!ground||hit.point.y<CoastalLandscape.SeaLevel+.4f;
                 if(water)sea+=w;
             }
-            SeaNear=Mathf.Clamp01(sea/weight*1.6f);
+            // No ground under any of the 36 samples is no world at all (the title screen, a loading screen), not open
+            // sea: it played the surf at full there (30 Sep, the launch "hang" notes). In the world the listener always
+            // has ground within the 20 m ring.
+            SeaNear=hits==0?0:Mathf.Clamp01(sea/weight*1.6f);
             windExposure=Mathf.Clamp01((at.y-CoastalLandscape.SeaLevel)/45f*.7f+SeaNear*.3f);
             var line=HillcrestRoute.River?.line;riverTarget=Vector3.zero;
             if(line!=null){float best=float.MaxValue;foreach(var p in line){float d=(p-at).sqrMagnitude;if(d<best){best=d;riverTarget=p;}}if(best>160*160)riverTarget=Vector3.zero;}

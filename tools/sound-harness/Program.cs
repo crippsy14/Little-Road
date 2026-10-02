@@ -105,12 +105,15 @@ if(filter=="fireworks")return FireworksRender(root);
         var spec=SpecFor(root,a[0]);if(raw)spec.exhaust="raw";
         var bank=GrainBank.Read(File.ReadAllBytes(a[1].EndsWith(".bytes")?a[1]:Path.Combine(root,"unity","Assets","Resources","Engines",a[1]+".bytes")));
         foreach(var o in a.Skip(4))if(o.StartsWith("exhaust="))spec.exhaust=o.Substring(8);
+        // (Statics first: the synth calibrates its level as it takes the grains.)
+        foreach(var o in a.Skip(4))if(o.StartsWith("cut="))GrainSynth.CutLevel=float.Parse(o.Substring(4),System.Globalization.CultureInfo.InvariantCulture);else if(o.StartsWith("calpeak="))EngineSynth.CalibrateToPeak=o.Substring(8)=="1";else if(o.StartsWith("peakroom="))EngineSynth.PeakHeadroom=float.Parse(o.Substring(9),System.Globalization.CultureInfo.InvariantCulture);else if(o.StartsWith("cal="))EngineSynth.CalibrationScale=float.Parse(o.Substring(4),System.Globalization.CultureInfo.InvariantCulture);else if(o=="muffle=1")EngineSynth.TurboMuffle=true;else if(o.StartsWith("loopmax="))GrainSynth.LoopMax=int.Parse(o.Substring(8));else if(o.StartsWith("loopspan="))GrainSynth.LoopSpan=int.Parse(o.Substring(9));else if(o.StartsWith("loopfloor="))GrainSynth.LoopFloor=float.Parse(o.Substring(10),System.Globalization.CultureInfo.InvariantCulture);else if(o.StartsWith("loopabove="))GrainSynth.LoopAbove=float.Parse(o.Substring(10),System.Globalization.CultureInfo.InvariantCulture);else if(o=="pulse=0")GrainSynth.PulseOverlap=false;else if(o=="loop=0")GrainSynth.SustainLoop=false;else if(o=="tonecorr=0")GrainSynth.ToneCorrection=false;else if(o.StartsWith("formantcap="))GrainSynth.FormantCap=float.Parse(o.Substring(11),System.Globalization.CultureInfo.InvariantCulture);else if(o.StartsWith("shiftlevel="))GrainSynth.ShiftLevel=float.Parse(o.Substring(11),System.Globalization.CultureInfo.InvariantCulture);
         var synth=new EngineSynth(spec,Fs,7){Solo=raw?0:-1};synth.UseGrains(new GrainSynth(bank,Fs,7,spec.idle,spec.redline));
         foreach(var o in a.Skip(4))if(o.StartsWith("solo="))synth.Solo=int.Parse(o.Substring(5));else if(o.StartsWith("mute="))synth.Mute=int.Parse(o.Substring(5));
         var rows=File.ReadAllLines(a[2]).Skip(1).Select(l=>l.Split(',').Select(v=>float.Parse(v,System.Globalization.CultureInfo.InvariantCulture)).ToArray()).ToList();
         var output=new List<float>();const int step=Fs/100;var block=new float[step];
         for(int i=0;i<rows.Count;i++) {
-            var r=rows[i];synth.Set(r[1],r[2],0,20,false,r[3]>.5f,2,(int)r[4],0);synth.Render(block,0,step);output.AddRange(block);
+            // (Columns 6-7, when present: limiter and gear, as the game passes them.)
+            var r=rows[i];synth.Set(r[1],r[2],0,20,r.Length>5&&r[5]>.5f,r[3]>.5f,r.Length>6?(int)r[6]:2,(int)r[4],0);synth.Render(block,0,step);output.AddRange(block);
         }
         WriteWav(a[3],output);
         Console.WriteLine($"FOLLOW {a[0]} on {a[1]}{(raw?" (raw)":"")}: {rows.Count/100f:0.0} s -> {a[3]}");

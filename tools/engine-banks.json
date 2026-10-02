@@ -1,25 +1,27 @@
 {
-  "_about": "Recorded engines for the grain banks (docs/47 stage 4). Sources: Sonniss GDC 2021-2023 Game Audio Bundle (royalty-free for games, no attribution, no AI training, raw files not redistributed), fetched with tools/fetch-sonniss.py into ../little-road-audio-sources (outside the repo). Build: python tools/engine-grains.py --config tools/engine-banks.json [--only name ...]. Cylinders, idle and redline describe the recorded car (they guide the rev tracker); trackCylinders: on these vees the bank pulse line (half the firing rate) is the strongest, so the tracker follows that.",
+  "_about": "Recorded engines for the grain banks (docs/47 stage 4). Sources: Sonniss GDC 2021-2024 Game Audio Bundles (royalty-free for games, no attribution, no AI training, raw files not redistributed), fetched with tools/fetch-sonniss.py into ../little-road-audio-sources (outside the repo). Build: python tools/engine-grains.py --config tools/engine-banks.json [--only name ...]. Cylinders, idle and redline describe the recorded car (they guide the rev tracker); trackCylinders: on these vees the bank pulse line (half the firing rate) is the strongest, so the tracker follows that.",
   "sources": "../../little-road-audio-sources/Sonniss-GDC2023",
   "output": "../unity/Assets/Resources/Engines",
   "banks": {
     "citroen-c2": {"cylinders": 4, "idle": 750, "redline": 6200, "files": [{"file": "PMSFX - Citroen C2/VEHCar_Citroen C2 Drive Stop DPA4062 EXHAUST_PMSFX_CC2.wav"}]},
     "golf": {"cylinders": 4, "idle": 750, "redline": 6200, "files": [{"file": "Pole Position Production - Volkswagen Golf R-Line 2018/VW Golf - t9 - ONBRD - FAST - Drive Various - ENGINE - Center - PZM.wav"}]},
-    "escort": {"cylinders": 4, "idle": 1000, "redline": 8000, "files": [
-      {"file": "Pole Position Production - Ford Escort RS1800 MKII 1977/Ford Escort RS1800 MKII - t7 - ONBRD - MEDIUM - Drive Various - ENGINE - Left - DPA4061.wav"},
-      {"file": "Pole Position Production - Ford Escort RS1800 MKII 1977/Ford Escort RS1800 MKII - t5 - ONBRD - IDLE - Steady Blips - ENGINE - Center - MKH8020.wav"}]},
+    "escort": {"cylinders": 4, "idle": 1000, "redline": 8000, "files": [{"file": "Pole Position Production - Ford Escort RS1800 MKII 1977/Ford Escort RS1800 MKII - t7 - ONBRD - MEDIUM - Drive Various - ENGINE - Left - DPA4061.wav"}, {"file": "Pole Position Production - Ford Escort RS1800 MKII 1977/Ford Escort RS1800 MKII - t5 - ONBRD - IDLE - Steady Blips - ENGINE - Center - MKH8020.wav"}]},
     "s2000": {"cylinders": 4, "idle": 800, "redline": 9000, "files": [{"file": "Pole Position Production - Honda S2000 2002/Honda S2000 - t6 - ONBRD - STEADY RPMS - Start Drive - ENGINE - Left - DPA4061.wav"}]},
     "skyline": {"cylinders": 6, "idle": 700, "redline": 8000, "files": [{"file": "Pole Position Production - Nissan R33 Skyline 1997/Nissan R33 Skyline - t5 - ONBRD - RAMPS - Drive - EXHAUST - Left - RE50.wav"}]},
     "piazza": {"cylinders": 4, "idle": 800, "redline": 6000, "files": [{"file": "Pole Position Production - Isuzu Piazza 1989/Isuzu Piazza - t5 - ONBRD - RAMPS - Start Drive Stop Off - ENGINE - Right - PZM.wav"}]},
-    "fabia": {"cylinders": 4, "idle": 1000, "redline": 7500, "files": [
-      {"file": "Pole Position Production - Skoda Fabia R5 WRC2 Rally Car 2020/Skoda Fabia R5 - t1 - ONBRD - FAST - Start Drive Stop Reverse Stop Drive Stop - EXHAUST - RE50.wav"},
-      {"file": "Pole Position Production - Skoda Fabia R5 WRC2 Rally Car 2020/Skoda Fabia R5 - t6 - ONBRD - IDLE - Various - ENGINE - Left - DPA4061.wav"}]},
+    "fabia": {"cylinders": 4, "idle": 1000, "redline": 7500, "files": [{"file": "Pole Position Production - Skoda Fabia R5 WRC2 Rally Car 2020/Skoda Fabia R5 - t1 - ONBRD - FAST - Start Drive Stop Reverse Stop Drive Stop - EXHAUST - RE50.wav"}]},
     "rs4": {"trackCylinders": 4, "cylinders": 8, "idle": 700, "redline": 8250, "files": [{"file": "Pole Position Production - Audi RS 4 2013/Audi RS4 - t1 - ONBRD - SLOW - Start Drive Stop Reverse Drive Stop Off - ENGINE - Mix.wav"}]},
     "viper": {"trackCylinders": 5, "cylinders": 10, "idle": 900, "redline": 7000, "files": [{"file": "Pole Position Production - Dodge Viper GTS V10 Race Engine 2014/Dodge Viper GTS Race Engine - t4 - ONBRD - RAMPS - Drive Stop Off - EXHAUST - Left - DPA4062.wav"}]},
     "testarossa": {"trackCylinders": 6, "cylinders": 12, "idle": 900, "redline": 6800, "files": [{"file": "Pole Position Production - Ferrari Testarossa 1990/Ferrari, Testarossa, t6, Onbrd, Start, Drive, Steady RPMs, Engine, Mix.wav"}]},
     "niro": {"cylinders": 4, "idle": 750, "redline": 6500, "files": [{"file": "Pole Position Production - Kia Niro Hybrid 2018/Kia Niro Hybrid - t13 - ONBRD - IDLE - PETROL - Steady Blips - ENGINE - VP88.wav"}]},
-    "sprint": {"cylinders": 8, "idle": 2000, "redline": 8500, "files": [
-      {"file": "344 Audio - Sprint Car Racing/Sprint Car, Rev, Accelerate, Explosive, Repeated, Racing, High RPM, Laps, Around Track, Rev, Idle, Stop, Tire Squeak.wav"},
-      {"file": "344 Audio - Sprint Car Racing/Sprint Car, Start, Rev, Idle, Off, Mid RPM.wav"}]}
+    "sprint": {"cylinders": 8, "idle": 2000, "redline": 8500, "files": [{"file": "344 Audio - Sprint Car Racing/Sprint Car, Rev, Accelerate, Explosive, Repeated, Racing, High RPM, Laps, Around Track, Rev, Idle, Stop, Tire Squeak.wav"}, {"file": "344 Audio - Sprint Car Racing/Sprint Car, Start, Rev, Idle, Off, Mid RPM.wav"}]},
+    "s2000-ext": {"cylinders": 4, "idle": 800, "redline": 9000, "files": [{"file": "Pole Position Production - Honda S2000 2002/Honda S2000 - t8 - EXT - CIRCLING - Up By Away x3 - Wide AB - MKH8060.wav"}]},
+    "ferrari-458": {"cylinders": 8, "idle": 1000, "redline": 9000, "files": [{"file": "../Sonniss-GDC2024/Pole Position - Ferrari 458 2013/Ferrari 458 Straight Pipes - t5 - ONBRD - RAMPS - Drive Stop Off - EXHAUST - Left - DPA4062.wav"}]},
+    "mclaren-720s": {"cylinders": 8, "idle": 900, "redline": 8500, "trackCylinders": 4, "files": [{"file": "../Sonniss-GDC2024/Pole Position - McLaren 720S Spider SSG 2019/McLaren 720S - t5 - ONBRD - RAMPS - Drive - EXHAUST - Left - BETA58.wav"}]},
+    "carrera-gt": {"cylinders": 10, "idle": 900, "redline": 8400, "trackCylinders": 5, "files": [{"file": "../Sonniss-GDC2024/Pole Position - Porsche Carrera GT 2005/Porsche, Carrera, GT, t9, Onbrd, Fast, Drive, Various, Engine, VP88.wav"}]},
+    "puma-rally1": {"cylinders": 4, "idle": 1000, "redline": 8500, "files": [{"file": "../Sonniss-GDC2024/Pole Position - Ford Puma Hybrid Rally1 2022/Ford Puma WRC - t3 - ONBRD - FAST - Start Drive Stop Reverse Stop Drive Launch Control Stop Off - EXHAUST - RE50.wav"}]},
+    "ds3-wrc": {"cylinders": 4, "idle": 1000, "redline": 8500, "files": [{"file": "../Sonniss-GDC2024/Pole Position - Citroen DS3 WRC 2012/Citroen DS3 WRC - t3 - ONBRD - RAMPS - Drive Stop - EXHAUST - MKH8040.wav"}]},
+    "xsara-wrc": {"cylinders": 4, "idle": 1000, "redline": 8000, "files": [{"file": "../Sonniss-GDC2024/Pole Position - Citroen Xsara WRC 2001/Citroen Xsara WRC - t2 - ONBRD - RAMPS - Start Drive Stop Various - EXHAUST - MKH8040.wav"}]},
+    "citroen-c5": {"cylinders": 4, "idle": 700, "redline": 6000, "files": [{"file": "../Sonniss-GDC2024/Pole Position - Citroen C5 2002/Citroen C5 - t4 - ONBRD - GEARSHIFTS - Drive Stop Off - ENGINE - Left - DPA4061.wav"}]}
   }
 }

@@ -2,6 +2,26 @@
 
 **Plan of record (29 September):** [doc 45](45-roadmap-and-feature-spec.md) sets the order of work, Phases 0–5; the parts ladder is in [doc 44](44-parts-tiers-and-progression.md). The campaign is at least 12 hours and open-ended. Next is **Phase 0**: world grid with per-tile map and fog, Racer records, radar chart, a traffic-aware launch, save and IDs, and track standards.
 
+**Update, 2 October, evening (Richard away): the wider game** ([doc 56](56-wider-game-round.md); a running log of this round).
+- **Swept contacts for every car (kept, study 215).**
+  - All 144 cars finished, with no resets.
+  - Contacts went from 115 to 54, and total time from 9617.0 to 9616.6 s.
+  - Physics cost is unchanged (study 217).
+  - `--speculative-contacts` restores the old mode.
+- **Hillcrest houses.** Three new terraces break the street skyline: a four-storey palazzetto with a rooftop altana, a two-storey cottage under a pitched roof, and a painted house with a gable and oculus. Roofs vary between terracotta shades and grey slate. The layout is unchanged and so is frame time (5.00 ms mean).
+- **Castle gate.** The gatehouse now follows Via Crest, so the drawbridge lies under the road (it was 2.5 m off, across the road's edge, and floated 0.6 m up). The drawbridge rests on the slope and hangs on real chains.
+- **Road paint.** Edge lines no longer saw-tooth round tight bends, on every valley road.
+- **Houses, again.** Painted trompe-l'oeil windows on every house's side walls (no more blank row ends), and roof colours on the Bayview high street (two slate).
+- **Stock 1.2 sound:** the Renault R4, Morris Oxford and Fiat 500 recordings were tried and none beat the C2 (details in doc 56). It stays at 7.7, and a better recording is needed.
+- **High-comp 2.0 voice:** now the DS3 WRC, 8.9 in game (was 7.9), so 15 of 18 engines are at 8 or above. Works 2.0 and Hybrid V8 stay at 7.9; the Viper's 8.3 for the Hybrid V8 comes with a chipmunk score of 2.3, so it wasn't taken.
+- **Tools:** `--view-shots` takes a still from any camera position (`capture-map.ps1 -Rendered`).
+
+**Update, 2 October, late afternoon (Richard away): engines to 8 in game, then the wider game** ([doc 55](55-engine-scorecard.md), "Round two").
+- **Engine sound:** the offline in-game average went from 5.5 to 8.3, with 16 of 18 engines at 8 or above (Stock 1.2 7.8, Hybrid V8 7.9). This came from new recordings from the Sonniss 2024 bundle chosen by score (Ferrari 458, McLaren 720S, DS3 and Xsara WRC, Puma Rally1, Citroën C5), measured gearchanges and coasting in the banks (v6), longer sustain loops, gentler exhaust shaping, and fairer measures.
+- **Title screen:** the surf no longer plays at full there (no ground under any sample now means no world, not open sea).
+- **Class S gearboxes:** taller (27 to 28.5 km/h per 1,000 rpm, from 21 to 22): the S V8 was on its limiter near 218 km/h.
+- **E-class AI:** weaker drivers no longer crash at E speeds. Aero grip and the real platform drag fixed it: all 0.4 and 0.6 drivers ran clean on three seeds, and the player's autopilot in an equal-car Duke race finished 2-3 s behind him with no recoveries (this morning: 172 s with two). A skill-scaled braking reserve was tried and made no difference, so it was removed.
+
 **Update, 2 October, evening: the engine scorecard** ([doc 55](55-engine-scorecard.md); [listening page](https://claude.ai/artifact/8zpJcfKs294HWgpAee59PW), private).
 - **The method:** every recorded engine is driven along its real recording's own drive (revs, throttle and gearchanges read from it) and scored 0–10 on pitch, tone, character, lift-off, gearchanges and rise with revs.
 - **Round one:** the average went from 5.8 to 6.5. Lift-offs now fade by each engine's measured drop instead of falling 6–8 dB at once; the low rumble is back; the made-up roar and gearchange thump are gone over recordings.

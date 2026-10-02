@@ -61,6 +61,10 @@ namespace LittleRoad
         // The output's DC blocker (a 2nd-order high-pass). At 25 Hz it took 4-12 dB off a recorded engine's lowest orders
         // at low revs (cycle rate 8-17 Hz at 1000-2000 rpm): the rumble (docs/55). 12 Hz still blocks DC.
         public static float DcCut=12;
+        // A turbo's muffling of a recording (a 3.6 kHz low-pass): off by default since the in-game scorecard (docs/55).
+        public static bool TurboMuffle=false;
+        public static float CalibrationScale=1;
+        public static bool CalibrateToPeak=false;public static float PeakHeadroom=1.25f;   // (the harness's headroom experiments)
         public static readonly bool TurboSound=Array.IndexOf(Environment.GetCommandLineArgs(),"--turbo-sound")>=0;
         public static readonly bool HybridSound=Array.IndexOf(Environment.GetCommandLineArgs(),"--hybrid-sound")>=0;
         float shaft,whistlePhase,whistle2Phase;Biquad whoosh,bovFilter,flutterFilter;Decay bov,flutter;float flutterPhase,lastThrottle=0,bovCooldown;
@@ -76,6 +80,7 @@ namespace LittleRoad
         Biquad grainTone,turboMuffle;float grainDrive=1,spool;
         public void UseGrains(GrainSynth grains,float level=1){Grains=grains;GrainGain=level;Calibrate();}
         public float LastRms {get;private set;}
+        public float Last {get;private set;}   // the last sample out (CarAudio's engine-only capture)
 
         public EngineSynth(EngineSoundSpec spec,float sampleRate,uint seed)
         {
@@ -115,7 +120,9 @@ namespace LittleRoad
             // A turbo sits in the exhaust: turbo cars sound a little smoother and deeper than the same engine without.
             turboMuffle=Biquad.LowPass(fs,3600,.6f);
             switch(spec.exhaust){case "raw":grainTone=Biquad.Peak(fs,1000,1,0);break;   // (the comparison harness: the recording untouched)
-                case "race":grainTone=Biquad.Peak(fs,2800,.9f,4);grainDrive=1.5f;break;case "sport":grainTone=Biquad.Peak(fs,170,.8f,2.5f);break;default:grainTone=Biquad.LowPass(fs,2600,.6f);break;}
+                // (Gentler since the in-game scorecard, docs/55: the road exhaust's 2.6 kHz low-pass muffled the Stock 1.2's
+                // recording, tone 3.5 of 10 against 6.9 untouched; the race and sport shaping took a little too.)
+                case "race":grainTone=Biquad.Peak(fs,2800,.9f,2);grainDrive=1.2f;break;case "sport":grainTone=Biquad.Peak(fs,170,.8f,1.5f);break;default:grainTone=new Biquad();grainTone.SetHighShelf(fs,3500,-3);break;}
             load=new OnePole(fs,.03f);throttleS=new OnePole(fs,.04f);boostS=new OnePole(fs,.05f);speedS=new OnePole(fs,.1f);
             rpm=spec.idle;inRpm=spec.idle;
             Calibrate();
@@ -182,7 +189,7 @@ namespace LittleRoad
             float exhaust=0;
             // A recorded engine (grain bank) replaces the modelled exhaust; the other layers stay.
             if(Grains!=null) {
-                float g=grainTone.Process(Grains.Next(rpm,l,inLimiter,inShifting));if(spec.turbo)g=turboMuffle.Process(g)*1.1f;
+                float g=grainTone.Process(Grains.Next(rpm,l,inLimiter,inShifting));if(spec.turbo&&TurboMuffle)g=turboMuffle.Process(g)*1.1f;
                 exhaust=g*GrainGain;
                 if(grainDrive>1)exhaust=SoftClip.Tanh(exhaust*grainDrive)/grainDrive;}
             else {
@@ -241,7 +248,7 @@ namespace LittleRoad
             if(Mute>=0){if(Mute==1)roar=0;else if(Mute==2)intake=0;else if(Mute==3)mech=0;else if(Mute==6)shift=0;}
             float mix=Solo<0?exhaust+roar+intake+mech+turbo+motor+shift:Solo==0?exhaust:Solo==1?roar:Solo==2?intake:Solo==3?mech:Solo==4?turbo:Solo==5?motor:shift;
             mix=dcBlock.Process(mix)*gain;
-            return SoftClip.Tanh(mix);
+            return Last=SoftClip.Tanh(mix);
         }
 
         void Fire(int i,float l,float thr,float rpmFrac,float late)
@@ -271,14 +278,19 @@ namespace LittleRoad
         void Calibrate()
         {
             // Full load across the rev range (a recording's level varies with revs; one point misjudged it).
-            float saved=gain;gain=1;double sum=0;int count=0;
+            float saved=gain;gain=1;double sum=0;int count=0;float loudest=0;
             foreach(float at in new[]{.35f,.55f,.75f,.9f}) {
                 Set(spec.redline*at,1,1,20,false,false,2,0,0);rpm=spec.redline*at;int n=(int)(fs*.15f);
-                Block(n);for(int i=0;i<n;i++){float x=Next();if(i>n/3){sum+=x*x;count++;}}
+                Block(n);double part=0;int pn=0;for(int i=0;i<n;i++){float x=Next();if(i>n/3){sum+=x*x;count++;part+=x*x;pn++;}}
+                loudest=Math.Max(loudest,(float)Math.Sqrt(part/Math.Max(1,pn)));
             }
             float rms=(float)Math.Sqrt(sum/Math.Max(1,count));
+            // To the loudest point, not the average (docs/55): engines that gain 8-11 dB per doubling of revs reached the
+            // top hotter than the soft clip, which flattened the very rise the scorecard measures. PeakHeadroom: the
+            // loudest point's level against the average's old target.
+            if(CalibrateToPeak)rms=loudest/PeakHeadroom;
             // Louder than at first (Richard, 1 Oct: the engines were mostly quiet), with headroom under the soft clip.
-            float level=spec.exhaust=="race"?.3f:spec.exhaust=="sport"?.26f:.22f;
+            float level=(spec.exhaust=="race"?.3f:spec.exhaust=="sport"?.26f:.22f)*CalibrationScale;
             gain=rms>1e-4f?level/rms:saved;
             // Settle back to idle.
             Set(spec.idle,0,0,0,false,false,0,0,0);rpm=spec.idle;shaft=0;

@@ -93,3 +93,153 @@ What the scorecard found, and what changed:
 - **References:**
   - Half the recordings are engine-bay microphones. External or exhaust recordings of pulls and lifts would score what the chase camera hears; getting them means downloading more, which needs Richard's go-ahead.
   - Many game engines rev past their recording (the Skyline pulls to about 3,800 rpm). Those revs can't be scored without a reference that reaches them.
+
+## In game (2 October, evening)
+
+Richard, after listening: "Some sound slightly chipmunky like the tuner engine and the stock engine sounds like it has multiple sounds garbled together in places, with lift off sounding weird on a few of them... Is it worth having some form of in game score?"
+
+### Why the scorecard sounded right and the game didn't
+
+The recording-matched scores only ever play an engine within its recording's revs. In the game, 13 of the 18 engines spend most of a full-throttle pull past their recording's top revs:
+
+| Engine | Recording | Share of the pull above it | Furthest stretch |
+|---|---|---|---|
+| Stock 1.2 | Citroën C2 | 95% | 1.76× |
+| Tuner V6 | Skyline | 97% | 2.07× |
+| Race and Hybrid V6 | Skyline | 100% | 2.9× |
+
+Above the recording the voice is made up from squeezed or looped cycles. That is where the chipmunk and the garble live.
+
+### The capture
+
+`python tools/engine-ingame-capture.py [engines]` captures every game engine, two at a time:
+
+- **The drive:** each engine is fitted with its class's first parts (class C: the stock car with that engine) and driven round the test loop with `--trial-auto --sound-drive`. The AI steers and `SoundDrive` works the pedal: full throttle; a 2 s lift at 90% of the redline in 3rd; back on to top gear and top speed; lift 3 s, tip-in 2.5 s, lift 4 s; brake to a stop; idle 3 s; quit.
+- **Hard braking:** if the AI brakes hard for a turn, it is allowed to.
+- **What is recorded:** the game writes the engine voice alone (`player-engine.wav`, new) and its revs, gear, throttle, shifting and limiter about every 10 ms (`player.csv`). Speakers are silent (`--audio-capture-silent`), the window is small and minimised (`--start-windowed`; otherwise the saved display setting opened every instance at 4K, which crashed two runs), and runs last up to `--audio-capture-seconds`.
+- **Batch mode doesn't work:** it runs no audio, so the captures need real windows.
+- **The harness matches the game:** the offline harness, driven along a capture's own trace (rpm, throttle, shifting, limiter), reproduces the game's sound band for band (Club motor brightness 511/401/242/254 Hz in game, 511/405/242/255 Hz from the harness). So in-game drives can be re-rendered offline for experiments.
+
+### The score
+
+`python tools/engine-ingame.py [engines]` writes `review/engine-ingame/<engine>/ingame.json`. Each measure sets the game's property against the engine's real recording:
+
+| Measure | What it compares | Tolerance |
+|---|---|---|
+| Pitch follows the revs | Tracked from the capture. Whole-number fractions down to the cycle rate count, and the fraction is reported. | 50 cents |
+| Tone colour at the same revs | Third-octave balance, rev band by rev band (500 rpm), within the recording | 6 dB rms |
+| No chipmunk | Tone above the recording against the real engine's highest well-recorded revs, beyond the drift the real engine's own tone shows per octave of revs | 6 dB |
+| One clean engine (garble) | How closely each engine cycle repeats the one before, over the full band and the mid band. Best match within ±5% of the cycle length. Counted only when the game falls short of the real engine's full-throttle pulls. | 0.3 |
+| No clicks | Sudden bursts above 2 kHz | 3 per second over the real |
+| Lifting off | Level curve at the game's own lifts | 6 dB |
+| Gearchanges | Level curve at the game's own upshifts | 6 dB |
+| Louder as the revs climb | Pulling | 6 dB per doubling |
+
+Measures that were tried and dropped:
+
+- **Brightness slope:** the real Escort itself darkens from 3,000 to 5,000 rpm, because exhaust resonances aren't straight lines.
+- **Noise between the harmonics:** the onboard recordings are noisy enough that the game always looked cleaner.
+- **Periodicity of the top band only:** too noisy in every signal to separate anything.
+
+### First results
+
+The in-game average is 5.5. The engines that stay within their recordings score best: Club motor 1.4 8.0, Sport 1.6 7.2, Touring 2.0 7.1. The findings, which agree with Richard's ears:
+
+- **Garble:** the Stock 1.2's cycles repeat 0.63 against the real C2's 0.97. The V6s (mid band 0.71 against 0.86), the Fabias and the RS4 also fall short.
+- **Chipmunk and a flat top half:** Tuner V6 chipmunk 4.6, Valley V6 2.3, Race V8 2.8, Twelve-hour V8 2.4. Above the recordings the level stops rising with revs: real engines gain 7–9 dB per doubling, the game −0.5 to +2.
+- **Gearchanges dip 19–24 dB in game** against 3–11 dB on the real engines. The automatic box touches the limiter (99.5% of the redline) before almost every upshift, and the limiter's cut leaves 8% of the level (`GrainSynth.CutLevel`).
+- **Lift-off:** the Workshop tune drops 10 dB in half a second (the real Golf about 1 dB).
+- **Screamer V10:** its strongest line is the cycle rate, a once-per-cycle buzz, rather than its firing note.
+
+The listening page has an "In game" table and a 16 s in-game clip and spectrogram for each engine.
+
+### Next
+
+- Recordings that reach each engine's revs: the real fix for chipmunk and the flat top half. A download list for Richard's approval.
+- Joins above the recording that keep the cycles repeating (garble).
+- A limiter cut that stutters instead of dropping out, and in-game shift dips like the real ones (a sound-side change; the gearbox's shift point affects lap times and would need keep/reject).
+- The Workshop tune's lift-off.
+
+## Round two: towards 8 in game (2 October, afternoon, Richard out)
+
+Richard: "Please continue with these fixes until we have at least a score of 8 on all of the in game engines... If you need more downloads then you don't need to ask... just be wary of licensing."
+
+### Tools
+
+- **Offline in-game scoring.** `sh tools/engine-ingame-all.sh --offline[=harness options]` re-renders every engine's captured in-game drive through the sound harness (the capture's own revs, throttle with braking, shifting, gear and limiter) and scores it with the in-game measures. It takes about a minute for all 18, and was within ±0.3 of the real captures (average 5.46 offline, 5.47 in game).
+- **Harness options**, so experiments need no code change: `cut=`, `shiftlevel=`, `loopabove=`, `formantcap=`, `pulse=0`, `loop=0`, `tonecorr=0`, `muffle=1`, `cal=`, `solo=`, `mute=`. They are applied before the voice calibrates its level; before that fix, `cal=` silently did nothing.
+- **Other scorer tools:**
+  - `SOUND_OVERRIDE=engine=bank,...` tries other recordings for engines without changing the game data.
+  - `python tools/engine-ingame-report.py [--offline] [measures]` prints the table and notes.
+- **Sonniss 2024:** `tools/fetch-sonniss.py` takes `SONNISS_YEAR=2024 SONNISS_PARTS=9`. The 2024 licence was read (`review/tmp/sonniss-2024-licence/`) and matches the earlier bundles: royalty-free use and modification in games, no attribution, no selling the raw files, no AI training.
+
+### Measures made fair (each applied to the game and the recording alike, and each a rule rather than a tuning)
+
+- **Whole recordings.** The in-game references now read each recording whole, as the bank builder does (cached in `review/engine-ingame/ref-<bank>.pkl`). The first 90 s left the S2000's reference stopping at 3,000 rpm while its cycles went to 7,350.
+- **Tone colour** compares wherever the real recording has the revs, on full-throttle (within 12 dB of the loudest) steady pulling, from 0.3 s after a gearchange. The game's test drive is flat out. Gentle part-throttle rises, and the recovery after each shift, have a different tone.
+- **Chipmunk** compares the spectral *envelope* from 3× the firing frequency (at least 400 Hz) to 6 kHz, shape only, beyond the real recording's highest revs, less the real engine's own drift per octave of revs. Third-octave balance across rev bands was dominated by single harmonics moving from band to band, which real engines do too.
+- **Rise with revs** uses steady pulling only (from 0.3 s after a gearchange).
+- **Rev-limiter bounce** is not pulling.
+- **Gearchanges:** a reference "shift" deeper than 15 dB is not a gearchange (the Niro hybrid's engine stopping), so there is no measure then.
+
+### Sound changes
+
+- **Bank version 6** (`tools/engine-grains.py`). The header now carries each recording's measured lift-off drop, its rise with revs while pulling (from the recording's loud pulls; the Skyline was 3.7 dB from cycle levels, 6.2 from pulls) and while coasting, and its median gearchange curve. The curve is 0.6 s in 50 ms steps, beyond what the revs explain, read with the scorecard's own driving states.
+- **Gearchanges:** playback holds the level through a shift and plays the recording's curve. The limiter cut leaves 50% (was 8%). The automatic box touches the limiter before most upshifts, and at 8% every shift dropped out.
+- **Above the recording** the level keeps rising at the recording's rate (up to +12 dB). The sustain loop stays for anything above the recording; `LoopAbove` is kept for experiments. Only looping beyond 2× brought the Skyline's 1.4× static back (the sound check caught it).
+- **Exhaust shaping is gentler:**
+  - road: a −3 dB shelf above 3.5 kHz (was a 2.6 kHz low-pass);
+  - sport: +1.5 dB at 170 Hz;
+  - race: +2 dB at 2.8 kHz with a 1.2× drive.
+
+  The turbo's 3.6 kHz muffle no longer applies over recordings.
+- **New recordings and banks:**
+  - Sonniss 2023: the S2000 external (`s2000-ext`, to 8,804 rpm).
+  - Sonniss 2024: Ferrari 458 (to 9,010), McLaren 720S (8,025), Porsche Carrera GT (8,740), Ford Puma Rally1 (8,071), Citroën DS3 WRC (7,716) and Xsara WRC (7,413).
+  - Chosen by score: Race V8 → Ferrari 458, Race V6 → DS3 WRC, High-comp → Xsara WRC, Works 2.0 and Hybrid V6 → Puma Rally1, Touring Evo → S2000 external, Hybrid V8 → sprint car.
+  - Tried and not kept: Carrera GT for the Screamer V10 (garble), McLaren for the Twelve-hour V8, the C2 pass-by (its Doppler shift mis-tagged the revs).
+
+### Round two results
+
+Each game engine's recording was chosen by its in-game score among the recordings that reach its revs. Within a class every engine keeps its own recording, and V8s keep V8 recordings where one scores. The Twelve-hour V8, the Duke's car, is the 458's V8, though a rally four scored 0.3 higher.
+
+| Class | Engine | Recording |
+|---|---|---|
+| C | Stock 1.2 | Citroën C2 |
+| C | Workshop tune | VW Golf |
+| C | Club motor | Ford Escort |
+| C | Sport 1.6 | Isuzu Piazza |
+| C | Valley V6 | **Citroën C5** |
+| B | Twin-cam | Isuzu Piazza |
+| B | High-comp | **Citroën DS3 WRC** (from the Xsara, 2 Oct evening: 8.0 → 8.9; doc 56) |
+| B | Tuner V6 | **McLaren 720S** |
+| A | Touring | Ford Escort |
+| A | Touring Evo | **Citroën DS3 WRC** |
+| A | Works | **Citroën Xsara WRC** |
+| S | Race V6 | **Citroën DS3 WRC** |
+| S | Race V8 | **Ferrari 458** |
+| S | Screamer V10 | Dodge Viper |
+| E | Hybrid V6 | **Ford Puma Rally1** |
+| E | Hybrid V8 | **McLaren 720S** |
+| E | Twelve-hour V8 | **Ferrari 458** |
+| E | Economy hybrid | **Citroën C5** |
+
+**Offline in-game scores** (each engine's captured drive re-rendered):
+
+- **Average 8.29 (was 5.47), 16 of 18 at 8 or above.**
+- The last two: Stock 1.2 at 7.8 and Hybrid V8 at 7.9.
+- One drive per engine carries about ±0.5 of noise. The Race V8 read 8.4 on one capture and 7.6 on the next, from different gearchange timing and AI braking.
+
+**What holds the last two back:**
+
+- **Stock 1.2:** its Citroën C2 recording stops at 3,500 rpm, so 95% of a pull is synthesised above it (cycles stop repeating like the real engine's, 0.77 against 0.94). No reliable small-car recording to 6,000 rpm was found (the C2 pass-by's Doppler shift broke its rev tracking). The C5 scores 8.5 but would give two class C engines one voice.
+- **Hybrid V8:** it is 0.2 short on rise with revs at the top. With 60% calibration headroom it reaches 8.1 (and 17 of 18 engines reach 8), but that costs 4.4 dB of loudness, and the engines were too quiet before (Richard, 1 Oct). Not taken.
+
+**Update, 2 October, evening** ([doc 56](56-wider-game-round.md)):
+- **High-comp moved to the DS3 WRC.** It now plays only 5% above the recording, against 21% on the Xsara. In-game capture 8.9 (was 7.9): 15 of 18 engines are at 8 or above in game.
+- **Still short:**
+  - Stock 1.2, 7.7: R4, Morris and Fiat 500 recordings tried, none better.
+  - Works 2.0, 7.9: S2000, S2000 external, DS3, Fabia, Piazza, Escort and Puma all score lower or share a voice within class A.
+  - Hybrid V8, 7.9: the Viper scores 8.3, but its chipmunk score is 2.3 at 60% above its recording, the very fault Richard heard, so it wasn't taken. RS4, Carrera GT and Testarossa score lower.
+
+**Kept switchable for experiments:** `EngineSynth.CalibrateToPeak` (no gain), `GrainSynth.LoopAbove`, `CutLevel`, `ShiftLevel`, `LoopMax/LoopSpan/LoopFloor` (now 80 / 110 / 0.8, from 40 / 48 / 0.85).

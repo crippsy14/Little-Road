@@ -160,7 +160,7 @@ def spectrogram(path, x, times, rpm, conf, cylinders, t, state):
         if typ == b'IDAT': idat += data[pos+8:pos+8+n]
         pos += 12 + n
     raw = zlib.decompress(idat); rows = [bytearray(raw[y*(W*3+1)+1:(y+1)*(W*3+1)]) for y in range(H)]
-    seconds = len(x) / FS; colours = {1: (60, 200, 90), 0: (230, 70, 60), 2: (240, 210, 40)}
+    seconds = len(x) / FS; colours = {1: (60, 200, 90), 0: (230, 70, 60), 2: (240, 210, 40), -1: (110, 110, 110)}
     strip = [bytearray(W * 3) for _ in range(10)]
     for i in range(W):
         k = state[min(len(state) - 1, int(i / W * seconds / HOP))]

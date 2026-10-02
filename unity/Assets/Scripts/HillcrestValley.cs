@@ -267,8 +267,10 @@ namespace LittleRoad
             if(!BayviewKit.Has("rock_cluster"))return;
             // Rocks down both edges and along the lip, so the sheet never shows a straight side.
             for(int side=-1;side<=1;side+=2)for(int k=0;k<5;k++) {
-                float u=k/4f;var p=Sheet(side*.5f,u,0,0)+across*side*(1.2f+u*1.4f);
-                BayviewKit.Spawn(k%2==0?"rock_cluster":"rock_b",p+Vector3.down*1.2f,k*67+side*40,holder,solid:false,scale:2.4f+k*.35f);
+                // Beside the sheet, but seated on the gorge side below it: the sheet arcs out from the cliff, so rocks
+                // following it hung 1.6-3.3 m in the air (placement audit, 2 Oct).
+                float u=k/4f;var p=Sheet(side*.5f,u,0,0)+across*side*(1.2f+u*1.4f);p.y=Mathf.Min(p.y-1.2f,ValleyField.Height(p.x,p.z)-.3f);
+                BayviewKit.Spawn(k%2==0?"rock_cluster":"rock_b",p,k*67+side*40,holder,solid:false,scale:2.4f+k*.35f);
             }
             foreach(float s in new[]{-.36f,.05f,.4f})BayviewKit.Spawn("rock_a",Sheet(s,0,-.8f,0)+Vector3.down*.9f,s*300,holder,solid:false,scale:1.1f);
         }
@@ -418,16 +420,24 @@ namespace LittleRoad
         }
         void Stripe(string name,Vector3[] line,float offset,float width,float dash,float from,float to,Transform parent)
         {
-            var v=new List<Vector3>();var t=new List<int>();float run=0;
-            for(int i=0;i<line.Length-1;i++) {
-                run+=Vector3.Distance(line[i],line[i+1]);if(run<from||run>to||(dash>0&&Mathf.Repeat(run,dash*2)>dash))continue;
-                Vector3 a=line[i],b=line[i+1],f=b-a;f.y=0;f.Normalize();var r=Vector3.Cross(Vector3.up,f);int s=v.Count;
-                v.Add(a+r*(offset-width*.5f)+Vector3.up*.047f);v.Add(a+r*(offset+width*.5f)+Vector3.up*.047f);v.Add(b+r*(offset-width*.5f)+Vector3.up*.047f);v.Add(b+r*(offset+width*.5f)+Vector3.up*.047f);
-                t.AddRange(new[]{s,s+2,s+1,s+1,s+2,s+3});
-            }
+            var v=new List<Vector3>();var t=new List<int>();StripeQuads(line,offset,width,dash,from,to,v,t);
             if(v.Count==0)return;
             var mesh=new Mesh{name=name,indexFormat=v.Count>65000?IndexFormat.UInt32:IndexFormat.UInt16};mesh.SetVertices(v);mesh.SetTriangles(t,0);mesh.RecalculateNormals();
             var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(parent);go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=roadPaint;
+        }
+        // Road paint: one quad per line segment (4 vertices: start inner/outer, end inner/outer), `offset` metres to the right.
+        public static void StripeQuads(Vector3[] line,float offset,float width,float dash,float from,float to,List<Vector3> v,List<int> t)
+        {
+            float run=0;
+            // Each point's sideways direction is the mean of its two segments', so neighbouring pieces share their
+            // ends: with a per-segment direction, an edge line 3.4 m out saw-toothed round tight bends.
+            Vector3 Side(int i){var f=line[Mathf.Min(line.Length-1,i+1)]-line[Mathf.Max(0,i-1)];f.y=0;return Vector3.Cross(Vector3.up,f.normalized);}
+            for(int i=0;i<line.Length-1;i++) {
+                run+=Vector3.Distance(line[i],line[i+1]);if(run<from||run>to||(dash>0&&Mathf.Repeat(run,dash*2)>dash))continue;
+                Vector3 a=line[i],b=line[i+1],ra=Side(i),rb=Side(i+1);int s=v.Count;
+                v.Add(a+ra*(offset-width*.5f)+Vector3.up*.047f);v.Add(a+ra*(offset+width*.5f)+Vector3.up*.047f);v.Add(b+rb*(offset-width*.5f)+Vector3.up*.047f);v.Add(b+rb*(offset+width*.5f)+Vector3.up*.047f);
+                t.AddRange(new[]{s,s+2,s+1,s+1,s+2,s+3});
+            }
         }
         // Causeway viaduct from the Halt quay to the north portal: a stone deck on round-arched
         // piers, an open balustrade (an invisible wall keeps cars on) with pilasters, pennants and

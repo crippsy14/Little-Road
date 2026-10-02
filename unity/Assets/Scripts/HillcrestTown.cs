@@ -16,6 +16,15 @@ namespace LittleRoad
         public static readonly Dictionary<string,(Vector3 at,float yaw)> Spots=new();
         // Front yards of the street houses (parking spot, parallel yaw, house kit).
         public static readonly List<(Vector3 yard,float yaw,string house)> Homes=new();
+        // The castle gatehouse (wall ring r 38 m, nominally at 172 degrees). Via Crest swings in from its spiral and
+        // crosses the ring ~15 degrees off the radial, so the gatehouse sits on the road as built and faces out along
+        // it: the drawbridge (2-10 m out) then lies under the road instead of across its edge.
+        public static (Vector3 at,float yaw) CastleGate()
+        {
+            var c=HillcrestRoute.CastleCourt;Vector3 Ring(float r){float a=172*Mathf.Deg2Rad;return new Vector3(c.x+Mathf.Sin(a)*r,0,c.z+Mathf.Cos(a)*r);}
+            var crest=HillcrestRoute.Crest;var at=crest.At(crest.Nearest(Ring(38),out _));at.y=HillcrestRoute.CastleY-.05f;
+            return (at,Quaternion.LookRotation(-crest.Forward(crest.Nearest(Ring(43),out _))).eulerAngles.y);
+        }
         public static readonly List<Vector3> Chimneys=new();
         static readonly List<(Vector2 centre,float radius)> reserved=new();
         public static bool Reserved(float x,float z)
@@ -32,7 +41,12 @@ namespace LittleRoad
         static readonly int[] Walls={0xe3a83b,0xeab04a,0xc9683f,0xd98545,0xb5493a,0xd98b7e,0xe39a72,0xb7703f,0xe8c27a,0xa9b58c,0xe6d3ad,0xd7a09a,0xe8cd5e,0xcf7a4a};
         static readonly int[] Shutters={0x2f6b3f,0x3b5f8a,0x2a6b5c,0x7a4a2e,0x9c3b30,0x2d5f73,0x5a6e35,0x3d7a4e};
         static readonly int[] Awnings={0xff4d5e,0x3a7bd5,0x2e9e5b,0xffb400,0xff7ac8,0x1f8a70};
-        BayviewKit.Tint RandomTint(){int s=Shutters[rng.Next(Shutters.Length)];return T(Walls[rng.Next(Walls.Length)],s,Awnings[rng.Next(Awnings.Length)],s);}
+        // Roofs: mostly fresh terracotta, then weathered and darker tiles, and some grey Ligurian slate. Their own
+        // random stream, so the town's layout (drawn from `rng`) doesn't move.
+        static readonly int[] Roofs={0,0,0,0xc4684c,0xb04a2e,0xd98760,0xa85a3c,0x69707a};
+        readonly System.Random roofRng=new(5113);
+        BayviewKit.Tint RandomTint(){int s=Shutters[rng.Next(Shutters.Length)];var t=T(Walls[rng.Next(Walls.Length)],s,Awnings[rng.Next(Awnings.Length)],s);
+            int roof=Roofs[roofRng.Next(Roofs.Length)];if(roof!=0)t.roof=Toy.Hex(roof);return t;}
         static float H(float x,float z)=>ValleyField.Height(x,z);
         static float Yaw(Vector3 from,Vector3 to){var d=to-from;d.y=0;return Quaternion.LookRotation(d).eulerAngles.y;}
         GameObject Put(string id,Vector3 p,float yaw,BayviewKit.Tint tint=null,string sign=null,float scale=1,bool solid=true,Transform parent=null)=>
@@ -54,7 +68,7 @@ namespace LittleRoad
         }
         // ---------------------------------------------------------------- buildings on slopes
         // Kit footprints (width along the frontage, depth).
-        static Vector2 Footprint(string id)=>id switch{"terrace_a"=>new(5.4f,8),"terrace_b"=>new(5.4f,8),"terrace_c"=>new(5.4f,8),"terrace_d"=>new(5.4f,8),
+        static Vector2 Footprint(string id)=>id switch{"terrace_a"=>new(5.4f,8),"terrace_b"=>new(5.4f,8),"terrace_c"=>new(5.4f,8),"terrace_d"=>new(5.4f,8),"terrace_e"=>new(5.4f,8),"terrace_f"=>new(5.4f,8),"terrace_g"=>new(5.4f,8),
             "house_a"=>new(8.5f,7.5f),"house_b"=>new(6.2f,7.5f),"house_c"=>new(10.8f,8.5f),"house_d"=>new(5.6f,7.4f),
             "shop"=>new(9,8),"cafe"=>new(9,8),"post_office"=>new(9,8),"church"=>new(12,14),"motors"=>new(15,11),"hotel"=>new(16,10),"town_hall"=>new(20,16),
             "station"=>new(22,8),"mill"=>new(12,11),_=>new(8,8)};
@@ -77,9 +91,9 @@ namespace LittleRoad
         {
             float s=from;
             while(s<to) {
-                // Terraces (plain, shop, arcade, bay window) mostly; villas, tower houses and cottages between.
+                // Terraces (plain, shop, arcade, bay window, four-storey palazzetto, low cottage, painted gable) mostly; villas, tower houses and cottages between.
                 double roll=rng.NextDouble();
-                string id=roll<.62?new[]{"terrace_a","terrace_a","terrace_b","terrace_b","terrace_c","terrace_d","terrace_d"}[rng.Next(7)]:
+                string id=roll<.62?new[]{"terrace_a","terrace_a","terrace_b","terrace_b","terrace_c","terrace_d","terrace_d","terrace_e","terrace_f","terrace_g"}[rng.Next(10)]:
                     roll<.72?"house_c":roll<.82?"house_d":roll<.91?"house_b":"house_a";
                 float w=Footprint(id).x;float mid=s+w*.5f;if(mid+w*.5f>to)break;
                 if(rng.NextDouble()<gapChance){Greenery(road,side,s+3,setback);s+=7;continue;}
@@ -91,7 +105,8 @@ namespace LittleRoad
                     // The front yard between pavement and door: where the resident parks.
                     var yard=at+right*side*(road.width*.5f+2.9f);yard.y=at.y;Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));
                     // Chimney tops (kit x mirrors on import): some of them smoke.
-                    if(id!="house_b"&&id!="house_d"&&rng.NextDouble()<.35)Chimneys.Add(centre+Quaternion.Euler(0,Yaw(centre,at),0)*(id=="house_a"?new Vector3(-2.6f,10.5f,-1.2f):id=="house_c"?new Vector3(-2.8f,10.2f,-1.4f):new Vector3(-1.4f,12.1f,-1.5f)));
+                    if(id!="house_b"&&id!="house_d"&&rng.NextDouble()<.35)Chimneys.Add(centre+Quaternion.Euler(0,Yaw(centre,at),0)*(id switch{"house_a"=>new Vector3(-2.6f,10.5f,-1.2f),"house_c"=>new Vector3(-2.8f,10.2f,-1.4f),
+                        "terrace_e"=>new Vector3(-1.9f,15.2f,2.7f),"terrace_f"=>new Vector3(-1.9f,10.7f,-.6f),"terrace_g"=>new Vector3(1.6f,13.1f,-2.4f),_=>new Vector3(-1.4f,12.1f,-1.5f)}));
                     s+=w+.35f+(rng.NextDouble()<.2?2.5f:0);
                 }
                 else s+=3;
@@ -205,7 +220,7 @@ namespace LittleRoad
             Vector3 At(float theta,float r){float a=theta*Mathf.Deg2Rad;return new Vector3(c.x+Mathf.Sin(a)*r,HillcrestRoute.CastleY,c.z+Mathf.Cos(a)*r);}
             Vector3 Tangent(float theta){float a=theta*Mathf.Deg2Rad;return new Vector3(Mathf.Cos(a),0,-Mathf.Sin(a));}
             bool grand=BayviewKit.Has("castle_donjon");var red=T(0xffffff,0,0xd8343f,0);
-            Put("castle_gatehouse",At(gateTheta,R)+Vector3.down*.05f,gateTheta,red,"HILLCREST CASTLE");
+            var gate=CastleGate();Put("castle_gatehouse",gate.at,gate.yaw,red,"HILLCREST CASTLE");
             var towers=new List<float>();for(int k=0;k<7;k++)towers.Add(gateTheta+26+k*(360-52)/6f);
             int[] pennants={0xff4d5e,0x3a7bd5,0xffb400,0x2e9e5b,0xff7ac8,0x1f8a70,0xff4d5e};
             for(int k=0;k<towers.Count;k++){var p=At(towers[k],R);p.y=Mathf.Min(p.y,H(p.x,p.z))-.3f;Put("castle_tower",p,towers[k],T(0xffffff,0,pennants[k],0));}

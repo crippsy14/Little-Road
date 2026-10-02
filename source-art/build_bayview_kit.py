@@ -227,6 +227,7 @@ def house_a():
     box('Chimney',(2.6,1.2,h+2.5),(.9,.9,2.4),'Stone',.06);box('Chimney cap',(2.6,1.2,h+3.75),(1.15,1.15,.18),'WhiteTrim',.04)
     for k in range(2):cyl('Chimney pot',(2.45+k*.3,1.2,h+4.05),.12,.4,'RoofTile','Z',12)
     planter_box(2.9,-d/2-.9,1.8)
+    side_paint(w,(1.7,4.4))
     collision('Body',(0,0,h/2),(w+.3,d+.3,h))
 
 def house_b():
@@ -243,6 +244,7 @@ def house_b():
     for k in range(5):sphere('Balcony pot',(-2+k,-d/2-1.05,4.15),(.18,.18,.18),['FlowerRed','FlowerPink','FlowerYellow','FlowerWhite','FlowerRed'][k],1)
     cyl('Attic window',(0,-d/2-.06,h+1.0),.5,.14,'WhiteTrim','Y',24);cyl('Attic glass',(0,-d/2-.12,h+1.0),.38,.08,'Glass','Y',24)
     window(0,d/2,4.9,1.2,1.4,face=1,flowers=False)
+    side_paint(w,(1.7,4.9),(-1.5,1.5))
     collision('Body',(0,0,h/2),(w+.3,d+.3,h))
 
 def shop(kind='shop'):
@@ -918,6 +920,18 @@ def town_hall():
     box('Flag',(tx+.9,ty,th+9.1),(1.8,.05,1.1),'Tint_Awning',.02)
     collision('Hall',(0,0,h/2),(w+.4,d+.4,h));collision('Arcade',(0,-d/2-1.6,2),(w,.9,4));collision('Tower',(tx,ty,th/2),(5.4,5.4,th))
 
+def side_paint(w,rows,ys=(-1.6,1.6)):
+    """Trompe-l'oeil windows on a terrace's side walls (Ligurian painted facades): flat frame, closed shutters, sill.
+    Under 0.12 m proud, so they fit the gap to a neighbour; at a row's end they stop the side being a blank wall."""
+    for s in(-1,1):
+        x=s*w/2
+        for z in rows:
+            for y in ys:
+                box('Painted frame',(x+s*.02,y,z),(.04,1.2,1.7),'WhiteTrim',0)
+                for t in(-1,1):box('Painted shutter',(x+s*.045,y+t*.27,z),(.03,.5,1.45),'Tint_Shutter',0)
+                box('Painted shutter gap',(x+s*.062,y,z),(.01,.04,1.45),'Black',0)
+                box('Painted sill',(x+s*.06,y,z-.95),(.12,1.4,.1),'WhiteTrim',0)
+
 def terrace(kind='a'):
     """Tall narrow town house (5.4 m frontage, three storeys): 'a' balconies, 'b' shop below."""
     w,d,h=5.4,8.0,9.6;walls(w,d,h,plinth=.45)
@@ -969,11 +983,83 @@ def terrace(kind='a'):
         box('Juliet balcony',(0,-d/2-.55,4.05),(w-1.2,1.1,.16),'Stone',.04)
         for k in range(9):cyl('Balcony rail',(-(w-1.4)/2+k*(w-1.4)/8,-d/2-1.05,4.5),.03,.8,'Metal','Z',6)
         box('Balcony top',(0,-d/2-1.05,4.92),(w-1.3,.07,.07),'Metal',.02)
+    side_paint(w,(5.0,8.0))
     collision('Body',(0,0,h/2),(w+.3,d+.3,h))
 def terrace_a():terrace('a')
 def terrace_b():terrace('b')
 def terrace_c():terrace('c')
 def terrace_d():terrace('d')
+def terrace_back(w,d,rows):
+    """Plain back of a terrace house: sash windows on each floor and a back door."""
+    for z in rows:
+        for x in((-1.25,) if z<3 else (-1.25,1.25)):window(x,d/2,z,.9,1.3,shutters=False,flowers=False,face=1)
+    door(1.3,d/2,0,1.0,2.3,face=1,canopy=False)
+
+def terrace_e():
+    """Four-storey palazzetto: rusticated ground floor, a cornice on modillions and a rooftop altana (loggia)."""
+    w,d,h=5.4,8.0,12.6;walls(w,d,h,plinth=.45)
+    box('Roof slab',(0,0,h+.25),(w+.5,d+.6,.5),'RoofTile',.1)
+    box('Cornice',(0,-d/2-.22,h-.02),(w+.7,.6,.32),'WhiteTrim',.05)
+    for k in range(7):box('Modillion',(-2.4+k*.8,-d/2-.24,h-.36),(.18,.45,.22),'WhiteTrim',.02)
+    for k in range(4):box('Rustication',(0,-d/2-.05,.8+k*.78),(w,.1,.5),'Stone',.04)
+    box('String course',(0,-d/2-.08,3.45),(w+.1,.22,.22),'WhiteTrim',.04)
+    door(-1.3,-d/2,0,1.1,2.4);window(1.2,-d/2,1.7,1.2,1.4,flowers=False)
+    for z,hh in((5.0,1.7),(8.0,1.5),(11.0,1.2)):
+        for x in(-1.25,1.25):window(x,-d/2,z,1.0,hh,flowers=(z<9))
+    box('Balcony',(0,-d/2-.55,4.0),(w-1.0,1.1,.18),'Stone',.04)
+    for k in range(11):cyl('Baluster',(-(w-1.3)/2+k*(w-1.3)/10,-d/2-1.03,4.45),.07,.75,'WhiteTrim','Z',8,r2=.05)
+    box('Balcony top',(0,-d/2-1.03,4.86),(w-1.1,.16,.1),'WhiteTrim',.03)
+    terrace_back(w,d,(1.7,5.0,8.0,11.0))
+    # The altana: a small roofed loggia on the roof terrace, set back from the street.
+    ay,az=1.3,h+.5
+    for sx in(-1,1):
+        for sy in(-1,1):box('Altana pier',(sx*1.95,ay+sy*1.45,az+1.05),(.34,.34,2.1),'Tint_Wall',.04)
+    box('Altana back',(0,ay+1.45,az+1.05),(3.9,.24,2.1),'Tint_Wall',.04)
+    box('Altana shade',(0,ay+1.3,az+1.05),(3.5,.04,1.9),'Black',0)
+    hip_roof(0,ay,4.2,3.2,az+2.1,.9,.3)
+    for x in(-.95,.95):cyl('Altana rail post',(x,ay-1.45,az+.45),.05,.9,'Metal','Z',8)
+    box('Altana rail',(0,ay-1.45,az+.88),(3.6,.07,.07),'Metal',.02)
+    for x in(-1.0,1.0):cyl('Roof pot',(x*1.8,-d/2+.9,az+.3),.25,.6,'RoofTile','Z',12,r2=.32);sphere('Roof shrub',(x*1.8,-d/2+.9,az+.85),(.38,.38,.42),'LeafDark',2)
+    box('Chimney',(1.9,-2.7,h+1.4),(.7,.7,1.8),'Stone',.05);box('Chimney cap',(1.9,-2.7,h+2.36),(.9,.9,.14),'WhiteTrim',.03)
+    cyl('Gutter',(0,-d/2-.32,h-.25),.09,w+.5,'Metal','X',10)
+    side_paint(w,(5.0,8.0,11.0))
+    collision('Body',(0,0,h/2),(w+.3,d+.3,h))
+
+def terrace_f():
+    """Two-storey cottage between the tall houses: a tiled pitched roof with its eaves to the street, and a dormer."""
+    w,d,h=5.4,8.0,6.6;walls(w,d,h,plinth=.45)
+    gable_roof(0,0,w,d,h,2.6,.16)
+    box('Dormer',(0,-1.75,h+1.4),(1.6,1.4,1.6),'Tint_Wall',.05)
+    box('Dormer roof',(0,-1.8,h+2.28),(1.95,1.75,.18),'RoofTile',.05,rot=(.12,0,0))
+    box('Dormer frame',(0,-2.46,h+1.62),(1.05,.06,.85),'WhiteTrim',.03);box('Dormer glass',(0,-2.5,h+1.62),(.8,.04,.62),'Glass',.01)
+    door(-1.3,-d/2,0,1.1,2.4);window(1.2,-d/2,1.7,1.2,1.4)
+    for x in(-1.25,1.25):window(x,-d/2,4.6,1.0,1.5)
+    box('Porch bench',(1.2,-d/2-.7,.42),(1.4,.45,.12),'Wood',.03)
+    for s in(-1,1):box('Bench leg',(1.2+s*.55,-d/2-.7,.2),(.1,.4,.4),'Wood',.02)
+    terrace_back(w,d,(1.7,4.6))
+    box('Chimney',(1.9,.6,h+2.4),(.7,.7,2.2),'Stone',.05);box('Chimney cap',(1.9,.6,h+3.56),(.9,.9,.14),'WhiteTrim',.03)
+    for k in range(2):cyl('Chimney pot',(1.75+k*.3,.6,h+3.83),.1,.4,'RoofTile','Z',12)
+    side_paint(w,(4.6,))
+    collision('Body',(0,0,h/2),(w+.3,d+.3,h))
+
+def terrace_g():
+    """Painted Ligurian house: a gable to the street with an oculus, painted pediments and string courses."""
+    w,d,h=5.4,8.0,10.2;walls(w,d,h,plinth=.45)
+    gable_roof(0,0,w,d,h,2.2,.16,'RoofTile','Y')
+    cyl('Oculus frame',(0,-d/2-.06,h+.85),.5,.14,'WhiteTrim','Y',20);cyl('Oculus glass',(0,-d/2-.12,h+.85),.36,.06,'Glass','Y',20)
+    for z in(3.45,6.65):box('String course',(0,-d/2-.08,z),(w+.1,.2,.2),'WhiteTrim',.04)
+    door(0,-d/2,0,1.2,2.5,canopy=False)
+    box('Fanlight frame',(0,-d/2-.05,2.95),(1.5,.12,.5),'WhiteTrim',.03);box('Fanlight',(0,-d/2-.1,2.95),(1.1,.04,.32),'Glass',.01)
+    for x in(-1.85,1.85):window(x,-d/2,1.7,.8,1.3,shutters=False,flowers=False)
+    for z in(4.9,8.1):
+        for x in(-1.25,1.25):
+            window(x,-d/2,z,1.0,1.5,flowers=(z<6))
+            top=z+.75+.48
+            wedge('Painted pediment',(x-.8,-d/2-.14,top),(x+.8,-d/2-.14,top),(x,-d/2-.14,top+.42),(0,-1,0),'WhiteTrim',.1)
+    terrace_back(w,d,(1.7,4.9,8.1))
+    box('Chimney',(-1.6,2.4,h+1.5),(.7,.7,2.2),'Stone',.05);box('Chimney cap',(-1.6,2.4,h+2.66),(.9,.9,.14),'WhiteTrim',.03)
+    side_paint(w,(4.9,8.1))
+    collision('Body',(0,0,h/2),(w+.3,d+.3,h))
 
 def hip_roof(cx,cy,w,d,eave,rise,over=.5,material='RoofTile'):
     """Hipped roof over a w x d plan (w >= d): four slopes, ridge along X, hip caps, gutters all round."""
@@ -1006,6 +1092,7 @@ def house_c():
     for x in(-3,3):window(x,d/2,1.6,1.0,1.3,shutters=False,flowers=False,face=1)
     for s in(-1,1):cyl('Garden urn',(s*(w/2+.6),-d/2-1.0,.4),.3,.8,'Stone','Z',12,.04,r2=.42);sphere('Urn shrub',(s*(w/2+.6),-d/2-1.0,1.05),(.4,.4,.45),'LeafDark',2)
     box('Chimney',(2.8,1.4,h+2.2),(.8,.8,2.2),'Stone',.05);box('Chimney cap',(2.8,1.4,h+3.35),(1.0,1.0,.14),'WhiteTrim',.03)
+    side_paint(w,(1.4,4.6),(-1.8,1.8))
     collision('Body',(0,0,h/2),(w+.3,d+.3,h))
 
 def house_d():
@@ -1023,6 +1110,7 @@ def house_d():
     box('String course',(0,0,6.6),(w+.25,d+.25,.2),'WhiteTrim',.03)
     for x in(-1.2,1.2):window(x,d/2,4.6,.9,1.3,shutters=False,flowers=False,face=1)
     window(0,d/2,8.2,1.1,1.4,flowers=False,face=1)
+    side_paint(w,(1.7,4.6),(-1.5,1.5))
     collision('Body',(0,0,h/2),(w+.3,d+.3,h))
 
 
@@ -1163,12 +1251,18 @@ def castle_gatehouse():
     for k in range(3):cyl('Crown point',(-.6+k*.6,-3.4,wall+vault+4.8),.14,.5,'Gold','Z',8,.02,r2=.02)
     box('Crown band',(0,-3.4,wall+vault+4.5),(1.6,.14,.25),'Gold',.03)
     sign_board(0,-3.4,wall+vault+1.3,7.0,1.1,'WhiteTrim','gate')
-    # Drawbridge lowered flat onto the approach, with its chains up to the gate block.
-    box('Drawbridge',(0,-3.2-3.5,.12),(2*half-.4,7.0,.24),'Wood',.04)
-    for k in range(9):box('Drawbridge plank',(0,-3.4-k*.75,.26),(2*half-.5,.08,.05),'WoodDark',0)
+    # Drawbridge lowered onto the approach: it pivots at the gate and its far end rests on the bank, falling 0.29 m
+    # over 7 m with Via Crest there (the deck top rides ~8 cm above the road all along), chains up to the gate block.
+    fall=math.atan2(.29,7.0)
+    def deck(d):return -3.2-d*math.cos(fall),-.02-d*math.sin(fall)
+    y,z=deck(3.5);box('Drawbridge',(0,y,z-.1),(2*half-.4,7.0,.2),'Wood',.04,rot=(fall,0,0))
+    for k in range(9):y,z=deck(.2+k*.75);box('Drawbridge plank',(0,y,z+.02),(2*half-.5,.08,.05),'WoodDark',0,rot=(fall,0,0))
+    foot=deck(6.6)[1]+.06;head=wall+vault+1.8
+    # Close-set links, alternate ones turned a quarter, so each reads as a chain rather than loose blocks.
+    links=int(math.hypot(6.6,head-foot)/.3)
     for s in(-1,1):
-        for k in range(8):
-            t=k/7;box('Chain link',(s*(half-.5),-3.2-6.6*(1-t),.3+t*(wall+vault+1.5)),(.12,.3,.22),'Metal',.02,rot=(-math.atan2(wall+vault+1.2,6.6),0,0))
+        for k in range(links+1):
+            t=k/links;box('Chain link',(s*(half-.5),-3.2-6.6*(1-t),foot+t*(head-foot)),(.07,.36,.2) if k%2 else (.2,.36,.07),'Metal',.02,rot=(math.atan2(head-foot,6.6),0,0))
     collision('Left',(-(half+4.0),0,9),(7.4,7.4,18));collision('Right',(half+4.0,0,9),(7.4,7.4,18))
     collision('Over',(0,0,(wall+vault+top)/2+.3),(2*half,6.4,top-wall-vault))
 
@@ -1948,7 +2042,7 @@ ASSETS={'house_a':house_a,'house_b':house_b,'shop':shop,'cafe':cafe,'post_office
     'barn':barn,'fence':fence,'hay_bale':hay_bale,'tractor':tractor,'tent':tent,'campfire':campfire,'caravan':caravan,
     'telescope':telescope,'kiosk':kiosk,'flower_bed':flower_bed,'picnic_table':picnic_table,'chevron_sign':chevron_sign,'telegraph_pole':telegraph_pole,
     'church':church,'market_stall':market_stall,'town_gate':town_gate,'vine_row':vine_row,'motors':motors,
-    'tunnel_portal':tunnel_portal,'headland_gate':headland_gate,'rail_gate':rail_gate,'town_hall':town_hall,'terrace_a':terrace_a,'terrace_b':terrace_b,'terrace_c':terrace_c,'terrace_d':terrace_d,'house_c':house_c,'house_d':house_d,'castle_tower':castle_tower,'castle_wall':castle_wall,
+    'tunnel_portal':tunnel_portal,'headland_gate':headland_gate,'rail_gate':rail_gate,'town_hall':town_hall,'terrace_a':terrace_a,'terrace_b':terrace_b,'terrace_c':terrace_c,'terrace_d':terrace_d,'terrace_e':terrace_e,'terrace_f':terrace_f,'terrace_g':terrace_g,'house_c':house_c,'house_d':house_d,'castle_tower':castle_tower,'castle_wall':castle_wall,
     'castle_gatehouse':castle_gatehouse,'castle_keep':castle_keep,'castle_donjon':castle_donjon,'castle_palace':castle_palace,'zip_tower':zip_tower,'zip_station':zip_station,'zip_trolley':zip_trolley,'station':station,'mill':mill,'bandstand':bandstand,'wind_turbine':wind_turbine,
     'balloon':balloon,'grandstand':grandstand,'train_loco':train_loco,'train_coach':train_coach,'olive_tree':olive_tree,'lavender_row':lavender_row,
     'sunflower_row':sunflower_row,'hotel':hotel,'map_board':map_board,'flag_pole':flag_pole,'tyre_wall':tyre_wall,'ad_board':ad_board,
@@ -2045,7 +2139,7 @@ def build(name):
     return v
 
 def render_lineup(names,path):
-    reset();x=0;spacing={'house_a':12,'house_b':10,'shop':12,'cafe':14,'post_office':12,'fountain':8,'lighthouse':14,'windmill':12,'boat':8,'beach_hut':5,'parasol':5,'pier':6,'barn':11,'caravan':7,'tractor':5,'kiosk':5,'flower_bed':6,'church':16,'market_stall':5,'town_gate':17,'vine_row':14,'motors':17,'tunnel_portal':44,'headland_gate':56,'rail_gate':32,'town_hall':26,'terrace_a':7,'terrace_b':7,'terrace_c':7,'terrace_d':7,'house_c':13,'house_d':7,'castle_tower':13,'castle_donjon':30,'castle_palace':36,'zip_tower':22,'zip_station':24,'zip_trolley':8,'castle_wall':22,'castle_gatehouse':26,'castle_keep':22,'station':40,'mill':16,'bandstand':12,'wind_turbine':44,'balloon':16,'grandstand':44,'train_loco':6,'train_coach':6,'olive_tree':5,'lavender_row':14,'sunflower_row':14,'hotel':20,'map_board':5,'flag_pole':5,'pit_stop_2':34,'pit_stop_3':44,'pit_garages':56}
+    reset();x=0;spacing={'house_a':12,'house_b':10,'shop':12,'cafe':14,'post_office':12,'fountain':8,'lighthouse':14,'windmill':12,'boat':8,'beach_hut':5,'parasol':5,'pier':6,'barn':11,'caravan':7,'tractor':5,'kiosk':5,'flower_bed':6,'church':16,'market_stall':5,'town_gate':17,'vine_row':14,'motors':17,'tunnel_portal':44,'headland_gate':56,'rail_gate':32,'town_hall':26,'terrace_a':7,'terrace_b':7,'terrace_c':7,'terrace_d':7,'terrace_e':7,'terrace_f':7,'terrace_g':7,'house_c':13,'house_d':7,'castle_tower':13,'castle_donjon':30,'castle_palace':36,'zip_tower':22,'zip_station':24,'zip_trolley':8,'castle_wall':22,'castle_gatehouse':26,'castle_keep':22,'station':40,'mill':16,'bandstand':12,'wind_turbine':44,'balloon':16,'grandstand':44,'train_loco':6,'train_coach':6,'olive_tree':5,'lavender_row':14,'sunflower_row':14,'hotel':20,'map_board':5,'flag_pole':5,'pit_stop_2':34,'pit_stop_3':44,'pit_garages':56}
     for n in names:
         before=set(bpy.data.objects);ASSETS[n]()
         step=spacing.get(n,5);x+=step/2
@@ -2076,6 +2170,7 @@ if __name__=='__main__':
         render_lineup([n for n in ONLY if n in('church','market_stall','town_gate','vine_row','motors')],RENDER/'hillcrest.png')
         render_lineup([n for n in ONLY if n in('tunnel_portal','town_hall','hotel','terrace_a','terrace_b','station')],RENDER/'valley-town.png')
         render_lineup([n for n in ONLY if n in('terrace_a','terrace_b','terrace_c','terrace_d','house_c','house_d')],RENDER/'houses.png')
+        render_lineup([n for n in ONLY if n in('terrace_a','terrace_e','terrace_f','terrace_g','terrace_d','terrace_f','terrace_c')],RENDER/'terraces.png')
         render_lineup([n for n in ONLY if n in('headland_gate','rail_gate')],RENDER/'headland-gates.png')
         render_lineup([n for n in ONLY if n in('castle_tower','castle_wall','castle_gatehouse','castle_keep','mill','bandstand')],RENDER/'valley-castle.png')
         render_lineup([n for n in ONLY if n in('tree_fir','tree_poplar','tree_blossom','tree_birch','tree_autumn','rock_a','rock_b','rock_cluster','reeds','grass_tuft','flower_bush')],RENDER/'valley-nature.png')

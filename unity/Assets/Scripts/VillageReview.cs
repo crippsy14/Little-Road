@@ -166,6 +166,18 @@ namespace LittleRoad
                 }
                 Application.Quit(0);yield break;
             }
+            // --view-shots "name:x,y,z>lx,ly,lz;...": a still from any camera position looking at any point (the
+            // player's car parked out of shot). Used to check placements, e.g. the castle gatehouse on Via Crest.
+            if(RaceTrial.Has("--view-shots")) {
+                Vector3 V(string text){var v=text.Split(',').Select(x=>float.Parse(x,System.Globalization.CultureInfo.InvariantCulture)).ToArray();return new Vector3(v[0],v[1],v[2]);}
+                player.body.isKinematic=true;player.body.position+=Vector3.down*30;
+                foreach(var shot in RaceTrial.Arg("--view-shots").Split(';')) {
+                    var name=shot.Split(':');var ends=name[1].Split('>');
+                    cameraView.transform.position=V(ends[0]);cameraView.transform.LookAt(V(ends[1]));cameraView.fieldOfView=50;WorldLook.Cut(cameraView);
+                    yield return new WaitForSeconds(.5f);ui.Capture(Path.Combine(folder,name[0]+".png"));
+                }
+                Application.Quit(0);yield break;
+            }
             if(RaceTrial.Has("--car-audit")){yield return new WaitForSeconds(1);File.WriteAllText(Path.Combine(folder,"car-audit.txt"),StationarySpot.Audit());Application.Quit(0);yield break;}
             if(RaceTrial.Has("--placement-audit")){File.WriteAllText(Path.Combine(folder,"placement-audit.txt"),PlacementAudit.Run());Application.Quit(0);yield break;}
             if(RaceTrial.Has("--zip-survey")){File.WriteAllText(Path.Combine(folder,"zip-survey.txt"),ZipLine.Survey());Application.Quit(0);yield break;}

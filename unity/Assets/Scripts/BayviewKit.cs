@@ -11,6 +11,8 @@ namespace LittleRoad
         public sealed class Tint
         {
             public Color wall=new(.97f,.89f,.72f),shutter=new(.10f,.55f,.62f),awning=new(.92f,.22f,.24f),door=new(.12f,.42f,.62f);
+            // Optional roof colour for the tile roofs ("RoofTile*"): the lighter courses keep their lift above it.
+            public Color? roof;
             public Tint(){}
             public Tint(Color wall,Color shutter,Color awning,Color door){this.wall=wall;this.shutter=shutter;this.awning=awning;this.door=door;}
         }
@@ -93,6 +95,7 @@ namespace LittleRoad
             string name=original!=null?original.name.Replace(" (Instance)",""):"Unknown";
             Color c=Palette(name,original!=null&&original.HasProperty("_BaseColor")?original.GetColor("_BaseColor"):Color.magenta);
             if(name.StartsWith("Tint_Wall"))c=tint.wall;else if(name.StartsWith("Tint_Shutter"))c=tint.shutter;else if(name.StartsWith("Tint_Awning"))c=tint.awning;else if(name.StartsWith("Tint_Door"))c=tint.door;
+            else if(tint.roof is Color roof&&name.StartsWith("RoofTile"))c=name.StartsWith("RoofTileLight")?Color.Lerp(roof,new Color(1,.86f,.7f),.18f):roof;
             c.a=1;var pattern=WorldLook.PatternFor(name);if(modelledMasonry&&pattern==WorldLook.Pattern.Stone)pattern=WorldLook.Pattern.Rock;
             bool aged=agedStone&&pattern==WorldLook.Pattern.Stone;if(aged)c=Color.Lerp(c,new Color(.60f,.60f,.57f),.4f)*.86f;
             string key=name+ColorUtility.ToHtmlStringRGB(c)+(int)pattern+(aged?"aged":"");

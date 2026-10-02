@@ -117,16 +117,51 @@ def cut_grains(x, times, rpm, conf):
         grains.append((float(np.mean(r[a:b])), 1 if slope >= -50 else 0, g, float(np.interp(mid / FS, times, conf)), int(a), tail))
     return grains
 
+def pull_rise(x, times, rpm, conf):
+    # How much louder the recording gets per doubling of revs while pulling (docs/55): 20 ms levels on the frames
+    # where the revs climb (over 120 rpm/s) and the engine is within 30 dB of its loudest, against log2 revs. (The
+    # cycles' own levels, the old measure, mixed in gentle part-throttle rises and read the Skyline at 3.7 dB, its
+    # pulls at 7.4.) Returns (log2 rpm, dB) points.
+    T = int(len(x) / FS / 0.01); t = np.arange(T) * 0.01; good = conf >= 0.5
+    if good.sum() < 10: return []
+    r = np.interp(t, times[good], rpm[good]); c = np.interp(t, times, conf); k = 6; slope = np.zeros(T); slope[k:-k] = (r[2*k:] - r[:-2*k]) / (2 * k * 0.01)
+    lv = np.array([10 * math.log10(np.mean(x[max(0, int(ti * FS) - 480):int(ti * FS) + 480] ** 2) + 1e-12) for ti in t])
+    m = (slope > 120) & (slope < 2200) & (c >= 0.5) & (lv > np.percentile(lv, 90) - 30)
+    # (And the coasting frames: revs falling 120-2200 rpm/s, engine braking. Real overrun loudness barely follows the
+    # revs; levelled like pulling, every in-game lift-off kept fading as the revs fell: -5 to -6 dB after 1 s against
+    # the recordings' -1 to -2.)
+    k2 = (slope < -120) & (slope > -2200) & (c >= 0.5) & (lv > np.percentile(lv, 90) - 30)
+    COAST.extend(zip(np.log2(np.maximum(r[k2], 1)), lv[k2]))
+    return list(zip(np.log2(np.maximum(r[m], 1)), lv[m]))
+COAST = []
+
+def shift_dips(x, times, rpm, conf):
+    # Gearchanges in the recording, read exactly as the scorecard reads them (tools/engine-compare.py: its driving
+    # states and events), so playback and scoring agree on what a shift is. For each, the 20 ms level from the shift's
+    # start for 0.6 s in 50 ms steps, against the median of the 0.15 s before, less what the revs alone explain (the
+    # cycles already follow the revs; RISE is filled in by build()).
+    ec = __import__('engine-compare')
+    t, r, c, thr, sh, up, state = ec.read_inputs(times, rpm, conf, x); lifts, shifts = ec.events(state)
+    lv = np.array([10 * math.log10(np.mean(x[max(0, int(ti * FS) - 480):int(ti * FS) + 480] ** 2) + 1e-12) for ti in t])
+    out = []
+    for i in shifts:
+        if i < 20 or i + 60 >= len(t) or c[i] < 0.5: continue
+        base = np.median(lv[i - 15:i]); r0 = np.median(r[i - 15:i])
+        out.append([float(np.mean(lv[i + s * 5:i + s * 5 + 5]) - base - RISE[0] * math.log2(max(1, np.mean(r[i + s * 5:i + s * 5 + 5])) / max(1, r0))) for s in range(12)])
+    return out
+RISE = [6.0]
+
 def build(sources, cylinders, idle, redline, out, report_base='', min_confidence=0.6, per_bin=4, track_cylinders=0):
     # track_cylinders: on some vees each bank's pulse train is the strongest line (half the firing rate); the
     # tracker then follows that line as if the engine had half the cylinders, and the revs come out right.
     # sources: [(wav path, start s, end s)]; every file's grains go into one bank.
-    grains = []; tracked = []
+    grains = []; tracked = []; shift_src = []; rise_pts = []; COAST.clear()
     for n, (path, start, end) in enumerate(sources):
         x, rate = read_wav(path); x = resample(x, rate)
         if end > 0: x = x[:int(end * FS)]
         x = x[int(start * FS):]; x = x / (np.max(np.abs(x)) + 1e-9) * 0.9
         times, rpm, conf, level = track_rpm(x, track_cylinders or cylinders, idle, redline); tracked.append((rpm.min(), rpm.max(), np.median(conf)))
+        rise_pts += pull_rise(x, times, rpm, conf) if n == 0 else []; shift_src.append((x, times, rpm, conf))
         if report_base: report(f'{report_base}-{n + 1}.png', x, times, rpm, conf, track_cylinders or cylinders)
         grains += [g for g in cut_grains(x, times, rpm, conf) if g[3] >= min_confidence]
     # Sweeps, not scattered cycles (Richard, 1 Oct: revving up flickered between rev noises). Consecutive trusted
@@ -176,10 +211,20 @@ def build(sources, cylinders, idle, redline, out, report_base='', min_confidence
     # which barely changes with load (0 dB), and would leave the throttle inaudible.
     contrast = float(np.clip(np.median(gaps), 3, 12)) if gaps else 4.0
     pts = [(math.log2((k + 0.5) * 250), np.median(v)) for k, v in pull_bins.items() if len(v) >= 4]
-    rise = float(np.clip(np.polyfit([p[0] for p in pts], [p[1] for p in pts], 1)[0], 3, 12)) if len(pts) >= 3 else 6.0
+    rise = float(np.clip(np.polyfit([p[0] for p in rise_pts], [p[1] for p in rise_pts], 1)[0], 3, 12)) if len(rise_pts) >= 30 else         float(np.clip(np.polyfit([p[0] for p in pts], [p[1] for p in pts], 1)[0], 3, 12)) if len(pts) >= 3 else 6.0
     # Both kinds are levelled alike; playback applies the lift-off drop as a gain from the header (coasting sweeps
     # rarely cover every rev range, and pulling cycles stand in for them).
-    def target(r, load): return max(0.02, 0.16 * 10 ** (rise * math.log2(r / hi_r) / 20))
+    coast_rise = float(np.clip(np.polyfit([p[0] for p in COAST], [p[1] for p in COAST], 1)[0], 0, rise)) if len(COAST) >= 30 and np.ptp([p[0] for p in COAST]) > .3 else rise
+    def target(r, load): return max(0.02, 0.16 * 10 ** ((rise if load == 1 else coast_rise) * math.log2(r / hi_r) / 20))
+    # The gearchange dip, measured like the lift-off (median of the recording's shifts). Deeper than 15 dB is not a
+    # gearchange (the Niro hybrid's "shifts" are its engine stopping): then, and without three shifts, 4 dB.
+    # The gearchange (docs/55): the recording's median level curve through its shifts, 0.6 s in 50 ms steps, beyond
+    # the revs' own effect. Deeper than 15 dB is not a gearchange (the Niro hybrid's engine stopping); that, or fewer
+    # than three shifts: a gentle generic dip (-3 dB for 0.2 s).
+    RISE[0] = rise; shift_all = [c for src in shift_src for c in shift_dips(*src)]
+    curve = np.median(np.array(shift_all), 0) if len(shift_all) >= 3 else None
+    if curve is None or curve.min() < -15: curve = np.array([0, -1.5, -3, -3, -3, -1.5, 0, 0, 0, 0, 0, 0], float)
+    curve = np.clip(curve - max(0, curve[0]), -15, 3); shift_db = float(-curve.min())
     for run in sorted({k[3] for k in kept}):
         idx = [i for i, k in enumerate(kept) if k[3] == run]
         rms = np.array([math.sqrt(np.mean(kept[i][2] ** 2)) + 1e-6 for i in idx]); lg = np.log(rms)
@@ -197,14 +242,15 @@ def build(sources, cylinders, idle, redline, out, report_base='', min_confidence
     os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
     with open(out, 'wb') as f:
         # Version 4: the header also carries the measured lift-off drop and rev-rise (dB), which playback uses.
-        f.write(b'LRGB'); f.write(struct.pack('<iiiffi', 4, FS, cylinders, idle, redline, len(kept))); f.write(struct.pack('<ff', contrast, rise))
+        f.write(b'LRGB'); f.write(struct.pack('<iiiffi', 6, FS, cylinders, idle, redline, len(kept))); f.write(struct.pack('<fff', contrast, rise, shift_db))
+        f.write(struct.pack('<12f', *curve))   # version 6: the gearchange curve
         for r, load, g, run, tail in kept:
             pcm = np.clip(np.round(np.concatenate([g, tail]) * 32767), -32768, 32767).astype('<i2')
             f.write(struct.pack('<fBHii', r, load, run, len(g), len(pcm))); f.write(pcm.tobytes())
     on = [g[0] for g in kept if g[1] == 1]; off = [g[0] for g in kept if g[1] == 0]
     print(f'ENGINE_GRAINS {os.path.basename(out)}: {len(kept)} grains in {run_id} sweeps ({os.path.getsize(out) / 1e6:.1f} MB) from {len(grains)} trusted cycles; '
           f'on load {len(on)} ({min(on) if on else 0:.0f}-{max(on) if on else 0:.0f} rpm), '
-          f'off load {len(off)} ({min(off) if off else 0:.0f}-{max(off) if off else 0:.0f} rpm); rise {rise:.1f} dB per doubling, lifted {contrast:.1f} dB under; tracked '
+          f'off load {len(off)} ({min(off) if off else 0:.0f}-{max(off) if off else 0:.0f} rpm); rise {rise:.1f} dB per doubling (coasting {coast_rise:.1f}), lifted {contrast:.1f} dB under, shifts dip {shift_db:.1f} dB ({len(shift_all)} found: {' '.join(f'{v:+.0f}' for v in curve)}); tracked '
           + ', '.join(f'{a:.0f}-{b:.0f} rpm (confidence {c:.2f})' for a, b, c in tracked))
 
 def main():

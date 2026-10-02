@@ -85,9 +85,11 @@ namespace LittleRoad
             body=gameObject.AddComponent<Rigidbody>();body.mass=850*tuning.mass;
             body.constraints=race.track.hasElevation?RigidbodyConstraints.None:RigidbodyConstraints.FreezeRotationX|RigidbodyConstraints.FreezeRotationZ;
             body.interpolation=RigidbodyInterpolation.Interpolate;
-            // Include angular motion in contact prediction. Keep a diagnostic
-            // sweep baseline for matched regressions; neither mode is perfect.
-            body.collisionDetectionMode=RaceTrial.Has("--sweep-contacts")?CollisionDetectionMode.ContinuousDynamic:CollisionDetectionMode.ContinuousSpeculative;
+            // Swept contacts: speculative contacts snag the internal edges of road meshes while a car yaws
+            // (one-step "knocks"). Study 215 kept swept contacts for every car: all 24 finished on 12 races,
+            // contacts 115 -> 54, total time 9617.0 -> 9616.6 s, physics cost unchanged (study 217).
+            // --speculative-contacts restores the old mode for comparison.
+            body.collisionDetectionMode=RaceTrial.Has("--speculative-contacts")?CollisionDetectionMode.ContinuousSpeculative:CollisionDetectionMode.ContinuousDynamic;
             body.linearDamping=0;body.angularDamping=1.5f;body.maxAngularVelocity=2.3f;
             body.solverIterations=12;body.solverVelocityIterations=8;
             body.centerOfMass=new Vector3(0,.45f,0);
@@ -339,6 +341,7 @@ namespace LittleRoad
                 if(previous!=physicalRecovery.State)Debug.Log($"PHYSICAL_RECOVERY id={driverId} time={race.elapsed:0.000} state={physicalRecovery.State} progress={progress:0.00} gate={nextGateProgress:0.00}");
             }else command=driverPolicy.Decide(in observation);
             throttle=command.pedal;steering=command.steering;targetSpeed=command.targetSpeed;
+            if(SoundDrive.On&&driverId==0)throttle=SoundDrive.Pedal(this,throttle,race.elapsed);
             predictedOffset=command.predictedOffset;chosenLane=command.chosenLane;
         }
         void TrackGates(float beforeProgress,float beforeOffset)

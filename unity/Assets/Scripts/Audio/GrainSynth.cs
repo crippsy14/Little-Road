@@ -14,6 +14,11 @@ namespace LittleRoad
         // Version 4 (docs/55): the lift-off drop (pulling against coasting at the same revs) and the rise with revs, in
         // dB, measured from the recording by tools/engine-grains.py; -1 for older banks.
         public float liftDb=-1,riseDb=-1;
+        // Version 5: the recording's gearchange dip (dB, its median shift), -1 for older banks.
+        public float shiftDb=-1;
+        // Version 6: the recording's median gearchange, 0.6 s from the start in 50 ms steps (dB), beyond what the revs
+        // alone explain (the cycles already follow the revs). Null for older banks.
+        public float[] shiftCurve;
         public float[] rpm;public byte[] load;public int[] run;public float[][] samples;
         // Version 3: each grain is one cycle (cycle[i] samples) plus a tail, the start of the next cycle as recorded.
         public int[] cycle;
@@ -25,10 +30,12 @@ namespace LittleRoad
         {
             using var r=new BinaryReader(new MemoryStream(data));
             if(new string(r.ReadChars(4))!="LRGB")throw new InvalidDataException("Not an engine grain bank");
-            int version=r.ReadInt32();if(version<1||version>4)throw new InvalidDataException("Grain bank version "+version);
+            int version=r.ReadInt32();if(version<1||version>6)throw new InvalidDataException("Grain bank version "+version);
             var b=new GrainBank{sampleRate=r.ReadInt32(),cylinders=r.ReadInt32(),idle=r.ReadSingle(),redline=r.ReadSingle()};
             int n=r.ReadInt32();
-            if(version>=4){b.liftDb=r.ReadSingle();b.riseDb=r.ReadSingle();}b.rpm=new float[n];b.load=new byte[n];b.run=new int[n];b.samples=new float[n][];b.cycle=new int[n];
+            if(version>=4){b.liftDb=r.ReadSingle();b.riseDb=r.ReadSingle();}
+            if(version>=5)b.shiftDb=r.ReadSingle();
+            if(version>=6){b.shiftCurve=new float[12];for(int k=0;k<12;k++)b.shiftCurve[k]=r.ReadSingle();}b.rpm=new float[n];b.load=new byte[n];b.run=new int[n];b.samples=new float[n][];b.cycle=new int[n];
             for(int i=0;i<n;i++) {
                 b.rpm[i]=r.ReadSingle();b.load[i]=r.ReadByte();b.run[i]=version>=2?r.ReadUInt16():i+1;
                 int cycleLength=version>=3?r.ReadInt32():-1,len=r.ReadInt32();b.cycle[i]=cycleLength>0?cycleLength:len;var g=new float[len];
@@ -100,7 +107,7 @@ namespace LittleRoad
             Sweep widest=null;foreach(var s in sweeps)if(s.pulling==pulling&&(widest==null||s.high>widest.high*1.01f))widest=s;
             if(widest==null)return;var g=widest.grains;
             int top=0;for(int i=0;i<g.Length;i++)if(rpm[g[i]]>rpm[g[top]])top=i;
-            int from=top;while(from>0&&top-from<48&&(rpm[g[from-1]]>=rpm[g[top]]*.85f||top-from<12))from--;
+            int from=top;while(from>0&&top-from<GrainSynth.LoopSpan&&(rpm[g[from-1]]>=rpm[g[top]]*GrainSynth.LoopFloor||top-from<12))from--;
             // Odd ones out (a cycle 15% brighter or darker than the median, or a revs spike) may not sit inside a run.
             float Bright(int grain){double d=0,e=0;var x=samples[grain];for(int j=1;j<cycle[grain];j++){d+=(x[j]-x[j-1])*(x[j]-x[j-1]);e+=x[j]*x[j];}return (float)Math.Sqrt(d/Math.Max(1e-12,e));}
             float Level(int grain){double e=0;int n=cycle[grain];for(int j=0;j<n;j++)e+=samples[grain][j]*samples[grain][j];return (float)Math.Sqrt(e/Math.Max(1,n));}
@@ -119,7 +126,7 @@ namespace LittleRoad
                 return (float)(ab/Math.Sqrt(Math.Max(1e-12,aa*bb))-2*Math.Abs(Math.Log(Math.Max(1e-6,Level(last))/Math.Max(1e-6,Level(first)))));}
             int bestA=-1,bestB=-1;float best=float.MinValue;
             // (Odd cycles count against a run rather than ruling it out: some recordings have no clean dozen.)
-            for(int a=from;a<=top;a++)for(int b=a+11;b<=Math.Min(top,a+39);b++) {
+            for(int a=from;a<=top;a++)for(int b=a+11;b<=Math.Min(top,a+GrainSynth.LoopMax-1);b++) {
                 int odd=0;for(int i=a;i<=b;i++)if(!clean[i-from])odd++;
                 float w=Wrap(g[b],g[a])+.002f*(b-a)-.25f*odd;if(w>best){best=w;bestA=a;bestB=b;}
             }
@@ -171,16 +178,28 @@ namespace LittleRoad
         // recording at part throttle played two unrelated stretches of engine together. Now the stream switches
         // between pulling and coasting sweeps (with hysteresis, through the tail crossfade), and part throttle only
         // shapes that one voice's level and brightness.
-        readonly Stream stream=new();bool pullingMode;float bright,lpState,modeLevel=1,liftEnv=1;
+        readonly Stream stream=new();bool pullingMode,wasShifting;float bright,lpState,modeLevel=1,liftEnv=1,shiftClock=9;
         // Lifting off (docs/55, the engine scorecard): real engines lose 1-4 dB in the first 0.7 s, and the overrun keeps
         // its own tone (the Escort's has its crackle, 19 dB more at 8 kHz than the muffled version). The bank now carries
         // each recording's own lifted-against-pulling level (tools/engine-grains.py), so the switch adds no step of its
         // own, the level eases over ~0.2 s, and the overrun is not muffled. LegacyLift (--legacy-lift): the old 0.75x
         // step and muffled overrun, for A/B.
+        // The limiter's ignition cut (docs/55): the share of the level left while it cuts. The automatic box touches the
+        // limiter for 75 ms before almost every upshift; at 0.08 (-22 dB) the engine dropped out at each gearchange.
+        public static float CutLevel=.5f;
+        // The level held through a gearchange (the throttle is shut for it; at 0.6, with the part-load muffling, every
+        // in-game shift dipped 5-8 dB for 0.4 s against the recordings' 0-4 dB).
+        public static float ShiftLevel=.6f;
         public static float LiftFade=1.4f;   // 1/s: the lift-off fade's rate (a 0.7 s time constant)
         public static bool LegacyLift=Array.IndexOf(Environment.GetCommandLineArgs(),"--legacy-lift")>=0;
         Biquad toneHigh,toneLow;float toneAt=-1,toneGain=1,levelIn,levelOut;bool toneOn;
-        public static bool ToneCorrection=true,SustainLoop=true,PulseOverlap=true;   // (the sound harness compares with and without)
+        public static bool ToneCorrection=true,SustainLoop=true,PulseOverlap=true;
+        // The sustain loop only this far above the recording's top (docs/55): just above it, the recording's own top
+        // cycles keep repeating like the real engine (the in-game scorecard's garble measure); far above, the loop stops
+        // the flutter of a few stretched cycles taking turns.
+        public static float LoopAbove=1;
+        // The loop's length (12 to LoopMax cycles, from the last LoopSpan cycles above LoopFloor of the top revs).
+        public static int LoopMax=80,LoopSpan=110;public static float LoopFloor=.8f;   // (40/48/.85 before the in-game scorecard: up to 80 cycles from the top 20% wraps half as often; docs/55)   // (the sound harness compares with and without)
         // Pulse overlap-add above 1.5x (Richard, 1 Oct: the Tuner V6 "sounds great up to about 80% of max and then after it
         // goes very high pitch and changes to be weird"). The Skyline recording pulls only to 3760 rpm, so at 80% of the
         // V6's 7600 rpm its grains play 1.67x fast, which lifts the exhaust's resonances with the note: a chipmunk. Up to
@@ -188,7 +207,7 @@ namespace LittleRoad
         // rest (each a two-period Hann window centred on its peak, as TD-PSOLA), so the note keeps rising and the pipes
         // stay put. Pulling only, like the sustain loop: the overrun Richard called epic is untouched. The stream is played
         // Lead samples late (5 ms) so the pulses, which need one period of lead-in, line up with it through the crossfade.
-        const float FormantCap=1.5f;const int Lead=256;
+        public static float FormantCap=1.5f;const int Lead=256;
         sealed class Voice {public bool on;public int g,before;public float u0,t,r,period,gain;}
         readonly Voice[] voices=new Voice[10];readonly float[] late=new float[512];int lateAt;float pulseMix,streamLevel,pulseLevel,pulseGain=1;
         // Each grain plays at its own recorded revs where the recording covers them (the most natural sound);
@@ -248,14 +267,24 @@ namespace LittleRoad
                 float s0=(lpState*(1-bright)+x*bright)*(pullingMode?.6f+.4f*l:.75f);
                 return cut?s0*.08f:s0;
             }
-            bright+=((pullingMode?.35f+.65f*l:1)-bright)*.0005f;
+            if(!(shifting&&!LegacyLift))bright+=((pullingMode?(shifting?Math.Max(.35f+.65f*l,ShiftLevel):.35f+.65f*l):1)-bright)*.0005f;
             float k=Math.Clamp(bright*bright,.05f,1);lpState+=(x-lpState)*k;
             // Part throttle and gearchanges dip quickly (real shifts dip 1-11 dB within a tenth of a second); only the
             // lift-off itself fades slowly.
             float liftAim=pullingMode||bank.liftDb<0?1:1/bank.LiftRatio;
-            modeLevel+=((pullingMode?.6f+.4f*l:1)-modeLevel)*25f/fs;liftEnv+=(liftAim-liftEnv)*(liftEnv>liftAim?LiftFade:30f)/fs;
-            float s=(lpState*(1-bright)+x*bright)*modeLevel*liftEnv;
-            return cut?s*.08f:s;
+            // Through a gearchange, the recording's own curve (bank v6), played from the shift's start; the level is held
+            // meanwhile. Older banks: ShiftLevel while shifting.
+            bool curveShift=bank.shiftCurve!=null&&!LegacyLift;
+            if(curveShift&&shifting&&!wasShifting)shiftClock=0;wasShifting=shifting;
+            float shiftGain=1;
+            if(curveShift&&shiftClock<.6f){float u=shiftClock/.05f;int ki=Math.Min(10,(int)u);float db=bank.shiftCurve[ki]+(bank.shiftCurve[ki+1]-bank.shiftCurve[ki])*Math.Min(1,u-ki);shiftGain=MathF.Pow(10,db/20);shiftClock+=1/fs;}
+            modeLevel+=((pullingMode?(shifting?(curveShift?1:ShiftLevel):.6f+.4f*l):1)-modeLevel)*25f/fs;liftEnv+=(liftAim-liftEnv)*(liftEnv>liftAim?LiftFade:30f)/fs;
+            float s=(lpState*(1-bright)+x*bright)*modeLevel*liftEnv*shiftGain;
+            // Above the recording the engine keeps getting louder with the revs at the recording's own rate (bank v4
+            // riseDb per doubling, up to +12 dB): squeezed or looped top cycles held the level flat, where real engines
+            // gain 7-9 dB per doubling (docs/55, the in-game scorecard).
+            if(!LegacyLift&&bank.riseDb>0){float above=rpm/Top(pullingMode);if(above>1)s*=Math.Min(4,MathF.Pow(above,bank.riseDb/6.0206f));}
+            return cut?s*CutLevel:s;
         }
         float Play(Stream s,float rpm,bool on)
         {
@@ -276,7 +305,7 @@ namespace LittleRoad
             if(s.pos>=length&&s.prev<0) {
                 int tail=g.Length-length;
                 s.before=s.cur;s.prev=s.cur;s.prevPos=s.pos;s.prevGain=s.gain;s.gain=1;
-                var loop=SustainLoop&&on&&rpm>Top(on)?bank.SustainLoop(on):null;
+                var loop=SustainLoop&&on&&rpm>Top(on)*LoopAbove?bank.SustainLoop(on):null;
                 if(loop!=null&&loop.Length>2) {
                     // Forwards through the loop, wrapping at its end (entering it, from its first cycle).
                     int at=Array.IndexOf(loop,s.cur);at=at<0||at+1>=loop.Length?0:at+1;
