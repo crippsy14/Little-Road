@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "gadgets": [
+    {"id": "hop", "name": "Hop test rig", "hint": "Test only (--gadget hop): a short push upwards. The seed of a jet pack.", "tier": "C", "discipline": "road", "price": 0}
+  ]
+}

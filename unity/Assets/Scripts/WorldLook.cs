@@ -122,9 +122,17 @@ namespace LittleRoad
         // ---- Speed (graphics scorecard item 16): the view widens with speed and races add a light
         // camera motion blur, so 34 m/s stops feeling like 15. Free roam gets the FOV only.
         public const float SpeedFovGain=11,SpeedFovFrom=12,SpeedFovTo=38,RaceMotionBlur=.22f;
-        public static float SpeedFov(float baseFov,float speed)=>baseFov+SpeedFovGain*Mathf.SmoothStep(0,1,Mathf.InverseLerp(SpeedFovFrom,SpeedFovTo,Mathf.Abs(speed)));
+        public static float SpeedFov(float baseFov,float speed)=>baseFov+SpeedFovGain*GraphicsOptions.SpeedEffectScale*Mathf.SmoothStep(0,1,Mathf.InverseLerp(SpeedFovFrom,SpeedFovTo,Mathf.Abs(speed)));
+        // Options > Graphics > Motion blur, applied live: off disables the race blur, on restores it in a race.
+        public static void RaceBlurSetting()
+        {
+            bool on=!GraphicsOptions.Active||GraphicsOptions.MotionBlur.Index==0;
+            if(on&&RaceTrial.Racing)RaceBlur();
+            foreach(var volume in Object.FindObjectsByType<Volume>(FindObjectsSortMode.None))if(volume.isGlobal&&volume.profile!=null&&volume.profile.TryGet<MotionBlur>(out var blur))blur.active=on;
+        }
         public static void RaceBlur()
         {
+            if(GraphicsOptions.Active&&GraphicsOptions.MotionBlur.Index==1)return;
             foreach(var volume in Object.FindObjectsByType<Volume>(FindObjectsSortMode.None)) {
                 if(!volume.isGlobal||volume.profile==null||volume.profile.Has<MotionBlur>())continue;
                 // Camera and objects: a car moving with the camera (your own) stays sharp; the world streaks past.

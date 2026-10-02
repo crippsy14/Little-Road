@@ -15,6 +15,8 @@ namespace LittleRoad
         static void Poll()
         {
             if(frame==Time.frameCount)return;frame=Time.frameCount;
+            // Options > Interface > Button prompts: a fixed family instead of following the last-touched device.
+            switch(GraphicsOptions.Prompts.Index){case 1:last=Family.Keyboard;return;case 2:last=Family.PlayStation;return;case 3:last=Family.Xbox;return;}
             var pad=Gamepad.current;
             if(pad!=null&&PadActive(pad))last=pad is UnityEngine.InputSystem.DualShock.DualShockGamepad?Family.PlayStation:Family.Xbox;
             else if(Keyboard.current?.anyKey.isPressed==true||Mouse.current!=null&&(Mouse.current.leftButton.isPressed||Mouse.current.delta.ReadValue().sqrMagnitude>9))last=Family.Keyboard;
@@ -27,7 +29,14 @@ namespace LittleRoad
         }
         // The confirm / talk button, its colour and letter (PlayStation draws a cross instead of a letter).
         public static string Confirm=>Current switch{Family.PlayStation=>"",Family.Xbox=>"A",_=>"E"};
-        public static string Name(string action)=>(Current,action) switch{
+        public static string Name(string action)=>action switch{
+            // Remappable driving actions name their current binding (Controls).
+            "look"=>(Current==Family.Keyboard?"Hold ":"")+Controls.Name(Controls.Act.LookBehind),
+            "recover"=>Controls.Name(Controls.Act.Recover),
+            "horn"=>Controls.Name(Controls.Act.Horn),
+            "drive"=>Current==Family.Keyboard?"WASD / arrows":$"Stick + {Controls.Name(Controls.Act.Throttle)} / {Controls.Name(Controls.Act.Brake)}",
+            _=>Fixed(action)};
+        static string Fixed(string action)=>(Current,action) switch{
             (Family.PlayStation,"talk")=>"Cross",(Family.PlayStation,"back")=>"Circle",(Family.PlayStation,"look")=>"Triangle",(Family.PlayStation,"recover")=>"D-pad Down",(Family.PlayStation,"drive")=>"Stick + R2 / L2",(Family.PlayStation,"choose")=>"D-pad",
             (Family.Xbox,"talk")=>"A",(Family.Xbox,"back")=>"B",(Family.Xbox,"look")=>"Y",(Family.Xbox,"recover")=>"D-pad Down",(Family.Xbox,"drive")=>"Stick + RT / LT",(Family.Xbox,"choose")=>"D-pad",
             (Family.PlayStation,"pause")=>"Options",(Family.Xbox,"pause")=>"Menu",(Family.PlayStation,"map")=>"Create",(Family.Xbox,"map")=>"View",(Family.PlayStation,"tabs")=>"L1 / R1",(Family.Xbox,"tabs")=>"LB / RB",

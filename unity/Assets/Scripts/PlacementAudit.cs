@@ -14,9 +14,38 @@ namespace LittleRoad
     public static class PlacementAudit
     {
         static readonly HashSet<string> Airborne=new(){"boat","balloon","zip_trolley","wind_turbine","lighthouse","pier","harbour_steps","sea_wall","promenade_rail","headland_gate","rail_gate","tunnel_portal"};
+        // The last Run(): floating pieces above the sea floor (sunken sea rocks are out of sight) and loose bunting ends.
+        public static readonly List<Vector3> FloatingAt=new(),LooseBunting=new();
+        // Before static batching (CoastalLandscape): planting (bushes, trees, rocks, flowers) left hanging more than
+        // 0.3 m over the ground under its whole footprint (a slope edge, a road ribbon's edge) is lowered onto it.
+        // Any area gets this for free; the audit then only finds pieces placed afloat on purpose or by structure kits.
+        static readonly string[] Settleable={"bush","flower_bush","olive_tree","tree_","rock_","reeds","grass_tuft","hay_bale"};
+        public static int Settle()
+        {
+            int moved=0;
+            foreach(var go in BayviewKit.Placed) {
+                if(go==null||!Settleable.Any(id=>id.EndsWith("_")?go.name.StartsWith(id):go.name==id))continue;
+                var renderers=go.GetComponentsInChildren<Renderer>();if(renderers.Length==0)continue;
+                var b=renderers[0].bounds;foreach(var r in renderers)b.Encapsulate(r.bounds);
+                if(b.min.y<CoastalLandscape.SeaLevel-1)continue; // sea rocks stand on the seabed by their own rule
+                // Quick test first: ground within 0.3 m under the centre (nearly every piece) needs nothing more.
+                bool near=false;foreach(var h in Physics.RaycastAll(new Vector3(b.center.x,b.min.y+.2f,b.center.z),Vector3.down,.5f))if(!h.collider.isTrigger&&!h.collider.transform.IsChildOf(go.transform)){near=true;break;}
+                if(near)continue;
+                float ground=float.MinValue;var ex=b.extents*.7f;
+                foreach(var o in new[]{Vector3.zero,new Vector3(ex.x,0,ex.z),new Vector3(-ex.x,0,ex.z),new Vector3(ex.x,0,-ex.z),new Vector3(-ex.x,0,-ex.z)})
+                    foreach(var hit in Physics.RaycastAll(new Vector3(b.center.x+o.x,b.max.y+.5f,b.center.z+o.z),Vector3.down,b.size.y+60)) {
+                        if(hit.collider.isTrigger||hit.collider.transform.IsChildOf(go.transform)||hit.collider.GetComponentInParent<RoadCar>()!=null)continue;
+                        if(hit.point.y<=b.max.y)ground=Mathf.Max(ground,Mathf.Min(hit.point.y,b.min.y+5));
+                    }
+                if(ground==float.MinValue||b.min.y-ground<=.3f)continue;
+                go.transform.position+=Vector3.down*(b.min.y-ground+.05f);moved++;
+            }
+            if(moved>0)Physics.SyncTransforms();
+            Debug.Log("LITTLE_ROAD_SETTLED_PLANTING moved="+moved);return moved;
+        }
         public static string Run()
         {
-            Physics.SyncTransforms();var floating=new List<string>();var sunk=new List<string>();int checkedCount=0;
+            Physics.SyncTransforms();var floating=new List<string>();var sunk=new List<string>();int checkedCount=0;FloatingAt.Clear();LooseBunting.Clear();
             foreach(var go in BayviewKit.Placed) {
                 if(go==null||!go.activeInHierarchy||Airborne.Contains(go.name))continue;
                 var renderers=go.GetComponentsInChildren<Renderer>();if(renderers.Length==0)continue;
@@ -35,7 +64,7 @@ namespace LittleRoad
                 if(highestGround==float.MinValue)continue; // over open water
                 float centreGround=b.center.z<-380?ValleyField.Height(b.center.x,b.center.z):float.MinValue;
                 string where=$"{go.name} at ({b.center.x:0},{bottom:0.0},{b.center.z:0})";
-                if(bottom-highestGround>.3f)floating.Add($"{where} gap {bottom-highestGround:0.00} m");
+                if(bottom-highestGround>.3f){floating.Add($"{where} gap {bottom-highestGround:0.00} m");if(bottom>CoastalLandscape.SeaLevel-1)FloatingAt.Add(b.center);}
                 else if(centreGround!=float.MinValue&&centreGround-bottom>1.2f&&centreGround<b.max.y)sunk.Add($"{where} buried {centreGround-bottom:0.00} m");
             }
             // Bunting ends: each must touch a placed piece (lamp, flag pole, building, gate) within 0.8 m.
@@ -43,7 +72,7 @@ namespace LittleRoad
             foreach(var (a,b) in HillcrestTown.BuntingEnds)foreach(var e in new[]{a,b}) {
                 ends++;bool held=false;
                 foreach(var go in BayviewKit.Placed){if(go==null)continue;foreach(var r in go.GetComponentsInChildren<Renderer>()){var rb=r.bounds;rb.Expand(1.6f);if(rb.Contains(e)){held=true;break;}}if(held)break;}
-                if(!held)loose.Add($"bunting end at ({e.x:0},{e.y:0.0},{e.z:0})");
+                if(!held){loose.Add($"bunting end at ({e.x:0},{e.y:0.0},{e.z:0})");LooseBunting.Add(e);}
             }
             var sb=new StringBuilder();
             sb.AppendLine($"checked={checkedCount} floating={floating.Count} sunk={sunk.Count} buntingEnds={ends} looseBunting={loose.Count}");
@@ -57,12 +86,34 @@ namespace LittleRoad
         // neighbouring samples (10 cm apart) is a lip a car's tyre catches on. Road ends are checked too.
         // Every road the car can drive (Bayview's loop, the valley roads, the raceway); each side's edge is found where
         // the tarmac collider (RoadSurface) ends, so no road's width has to be known.
+        // Where the last Edges() run found each lip (true) or too-steep bank (false), for the area audit.
+        public static readonly List<(Vector3 at,bool lip)> EdgeFindings=new();
         public static string Edges(Circuit bayview=null)
         {
-            Physics.SyncTransforms();var sb=new StringBuilder();int lips=0,checks=0;
+            Physics.SyncTransforms();var sb=new StringBuilder();int lips=0,checks=0;EdgeFindings.Clear();
             float Top(Vector3 p){float best=float.MinValue;foreach(var h in Physics.RaycastAll(p+Vector3.up*4,Vector3.down,10))if(!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null&&!h.collider.CompareTag("Respawn"))best=Mathf.Max(best,h.point.y);return best==float.MinValue?float.NaN:best;}   // NaN: nothing solid (open water)
             bool Tarmac(Vector3 p){float best=float.MinValue;bool road=false;foreach(var h in Physics.RaycastAll(p+Vector3.up*4,Vector3.down,10))if(!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null&&h.point.y>best){best=h.point.y;road=h.collider.GetComponentInParent<RoadSurface>()!=null;}return road;}
-            var found=new List<string>();var bankList=new List<string>();int banks=0;
+            var found=new List<string>();var bankList=new List<string>();int banks=0,guardedEdges=0;
+            // A barrier at p: something solid standing 35 cm or more over the ground there (a guardrail, parapet,
+            // railing, wall, house or plinth). The ground is the terrain, a road or a gravel shoulder or ramp.
+            static bool Ground(Collider c)=>c.GetComponent<RoadSurface>()!=null||c.name.Contains("mainland collider")||c.name.Contains("island collider")||c.name.Contains("shoulder")||c.name.Contains("ramp");
+            bool Barrier(Vector3 p)
+            {
+                float ground=float.MinValue,top=float.MinValue;
+                foreach(var h in Physics.RaycastAll(p+Vector3.up*40,Vector3.down,60)) {
+                    if(h.collider.isTrigger||h.collider.GetComponentInParent<RoadCar>()!=null)continue;
+                    if(Ground(h.collider))ground=Mathf.Max(ground,h.point.y);else top=Mathf.Max(top,h.point.y);
+                }
+                return ground>float.MinValue&&top-ground>.35f;
+            }
+            // A barrier between the edge and `upTo` metres out from the centreline.
+            // A gap between barriers narrower than a car (1.1 m either side along the road) is closed too: the gap between
+            // two terraced houses on a hillside.
+            bool Guarded(Vector3 at,Vector3 r,float half,float upTo,Vector3 along)
+            {
+                for(float o=half+.1f;o<=upTo;o+=.04f){var p=at+r*o;if(Barrier(p)||Barrier(p+along*1.1f)&&Barrier(p-along*1.1f))return true;}
+                return false;
+            }
             var lines=new List<(string name,Vector3[] line,float half)>();
             if(bayview!=null)lines.Add(("Bayview road",bayview.points,Circuit.Width*.5f));
             foreach(var road in HillcrestRoute.All())lines.Add((road.name,road.line,road.width*.5f));
@@ -77,7 +128,9 @@ namespace LittleRoad
                         float half=guess;if(Tarmac(line[i])){for(float o=1;o<guess+6;o+=.1f)if(!Tarmac(line[i]+r*side*o)){half=o;break;}}
                         checks++;float prev=Top(line[i]+r*side*(half-.3f)),worst=0;float at=0;
                         for(float o=half-.2f;o<=half+4;o+=.1f){float h=Top(line[i]+r*side*o);if(float.IsNaN(h))break;float rise=prev-h;if(rise>worst){worst=rise;at=o;}prev=h;}
-                        if(worst>.12f&&worst<2){lips++;found.Add($"  {name} run {run:0} side {(side>0?"R":"L")} lip {worst:0.00} m at {at-half:0.0} m past the edge ({line[i].x:0},{line[i].y:0.0},{line[i].z:0})");}
+                        // A barrier between the edge and the step keeps a car on the road: a step behind one isn't a trap.
+                        bool guarded=worst>.12f&&Guarded(line[i],r*side,half,at+1f,f);
+                        if(worst>.12f&&worst<2&&!guarded){lips++;EdgeFindings.Add((line[i],true));found.Add($"  {name} run {run:0} side {(side>0?"R":"L")} lip {worst:0.00} m at {at-half:0.0} m past the edge ({line[i].x:0},{line[i].y:0.0},{line[i].z:0})");}
                         // Banks (Richard, 30 Sep: roads by the railway you can't get back onto): out to 12 m, the
                         // steepest climb back towards the road over any metre, where the climb is at least 40 cm.
                         // (Drops of 2 m and more are bridges and sea walls, which have parapets.)
@@ -85,7 +138,10 @@ namespace LittleRoad
                             var list=new List<float>();for(int k=0;k<49;k++){float h=Top(line[i]+r*side*(half+k*.25f));if(float.IsNaN(h))break;list.Add(h);}var hs=list.ToArray();
                             float steep=0,rise=0;for(int k=0;k+4<hs.Length;k++){float s=hs[k]-hs[k+4];if(s>steep)steep=s;}
                             for(int k=1;k<hs.Length;k++)if(hs[k-1]-hs[k]>.05f)rise+=hs[k-1]-hs[k];
-                            if(steep>.55f&&rise>.4f){banks++;bankList.Add($"  {name} run {run:0} side {(side>0?"R":"L")} bank {Mathf.Atan(steep)*Mathf.Rad2Deg:0}° climbing {rise:0.0} m ({line[i].x:0},{line[i].y:0.0},{line[i].z:0})");}
+                            int kSteep=0;for(int k=0;k+4<hs.Length;k++)if(hs[k]-hs[k+4]>=steep-1e-4f){kSteep=k;break;}
+                            // A barrier between the edge and the top of the drop (a sea-wall railing, a parapet) guards it.
+                            if(steep>.55f&&rise>.4f&&Guarded(line[i],r*side,half,half+kSteep*.25f+1f,f)){guardedEdges++;continue;}
+                            if(steep>.55f&&rise>.4f){banks++;EdgeFindings.Add((line[i],false));bankList.Add($"  {name} run {run:0} side {(side>0?"R":"L")} bank {Mathf.Atan(steep)*Mathf.Rad2Deg:0}° climbing {rise:0.0} m ({line[i].x:0},{line[i].y:0.0},{line[i].z:0})");}
                         }
                     }
                 }
@@ -93,10 +149,10 @@ namespace LittleRoad
                 if(Vector3.Distance(line[0],line[^1])>12)foreach(bool start in new[]{true,false}) {
                     var e=start?line[0]:line[^1];var d=start?line[0]-line[1]:line[^1]-line[^2];d.y=0;d.Normalize();float prev=Top(e-d*.3f),worst=0;
                     for(float o=0;o<=4;o+=.1f){float h=Top(e+d*o);if(float.IsNaN(h))break;worst=Mathf.Max(worst,prev-h);prev=h;}
-                    checks++;if(worst>.12f){lips++;found.Add($"  {name} {(start?"start":"end")} lip {worst:0.00} m ({e.x:0},{e.z:0})");}
+                    checks++;if(worst>.12f){lips++;EdgeFindings.Add((e,true));found.Add($"  {name} {(start?"start":"end")} lip {worst:0.00} m ({e.x:0},{e.z:0})");}
                 }
             }
-            sb.AppendLine($"edge checks={checks} lips={lips} banks={banks}");foreach(var l in found)sb.AppendLine(l);
+            sb.AppendLine($"edge checks={checks} lips={lips} banks={banks} guarded={guardedEdges}");foreach(var l in found)sb.AppendLine(l);
             sb.AppendLine("banks too steep to drive back up:");foreach(var l in bankList)sb.AppendLine(l);
             // Roads beside the railways: every 8 m of road within 25 m of a line, with both heights.
             sb.AppendLine("roads within 25 m of a railway:");

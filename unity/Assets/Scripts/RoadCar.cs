@@ -120,6 +120,8 @@ namespace LittleRoad
             nextGate=0;nextGateProgress=0;lastSafeDistance=progress;
             // Sound (docs/47 stage 4): car 0 is the one the camera follows, heard as the player's.
             if(GetComponent<CarAudio>()==null)AudioDirector.Attach(this,id==0);
+            // The player's gadget (the save's, or --gadget <id> in tests).
+            if(id==0&&!ai){gadget=Gadgets.Create(Gadgets.ForPlayer(AdventureSession.Store?.Data));gadget?.Fitted(this);}
         }
         // Timed for the frame probe (FrameCost.Cars): every car's driving and AI step.
         // The physical box for a car body, fitted to that body: its model's length and height, and its
@@ -138,6 +140,12 @@ namespace LittleRoad
                     if(firstVertex){envelope=new Bounds(p,Vector3.zero);firstVertex=false;}else envelope.Encapsulate(p);
                 }
             }
+            // Ride height (docs/57, 2.5; Richard: "some models seem to float"): the box's bottom at the tyres. Each part's
+            // bounds, rotated into the car, poke out below them (a rolled wheel's box reaches ~0.4 r lower), so the box hung
+            // 7-18 cm under the tyres and every car rode on it, wheels in the air. Every car model stands on y = 0 with its
+            // tyres touching it (WheelVisuals), so the box's bottom goes there. Study 219 kept it: 144/144 finished, no
+            // resets, total time 9616.6 -> 9612.6 s (contacts 54 -> 57). --old-ride-height restores the old box.
+            if(!RaceTrial.Has("--old-ride-height")&&envelope.min.y< -.01f){var max=envelope.max;envelope.SetMinMax(new Vector3(envelope.min.x,-.003f,envelope.min.z),max);}
             envelope.Expand(.015f);Vector3 size=envelope.size;
             string body=car.name.Replace("(Clone)","").Trim();var shoulders=CarBodies.ShoulderWidth(body);var length=CarBodies.Length(body);
             if(shoulders.HasValue){size.x=shoulders.Value;envelope.center=new Vector3(0,envelope.center.y,envelope.center.z);}if(length.HasValue)size.z=length.Value;
@@ -145,17 +153,22 @@ namespace LittleRoad
             return (envelope.center,size);
         }
         // Manual shifts are presses, so read them every frame (FixedUpdate can miss or double a press).
+        // The fitted gadget (Gadgets): the player's car only. Its button is read every frame (presses latch for the step).
+        public Gadget gadget;bool gadgetPressed;
         void Update()
         {
+            if(gadget!=null&&!controlsBlocked&&!autonomous&&Controls.Pressed(Controls.Act.Gadget))gadgetPressed=true;
             if(controlsBlocked||gears==null||!gears.Manual)return;
-            var k=Keyboard.current;var p=Gamepad.current;
-            if(k!=null){if(k.leftShiftKey.wasPressedThisFrame)gears.RequestShift(1);if(k.leftCtrlKey.wasPressedThisFrame)gears.RequestShift(-1);}
-            if(p!=null){if(p.rightTrigger.wasPressedThisFrame)gears.RequestShift(1);if(p.leftTrigger.wasPressedThisFrame)gears.RequestShift(-1);}
+            // Cross / Square (Left Shift / Left Ctrl) by default, remappable (Controls). Near someone to talk to, the talk
+            // button talks instead of shifting up.
+            if(Controls.Pressed(Controls.Act.ShiftUp)&&!(Controls.InteractionReady&&Controls.Of(Controls.Act.ShiftUp).Pad=="buttonSouth"))gears.RequestShift(1);
+            if(Controls.Pressed(Controls.Act.ShiftDown))gears.RequestShift(-1);
         }
         void FixedUpdate(){long start=System.Diagnostics.Stopwatch.GetTimestamp();try{Step();}finally{FrameCost.Cars+=System.Diagnostics.Stopwatch.GetTimestamp()-start;}}
         void Step()
         {
             if(race==null || !race.running) return;
+            if(gadget!=null){bool on=!controlsBlocked&&!autonomous;gadget.Step(on&&Controls.Held(Controls.Act.Gadget),on&&gadgetPressed,Time.fixedDeltaTime);gadgetPressed=false;}
             if(ground!=null)ground.Sample();
             float recoveryDatum=ground==null?0:race.track.At(pathDistance).y;
             // Free roam spans the island and the mainland: only the sea counts as falling out of the world.
@@ -278,15 +291,12 @@ namespace LittleRoad
         void OnDestroy(){recoverySensor?.Dispose();}
         void ReadInput()
         {
-            var k=Keyboard.current;var p=Gamepad.current;float gas=0,brake=0;steering=0;
-            if(k!=null) {gas=k.wKey.isPressed||k.upArrowKey.isPressed?1:0;brake=k.sKey.isPressed||k.downArrowKey.isPressed?1:0;
-                steering=(k.dKey.isPressed||k.rightArrowKey.isPressed?1:0)-(k.aKey.isPressed||k.leftArrowKey.isPressed?1:0);}
-            // Manual gears on a pad: the triggers shift (Update), so the right stick is throttle (up) and brake (down).
-            bool manualPad=gears!=null&&gears.Manual;
-            if(p!=null&&manualPad) {float stick=p.rightStick.y.ReadValue();if(stick>.08f)gas=Mathf.Max(gas,stick);else if(stick< -.08f)brake=Mathf.Max(brake,-stick);
-                if(Mathf.Abs(p.leftStick.x.ReadValue())>.12f)steering=p.leftStick.x.ReadValue();}
-            else if(p!=null) {gas=Mathf.Max(gas,p.rightTrigger.ReadValue());brake=Mathf.Max(brake,p.leftTrigger.ReadValue());
-                if(Mathf.Abs(p.leftStick.x.ReadValue())>.12f)steering=p.leftStick.x.ReadValue();}
+            var k=Keyboard.current;var p=Gamepad.current;steering=0;
+            // Throttle and brake from their bindings (R2 / L2, W / S, and the arrows), in automatic and manual alike:
+            // manual shifts are on buttons now (Update), so the right stick is no longer the throttle (Richard, 2 Oct).
+            float gas=Controls.Value(Controls.Act.Throttle),brake=Controls.Value(Controls.Act.Brake);
+            if(k!=null)steering=(k.dKey.isPressed||k.rightArrowKey.isPressed?1:0)-(k.aKey.isPressed||k.leftArrowKey.isPressed?1:0);
+            if(p!=null&&Mathf.Abs(p.leftStick.x.ReadValue())>.12f)steering=p.leftStick.x.ReadValue();
             throttle=gas-brake;
             // Manual box: in reverse the throttle drives backwards and the brake brakes (it never drives);
             // in a forward gear the brake holds the car at a stop instead of reversing.

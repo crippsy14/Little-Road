@@ -21,10 +21,16 @@ namespace LittleRoad
         Canvas canvas;AdventureStore store;PartPreviewStage stage,icons;ToyShape selectedShape,badge;
         Action fitted,back;Mode mode;
         EquipmentCatalog.Part[] parts;int index;string slot="engine",notice;
+        // Discipline and class filters (Richard, 2 Oct: "a tier selection tab, so you can R1/L1 through the tiers so there
+        // isn't an overwhelming amount of options", plus Road / Rally / Ice on the top screen). One class's parts at a time.
+        public static readonly string[] Disciplines={"road","rally","ice"};
+        string discipline="road",tierSel;readonly List<string> tiersHere=new();
+        public string Tier=>tierSel;public IReadOnlyList<string> Tiers=>tiersHere;
+        readonly List<(ToyShape pill,Text text,string tier)> tierPills=new();readonly List<(ToyShape pill,Text text,string id)> disciplinePills=new();Text tierKeys;
         readonly Dictionary<string,string> remembered=new();
         // "hillcrest" at Hillcrest: the valley parts join the catalogue.
         public string Shop="bayview";
-        Text wallet,heading,modePill,title,badgeText,hint,comparisonHeading,explanation,status,leftLabel,rightLabel,keysHint,actionText,actionKey,tabLeft,tabRight;
+        Text slotTitle,wallet,heading,modePill,title,badgeText,hint,comparisonHeading,explanation,status,leftLabel,rightLabel,keysHint,actionText,actionKey,tabLeft,tabRight;
         readonly Text[] captions=new Text[3],before=new Text[3],after=new Text[3];readonly GameObject[] statRows=new GameObject[3];
         RawImage selectedImage,leftImage,rightImage;GameObject leftCard,rightCard,leftTick,rightTick;
         Button selectedCard,action,previous,next,exit;ToyShape actionShape,actionKeyShape;GameObject actionCross;
@@ -40,7 +46,7 @@ namespace LittleRoad
         static string[] Slots=>EquipmentCatalog.All.slots;
         static string SlotName(string s)=>s.ToUpperInvariant();
         string FitterName=>Shop=="hillcrest"?"Gio":"Mara";
-        const float TabSmall=118,TabOpen=330,TabGap=12;
+        const float TabSmall=118,TabOpen=330,TabGap=12,ChipSize=100,ChipStep=92;
 
         public void Open(AdventureStore inventory,Mode openMode,string startSlot,Action onFitted,Action onBack)
         {
@@ -54,24 +60,37 @@ namespace LittleRoad
             icons?.Dispose();icons=new PartPreviewStage(store.Data.bodyId,AdventureGame.Paints[store.Data.paintIndex],Slots.Select(s=>EquipmentCatalog.Get(s+"_stock")),Color.clear);
             for(int i=0;i<tabs.Count;i++)tabs[i].icon.texture=icons.Card(Slots[i]+"_stock");
             Toy.UseMenuCamera(canvas);canvas.gameObject.SetActive(true);
+            // A visit to this parts counter finds its own parts (whose conditions are met) for every shop.
+            var found=mode==Mode.Shop?PartDiscovery.Visit(store,Shop):new List<EquipmentCatalog.Part>();
             Load(startSlot,true);StartCoroutine(FocusNextFrame());
+            if(found.Count>0){notice=$"New parts found here: {string.Join(", ",found.Take(4).Select(p=>p.name))}{(found.Count>4?$" and {found.Count-4} more":"")}. Every parts shop stocks them now.";Refresh(false);}
         }
         // Switch category: this mode's parts for the slot, a fresh preview stage, the tab opened out.
         void Load(string newSlot,bool snapTabs=false)
         {
             slot=newSlot;notice="";
-            var list=EquipmentCatalog.All.parts.Where(p=>p.slot==slot&&(Shop=="hillcrest"||p.shop!="hillcrest"));
+            // Shop: parts found anywhere (and this shop's own, locked until found); fitting bay: everything you own.
+            var list=EquipmentCatalog.All.parts.Where(p=>p.slot==slot&&(mode==Mode.Fit||PartDiscovery.OnSale(store.Data,p,Shop)));
             // Only the open class and below (Richard, 30 Sep: keep the next tier hidden until it's unlocked). The
             // fitting bay shows owned parts the same way, plus whatever is on the car now.
             int open=RaceCalendar.Rank(RaceCalendar.Open(store.Data));string onCar=store.Data.Loadout()[slot];
             list=mode==Mode.Fit?list.Where(p=>store.Data.owned.Contains(p.id)&&(RaceCalendar.Rank(p.tier)<=open||p.id==onCar)):list.Where(p=>p.price>0&&RaceCalendar.Rank(p.tier)<=open);
-            parts=list.OrderBy(p=>RaceCalendar.Rank(p.tier)).ThenBy(p=>p.price).ToArray();
+            list=list.Where(p=>p.Discipline==discipline);
+            var all=list.OrderBy(p=>RaceCalendar.Rank(p.tier)).ThenBy(p=>p.price).ToArray();
+            // Class tabs: the classes this category has here. Start at the newest (the shop) or the fitted part's (the bay).
+            tiersHere.Clear();foreach(var t in all.Select(p=>string.IsNullOrEmpty(p.tier)?"C":p.tier).Distinct().OrderBy(RaceCalendar.Rank))tiersHere.Add(t);
+            if(tierSel==null||!tiersHere.Contains(tierSel)) {
+                var fittedPart=EquipmentCatalog.Get(onCar);string fittedTier=string.IsNullOrEmpty(fittedPart.tier)?"C":fittedPart.tier;
+                tierSel=mode==Mode.Fit&&tiersHere.Contains(fittedTier)?fittedTier:tierSel!=null?tiersHere.LastOrDefault(t=>RaceCalendar.Rank(t)<=RaceCalendar.Rank(tierSel))??tiersHere.LastOrDefault():tiersHere.LastOrDefault();
+            }
+            parts=all.Where(p=>(string.IsNullOrEmpty(p.tier)?"C":p.tier)==tierSel).ToArray();if(parts.Length==0)parts=all;
+            RefreshFilters();
             string fittedId=store.Data.Loadout()[slot];
             string want=mode==Mode.Fit?fittedId:remembered.TryGetValue(slot,out var r)?r:parts.FirstOrDefault(p=>!store.Data.owned.Contains(p.id))?.id;
             index=Mathf.Max(0,Array.FindIndex(parts,p=>p.id==want));
             stage?.Dispose();stage=new PartPreviewStage(store.Data.bodyId,AdventureGame.Paints[store.Data.paintIndex],parts,Color.clear);
             selectedImage.texture=stage.Selected;
-            for(int i=0;i<tabs.Count;i++){bool on=Slots[i]==slot;tabWidths[i]=on?TabOpen:TabSmall;if(snapTabs)tabs[i].shape.rectTransform.sizeDelta=new Vector2(tabWidths[i],96);}
+            slotTitle.text=SlotName(slot);
             Refresh(true);
         }
         IEnumerator FocusNextFrame(){yield return null;if(IsOpen)EventSystem.current.SetSelectedGameObject(selectedCard.gameObject);}
@@ -91,18 +110,35 @@ namespace LittleRoad
             var coin=Toy.Card(purse.transform,"Coin",new Vector2(54,54),new Vector2(-138,0),Toy.Gold,27,4,0);Toy.Title(coin.transform,"C","C",34,new Vector2(54,54),Vector2.zero,Toy.White,TextAnchor.MiddleCenter);
             coin.gameObject.AddComponent<ToyCoinFlip>();
             wallet=Toy.Label(purse.transform,"Wallet text",string.Empty,30,new Vector2(280,70),new Vector2(30,0),Toy.Navy,TextAnchor.MiddleCenter,true);
-            // Category tabs: icon chips across the top; the current one opens out with its name.
-            var strip=Toy.Rect(background,"Category tabs",new Vector2(1500,110),new Vector2(0,300));
+            // Discipline pills (top centre) and class pills (under the title, L1 / R1).
+            for(int i=0;i<Disciplines.Length;i++) {
+                string d=Disciplines[i];var dp=Toy.Card(background,"Discipline "+d,new Vector2(150,46),new Vector2(-40+i*160,440),Toy.Navy,23,4,4);dp.raycastTarget=true;
+                var dt=Toy.Label(dp.transform,"Discipline text",d.ToUpperInvariant(),22,new Vector2(150,46),Vector2.zero,Toy.White,TextAnchor.MiddleCenter,true);
+                var db=dp.gameObject.AddComponent<Button>();db.transition=Selectable.Transition.None;db.navigation=new Navigation{mode=Navigation.Mode.None};db.onClick.AddListener(()=>SetDiscipline(d));
+                disciplinePills.Add((dp,dt,d));
+            }
+            Toy.Label(background,"Class caption","CLASS",22,new Vector2(100,40),new Vector2(-470,372),Toy.Navy,TextAnchor.MiddleRight,true);
+            foreach(var t in RaceCalendar.Classes) {
+                var tp=Toy.Card(background,"Class "+t,new Vector2(64,46),Vector2.zero,Toy.Navy,23,4,4);tp.raycastTarget=true;
+                var tt=Toy.Title(tp.transform,"Class text",t,28,new Vector2(64,46),Vector2.zero,Toy.White,TextAnchor.MiddleCenter);
+                var tb=tp.gameObject.AddComponent<Button>();tb.transition=Selectable.Transition.None;tb.navigation=new Navigation{mode=Navigation.Mode.None};string tier=t;tb.onClick.AddListener(()=>SetTier(tier));
+                tierPills.Add((tp,tt,t));
+            }
+            tierKeys=Toy.Label(background,"Class keys",string.Empty,20,new Vector2(220,40),Vector2.zero,Toy.Navy,TextAnchor.MiddleLeft,true);
+            // Categories: a column of icon chips down the left edge, moved through with D-pad up / down (Richard, 2 Oct:
+            // "do the part icons as a list that is up and down"); the current one stands out and its name heads the stand.
+            var strip=Toy.Rect(background,"Category list",new Vector2(140,700),new Vector2(-850,-14));
+            slotTitle=Toy.Title(background,"Category title","",48,new Vector2(700,64),new Vector2(0,290),Toy.White,TextAnchor.MiddleCenter,-1);
             for(int i=0;i<Slots.Length;i++) {
                 string s=Slots[i];
-                var shape=Toy.Card(strip,"Tab "+SlotName(s),new Vector2(TabSmall,96),Vector2.zero,Toy.Navy,30,5,6);shape.raycastTarget=true;
+                var shape=Toy.Card(strip,"Tab "+SlotName(s),new Vector2(ChipSize,ChipSize-10),Vector2.zero,Toy.Navy,26,5,6);shape.raycastTarget=true;
                 var icon=Toy.Rect(shape.transform,"Icon",new Vector2(104,88),Vector2.zero).gameObject.AddComponent<RawImage>();icon.raycastTarget=false;
                 var label=Toy.Title(shape.transform,"Name",SlotName(s),34,new Vector2(210,60),Vector2.zero,Toy.White,TextAnchor.MiddleLeft);
                 var b=shape.gameObject.AddComponent<Button>();b.transition=Selectable.Transition.None;b.navigation=new Navigation{mode=Navigation.Mode.None};b.onClick.AddListener(()=>SwitchCategory(s));
                 tabs.Add((shape,icon,label,b));tabWidths.Add(TabSmall);
             }
-            tabLeft=Toy.Label(strip,"Tab key left",string.Empty,24,new Vector2(90,40),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter,true);
-            tabRight=Toy.Label(strip,"Tab key right",string.Empty,24,new Vector2(90,40),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter,true);
+            tabLeft=Toy.Label(strip,"Tab key up",string.Empty,18,new Vector2(160,30),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter,true);
+            tabRight=Toy.Label(strip,"Tab key down",string.Empty,18,new Vector2(160,30),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter,true);
 
             // Carousel: neighbours either side, the selected part on its stand in the middle.
             var left=Toy.Card(background,"Previous part",new Vector2(280,280),new Vector2(-525,40),Toy.White,30,6,8);leftCard=left.gameObject;
@@ -161,14 +197,15 @@ namespace LittleRoad
         public void Step(int amount){if(parts.Length<2)return;index=(index+amount+parts.Length)%parts.Length;remembered[slot]=SelectedId;notice="";Refresh(true);}
         public void SelectPart(string id)
         {
-            var part=EquipmentCatalog.Get(id);if(part.slot!=slot)Load(part.slot);
+            var part=EquipmentCatalog.Get(id);string partTier=string.IsNullOrEmpty(part.tier)?"C":part.tier;
+            if(part.slot!=slot||partTier!=tierSel){tierSel=partTier;discipline=part.Discipline;Load(part.slot);}
             int found=Array.FindIndex(parts,p=>p.id==id);if(found<0)throw new ArgumentException(id+" is not on this screen ("+mode+")");index=found;remembered[slot]=id;notice="";Refresh(true);
         }
         // What each category changes, before (fitted) and after (previewed), with your other parts fitted.
         static (string caption,Func<CarTuning,string> value)[] StatsFor(string s)
         {
             string Index(float value,float stock)=>$"{value/stock*100:0}";
-            string Mph(float metres)=>$"{metres*2.237f:0.0} mph";
+            string Mph(float metres)=>Units.Show(metres,"0.0");
             string Stop(CarTuning t,float mph)=>$"{Mathf.Pow(mph/2.237f,2)/(2*Mathf.Max(t.braking,.1f)):0.0} m";
             var power=("POWER INDEX",(Func<CarTuning,string>)(t=>Index(t.power,CarTuning.Stock.power)));
             var sprint=("0-30 MPH",(Func<CarTuning,string>)(t=>$"{Sprint(t):0.00} s"));
@@ -198,7 +235,7 @@ namespace LittleRoad
             bool owned=store.Data.owned.Contains(part.id),isFitted=store.Data.Loadout()[part.slot]==part.id;
             if(mode==Mode.Fit)return isFitted?State.Fitted:State.CanFit;
             if(owned)return State.Owned;
-            if(!RaceCalendar.PartOpen(store.Data,part))return State.Locked;
+            if(!RaceCalendar.PartOpen(store.Data,part)||!PartDiscovery.Found(store.Data,part))return State.Locked;
             return store.Data.credits>=part.price?State.CanBuy:State.CannotAfford;
         }
         void Refresh(bool modelChanged)
@@ -208,7 +245,7 @@ namespace LittleRoad
             // Badge: what this part is to you right now.
             (string text,Color fill)=state switch{
                 State.Fitted=>("✓ FITTED",Toy.Mint),State.CanFit=>("OWNED",Toy.Sky),State.Owned=>("✓ OWNED",Toy.Mint),
-                State.Locked=>($"CLASS {part.tier}",Toy.Silver),_=>($"{part.price:N0} CR",Toy.Sun)};
+                State.Locked=>(RaceCalendar.PartOpen(store.Data,part)?"LOCKED":$"CLASS {part.tier}",Toy.Silver),_=>($"{part.price:N0} CR",Toy.Sun)};
             badgeText.text=text;badge.SetFill(fill);
             // Action: the one thing you can do here.
             bool live=state is State.CanFit or State.CanBuy;
@@ -224,7 +261,7 @@ namespace LittleRoad
             for(int i=0;i<3;i++){bool used=i<stats.Length;statRows[i].SetActive(used);if(!used)continue;captions[i].text=stats[i].caption;before[i].text=stats[i].value(actual);after[i].text=stats[i].value(target);}
             explanation.text="Estimates use your other fitted parts. "+Explain(slot,target);
             status.text=!string.IsNullOrEmpty(notice)?notice:state switch{
-                State.Locked=>$"Class {part.tier} part. {RaceCalendar.Progress(store.Data)}",
+                State.Locked=>RaceCalendar.PartOpen(store.Data,part)?$"Unlocks with: {PartDiscovery.Need(part.unlock)}. Then it's sold at every parts shop.":$"Class {part.tier} part. {RaceCalendar.Progress(store.Data)}",
                 State.CannotAfford=>"Every race finish pays. Come back when you've earned a little more.",
                 State.Owned=>$"You own this. {FitterName} fits it for free at the garage bay.",
                 State.CanBuy=>$"Buy it here, then {FitterName} fits it for free at the garage bay.",
@@ -260,6 +297,33 @@ namespace LittleRoad
             Primary();return true;
         }
         void SwitchCategory(string s){if(s!=slot)Load(s);EventSystem.current.SetSelectedGameObject(selectedCard.gameObject);}
+        public void StepCategory(int d){int current=Array.IndexOf(Slots,slot);SwitchCategory(Slots[(current+d+Slots.Length)%Slots.Length]);}
+        public void SetTier(string t){if(!tiersHere.Contains(t)||t==tierSel)return;tierSel=t;remembered.Remove(slot);Load(slot);}
+        public void StepTier(int d){if(tiersHere.Count<2)return;int i=tiersHere.IndexOf(tierSel);SetTier(tiersHere[Mathf.Clamp(i+d,0,tiersHere.Count-1)]);}
+        // Rally and ice parts aren't made yet: their pills say so instead of opening an empty shop.
+        public void SetDiscipline(string d)
+        {
+            if(d==discipline)return;
+            if(!EquipmentCatalog.All.parts.Any(p=>p.Discipline==d)){notice=$"{char.ToUpperInvariant(d[0])+d.Substring(1)} parts are coming soon.";Refresh(false);return;}
+            discipline=d;tierSel=null;Load(slot);
+        }
+        void RefreshFilters()
+        {
+            if(tierPills.Count==0)return;
+            float x=-400;
+            foreach(var (pill,text,t) in tierPills) {
+                bool shown=tiersHere.Contains(t);pill.gameObject.SetActive(shown);if(!shown)continue;
+                bool on=t==tierSel;pill.rectTransform.anchoredPosition=new Vector2(x+32,372+(on?4:0));pill.SetFill(on?Toy.Sun:Toy.Navy);text.color=on?Toy.Navy:Toy.White;pill.rectTransform.localScale=Vector3.one*(on?1.1f:1);x+=72;
+            }
+            tierKeys.rectTransform.anchoredPosition=new Vector2(x+120,372);
+            float dx=-120;
+            foreach(var (pill,text,id) in disciplinePills) {
+                bool exists=EquipmentCatalog.All.parts.Any(p=>p.Discipline==id),on=id==discipline;
+                pill.SetFill(on?Toy.Sun:exists?Toy.Navy:Toy.Silver);text.color=on?Toy.Navy:Toy.White;text.text=id.ToUpperInvariant()+(exists?"":" · SOON");
+                float w=exists?140:200;pill.rectTransform.sizeDelta=new Vector2(w,46);text.rectTransform.sizeDelta=new Vector2(w,46);
+                pill.rectTransform.anchoredPosition=new Vector2(dx+w/2,440);dx+=w+12;
+            }
+        }
         void Leave(Action then){Hide();then?.Invoke();}
         public void Hide()
         {
@@ -272,9 +336,10 @@ namespace LittleRoad
         {
             if(!IsOpen)return;var keyboard=Keyboard.current;var pad=Gamepad.current;var mouse=Mouse.current;
             if(keyboard?.escapeKey.wasPressedThisFrame==true||pad?.buttonEast.wasPressedThisFrame==true){Leave(back);return;}
-            int shift=keyboard?.qKey.wasPressedThisFrame==true||keyboard?.leftBracketKey.wasPressedThisFrame==true||pad?.leftShoulder.wasPressedThisFrame==true?-1:
-                keyboard?.eKey.wasPressedThisFrame==true||keyboard?.rightBracketKey.wasPressedThisFrame==true||pad?.rightShoulder.wasPressedThisFrame==true?1:0;
-            if(shift!=0){int current=Array.IndexOf(Slots,slot);SwitchCategory(Slots[(current+shift+Slots.Length)%Slots.Length]);return;}
+            int tierShift=keyboard?.qKey.wasPressedThisFrame==true||pad?.leftShoulder.wasPressedThisFrame==true?-1:keyboard?.eKey.wasPressedThisFrame==true||pad?.rightShoulder.wasPressedThisFrame==true?1:0;
+            if(tierShift!=0){StepTier(tierShift);return;}
+            int shift=keyboard?.leftBracketKey.wasPressedThisFrame==true?-1:keyboard?.rightBracketKey.wasPressedThisFrame==true?1:0;
+            if(shift!=0){StepCategory(shift);return;}
             // Spin: right stick, Z / X, or drag the part with the mouse.
             float rotation=(keyboard?.zKey.isPressed==true?-1:0)+(keyboard?.xKey.isPressed==true?1:0)+(pad?.rightStick.x.ReadValue()??0);
             if(Mathf.Abs(rotation)>.1f)stage.Rotate(rotation*85*Time.unscaledDeltaTime);
@@ -289,20 +354,19 @@ namespace LittleRoad
         void LateUpdate()
         {
             if(!IsOpen)return;Toy.UseMenuCamera(canvas);
-            keysHint.text=InputGlyphs.Prompts(("browse","browse"),("category","category"),("select",mode==Mode.Shop?"buy":"fit"),("spin","spin"),("back","back"));
-            var sides=InputGlyphs.Name("category").Split('/');tabLeft.text=sides[0].Trim();tabRight.text=sides[^1].Trim();
-            // Accordion tabs: widths ease to target, laid out left to right, centred.
-            float total=0;for(int i=0;i<tabs.Count;i++){var sz=tabs[i].shape.rectTransform.sizeDelta;sz.x=Mathf.Lerp(sz.x,tabWidths[i],1-Mathf.Exp(-Time.unscaledDeltaTime*14));tabs[i].shape.rectTransform.sizeDelta=sz;total+=sz.x;}
-            total+=TabGap*(tabs.Count-1);float x=-total/2;
+            bool keys=InputGlyphs.Current==InputGlyphs.Family.Keyboard;
+            keysHint.text=InputGlyphs.Prompts(("browse","browse"),("select",mode==Mode.Shop?"buy":"fit"),("spin","spin"),("back","back"))+$"     {InputGlyphs.Name("tabs")}: class     {(keys?"Up / Down or [ ]":"D-pad Up / Down")}: category";
+            tierKeys.text=tiersHere.Count>1?InputGlyphs.Name("tabs"):"";
+            tabLeft.text="";tabRight.text=""; // (the hint line names the keys)
+            // The category column: top to bottom, the current chip gold and eased out to the right.
+            float top=(tabs.Count-1)*ChipStep*.5f;
             for(int i=0;i<tabs.Count;i++) {
-                var (shape,icon,label,_)=tabs[i];float w=shape.rectTransform.sizeDelta.x;bool on=Slots[i]==slot;
-                shape.rectTransform.anchoredPosition=new Vector2(x+w/2,on?6:0);shape.SetFill(on?Toy.Sun:Toy.Navy);shape.SetVerticesDirty();
-                icon.rectTransform.anchoredPosition=new Vector2(-w/2+TabSmall/2,0);
-                float open=Mathf.InverseLerp(TabSmall+20,TabOpen,w);label.color=new Color(1,1,1,open);
-                label.rectTransform.anchoredPosition=new Vector2(-w/2+TabSmall+label.rectTransform.sizeDelta.x/2-8,0);
-                x+=w+TabGap;
+                var (shape,icon,label,_)=tabs[i];bool on=Slots[i]==slot;var rt=shape.rectTransform;
+                var target=new Vector2(on?18:0,top-i*ChipStep);rt.anchoredPosition=Vector2.Lerp(rt.anchoredPosition,target,1-Mathf.Exp(-Time.unscaledDeltaTime*14));
+                rt.localScale=Vector3.one*(on?1.08f:1);shape.SetFill(on?Toy.Sun:Toy.Navy);shape.SetVerticesDirty();
+                icon.rectTransform.anchoredPosition=Vector2.zero;icon.rectTransform.sizeDelta=new Vector2(ChipSize-10,ChipSize-18);label.color=Color.clear;
             }
-            tabLeft.rectTransform.anchoredPosition=new Vector2(-total/2-72,0);tabRight.rectTransform.anchoredPosition=new Vector2(total/2+72,0);
+            tabLeft.rectTransform.anchoredPosition=new Vector2(0,top+ChipStep*.5f+26);tabRight.rectTransform.anchoredPosition=new Vector2(0,-top-ChipStep*.5f-26);
             bool focus=EventSystem.current.currentSelectedGameObject==selectedCard.gameObject;selectedShape.SetBorder(focus?Toy.Orange:Toy.Navy);
         }
         void OnDestroy(){stage?.Dispose();icons?.Dispose();}
@@ -312,7 +376,8 @@ namespace LittleRoad
     {
         public PartsBrowser browser;
         public void OnMove(AxisEventData data)
-        {if(data.moveDir==MoveDirection.Left)browser.Step(-1);else if(data.moveDir==MoveDirection.Right)browser.Step(1);}
+        {if(data.moveDir==MoveDirection.Left)browser.Step(-1);else if(data.moveDir==MoveDirection.Right)browser.Step(1);
+         else if(data.moveDir==MoveDirection.Up)browser.StepCategory(-1);else if(data.moveDir==MoveDirection.Down)browser.StepCategory(1);}
         public void OnSubmit(BaseEventData data)=>browser.Primary();
     }
 }

@@ -86,10 +86,11 @@ namespace LittleRoad
                 Toy.Label(page,"Continue note",$"Slot {newest}  ·  {info.summary}  ·  {info.When}",22,new Vector2(1100,34),new Vector2(0,-62),Toy.Navy,TextAnchor.MiddleCenter,true);
                 if(info.damaged)Grey(cont);
             }
-            Add(Toy.Candy(page,"Choice New game","New game",null,new Vector2(560,84),new Vector2(0,-140),Toy.Blue,()=>ShowSlots(true)));
-            var load=Add(Toy.Candy(page,"Choice Load game","Load game",null,new Vector2(560,84),new Vector2(0,-240),Toy.Orange,()=>ShowSlots(false)));
+            Add(Toy.Candy(page,"Choice New game","New game",null,new Vector2(560,74),new Vector2(0,-128),Toy.Blue,()=>ShowSlots(true)));
+            var load=Add(Toy.Candy(page,"Choice Load game","Load game",null,new Vector2(560,74),new Vector2(0,-212),Toy.Orange,()=>ShowSlots(false)));
             if(newest==0)Grey(load);
-            Add(Toy.Candy(page,"Choice Quit","Quit",null,new Vector2(560,84),new Vector2(0,-340),Toy.Red,Application.Quit));
+            Add(Toy.Candy(page,"Choice Options","Options",null,new Vector2(560,74),new Vector2(0,-296),Toy.Sky,()=>{var keep=back;back=null;OptionsScreen.Open(()=>{back=keep;ShowMain();});}));
+            Add(Toy.Candy(page,"Choice Quit","Quit",null,new Vector2(560,74),new Vector2(0,-380),Toy.Red,Application.Quit));
             footer.text="Enter / A: choose";Focus();
         }
         // Three slot cards: New game starts in one (asking first if it's in use); Load game opens its autosave or
@@ -154,7 +155,7 @@ namespace LittleRoad
 
         void Update()
         {
-            if(done||back==null)return;
+            if(done||back==null||OptionsScreen.IsOpen||OptionsScreen.LastCloseFrame==Time.frameCount)return;
             var k=Keyboard.current;var pad=Gamepad.current;
             if(k?.escapeKey.wasPressedThisFrame==true||pad?.buttonEast.wasPressedThisFrame==true)back();
         }

@@ -5,7 +5,9 @@
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 if(Get-Process Unity -ErrorAction SilentlyContinue){throw 'Close the Unity editor before a batch build.'}
-if(Get-Process 'Little Road Unity' -ErrorAction SilentlyContinue){throw 'Close running Little Road games before replacing the dev build.'}
+# Only a game running from the dev build blocks replacing it; the play copy (../little-road-play) can keep running.
+$devDir=[IO.Path]::GetFullPath((Join-Path $root '../little-road-dev-build'))
+if(Get-Process 'Little Road Unity' -ErrorAction SilentlyContinue|Where-Object{$_.Path -and $_.Path.StartsWith($devDir,[StringComparison]::OrdinalIgnoreCase)}){throw 'Close Little Road games running from the dev build before replacing it.'}
 # Compile errors in ~2 s instead of after Unity's start-up (tools/compile-check.ps1).
 & (Join-Path $PSScriptRoot 'compile-check.ps1') -Quiet
 if($LASTEXITCODE -ne 0){throw 'Compile check failed; Unity build not started.'}

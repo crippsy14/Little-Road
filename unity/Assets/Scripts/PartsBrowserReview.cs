@@ -50,9 +50,13 @@ namespace LittleRoad
             Check(Vector3.Distance(start,car.body.position)<.08f,"Throttle stays blocked in the garage");
             int renderCount=browser.PreviewRenderCount;yield return new WaitForSeconds(.5f);
             Check(browser.PreviewRenderCount==renderCount,"Idle screen reuses cached renders");
-            yield return Pad(GamepadButton.RightShoulder);Check(browser.Slot=="turbo","RB moves right along the category tabs");Capture("02-shop-turbo");
-            yield return Pad(GamepadButton.LeftShoulder);Check(browser.Slot=="engine","LB moves back left");
-            yield return PressKey(Key.E);Check(browser.Slot=="turbo","E moves right along the tabs");yield return PressKey(Key.Q);Check(browser.Slot=="engine","Q moves left");
+            // Categories on D-pad down / up (RB / LB step the class tabs now: one class's parts at a time).
+            yield return Pad(GamepadButton.DpadDown);Check(browser.Slot=="turbo","D-pad down moves to the next category");Capture("02-shop-turbo");
+            yield return Pad(GamepadButton.DpadUp);Check(browser.Slot=="engine","D-pad up moves back");
+            string tier=browser.Tier;yield return Pad(GamepadButton.RightShoulder);
+            Check(browser.Tiers.Count<2?browser.Tier==tier:browser.Tier!=tier,$"RB steps the class tabs ({string.Join(" ",browser.Tiers)}; one class here leaves it)");
+            browser.SetDiscipline("rally");Check(browser.Slot=="engine"&&browser.PartCount>0,"Rally (no parts yet) says coming soon instead of opening an empty shop");
+            yield return PressKey(Key.RightBracket);Check(browser.Slot=="turbo","] moves right along the category tabs");yield return PressKey(Key.LeftBracket);Check(browser.Slot=="engine","[ moves left");
             yield return Pad(GamepadButton.East);Check(!browser.IsOpen&&ui.IsOpen,"B returns to Sid without road input leaking");
             Check(JsonUtility.ToJson(store.Data)==original&&File.Exists(store.path)==hadFile&&(!hadFile||File.ReadAllText(store.path)==originalDisk),"Browsing and backing out preserve inventory and save bytes");
             // Earn the real early-game budget through the store's reward transactions.
@@ -72,7 +76,7 @@ namespace LittleRoad
             yield return PressKey(Key.RightArrow);Check(browser.SelectedId=="engine_stock","Arrow keys browse (and wrap)");
             angle=browser.PreviewAngle;yield return PressKey(Key.X);Check(Mathf.Abs(Mathf.DeltaAngle(angle,browser.PreviewAngle))>2,"X spins the part");
             yield return PressKey(Key.Enter);Check(store.Data.Loadout()["engine"]=="engine_stock"&&store.Data.credits==0&&Mathf.Abs(car.tuning.power-stockPower)<.001f,"Enter refits the stock engine for free");
-            foreach(string s in new[]{"turbo","tyres","transmission","brakes","steering","chassis"}){yield return Pad(GamepadButton.RightShoulder);Check(browser.Slot==s&&browser.PartCount>=1,"Fitting bay reaches "+s);Capture("07-fit-"+s);}
+            foreach(string s in new[]{"turbo","tyres","transmission","brakes","steering","chassis"}){yield return Pad(GamepadButton.DpadDown);Check(browser.Slot==s&&browser.PartCount>=1,"Fitting bay reaches "+s);Capture("07-fit-"+s);}
             yield return Pad(GamepadButton.East);Check(!browser.IsOpen&&ui.IsOpen,"B returns to Mara");
             var workshop=new Dictionary<string,string>(store.Data.Loadout()){["engine"]="engine_workshop"};
             var evidence=new Evidence{checks=checks.ToArray(),cachedIdleRenders=renderCount,stockSprint=PartsBrowser.Sprint(CarTuning.Stock),workshopSprint=PartsBrowser.Sprint(EquipmentCatalog.Stats(workshop))};

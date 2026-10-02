@@ -64,7 +64,7 @@ namespace LittleRoad
         public static void Beep(float hz,float seconds){if(instance!=null)instance.tones?.Play(hz,seconds);}
         public static void Register(CarAudio car){cars.Add(car);Ensure();}
         public static void Unregister(CarAudio car){cars.Remove(car);}
-        public static void Attach(RoadCar car,bool player){if(Enabled)car.gameObject.AddComponent<CarAudio>().Setup(car,player);}
+        public static void Attach(RoadCar car,bool player){if(!Enabled)return;car.gameObject.AddComponent<CarAudio>().Setup(car,player);if(player)Rumble.Watch(car);}
         public static void Ensure()
         {
             if(instance!=null||!Enabled)return;
@@ -104,7 +104,8 @@ namespace LittleRoad
         public static readonly GraphicsOptions.Option Master=new("vol_master","Master volume",10,Steps);
         public static readonly GraphicsOptions.Option Effects=new("vol_effects","Engines & effects",10,Steps);
         public static readonly GraphicsOptions.Option Music=new("vol_music","Music",7,Steps);
-        public static readonly GraphicsOptions.Option[] All={Master,Effects,Music};
+        public static readonly GraphicsOptions.Option Ambience=new("vol_ambience","Ambience",10,Steps);
+        public static readonly GraphicsOptions.Option[] All={Master,Effects,Music,Ambience};
         public static float Level(GraphicsOptions.Option o){float x=o.Index/10f;return x*x;} // perceptual taper
     }
 }

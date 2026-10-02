@@ -164,10 +164,188 @@ Side walls were blank on every terrace and detached house. They show at every ro
 
 **Check.** `SoundChecks` confirms the game is audible unless the flag is passed.
 
+## 13. Barriers where the ground falls away (kept)
+
+**The area audit (doc 57) counted every drop beside a road that a car couldn't climb back from.** Several fixes and audit refinements followed.
+
+**Via Crest.**
+- A low stone parapet (with a white cap) runs along the downhill side where the ground falls away and nothing else stands (`HillcrestTown.Parapets`), with a gate-wide gap at each front yard. It is 67 pieces.
+- Garden gaps between houses on the downhill side get the same wall.
+- [Before](../review/map-sweep/crest-bank-1/crest-b.png) and [after](../review/map-sweep/crest-bank-2/crest-b.png).
+
+**Valley roads and the raceway.**
+- Guardrails now go wherever the ground falls steeply within 8 m (over 1.1 m in any 2 m), measured from the road or run-off surface. The old rule needed a 1.8 m drop 3 m out.
+- The raceway gets armco along the run-off's outer edge on its climb to the hairpins.
+- A guardrail no longer stops where its own road continues under another name (the valley road is a chain of three).
+
+**The audit's barrier test** (`PlacementAudit.Edges`). A drop isn't a trap when either of these stands between the kerb and the top of the drop:
+- something solid standing 35 cm or more over the ground (a guardrail, parapet, railing, house or plinth);
+- a gap narrower than a car between two such things.
+
+The probe steps every 4 cm, so thin railings count.
+
+## 14. In-race pause menu (Richard's request)
+
+**Problem.** Esc or Options used to quit the race.
+
+**What it does now.**
+- It pauses the race (the time scale and all audio) and shows:
+  - Back to the race;
+  - Restart race (the same event from the grid);
+  - View the field (the pre-race grid screen, renamed THE FIELD, with no start button);
+  - Options;
+  - Retire to town (no payout).
+- The card shows your place, lap and race time, plus the leader and the cars ahead of and behind you. Esc, B or Options resumes.
+- Once you've finished, Esc goes back to town as before.
+
+**Check.** The adventure smoke now pauses mid-race and exercises every page:
+- it checks the race clock holds while paused;
+- it opens the field and comes back;
+- it opens Options, captures two tabs and returns to the pause;
+- it resumes and checks the race carries on (`LITTLE_ROAD_RACE_PAUSE_REVIEW_PASSED`).
+
+Captures: [pause](../review/ui-screens/smoke35/captures/02c-pause.png), [the field](../review/ui-screens/smoke35/captures/02d-field.png).
+
+## 15. The Options screen (Richard's request)
+
+**What it is.** One screen with five tabs: GRAPHICS, DISPLAY, AUDIO, DRIVING and INTERFACE. It opens from:
+- the pause hub (SETTINGS > Options);
+- the race pause menu;
+- the title screen.
+
+Each row shows its value as "‹ value ›", with a help line underneath. Left and right step the value, and every change applies at once (`GraphicsOptions.Step` plus the `Changed` event).
+
+**New settings** (the genre survey in doc 57 marks these as essential):
+
+| Setting | Values |
+|---|---|
+| Motion blur | On / Off (races) |
+| Speed effects | the speed field-of-view widening: Full / Reduced / Off |
+| Camera shake | Full / Reduced / Off |
+| Speed units | mph / km/h, for every speed shown: dash, race HUD, speed traps, parts shop, field screen, test drive |
+| Vibration | Full / Reduced / Off; new controller rumble on knocks and off the tarmac (`Rumble`) |
+| Ambience volume | its own slider (it was tied to effects) |
+| Minimap | On / Off |
+| Button prompts | Automatic / Keyboard / PlayStation / Xbox |
+
+**Check.** `OptionsChecks` confirms:
+- every setting is on the screen, with a help line;
+- the defaults;
+- the unit conversion;
+- that stepping wraps round and tells listeners.
+
+Captures: [graphics](../review/ui-screens/smoke36/captures/02e-options-graphics.png), [driving](../review/ui-screens/smoke36/captures/02f-options-driving.png), [title](../review/ui-screens/title-options-2/title-main.png), [pause hub](../review/map-sweep/pause-settings-1/p6-settings.png).
+
+**Sound smoke note.** Your play session set Engines & effects to 60%, and the mixed capture (`player.wav`) follows your volume. The sound smoke now reads the engine-only capture (`player-engine.wav`), which ignores settings: −12.5 dB with a 0.80 peak, unchanged.
+
+## 16. Grounding: planting and cars (kept)
+
+- **Planting.** `PlacementAudit.Settle` runs before static batching. Any bush, tree, rock or reed hanging more than 0.3 m over the ground under its whole footprint is lowered onto it. It moved the last 2 in the world; any new area gets it for free.
+- **Cars** (Richard: "some models seem to float"). `CarContact` finds each car's four wheel contact patches.
+  - `SeatAll` lowers and tilts every standing car (residents, parked cars, taxis) onto its four wheels, up to 12°, once the world is ready.
+  - The area audit measures every car with wheels: all wheels up, one wheel more than 15 cm off, or sunk.
+  - `ContactChecks` seats a car on an 8° slope in the editor.
+
+## 17. Cars ride on their wheels (kept, studies 218–219; Richard's report)
+
+**Found by the car-contact check.** Mid-race, 25 of 29 cars rode 18–23 cm above the road with all four wheels in the air.
+
+**Cause.** Each car's physics box is fitted to the bounds of its parts, rotated into the car. A wheel mesh sits at a rolled angle, so its rotated box reaches about 0.4 of its radius below the tyre. The box hung 7–18 cm under the tyres on every body except the compact (0.8 cm), and cars drove on it.
+
+Box bottom below the tyres, per body (`ContactChecks`):
+
+| Bodies | Gap |
+|---|---|
+| puddle | 6.7 cm |
+| postvan, minibus | 7.1–7.5 cm |
+| comet | 12.4 cm |
+| the family field and sporty bodies | 14.3–17.6 cm |
+
+**Fix.** The box's bottom goes to the model's base, where the tyres touch (every car model stands on y = 0).
+- **Study 218** used mesh vertices, which aren't readable in the player. It changed nothing; it's recorded as a failed attempt.
+- **Study 219** (Cedar and Bayview, seeds 1709–1711) passed:
+  - 144/144 finished with no resets;
+  - total time 9616.6 → 9612.6 s;
+  - contacts 54 → 57, with 2 hard contacts (Cedar 1710).
+
+  Kept. It's now the default; `--old-ride-height` restores the old box.
+
+**Check.** `ContactChecks` now requires every body's box within 2 cm of its tyres.
+
+## 18. Driving controls: manual on R2/L2 with Cross/Square, and remapping (Richard's request)
+
+**What changed.**
+- Manual gears now drive like automatic: R2/L2 (RT/LT, W/S) for throttle and brake. Cross/A shifts up and Square/X shifts down (Left Shift / Left Ctrl on the keyboard). The right-stick throttle is gone.
+- Near someone to talk to, Cross/A talks instead of shifting.
+- `Controls` holds one controller button and one key per driving action: accelerate, brake, shift up, shift down, look behind, recover, horn. They are saved like the other settings.
+
+**Remapping.** Options gets a CONTROLS tab.
+- Confirm a row, then press the new button or key. Backspace restores the default; Esc cancels.
+- Binding something already in use swaps the two actions, so nothing is left unbound.
+- Reset all controls restores the defaults.
+
+**Where it shows.**
+- The pause hub's CONTROLS page lists the live bindings.
+- The on-screen hints (look behind, recover, drive) name them.
+
+**Check.** `OptionsChecks` covers the defaults, the button names, the swap, reset, and that the tab lists every action.
+
+## 19. Parts shop: Road / Rally / Ice and class tabs (Richard's request)
+
+**What changed.**
+- **One class at a time.** The shop and fitting bay show one class's parts. L1/R1 (Q/E) step through the classes you've unlocked, shown as pills under the title. The shop starts on your newest class; the fitting bay starts on the fitted part's class.
+- **Categories moved.** They are a column of icon chips down the left edge (Richard: "a list that is up and down"), moved through with D-pad up/down ([ ] or the arrows on the keyboard). The current chip is gold and steps out, and its name heads the stand. Left/right browse the parts as before.
+- **Road / Rally / Ice.** Pills at the top choose the discipline. Parts carry a `discipline` field (empty means road). There are no rally or ice parts yet, so those pills read "SOON" and say so when chosen, instead of opening an empty shop.
+
+**Check.** The scripted shop review (`run-parts-review`) covers the new controls: categories on the D-pad and brackets, the class step, and Rally saying "coming soon". It passes all 36 checks.
+
+[Capture](../review/ui-screens/shop-list-2/parts/01-shop.png).
+
+## 20. Gadgets: the building blocks for jet packs and wings (Richard's request)
+
+Gadgets are a small system alongside the seven performance parts, so saves, stats and the race preview are untouched.
+- **The `Gadget` contract.** A gadget is fitted to a car, stepped with its physics given the button's held and pressed state, and shows a 0–1 charge for the HUD. A registry maps ids to behaviours. `Resources/Data/gadgets.json` is the catalogue for sale, with id, name, hint, class, discipline and price.
+- **One gadget per save.** It's stored in `AdventureProgress.gadget`; older saves read as none, and validation refuses unknown ones.
+- **A remappable button:** R1 / RB / G, under Options > CONTROLS.
+- **The player's car runs its gadget** every physics step.
+- **The test gadget.** `hop` (`--gadget hop`, not on sale) gives a short upward push, then a 3 s recharge, as the seed of a jet pack.
+
+**Adding a jet pack** takes three things: a `Gadget` subclass, a registry line, and a catalogue row. A HUD charge meter and a shop page come with the first real gadget.
+
+**Check.** `GadgetChecks` covers the catalogue and behaviours, the save field, the default button, and the hop's fire, empty, no-refire and recharge.
+
+## 21. Parts are discoveries (Richard's design)
+
+"When parts are discovered at a new location... those parts should be then available for purchase at every parts shop, and available for fitting at every garage... but you have to visit the specific part shop first." This also allows gatekeeping "like x amount of wins in the said tier".
+
+**How it works** (`PartDiscovery`):
+- **Home shop.** A part with a home shop (`shop`, for example Hillcrest's eight valley parts) is **found** the first time you open that shop's parts counter. From then on every parts shop sells it. The shop says "New parts found here: …. Every parts shop stocks them now."
+- **Fitting.** The fitting bay fits everything you own, at every garage. It used to hide Hillcrest parts in Bayview.
+- **Unlock conditions** (`unlock` on a part):
+  - `wins:5`
+  - `podiums:B:3`
+  - `class:A`
+
+  Until a condition is met, the part shows at its home shop as LOCKED, with the condition in words ("Unlocks with: 3 podiums at class B races"). It's found on the next visit after that.
+- **Class gating** (your open class and below) still applies on top.
+- **Saves:** `AdventureProgress.partsFound` holds what's been found; parts you already own count as found.
+
+**For new regions** (doc 57 §2.6):
+- Each region's 2–3 local parts get its parts shop as their home.
+- Gatekept parts get an `unlock`.
+
+**Check.** `PartDiscoveryChecks` covers:
+- a new game doesn't see Hillcrest parts in Bayview, though Hillcrest's counter does;
+- the visit finds them once, and then Bayview sells them;
+- the conditions read plainly and hold parts back until met.
+
+The shop review and the smoke test (which buys and fits parts) pass.
+
 ## Release
 
 Each batch was built, smoke-tested, sound-checked and published to the play copy.
-- **Build:** 2813 editor checks.
+- **Build:** 2832 editor checks (later batches).
 - **Smoke tests:** smoke28 (houses and contacts), smoke29 (gate and paint), smoke30 (High-comp voice) smoke31 (Bayview roofs) smoke32 (painted side windows), smoke33 (junction shoulders) and smoke34 (bunting, silent runs). Each passed: both 24-car races finished and the save reloads.
 - **Sound smokes** (`review/sound/smoke28`–`34`): about −12.5 dB with peaks of 0.79–0.81 and no exceptions.
+- **One start-up crash:** a native crash inside the Unity player (before any game code) happened once in a sound smoke (`smoke40`). Two re-runs were clean. It's noted in case it recurs.
 - **Night views** of the new houses, roofs and gate look right ([Hillcrest](../review/map-sweep/night-1/hillcrest.png), [Bayview](../review/map-sweep/night-1/bayview.png)).

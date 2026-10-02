@@ -15,6 +15,8 @@ namespace LittleRoad
         public readonly List<RoadCar> cars=new();
         public float elapsed=-3;
         public bool running,freeRoam;
+        // The race in progress (not free roam), for settings applied live (race pacing, shadows, blur).
+        public static bool Racing=>current!=null&&!current.freeRoam&&current.isActiveAndEnabled;static RaceTrial current;
         public bool PlayerRecoveryPending {get;private set;}
         public bool DraftingEnabled {get;private set;}
         public RaceWorldSnapshot DriverSnapshot {get;private set;}
@@ -74,6 +76,7 @@ namespace LittleRoad
         void Awake()=>SceneStart=Time.realtimeSinceStartup;
         IEnumerator Start()
         {
+            current=this;Controls.InteractionReady=false;
             if(Has("--performance-trial")){enabled=false;gameObject.AddComponent<PerformanceTrial>();yield break;}
             if(Has("--trial-gallery")){gameObject.AddComponent<CarGallery>();yield break;}
             career=AdventureSession.Racing;
@@ -183,6 +186,7 @@ namespace LittleRoad
             if(bayviewStudy&&captureFolder==null&&reportPath!=null)RaceGrid.Capture(this,Path.GetDirectoryName(Path.GetFullPath(reportPath)));
             if((Arg("--traffic-case")=="standing-solo"||Arg("--traffic-case")=="class-sort")&&captureFolder==null&&reportPath!=null)RaceGrid.Capture(this,Path.GetDirectoryName(Path.GetFullPath(reportPath)));
             if(Has("--vertical-audit"))gameObject.AddComponent<VerticalMotionAudit>().Setup(this);
+            if(career)CarContact.SeatAll(); // the world's standing cars on their wheels (docs/57, 2.5); race cars aren't standing
             Debug.Log("LITTLE_ROAD_UNITY_READY cars="+cars.Count+" width="+Circuit.Width+" length="+track.length+" "+LoadTime);LoadingScreen.Ready();
             if((career&&!Has("--no-race-hud"))||RaceHud.Requested){Hud=gameObject.AddComponent<RaceHud>();Hud.Setup(this);}
             if(!career&&(Has("--race-preview")||Has("--race-preview-review"))) {
@@ -192,7 +196,8 @@ namespace LittleRoad
             }
             if(Has("--evening-route-review"))gameObject.AddComponent<EveningRouteReview>();
             if(captureFolder!=null) {Directory.CreateDirectory(captureFolder);yield return new WaitForSeconds(2);yield return Capture("01-grid");
-                yield return new WaitForSeconds(15);yield return Capture("02-race");}
+                yield return new WaitForSeconds(15);yield return Capture("02-race");
+                if(career&&Has("--race-pause-review"))yield return ReviewPause();}
         }
         void FixedUpdate(){long start=System.Diagnostics.Stopwatch.GetTimestamp();FrameCost.Steps++;try{RaceStep();}finally{FrameCost.Race+=System.Diagnostics.Stopwatch.GetTimestamp()-start;}}
         void RaceStep(){if(running&&!freeRoam) {
@@ -208,20 +213,29 @@ namespace LittleRoad
         void Update()
         {
             if(!running||freeRoam||racePreview?.IsOpen==true||racePreview?.LastCloseFrame==Time.frameCount)return;
+            bool waiting=WaitingForReady;
+            // The in-race pause menu (Richard, 2 Oct: pause used to quit the race). Esc / Options pauses a career race;
+            // Esc / B (or Options again) resumes. Once you've finished, it goes back to town as before.
+            bool pausePressed=Keyboard.current?.escapeKey.wasPressedThisFrame==true||(career&&!waiting&&Gamepad.all.Any(g=>g.startButton.wasPressedThisFrame));
+            if(career&&!cars[0].finished&&!(careerUI.IsOpen&&!Paused)) {
+                if(Paused&&(OptionsScreen.IsOpen||OptionsScreen.LastCloseFrame==Time.frameCount))return;
+                if(Paused){if(pausePressed||Gamepad.all.Any(g=>g.buttonEast.wasPressedThisFrame))ResumeRace();return;}
+                if(pausePressed){OpenPause();return;}
+            }
             if(WaitingForReady)ConfirmManualStart(Keyboard.current?.enterKey.wasPressedThisFrame==true||Gamepad.current?.startButton.wasPressedThisFrame==true);
             DriverAudit?.EndFrame(elapsed);
             if(Has("--trial-human")&&cars[0].finished&&!reportWritten)WriteReport();
             if(technical!=null&&Keyboard.current?.cKey.wasPressedThisFrame==true)overview=!overview;
             if(elapsed>5)frameTimes.Add(Time.unscaledDeltaTime*1000);
-            if(!cars[0].finished&&(Keyboard.current?.rKey.wasPressedThisFrame==true || Gamepad.current?.dpad.down.wasPressedThisFrame==true))PlayerRecoveryPending=true;
+            if(!cars[0].finished&&Controls.Pressed(Controls.Act.Recover))PlayerRecoveryPending=true;
             if(PlayerRecoveryPending&&cars[0].TryRecover())PlayerRecoveryPending=false;
             if(!career&&(Keyboard.current?.tabKey.wasPressedThisFrame==true || Gamepad.current?.selectButton.wasPressedThisFrame==true))cars[0].autonomous=!cars[0].autonomous;
-            if(Keyboard.current?.escapeKey.wasPressedThisFrame==true || (career&&Gamepad.current?.startButton.wasPressedThisFrame==true)) {if(career){AdventureSession.Notice=cars[0].finished?"Back in Bayview. Your result and reward are saved.":"Race retired · no payout. Your equipment is unchanged.";AdventureSession.ReturnToTown();}else{WriteReport();Application.Quit();}}
+            if(pausePressed) {if(career){AdventureSession.Notice=cars[0].finished?"Back in Bayview. Your result and reward are saved.":"Race retired · no payout. Your equipment is unchanged.";AdventureSession.ReturnToTown();}else{WriteReport();Application.Quit();}}
             if(career) {
                 careerUI.SetHudVisible(Hud==null&&!careerUI.IsOpen);
                 // Only while it shows (the race HUD normally replaces it): rebuilding it every frame cost time.
                 if(Hud==null){int place=LivePlace(cars[0]);
-                careerUI.HUD($"BAYVIEW COAST / CLASS C   ·   {place}/{cars.Count}   ·   Lap {Mathf.Min(cars[0].laps+1,requiredLaps)}/3   ·   {Mathf.RoundToInt(Mathf.Abs(cars[0].speed)*2.237f)} mph\n{(elapsed<0?"START IN "+Mathf.CeilToInt(-elapsed):"Race time "+(cars[0].finished?cars[0].finishTime:elapsed).ToString("0.0")+"s")}   ·   {AdventureSession.Store.Data.credits} credits",
+                careerUI.HUD($"BAYVIEW COAST / CLASS C   ·   {place}/{cars.Count}   ·   Lap {Mathf.Min(cars[0].laps+1,requiredLaps)}/3   ·   {Units.Show(Mathf.Abs(cars[0].speed))}\n{(elapsed<0?"START IN "+Mathf.CeilToInt(-elapsed):"Race time "+(cars[0].finished?cars[0].finishTime:elapsed).ToString("0.0")+"s")}   ·   {AdventureSession.Store.Data.credits} credits",
                     PlayerRecoveryPending?"RECOVERY REQUESTED — waiting for a clear space on the road":cars[0].CheckpointMissed?cars[0].CheckpointMessage:InputGlyphs.Race);}
             }
             if(automation && !reportWritten && (elapsed>=duration || finishOrder.Count==cars.Count)) {
@@ -249,6 +263,76 @@ namespace LittleRoad
             else AdventureSession.ReturnToTown();
         }
         void LateUpdate(){if(chase!=null&&cars.Count>0)UpdateCamera(false);}
+        // ---- the in-race pause menu
+        // --race-pause-review (the adventure smoke): pause mid-race, view the field, back, resume; the race must hold still
+        // while paused and carry on afterwards.
+        IEnumerator ReviewPause()
+        {
+            // Cars on the road (docs/57, 2.5): every racing car's wheel gaps, measured mid-race at the pause.
+            float before=elapsed;OpenPause();yield return new WaitForSecondsRealtime(.6f);
+            Debug.Log("LITTLE_ROAD_RACE_CAR_CONTACT "+CarContact.Audit(out int raceCars).Replace("\n"," | "));
+            if(!Paused||Time.timeScale!=0)throw new Exception("Pause did not stop the race.");
+            careerUI.Capture(Path.Combine(captureFolder,"02c-pause.png"));
+            if(!careerUI.InvokeChoice("View the field"))throw new Exception("Pause menu has no View the field.");
+            yield return new WaitForSecondsRealtime(.8f);
+            if(racePreview==null||!racePreview.IsOpen||!racePreview.ViewOnly)throw new Exception("The field did not open view-only.");
+            racePreview.Capture(Path.Combine(captureFolder,"02d-field.png"));racePreview.Cancel();yield return new WaitForSecondsRealtime(.3f);
+            if(!Paused||!careerUI.IsOpen)throw new Exception("Back from the field did not return to the pause menu.");
+            if(!careerUI.InvokeChoice("Options"))throw new Exception("Pause menu has no Options.");
+            yield return new WaitForSecondsRealtime(.6f);
+            if(!OptionsScreen.IsOpen)throw new Exception("Options did not open from the race pause menu.");
+            OptionsScreen.Instance.Capture(Path.Combine(captureFolder,"02e-options-graphics.png"));
+            OptionsScreen.Instance.ShowTab(3);yield return new WaitForSecondsRealtime(.3f);OptionsScreen.Instance.Capture(Path.Combine(captureFolder,"02f-options-driving.png"));
+            OptionsScreen.Instance.Close();yield return new WaitForSecondsRealtime(.3f);
+            if(!Paused||!careerUI.IsOpen)throw new Exception("Closing Options did not return to the pause menu.");
+            if(Mathf.Abs(elapsed-before)>.001f)throw new Exception("The race moved while paused.");
+            if(!careerUI.InvokeChoice("Back to the race"))throw new Exception("Pause menu has no Back to the race.");
+            yield return new WaitForSecondsRealtime(.5f);
+            if(Paused||Time.timeScale<=0||elapsed<=before)throw new Exception("The race did not resume.");
+            Debug.Log("LITTLE_ROAD_RACE_PAUSE_REVIEW_PASSED held="+before.ToString("0.0")+" resumed="+elapsed.ToString("0.0"));
+        }
+        public bool Paused{get;private set;}
+        float pausedScale=1;
+        public void OpenPause()
+        {
+            if(!Paused){Paused=true;pausedScale=Time.timeScale;Time.timeScale=0;AudioListener.pause=true;}
+            careerUI.SetVisible(true);
+            int place=LivePlace(cars[0]);string where=(Roster?.Title??"Race").Replace("/","·");
+            string status=elapsed<0?"On the grid · the countdown is held":$"{Toy.Ordinal(place)} of {cars.Count}  ·  lap {Mathf.Min(cars[0].laps+1,requiredLaps)} of {requiredLaps}  ·  {AdventureUI.FinishTimeLabel(elapsed)}";
+            // The running order round you: the leader, the car ahead and the car behind.
+            if(elapsed>=0) {
+                var order=LiveStandings();int me=order.FindIndex(o=>o.player);
+                string Who(int i)=>i>=0&&i<order.Count?$"{Toy.Ordinal(order[i].place)}  {order[i].name}":null;
+                var lines=new List<string>();
+                if(me!=0)lines.Add("Leading:  "+Who(0));
+                if(me>1)lines.Add("Ahead of you:  "+Who(me-1));
+                if(me<order.Count-1)lines.Add("Behind you:  "+Who(me+1));
+                if(lines.Count>0)status+="\n\n"+string.Join("\n",lines);
+            }
+            var choices=new List<AdventureUI.Choice>{new("Back to the race",ResumeRace),new("Restart race",RestartRace)};
+            if(Roster!=null&&Roster.Entries.Count==24)choices.Add(new("View the field",ViewField));
+            choices.Add(new("Options",()=>{careerUI.Close();careerUI.SetVisible(false);OptionsScreen.Open(OpenPause);}));
+            choices.Add(new("Retire to town · no payout",RetireRace));
+            careerUI.Show("PAUSED / "+where,status,choices);
+            Debug.Log("LITTLE_ROAD_RACE_PAUSED elapsed="+elapsed.ToString("0.0"));
+        }
+        public void ResumeRace()
+        {
+            if(!Paused)return;
+            careerUI.Close();Paused=false;Time.timeScale=pausedScale;AudioListener.pause=false;
+        }
+        void RestartRace(){AudioListener.pause=false;Paused=false;AdventureSession.RestartRace();}
+        void RetireRace()
+        {
+            AudioListener.pause=false;Paused=false;
+            AdventureSession.Notice="Race retired · no payout. Your equipment is unchanged.";AdventureSession.ReturnToTown();
+        }
+        void ViewField()
+        {
+            careerUI.Close();careerUI.SetVisible(false);
+            if(racePreview==null)racePreview=gameObject.AddComponent<RacePreviewUI>();
+            racePreview.Open(Roster,OpenPause,OpenPause,viewOnly:true);
+        }
         void ConfirmManualStart(bool requested)
         {
             if(manualStart?.TryStart(Application.isFocused,requested)!=true)return;
@@ -419,7 +503,7 @@ namespace LittleRoad
             GUI.color=new Color(.07f,.16f,.19f,.9f);GUI.DrawTexture(new Rect(20,20,480,148),Texture2D.whiteTexture);GUI.color=Color.white;
             GUI.Label(new Rect(36,29,450,38),"LITTLE ROAD / "+(Roster?.Title??"COASTAL CIRCUIT"),title);
             int place=LivePlace(cars[0]);
-            GUI.Label(new Rect(36,69,450,30),$"{Mathf.RoundToInt(Mathf.Abs(cars[0].speed)*2.237f)} mph     {place}/{cars.Count}     Lap {Mathf.Min(cars[0].laps+1,requiredLaps)}/{requiredLaps}",label);
+            GUI.Label(new Rect(36,69,450,30),$"{Units.Show(Mathf.Abs(cars[0].speed))}     {place}/{cars.Count}     Lap {Mathf.Min(cars[0].laps+1,requiredLaps)}/{requiredLaps}",label);
             GUI.Label(new Rect(36,103,450,24),$"{setup.ToUpperInvariant()}  ·  {(cars[0].autonomous?"AI driving":"You are driving")}  ·  {Mathf.Max(0,elapsed):0.0}s",small);
             // Lap times (the max build hot laps, docs/54: how fast is the fastest car?).
             string Lap(float t)=>t>0&&t<float.MaxValue?$"{(int)(t/60)}:{t%60:00.00}":"--";

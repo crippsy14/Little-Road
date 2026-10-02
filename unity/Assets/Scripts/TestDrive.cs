@@ -41,7 +41,7 @@ namespace LittleRoad
             float path=track.Nearest(car.body.position,out _);float step=Mathf.Repeat(path-lastPath+track.length*.5f,track.length)-track.length*.5f;
             if(Mathf.Abs(step)<30)progress+=step;lastPath=path;
             top=Mathf.Max(top,speed);if(to60<0&&speed>=26.82f)to60=time;
-            readout.text=$"{Clock(time)}   ·   {speed*2.237f:0} mph   ·   top {top*2.237f:0} mph   ·   {Mathf.Clamp01(progress/track.length)*100:0}%   ·   Esc: back to tuning";
+            readout.text=$"{Clock(time)}   ·   {Units.Show(speed)}   ·   top {Units.Show(top)}   ·   {Mathf.Clamp01(progress/track.length)*100:0}%   ·   Esc: back to tuning";
             if(started&&progress>=track.length)Finish($"Test drive: lap {Clock(time)}  ·  top {top*3.6f:0} km/h  ·  0-60 {(to60>0?to60.ToString("0.0")+" s":"—")}");
         }
         static string Clock(float t)=>$"{Mathf.FloorToInt(t/60)}:{t%60:00.0}";

@@ -23,13 +23,41 @@ namespace LittleRoad
         public static readonly Option FieldOfView=new("fov","Field of view",0,"Normal","Wide");
         public static readonly Option Time=new("time2","Time of day",0,"Cycle","Morning","Afternoon","Golden hour","Dusk","Night");
         public static readonly Option[] All={Time,AntiAliasing,Grass,Shadows,FrameRate,FieldOfView};
+        // Comfort and interface (the Options screen; the genre survey in docs/57: XAG 117 asks for camera shake, motion
+        // blur and speed-effect toggles; units and a minimap toggle are standard).
+        public static readonly Option MotionBlur=new("blur","Motion blur",0,"On","Off");
+        public static readonly Option SpeedEffects=new("speedfx","Speed effects",0,"Full","Reduced","Off");
+        public static readonly Option Shake=new("shake","Camera shake",0,"Full","Reduced","Off");
+        public static readonly Option Minimap=new("minimap","Minimap",0,"On","Off");
+        public static readonly Option Prompts=new("prompts","Button prompts",0,"Automatic","Keyboard","PlayStation","Xbox");
+        static float Scale3(Option o)=>!Active?1:o.Index switch{1=>.5f,2=>0,_=>1};
+        public static float SpeedEffectScale=>Scale3(SpeedEffects);
+        public static float ShakeScale=>Scale3(Shake);
+        public static bool MinimapShown=>!Active||Minimap.Index==0;
+        // Every change from the Options screen goes through Step, so whoever is listening applies it live
+        // (free roam: grass; races: their pacing; everywhere: camera, shadows, blur, audio levels).
+        public static event Action<Option> Changed;
+        public static void Step(Option option,int direction)
+        {
+            int n=option.values.Length;option.Index=((option.Index+direction)%n+n)%n;
+            ApplyCommon(option);Changed?.Invoke(option);
+        }
+        static void ApplyCommon(Option o)
+        {
+            if(o==FrameRate){if(RaceTrial.Racing)ApplyRacePacing();else ApplyPacing();}
+            else if(o==Shadows)ApplyShadows(RaceTrial.Racing);
+            else if(o==AntiAliasing&&UnityEngine.Camera.main!=null)WorldLook.Camera(UnityEngine.Camera.main);
+            else if(o==Time)TimeOfDay.Apply();
+            else if(o==MotionBlur)WorldLook.RaceBlurSetting();
+            else if(Array.IndexOf(AudioOptions.All,o)>=0)AudioDirector.Apply();
+        }
         // Reviews, frame-cost studies and batch trials always measure the defaults.
         public static bool Active=>!Application.isBatchMode&&!RaceTrial.Has("--world-review");
         public static string AaMode=>!Active?"taa":AntiAliasing.Index switch{1=>"smaa",2=>"off",_=>"taa"};
         public static float GrassDensity=>!Active?1:Grass.Index switch{1=>.45f,2=>0,_=>1};
         public static float FovOffset=>Active&&FieldOfView.Index==1?8:0;
         public static float ShadowScale=>Active&&Shadows.Index==1?.6f:1;
-        public static void Cycle(Option option){option.Index=(option.Index+1)%option.values.Length;}
+        public static void Cycle(Option option)=>Step(option,1);
         // Presets set the detail options together (Low suits older laptops; Ultra is today's default look).
         public static readonly string[] Presets={"Low","Medium","High","Ultra"};
         public static string PresetName{get{
@@ -87,6 +115,25 @@ namespace LittleRoad
     public static class DrivingOptions
     {
         public static readonly GraphicsOptions.Option Gears=new("gears","Gears",0,"Automatic","Manual");
+        public static readonly GraphicsOptions.Option Vibration=new("rumble","Vibration",0,"Full","Reduced","Off");
+        public static float VibrationScale=>Vibration.Index switch{1=>.5f,2=>0,_=>1};
         public static bool Manual=>Gears.Index==1||RaceTrial.Has("--manual-gears");
+    }
+}
+
+namespace LittleRoad
+{
+    // Speed shown to the player in their chosen unit (Options > Driving). Speeds are m/s inside the game; speed-trap
+    // marks and records are kept in mph and shown converted.
+    public static class Units
+    {
+        public static readonly GraphicsOptions.Option Speed=new("units","Speed units",0,"mph","km/h");
+        public const float MphPerMps=2.2369363f,KmhPerMps=3.6f;
+        public static bool Metric=>Speed.Index==1;
+        public static string Label=>Metric?"km/h":"mph";
+        public static float FromMps(float mps)=>mps*(Metric?KmhPerMps:MphPerMps);
+        public static float FromMph(float mph)=>Metric?mph*1.609344f:mph;
+        public static string Show(float mps,string format="0")=>FromMps(mps).ToString(format)+" "+Label;
+        public static string ShowMph(float mph,string format="0")=>FromMph(mph).ToString(format)+" "+Label;
     }
 }

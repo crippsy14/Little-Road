@@ -23,7 +23,7 @@ namespace LittleRoad
         public static void Apply(Camera camera)
         {
             if(trauma<=0||camera==null)return;
-            trauma=Mathf.Max(0,trauma-Decay*Time.deltaTime);float s=trauma*trauma;seed+=Time.deltaTime*18;
+            trauma=Mathf.Max(0,trauma-Decay*Time.deltaTime);float s=trauma*trauma*GraphicsOptions.ShakeScale;seed+=Time.deltaTime*18;if(s<=0)return;
             float N(float o)=>Mathf.PerlinNoise(seed,o)*2-1;
             camera.transform.rotation*=Quaternion.Euler(N(1)*MaxAngle*s,N(2)*MaxAngle*s,N(3)*MaxAngle*s*.6f);
             camera.transform.position+=camera.transform.rotation*new Vector3(N(4),N(5),0)*MaxOffset*s;

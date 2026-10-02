@@ -416,6 +416,7 @@ namespace LittleRoad
             if(ValleyDetail){Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");Next(.93f,"Filling the sea");yield return null;}RegisterRoads();
             // Runtime static batching converts combined geometry to 16-bit
             // chunks. Keep the large grass mesh and displaced sea independent.
+            Physics.SyncTransforms();PlacementAudit.Settle();CarContact.SeatAll();Step("settle-planting");
             StaticBatchingUtility.Combine(root.gameObject);Step("static-batching");
             Sea();new CoastalGroundCover(this,track,root).Build();Step("sea-ground-cover");
             GroundCoverGeometryAudit.Record("after-batching",root);

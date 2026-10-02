@@ -7,7 +7,7 @@ namespace LittleRoad
     // containment test and an outline (world x/z) for the map; keepsakes belong to the region they lie in.
     public static class MapRegions
     {
-        public sealed class Region{public string id,name,blurb;public Color colour;public System.Func<float,float,bool> contains;public List<Vector2> outline=new();}
+        public sealed class Region{public string id,name,blurb,kind="country";public Color colour;public System.Func<float,float,bool> contains;public List<Vector2> outline=new();}
         static List<Region> all;
         public static IReadOnlyList<Region> All=>all??=Build();
         public static bool InTown(float x,float z)=>Vector2.Distance(new(x,z),HillcrestRoute.HillCentre)<232||(z<-872&&z>-962&&x>-104&&x<472);
@@ -15,11 +15,11 @@ namespace LittleRoad
         {
             var list=new List<Region>();
             // Bayview island, its halt and the causeway (everything north of the headland cliffs).
-            var bay=new Region{id="bayview",name="Bayview",blurb="Home island · harbour town",colour=Toy.Sky,contains=(x,z)=>z>-452};
+            var bay=new Region{id="bayview",kind="town",name="Bayview",blurb="Home island · harbour town",colour=Toy.Sky,contains=(x,z)=>z>-452};
             foreach(var p in new[]{new Vector2(-170,130),new Vector2(190,130),new Vector2(190,-452),new Vector2(-170,-452)})bay.outline.Add(p);
             // Hillcrest town: the hill, its spiral streets and the lower town along the quay (star-shaped from
             // the hill centre, so the outline is traced by rays).
-            var town=new Region{id="hillcrest",name="Hillcrest",blurb="Market town on the hill",colour=Toy.Orange,contains=InTown};
+            var town=new Region{id="hillcrest",kind="town",name="Hillcrest",blurb="Market town on the hill",colour=Toy.Orange,contains=InTown};
             var c=HillcrestRoute.HillCentre;
             for(int k=0;k<96;k++){float a=k*Mathf.PI*2/96;var d=new Vector2(Mathf.Sin(a),Mathf.Cos(a));float r=0;for(float s=0;s<520;s+=4)if(InTown(c.x+d.x*s,c.y+d.y*s))r=s;town.outline.Add(c+d*r);}
             // The valley: the rest of the mainland.

@@ -184,14 +184,15 @@ namespace LittleRoad
             Stripes(mainRoad.trimmed,main.width,0,0,holder,false);
             Causeway(main,north,holder);
             Tunnel(main,north,south);
-            Guardrails(main.line,main.width,holder,System.Array.FindIndex(main.line,p=>p.z<HillcrestRoute.PortalSouth.z-6));
+            Guardrails(main.line,main.width,holder,System.Array.FindIndex(main.line,p=>p.z<HillcrestRoute.PortalSouth.z-6),true);
             foreach(var r in net.roads) {
                 if(r==mainRoad)continue;
                 // Free ends (the road just stops) get their gravel ramps and leave 3 m of paint off; junction ends meet the surface.
                 Ribbon(r.name,r.trimmed,r.width,r.lift,holder,asphaltMainland,true,false,r.start==null,r.end==null);
                 Stripes(r.trimmed,r.width,r.start==null?3:0,r.end==null?(r==crestRoad?6:3):0,holder,r.noCentre);
             }
-            foreach(var (line,width) in new[]{(valleyRoad,valleyWidth),(stationRoad,stationWidth),(crest.line,crest.width)})Guardrails(line,width,holder,0);
+            foreach(var (line,width) in new[]{(valleyRoad,valleyWidth),(stationRoad,stationWidth)})Guardrails(line,width,holder,0,true);
+            Guardrails(crest.line,crest.width,holder,0); // (in town Via Crest has stone parapets instead: HillcrestTown.Parapets)
             foreach(var road in HillcrestRoute.All())RiverBridges(road,holder);
             // Drivable gravel shoulders where the road runs on the ground (not on the causeway, in the tunnel or over the river).
             var gravel=WorldLook.Kit("Road verge gravel",new Color(.58f,.54f,.46f),WorldLook.Pattern.Rock,0,.1f,true);
@@ -218,6 +219,8 @@ namespace LittleRoad
             // Both carry RoadSupport: race cars on an elevated circuit only drive on road-support geometry.
             var off=Ribbon("Raceway runoff",line,26,.012f,holder,runoff,true,true);Object.DestroyImmediate(off.GetComponent<RoadSurface>());off.AddComponent<RoadSupport>();
             Shoulders(line,13,.012f,0,true,holder,WorldLook.Kit("Raceway verge",new Color(.52f,.56f,.36f),WorldLook.Pattern.Rock,0,.08f,true),"Raceway shoulder");
+            // Armco along the run-off's outer edge where the ground falls away (the climb to the hairpins): track standards.
+            Guardrails(line,26,holder,0,true,HillcrestRoute.Circuit);
             Ribbon("Raceway asphalt",line,LittleRoad.Circuit.Width,.03f,holder,asphaltMainland,true,true).AddComponent<RoadSupport>();
             TrialWorld.RubberedLine(new LittleRoad.Circuit(line),holder,.045f);
             var white=TrialWorld.Material("Raceway paint",new Color(.97f,.97f,.92f),0,.3f);var coral=TrialWorld.Material("Raceway kerb red",new Color(.86f,.2f,.18f),0,.3f);
@@ -272,7 +275,15 @@ namespace LittleRoad
                 float u=k/4f;var p=Sheet(side*.5f,u,0,0)+across*side*(1.2f+u*1.4f);p.y=Mathf.Min(p.y-1.2f,ValleyField.Height(p.x,p.z)-.3f);
                 BayviewKit.Spawn(k%2==0?"rock_cluster":"rock_b",p,k*67+side*40,holder,solid:false,scale:2.4f+k*.35f);
             }
-            foreach(float s in new[]{-.36f,.05f,.4f})BayviewKit.Spawn("rock_a",Sheet(s,0,-.8f,0)+Vector3.down*.9f,s*300,holder,solid:false,scale:1.1f);
+            // Lip rocks break the water as it leaves the lip; each is stretched down to stand on the riverbed (the
+            // placement audit found them 1.6 m over it), keeping the top that shows above the water where it was.
+            foreach(float s in new[]{-.36f,.05f,.4f}) {
+                var rock=BayviewKit.Spawn("rock_a",Sheet(s,0,-.8f,0)+Vector3.down*.9f,s*300,holder,solid:false,scale:1.1f);
+                var rs=rock.GetComponentsInChildren<Renderer>();if(rs.Length==0)continue;var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);
+                float bed=ValleyField.Height(b.center.x,b.center.z)-.1f;if(bed>=b.min.y)continue;
+                float k=(b.max.y-bed)/b.size.y;var scale=rock.transform.localScale;scale.y*=k;rock.transform.localScale=scale;
+                rs=rock.GetComponentsInChildren<Renderer>();b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);rock.transform.position+=Vector3.down*(b.min.y-bed);
+            }
         }
         GameObject Ribbon(string name,Vector3[] line,float width,float lift,Transform parent,Material material,bool drivable,bool closed=false,bool rampStart=true,bool rampEnd=true)
         {
@@ -639,14 +650,30 @@ namespace LittleRoad
             }
         }
         // Red-and-white rails wherever the ground falls away beside a road.
-        void Guardrails(Vector3[] line,float width,Transform parent,int start)
+        // steep: also where the ground beyond falls steeply within 8 m (over 1.1 m in any 2 m, 0.4 m in all: the edge
+        // audit's "bank you can't drive back up", docs/57), not only a 1.8 m drop 3 m out.
+        static bool SteepDrop(Vector3 edge,Vector3 outward)
+        {
+            // From the road (or run-off) surface itself, so a drop right at its edge counts even where the land beyond is gentle.
+            float top=edge.y,worst=0,lowest=top;var hs=new float[17];
+            for(int k=0;k<hs.Length;k++){var p=edge+outward*(k*.5f);hs[k]=k==0?top:Mathf.Min(top,ValleyField.Height(p.x,p.z));lowest=Mathf.Min(lowest,hs[k]);}
+            for(int k=0;k+4<hs.Length;k++)worst=Mathf.Max(worst,hs[k]-hs[k+4]);
+            return worst>1.1f&&top-lowest>.4f;
+        }
+        void Guardrails(Vector3[] line,float width,Transform parent,int start,bool steep=false,Vector3[] own=null)
         {
             var white=TrialWorld.Material("Guardrail white",new Color(.97f,.97f,.95f),.2f,.4f);var red=TrialWorld.Material("Guardrail red",Toy.Red,.1f,.4f);
             for(int i=Mathf.Max(0,start);i<line.Length-1;i++) {
                 Vector3 a=line[i],b=line[i+1],f=b-a;float len=new Vector2(f.x,f.z).magnitude;var flat=new Vector3(f.x,0,f.z).normalized;var right=Vector3.Cross(Vector3.up,flat);
                 foreach(int side in new[]{-1,1}) {
                     Vector3 edge=(a+b)*.5f+right*side*(width*.5f+.55f),beyond=edge+right*side*3;
-                    if(ValleyField.Height(beyond.x,beyond.z)>edge.y-1.8f||RiverBelow(edge)||NearMouth(edge,2))continue;
+                    bool drop=ValleyField.Height(beyond.x,beyond.z)<=edge.y-1.8f||steep&&SteepDrop(edge,right*side);
+                    if(!drop||RiverBelow(edge)||NearMouth(edge,2))continue;
+                    // Another road here (a side road, a crossing): no rail across it. A stretch of the same chained road
+                    // sits as far from the edge as our own centreline, so only a road clearly nearer counts.
+                    if(steep){bool crossing=false;float ownDist=width*.5f+.55f;
+                        foreach(var road in HillcrestRoute.All()){if(road.line==line||road.line==own)continue;float d=HillcrestRoute.Distance(road.line,edge.x,edge.z,out _);if(d<Mathf.Min(road.width*.5f+2.5f,ownDist-1)){crossing=true;break;}}
+                        if(crossing)continue;}
                     var rail=Piece("Guardrail",edge+Vector3.up*.62f,new Vector3(.12f,.32f,len+.08f),i%2==0?white:red,true);rail.transform.rotation=Quaternion.LookRotation(f);
                     if(i%2==0)Piece("Guardrail post",a+right*side*(width*.5f+.55f)+Vector3.up*.35f,new Vector3(.16f,.7f,.16f),white,true);
                 }

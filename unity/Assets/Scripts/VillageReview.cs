@@ -179,6 +179,8 @@ namespace LittleRoad
                 Application.Quit(0);yield break;
             }
             if(RaceTrial.Has("--car-audit")){yield return new WaitForSeconds(1);File.WriteAllText(Path.Combine(folder,"car-audit.txt"),StationarySpot.Audit());Application.Quit(0);yield break;}
+            if(RaceTrial.Has("--area-audit")){yield return new WaitForSeconds(1);var text=AreaAudit.Run(GetComponent<AdventureGame>().ResidentDirectory(),world.track,out string json);
+                File.WriteAllText(Path.Combine(folder,"area-audit.txt"),text);File.WriteAllText(Path.Combine(folder,"area-audit.json"),json);Application.Quit(0);yield break;}
             if(RaceTrial.Has("--placement-audit")){File.WriteAllText(Path.Combine(folder,"placement-audit.txt"),PlacementAudit.Run());Application.Quit(0);yield break;}
             if(RaceTrial.Has("--zip-survey")){File.WriteAllText(Path.Combine(folder,"zip-survey.txt"),ZipLine.Survey());Application.Quit(0);yield break;}
             if(RaceTrial.Has("--valley-views"))yield return ValleyViews(world);else {

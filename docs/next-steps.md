@@ -2,6 +2,29 @@
 
 **Plan of record (29 September):** [doc 45](45-roadmap-and-feature-spec.md) sets the order of work, Phases 0–5; the parts ladder is in [doc 44](44-parts-tiers-and-progression.md). The campaign is at least 12 hours and open-ended. Next is **Phase 0**: world grid with per-tile map and fog, Racer records, radar chart, a traffic-aware launch, save and IDs, and track standards.
 
+**Update, 2 October, night: Richard's list, tied off** ([doc 56](56-wider-game-round.md) §13–20; [doc 57](57-new-area-standards.md)).
+- **In-race pause:** resume, restart, view the field, options and retire. The race truly pauses.
+- **Options screen:** six tabs. New settings: units, vibration, motion blur, speed effects, camera shake, minimap, button prompts, ambience. Opens from the title, the pause hub and the race pause.
+- **Controls:**
+  - manual gears on R2/L2 with Cross/Square shifts;
+  - driving controls remappable on pad and keyboard (Options > CONTROLS).
+- **Parts shop:** one class at a time (L1/R1), categories on the D-pad, Road / Rally / Ice pills (rally and ice coming soon).
+- **Parts are discoveries:** found at their home shop, then sold at every shop and fitted at every garage, with optional unlock conditions (wins, podiums in a class, class reached).
+- **Parts shop categories** are a vertical list on the left (D-pad up/down); L1/R1 change class.
+- **Gadgets:** the building blocks for jet packs and wings: contract, catalogue, save field, button, car hook, and a test hop.
+- **Standards doc** (doc 57), covering:
+  - the build process for a new area;
+  - measured standards with an area audit (`--area-audit`) that says PASS or FAIL per region;
+  - a genre checklist from research, with Little Road's status.
+- **Fixes the audit drove:**
+  - cars now ride on their wheels (the physics box hung 7–18 cm under the tyres; study 219 kept);
+  - standing cars are seated on their wheels;
+  - the Via Crest parapet, steep-drop guardrails and raceway armco;
+  - junction shoulders;
+  - the planting settle pass.
+- **Left:** 15 short unguarded drops (listed in doc 57).
+- **Genre gaps:** a wrong-way warning, a waypoint and route line, difficulty, a camera choice.
+
 **Update, 2 October, evening (Richard away): the wider game** ([doc 56](56-wider-game-round.md); a running log of this round).
 - **Swept contacts for every car (kept, study 215).**
   - All 144 cars finished, with no resets.

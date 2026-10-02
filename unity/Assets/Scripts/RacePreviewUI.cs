@@ -43,11 +43,15 @@ namespace LittleRoad
         public RaceRoster Roster=>roster;
         public string DisplayedParts=>string.Join("\n",partNames.Select(t=>t.text));
         public string DisplayedRating=>rating.text+" PP";
-        public void FocusStart()=>EventSystem.current.SetSelectedGameObject(start.gameObject);
+        public void FocusStart()=>EventSystem.current.SetSelectedGameObject((ViewOnly?back:start).gameObject);
         static readonly string[] SlotCodes={"EN","TU","TY","GB","BR","ST","CH"};
         static readonly Color[] SlotColours={Toy.Red,Toy.Orange,Toy.Navy,Toy.Blue,Toy.Pink,Toy.Mint,Toy.Sun};
 
-        public void Open(RaceRoster race,Action onStart,Action onBack)
+        // viewOnly: the in-race pause menu's "View the field" (Richard, 2 Oct): the same grid and cards, no START RACE, and
+        // Back returns to the pause menu.
+        public bool ViewOnly{get;private set;}
+        Text heading;
+        public void Open(RaceRoster race,Action onStart,Action onBack,bool viewOnly=false)
         {
             if(race.Entries.Count!=Rows)throw new ArgumentException("Race preview requires the full 24-car event.");
             stage?.Dispose();stage=null;
@@ -55,6 +59,7 @@ namespace LittleRoad
             maxSpeed=race.Entries.Max(e=>e.Tuning.AttainableSpeed);bestSprint=race.Entries.Min(e=>PartsBrowser.Sprint(e.Tuning));
             if(canvas==null)Build();
             Toy.UseMenuCamera(canvas);canvas.gameObject.SetActive(true);
+            ViewOnly=viewOnly;heading.text=viewOnly?"THE FIELD":"RACE DAY!";start.gameObject.SetActive(!viewOnly);
             RefreshTiles();selected=-1;SelectEntry(0);StartCoroutine(Focus());SetTour(false);
         }
         IEnumerator Focus(){yield return null;if(IsOpen)EventSystem.current.SetSelectedGameObject(rows[roster.Entries[selected].Slot].gameObject);}
@@ -69,7 +74,7 @@ namespace LittleRoad
             Toy.Sunburst(root,new Vector2(2600,2600),new Vector2(0,-120),Toy.Sky,Toy.SkyLight,32,3);
             Toy.Bunting(root,1920,505,18);Toy.Checker(root,1920,-525);
 
-            Toy.Title(root,"Heading","RACE DAY!",104,new Vector2(640,120),new Vector2(-600,398),Toy.White,TextAnchor.MiddleLeft,3);
+            heading=Toy.Title(root,"Heading","RACE DAY!",104,new Vector2(640,120),new Vector2(-600,398),Toy.White,TextAnchor.MiddleLeft,3);
             Toy.Title(root,"Venue","Bayview Coast Cup",50,new Vector2(640,64),new Vector2(-600,308),Toy.Sun,TextAnchor.MiddleLeft,3);
             var badges=Toy.Rect(root,"Race badges",new Vector2(320,130),new Vector2(-250,372));badges.localRotation=Quaternion.Euler(0,0,3);
             Toy.Pill(badges,"Class","CLASS C",22,new Vector2(150,50),new Vector2(-80,30),Toy.Red,Toy.White);
@@ -185,7 +190,7 @@ namespace LittleRoad
             radarCard.Hide();
             float speed=e.Tuning.AttainableSpeed,sprint=PartsBrowser.Sprint(e.Tuning);
             int rank=1+roster.Entries.Count(o=>o.Rating>e.Rating);
-            speedValue.text=$"{speed*2.237f:0.0} mph";SetBar(speedBar,speed/Mathf.Max(.01f,maxSpeed));
+            speedValue.text=Units.Show(speed,"0.0");SetBar(speedBar,speed/Mathf.Max(.01f,maxSpeed));
             accelValue.text=$"{sprint:0.00} s";SetBar(accelBar,bestSprint/Mathf.Max(.01f,sprint));
             rankValue.text=Toy.Ordinal(rank)+" of "+Rows;SetBar(rankBar,1-(rank-1)/(float)Rows);
             bodyLabel.text=CarBodies.Name(e.Body)+"  ·  "+e.EquipmentLabel;

@@ -100,8 +100,10 @@ namespace LittleRoad
 }
             RenderTexture mapTexture=null;
             if(!Application.isBatchMode&&!RaceTrial.Has("--no-minimap")){mapTexture=WorldMap.Bake();minimap=gameObject.AddComponent<Minimap>();minimap.Setup(player,mapTexture,MapMarks,()=>WorldMap.Labels(ResidentDirectory(),world.track));}
+            GraphicsOptions.Changed+=OnOptionChanged;
             pause=gameObject.AddComponent<PauseMenu>();pause.Setup(new PauseMenu.Context{save=()=>Store.Data,area=()=>AreaBanner.Area(player.transform.position),objective=()=>GoalText(false),car=player.transform,
                 minimap=minimap,marks=MapMarks,map=mapTexture,settings=SettingsItems,quit=Application.Quit,car_=CarSummary});
+            CarContact.SeatAll(); // every standing car onto its four wheels (docs/57, 2.5)
             Debug.Log("LITTLE_ROAD_ADVENTURE_READY save="+Store.path+" quest="+Store.Data.questStage+" credits="+Store.Data.credits+" "+RaceTrial.LoadTime);LoadingScreen.Ready();
             if(RaceTrial.Has("--geometry-audit-only")){Application.Quit();yield break;}
             if(RaceTrial.Has("--minimap-review")){reviewing=true;yield return MinimapReview();yield break;}
@@ -349,10 +351,12 @@ namespace LittleRoad
                 if(Vector3.Distance(player.body.position,zip.top.bay)<6)nearZip=zip.top;else if(Vector3.Distance(player.body.position,zip.bottom.bay)<6)nearZip=zip.bottom;
                 if(nearZip!=null){nearFolk=null;nearChat=null;}
             }
+            // Cross / A (and E) talks while someone (or the zipline) is in reach; then it doesn't also shift up (Controls).
+            Controls.InteractionReady=Time.unscaledTime>interactionReadyTime&&(nearest!=null||nearZip!=null||nearFolk!=null||nearChat!=null);
             if(Time.unscaledTime>interactionReadyTime&&(k?.eKey.wasPressedThisFrame==true||pad?.buttonSouth.wasPressedThisFrame==true)){if(nearest!=null)Interact(nearest);else if(nearZip!=null)StartCoroutine(RideZip(nearZip==zip.top));else if(nearFolk!=null)TalkFolk(nearFolk);else if(nearChat!=null)TalkChatter(nearChat);}
-            if(k?.rKey.wasPressedThisFrame==true||pad?.dpad.down.wasPressedThisFrame==true)player.TryRecover();
+            if(Controls.Pressed(Controls.Act.Recover))player.TryRecover();
             // The horn (H / L3, docs/51): folk nearby answer, some traffic beeps back, the train whistles.
-            bool honk=k?.hKey.isPressed==true||pad?.leftStickButton.isPressed==true;playerHorn?.Hold(honk&&!player.controlsBlocked);
+            bool honk=Controls.Held(Controls.Act.Horn);playerHorn?.Hold(honk&&!player.controlsBlocked);
             if(honk&&!honking&&!player.controlsBlocked)HornHeard();honking=honk;
             // Photo mode (P / D-pad Up, docs/51).
             if(!player.controlsBlocked&&(k?.pKey.wasPressedThisFrame==true||pad?.dpad.up.wasPressedThisFrame==true)){photo.Open();return;}
@@ -416,19 +420,12 @@ namespace LittleRoad
             float stopped=stoppedSince<0?0:now-stoppedSince;
             ui.Roam(GoalText(true),climbStart>=0||now<goalUntil||stopped>1.5f,null,false,player);
         }
-        // Pause hub > Settings: each row cycles its option and applies it straight away.
-        List<(string label,Action act)> SettingsItems()
-        {
-            var items=new List<(string,Action)>{
-                ("Gears · "+DrivingOptions.Gears.Value,()=>GraphicsOptions.Cycle(DrivingOptions.Gears)),
-                ("Engine sound test",()=>EngineBench.Show(Store.Data.Loadout().TryGetValue("engine",out var e)?e:null)),
-                ("Quality preset · "+GraphicsOptions.PresetName,()=>{GraphicsOptions.NextPreset();ApplyGraphics(GraphicsOptions.AntiAliasing);ApplyGraphics(GraphicsOptions.Shadows);ApplyGraphics(GraphicsOptions.Grass);}),
-                ("Resolution · "+GraphicsOptions.ResolutionName,GraphicsOptions.NextResolution),
-                ("Display · "+GraphicsOptions.ModeName,GraphicsOptions.NextMode)};
-            foreach(var option in AudioOptions.All){var o=option;items.Add((o.label+" · "+o.Value,()=>{GraphicsOptions.Cycle(o);AudioDirector.Apply();}));}
-            foreach(var option in GraphicsOptions.All){var o=option;items.Add((o.label+" · "+o.Value,()=>{GraphicsOptions.Cycle(o);ApplyGraphics(o);}));}
-            return items;
-        }
+        // Pause hub > Settings: the Options screen (every setting, in tabs), then Save and Quit (added by the hub).
+        List<(string label,Action act)> SettingsItems()=>new(){
+            ("Options",()=>OptionsScreen.Open(()=>pause.ShowTab(PauseMenu.SettingsTab),Store.Data.Loadout().TryGetValue("engine",out var e)?e:null))};
+        // Options applied live in free roam (the rest apply themselves in GraphicsOptions.Step).
+        void OnOptionChanged(GraphicsOptions.Option o){if(o==GraphicsOptions.Grass)ApplyGraphics(o);}
+        void OnDestroy(){GraphicsOptions.Changed-=OnOptionChanged;}
         // Pause hub > Car: the car as fitted.
         (string,Color,string,List<string>,int,string) CarSummary()
         {
@@ -539,7 +536,7 @@ namespace LittleRoad
             // Leaving the pause hub always hands the car back (Update may already have run this frame, so
             // it can't be left to Update: that race left the car blocked after closing the hub).
             if(paused!=wasPaused){wasPaused=paused;ui.SetHudVisible(!paused);if(!paused&&player!=null)player.controlsBlocked=riding||ui.IsOpen||(minimap!=null&&minimap.FullOpen);}
-            minimap?.SetShown(!reviewing&&!paused&&photo?.Active!=true&&!ui.IsOpen&&!browser.IsOpen&&!tuning.IsOpen&&!racePreview.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen);
+            minimap?.SetShown(GraphicsOptions.MinimapShown&&!reviewing&&!paused&&photo?.Active!=true&&!ui.IsOpen&&!browser.IsOpen&&!tuning.IsOpen&&!racePreview.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen);
             if(!reviewing&&player!=null&&cameraView!=null&&photo?.Active!=true)CameraPose(false);
             // The finish beacon (Richard, 1 Oct: you had to guess where the finish was).
             // (The castle's: 6 m from the court's centre towards the gate, on open paving clear of the donjon, its 10 m ring

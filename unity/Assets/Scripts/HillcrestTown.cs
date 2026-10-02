@@ -96,7 +96,7 @@ namespace LittleRoad
                 string id=roll<.62?new[]{"terrace_a","terrace_a","terrace_b","terrace_b","terrace_c","terrace_d","terrace_d","terrace_e","terrace_f","terrace_g"}[rng.Next(10)]:
                     roll<.72?"house_c":roll<.82?"house_d":roll<.91?"house_b":"house_a";
                 float w=Footprint(id).x;float mid=s+w*.5f;if(mid+w*.5f>to)break;
-                if(rng.NextDouble()<gapChance){Greenery(road,side,s+3,setback);s+=7;continue;}
+                if(rng.NextDouble()<gapChance){Greenery(road,side,s+3,setback);GardenGaps.Add((road,side,s,s+7));s+=7;continue;}
                 Vector3 at=road.At(mid),right=road.Right(mid);var centre=at+right*side*(setback+Footprint(id).y*.5f-4);centre.y=at.y+.02f;
                 if(Vector2.Distance(new(centre.x,centre.z),new(Square.x,Square.z))<44||Vector2.Distance(new(centre.x,centre.z),HillcrestRoute.HillCentre)<50){s+=3;continue;}
                 // Keep the Pit Stop plot and forecourt clear, and the zipline landing and its lane.
@@ -433,6 +433,47 @@ namespace LittleRoad
             Row(crest,1,14,crest.Length-60);Row(crest,-1,14,crest.Length-60,12.2f,.22f);
             Pavements(crest,4,crest.Length-50);Lamps(crest,10,crest.Length-40,26);
             for(float s=60;s<crest.Length-60;s+=90)StreetBunting(crest,s);
+            Parapets(crest,14,crest.Length-30);
+        }
+        // A low stone parapet along the downhill side of a hill street, where the ground beyond the pavement falls away
+        // and nothing else stands (the edge audit found 128 open drops along Via Crest's outer side, 2 Oct). Gaps are
+        // left for house yards, side roads, the market square and the castle approach's gate.
+        // Garden gaps between houses (Row): on a hillside's downhill side a low wall closes each (docs/57, 2.4).
+        readonly List<(HillcrestRoute.Road road,int side,float from,float to)> GardenGaps=new();
+        void Parapets(HillcrestRoute.Road road,float from,float to)
+        {
+            var stone=WorldLook.Kit("Hillcrest parapet",Toy.Hex(0xc2b08e),WorldLook.Pattern.Stone,0,.12f,true);
+            var cap=TrialWorld.Material("Parapet cap",Toy.Hex(0xefe6d2),0,.25f);
+            float off=road.width*.5f+2.45f;int pieces=0;const float step=2;
+            bool Open(float s,int side,bool gap=false)
+            {
+                Vector3 at=road.At(s),r=road.Right(s)*side,wall=at+r*off;
+                float lowest=float.MaxValue;for(float d=1;d<=8;d+=1){var b=at+r*(off+d);lowest=Mathf.Min(lowest,H(b.x,b.z));}
+                if(lowest>at.y-1.2f)return false;
+                foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,wall.x,wall.z,out _)<other.width*.5f+5)return false;
+                if(Vector2.Distance(new(wall.x,wall.z),new(Square.x,Square.z))<46)return false;
+                if(gap)return true; // a garden gap between houses is clear by construction
+                foreach(var h in Homes)if(Vector2.Distance(new(h.yard.x,h.yard.z),new(wall.x,wall.z))<3.2f)return false; // a gate-wide gap at each front yard
+                var probe=new Bounds(wall+Vector3.up*1.2f,new Vector3(1.5f,2,1.5f));if(BayviewKit.Occupied(probe))return false;
+                return true;
+            }
+            // Open stretches, plus the garden gaps between houses on this street (their yards are clear by construction).
+            var spans=new List<(int side,float a,float b,bool gap)>();
+            foreach(var g in GardenGaps)if(g.road==road)spans.Add((g.side,g.from+.5f,g.to-.5f,true));
+            spans.Add((-1,from,to,false));spans.Add((1,from,to,false));
+            var done=new HashSet<(int,int)>();
+            foreach(var (side,a0,b0,gap) in spans)for(float s=a0;s<b0;s+=step) {
+                if(done.Contains((side,Mathf.RoundToInt(s/step))))continue;
+                if(!Open(s,side,gap)||!Open(Mathf.Min(s+step,b0),side,gap))continue;
+                done.Add((side,Mathf.RoundToInt(s/step)));
+                float s2=Mathf.Min(s+step,b0);
+                Vector3 a=road.At(s)+road.Right(s)*side*off,b=road.At(s2)+road.Right(s2)*side*off;
+                float top=Mathf.Max(road.At(s).y,road.At(s2).y)+.75f,bottom=Mathf.Min(H(a.x,a.z),H(b.x,b.z),road.At(s).y)-.4f;
+                var mid=(a+b)*.5f;var f=b-a;f.y=0;var rot=Quaternion.LookRotation(f);float len=f.magnitude+.06f;
+                Box("Parapet",new Vector3(mid.x,(top+bottom)*.5f,mid.z),new Vector3(.34f,top-bottom,len),rot,stone,true);
+                Box("Parapet cap",new Vector3(mid.x,top+.06f,mid.z),new Vector3(.46f,.12f,len+.02f),rot,cap,false);pieces++;
+            }
+            Debug.Log($"LITTLE_ROAD_PARAPETS {road.name} pieces={pieces}");
         }
         // ---------------------------------------------------------------- viewpoints
         void Vista()

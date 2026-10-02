@@ -165,9 +165,9 @@ namespace LittleRoad
             var saves=store();var before=Record(saves.Data,trap.id);float previous=before?.best??0;int stars=Stars(trap,mph),had=before?.stars??0;
             int paid=0;try{paid=saves.RecordTrap(trap.id,mph,stars,Prizes);}catch(Exception e){Debug.LogException(e);}
             string starText=stars==0?"No stars yet":stars==1?"1 star":$"{stars} stars";
-            string detail=stars<3?$"{starText}  ·  next star at {trap.marks[stars]} mph":$"{starText}  ·  top marks!";
-            if(paid>0)detail+=$"  ·  +{paid} credits";else if(mph>previous+.05f&&previous>0)detail+=$"  ·  new best (was {previous:0})";else if(previous>0)detail+=$"  ·  best {previous:0}";
-            card?.Invoke($"{trap.name.ToUpperInvariant()}  {mph:0} MPH",detail);
+            string detail=stars<3?$"{starText}  ·  next star at {Units.ShowMph(trap.marks[stars])}":$"{starText}  ·  top marks!";
+            if(paid>0)detail+=$"  ·  +{paid} credits";else if(mph>previous+.05f&&previous>0)detail+=$"  ·  new best (was {Units.FromMph(previous):0})";else if(previous>0)detail+=$"  ·  best {Units.FromMph(previous):0}";
+            card?.Invoke($"{trap.name.ToUpperInvariant()}  {Units.ShowMph(mph).ToUpperInvariant()}",detail);
             // The flash and the shutter: two quick high beeps.
             if(trap.camera!=null){var l=new GameObject("Trap flash").AddComponent<Light>();l.type=LightType.Point;l.range=14;l.intensity=6;l.color=new Color(1,.97f,.9f);l.transform.position=trap.camera.position;flashes.Add((l,Time.time+.12f));}
             AudioDirector.Beep(1568,.05f);AudioDirector.Beep(2093,.09f);

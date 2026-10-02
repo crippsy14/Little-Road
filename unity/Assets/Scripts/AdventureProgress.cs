@@ -42,6 +42,10 @@ namespace LittleRoad
     [Serializable] public sealed class AdventureProgress
     {
         public int version,credits,questStage,paintIndex,raceSerial,settledSerial,bestPlace,raceWins;
+        // The fitted gadget (Gadgets), empty for none; older saves read as none.
+        public string gadget;
+        // Parts found at their home shops (PartDiscovery): sold everywhere from then on.
+        public List<string> partsFound;
         public string bodyId;
         public List<string> owned,collected;
         // Bodies bought at Pit Stop body shops (bodyId is the one being driven). Older saves: see AdventureStore.
@@ -68,6 +72,8 @@ namespace LittleRoad
                 raceSerial<0||settledSerial<0||settledSerial>raceSerial||raceWins<0||raceWins>settledSerial||bestPlace<0||bestPlace>24)
                 throw new InvalidDataException("Save version or progression values are invalid.");
             if(!CarBodies.Ownable(bodyId))throw new InvalidDataException("Unknown body.");
+            if(!Gadgets.Known(gadget))throw new InvalidDataException("Unknown gadget.");
+            if(partsFound!=null&&(partsFound.Distinct().Count()!=partsFound.Count||partsFound.Any(id=>!EquipmentCatalog.Has(id))))throw new InvalidDataException("A found part is unknown or repeated.");
             if(bodies==null||bodies.Distinct().Count()!=bodies.Count||!bodies.Contains(bodyId)||bodies.Any(b=>!CarBodies.Ownable(b)))throw new InvalidDataException("Owned bodies are missing, duplicated or unknown.");
             if(bodies.Contains(CarBodies.Prototype)&&collected?.Contains(Collectibles.DukeBeaten)!=true)throw new InvalidDataException("The Regale is only won from the Duke.");
             if(owned==null||collected==null||fitted==null||owned.Distinct().Count()!=owned.Count||collected.Distinct().Count()!=collected.Count)
@@ -231,6 +237,13 @@ namespace LittleRoad
             if(Racing&&Store.Data.settledSerial<RaceSerial)return;
             if(roster==null||!roster.MatchesPlayer(Store.Data))throw new InvalidOperationException("Race entry changed; reopen the preview.");
             RaceSerial=Store.BeginRace();EnteredRoster=roster;Racing=true;Time.timeScale=1;LoadingScreen.Load(SceneManager.GetActiveScene().buildIndex,roster.Title);
+        }
+        // The pause menu's Restart race: the running entry is left unsettled (as retiring does) and the same event
+        // is entered again from the grid.
+        public static void RestartRace()
+        {
+            var roster=EnteredRoster;if(roster==null){ReturnToTown();return;}
+            Racing=false;StartRace(roster);
         }
         public static void ReturnToTown()
         {

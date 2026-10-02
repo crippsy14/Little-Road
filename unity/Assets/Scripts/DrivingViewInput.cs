@@ -4,6 +4,6 @@ namespace LittleRoad
 {
     public static class DrivingViewInput
     {
-        public static bool LookingBehind=>Keyboard.current?.qKey.isPressed==true||Gamepad.current?.buttonNorth.isPressed==true;
+        public static bool LookingBehind=>Controls.Held(Controls.Act.LookBehind);
     }
 }

@@ -13,6 +13,12 @@ namespace LittleRoad
         {
             public string id,slot,name,hint,shop;
             public string tier; // race class (RaceCalendar): C, B, A, S or E; empty means C
+            // Discipline (Richard, 2 Oct): road, rally or ice; empty means road. Rally and ice parts are planned; the parts
+            // shop already filters by it (its Road / Rally / Ice pills show the others as coming soon).
+            public string discipline;
+            // An unlock condition (PartDiscovery): "wins:5", "podiums:B:3", "class:A"; empty for none.
+            public string unlock;
+            public string Discipline=>string.IsNullOrEmpty(discipline)?"road":discipline;
             public int price;
             public float power,torque,accel,power_limit,road,dirt,ceiling,pull,braking,response,yaw,mass;
             // Schema 2 (docs/47, tools/parts-ladder.py). Engine: real specs and a sound fingerprint.
@@ -54,6 +60,7 @@ namespace LittleRoad
                 throw new InvalidOperationException("Missing stock part for "+slot);
             data=candidate;byId=index;
         }
+        public static bool Has(string id)=>!string.IsNullOrEmpty(id)&&All.parts.Any(p=>p.id==id);
         public static Part Get(string id)
         {
             EnsureLoaded();if(id==null||!byId.TryGetValue(id,out var p))throw new ArgumentException("Unknown part ID: "+id);return p;

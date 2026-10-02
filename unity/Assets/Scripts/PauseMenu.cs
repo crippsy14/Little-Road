@@ -20,7 +20,7 @@ namespace LittleRoad
             public Func<List<(string label,Action act)>> settings;public Action quit;
             public Func<(string body,Color paint,string paintName,List<string> parts,int rating,string ladder)> car_;
         }
-        static readonly string[] Tabs={"MAP","COLLECTION","CAR","RECORDS","CONTROLS","SETTINGS"};const int Settings=5;
+        static readonly string[] Tabs={"MAP","COLLECTION","CAR","RECORDS","CONTROLS","SETTINGS"};const int Settings=5;public const int SettingsTab=Settings;
         Context ctx;Canvas canvas;RectTransform root,body;Text areaText,creditText,footer,objectiveText;readonly List<(ToyShape pill,Text text)> tabPills=new();
         int tab;bool subPage;float openedAt;readonly Text[] tabGlyphs=new Text[2];
         public bool IsOpen{get;private set;}
@@ -174,7 +174,7 @@ namespace LittleRoad
                 Toy.Title(card.transform,"Trap best",seen?$"{r.best:0} MPH":"NO RECORD",seen?40:28,new Vector2(320,54),new Vector2(0,0),seen?Toy.Sun:Toy.Silver,TextAnchor.MiddleCenter);
                 var marks=Toy.Rect(card.transform,"Stars",new Vector2(200,40),new Vector2(0,-40)).gameObject.AddComponent<Minimap.MarkLayer>();marks.raycastTarget=false;marks.Begin();
                 for(int s=0;s<3;s++)marks.Add(new Vector2((s-1)*50,0),s<stars?Toy.Gold:new Color(.8f,.82f,.88f),Minimap.Shape.Objective,17);marks.End();
-                Toy.Label(card.transform,"Trap marks",$"{trap.marks[0]} · {trap.marks[1]} · {trap.marks[2]} mph",18,new Vector2(320,26),new Vector2(0,-72),Toy.Navy,TextAnchor.MiddleCenter,false);
+                Toy.Label(card.transform,"Trap marks",$"{Units.FromMph(trap.marks[0]):0} · {Units.FromMph(trap.marks[1]):0} · {Units.FromMph(trap.marks[2]):0} {Units.Label}",18,new Vector2(320,26),new Vector2(0,-72),Toy.Navy,TextAnchor.MiddleCenter,false);
             }
             // Beat the Train: best time each way.
             float bx=-400;
@@ -211,13 +211,15 @@ namespace LittleRoad
         }
         // ---------------------------------------------------------------- CONTROLS
         // Every binding in one place (the HUD no longer shows button hints while driving).
-        static readonly (string action,string keys,string xbox,string ps)[] Bindings={
-            ("Accelerate","W / Up","RT","R2"),("Brake / reverse","S / Down","LT","L2"),
-            ("Manual gears: up / down","L Shift / L Ctrl","RT / LT","R2 / L2"),("Manual: throttle / brake","W / S","Right stick","Right stick"),("Steer","A D / Left Right","Left stick","Left stick"),
-            ("Look behind (hold)","Q","Y","Triangle"),("Recover to the road","R","D-pad down","D-pad down"),("Talk / use","E","A","Cross"),
-            ("Map","M","View","Create"),("Pause menu","Esc","Menu","Options"),("Race HUD size","H","L3","L3"),
-            ("Horn","H","L3","L3"),("Photo mode","P","D-pad Up","D-pad Up"),("Menus: select","Enter / Space","A","Cross"),("Menus: back","Esc","B","Circle"),("Menus: tabs","Q / E","LB / RB","L1 / R1"),
-            ("Garage: spin a part","Z / X  or drag","Right stick","Right stick"),("Full screen / windowed","F11","",""),};
+        // The driving rows come from the live bindings (Controls; remap them in Options > CONTROLS), the rest are fixed.
+        static (string action,string keys,string xbox,string ps)[] Bindings{get{
+            var rows=new List<(string,string,string,string)>();
+            foreach(var b in Controls.All)rows.Add((b.label,Controls.KeyName(b.Key)+(b.act==Controls.Act.Throttle?" / Up":b.act==Controls.Act.Brake?" / Down":""),Controls.PadName(b.Pad,InputGlyphs.Family.Xbox),Controls.PadName(b.Pad,InputGlyphs.Family.PlayStation)));
+            rows.AddRange(new[]{("Steer","A D / Left Right","Left stick","Left stick"),("Talk / use","E","A","Cross"),
+                ("Map","M","View","Create"),("Pause menu","Esc","Menu","Options"),("Race HUD size","H","L3","L3"),("Photo mode","P","D-pad Up","D-pad Up"),
+                ("Menus: select","Enter / Space","A","Cross"),("Menus: back","Esc","B","Circle"),("Menus: tabs","Q / E","LB / RB","L1 / R1"),
+                ("Garage: spin a part","Z / X  or drag","Right stick","Right stick"),("Full screen / windowed","F11","","")});
+            return rows.ToArray();}}
         void BuildControls()
         {
             var family=InputGlyphs.Current;
@@ -303,7 +305,7 @@ namespace LittleRoad
         // ---------------------------------------------------------------- input
         void Update()
         {
-            if(!IsOpen||EngineBench.Showing)return;
+            if(!IsOpen||EngineBench.Showing||OptionsScreen.IsOpen||OptionsScreen.LastCloseFrame==Time.frameCount)return;
             if(ctx.minimap!=null&&(ctx.minimap.FullOpen||ctx.minimap.LastCloseFrame==Time.frameCount))return; // the full map has the input
             if(Time.unscaledTime-openedAt<.1f)return;
             var k=Keyboard.current;var pad=Gamepad.current;
