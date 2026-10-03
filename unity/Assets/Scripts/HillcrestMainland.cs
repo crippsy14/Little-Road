@@ -53,7 +53,7 @@ namespace LittleRoad
                 return where;
             }
         }
-        static Road Make(string name,Vector3[] line,float width,float inner,float outer)
+        public static Road Make(string name,Vector3[] line,float width,float inner,float outer)
         {
             var r=new Road{name=name,line=line,width=width,inner=inner,outer=outer,run=new float[line.Length]};
             for(int i=1;i<line.Length;i++)r.run[i]=r.run[i-1]+Vector3.Distance(line[i],line[i-1]);return r;
@@ -186,12 +186,22 @@ namespace LittleRoad
         public static Road SeaRail=>seaRail??=Make("Bayview sea railway",Dense(SeaRailControl(),2),4,3,9);
         public static Vector3 ValleyPortal=>Rail.line[0];
         // Banks blend over 34 m (was 26): the steep cut read as grey rock walls, a canal, not a river.
-        public static Road River=>river??=Make("Silver river",Dense(RiverControl,4),22,9,34);
+        // With Quarry Hills (docs/59) the river rises in a tarn below Quarry Road's crest instead of at the grid's edge.
+        public static Road River=>river??=Make("Silver river",Dense(QuarryHills.Enabled?Concat(QuarryHills.RiverHead,RiverControl):RiverControl,4),22,9,34);
+        static Vector3[] Concat(Vector3[] a,Vector3[] b){var c=new Vector3[a.Length+b.Length];a.CopyTo(c,0);b.CopyTo(c,a.Length);return c;}
         public static Vector3[] Circuit=>circuit??=DenseClosed(RacewayCircuitControl,1.5f);
-        public static Road[] All()=>roads??=new[]{
+        public static Road[] All()=>roads??=BuildRoads();
+        static Road[] BuildRoads()
+        {
+            var list=new List<Road>{
             Make("Hillcrest mainline",Dense(MainlineControl,2),8.5f,6,22),Make("Quay road",Dense(QuayControl,2),8,6,20),Make("Via Crest",Dense(CrestControl(),2),7.5f,6,20),
             Make("Raceway road",Dense(RacewayControl,2),7.5f,6,18),Make("Falls road",Dense(FallsControl,2),7,5,16),Make("Station road",Dense(StationControl,2),7,5,16),
             Make("Farm lane",Dense(FarmLaneControl(),2),6.5f,5,16)};
+            // Quarry Hills' roads follow Hillcrest's seven (docs/59): stamped, filled, planted round and bridged the same way.
+            if(QuarryHills.Enabled)list.AddRange(QuarryHills.Roads(list[3].line));
+            return list.ToArray();
+        }
+        public static Road Find(string name){foreach(var r in All())if(r.name==name)return r;return null;}
         // The island end of the mainline (planting exclusions and the island terrain cut use it).
         public static Vector3[] Causeway=>causeway??=System.Array.FindAll(Mainline.line,p=>p.z>-452);
         public static float PortalNorthRun=>Mainline.Nearest(PortalNorth,out _);
@@ -259,7 +269,13 @@ namespace LittleRoad
     // road/rail builders all sample this same field, so nothing floats or sinks.
     public static class ValleyField
     {
-        public const float X0=-1100,Z0=-2000,Cell=2.5f;public const int NX=961,NZ=649;
+        // Hillcrest's grid (x -1100..1300, z -2000..-380); with Quarry Hills (docs/59) it reaches west to -4300 and south to
+        // -4000. Cells south of the valley and east of the seam aren't part of either region and stay sea floor.
+        public const float Cell=2.5f;
+        public static readonly float X0=QuarryHills.Enabled?QuarryHills.West:-1100,Z0=QuarryHills.Enabled?QuarryHills.South:-2000;
+        public static readonly int NX=Mathf.RoundToInt((1300-X0)/Cell)+1,NZ=Mathf.RoundToInt((-380-Z0)/Cell)+1;
+        // Outside both regions: east of the seam and south of the valley (with a 160 m margin for the chunk row that straddles it).
+        public static bool Outside(float x,float z)=>x>=QuarryHills.SeamX&&z<-2160;
         static float[] h,roadDistance;
         static float Blend(float a,float b,float x)=>Mathf.SmoothStep(0,1,Mathf.InverseLerp(a,b,x));
         public static float Raw(int i,int j){if(h==null)Build();return h[Mathf.Clamp(j,0,NZ-1)*NX+Mathf.Clamp(i,0,NX-1)];}
@@ -291,6 +307,12 @@ namespace LittleRoad
             return Vector2.Distance(p,a+ab*t)+Mathf.Max(0,-Vector2.Dot(p-a,ab)/ab.magnitude)*2;
         }
         public static float Natural(float x,float z)
+        {
+            if(!QuarryHills.Enabled)return ValleyNatural(x,z);
+            if(x<QuarryHills.SeamX)return QuarryHills.Natural(x,z);
+            return QuarryHills.Gap(x,z,ValleyNatural(x,z));
+        }
+        public static float ValleyNatural(float x,float z)
         {
             float n1=Mathf.PerlinNoise((x+900)*.0045f,(z+300)*.0045f),n2=Mathf.PerlinNoise((x+40)*.021f,(z+77)*.021f);
             // Valley floor rising gently south, with soft rolling.
@@ -326,7 +348,7 @@ namespace LittleRoad
         {
             var clock=System.Diagnostics.Stopwatch.StartNew();
             h=new float[NX*NZ];roadDistance=new float[NX*NZ];
-            for(int j=0;j<NZ;j++)for(int i=0;i<NX;i++){h[j*NX+i]=Natural(X0+i*Cell,Z0+j*Cell);roadDistance[j*NX+i]=1e6f;}
+            System.Threading.Tasks.Parallel.For(0,NZ,j=>{for(int i=0;i<NX;i++){float x=X0+i*Cell,z=Z0+j*Cell;h[j*NX+i]=Outside(x,z)?-40:Natural(x,z);roadDistance[j*NX+i]=1e6f;}});
             // Town hill: a cone matched to the spiral road, flat on top for the castle.
             Stamp(HillcrestRoute.HillCentre,230,(r,old)=>{float cone=r<48?HillcrestRoute.CastleY-.2f:r<108?Mathf.Lerp(HillcrestRoute.CastleY-2,HillcrestRoute.SquareY,(r-48)/60f):r<176?Mathf.Lerp(HillcrestRoute.SquareY,7,(r-108)/68f):Mathf.Lerp(7,old,Blend(176,228,r));return Mathf.Max(old,cone+(Mathf.PerlinNoise(r*.1f,3)-.5f)*1.5f);});
             // Lake in the raceway infield.
@@ -342,6 +364,7 @@ namespace LittleRoad
             var bf=HillcrestRoute.BalloonField;Pad(bf,60,110,Natural(bf.x,bf.y));
             var ps=HillcrestRoute.PitStopSite.at;Pad(new(ps.x,ps.z),22,34,ps.y-.12f);
             Pad(HillcrestRoute.FarmCentre,HillcrestRoute.FarmInner,HillcrestRoute.FarmOuter,HillcrestRoute.FarmY-.1f);
+            if(QuarryHills.Enabled)foreach(var (padAt,padIn,padOut,padY) in QuarryHills.Pads())Pad(padAt,padIn,padOut,padY-.12f);
             var before=(float[])h.Clone();
             // Roads and the raceway flatten their corridors; the railway only cuts through high ground.
             var mainline=HillcrestRoute.Mainline;int portalN=Index(mainline,HillcrestRoute.PortalNorth),portalS=Index(mainline,HillcrestRoute.PortalSouth);

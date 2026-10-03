@@ -57,7 +57,7 @@ public static class AdventureChecks
         // what the best Class C kit can; a record keeps the best and pays each star once.
         {
             var traps=SpeedTraps.Plan(new Circuit());
-            Check(traps.Select(t=>t.id).SequenceEqual(SpeedTraps.Ids),$"Speed traps: all {SpeedTraps.Ids.Length} cameras placed ({string.Join(", ",traps.Select(t=>$"{t.id} {t.marks[0]}/{t.marks[1]}/{t.marks[2]}"))} mph)");
+            Check(traps.Select(t=>t.id).SequenceEqual(SpeedTraps.ActiveIds),$"Speed traps: all {SpeedTraps.ActiveIds.Length} cameras placed ({string.Join(", ",traps.Select(t=>$"{t.id} {t.marks[0]}/{t.marks[1]}/{t.marks[2]}"))} mph)");
             Check(traps.All(t=>t.marks[0]>=35&&t.marks[0]<t.marks[1]&&t.marks[1]<t.marks[2]&&t.marks[2]<=160),"Speed traps: marks rise from the stock car's reach to the best Class C kit's");
             var trapStore=new AdventureStore(Path.Combine(folder,"traps.json"));int c0=trapStore.Data.credits;
             int paid=trapStore.RecordTrap("quay",60,2,SpeedTraps.Prizes);int again=trapStore.RecordTrap("quay",58,2,SpeedTraps.Prizes);int third=trapStore.RecordTrap("quay",80,3,SpeedTraps.Prizes);

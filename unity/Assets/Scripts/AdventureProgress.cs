@@ -13,14 +13,14 @@ namespace LittleRoad
     public static class Collectibles
     {
         public const int Postcards=5,Stamps=8;
-        public const string VisitHillcrest="visit_hillcrest",CastleTrial="trial_castle",CastleTrialHard="trial_castle_hard";
+        public const string VisitHillcrest="visit_hillcrest",CastleTrial="trial_castle",CastleTrialHard="trial_castle_hard",QuarrySprint="trial_quarry_sprint";
         // Beating Duke Rolo in the Duke's Challenge (docs/54): the Regale and the prize, once.
         public const string DukeBeaten="duke_beaten";
         public static string Postcard(int i)=>"postcard_"+i;
         public static string Stamp(int i)=>"stamp_"+i;
         public static bool IsPostcard(string id)=>Indexed(id,"postcard_",Postcards);
         public static bool IsStamp(string id)=>Indexed(id,"stamp_",Stamps);
-        public static bool Known(string id)=>IsPostcard(id)||IsStamp(id)||id==VisitHillcrest||id==CastleTrial||id==CastleTrialHard||id==DukeBeaten||PhotoRequests.Known(id);
+        public static bool Known(string id)=>IsPostcard(id)||IsStamp(id)||id==VisitHillcrest||id==CastleTrial||id==CastleTrialHard||id==QuarrySprint||id==DukeBeaten||PhotoRequests.Known(id);
         static bool Indexed(string id,string prefix,int count)
         {
             if(id==null||!id.StartsWith(prefix,StringComparison.Ordinal))return false;

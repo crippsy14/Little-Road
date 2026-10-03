@@ -188,6 +188,8 @@ public static class MigrationBuild
         evidence.checks.AddRange(ContactChecks.Run());
         evidence.checks.AddRange(OptionsChecks.Run());
         evidence.checks.AddRange(GadgetChecks.Run());
+        evidence.checks.AddRange(ScaleTestChecks.Run());
+        evidence.checks.AddRange(QuarryHillsChecks.Run());
         evidence.checks.AddRange(PartDiscoveryChecks.Run());
         evidence.checks.AddRange(InterfaceChecks.Run());
         evidence.checks.AddRange(RacerChecks.Run());

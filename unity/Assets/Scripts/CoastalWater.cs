@@ -18,7 +18,8 @@ namespace LittleRoad
         {
             const int count=257;var vertices=new Vector3[count*count];var normals=new Vector3[vertices.Length];
             var triangles=new int[(count-1)*(count-1)*6];
-            float Axis(int i){float t=(i-128)/128f;return Mathf.Sign(t)*Mathf.Pow(Mathf.Abs(t),1.65f)*1750;}
+            // With Quarry Hills (docs/59) the sea reaches past its coast, 4.5 km west of Bayview.
+            float reach=QuarryHills.Enabled?4800:1750;float Axis(int i){float t=(i-128)/128f;return Mathf.Sign(t)*Mathf.Pow(Mathf.Abs(t),1.65f)*reach;}
             for(int z=0;z<count;z++)for(int x=0;x<count;x++) {
                 int i=z*count+x;vertices[i]=new Vector3(Axis(x),CoastalLandscape.SeaLevel,Axis(z));normals[i]=Vector3.up;
                 if(x<count-1&&z<count-1){int k=(z*(count-1)+x)*6;triangles[k]=i;triangles[k+1]=i+count;triangles[k+2]=i+1;triangles[k+3]=i+1;triangles[k+4]=i+count;triangles[k+5]=i+count+1;}

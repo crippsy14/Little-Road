@@ -54,7 +54,10 @@ namespace LittleRoad
         int gearRecoveries;
         public GearState gears {get;private set;}
         // The player drives a manual box when Settings > Gears says so; everything autonomous stays automatic.
-        public bool ManualGears=>!autonomous&&DrivingOptions.Manual;
+        public static float FreeRoamFloor=float.NaN;
+        // The scale test's autopilot drives a player car on automatic whatever the Gears option says.
+        public static bool ForceAutomaticGears;
+        public bool ManualGears=>!autonomous&&!ForceAutomaticGears&&DrivingOptions.Manual;
         // Pedal use while racing (both AIs, for comparisons): braking, lifting (partial throttle above
         // walking pace) and stopped (under 2 m/s: the pauses of docs/46).
         public float BrakeSeconds {get;private set;}
@@ -172,7 +175,8 @@ namespace LittleRoad
             if(ground!=null)ground.Sample();
             float recoveryDatum=ground==null?0:race.track.At(pathDistance).y;
             // Free roam spans the island and the mainland: only the sea counts as falling out of the world.
-            if(race.freeRoam&&body.position.y<(FreeRoamRoads.Count>0?CoastalLandscape.SeaLevel+1:recoveryDatum-3)){TryRecover();return;}
+            // The scale test (docs/58) drives the sea floor: it sets its own floor below the deepest seabed.
+            if(race.freeRoam&&body.position.y<(!float.IsNaN(FreeRoamFloor)?FreeRoamFloor:FreeRoamRoads.Count>0?CoastalLandscape.SeaLevel+1:recoveryDatum-3)){TryRecover();return;}
             Grip=0;
             // Kinematic while carried (the castle zipline): the carrier poses it; velocity can't be set.
             if(controlsBlocked){throttle=0;steering=0;speed=0;if(!body.isKinematic){body.linearVelocity=Vector3.zero;body.angularVelocity=Vector3.zero;}return;}

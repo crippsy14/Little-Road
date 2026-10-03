@@ -21,7 +21,9 @@ namespace LittleRoad
             public List<Vector3> approach=new();
             public float Along(Vector3 p)=>Vector3.Dot(p-at,forward);
         }
-        public static readonly string[] Ids={"coast","causeway","valley","quay","farm","falls","raceway"};
+        public static readonly string[] Ids={"coast","causeway","valley","quay","farm","falls","raceway","quarryroad"};
+        // The cameras this run places (Quarry Road's only with --quarry-hills).
+        public static string[] ActiveIds=>Array.FindAll(Ids,id=>id!="quarryroad"||QuarryHills.Enabled);
         public static bool Known(string id)=>Array.IndexOf(Ids,id)>=0;
         public static readonly int[] Prizes={50,100,150};
         public static readonly List<Trap> All=new();
@@ -40,6 +42,8 @@ namespace LittleRoad
             yield return ("farm","Farm Lane",HillcrestRoute.FarmLane.line,false,HillcrestRoute.FarmLane.width*.5f,p=>true);
             yield return ("falls","Falls Road",HillcrestRoute.Falls.line,false,HillcrestRoute.Falls.width*.5f,p=>true);
             yield return ("raceway","Raceway Road",HillcrestRoute.RacewayAccess.line,false,HillcrestRoute.RacewayAccess.width*.5f,p=>true);
+            // Quarry Hills (--quarry-hills): the run down from the crest towards the town.
+            if(QuarryHills.Enabled){var q=HillcrestRoute.Find(QuarryHills.QuarryRoadName);yield return ("quarryroad","Quarry Road",q.line,false,q.width*.5f,p=>p.x<-1500&&p.x>-2300);}
         }
 
         // Where the cameras go and their marks. Pure geometry and the drive model: the editor checks call it too.

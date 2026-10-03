@@ -1,6 +1,39 @@
-# Next steps (2 October 2026)
+# Next steps (3 October 2026)
 
 **Plan of record (29 September):** [doc 45](45-roadmap-and-feature-spec.md) sets the order of work, Phases 0–5; the parts ladder is in [doc 44](44-parts-tiers-and-progression.md). The campaign is at least 12 hours and open-ended. Next is **Phase 0**: world grid with per-tile map and fog, Racer records, radar chart, a traffic-aware launch, save and IDs, and track standards.
+
+**The world plan (3 October):** [doc 58](58-world-and-campaign-design.md) is the design for the whole world and campaign. It covers:
+- the **Glasswater** continent (about 20 × 20 km, generated from climate);
+- 33 places, 121 races and the story: prove yourself, get entered in the Aurora Endurance, beat Duke Rolo;
+- the post-game;
+- the railway wars;
+- 24 design principles from research, each with a checkable rule.
+
+The world blueprint artifact is the interactive version.
+
+**W0, the scale test, is built.** `--scale-test` builds the whole continent from the blueprint's data in the game's own coordinates:
+- rough terrain coloured by biome;
+- graybox roads with switchbacks on steep ground;
+- blocks for towns, the sea and the lakes.
+
+You can drive it in any class's strongest build:
+- **Class:** 1–5 picks C–E, 0 the stock car, M the max build; D-pad left/right on a pad.
+- **Map and jumps:** N or View opens the map; Tab or D-pad up/down jumps between towns.
+- **Pacing:** a trip timer logs every drive between places, and `--scale-pacing` writes drive times for every road and class.
+- **Autopilot:** `--scale-autodrive a,b,c` drives real physics along the roads.
+- **Shortcut:** "Little Road - Continent Scale Test", added by `publish-play.ps1`.
+
+Results are in doc 58 §12. **Next (W1):** foundations (world tiles, streaming, floating origin, data-driven regions, race rows, world-state layers), then the C ring town by town.
+
+**Quarry Hills is built behind `--quarry-hills` (3 October, afternoon; [doc 59](59-quarry-hills.md) "Build status").** The play copy has a "Little Road - Quarry Hills" shortcut. What's in it:
+- the slate town of about 1,560 buildings in terrace blocks, with the square and the Pit Stop;
+- the galleries with inclines, Glas, the tips, the quarry floor, the rally school and the Quarry Sprint;
+- the Blondin, and Slate Quay with its rail terminus;
+- 6 named residents, about 110 townsfolk, Welsh traffic and Dai the Dumper.
+
+Gwen's Quarry Sprint time trial is playable. Against doc 57's standards, Quarry Hills passes everything but the edge defects (1 lip and 2 banks, against Hillcrest's 8 banks), and its frame cost is below Hillcrest's.
+
+Next is the rest of doc 59's list (the Blondin ride, rally school lessons, slate carvings, the Gallery Climb road, the railway), then **Bramblewick**, the first village.
 
 **Update, 2 October, night: Richard's list, tied off** ([doc 56](56-wider-game-round.md) §13–20; [doc 57](57-new-area-standards.md)).
 - **In-race pause:** resume, restart, view the field, options and retire. The race truly pauses.

@@ -169,12 +169,20 @@ namespace LittleRoad
             // --view-shots "name:x,y,z>lx,ly,lz;...": a still from any camera position looking at any point (the
             // player's car parked out of shot). Used to check placements, e.g. the castle gatehouse on Via Crest.
             if(RaceTrial.Has("--view-shots")) {
-                Vector3 V(string text){var v=text.Split(',').Select(x=>float.Parse(x,System.Globalization.CultureInfo.InvariantCulture)).ToArray();return new Vector3(v[0],v[1],v[2]);}
+                // A height written "g+2" is 2 m above the ground there (driver's-eye views without looking heights up).
+                Vector3 V(string text){var s=text.Split(',');float F(string x)=>float.Parse(x,System.Globalization.CultureInfo.InvariantCulture);float x0=F(s[0]),z0=F(s[2]);
+                    float y=s[1].StartsWith("g")?ValleyField.Height(x0,z0)+F(s[1].Substring(1)):F(s[1]);return new Vector3(x0,y,z0);}
                 player.body.isKinematic=true;player.body.position+=Vector3.down*30;
                 foreach(var shot in RaceTrial.Arg("--view-shots").Split(';')) {
                     var name=shot.Split(':');var ends=name[1].Split('>');
                     cameraView.transform.position=V(ends[0]);cameraView.transform.LookAt(V(ends[1]));cameraView.fieldOfView=50;WorldLook.Cut(cameraView);
                     yield return new WaitForSeconds(.5f);ui.Capture(Path.Combine(folder,name[0]+".png"));
+                    // Frame cost from this view (vsync off while measuring): mean and worst of 60 frames.
+                    int vsync=QualitySettings.vSyncCount,target=Application.targetFrameRate;QualitySettings.vSyncCount=0;Application.targetFrameRate=-1;
+                    yield return null;yield return null;float sum=0,worst=0;
+                    for(int i=0;i<60;i++){yield return null;float ms=Time.unscaledDeltaTime*1000;sum+=ms;worst=Mathf.Max(worst,ms);}
+                    QualitySettings.vSyncCount=vsync;Application.targetFrameRate=target;
+                    Debug.Log($"LITTLE_ROAD_VIEW_FRAME view={name[0]} mean_ms={sum/60:0.0} worst_ms={worst:0.0}");
                 }
                 Application.Quit(0);yield break;
             }

@@ -413,7 +413,7 @@ namespace LittleRoad
             Physics.SyncTransforms();ValleyRoads();ValleyWater();Step("valley-roads-water");Next(.6f,"Laying the railway and Hillcrest");yield return null;
             // The town, railway and woods sit behind the headland ridge, out of sight of the Bayview
             // circuit: Bayview races skip them (ValleyDetail false) and keep their frame cost.
-            if(ValleyDetail){Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");Next(.93f,"Filling the sea");yield return null;}RegisterRoads();
+            if(ValleyDetail){Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");QuarryHillsScenery();Step("quarry-hills");Next(.93f,"Filling the sea");yield return null;}RegisterRoads();
             // Runtime static batching converts combined geometry to 16-bit
             // chunks. Keep the large grass mesh and displaced sea independent.
             Physics.SyncTransforms();PlacementAudit.Settle();CarContact.SeatAll();Step("settle-planting");

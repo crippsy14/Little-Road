@@ -79,6 +79,8 @@ namespace LittleRoad
             current=this;Controls.InteractionReady=false;
             if(Has("--performance-trial")){enabled=false;gameObject.AddComponent<PerformanceTrial>();yield break;}
             if(Has("--trial-gallery")){gameObject.AddComponent<CarGallery>();yield break;}
+            // The continent scale test (docs/58 §11): the generated world to drive at every class's pace.
+            if(Has("--scale-test")){freeRoam=true;gameObject.AddComponent<ScaleTest>();yield break;}
             career=AdventureSession.Racing;
             if(!career&&!Has("--trial-auto")&&!Has("--trial-race")){freeRoam=true;gameObject.AddComponent<AdventureGame>();yield break;}
             sampleInterval=Arg("--traffic-case","").StartsWith("draft-")?1f/120:1;

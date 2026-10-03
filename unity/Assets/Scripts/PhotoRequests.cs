@@ -10,7 +10,7 @@ namespace LittleRoad
     public static class PhotoRequests
     {
         public sealed class Request{public string id,name;public Func<Vector3?> where;public float reach;}
-        public static readonly string[] Ids={"photo_lighthouse","photo_halt","photo_castle","photo_falls","photo_train","photo_balloons"};
+        public static readonly string[] Ids={"photo_lighthouse","photo_halt","photo_castle","photo_falls","photo_train","photo_balloons","photo_galleries","photo_slatequay","photo_blondin"};
         public static bool Known(string id)=>Array.IndexOf(Ids,id)>=0;
         public const int Prize=100;
         public static readonly List<Request> All=new();
@@ -25,6 +25,12 @@ namespace LittleRoad
             // (The balloon you're pointing at: nearest the middle of the picture, not nearest the camera.)
             All.Add(new Request{id=Ids[5],name="The balloons",where=()=>{Vector3? best=null;float ba=float.MaxValue;var cam=Camera.main;if(cam==null)return null;
                 foreach(var b in UnityEngine.Object.FindObjectsByType<BalloonDrift>(FindObjectsSortMode.None)){var p=b.transform.position+Vector3.up*8;float a=Vector3.Angle(cam.transform.forward,p-cam.transform.position);if(a<ba){ba=a;best=p;}}return best;},reach=170});
+            // Quarry Hills (--quarry-hills): the galleries across Glas, Slate Quay's light, the Blondin's floor tower.
+            if(QuarryHills.Enabled) {
+                All.Add(new Request{id=Ids[6],name="The galleries",where=()=>QuarryHills.PitPoint(QuarryHills.GalleryAxis,QuarryHills.Benches*QuarryHills.BenchWidth*.5f)+Vector3.up*(QuarryHills.FloorY+QuarryHills.Benches*QuarryHills.BenchHeight*.5f),reach=700});
+                All.Add(new Request{id=Ids[7],name="Slate Quay",where=()=>QuarryHills.QuayPoint(QuarryHills.QuayHalf-6,-QuarryHills.QuaySea+5,QuarryHills.QuayY+6),reach=160});
+                All.Add(new Request{id=Ids[8],name="The Blondin",where=()=>{var b=QuarryFloor.BlondinFloor;return new Vector3(b.x,ValleyField.Height(b.x,b.y)+18,b.y);},reach=220});
+            }
         }
         // Nothing solid between: railings, posts and fences (under 0.6 m in their thinnest direction) don't hide a sight.
         static bool Clear(Vector3 from,Vector3 to)

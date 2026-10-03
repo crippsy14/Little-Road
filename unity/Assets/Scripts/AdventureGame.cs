@@ -53,6 +53,8 @@ namespace LittleRoad
             residents["cafe"]=new Vector3(-40.5f,0,-101.8f);residents["paint"]=new Vector3(3.5f,0,-102.2f);
             if(HillcrestTown.Spots.Count>0){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}
             foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
+            // Quarry Hills (--quarry-hills): Gwen at the rally school.
+            foreach(var id in new[]{"rallyschool","qgarage","qparts","qbody","caban","slatequay"})if(QuarryHillsTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
             residents["post"]=world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
             CreatePlaces();
             if(AdventureSession.MaxBuildTest&&!AdventureSession.TestPlaced){AdventureSession.TestPlaced=true;FaceDuke();}
@@ -83,8 +85,8 @@ namespace LittleRoad
             if(title!=null)title.Dismiss();cameraView.gameObject.AddComponent<AudioListener>();WorldLook.Camera(cameraView);
             photo=gameObject.AddComponent<PhotoMode>();photo.Setup(cameraView,player.transform,ui,()=>AreaBanner.Area(player.transform.position),Notify,show=>ui.SetHudVisible(show));
             // Pip's photo requests (docs/51): each sight pays once, the first photo that shows it.
-            photo.Photographed=cam=>{foreach(var r in PhotoRequests.Seen(cam))Attempt(()=>{if(Store.ClaimTrial(r.id,PhotoRequests.Prize)){int got=0;foreach(var id in PhotoRequests.Ids)if(Store.Data.collected.Contains(id))got++;
-                ui.Card($"PHOTO FOR PIP: {r.name.ToUpperInvariant()}",$"{got} of {PhotoRequests.Ids.Length} requests  ·  +{PhotoRequests.Prize} credits",Toy.Pink,"POSTCARD PHOTO");}});};
+            photo.Photographed=cam=>{foreach(var r in PhotoRequests.Seen(cam))Attempt(()=>{if(Store.ClaimTrial(r.id,PhotoRequests.Prize)){int got=0;foreach(var q in PhotoRequests.All)if(Store.Data.collected.Contains(q.id))got++;
+                ui.Card($"PHOTO FOR PIP: {r.name.ToUpperInvariant()}",$"{got} of {PhotoRequests.All.Count} requests  ·  +{PhotoRequests.Prize} credits",Toy.Pink,"POSTCARD PHOTO");}});};
             if(GrassField.Wanted)gameObject.AddComponent<GrassField>().Setup(cameraView);
             CameraPose(true);if(!string.IsNullOrEmpty(AdventureSession.Notice)){Notify(AdventureSession.Notice);AdventureSession.Notice=null;}
             else if(Store.Data.questStage==0)Notify("Welcome to Bayview · Mara has a parcel for the lighthouse");
@@ -130,7 +132,27 @@ namespace LittleRoad
             // Review: the tuning screen, captured (docs/48).
             if(RaceTrial.Has("--tuning-review")){reviewing=true;OpenTuning("bayview",Mara);yield return new WaitForSeconds(1.5f);
                 string shot=RaceTrial.Arg("--tuning-review");ui.Capture(shot);yield return new WaitForSeconds(1);Debug.Log("LITTLE_ROAD_TUNING_REVIEW "+shot);Application.Quit();yield break;}
+            // Test (--quarry-hills --sprint-test): talk to Gwen, start the Quarry Sprint, carry the car round the loop at 22 m/s and
+            // check the lap is timed and the prize claimed (the result goes to the log, then the game quits).
+            if(RaceTrial.Has("--sprint-test")&&residents.ContainsKey("rallyschool")){StartCoroutine(SprintTest());yield break;}
             yield return null;if(AdventureSession.Smoke)StartCoroutine(Smoke());
+        }
+        IEnumerator SprintTest()
+        {
+            yield return new WaitForSeconds(1);
+            Place(residents["rallyschool"]+Vector3.forward*5);yield return new WaitForSeconds(.5f);
+            bool talked=Interact("rallyschool");bool started=talked&&ui.InvokeChoice("Quarry Sprint");
+            float credits=Store.Data.credits;yield return new WaitForSeconds(3.2f);
+            var loop=QuarryFloor.Loop;int n=loop.Length,s0=HillcrestRoute.Index(loop,new Vector3(-2335,0,-2935));
+            player.body.isKinematic=true;
+            for(float d=0;d<n*2+40;d+=22*Time.fixedDeltaTime/2) {
+                int i=(s0-12+(int)d+n)%n;var p=loop[i];p.y=ValleyField.Height(p.x,p.z)+.6f;player.body.position=p;
+                yield return new WaitForFixedUpdate();if(sprintStart<0)break;
+            }
+            player.body.isKinematic=false;
+            bool claimed=Store.Data.collected.Contains(Collectibles.QuarrySprint);
+            Debug.Log($"LITTLE_ROAD_SPRINT_TEST talked={talked} started={started} gates={sprintGate} finished={sprintStart<0} claimed={claimed} credits={credits}->{Store.Data.credits}");
+            Application.Quit(talked&&started&&claimed?0:1);
         }
         GameObject Block(string name,Vector3 p,Vector3 scale,Color color,bool solid=false,PrimitiveType shape=PrimitiveType.Cube)
         {
@@ -169,6 +191,12 @@ namespace LittleRoad
             ["vista"]=("doodle",Toy.Hex(0x5ec8ff),"WREN / VIEWPOINT","Wren",Toy.Sky,new[]{"Hey! You're in my photo!","Isn't it the BEST view?","Careful, don't knock me over the edge!"}),
             ["bayhalt"]=("minibus",Toy.Hex(0x1d6fa8),"STANLEY / BAYVIEW HALT","Stanley",Toy.Sky,new[]{"Mind the platform edge! And my wing mirror!","All aboard! Well... not you, you're a car.","The 4:10 to Hillcrest is running early!"}),
             ["lookout"]=("bramble",Toy.Hex(0x3ee6a4),"MOSS / FALLS","Moss",Toy.Mint,new[]{"Shh! You'll scare the fish!","Oof. That's the third bump today.","Mind the drop, it's a long way down!"}),
+            ["rallyschool"]=("rally",Toy.Hex(0x229954),"GWEN / RALLY SCHOOL","Gwen",Toy.Mint,new[]{"Oi! Save the contact for the rallycross!","Lift and turn, cariad, lift and turn.","That's a sump guard's job, that is!"}),
+            ["qgarage"]=("kipper",Toy.Hex(0xc0392b),"HUW / PIT STOP GARAGE","Huw",Toy.Red,new[]{"Easy, butt! I only just swept the bay.","Gravel in the arches again? Bring her in.","Duw, that was a clatter!"}),
+            ["qparts"]=("bubble",Toy.Hex(0xf1c40f),"BETHAN / GRIT & GRAVEL","Bethan",Toy.Sun,new[]{"Mind the shelves! Mud flaps everywhere now.","Parts are for fitting, not for bumping, cariad.","Ooh, that'll want a sump guard."}),
+            ["qbody"]=("roadster",Toy.Hex(0x8e44ad),"NIA / PIT STOP BODY SHOP","Nia",Toy.Pink,new[]{"Slate grey would hide that scratch, you know.","Careful! That's my show car's nan.","New look? I've got just the thing."}),
+            ["caban"]=("otter",Toy.Hex(0xe9e3d3),"MEGAN / CABAN","Megan",Toy.Sky,new[]{"Careful! The cawl's still hot!","Tea's brewing, no need to knock!","Duw, you'll have the cakes off the shelf!"}),
+            ["slatequay"]=("heron",Toy.Hex(0x1f3a93),"MARI / SLATE QUAY","Mari",Toy.Mint,new[]{"Mind the wagons! They're loaded!","Engine's warming up, keep clear of the shed!","Whoa! The quay's for slate, not stunts!"}),
         };
         void CreatePlaces()
         {
@@ -372,7 +400,7 @@ namespace LittleRoad
             // Countdowns hold the car still but let it rev (Richard, 1 Oct).
             player.holdStill=climbStart>=0&&Time.time<climbStart||trainRace!=null&&trainRace.Holding;
 
-            UpdateClimb();UpdateVisit();RefreshHUD();
+            UpdateClimb();UpdateSprint();UpdateVisit();RefreshHUD();
         }
         // Runs every frame (from LateUpdate), reviews included: they capture the prompt and badges.
         void PromptFrame()
@@ -435,7 +463,7 @@ namespace LittleRoad
             return (Store.Data.bodyId,Paints[paint],PaintCatalog.All[paint].name,parts,CarPerformanceRating.Calculate(EquipmentCatalog.Stats(fit)),RaceCalendar.Progress(Store.Data));
         }
         // Marks for the minimap: residents in their colours, Pit Stops, both zipline stations, the objective.
-        static readonly HashSet<string> PitHosts=new(){"garage","parts","motors","hcparts","hcbody"};
+        static readonly HashSet<string> PitHosts=new(){"garage","parts","motors","hcparts","hcbody","qgarage","qparts","qbody"};
         List<Minimap.Mark> MapMarks()
         {
             mapMarks.Clear();
@@ -646,7 +674,7 @@ namespace LittleRoad
         {
             if(!residents.ContainsKey(id)||Vector3.Distance(player.body.position,residents[id])>7||Mathf.Abs(player.speed)>1.2f)return false;
             switch(id){case "garage":Mara();break;case "parts":Sid();break;case "hcparts":Rosa();break;case "hcbody":Lina();break;case "post":Pip();break;case "paint":Dot();break;case "motors":Gio();break;case "hillcafe":Fern();break;
-                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;default:Rowan();break;}
+                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;default:Rowan();break;}
             return true;
         }
         void Mara()
@@ -675,10 +703,11 @@ namespace LittleRoad
             new(){new("Buy parts",()=>OpenParts("hillcrest",PartsBrowser.Mode.Shop,Rosa)),new("Back to the road",Close)});
         void Lina()=>Show("Lina / Pit Stop Body Shop","New car, same you! Every body here is looks only: your fitted parts decide the pace. Buy one and Gio swaps it in the garage bay whenever you like. Fresh paint too.",
             new(){new("Browse new bodies",OpenBodyShop),new("Fresh paint",()=>OpenPaintShop(Lina)),new("Back to the road",Close)});
-        void OpenBodyShop()
+        void OpenBodyShop()=>OpenBodyShop(Lina,"Gio");
+        void OpenBodyShop(Action back,string fitter)
         {
             ui.Close();ui.SetVisible(false);player.controlsBlocked=true;
-            bodyShop.Open(Store,"hillcrest",()=>Notify("New body in the garage bay · swap to it with Gio"),()=>{ui.SetVisible(true);Lina();});
+            bodyShop.Open(Store,"hillcrest",()=>Notify("New body in the garage bay · swap to it with "+fitter),()=>{ui.SetVisible(true);back();});
         }
         // Garage bay: swap between owned bodies (free, looks only), live on the car.
         void SwapBody(Action back)
@@ -780,6 +809,50 @@ namespace LittleRoad
             climbStart=Time.time+3;Notify((hard?"Hard Castle Climb":"Castle Climb")+" · Ready... GO in 3!");
         }
         void EndClimb(){climbStart=-1;climbEvent?.End();}
+        // The Quarry Sprint (docs/59): one timed lap of the rallycross loop on the quarry floor, from Gwen at the rally
+        // school. Through the three quarter-lap gates in order, then back over the start line.
+        const float SprintPar=80;const int SprintPrize=250;float sprintStart=-1;int sprintGate;
+        void Gwen()
+        {
+            string done=Store.Data.collected.Contains(Collectibles.QuarrySprint)?" You've beaten par already. Lovely. Go again for the joy of it.":$" Beat {SprintPar:0} seconds and I'll pay {SprintPrize} credits.";
+            Show("Gwen \"Granite\" Price / Rally School","Croeso! Gravel's not tarmac, cariad: brake in a straight line, turn in early, and let her slide. The Quarry Sprint is one lap of the floor, from the gate by the grandstand."+done,
+                new(){new($"Quarry Sprint · time trial (par {SprintPar:0} s)",StartSprint),new("Back to the road",Close)});
+        }
+        // Quarry Hills' Pit Stop (uniform with every town's) and its people.
+        void Huw()
+        {
+            var choices=new List<AdventureUI.Choice>{new("Fit parts",()=>OpenParts("hillcrest",PartsBrowser.Mode.Fit,Huw)),new("Tune gearbox",()=>OpenTuning("hillcrest",Huw))};
+            if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Huw)));
+            choices.Add(new("Back to the road",Close));
+            Show("Huw / Pit Stop Garage","Croeso i'r Pit Stop! Bring her in: I'll fit anything you own, set up the gearbox, or swap to another of your bodies. Bethan sells the parts next door, Nia the new rides.",choices);
+        }
+        void Bethan()=>Show("Bethan / Grit & Gravel","Everything the valley stocks, right here. The proper rally kit (gravel tyres, raised suspension, sump guards, mud flaps) comes once Gwen at the rally school says you're ready for it.",
+            new(){new("Buy parts",()=>OpenParts("hillcrest",PartsBrowser.Mode.Shop,Bethan)),new("Back to the road",Close)});
+        void Nia()=>Show("Nia / Pit Stop Body Shop","New car, same you! Bodies are looks only: your parts decide the pace. Huw swaps them in the bay whenever you like. Fresh paint too. Slate grey's popular round here, funnily enough.",
+            new(){new("Browse new bodies",()=>OpenBodyShop(Nia,"Huw")),new("Fresh paint",()=>OpenPaintShop(Nia)),new("Back to the road",Close)});
+        void Megan()=>Show("Megan / Caban","The Caban's where the quarrymen ate, and argued, and sang. Still do, mostly the arguing. The town's betting on motorsport now the quarry's winding down: rally school, the Sprint, and there's talk of a proper stage up through the tips and the moor.",
+            new(){new("Back to the road",Close)});
+        void Mari()=>Show("Mari / Slate Quay","Mari, from the engine shed. The slate trains come down to the quay by gravity and go back up behind the engine. When the line's open again you can race one down the valley, if you think you're quick enough.",
+            new(){new("Back to the road",Close)});
+        void StartSprint()
+        {
+            Close();var loop=QuarryFloor.Loop;int s0=HillcrestRoute.Index(loop,new Vector3(-2335,0,-2935));int back=(s0-12+loop.Length)%loop.Length;
+            var f=loop[(s0+2)%loop.Length]-loop[(s0+loop.Length-2)%loop.Length];f.y=0;
+            player.body.rotation=Quaternion.LookRotation(f.normalized);Place(loop[back]);
+            sprintGate=0;sprintStart=Time.time+3;Notify("Quarry Sprint · Ready... GO in 3!");
+        }
+        void UpdateSprint()
+        {
+            if(sprintStart<0||Time.time<sprintStart)return;float t=Time.time-sprintStart;
+            if(t>200){sprintStart=-1;Notify("Quarry Sprint · Out of time. Gwen's waiting for another go!");return;}
+            var loop=QuarryFloor.Loop;int n=loop.Length,s0=HillcrestRoute.Index(loop,new Vector3(-2335,0,-2935));
+            var p=player.body.position;
+            if(sprintGate<3){var gate=loop[(s0+n*(sprintGate+1)/4)%n];if(Vector2.Distance(new(p.x,p.z),new(gate.x,gate.z))<14){sprintGate++;Notify($"Quarry Sprint · {t:0.0} s");}return;}
+            if(Vector2.Distance(new(p.x,p.z),new(loop[s0].x,loop[s0].z))<12) {
+                sprintStart=-1;bool beat=t<=SprintPar;Confetti.Burst(p+Vector3.up*2);
+                Attempt(()=>{if(beat&&Store.ClaimTrial(Collectibles.QuarrySprint,SprintPrize))Notify($"Quarry Sprint {t:0.0} s · Under par! +{SprintPrize} credits");else Notify($"Quarry Sprint {t:0.0} s · "+(beat?"Under par again. Da iawn!":$"Par is {SprintPar:0} s. Again?"));});
+            }
+        }
         void UpdateVisit()
         {
             if(player.transform.position.z<-620&&!Store.Data.collected.Contains(Collectibles.VisitHillcrest))Attempt(()=>Store.ClaimTrial(Collectibles.VisitHillcrest,0));

@@ -40,6 +40,21 @@ namespace LittleRoad
                 var chatter=go.AddComponent<NpcChatter>();chatter.speaker=names[i%names.Length];chatter.colour=paint;chatter.title="Out for a drive";
                 chatter.lines=new[]{"Oi! Hillcrest drivers indicate, you know!","Beep beep! Off to market?","Mind my bumper, I'm late for the bakery!","Lovely day for the valley road!","Have you seen the falls yet?","Race you to the castle!","The train's due any minute!"};
             }
+            // Quarry Hills' traffic (--quarry-hills): the town's streets, and Dai's dumper grinding up and down the haul road.
+            if(QuarryHills.Enabled) {
+                string[] welsh={"Bore da! Mind the slate dust!","Iawn? Off to the Caban?","Wrong side of the road, butt!","Chapel's at six. Don't be late!","Seen the Blondin running? Lush.","Rain later. Always is.","Hwyl fawr! See you at the quay!"};
+                var quarryRoads=new List<(string road,float from,float back)>{(QuarryHills.QuarryRoadName,30,40),(QuarryHills.QuarryRoadName,30,40),(QuarryHills.HighStreetName,10,10),(QuarryHills.QuayLaneName,10,12),(QuarryHills.ChapelStreetName,8,8),(QuarryHills.TerraceRowName,8,8)};
+                for(int i=0;i<quarryRoads.Count;i++) {
+                    var road=HillcrestRoute.Find(quarryRoads[i].road);float from=quarryRoads[i].from,to=road.Length-quarryRoads[i].back;Color paint=PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color;
+                    var go=TrialWorld.Car(bodies[(i+3)%bodies.Length],paint);go.name="Quarry traffic "+i;go.transform.SetParent(root);
+                    go.AddComponent<RoadCruiser>().Setup(road,from,to,Mathf.Lerp(from,to,(float)rng.NextDouble()),rng.Next(2)*2-1,player);
+                    var chatter=go.AddComponent<NpcChatter>();chatter.speaker=new[]{"Delyth","Rhodri","Nerys","Ifan","Carys","Geraint"}[i%6];chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=welsh;
+                }
+                var haul=HillcrestRoute.Find(QuarryHills.HaulRoadName);var dumper=TrialWorld.Car("tallboy",Toy.Hex(0xf1c40f));dumper.name="Dai's dumper";dumper.transform.SetParent(root);
+                dumper.AddComponent<RoadCruiser>().Setup(haul,12,haul.Length-12,haul.Length*.5f,1,player);
+                var dai=dumper.AddComponent<NpcChatter>();dai.speaker="Dai the Dumper";dai.colour=Toy.Sun;dai.title="Quarry haulage";
+                dai.lines=new[]{"Twelve tonnes of slate on here, butt. Give way!","Haul road's mine till noon!","Brakes? Who needs brakes going UP?","Race you to the floor. Go on. I dare you."};
+            }
         }
         // Parked cars where people gather: paddock, square, station, viewpoints.
         void Parked(Transform root)
@@ -50,6 +65,7 @@ namespace LittleRoad
             foreach(float phi in new[]{-44f,44f,-118f,118f}){var d=Quaternion.Euler(0,phi,0)*outward;var p=sq+d*(Mathf.Abs(phi)>100?16.5f:26.5f);spots.Add((p,Quaternion.LookRotation(Vector3.Cross(Vector3.up,d)).eulerAngles.y));}
             var yard=HillcrestRoute.StationYard;for(int i=0;i<3;i++)spots.Add((yard+new Vector3(-7+i*5.5f,0,-12),0));
             var lk=HillcrestRoute.Lookout;spots.Add((lk+new Vector3(-9,0,-6),40));spots.Add((HillcrestRoute.Vista+new Vector3(-8,0,-6),150));
+            spots.AddRange(QuarryFloor.Parking); // outside the rally school (--quarry-hills)
             string[] bodies={"marlow","heron","picnic","doodle","otter","bramble","pebble","tallboy","dover","kipper","sprint","roadster"};var rng=new System.Random(41);
             foreach(var (spotAt,yaw) in spots) {
                 // Slide along the row (0, +-2.5, +-5, +-7.5 m) to the nearest spot clear of any kit prop.
@@ -96,6 +112,22 @@ namespace LittleRoad
             "Lost? Just follow the river. It always knows the way home.",
             "I painted my shutters to match my bonnet. Very important.",
             "Watch out on the spiral, the tourists stop anywhere for a photo!"};
+        static readonly string[] QuarryNames={"Dafydd","Sian","Gethin","Nia","Rhys","Ffion","Iolo","Megan","Owain","Cerys","Huw","Eleri","Bryn","Angharad","Emyr","Lowri","Gwilym","Mared","Ianto","Bethan","Tomos","Seren","Aled","Elin","Elfed","Morfudd","Cai","Heledd"};
+        public static readonly string[] QuarryGossip={
+            "Bore da! That's good morning. You'll pick it up.",
+            "My taid split slate in the galleries for forty years. Twelve benches, and he knew every one by name.",
+            "The lake in the pit is that colour on its own. Nobody painted it, honest.",
+            "Don't go near the edge of the galleries in the wet. Or the dry. Just don't.",
+            "Slate Quay used to send roofs all over the world. Now it sends me fishing.",
+            "There's talk of a rally school down on the quarry floor. Loose stuff, mind. Not like your tarmac.",
+            "The haul road's gravel. Ease off before the bends or you'll be on the tips.",
+            "Capel Bethel choir practises on Thursdays. You can hear it from the crest.",
+            "The Caban does a cawl that'll fix anything. Even a bent wheel.",
+            "Those grey hills? Tips. Waste slate. Two tonnes of waste for every tonne of roof.",
+            "Kettle Falls is up past the high street, along the gravel. Lovely when it's been raining. Which is always.",
+            "Rain? This? This is just damp. Proper rain is sideways.",
+            "Hillcrest folk think they've got hills. Bless them.",
+            "We had a Blondin up on the rim once, carrying wagons across the pit on a cable. Imagine racing that!"};
         static readonly string[] FolkBump={"Oi! That's my front yard!","Mind the geraniums!","Honk! I'm parked, you know!","Careful, I just polished that!","Ooh, a visitor!","Beep! Hello to you too!"};
         void Townsfolk(Transform root)
         {
@@ -107,7 +139,15 @@ namespace LittleRoad
                 string body=bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
                 Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color,yard,yaw,FolkNames[name++%FolkNames.Length],"Hillcrest",new[]{Gossip[rng.Next(Gossip.Length)],Gossip[rng.Next(Gossip.Length)]});placed++;
             }
+            // Quarry Hills' residents, outside their terraces (--quarry-hills).
+            int quarryPlaced=0;
+            for(int i=0;i<QuarryHillsTown.Homes.Count&&quarryPlaced<110;i++) {
+                if(rng.NextDouble()>.36)continue;var (yard,yaw,_)=QuarryHillsTown.Homes[i];
+                string body=bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
+                Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color,yard,yaw,QuarryNames[quarryPlaced%QuarryNames.Length],"Quarry Hills",new[]{QuarryGossip[rng.Next(QuarryGossip.Length)],QuarryGossip[rng.Next(QuarryGossip.Length)]});quarryPlaced++;
+            }
             void Special(string spot,string body,Color paint,string who,string title,params string[] lines){if(HillcrestTown.Spots.TryGetValue(spot,out var s))Spawn(root,body,paint,s.at,s.yaw,who,title,lines);}
+            // (Gwen at the rally school is a resident: AdventureGame.)
             Special("gelato","gelato",Toy.Hex(0xffd6e8),"Gelato Gina","Gelato van","Gelato! Twelve flavours, all of them pistachio. Well, nearly.","Best seat in town: right by the fountain, watching the market.");
             Special("postvan","postvan",Toy.Hex(0xd92b3a),"Postie Percival","Hillcrest Post","Letters for the castle, parcels for the hotel, postcards for everyone!","Pip on Bayview and I swap postcards every week. Island news travels slow!");
             if(HillcrestTown.Spots.TryGetValue("taxirank",out var rank))for(int k=0;k<2;k++)Spawn(root,"taxi",Toy.Hex(0xffd23f),rank.at+new Vector3(0,0,k*5.5f),rank.yaw,k==0?"Cabbie Carmine":"Cabbie Lou","Station taxis",new[]{k==0?"Taxi? Where to? Anywhere in the valley, as long as it's downhill.":"The train brings the tourists, I bring them up the hill. Teamwork!"});
@@ -136,7 +176,10 @@ namespace LittleRoad
         }
         void Birds(Transform root)
         {
-            var flocks=new[]{(new Vector3(200,72,-1110),26f,Toy.Hex(0x3d3a4a)),(new Vector3(150,24,-870),40f,Color.white),(new Vector3(-392,26,-1250),55f,Color.white),(HillcrestRoute.FallsHead+Vector3.up*28,30f,Color.white),(HillcrestRoute.Square+Vector3.up*22,20f,Toy.Hex(0x3d3a4a))};
+            var flocks=new List<(Vector3,float,Color)>{(new Vector3(200,72,-1110),26f,Toy.Hex(0x3d3a4a)),(new Vector3(150,24,-870),40f,Color.white),(new Vector3(-392,26,-1250),55f,Color.white),(HillcrestRoute.FallsHead+Vector3.up*28,30f,Color.white),(HillcrestRoute.Square+Vector3.up*22,20f,Toy.Hex(0x3d3a4a))};
+            // Quarry Hills: choughs over the pit, gulls over Slate Quay, jackdaws round the chapel.
+            if(QuarryHills.Enabled){flocks.Add((new Vector3(QuarryHills.Pit.x,QuarryHills.FloorY+70,QuarryHills.Pit.y),60f,Toy.Hex(0x2b2b33)));flocks.Add((QuarryHills.QuayPoint(0,-20,QuarryHills.QuayY+22),35f,Color.white));
+                flocks.Add((new Vector3(QuarryHills.Square.x,QuarryHills.SquareY+26,QuarryHills.Square.y),22f,Toy.Hex(0x3d3a4a)));}
             var rng=new System.Random(5);
             foreach(var (centre,radius,colour) in flocks) {
                 var material=TrialWorld.Material("Bird",colour,0,.2f);

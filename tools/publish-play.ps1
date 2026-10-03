@@ -1,4 +1,4 @@
-# Usage (from project root): .\tools\publish-play.ps1
+﻿# Usage (from project root): .\tools\publish-play.ps1
 # Richard's play copy: copies the current dev build (../little-road-dev-build, overwritten by every build) to
 # ../little-road-play, which changes only when this runs, and points the "Little Road" desktop shortcut at it.
 # Run it only after a build has passed its checks and smoke tests. The shortcut opens on the main screen
@@ -29,8 +29,12 @@ $link.Description="Little Road (play copy, $branch $(($commit -split ' ')[0]))";
 # live save with the maximum build fitted, by the Duke (race him from there). Neither writes the real slots.
 foreach($extra in @(
   @{Name='Little Road - Max Build Hot Laps';Args='-monitor 1 --trial-race --trial-track hillcrest --trial-human --hide-racing-line --trial-cars 1 --trial-laps 5 --trial-duration 1800 --trial-setup max --trial-body regale --sweep-contacts';What='Hot laps of Hillcrest Raceway in the maximum build'},
-  @{Name='Little Road - Max Build Test Drive';Args='-monitor 1 --max-build-test';What='Free roam with the maximum build, by the Duke (a copy of your save)'})){
+  @{Name='Little Road - Max Build Test Drive';Args='-monitor 1 --max-build-test';What='Free roam with the maximum build, by the Duke (a copy of your save)'},
+  # The continent scale test (docs/58 s11): the generated 20 km world to drive; 1-5 switch class in game.
+  @{Name='Little Road - Continent Scale Test';Args='-monitor 1 --scale-test --scale-class C';What='The generated Glasswater continent: drive it in any class (1-5 / D-pad), Tab to jump between towns'},
+  # Quarry Hills (docs/59): the game with the new district built; take Quarry Road west off the raceway road.
+  @{Name='Little Road - Quarry Hills';Args='-monitor 1 --quarry-hills';What='Little Road with Quarry Hills built: Quarry Road heads west off the raceway road'})){
   $l=$shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Desktop')) ($extra.Name+'.lnk')))
   $l.TargetPath=Join-Path $to $exe;$l.Arguments=$extra.Args;$l.WorkingDirectory=$to;$l.IconLocation=(Join-Path $to $exe)+',0';$l.Description=$extra.What;$l.Save()
 }
-Write-Output "Published to $to ($branch $commit); desktop shortcuts 'Little Road', 'Little Road - Max Build Hot Laps' and 'Little Road - Max Build Test Drive' updated."
+Write-Output "Published to $to ($branch $commit); desktop shortcuts 'Little Road', 'Little Road - Max Build Hot Laps', 'Little Road - Max Build Test Drive', 'Little Road - Continent Scale Test' and 'Little Road - Quarry Hills' updated."

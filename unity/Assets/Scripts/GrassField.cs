@@ -73,7 +73,7 @@ namespace LittleRoad
         {
             onGreen=false;
             if(z<-380) {
-                if(ValleyField.RoadDistance(x,z)<8.5f||HillcrestTown.Reserved(x,z))return false;
+                if(ValleyField.RoadDistance(x,z)<8.5f||HillcrestTown.Reserved(x,z)||QuarryHills.Bare(x,z))return false;
                 if(Vector2.Distance(new(x,z),HillcrestRoute.Lake)<HillcrestRoute.LakeRadius+4)return false;
                 if(nearRiver&&HillcrestRoute.Distance(HillcrestRoute.River.line,x,z,out _)<17)return false;
                 return true;
