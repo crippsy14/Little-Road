@@ -45,6 +45,17 @@ public static class QuarryHillsChecks
             "The Blondin runs from the quarry floor to the top of the big tip");
         Check(QuarryHills.Owns(QuarryHills.ChapelStreetName)&&QuarryHills.Owns(QuarryHills.TerraceRowName)&&QuarryHills.Gravel(QuarryHills.HaulRoadName)&&!QuarryHills.Gravel(QuarryHills.HighStreetName),
             "Quarry Hills owns its streets (back streets included); the haul road is gravel and the High Street tarmac");
+        // Gwen's rally school: six lessons with medal times in order, ids the save accepts, and the rally parts locked behind it.
+        Check(RallySchool.Lessons.Length==6&&RallySchool.Lessons.All(l=>l.gold<l.silver&&l.silver<l.bronze&&RallySchool.Known(l.id))&&!RallySchool.Known("lesson_6"),
+            "Six rally lessons, each with gold faster than silver faster than bronze");
+        var gravel=EquipmentCatalog.All.parts.Where(p=>p.shop=="quarry").ToList();
+        Check(gravel.Count==2&&gravel.All(p=>p.unlock==RallySchool.Unlock&&p.tier=="C")&&PartDiscovery.Valid(RallySchool.Unlock),$"Grit & Gravel's own rally kit ({string.Join(", ",gravel.Select(p=>p.name))}) waits for gold in every lesson");
+        var school=new AdventureProgress{traps=new List<TrapRecord>()};
+        Check(!RallySchool.AllGold(school)&&!PartDiscovery.Met(school,RallySchool.Unlock),"With no lessons done the rally kit stays locked");
+        for(int i=0;i<6;i++)school.traps.Add(new TrapRecord{id=RallySchool.Lessons[i].id,best=RallySchool.Lessons[i].gold-1,stars=3});
+        Check(RallySchool.AllGold(school)&&PartDiscovery.Met(school,RallySchool.Unlock),"Gold in all six lessons releases it");
+        var tyres=EquipmentCatalog.Get("tyres_c_gravel");
+        Check(tyres.dirt>EquipmentCatalog.All.parts.Where(p=>p.slot=="tyres"&&p.tier=="C"&&p.id!=tyres.id).Max(p=>p.dirt),"The gravel tyres have the best loose-ground grip in class C");
         return checks;
     }
 }

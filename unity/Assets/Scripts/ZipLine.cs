@@ -12,11 +12,15 @@ namespace LittleRoad
     public sealed class ZipLine
     {
         public static ZipLine Active;
+        // Every line in the world: the castle zipline (Active) and Quarry Hills' Blondin (--quarry-hills).
+        public static readonly List<ZipLine> All=new();
+        public string title="Hillcrest Castle Zipline";
         public const float Hang=2.7f;          // trolley (on the cable) to the car's ground contact
         public const float TopDeck=10.2f;      // zip tower launch deck above the tower's base
         public const float BottomHead=13.4f;   // trolley height under the lower station's headframe
         public const float SagPerMetre=.022f;  // mid-span sag per metre of horizontal span
-        public sealed class Station{public Vector3 bay,cable;public float facing;public string name;}
+        // ride: the prompt in this station's bay; arrive: the note on getting here.
+        public sealed class Station{public Vector3 bay,cable;public float facing;public string name,ride,arrive;}
         public readonly Station top,bottom;
         public bool Busy{get;private set;}
         public bool TrolleyAtTop{get;private set;}=true;
@@ -29,8 +33,8 @@ namespace LittleRoad
 
         public ZipLine(Transform topTower,Transform bottomStation,Transform trolley,Transform parent,Material cable)
         {
-            top=new Station{bay=Child(topTower,"BayAnchor"),cable=Child(topTower,"CableAnchor"),facing=topTower.eulerAngles.y,name="Castle Zip Tower"};
-            bottom=new Station{bay=Child(bottomStation,"BayAnchor"),cable=Child(bottomStation,"CableAnchor"),facing=bottomStation.eulerAngles.y,name="Lower Town zip station"};
+            top=new Station{bay=Child(topTower,"BayAnchor"),cable=Child(topTower,"CableAnchor"),facing=topTower.eulerAngles.y,name="Castle Zip Tower",ride="Ride the zipline down",arrive="Welcome to Hillcrest Castle"};
+            bottom=new Station{bay=Child(bottomStation,"BayAnchor"),cable=Child(bottomStation,"CableAnchor"),facing=bottomStation.eulerAngles.y,name="Lower Town zip station",ride="Ride the lift up to the castle",arrive="Wheee! Welcome to the lower town"};
             this.trolley=trolley;
             // Top bay -> hoist -> launch boom -> cable -> lower boom -> over the bay -> down into it.
             Line(top.bay+Vector3.up*Hang,top.bay+Vector3.up*(TopDeck+Hang));parkTop=Measure();
@@ -41,7 +45,18 @@ namespace LittleRoad
             for(int i=1;i<span.Count;i++)Add(span[i]);cableTo=Measure();
             Line(path[^1],bottom.bay+Vector3.up*BottomHead);parkBottom=Measure();Line(path[^1],bottom.bay+Vector3.up*Hang);
             BuildCable(span,parent,cable);
-            Park(true);Active=this;
+            Park(true);Active=this;All.Add(this);
+        }
+        // A cableway whose bays lie under the rope itself (Quarry Hills' Blondin): the car is hoisted straight up on the fall
+        // rope to the main rope `pickTop` metres along the span from its top end, carried along it, and lowered into the
+        // bay under the rope `pickBottom` metres short of the bottom end. The rope's own mesh is the caller's.
+        public ZipLine(string title,Station top,Station bottom,List<Vector3> span,Transform trolley)
+        {
+            this.title=title;this.top=top;this.bottom=bottom;this.trolley=trolley;
+            Line(top.bay+Vector3.up*Hang,span[0]);parkTop=Measure();cableFrom=parkTop;
+            for(int i=1;i<span.Count;i++)Add(span[i]);cableTo=Measure();parkBottom=cableTo;
+            Line(path[^1],bottom.bay+Vector3.up*Hang);
+            Park(true);All.Add(this);
         }
         static Vector3 Child(Transform t,string name){foreach(var c in t.GetComponentsInChildren<Transform>(true))if(c.name==name)return c.position;throw new System.InvalidOperationException(t.name+" has no "+name);}
         void Add(Vector3 p){along.Add(path.Count==0?0:along[^1]+Vector3.Distance(path[^1],p));path.Add(p);}

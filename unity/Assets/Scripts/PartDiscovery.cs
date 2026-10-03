@@ -7,7 +7,8 @@ namespace LittleRoad
     // visit that parts shop, and from then on every parts shop sells it and every garage fits it, so Bayview can be a
     // sandbox for everything you've found. A part can also carry an unlock condition (Part.unlock) that "gatekeeps" it:
     // until it's met, its home shop shows it locked with the condition; it's found on the next visit after.
-    //   unlock: "wins:5" (race wins), "podiums:B:3" (podiums at class B events), "class:A" (class A open). Empty: none.
+    //   unlock: "wins:5" (race wins), "podiums:B:3" (podiums at class B events), "class:A" (class A open),
+    //   "rallyschool" (gold in all six of Gwen's lessons, Quarry Hills). Empty: none.
     // Class gating still applies on top: only your open class and below are on sale (RaceCalendar.PartOpen).
     public static class PartDiscovery
     {
@@ -24,18 +25,19 @@ namespace LittleRoad
                 "wins"=>f.Length==2&&int.TryParse(f[1],out int w)&&s.raceWins>=w,
                 "podiums"=>f.Length==3&&int.TryParse(f[2],out int n)&&RaceCalendar.Podiums(s,f[1])>=n,
                 "class"=>f.Length==2&&RaceCalendar.Rank(RaceCalendar.Open(s))>=RaceCalendar.Rank(f[1]),
+                RallySchool.Unlock=>RallySchool.AllGold(s),
                 _=>false};
         }
         public static bool Valid(string unlock)
         {
             if(string.IsNullOrEmpty(unlock))return true;var f=unlock.Split(':');
-            return f[0]=="wins"&&f.Length==2&&int.TryParse(f[1],out _)||f[0]=="podiums"&&f.Length==3&&RaceCalendar.Rank(f[1])>=0&&int.TryParse(f[2],out _)||f[0]=="class"&&f.Length==2&&RaceCalendar.Rank(f[1])>=0;
+            return unlock==RallySchool.Unlock||f[0]=="wins"&&f.Length==2&&int.TryParse(f[1],out _)||f[0]=="podiums"&&f.Length==3&&RaceCalendar.Rank(f[1])>=0&&int.TryParse(f[2],out _)||f[0]=="class"&&f.Length==2&&RaceCalendar.Rank(f[1])>=0;
         }
         // The condition, said plainly ("Win 5 races", "3 podiums in class B", "Reach class A").
         public static string Need(string unlock)
         {
             if(string.IsNullOrEmpty(unlock))return "";var f=unlock.Split(':');
-            return f[0] switch{"wins"=>$"Win {f[1]} race{(f[1]=="1"?"":"s")}","podiums"=>$"{f[2]} podium{(f[2]=="1"?"":"s")} at class {f[1]} races","class"=>$"Reach class {f[1]}",_=>unlock};
+            return f[0] switch{RallySchool.Unlock=>"Gold in all six rally school lessons","wins"=>$"Win {f[1]} race{(f[1]=="1"?"":"s")}","podiums"=>$"{f[2]} podium{(f[2]=="1"?"":"s")} at class {f[1]} races","class"=>$"Reach class {f[1]}",_=>unlock};
         }
         // A visit to `shop`'s parts counter: everything at home here whose condition is met is found (once). Returns them.
         public static List<EquipmentCatalog.Part> Visit(AdventureStore store,string shop)

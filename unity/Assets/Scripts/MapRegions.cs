@@ -38,6 +38,7 @@ namespace LittleRoad
         // Where each keepsake is and what it's called (AdventureGame places them; the album names them).
         public static readonly Dictionary<string,(Vector3 at,string place)> Keepsakes=new();
         public static string StampPlace(int i)=>i switch{0=>"Valley viewpoint",1=>"Silver Falls lookout",2=>"Castle courtyard",3=>"Raceway paddock",4=>"Hillcrest Station",5=>"Balloon field",6=>"Vineyard hills",7=>"Lake meadows",_=>"Hillcrest Valley"};
+        public static string CarvingPlace(int i)=>i switch{0=>"The crest",1=>"Source tarn",2=>"The square",3=>"Slate Quay",4=>"Rally school",5=>"Top of the big tip",6=>"Haul road",7=>"Glas ledge",8=>"Kettle Falls gate",9=>"Coast turf",10=>"Foot of the tips",11=>"Top of the High Street",_=>"Quarry Hills"};
         public static string PostcardPlace(int i)=>i switch{0=>"Coast road",1=>"Harbour bend",2=>"Lighthouse run",3=>"Windmill hill",4=>"Campsite straight",_=>"Bayview"};
     }
 }

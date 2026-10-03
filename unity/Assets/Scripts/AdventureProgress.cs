@@ -12,15 +12,18 @@ namespace LittleRoad
     // against it, so a new postcard, stamp or trial cannot pass one and fail the other.
     public static class Collectibles
     {
-        public const int Postcards=5,Stamps=8;
+        public const int Postcards=5,Stamps=8,Carvings=12;
         public const string VisitHillcrest="visit_hillcrest",CastleTrial="trial_castle",CastleTrialHard="trial_castle_hard",QuarrySprint="trial_quarry_sprint";
         // Beating Duke Rolo in the Duke's Challenge (docs/54): the Regale and the prize, once.
         public const string DukeBeaten="duke_beaten";
         public static string Postcard(int i)=>"postcard_"+i;
         public static string Stamp(int i)=>"stamp_"+i;
+        // Quarry Hills' slate carvings (docs/59; --quarry-hills).
+        public static string Carving(int i)=>"carving_"+i;
+        public static bool IsCarving(string id)=>Indexed(id,"carving_",Carvings);
         public static bool IsPostcard(string id)=>Indexed(id,"postcard_",Postcards);
         public static bool IsStamp(string id)=>Indexed(id,"stamp_",Stamps);
-        public static bool Known(string id)=>IsPostcard(id)||IsStamp(id)||id==VisitHillcrest||id==CastleTrial||id==CastleTrialHard||id==QuarrySprint||id==DukeBeaten||PhotoRequests.Known(id);
+        public static bool Known(string id)=>IsPostcard(id)||IsStamp(id)||IsCarving(id)||id==VisitHillcrest||id==CastleTrial||id==CastleTrialHard||id==QuarrySprint||id==DukeBeaten||PhotoRequests.Known(id);
         static bool Indexed(string id,string prefix,int count)
         {
             if(id==null||!id.StartsWith(prefix,StringComparison.Ordinal))return false;
@@ -66,7 +69,7 @@ namespace LittleRoad
         public Dictionary<string,string> Loadout()=>fitted.ToDictionary(p=>p.slot,p=>p.id);
         public void Validate()
         {
-            if(traps!=null&&(traps.Any(t=>t==null||!(SpeedTraps.Known(t.id)||TrainRace.Known(t.id)||DukeDrive.Known(t.id))||t.stars<0||t.stars>3||t.best<0||t.best>500)||traps.Select(t=>t.id).Distinct().Count()!=traps.Count))throw new InvalidDataException("A speed trap record is invalid or repeated.");
+            if(traps!=null&&(traps.Any(t=>t==null||!(SpeedTraps.Known(t.id)||TrainRace.Known(t.id)||DukeDrive.Known(t.id)||RallySchool.Known(t.id)||GalleryClimb.Known(t.id))||t.stars<0||t.stars>3||t.best<0||t.best>500)||traps.Select(t=>t.id).Distinct().Count()!=traps.Count))throw new InvalidDataException("A speed trap record is invalid or repeated.");
             if(tunes!=null&&(tunes.Any(t=>t==null||!t.Valid)||tunes.Select(t=>t.transmission).Distinct().Count()!=tunes.Count))throw new InvalidDataException("A gearbox tune is invalid or repeated.");
             if(version!=1||credits<0||credits>10000000||questStage<0||questStage>3||paintIndex<0||paintIndex>=PaintCatalog.All.Length||
                 raceSerial<0||settledSerial<0||settledSerial>raceSerial||raceWins<0||raceWins>settledSerial||bestPlace<0||bestPlace>24)
@@ -164,6 +167,18 @@ namespace LittleRoad
                 bool better=r.best<=0||seconds<r.best-.05f;int earned=r.stars<1?prize:0;
                 if(!better&&earned==0)return false;
                 if(better)r.best=Mathf.Round(seconds*10)/10;r.stars=1;p.credits+=earned;paid=earned;return true;});
+            return paid;
+        }
+        // A rally school lesson (RallySchool): keeps the best (lowest) time and the best medal (stars 1-3), paying each newly
+        // reached medal's prize once. Returns credits paid.
+        public int RecordLesson(string id,float seconds,int medal,int[] prizes)
+        {
+            int paid=0;
+            Change(p=>{
+                p.traps??=new List<TrapRecord>();var r=p.traps.Find(t=>t.id==id);if(r==null){r=new TrapRecord{id=id};p.traps.Add(r);}
+                bool better=r.best<=0||seconds<r.best-.05f;int earned=0;for(int s=r.stars;s<medal&&s<prizes.Length;s++)earned+=prizes[s];
+                if(!better&&earned==0)return false;
+                if(better)r.best=Mathf.Round(seconds*10)/10;if(medal>r.stars)r.stars=medal;p.credits+=earned;paid=earned;return true;});
             return paid;
         }
         public int BeginRace(){Change(p=>{p.raceSerial++;return true;});return Data.raceSerial;}

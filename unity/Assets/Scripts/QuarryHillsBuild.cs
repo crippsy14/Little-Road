@@ -68,7 +68,7 @@ namespace LittleRoad
                     if(R()<.1f)Plant("bush",q.x,q.z,.7f+R()*.5f,false);else Plant("grass_tuft",q.x,q.z,.9f+R()*.8f,false);tufts++;
                 }
             }
-            int slate=SlateFaces(holder);Galleries(holder);GalleryDressing(holder);QuarryFloor.Build(holder);QuarryQuay.Build(holder);
+            int slate=SlateFaces(holder);Galleries(holder);GalleryDressing(holder);GalleryClimb.Build(holder);QuarryFloor.Build(holder);QuarryQuay.Build(holder);
             Debug.Log($"LITTLE_ROAD_QUARRY_SCENERY trees={trees} tufts={tufts} slateCells={slate}");
         }
         // Worked slate: the galleries (benches and faces alike), the pit's walls above the water and the tips are all bare
@@ -175,6 +175,7 @@ namespace LittleRoad
             int B=QuarryHills.Benches;float W=QuarryHills.BenchWidth,H=QuarryHills.BenchHeight,F=QuarryHills.FloorY;
             string[] rocks={"rock_a","rock_b","rock_cluster"};int scree=0,birch=0;
             for(int k=0;k<B-1;k++)for(float a=axis-half+4;a<axis+half-4;a+=5+R()*9) {
+                if(GalleryClimb.Covers(a))continue;   // (the Gallery Climb's ramps run here)
                 var dir=Dir(a);var at=QuarryHills.PitPoint(dir,(k+1)*W);float toe=(k+1)*W-QuarryHills.Wobble(at.x,at.z);
                 var p=QuarryHills.PitPoint(dir,toe-1.5f-R()*3);p.y=F+(k+1)*H-.2f;
                 string id=rocks[rng.Next(rocks.Length)];if(!BayviewKit.Has(id))continue;

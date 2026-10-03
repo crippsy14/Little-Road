@@ -163,8 +163,8 @@ namespace LittleRoad
             foreach(var (road,from,to) in streets){Pavements(road,from-6,to+6);}
             for(float s=50;s<high.Length-40;s+=64)StreetBunting(high,s);
             // Benches on the pavements, lamps along Quarry Road's approach, map boards in the square and by the Pit Stop.
-            foreach(var (road,from,to) in streets){int k=0;for(float s=from+20;s<to-20;s+=46,k++)Bench(road,s,k%2==0?1:-1);}
-            for(float s=quarry.Length-900;s<quarry.Length-430;s+=36){int side=((int)(s/36))%2==0?1:-1;var lp=quarry.At(s)+quarry.Right(s)*side*(quarry.width*.5f+.9f);lp.y=quarry.At(s).y;if(ValleyField.RoadDistance(lp.x,lp.z)>quarry.width*.5f-.5f)Lamp(lp);}
+            foreach(var (road,from,to) in streets){int k=0;for(float s=from+20;s<to-20;s+=30,k++)Bench(road,s,k%2==0?1:-1);}
+            for(float s=quarry.Length-1400;s<quarry.Length-430;s+=24){int side=((int)(s/24))%2==0?1:-1;var lp=quarry.At(s)+quarry.Right(s)*side*(quarry.width*.5f+.9f);lp.y=quarry.At(s).y;if(ValleyField.RoadDistance(lp.x,lp.z)>quarry.width*.5f-.5f)Lamp(lp);}
             var sq=new Vector3(QuarryHills.Square.x,QuarryHills.SquareY,QuarryHills.Square.y);var mb=sq+new Vector3(18,0,-18);mb.y=H(mb.x,mb.z);Put("map_board",mb,Yaw(mb,sq));
             var ps=QuarryHills.PitStopSite.at;var mb2=ps+Quaternion.Euler(0,QuarryHills.PitStopSite.yaw,0)*new Vector3(16,0,14);mb2.y=H(mb2.x,mb2.z);Put("map_board",mb2,QuarryHills.PitStopSite.yaw);
             for(float s=quarry.Length-300;s<quarry.Length-50;s+=80)StreetBunting(quarry,s);
@@ -191,7 +191,7 @@ namespace LittleRoad
                 bool central=Vector2.Distance(new(centre.x,centre.z),core)<230;if(central&&id.StartsWith("t")&&rng.NextDouble()<.3)id="terrace_b";
                 if(Building(id,centre,Yaw(centre,at),RandomTint(),id=="terrace_b"?ShopNames[shopName++%ShopNames.Length]:null)) {
                     var yard=at+right*side*(road.width*.5f+Pave+Garden*.5f+.4f);yard.y=at.y;Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));
-                    if(lamps<500&&((int)(mid/32))%2==(side>0?0:1)&&Mathf.Repeat(mid,32)<size.x){var lp=at+right*side*(road.width*.5f+.7f);lp.y=at.y;Lamp(lp);}
+                    if(lamps<900&&((int)(mid/16))%2==(side>0?0:1)&&Mathf.Repeat(mid,16)<size.x){var lp=at+right*side*(road.width*.5f+.7f);lp.y=at.y;Lamp(lp);}
                     // Now and then a flowering bush at the corner of the front garden (clear of the parking spot's middle).
                     if(rng.NextDouble()<.16){var fb=at+right*side*(road.width*.5f+Pave+Garden-.7f)+road.Forward(mid)*(size.x*.5f-.7f);fb.y=at.y;Put("flower_bush",fb,(float)rng.NextDouble()*360,null,null,.8f,false);}
                     // The back yard behind it: a wall along the lane and one between it and next door.

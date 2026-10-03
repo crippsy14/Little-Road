@@ -122,7 +122,7 @@ namespace LittleRoad
             regionName.text=r.name.ToUpperInvariant();regionBlurb.text=r.blurb+(r==MapRegions.At(ctx.car.position)?"  ·  you are here":"");
             for(int i=countsHolder.childCount-1;i>=0;i--)Destroy(countsHolder.GetChild(i).gameObject);
             var save=ctx.save();float y=100;int rows=0;
-            foreach(var (label,isKind,colour) in new (string,Func<string,bool>,Color)[]{("Postcards",Collectibles.IsPostcard,Toy.Pink),("Stamps",Collectibles.IsStamp,Toy.Gold)}) {
+            foreach(var (label,isKind,colour) in new (string,Func<string,bool>,Color)[]{("Postcards",Collectibles.IsPostcard,Toy.Pink),("Stamps",Collectibles.IsStamp,Toy.Gold),("Carvings",Collectibles.IsCarving,Toy.Hex(0x5d6b7a))}) {
                 var ids=MapRegions.Keepsakes.Where(p=>isKind(p.Key)&&r.contains(p.Value.at.x,p.Value.at.z)).Select(p=>p.Key).ToList();if(ids.Count==0)continue;
                 int found=ids.Count(save.collected.Contains);rows++;
                 var icon=Toy.Card(countsHolder,label+" icon",new Vector2(60,76),new Vector2(-230,y),colour,8,4,4);icon.rectTransform.localRotation=Quaternion.Euler(0,0,-6);
@@ -135,26 +135,29 @@ namespace LittleRoad
         // ---------------------------------------------------------------- COLLECTION
         void BuildCollection(AdventureProgress save)
         {
-            float y=285;
+            // With Quarry Hills' carvings there are three albums: the rows close up and the cards narrow to fit twelve.
+            bool three=QuarryHills.Enabled;float y=three?300:285,step=three?245:310,cardH=three?160:200;
             void Album(string title,int count,Func<int,string> id,Func<int,string> place,Color colour)
             {
+                float pitch=Mathf.Min(195,1560f/count),cardW=pitch-25;
                 int found=Enumerable.Range(0,count).Count(i=>save.collected.Contains(id(i)));
                 Toy.Title(body,title+" title",$"{title}  {found}/{count}",40,new Vector2(1200,56),new Vector2(-180,y),colour,TextAnchor.MiddleLeft);
                 for(int i=0;i<count;i++) {
-                    bool has=save.collected.Contains(id(i));float cx=-760+i*195;
-                    var card=Toy.Card(body,title+" "+i,new Vector2(170,200),new Vector2(cx+85,y-140),has?colour:Toy.Silver,18,5,6);card.rectTransform.localRotation=Quaternion.Euler(0,0,(i%2==0?-2:2));
-                    Toy.Label(card.transform,"Mark",has?(i+1).ToString():"?",has?54:70,new Vector2(170,90),new Vector2(0,26),has?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true);
+                    bool has=save.collected.Contains(id(i));float cx=-760+i*pitch;
+                    var card=Toy.Card(body,title+" "+i,new Vector2(cardW,cardH),new Vector2(cx+cardW*.5f,y-40-cardH*.5f),has?colour:Toy.Silver,18,5,6);card.rectTransform.localRotation=Quaternion.Euler(0,0,(i%2==0?-2:2));
+                    Toy.Label(card.transform,"Mark",has?(i+1).ToString():"?",has?54:70,new Vector2(cardW,90),new Vector2(0,cardH*.13f),has?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true);
                     var region=MapRegions.Keepsakes.TryGetValue(id(i),out var k)?MapRegions.At(k.at).name:"";
-                    Toy.Label(card.transform,"Place",has?place(i):"Somewhere in "+region,17,new Vector2(156,60),new Vector2(0,-56),has?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true);
+                    Toy.Label(card.transform,"Place",has?place(i):"Somewhere in "+region,cardW<150?14:17,new Vector2(cardW-14,60),new Vector2(0,-cardH*.28f),has?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true);
                 }
-                y-=310;
+                y-=step;
             }
             Album("BAYVIEW POSTCARDS",Collectibles.Postcards,Collectibles.Postcard,MapRegions.PostcardPlace,Toy.Pink);
             Album("HILLCREST STAMPS",Collectibles.Stamps,Collectibles.Stamp,MapRegions.StampPlace,Toy.Gold);
+            if(three)Album("QUARRY HILLS CARVINGS",Collectibles.Carvings,Collectibles.Carving,MapRegions.CarvingPlace,Toy.Hex(0x5d6b7a));
             // Badges: one-off achievements.
             float bx=-620;
             foreach(var (id,label) in new[]{(Collectibles.VisitHillcrest,"Reached Hillcrest"),(Collectibles.CastleTrial,"Castle Climb beaten"),(Collectibles.CastleTrialHard,"Hard Climb beaten")}) {
-                bool has=save.collected.Contains(id);var badge=Toy.Card(body,"Badge "+label,new Vector2(380,64),new Vector2(bx,-335),has?Toy.Mint:Toy.Silver,32,5,5);
+                bool has=save.collected.Contains(id);var badge=Toy.Card(body,"Badge "+label,new Vector2(380,64),new Vector2(bx,three?-440:-335),has?Toy.Mint:Toy.Silver,32,5,5);
                 Toy.Label(badge.transform,"Badge text",(has?"✓ ":"")+label,24,new Vector2(360,64),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter,true);bx+=400;
             }
         }

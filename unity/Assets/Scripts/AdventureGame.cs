@@ -22,7 +22,7 @@ namespace LittleRoad
         string lastGoal;float goalUntil,controlsUntil=-1,stoppedSince=-1;
         // Fog of war (ExploredMap): reveal around the car a few times a second, save now and then.
         float nextReveal,nextExploreSave;readonly HashSet<string> viewpointsSeen=new();
-        string nearest;float interactionReadyTime;ValleyLife.Folk nearFolk;NpcChatter nearChat;ZipLine.Station nearZip;bool riding;
+        string nearest;float interactionReadyTime;ValleyLife.Folk nearFolk;NpcChatter nearChat;ZipLine.Station nearZip;ZipLine nearLine;bool riding;
         // Interaction prompts: a badge over each resident (discover), the bottom card when in range (act).
         readonly Dictionary<string,TalkBadge> badges=new();TalkBadge roamBadge;GameObject roamOwner;string objectiveResident;
         void TalkChatter(NpcChatter c)
@@ -135,7 +135,77 @@ namespace LittleRoad
             // Test (--quarry-hills --sprint-test): talk to Gwen, start the Quarry Sprint, carry the car round the loop at 22 m/s and
             // check the lap is timed and the prize claimed (the result goes to the log, then the game quits).
             if(RaceTrial.Has("--sprint-test")&&residents.ContainsKey("rallyschool")){StartCoroutine(SprintTest());yield break;}
+            if(RaceTrial.Has("--carving-test")&&QuarryHillsTown.Spots.Count>0){StartCoroutine(CarvingTest());yield break;}
+            if(RaceTrial.Has("--blondin-test")){StartCoroutine(BlondinTest());yield break;}
+            if(RaceTrial.Has("--climb-test")){StartCoroutine(ClimbTest());yield break;}
+            if(RaceTrial.Has("--lesson-test")&&residents.ContainsKey("rallyschool")){StartCoroutine(LessonTest());yield break;}
             yield return null;if(AdventureSession.Smoke)StartCoroutine(Smoke());
+        }
+        // Test (--quarry-hills --carving-test): every carving is clear of buildings and props, and collecting all twelve pays.
+        IEnumerator CarvingTest()
+        {
+            yield return new WaitForSeconds(1);int blocked=0;float credits=Store.Data.credits;
+            for(int i=0;i<Collectibles.Carvings;i++) {
+                string id=Collectibles.Carving(i);if(!finds.TryGetValue(id,out var go))continue;var at=go.transform.position;
+                int hits=0;string what="";foreach(var c in Physics.OverlapSphere(at,2.2f))if(c.CompareTag("Respawn")&&c.GetComponentInParent<RoadCar>()==null){hits++;what+=c.name+";";}if(hits>0)blocked++;
+                Debug.Log($"LITTLE_ROAD_CARVING {i} {MapRegions.CarvingPlace(i)} at=({at.x:0},{at.y:0.0},{at.z:0}) ground={ValleyField.Height(at.x,at.z):0.0} road={ValleyField.RoadDistance(at.x,at.z):0} blocked={hits} {what}");
+                player.body.isKinematic=true;player.body.position=at+Vector3.down*.8f;yield return new WaitForFixedUpdate();yield return null;yield return null;
+            }
+            player.body.isKinematic=false;int got=0;foreach(var c in Store.Data.collected)if(Collectibles.IsCarving(c))got++;
+            Debug.Log($"LITTLE_ROAD_CARVING_TEST collected={got}/{Collectibles.Carvings} blocked={blocked} credits={credits}->{Store.Data.credits}");
+            Application.Quit(got==Collectibles.Carvings&&blocked==0?0:1);
+        }
+        // Test (--quarry-hills --blondin-test): ride the Blondin up from the floor and back down, with a picture mid-ride
+        // (camera off to the side); the car must end each ride in the far bay.
+        IEnumerator BlondinTest()
+        {
+            yield return new WaitForSeconds(1);var line=ZipLine.All.Find(z=>z.title.Contains("Blondin"));
+            if(line==null){Debug.Log("LITTLE_ROAD_BLONDIN_TEST missing");Application.Quit(1);yield break;}
+            Place(line.bottom.bay);yield return new WaitForSeconds(.6f);float t0=Time.time;
+            var up=StartCoroutine(RideZip(line,false));
+            yield return new WaitForSeconds(12);var p=player.body.position;
+            cameraView.transform.position=p+new Vector3(-30,8,25);cameraView.transform.LookAt(p);yield return null;Capture("blondin-ride");
+            while(riding)yield return null;float upTime=Time.time-t0;float upEnd=Vector3.Distance(player.body.position,line.top.bay);
+            yield return new WaitForSeconds(1);t0=Time.time;StartCoroutine(RideZip(line,true));yield return null;while(riding)yield return null;
+            float downTime=Time.time-t0,downEnd=Vector3.Distance(player.body.position,line.bottom.bay);
+            Debug.Log($"LITTLE_ROAD_BLONDIN_TEST up={upTime:0.0}s end={upEnd:0.0}m down={downTime:0.0}s end={downEnd:0.0}m");
+            Application.Quit(upEnd<4&&downEnd<4?0:1);
+        }
+        // Test (--quarry-hills --lesson-test): each rally lesson run along a clean line (carried, 14 m/s; the mini-stage at
+        // 20 m/s) must finish with a medal; six golds must release the rally parts at Grit & Gravel.
+        IEnumerator LessonTest()
+        {
+            yield return new WaitForSeconds(1);float credits=Store.Data.credits;var report=new List<string>();
+            for(int i=0;i<RallySchool.Lessons.Length;i++) {
+                StartLesson(i);yield return new WaitForSeconds(3.2f);var path=RallySchool.TestPath(i);float speed=i==5?20:14;
+                player.body.isKinematic=true;
+                for(int k=0;k+1<path.Count&&school.Active;k++){var a=path[k];var b=path[k+1];float len=Vector3.Distance(a,b);
+                    for(float d=0;d<len&&school.Active;d+=speed*Time.fixedDeltaTime){var p=Vector3.Lerp(a,b,d/len);p.y=ValleyField.Height(p.x,p.z)+.6f;player.body.MovePosition(p);
+                        var f=b-a;f.y=0;if(f.sqrMagnitude>.01f)player.body.MoveRotation(Quaternion.LookRotation(f));yield return new WaitForFixedUpdate();}}
+                for(int k=0;k<30&&school.Active;k++)yield return new WaitForFixedUpdate();
+                player.body.isKinematic=false;var r=RallySchool.Record(Store.Data,i);report.Add($"{i}:{(r==null?"none":RallySchool.MedalName(r.stars)+" "+r.best)}");
+                school.End();yield return new WaitForSeconds(.3f);
+            }
+            bool unlocked=PartDiscovery.Met(Store.Data,RallySchool.Unlock);
+            Debug.Log($"LITTLE_ROAD_LESSON_TEST {string.Join(" ",report)} allGold={RallySchool.AllGold(Store.Data)} partsUnlocked={unlocked} credits={credits}->{Store.Data.credits}");
+            Application.Quit(unlocked?0:1);
+        }
+        // Test (--quarry-hills --climb-test): carried up the Gallery Climb's middle line at 15 m/s from the bottom flags, the
+        // run must start itself and finish at the top; a still from part-way up, looking across the galleries.
+        IEnumerator ClimbTest()
+        {
+            yield return new WaitForSeconds(1);var path=GalleryClimb.Path;if(path.Count<10){Debug.Log("LITTLE_ROAD_CLIMB_TEST no path");Application.Quit(1);yield break;}
+            var back=GalleryClimb.Start-GalleryClimb.StartDir*20;back.y=ValleyField.Height(back.x,back.z);var all=new List<Vector3>{back};all.AddRange(path);all.Add(GalleryClimb.Finish);
+            player.body.isKinematic=true;bool started=false,shot=false;float t0=Time.time;
+            for(int k=0;k+1<all.Count;k++){var a=all[k];var b=all[k+1];float len=Vector3.Distance(a,b);
+                for(float d=0;d<len;d+=15*Time.fixedDeltaTime){var p=Vector3.Lerp(a,b,d/len)+Vector3.up*.6f;var f=b-a;f.y=0;
+                    player.body.MovePosition(p);if(f.sqrMagnitude>.01f)player.body.MoveRotation(Quaternion.LookRotation(f));
+                    yield return new WaitForFixedUpdate();if(galleryStart>=0)started=true;
+                    if(!shot&&k==all.Count/2){shot=true;cameraView.transform.position=p+new Vector3(0,40,0)-GalleryClimb.StartDir*60;cameraView.transform.LookAt(p);yield return null;Capture("gallery-climb");}}}
+            for(int k=0;k<20;k++)yield return new WaitForFixedUpdate();
+            player.body.isKinematic=false;var r=Store.Data.traps?.Find(x=>x.id==GalleryClimb.Id);
+            Debug.Log($"LITTLE_ROAD_CLIMB_TEST started={started} finished={(r!=null)} best={(r!=null?r.best:0)} rise={GalleryClimb.Finish.y-GalleryClimb.Start.y:0} points={path.Count}");
+            Application.Quit(started&&r!=null?0:1);
         }
         IEnumerator SprintTest()
         {
@@ -247,20 +317,26 @@ namespace LittleRoad
                 for(int i=0;i<stampSpots.Length;i++) {
                     string id=Collectibles.Stamp(i);var p=stampSpots[i];p.y=Mathf.Max(p.y,ValleyField.Height(p.x,p.z))+1.2f;MapRegions.Keepsakes[id]=(p,MapRegions.StampPlace(i));
                     if(Store.Data.collected.Contains(id))continue;
-                    finds[id]=Keepsake(id,p,true,i);
+                    finds[id]=Keepsake(id,p,1,i);
                 }
+            }
+            // Quarry Hills' slate carvings (--quarry-hills).
+            if(QuarryHillsTown.Spots.Count>0) {
+                var spots=QuarryHills.CarvingSpots();if(spots.Length!=Collectibles.Carvings)throw new InvalidOperationException("Carving spots and Collectibles.Carvings disagree.");
+                for(int i=0;i<spots.Length;i++){string id=Collectibles.Carving(i);var p=spots[i]+Vector3.up*1.3f;MapRegions.Keepsakes[id]=(p,MapRegions.CarvingPlace(i));if(Store.Data.collected.Contains(id))continue;finds[id]=Keepsake(id,p,2,i);}
             }
             for(int i=0;i<Collectibles.Postcards;i++) {
                 string id=Collectibles.Postcard(i);
                 float d=world.track.length*(.12f+i*.17f);Vector3 p=world.track.At(d)+world.track.Right(d)*(i%2==0?13:-13)+Vector3.up*1.1f;MapRegions.Keepsakes[id]=(p,MapRegions.PostcardPlace(i));
                 if(Store.Data.collected.Contains(id))continue;
-                finds[id]=Keepsake(id,p,false,i);
+                finds[id]=Keepsake(id,p,0,i);
             }
         }
         // Postcards and stamps: paper cards with a picture on both faces (they turn) on a bobbing
         // pivot, so they read as keepsakes from the road instead of flat coloured tiles.
         readonly Dictionary<Color,Material> keepsakeMaterials=new();
-        GameObject Keepsake(string id,Vector3 at,bool stamp,int index)
+        // kind: 0 Bayview postcard, 1 Hillcrest stamp, 2 Quarry Hills slate carving.
+        GameObject Keepsake(string id,Vector3 at,int kind,int index)
         {
             var root=new GameObject(id).transform;root.position=at;
             var pivot=new GameObject("Bob").transform;pivot.SetParent(root,false);
@@ -273,7 +349,17 @@ namespace LittleRoad
                 if(!keepsakeMaterials.TryGetValue(c,out var m))keepsakeMaterials[c]=m=TrialWorld.Material("Keepsake",c,0,.35f);
                 var r=g.GetComponent<Renderer>();r.sharedMaterial=m;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
             }
-            if(stamp) {
+            if(kind==2) {
+                // Slate carving: a dark tablet with a pale carved border, a carved panel and a red dragon mark.
+                Color slate=Toy.Hex(0x3f4650),carved=Toy.Hex(0x9aa3ad),dragon=Toy.Hex(0xc0392b);
+                Part(Vector3.zero,new Vector3(.78f,.95f,.09f),slate);
+                foreach(int side in new[]{-1,1}) {
+                    Part(new Vector3(0,.41f,side*.05f),new Vector3(.66f,.04f,.01f),carved);Part(new Vector3(0,-.41f,side*.05f),new Vector3(.66f,.04f,.01f),carved);
+                    Part(new Vector3(.31f,0,side*.05f),new Vector3(.04f,.82f,.01f),carved);Part(new Vector3(-.31f,0,side*.05f),new Vector3(.04f,.82f,.01f),carved);
+                    Part(new Vector3(0,.12f,side*.05f),new Vector3(.38f,.3f,.01f),carved*.85f);Part(new Vector3(0,.12f,side*.053f),new Vector3(.22f,.14f,.01f),dragon);
+                    Part(new Vector3(0,-.2f,side*.05f),new Vector3(.4f,.05f,.01f),carved);
+                }
+            } else if(kind==1) {
                 // Hillcrest stamp: paper square, coloured scene, white emblem and a darker frame.
                 Part(Vector3.zero,new Vector3(.8f,.8f,.04f),paper);
                 foreach(int side in new[]{-1,1}) {
@@ -374,14 +460,16 @@ namespace LittleRoad
                 foreach(var c in NpcChatter.All){if(c==null||!c.CanTalk||c.transform==player.transform)continue;float d=Vector3.Distance(player.body.position,c.transform.position);if(d<best){best=d;nearChat=c;nearFolk=null;}}
             }
             // Zipline bays (castle Zip Tower and the lower-town station): stopped in the bay.
-            nearZip=null;var zip=ZipLine.Active;
-            if(inRange==null&&stopped&&zip!=null&&!zip.Busy&&climbStart<0){
-                if(Vector3.Distance(player.body.position,zip.top.bay)<6)nearZip=zip.top;else if(Vector3.Distance(player.body.position,zip.bottom.bay)<6)nearZip=zip.bottom;
-                if(nearZip!=null){nearFolk=null;nearChat=null;}
+            // (Every line: the castle zipline and Quarry Hills' Blondin.)
+            nearZip=null;nearLine=null;
+            if(inRange==null&&stopped&&climbStart<0&&sprintStart<0&&(school==null||!school.Active))foreach(var line in ZipLine.All) {
+                if(line.Busy)continue;
+                if(Vector3.Distance(player.body.position,line.top.bay)<6)nearZip=line.top;else if(Vector3.Distance(player.body.position,line.bottom.bay)<6)nearZip=line.bottom;
+                if(nearZip!=null){nearLine=line;nearFolk=null;nearChat=null;break;}
             }
             // Cross / A (and E) talks while someone (or the zipline) is in reach; then it doesn't also shift up (Controls).
             Controls.InteractionReady=Time.unscaledTime>interactionReadyTime&&(nearest!=null||nearZip!=null||nearFolk!=null||nearChat!=null);
-            if(Time.unscaledTime>interactionReadyTime&&(k?.eKey.wasPressedThisFrame==true||pad?.buttonSouth.wasPressedThisFrame==true)){if(nearest!=null)Interact(nearest);else if(nearZip!=null)StartCoroutine(RideZip(nearZip==zip.top));else if(nearFolk!=null)TalkFolk(nearFolk);else if(nearChat!=null)TalkChatter(nearChat);}
+            if(Time.unscaledTime>interactionReadyTime&&(k?.eKey.wasPressedThisFrame==true||pad?.buttonSouth.wasPressedThisFrame==true)){if(nearest!=null)Interact(nearest);else if(nearZip!=null)StartCoroutine(RideZip(nearLine,nearZip==nearLine.top));else if(nearFolk!=null)TalkFolk(nearFolk);else if(nearChat!=null)TalkChatter(nearChat);}
             if(Controls.Pressed(Controls.Act.Recover))player.TryRecover();
             // The horn (H / L3, docs/51): folk nearby answer, some traffic beeps back, the train whistles.
             bool honk=Controls.Held(Controls.Act.Horn);playerHorn?.Hold(honk&&!player.controlsBlocked);
@@ -394,13 +482,14 @@ namespace LittleRoad
                 if(Vector3.Distance(player.body.position,pair.Value.transform.position)<2.7f)Attempt(()=>{
                     var at=pair.Value.transform.position;
                     if(Store.Collect(pair.Key)){Destroy(pair.Value);finds.Remove(pair.Key);Confetti.Burst(at);
-                        int got=0;bool stamp=Collectibles.IsStamp(pair.Key);foreach(string c in Store.Data.collected)if(stamp?Collectibles.IsStamp(c):Collectibles.IsPostcard(c))got++;
-                        Notify(stamp?$"Hillcrest stamp {got} of {Collectibles.Stamps} found · +50 credits":$"Bayview postcard {got} of {Collectibles.Postcards} found · +50 credits");}});
+                        Func<string,bool> kind=Collectibles.IsCarving(pair.Key)?Collectibles.IsCarving:Collectibles.IsStamp(pair.Key)?Collectibles.IsStamp:Collectibles.IsPostcard;
+                        int got=0;foreach(string c in Store.Data.collected)if(kind(c))got++;
+                        Notify(Collectibles.IsCarving(pair.Key)?$"Slate carving {got} of {Collectibles.Carvings} found · +50 credits":Collectibles.IsStamp(pair.Key)?$"Hillcrest stamp {got} of {Collectibles.Stamps} found · +50 credits":$"Bayview postcard {got} of {Collectibles.Postcards} found · +50 credits");}});
             }
             // Countdowns hold the car still but let it rev (Richard, 1 Oct).
-            player.holdStill=climbStart>=0&&Time.time<climbStart||trainRace!=null&&trainRace.Holding;
+            player.holdStill=climbStart>=0&&Time.time<climbStart||trainRace!=null&&trainRace.Holding||school!=null&&school.Holding;
 
-            UpdateClimb();UpdateSprint();UpdateVisit();RefreshHUD();
+            UpdateClimb();UpdateSprint();UpdateGalleryClimb();UpdateVisit();RefreshHUD();
         }
         // Runs every frame (from LateUpdate), reviews included: they capture the prompt and badges.
         void PromptFrame()
@@ -414,7 +503,7 @@ namespace LittleRoad
         {
             string title=null,role=null;Color colour=Toy.Sun;GameObject roam=null;
             if(inRange!=null){var who=People[inRange];title=(stopped?"Talk to ":"Slow down to talk to ")+who.speaker;role=RoleOf(who.label);colour=who.bubble;}
-            else if(nearZip!=null&&ZipLine.Active!=null&&!riding){title=nearZip==ZipLine.Active.top?"Ride the zipline down":"Ride the lift up to the castle";role="Hillcrest Castle Zipline";colour=Toy.Sun;}
+            else if(nearZip!=null&&nearLine!=null&&!riding){title=nearZip.ride;role=nearLine.title;colour=Toy.Sun;}
             else if(nearFolk!=null){title="Talk to "+nearFolk.name;role=nearFolk.title;roam=nearFolk.car.gameObject;colour=Toy.Sky;}
             else if(nearChat!=null){title="Talk to "+nearChat.speaker;role=string.IsNullOrEmpty(nearChat.title)?"Local":nearChat.title;roam=nearChat.gameObject;colour=nearChat.colour;}
             ui.Interaction(title,role,colour,stopped);
@@ -437,16 +526,20 @@ namespace LittleRoad
             string[] objectives={"Visit Mara at the Pit Stop garage","Deliver Mara's parcel to Pip at the lighthouse","Return to Mara for 350 credits",mainland?"Explore Hillcrest Valley · Vito runs the Valley Cup at the raceway":"Race Rowan, or cross the causeway to Hillcrest Valley"};
             string target=Store.Data.questStage==1?"post":Store.Data.questStage<3?"garage":mainland&&residents.ContainsKey("raceway")?"raceway":"cafe";objectiveResident=target;
             if(trainRace!=null&&trainRace.Active)return trainRace.Goal_Text(player.transform.position,distance);
+            if(school!=null&&school.Active)return school.GoalText();
+            if(galleryStart>=0)return $"Gallery Climb · {Time.time-galleryStart:0.0} s · par {GalleryClimb.Par:0} s"+(distance?$"  ·  {Mathf.Max(0,GalleryClimb.Finish.y-player.transform.position.y):0} m to climb":"");
+            if(sprintStart>=0)return Time.time<sprintStart?"Quarry Sprint · get ready!":$"Quarry Sprint · {Time.time-sprintStart:0.0} s · par {SprintPar:0} s";
             if(climbStart>=0)return (Time.time<climbStart?"Castle Climb · get ready!":$"Castle Climb · {Time.time-climbStart:0.0} s · par {ClimbPar:0} s · to the castle")+(distance?$"  ·  {Vector3.Distance(player.transform.position,HillcrestRoute.CastleCourt):0} m":"");
             return objectives[Store.Data.questStage]+(distance?$"  ·  {Vector3.Distance(player.transform.position,residents[target]):0} m":"");
         }
         void RefreshHUD()
         {
             float now=Time.unscaledTime;if(controlsUntil<0)controlsUntil=now+15;
-            string goal=GoalText(false);if(goal!=lastGoal&&climbStart<0){lastGoal=goal;goalUntil=now+8;}
+            string goal=GoalText(false);if(goal!=lastGoal&&climbStart<0&&sprintStart<0&&(school==null||!school.Active)){lastGoal=goal;goalUntil=now+8;}
             if(Mathf.Abs(player.speed)<=1.2f){if(stoppedSince<0)stoppedSince=now;}else stoppedSince=-1;
             float stopped=stoppedSince<0?0:now-stoppedSince;
-            ui.Roam(GoalText(true),climbStart>=0||now<goalUntil||stopped>1.5f,null,false,player);
+            bool timed=climbStart>=0||sprintStart>=0||galleryStart>=0||school!=null&&school.Active;
+            ui.Roam(GoalText(true),timed||now<goalUntil||stopped>1.5f,null,false,player);
         }
         // Pause hub > Settings: the Options screen (every setting, in tabs), then Save and Quit (added by the hub).
         List<(string label,Action act)> SettingsItems()=>new(){
@@ -470,7 +563,7 @@ namespace LittleRoad
             // Only what you've found shows (the objective always does).
             foreach(var r in residents)if(!PitHosts.Contains(r.Key)&&People.TryGetValue(r.Key,out var who)&&ExploredMap.Seen(r.Value))mapMarks.Add(new(r.Value,who.bubble,Minimap.Shape.Dot));
             foreach(var site in PitStop.Sites.Values)if(ExploredMap.Seen(site))mapMarks.Add(new(site,PitStop.Brand,Minimap.Shape.Service));
-            if(ZipLine.Active!=null){foreach(var bay in new[]{ZipLine.Active.top.bay,ZipLine.Active.bottom.bay})if(ExploredMap.Seen(bay))mapMarks.Add(new(bay,Toy.Sun,Minimap.Shape.Zip));}
+            foreach(var line in ZipLine.All)foreach(var bay in new[]{line.top.bay,line.bottom.bay})if(ExploredMap.Seen(bay))mapMarks.Add(new(bay,Toy.Sun,Minimap.Shape.Zip));
             foreach(var trap in SpeedTraps.All)if(ExploredMap.Seen(trap.at))mapMarks.Add(new(trap.at,(SpeedTraps.Record(Store.Data,trap.id)?.stars??0)>=3?Toy.Mint:Toy.Orange,Minimap.Shape.Trap));
             if(trainRace!=null&&trainRace.Active)mapMarks.Add(new(trainRace.Goal,Toy.Red,Minimap.Shape.Objective));
             else if(climbStart>=0)mapMarks.Add(new(HillcrestRoute.CastleCourt,Toy.Sun,Minimap.Shape.Objective));
@@ -645,17 +738,17 @@ namespace LittleRoad
             return list;
         }
         // Hillcrest Castle zipline: the car hangs in the trolley's cradle for the ride.
-        IEnumerator RideZip(bool down)
+        IEnumerator RideZip(ZipLine zip,bool down)
         {
             if(climbStart>=0){Notify("The zipline is closed · Castle Climb in progress");yield break;}   // no lift to the top during the climb
-            var zip=ZipLine.Active;riding=true;nearZip=null;player.controlsBlocked=true;player.body.isKinematic=true;
+            riding=true;nearZip=null;nearLine=null;player.controlsBlocked=true;player.body.isKinematic=true;
             Notify(down?"Hold on tight!":"Up we go!");
             try{yield return zip.Ride(player,down);}
             finally {
                 player.body.isKinematic=false;player.body.linearVelocity=Vector3.zero;player.body.angularVelocity=Vector3.zero;
                 riding=false;player.controlsBlocked=ui.IsOpen;interactionReadyTime=Time.unscaledTime+.6f;
             }
-            Notify(down?"Wheee! Welcome to the lower town":"Welcome to Hillcrest Castle");
+            Notify(down?zip.bottom.arrive:zip.top.arrive);
         }
         void Attempt(Action action){try{action();}catch(Exception e){Debug.LogError(e);Show("Could not save that change",e.Message+"\nYour previous progress is still loaded.",new(){new("Back to the road",Close)});}}
         void Show(string title,string description,List<AdventureUI.Choice> choices){player.controlsBlocked=true;ui.Show(title,description,choices);}
@@ -811,32 +904,75 @@ namespace LittleRoad
         void EndClimb(){climbStart=-1;climbEvent?.End();}
         // The Quarry Sprint (docs/59): one timed lap of the rallycross loop on the quarry floor, from Gwen at the rally
         // school. Through the three quarter-lap gates in order, then back over the start line.
-        const float SprintPar=80;const int SprintPrize=250;float sprintStart=-1;int sprintGate;
+        const float SprintPar=80;const int SprintPrize=250;float sprintStart=-1;int sprintGate;RallySchool school;
         void Gwen()
         {
-            string done=Store.Data.collected.Contains(Collectibles.QuarrySprint)?" You've beaten par already. Lovely. Go again for the joy of it.":$" Beat {SprintPar:0} seconds and I'll pay {SprintPrize} credits.";
-            Show("Gwen \"Granite\" Price / Rally School","Croeso! Gravel's not tarmac, cariad: brake in a straight line, turn in early, and let her slide. The Quarry Sprint is one lap of the floor, from the gate by the grandstand."+done,
-                new(){new($"Quarry Sprint · time trial (par {SprintPar:0} s)",StartSprint),new("Back to the road",Close)});
+            string done=Store.Data.collected.Contains(Collectibles.QuarrySprint)?" You've beaten the Sprint's par already. Lovely.":$" Beat {SprintPar:0} seconds round the Sprint and I'll pay {SprintPrize} credits.";
+            int golds=0;for(int i=0;i<RallySchool.Lessons.Length;i++){var r=RallySchool.Record(Store.Data,i);if(r!=null&&r.stars==3)golds++;}
+            string schoolLine=RallySchool.AllGold(Store.Data)?" Gold in every lesson: Bethan at Grit & Gravel has the rally kit for you.":$" Six lessons, bronze to gold: get gold in all six and Bethan sells you the proper rally kit ({golds} of 6 so far).";
+            Show("Gwen \"Granite\" Price / Rally School","Croeso! Gravel's not tarmac, cariad: brake in a straight line, turn in early, and let her slide."+schoolLine+done,
+                new(){new("Rally lessons",GwenLessons),new($"Quarry Sprint · time trial (par {SprintPar:0} s)",StartSprint),new("Back to the road",Close)});
+        }
+        void GwenLessons()
+        {
+            var choices=new List<AdventureUI.Choice>();
+            for(int i=0;i<RallySchool.Lessons.Length;i++){int k=i;var l=RallySchool.Lessons[i];var r=RallySchool.Record(Store.Data,i);
+                string mark=r==null||r.stars==0?"":$" · {RallySchool.MedalName(r.stars)} {r.best:0.0} s";
+                choices.Add(new($"{i+1}. {l.name}{mark}",()=>GwenLesson(k)));}
+            choices.Add(new("Back",Gwen));
+            Show("Gwen / Rally lessons",$"Pick a lesson. Medals pay once each: bronze {RallySchool.Prizes[0]}, silver {RallySchool.Prizes[1]}, gold {RallySchool.Prizes[2]} credits.",choices);
+        }
+        void GwenLesson(int i)
+        {
+            var l=RallySchool.Lessons[i];
+            Show($"Gwen / {l.name}",$"{l.how}\nGold {l.gold:0.0} s · silver {l.silver:0.0} s · bronze {l.bronze:0} s. Knocked cones cost 2 s each.",
+                new(){new("Go!",()=>{Close();StartLesson(i);}),new("Back",GwenLessons)});
+        }
+        void StartLesson(int i)
+        {
+            if(school==null){school=gameObject.AddComponent<RallySchool>();school.Setup(player,()=>Store,Notify,(p,yaw)=>{player.body.rotation=Quaternion.Euler(0,yaw,0);Place(p);});}
+            sprintStart=-1;school.Begin(i);
         }
         // Quarry Hills' Pit Stop (uniform with every town's) and its people.
         void Huw()
         {
-            var choices=new List<AdventureUI.Choice>{new("Fit parts",()=>OpenParts("hillcrest",PartsBrowser.Mode.Fit,Huw)),new("Tune gearbox",()=>OpenTuning("hillcrest",Huw))};
+            var choices=new List<AdventureUI.Choice>{new("Fit parts",()=>OpenParts("quarry",PartsBrowser.Mode.Fit,Huw)),new("Tune gearbox",()=>OpenTuning("hillcrest",Huw))};
             if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Huw)));
             choices.Add(new("Back to the road",Close));
             Show("Huw / Pit Stop Garage","Croeso i'r Pit Stop! Bring her in: I'll fit anything you own, set up the gearbox, or swap to another of your bodies. Bethan sells the parts next door, Nia the new rides.",choices);
         }
-        void Bethan()=>Show("Bethan / Grit & Gravel","Everything the valley stocks, right here. The proper rally kit (gravel tyres, raised suspension, sump guards, mud flaps) comes once Gwen at the rally school says you're ready for it.",
-            new(){new("Buy parts",()=>OpenParts("hillcrest",PartsBrowser.Mode.Shop,Bethan)),new("Back to the road",Close)});
+        void Bethan()=>Show("Bethan / Grit & Gravel",RallySchool.AllGold(Store.Data)?"Gwen says you're ready, so here it is: our gravel tyres and the gravel rack. Knobbly, loud and quick on the loose. Plus everything else you've found on your travels.":
+            "Everything you've found on your travels, right here. Our own rally kit (gravel tyres, the gravel rack) comes once Gwen at the rally school says you're ready: gold in all six lessons.",
+            new(){new("Buy parts",()=>OpenParts("quarry",PartsBrowser.Mode.Shop,Bethan)),new("Back to the road",Close)});
         void Nia()=>Show("Nia / Pit Stop Body Shop","New car, same you! Bodies are looks only: your parts decide the pace. Huw swaps them in the bay whenever you like. Fresh paint too. Slate grey's popular round here, funnily enough.",
             new(){new("Browse new bodies",()=>OpenBodyShop(Nia,"Huw")),new("Fresh paint",()=>OpenPaintShop(Nia)),new("Back to the road",Close)});
         void Megan()=>Show("Megan / Caban","The Caban's where the quarrymen ate, and argued, and sang. Still do, mostly the arguing. The town's betting on motorsport now the quarry's winding down: rally school, the Sprint, and there's talk of a proper stage up through the tips and the moor.",
             new(){new("Back to the road",Close)});
         void Mari()=>Show("Mari / Slate Quay","Mari, from the engine shed. The slate trains come down to the quay by gravity and go back up behind the engine. When the line's open again you can race one down the valley, if you think you're quick enough.",
             new(){new("Back to the road",Close)});
+        // The Gallery Climb (GalleryClimb): starts itself when you pass the bottom flags heading up; ends at the top flags.
+        float galleryStart=-1;Vector3 galleryLast;
+        void UpdateGalleryClimb()
+        {
+            if(!GalleryClimb.Built||riding)return;var p=player.body.position;var moved=(p-galleryLast)/Mathf.Max(Time.deltaTime,1e-3f);galleryLast=p;
+            if(galleryStart<0) {
+                if(climbStart>=0||sprintStart>=0||school!=null&&school.Active)return;
+                var d=p-GalleryClimb.Start;d.y=0;var v=moved;v.y=0;
+                if(d.magnitude<5&&Mathf.Abs(p.y-GalleryClimb.Start.y)<3&&Vector3.Dot(v,GalleryClimb.StartDir)>3){galleryStart=Time.time;Notify("Gallery Climb · GO! Twelve benches to the rim.");}
+                return;
+            }
+            float t=Time.time-galleryStart;
+            if(t>400||p.y<GalleryClimb.Start.y-6){galleryStart=-1;Notify("Gallery Climb · off the course. Back to the bottom flags for another go.");return;}
+            var f=p-GalleryClimb.Finish;f.y=0;
+            if(f.magnitude<9&&p.y>GalleryClimb.Finish.y-3) {
+                galleryStart=-1;Confetti.Burst(p+Vector3.up*2);
+                Attempt(()=>{int paid=t<=GalleryClimb.Par?Store.RecordTime(GalleryClimb.Id,t,GalleryClimb.Prize):Store.RecordTime(GalleryClimb.Id,t,0);
+                    Notify($"Gallery Climb {t:0.0} s · "+(t<=GalleryClimb.Par?(paid>0?$"under par! +{paid} credits":"under par again!"):$"par is {GalleryClimb.Par:0} s. Again?"));});
+            }
+        }
         void StartSprint()
         {
-            Close();var loop=QuarryFloor.Loop;int s0=HillcrestRoute.Index(loop,new Vector3(-2335,0,-2935));int back=(s0-12+loop.Length)%loop.Length;
+            Close();school?.End();var loop=QuarryFloor.Loop;int s0=HillcrestRoute.Index(loop,new Vector3(-2335,0,-2935));int back=(s0-12+loop.Length)%loop.Length;
             var f=loop[(s0+2)%loop.Length]-loop[(s0+loop.Length-2)%loop.Length];f.y=0;
             player.body.rotation=Quaternion.LookRotation(f.normalized);Place(loop[back]);
             sprintGate=0;sprintStart=Time.time+3;Notify("Quarry Sprint · Ready... GO in 3!");

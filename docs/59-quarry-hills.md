@@ -195,12 +195,36 @@ The tests on this build all pass:
 
 Load time is 18 s, against 9 s without the flag.
 
+### Round two (3 October, evening)
+
+| Added | What it does | Tested by |
+|---|---|---|
+| **Gwen's rally school** | Six gravel lessons on the quarry floor. **Loose braking:** stop in the box. **Slalom:** six cones. **Handbrake hairpin:** round the tyre stack and back. **Scandinavian flick:** three S-gates. **Crest and landing:** over a permanent 1.4 m gravel crest, stop in the box. **Mini-stage:** a flying Sprint lap. Each lesson has bronze, silver and gold times; medals pay 60/100/150 credits once each. A knocked cone costs 2 s; a missed gate or an overshot box ends the go. | `--lesson-test`: six golds, rally kit unlocked |
+| **Rally kit at Grit & Gravel** | The quarry's own parts shop (`quarry`), with two class C parts: **gravel tyres** (dirt 15, the best loose-ground grip in class C) and the **gravel rack**. Both are locked behind `unlock: "rallyschool"` (gold in all six lessons). Huw fits parts in the quarry garage. | `QuarryHillsChecks` |
+| **The Blondin ride** | The cableway is now a lift, like the castle zipline. Stop in the floor bay or the tip-top bay to ride it. `ZipLine` now handles any number of lines (`ZipLine.All`), and the Blondin uses a bay-under-the-rope variant. | `--blondin-test`: up 57 s, down 31 s, both landing in the bay |
+| **The Gallery Climb** | A hill climb up the galleries' western end: twelve 150 m gravel ramps (10%) zig-zag bench by bench from Glas's ledge to the rim, 180 m of climb. Rubble bunds line the drops. The run starts as you pass the bottom flags heading up; par is 180 s and pays 300 credits once. | `--climb-test`: started, finished, 139 s at a steady 15 m/s |
+| **12 slate carvings** | Quarry Hills' keepsake set: dark slate tablets with a red dragon mark at the crest, the tarn, the square, the quay, the rally school, the top of the big tip, the haul road, Glas's ledge, the Kettle gate, the coast, the foot of the tips and the top of the High Street. They have their own album in the pause menu. | `--carving-test`: 12/12 collected, none inside anything |
+| **More street furniture** | Lamps every 16 m, benches every 30 m, and lamps along Quarry Road's approach | Area audit |
+| **Quiet test windows** | `tools/quiet-start.ps1`: the game's test runs open without taking the focus (shown or minimised, never activated), and the foreground is handed back if Unity grabs it. Every launching tool uses it. | — |
+
+**Area audit now (Quarry Hills / Hillcrest):**
+
+| Measure | Quarry Hills | Hillcrest |
+|---|---|---|
+| Street furniture per road km | 76 | 98 |
+| Lamps per road km | 37 | 63 |
+| Keepsakes | 12 | 1 |
+| Event / story spots | 9 | 8 |
+| Floating pieces | 0 | 0 |
+| Road-edge lips | 1 | 0 |
+| Banks too steep | 2 | 8 |
+
 ### Next for Quarry Hills
 
-- **Ride and races:** make the Blondin a ride, reusing the ZipLine carrier (ZipLine is still a single instance). Add the Glas zip. Grid the Quarry Sprint for 24 cars on three seeds.
-- **Rally school and rally parts:** build the six lessons, with gold unlocking the rally parts. Then the Heavy Haul dumper job and the Blast Run.
-- **Keepsakes:** the 12 slate carvings on the gallery faces (the keepsake count is still 0).
-- **Roads and railway:** the haul road's switchbacks up the galleries to the rim and moor (Gallery Climb), and the Pine & Peak line from the quay.
+- ~~The Blondin ride, the rally school and rally parts, the slate carvings, the Gallery Climb~~ (round two).
+- **Races:** grid the Quarry Sprint for 24 cars on three seeds; the Glas zip.
+- **Jobs:** the Heavy Haul dumper job and the Blast Run.
+- **Railway:** the Pine & Peak line from the quay.
 - **Town:** the Great Wheel, and more lamps and furniture to reach Hillcrest's density.
 - **Edge audit:** the last lip and two banks, at the Terrace Row and Chapel Street junction corners.
 

@@ -161,6 +161,8 @@ simple('tyres', 1050, [
     ('tyres_grip', 'Hill grip tyres', 'Soft, sticky tarmac tyres for the twisty valley roads.', 1300, 'C', 'hillcrest', {'road': 10.2, 'dirt': 5}),
     ('tyres_trail', 'Trail tyres', 'Sidegrade: secure on dirt, less road grip.', 450, 'C', None, {'road': 7.5, 'dirt': 10}),
     ('tyres_rally', 'Rally tyres', 'Chunky all-rounders: fast on tarmac, brilliant off it.', 1100, 'C', 'hillcrest', {'road': 8.5, 'dirt': 12.5}),
+    # Quarry Hills (docs/59): Grit & Gravel's own, released by gold in all six of Gwen's rally lessons.
+    ('tyres_c_gravel', 'Gravel tyres', "Narrow, knobbly and loud: Quarry Hills' own. The best grip on loose ground in class C.", 1350, 'C', 'quarry', {'road': 7.5, 'dirt': 15, 'unlock': 'rallyschool'}),
     ('tyres_b_sport', 'Tuner sport tyres', 'A proper performance tyre.', None, 'B', None, {'road': 14.5, 'dirt': 4}),
     ('tyres_b_performance', 'Tuner performance tyres', 'Stiffer walls, sharper turn-in.', None, 'B', None, {'road': 15.5, 'dirt': 4}),
     ('tyres_b_semislick', 'Tuner semi-slick', 'Barely any tread: track days only.', None, 'B', None, {'road': 16.5, 'dirt': 3}),
@@ -204,6 +206,7 @@ simple('steering', 1150, [
     ('steering_precision', 'Precision rack', 'Fast response for technical bends.', 850, 'C', None, {'response': 6, 'yaw': 1.18}),
     ('steering_sportrack', 'Sport rack and wheel', 'A small leather wheel and a quick rack.', 1150, 'C', None, {'response': 6.5, 'yaw': 1.23}),
     ('steering_rally', 'Rally rack', 'Sharp, eager turn-in for hairpins.', 1200, 'C', 'hillcrest', {'response': 7, 'yaw': 1.28}),
+    ('steering_c_gravel', 'Gravel rack', 'Quick and light, for flicking the car into slides on the loose.', 1400, 'C', 'quarry', {'response': 7.2, 'yaw': 1.34, 'unlock': 'rallyschool'}),
     ('steering_b_quick', 'Quick-ratio rack', 'Two turns lock to lock.', None, 'B', None, {'response': 7, 'yaw': 1.3}),
     ('steering_b_rally', 'Tuner rally rack', 'Built for flicks.', None, 'B', None, {'response': 7.5, 'yaw': 1.34}),
     ('steering_b_wheel', 'Tuner wheel and rack', 'A suede three-spoke wheel.', None, 'B', None, {'response': 8, 'yaw': 1.38}),

@@ -33,7 +33,14 @@ Results are in doc 58 §12. **Next (W1):** foundations (world tiles, streaming, 
 
 Gwen's Quarry Sprint time trial is playable. Against doc 57's standards, Quarry Hills passes everything but the edge defects (1 lip and 2 banks, against Hillcrest's 8 banks), and its frame cost is below Hillcrest's.
 
-Next is the rest of doc 59's list (the Blondin ride, rally school lessons, slate carvings, the Gallery Climb road, the railway), then **Bramblewick**, the first village.
+**Round two (evening):**
+- Gwen's six rally lessons, whose six golds unlock the gravel tyres and gravel rack at Grit & Gravel;
+- the Blondin as a ride;
+- the Gallery Climb hill climb up the galleries;
+- 12 slate carvings with their own album;
+- denser lamps and furniture.
+
+Test windows now open without stealing focus (`tools/quiet-start.ps1`). Next is the Sprint as a 24-car race, Heavy Haul and the Blast Run, the railway, then **Bramblewick**, the first village.
 
 **Update, 2 October, night: Richard's list, tied off** ([doc 56](56-wider-game-round.md) §13–20; [doc 57](57-new-area-standards.md)).
 - **In-race pause:** resume, restart, view the field, options and retire. The race truly pauses.

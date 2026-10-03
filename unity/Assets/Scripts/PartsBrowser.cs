@@ -45,7 +45,7 @@ namespace LittleRoad
         public int PreviewRenderCount=>stage.RenderCount;
         static string[] Slots=>EquipmentCatalog.All.slots;
         static string SlotName(string s)=>s.ToUpperInvariant();
-        string FitterName=>Shop=="hillcrest"?"Gio":"Mara";
+        string FitterName=>Shop=="hillcrest"?"Gio":Shop=="quarry"?"Huw":"Mara";
         const float TabSmall=118,TabOpen=330,TabGap=12,ChipSize=100,ChipStep=92;
 
         public void Open(AdventureStore inventory,Mode openMode,string startSlot,Action onFitted,Action onBack)
@@ -53,7 +53,7 @@ namespace LittleRoad
             store=inventory;mode=openMode;fitted=onFitted;back=onBack;notice="";
             if(canvas==null)Build();
             bool valley=Shop=="hillcrest";
-            heading.text=mode==Mode.Shop?(valley?"HILLCREST PARTS":"BAYVIEW PARTS"):(valley?"HILLCREST MOTORS":"HARBOUR GARAGE");
+            heading.text=Shop=="quarry"?(mode==Mode.Shop?"GRIT & GRAVEL":"QUARRY HILLS PIT STOP"):mode==Mode.Shop?(valley?"HILLCREST PARTS":"BAYVIEW PARTS"):(valley?"HILLCREST MOTORS":"HARBOUR GARAGE");
             modePill.text=mode==Mode.Shop?"PARTS SHOP  ·  BUY HERE":"FITTING BAY  ·  YOUR PARTS";
             modePill.transform.parent.GetComponent<ToyShape>().SetFill(mode==Mode.Shop?Toy.Gold:Toy.Mint);
             // Category icons: each slot's stock part, rendered once.

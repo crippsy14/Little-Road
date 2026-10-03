@@ -23,6 +23,8 @@ namespace LittleRoad
         public static readonly Vector2 BlondinFloor=new(-2650,-2985),BlondinTip=new(-2925,-2958);
         // Cars parked outside the school (read by ValleyLife).
         public static readonly List<(Vector3 at,float yaw)> Parking=new();
+        // The Blondin's two loading bays (top: the tip; bottom: the floor).
+        public static (Vector3 top,Vector3 bottom) Bays;
 
         public static void Build(Transform parent)
         {
@@ -33,6 +35,7 @@ namespace LittleRoad
             // The loop: loose slate gravel (no tarmac grip: the floor's own dirt grip under it).
             var gravel=WorldLook.Kit("Rallycross gravel",new Color(.55f,.53f,.50f),WorldLook.Pattern.Rock,0,.1f,true);
             Strip("Quarry Sprint",Loop,LoopWidth,.07f,gravel,root,true);
+            RallySchool.BuildCrest(root,gravel);
             int n=Loop.Length;
             // Tyre walls on the outside of the bends, boards along the straights.
             string[] brands={"GRIT & GRAVEL","CABAN","SLATE QUAY","PINE & PEAK","BARA BRITH","DAI'S DUMPERS","GLAS WATER","YSGOL RALI"};int brand=0;float since=99;
@@ -116,15 +119,28 @@ namespace LittleRoad
                 return head+fwd*2.5f;
             }
             var floorAt=new Vector3(BlondinFloor.x,0,BlondinFloor.y);var tipAt=new Vector3(BlondinTip.x,0,BlondinTip.y);
-            var lo=Tower(BlondinFloor,30,tipAt);var hi=Tower(BlondinTip,22,floorAt);
+            var lo=Tower(BlondinFloor,34,tipAt);var hi=Tower(BlondinTip,28,floorAt);
             // Ropes: 40 segments of a catenary-ish sag (2.2% of the span at mid-span), main and hauling ropes.
             float span=Vector2.Distance(BlondinFloor,BlondinTip),sag=span*.022f;var across=Vector3.Cross(Vector3.up,(hi-lo).normalized).normalized;
             Vector3 On(float u,float offset)=>Vector3.Lerp(lo,hi,u)+Vector3.down*sag*4*u*(1-u)+across*offset;
             foreach(float offset in new[]{-.5f,.5f})for(int i=0;i<40;i++)Beam(ropes,On(i/40f,offset),On((i+1)/40f,offset),.09f);
-            // The carriage 38% of the way up, its fall rope and a wagon of slate.
-            var car=On(.38f,0);Beam(beams,car+across*.9f-Vector3.up*.3f,car-across*.9f-Vector3.up*.3f,.5f);var hook=car+Vector3.down*14;Beam(ropes,car,hook,.08f);
-            var wagon=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(wagon.GetComponent<Collider>());wagon.name="Blondin wagon";wagon.transform.SetParent(root);
-            wagon.transform.SetPositionAndRotation(hook+Vector3.down*.7f,Quaternion.LookRotation(across));wagon.transform.localScale=new Vector3(1.6f,1.2f,2.6f);wagon.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Slate wagon",Toy.Hex(0x8c3b2e),0,.3f);
+            // The ride (docs/59; Richard, 3 Oct: the Blondin is the car lift): the carriage runs on the main rope between bays on
+            // the ground under the rope, 14 m in from each tower: the tip's top and the quarry floor.
+            var ropePts=new List<Vector3>();const int segs=60;for(int i=0;i<=segs;i++)ropePts.Add(On(1-i/(float)segs,0));   // tip end first: "top"
+            float ropeLen=0;for(int i=1;i<ropePts.Count;i++)ropeLen+=Vector3.Distance(ropePts[i],ropePts[i-1]);
+            List<Vector3> Cut(float from,float to){var pts=new List<Vector3>();float run=0;for(int i=0;i<ropePts.Count;i++){if(i>0)run+=Vector3.Distance(ropePts[i],ropePts[i-1]);if(run>=from&&run<=to)pts.Add(ropePts[i]);}return pts;}
+            var ride=Cut(14,ropeLen-14);
+            Vector3 Bay(Vector3 above){var g=above;g.y=ValleyField.Height(g.x,g.z)+.02f;return g;}
+            var dirDown=(lo-hi);dirDown.y=0;float yawDown=Quaternion.LookRotation(dirDown).eulerAngles.y;
+            var topStation=new ZipLine.Station{bay=Bay(ride[0]),cable=hi,facing=yawDown,name="Blondin tip bay",ride="Ride the Blondin down to the quarry floor",arrive="Down on the floor! Diolch, Blondin."};
+            var bottomStation=new ZipLine.Station{bay=Bay(ride[^1]),cable=lo,facing=yawDown+180,name="Blondin floor bay",ride="Ride the Blondin up to the big tip",arrive="Top of the tip! Mind the edge."};
+            Bays=(topStation.bay,bottomStation.bay);
+            if(BayviewKit.Has("zip_trolley")){var carriage=BayviewKit.Spawn("zip_trolley",ride[0],yawDown,BayviewKit.AnimatedRoot,null,null,false,1);
+                var line=new ZipLine("Quarry Hills Blondin",topStation,bottomStation,ride,carriage.transform);
+                Debug.Log($"LITTLE_ROAD_BLONDIN ride={ropeLen:0} clearance={ZipLine.Clearance(ride[0],ride[^1],.022f,6,6,c=>c.isTrigger||c.transform.IsChildOf(root)):0.0} bays={topStation.bay}/{bottomStation.bay}");}
+            // Loading bays: slate-flag pads under each end of the ride.
+            foreach(var bayAt in new[]{topStation.bay,bottomStation.bay}){var pad=GameObject.CreatePrimitive(PrimitiveType.Cylinder);Object.Destroy(pad.GetComponent<Collider>());pad.name="Blondin bay";pad.transform.SetParent(root);
+                pad.transform.SetPositionAndRotation(bayAt+Vector3.up*.02f,Quaternion.identity);pad.transform.localScale=new Vector3(9,.02f,9);pad.GetComponent<Renderer>().sharedMaterial=WorldLook.Kit("Blondin bay flags",Toy.Hex(0x8f9296),WorldLook.Pattern.Stone,0,.15f,true);}
             Combine("Blondin towers",beams,iron,root,true);Combine("Blondin ropes",ropes,rope,root,false);
             // A winding house at the foot of the floor tower.
             var wh=floorAt+(floorAt-tipAt).normalized*12;wh.y=ValleyField.Height(wh.x,wh.z)-.04f;

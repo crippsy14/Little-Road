@@ -62,6 +62,28 @@ namespace LittleRoad
             QuayLocal(x,z,out float u,out float v);if(OnQuay(u,v,4))return true;
             return OnTip(x,z,3);
         }
+        // The twelve slate carvings (docs/59): carved slate plaques hidden round the district, each where a car can reach it
+        // (on the gallery faces themselves once the Gallery Climb is built). Ground positions; the keepsake floats above.
+        public static Vector3[] CarvingSpots()
+        {
+            Vector3 G(Vector2 p){return new Vector3(p.x,ValleyField.Height(p.x,p.y),p.y);}
+            Vector3 Off(HillcrestRoute.Road r,float s,float side){var p=r.At(s)+r.Right(s)*side;return G(new Vector2(p.x,p.z));}
+            var quarry=HillcrestRoute.Find(QuarryRoadName);var haul=HillcrestRoute.Find(HaulRoadName);var kettle=HillcrestRoute.Find(KettleRoadName);var high=HillcrestRoute.Find(HighStreetName);
+            var toFloor=(FloorCentre-Pit).normalized;var ledge=PitPoint(toFloor,9);var tip=Tips[0];
+            return new[]{
+                Off(quarry,quarry.Nearest(new Vector3(Crest.x,0,Crest.y),out _),-14),
+                G(Source+new Vector2(0,-(SourceRadius+12))),
+                G(Square+new Vector2(0,8)),
+                QuayPoint(76,-24,QuayY),
+                G(new Vector2(QuarryFloor.School.x,QuarryFloor.School.z+16)),
+                G(tip.b+(tip.a-tip.b).normalized*90),
+                Off(haul,haul.Length*.55f,9),
+                new Vector3(ledge.x,FloorY,ledge.z),
+                Off(kettle,kettle.Length-22,7),
+                G(QuayCentre+QuayAlong*(-QuayHalf-30)+QuayInland*20),
+                G(Tips[2].a+new Vector2(30,25)),
+                Off(high,high.Length-8,-7)};
+        }
         // How far into the quarry floor's ellipse (1 at its edge).
         public static float FloorQ(float x,float z)=>Mathf.Sqrt(Mathf.Pow((x-FloorCentre.x)/FloorRX,2)+Mathf.Pow((z-FloorCentre.y)/FloorRZ,2));
         public static Rect TipBox(int i){var t=Tips[i];float r=t.half+t.top/TipSlope*.8f;return Rect.MinMaxRect(Mathf.Min(t.a.x,t.b.x)-r,Mathf.Min(t.a.y,t.b.y)-r,Mathf.Max(t.a.x,t.b.x)+r,Mathf.Max(t.a.y,t.b.y)+r);}

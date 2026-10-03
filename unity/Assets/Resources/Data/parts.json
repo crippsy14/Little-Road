@@ -1095,6 +1095,18 @@
       "dirt": 12.5
     },
     {
+      "id": "tyres_c_gravel",
+      "slot": "tyres",
+      "name": "Gravel tyres",
+      "hint": "Narrow, knobbly and loud: Quarry Hills' own. The best grip on loose ground in class C.",
+      "price": 1350,
+      "tier": "C",
+      "shop": "quarry",
+      "road": 7.5,
+      "dirt": 15,
+      "unlock": "rallyschool"
+    },
+    {
       "id": "tyres_b_sport",
       "slot": "tyres",
       "name": "Tuner sport tyres",
@@ -1468,6 +1480,18 @@
       "shop": "hillcrest",
       "response": 7,
       "yaw": 1.28
+    },
+    {
+      "id": "steering_c_gravel",
+      "slot": "steering",
+      "name": "Gravel rack",
+      "hint": "Quick and light, for flicking the car into slides on the loose.",
+      "price": 1400,
+      "tier": "C",
+      "shop": "quarry",
+      "response": 7.2,
+      "yaw": 1.34,
+      "unlock": "rallyschool"
     },
     {
       "id": "steering_b_quick",

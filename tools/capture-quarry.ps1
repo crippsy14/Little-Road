@@ -1,8 +1,9 @@
-# Usage (from project root): .\tools\capture-quarry.ps1 -Name q02 [-Shots "name:x,y,z>lx,ly,lz;..."] [-Flags @(...)]
+﻿# Usage (from project root): .\tools\capture-quarry.ps1 -Name q02 [-Shots "name:x,y,z>lx,ly,lz;..."] [-Flags @(...)]
 # Rendered stills of Quarry Hills (docs/59) from fixed viewpoints, with --quarry-hills, saved to review/quarry-hills/<Name>.
 # The same views every time so each build can be compared with the last. Never overwrites a run.
 param([Parameter(Mandatory)][ValidatePattern('^[a-z0-9-]+$')][string]$Name,[string]$Shots='',[string[]]$Flags=@())
 $ErrorActionPreference='Stop'
+. "$PSScriptRoot/quiet-start.ps1"
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $folder=Join-Path $root "review/quarry-hills/$Name"
 if(Test-Path -LiteralPath $folder){throw "Quarry capture $Name already exists"}
@@ -16,7 +17,7 @@ if(-not $Shots){$Shots=@(
   'rimview:-1650,260,-3800>-2600,30,-2400','edgewest:-2500,160,-2600>-4300,150,-3200','galleryclose:-2050,120,-3250>-1750,160,-3640') -join ';'}
 $arguments=@('--start-windowed','-screen-width','1600','-screen-height','900','-screen-fullscreen','0','-monitor','1','--silent','--world-review','--quarry-hills',
   '--adventure-save',('"'+(Join-Path $folder 'save.json')+'"'),'--trial-captures',('"'+$folder+'"'),'--view-shots',('"'+$Shots+'"'),'-logFile',('"'+(Join-Path $folder 'player.log')+'"'))+$Flags
-$run=Start-Process -FilePath $exe -PassThru -ArgumentList $arguments
+$run=Start-Quiet -FilePath $exe -PassThru -ArgumentList $arguments
 $run.WaitForExit()
 Write-Output "exit=$($run.ExitCode)"
 Select-String -LiteralPath (Join-Path $folder 'player.log') -Pattern 'Exception|QUARRY|VIEW_FRAME|LOAD_STEP (mainland|quarry)|VALLEY_FIELD' | Select-Object -First 40 | ForEach-Object { $_.Line }

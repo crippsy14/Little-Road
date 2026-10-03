@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$Executable=(Join-Path $PSScriptRoot '../../little-road-ai-review/Little Road Unity.exe'),
     [string]$OutputDirectory,
     [ValidateSet('cedar','bayview','cedar-hills')][string]$Track='cedar',
@@ -88,6 +88,7 @@ param(
     [string[]]$ExtraArguments=@()
 )
 $ErrorActionPreference='Stop'
+. "$PSScriptRoot/quiet-start.ps1"
 if($ParallelContinuationForecast -and (-not $CompareContinuation -or $ParallelForecastWorkers -eq 0)){throw 'Parallel continuation requires continuation comparison and forecast workers.'}
 if($ComparePassCompletion -and (-not $TrafficAwareProgress -or -not $CompareContinuation)){throw 'Pass completion requires traffic-aware continuation.'}
 if(-not $FollowingFeasibilityFallback -and $FollowingFallbackScope -ne 'all'){throw 'Component scope requires following fallback enabled.'}
@@ -183,7 +184,7 @@ foreach($extra in $ExtraArguments){if($extra -notmatch '^--[a-z0-9-]+$' -and $ex
 $trialStyle=if($Visible){'Normal'}else{'Hidden'}
 $trialAssembly=Join-Path (Split-Path $trialExecutable) 'Little Road Unity_Data/Managed/Assembly-CSharp.dll'
 $trialAssemblyHash=if(Test-Path -LiteralPath $trialAssembly){(Get-FileHash -LiteralPath $trialAssembly -Algorithm SHA256).Hash}else{$null}
-$trialProcess=Start-Process -FilePath $trialExecutable -ArgumentList $trialArguments -WindowStyle $trialStyle -PassThru
+$trialProcess=Start-Quiet -FilePath $trialExecutable -ArgumentList $trialArguments -WindowStyle $trialStyle -PassThru
 $trialLaunch=[pscustomobject]@{pid=$trialProcess.Id;executable=$trialExecutable;assemblyHash=$trialAssemblyHash;arguments=$trialArguments;output=$trialOutput;visible=[bool]$Visible;requestedWidth=$Width;requestedHeight=$Height;windowed=[bool]$Windowed;directGraphics=[bool]$DirectGraphics;trafficDiagnostics=[bool]$TrafficDiagnostics;sweepContacts=[bool]$SweepContacts;noImmediateSafety=[bool]$NoImmediateSafety;noRearAnticipation=[bool]$NoRearAnticipation;motionAudit=$MotionAudit;physicalRecovery=[bool]$PhysicalRecovery;trafficCase=$TrafficCase;trafficRearSpeed=$TrafficRearSpeed;recoveryCase=$RecoveryCase;opponents=$Opponents;duration=$trialDuration;track=$Track;loadout=$Loadout;grid=$Grid;cars=$Cars;laps=$Laps;seed=$Seed;policy=$Policy;racingLine=$RacingLine;playbackRate=$trialRate}
 $trialLaunch | Add-Member -NotePropertyName openSpacePriority -NotePropertyValue ([bool]$OpenSpacePriority)
 $trialLaunch | Add-Member -NotePropertyName dynamicRejoin -NotePropertyValue ([bool]$DynamicRejoin)
