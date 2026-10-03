@@ -19,7 +19,10 @@ namespace LittleRoad
         Material plinth,paving,laneGravel,stone;int buildings,plinths,lamps,backHouses;
         readonly List<Vector3> streetLamps=new();
         readonly List<Matrix4x4> walls=new(),paths=new();
-        public QuarryHillsTown(Transform parent){root=new GameObject("Quarry Hills town").transform;root.SetParent(parent);}
+        public QuarryHillsTown(Transform parent){root=new GameObject("Quarry Hills town").transform;root.SetParent(parent);Last=this;}
+        // The town as last built: the countryside asks it where buildings stand.
+        public static QuarryHillsTown Last;
+        public bool Clear(Vector2 c,Vector2 half,float yaw)=>Free(c,half,yaw);
         static float H(float x,float z)=>ValleyField.Height(x,z);
         static float Yaw(Vector3 from,Vector3 to){var d=to-from;d.y=0;return Quaternion.LookRotation(d).eulerAngles.y;}
         static BayviewKit.Tint T(int wall,int shutter,int awning,int door,int roof){var t=new BayviewKit.Tint(Toy.Hex(wall),Toy.Hex(shutter),Toy.Hex(awning),Toy.Hex(door));t.roof=Toy.Hex(roof);return t;}

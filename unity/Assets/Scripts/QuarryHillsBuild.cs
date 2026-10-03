@@ -10,7 +10,7 @@ namespace LittleRoad
         {
             if(!QuarryHills.Enabled||!BayviewKit.Has("tree_round"))return;
             var holder=new GameObject("Quarry Hills scenery").transform;holder.SetParent(root);
-            new QuarryHillsTown(holder).Build();Physics.SyncTransforms();
+            new QuarryHillsTown(holder).Build();Physics.SyncTransforms();QuarryHillsCountry.Build(holder);Physics.SyncTransforms();
             var rng=new System.Random(5903);float R()=>(float)rng.NextDouble();int trees=0,tufts=0;
             bool nature=BayviewKit.Has("tree_fir");
             GameObject Plant(string id,float x,float z,float scale,bool solid=true)
@@ -25,6 +25,9 @@ namespace LittleRoad
                 if(!QuarryHills.Contains(x,z)||x>QuarryHills.SeamX-40)return false;
                 float h=ValleyField.Height(x,z);if(h<-6||h>185||ValleyField.Normal(x,z).y<.8f||ValleyField.RoadDistance(x,z)<12)return false;
                 if(Vector2.Distance(new(x,z),QuarryHills.Square)<300||Vector2.Distance(new(x,z),QuarryHills.Source)<QuarryHills.SourceRadius+14)return false;
+                // (Clear of the rugby ground, the farmyards and the campsite.)
+                if(Vector2.Distance(new(x,z),QuarryHillsCountry.Pitch)<95)return false;
+                foreach(var s in QuarryHillsTown.Spots)if((s.Key.StartsWith("farm ")||s.Key=="campsite"||s.Key=="workshops")&&Vector2.Distance(new(x,z),new(s.Value.at.x,s.Value.at.z))<55)return false;
                 float qf=Mathf.Sqrt(Mathf.Pow((x-QuarryHills.FloorCentre.x)/QuarryHills.FloorRX,2)+Mathf.Pow((z-QuarryHills.FloorCentre.y)/QuarryHills.FloorRZ,2));if(qf<1.5f)return false;
                 QuarryHills.PitMetric(x,z,out float q,out float e,out float mask);if(q<1.15f||mask>.2f&&e<QuarryHills.Benches*QuarryHills.BenchWidth+30)return false;
                 if(QuarryHills.OnTip(x,z,18))return false;
@@ -68,7 +71,7 @@ namespace LittleRoad
                     if(R()<.1f)Plant("bush",q.x,q.z,.7f+R()*.5f,false);else Plant("grass_tuft",q.x,q.z,.9f+R()*.8f,false);tufts++;
                 }
             }
-            int slate=SlateFaces(holder);Galleries(holder);GalleryDressing(holder);GalleryClimb.Build(holder);QuarryFloor.Build(holder);QuarryQuay.Build(holder);
+            int slate=SlateFaces(holder);Galleries(holder);Physics.SyncTransforms();GalleryClimb.Build(holder);GalleryDressing(holder);QuarryFloor.Build(holder);QuarryQuay.Build(holder);
             Debug.Log($"LITTLE_ROAD_QUARRY_SCENERY trees={trees} tufts={tufts} slateCells={slate}");
         }
         // Worked slate: the galleries (benches and faces alike), the pit's walls above the water and the tips are all bare
@@ -86,9 +89,8 @@ namespace LittleRoad
         public static Material SlateMaterial;
         int SlateFaces(Transform parent)
         {
-            var m=TerrainMaterial("Quarry Hills worked slate",new Color(.36f,.39f,.42f),new Color(.38f,.41f,.45f));
-            m.SetFloat("_RockOnly",1);m.SetColor("_ToyRockA",new Color(.45f,.48f,.52f));m.SetColor("_ToyRockB",new Color(.29f,.32f,.36f));
-            m.SetFloat("_Bands",.9f);m.SetColor("_RockColor",new Color(.42f,.45f,.49f));m.SetFloat("_RockDesat",.2f);SlateMaterial=m;
+            // The tips and the floor: slate spoil, matte chips of every shade (the kit's slate pattern on flat-ish ground).
+            var m=WorldLook.Kit("Quarry Hills worked slate",new Color(.31f,.32f,.36f),WorldLook.Pattern.Slate,0,.05f,true);SlateMaterial=m;
             var boxes=new System.Collections.Generic.List<Rect>{Rect.MinMaxRect(QuarryHills.Pit.x-QuarryHills.PitRX-340,QuarryHills.Pit.y-QuarryHills.PitRZ-340,QuarryHills.Pit.x+QuarryHills.PitRX+340,QuarryHills.Pit.y+QuarryHills.PitRZ+340)};
             for(int i=0;i<QuarryHills.Tips.Length;i++)boxes.Add(QuarryHills.TipBox(i));
             int cells=0;const int block=96;
@@ -117,15 +119,16 @@ namespace LittleRoad
         // profile has its own vertices so the lips stay crisp.
         void Galleries(Transform parent)
         {
-            var m=TerrainMaterial("Quarry Hills gallery slate",new Color(.36f,.39f,.42f),new Color(.38f,.41f,.45f));
+            // Split slate (Richard, 3 Oct: the quarry looked shiny and odd): the kit shader's matte slate pattern in world space, so
+            // the faces show beds and cleavage instead of the terrain shader's stretched rock; Penrhyn's blue-grey with purple beds.
+            var m=WorldLook.Kit("Quarry Hills gallery slate",new Color(.30f,.31f,.36f),WorldLook.Pattern.Slate,0,.05f,true);
             // Penrhyn slate: blue-grey with a purple cast, lighter than the tips (fresh faces catch the light).
-            m.SetFloat("_RockOnly",1);m.SetColor("_ToyRockA",new Color(.60f,.59f,.68f));m.SetColor("_ToyRockB",new Color(.40f,.40f,.49f));
-            m.SetFloat("_Bands",1);m.SetColor("_RockColor",new Color(.53f,.52f,.61f));m.SetFloat("_RockDesat",.1f);
+
             float axis=Mathf.Atan2(QuarryHills.GalleryAxis.y,QuarryHills.GalleryAxis.x)*Mathf.Rad2Deg;
             // The directions the mesh covers: where the cut's mask reaches MeshMask.
             float half=0;for(float a=0;a<=180;a+=.25f){var d=Dir(axis+a);if(QuarryHills.MaskOf(d)>=QuarryHills.MeshMask)half=a;}
             var v=new System.Collections.Generic.List<Vector3>();var uv=new System.Collections.Generic.List<Vector2>();var t=new System.Collections.Generic.List<int>();var shelf=new System.Collections.Generic.List<int>();
-            var rubble=WorldLook.Kit("Gallery slate rubble",new Color(.60f,.60f,.65f),WorldLook.Pattern.Rock,0,.1f,true);
+            var rubble=WorldLook.Kit("Gallery slate rubble",new Color(.35f,.36f,.39f),WorldLook.Pattern.Slate,0,.05f,true);
             int B=QuarryHills.Benches;float W=QuarryHills.BenchWidth,H=QuarryHills.BenchHeight,F=QuarryHills.FloorY;
             // Profile (e beyond the rim, height): the pit wall from under the lake to the floor, then face and shelf by bench.
             System.Collections.Generic.List<Vector2> Profile(Vector2 dir,bool benches)
@@ -175,18 +178,19 @@ namespace LittleRoad
             int B=QuarryHills.Benches;float W=QuarryHills.BenchWidth,H=QuarryHills.BenchHeight,F=QuarryHills.FloorY;
             string[] rocks={"rock_a","rock_b","rock_cluster"};int scree=0,birch=0;
             for(int k=0;k<B-1;k++)for(float a=axis-half+4;a<axis+half-4;a+=5+R()*9) {
-                if(GalleryClimb.Covers(a))continue;   // (the Gallery Climb's ramps run here)
+                if(GalleryClimb.Covers(a,k+1))continue;   // (the Gallery Climb's ramps and landings run here)
                 var dir=Dir(a);var at=QuarryHills.PitPoint(dir,(k+1)*W);float toe=(k+1)*W-QuarryHills.Wobble(at.x,at.z);
                 var p=QuarryHills.PitPoint(dir,toe-1.5f-R()*3);p.y=F+(k+1)*H-.2f;
                 string id=rocks[rng.Next(rocks.Length)];if(!BayviewKit.Has(id))continue;
                 BayviewKit.Spawn(id,p,R()*360,parent,null,null,false,1.4f+R()*1.8f);scree++;
                 if(k>=5&&R()<.16f&&BayviewKit.Has("tree_birch"))for(int n=0;n<3;n++){var q=QuarryHills.PitPoint(Dir(a+(R()-.5f)*2),toe-8-R()*10);q.y=F+(k+1)*H-.1f;KitLod.Attach(BayviewKit.Spawn("tree_birch",q,R()*360,parent,solid:false,scale:.6f+R()*.4f),"tree_birch");birch++;}
             }
-            var body=WorldLook.Kit("Incline rubble",new Color(.55f,.55f,.60f),WorldLook.Pattern.Rock,0,.1f,true);
+            var body=WorldLook.Kit("Incline rubble",new Color(.34f,.35f,.39f),WorldLook.Pattern.Slate,0,.05f,true);
             var rail=TrialWorld.Material("Incline rail",new Color(.22f,.2f,.2f),.3f,.4f);
             foreach(float off in new[]{-38f,34f}) {
                 var dir=Dir(axis+off);float Y(float e)=>F+H+2.4f+(e-7.7f)*H/W;
-                float e0=11.7f,e1=(B-1)*W+9;Vector3 P(float e){var q=QuarryHills.PitPoint(dir,e);q.y=Y(e);return q;}
+                // (The west incline stops at bench 5: the Gallery Climb's Long Bench runs across above its head on bench 6.)
+                float e0=11.7f,e1=(off<0?4:B-1)*W+9;Vector3 P(float e){var q=QuarryHills.PitPoint(dir,e);q.y=Y(e);return q;}
                 Vector3 a=P(e0),b=P(e1),along=(b-a);along.y=0;along.Normalize();var side=Vector3.Cross(Vector3.up,along);
                 // The embankment: a top along the incline, vertical sides 20 m deep (into the benches), vertical ends.
                 var v=new System.Collections.Generic.List<Vector3>();var t=new System.Collections.Generic.List<int>();

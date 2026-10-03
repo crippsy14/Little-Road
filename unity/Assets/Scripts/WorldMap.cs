@@ -14,7 +14,9 @@ namespace LittleRoad
     // code match. Writes world-map.jpg and world-map.json (bounds, labels by kind) to the capture folder.
     public static class WorldMap
     {
-        public const float X0=-1150,Z0=-2100,Size=2500;public const int Pixels=4096;
+        // The square the maps cover: Bayview and Hillcrest Valley, and with --quarry-hills Quarry Hills to the west as well.
+        public static readonly float X0=QuarryHills.Enabled?-4400:-1150,Z0=QuarryHills.Enabled?-4100:-2100,Size=QuarryHills.Enabled?5900:2500;public const int Pixels=4096;
+        public static int BakePixels=>QuarryHills.Enabled?4096:2048;
         [Serializable] public class Label{public string name,kind,note;public float x,z;}
         [Serializable] public class Data{public float x0=X0,z0=Z0,size=Size;public int pixels=Pixels;public string image="world-map.jpg";public List<Label> labels=new();}
 
@@ -41,8 +43,9 @@ namespace LittleRoad
         // The in-game map (Minimap): the same straight-down view, rendered once while loading into a texture
         // that stays on the GPU. Lit as a clear afternoon whatever the time of day, without fog or cloud
         // shadows; every global it touches is put back afterwards.
-        public static RenderTexture Bake(int pixels=2048)
+        public static RenderTexture Bake(int pixels=0)
         {
+            if(pixels<=0)pixels=BakePixels;
             var go=new GameObject("Map bake camera");var cam=go.AddComponent<Camera>();cam.enabled=false;
             var data=cam.GetUniversalAdditionalCameraData();data.renderPostProcessing=true;data.antialiasing=AntialiasingMode.SubpixelMorphologicalAntiAliasing;data.renderShadows=true;
             cam.orthographic=true;cam.orthographicSize=Size/2;cam.nearClipPlane=5;cam.farClipPlane=1600;cam.aspect=1;cam.clearFlags=CameraClearFlags.SolidColor;cam.backgroundColor=new Color(.10f,.25f,.52f);

@@ -286,6 +286,13 @@ class Car:
         if self.R['rear']=='boot':y0=max(y0,G['yr0']+.05)
         c=box('Passenger well cutter',(0,(y0+y1)*.5,1.12),(2*(G['wb']-.09),y1-y0,1.16),M['trim'],.045);apply_all(c)
         cut(body,c,'Open passenger cabin')
+        # Pickups: an open load bed behind the cab, down to a floor 0.3 m above the sill line.
+        if 'bed' in self.R['extras']:
+            yb0=self.P[0][0]+.13;yb1=G['yr0']-.12;w,lo,hi=self.section((yb0+yb1)*.5);fl=lo+.30
+            c=box('Load bed cutter',(0,(yb0+yb1)*.5,fl+.8),(2*(w-.08),yb1-yb0,1.6),M['trim'],.03);apply_all(c)
+            cut(body,c,'Open load bed')
+            box('Load bed floor',(0,(yb0+yb1)*.5,fl+.01),(2*(w-.1),yb1-yb0-.02,.03),M['trim'],.01)
+            for k in range(5):box('Bed floor rib',(-.5+k*.25,(yb0+yb1)*.5,fl+.03),(.04,yb1-yb0-.06,.02),M['insert'],.005)
         self.body=body
 
     def lamp_span(self,tree,side,x):
@@ -843,6 +850,45 @@ class Car:
             cylinder('Spare tyre',(0,yc,z0+.06),.26,.12,M['rubber'],'Z',32,.03)
             cylinder('Spare wheel',(0,yc,z0+.07),.17,.12,M['steel'],'Z',24,0)
             box('Spare strap',(0,yc,z0+.13),(.04,.56,.02),M['trim'],.005)
+        if 'bull_bar' in E:
+            B=self.R['bumper'];yb=self.end_y(.3,B['z']) or yF;y=yb+B['d']+.12;z0=B['z']-.05
+            for x in [-.42,.42]:cylinder('Bull bar upright',(x,y,z0+.32),.035,.64,M['trim'],'Z',16,.01)
+            pts=[(-.42,y,z0+.64),(-.30,y+.03,z0+.76),(0,y+.04,z0+.80),(.30,y+.03,z0+.76),(.42,y,z0+.64)]
+            curve('Bull bar hoop',pts,M['trim'],.035)
+            cylinder('Bull bar cross tube',(0,y,z0+.36),.03,.84,M['trim'],'X',16,.01)
+            for x in [-.42,.42]:box('Bull bar mount',(x,y-.08,z0+.12),(.06,.16,.06),M['trim'],.01)
+        if 'snorkel' in E:
+            # Up the outside of the wing just ahead of the windscreen, its head at the roof line.
+            yw=G['yf0']+.10;x=self.surface_x(yw,G['belt']-.1)+.07;zt=r-.08
+            cylinder('Snorkel body',(x,yw,(G['belt']-.15+zt)*.5),.055,zt-(G['belt']-.15),M['trim'],'Z',16,.01)
+            box('Snorkel head',(x,yw,zt+.06),(.12,.16,.12),M['trim'],.02)
+        if 'spare_rear' in E:
+            z=.95;yt=self.end_y(0,z,False) or yR;y=yt-.13
+            cylinder('Rear spare tyre',(0,y,z),.36,.20,M['rubber'],'Y',32,.04)
+            cylinder('Rear spare wheel',(0,y-.02,z),.22,.21,M['steel'],'Y',24,0)
+            box('Spare carrier',(0,yt-.02,z),(.18,.06,.5),M['trim'],.01)
+            box('Spare cover badge',(0,y-.11,z),(.16,.01,.16),M['paint'],.01)
+        if 'light_bar' in E:
+            yb=G['yf1']-.12;zb=r+G['crown']*.6+.13
+            cylinder('Light bar tube',(0,yb,zb),.03,2*wr-.12,M['trim'],'X',16,.01)
+            for x in [-.48,-.16,.16,.48]:
+                cylinder('Roof spot housing',(x,yb+.06,zb+.09),.075,.08,M['trim'],'Y',24)
+                sphere('Roof spot lens',(x,yb+.105,zb+.09),(.064,.02,.064),M['lamp'])
+            for side in [-1,1]:box('Light bar leg',(side*(wr-.12),yb,zb-.07),(.05,.05,.14),M['trim'],.01)
+        if 'side_steps' in E:
+            for side in [-1,1]:
+                y0,y1=self.ra+self.wr+.18,self.fa-self.wr-.18
+                box('Side step',(side*(self.section(0)[0]+.04),(y0+y1)*.5,sill+.02),(.16,y1-y0,.05),M['trim'],.01)
+                for y in [y0+.1,y1-.1]:box('Side step bracket',(side*(self.section(0)[0]-.02),y,sill+.07),(.06,.05,.1),M['trim'],.005)
+        if 'bed' in E:
+            yb0=yR+.13;yb1=G['yr0']-.12
+            # A roll hoop behind the cab and rails along the bed sides.
+            xh=self.section(yb1)[0]-.12;zt=self.section(yb1)[2]
+            pts=[(-xh,yb1-.08,zt),(-xh+.06,yb1-.08,zt+.42),(xh-.06,yb1-.08,zt+.42),(xh,yb1-.08,zt)]
+            curve('Roll hoop',pts,M['trim'],.035,poly=True)
+            for side in [-1,1]:
+                w,lo,hi=self.section((yb0+yb1)*.5);x=side*(w-.06)
+                cylinder('Bed rail',(x,(yb0+yb1)*.5,hi+.05),.02,yb1-yb0-.1,M['alloy'],'Y',12,0)
         if 'livery' in E:self.livery()
         if 'antenna' in E:
             y=self.fa-.1;x=-.66;z=self.surface_z(x,y)
@@ -891,11 +937,19 @@ class Car:
         for j in range(len(prof)):
             for k in range(n):wf.append((j*n+k,j*n+(k+1)%n,((j+1)%len(prof))*n+(k+1)%n,((j+1)%len(prof))*n+k))
         mesh('Profiled tyre',wv,wf,M['rubber'])
-        # Tread blocks on the crown.
-        for k in range(36):
-            a=k*math.tau/36
-            for u in [-.07,.07]:
-                box('Tread block',(cx+u*s,cy+.424*s*math.sin(a),cz+.424*s*math.cos(a)),(.09*s,.028,.008),M['rubber'],0,rot=(-a,0,0))
+        # Tread blocks on the crown (off-roaders: big staggered knobbly blocks that stand proud of the tyre).
+        if W.get('tread')=='knobbly':
+            ww=W.get('width',1)
+            for k in range(26):
+                a=k*math.tau/26
+                for u in ([-.095,.03] if k%2==0 else [-.03,.095]):
+                    box('Knobbly tread block',(cx+u*s*ww,cy+.428*s*math.sin(a),cz+.428*s*math.cos(a)),(.075*s*ww,.06,.026),M['rubber'],.006,rot=(-a,0,0))
+                for sd in [-1,1]:box('Shoulder lug',(cx+sd*.15*s*ww,cy+.41*s*math.sin(a+.12),cz+.41*s*math.cos(a+.12)),(.03,.05,.03),M['rubber'],.005,rot=(-a,0,0))
+        else:
+            for k in range(36):
+                a=k*math.tau/36
+                for u in [-.07,.07]:
+                    box('Tread block',(cx+u*s,cy+.424*s*math.sin(a),cz+.424*s*math.cos(a)),(.09*s,.028,.008),M['rubber'],0,rot=(-a,0,0))
         outer=cx+side*.149*s
         def torus(label,r,minor,x,mat,seg=40):
             tv=[];tf=[]
@@ -1032,7 +1086,8 @@ def clear_scene():
 def stats(cid):
     meshes=[o for o in bpy.context.scene.objects if o.type=='MESH']
     pts=[o.matrix_world@v.co for o in meshes for v in o.data.vertices]
-    return {'body_id':cid,'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in meshes),
+    xs=sorted(abs(p[0]) for p in pts)
+    return {'body_id':cid,'shoulder_995':round(2*xs[int(len(xs)*.995)]+.02,3),'length':round(max(p[1] for p in pts)-min(p[1] for p in pts)+.01,3),'triangles':sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in meshes),
             'min':[round(min(p[i] for p in pts),3) for i in range(3)],'max':[round(max(p[i] for p in pts),3) for i in range(3)]}
 
 def export(cid):
@@ -1068,7 +1123,8 @@ def render(cid,paint,out):
 PAINTS={'pebble':(.85,.30,.25),'tallboy':(.95,.75,.20),'marlow':(.20,.35,.70),'dover':(.15,.45,.40),'heron':(.55,.12,.12),
         'bramble':(.30,.55,.20),'picnic':(.40,.65,.85),'kipper':(.90,.45,.15),'doodle':(.55,.75,.70),'otter':(.60,.35,.10),
         'sprint':(.85,.85,.82),'comet':(.10,.12,.14),'rally':(.15,.30,.75),'roadster':(.75,.08,.08),'zenith':(.05,.20,.55),'puddle':(.08,.56,.49),
-        'bubble':(.95,.55,.70),'beetle':(.45,.70,.90),'taxi':(.98,.78,.10),'camper':(.35,.70,.55),'gelato':(.98,.85,.88),'minibus':(.95,.62,.15),'ritz':(.12,.18,.30),'postvan':(.80,.06,.05)}
+        'bubble':(.95,.55,.70),'beetle':(.45,.70,.90),'taxi':(.98,.78,.10),'camper':(.35,.70,.55),'gelato':(.98,.85,.88),'minibus':(.95,.62,.15),'ritz':(.12,.18,.30),'postvan':(.80,.06,.05),
+        'cob':(.30,.42,.30),'drover':(.85,.85,.82),'scamp':(.90,.55,.12),'fell':(.55,.12,.10),'tumbler':(.75,.68,.45),'hauler':(.20,.45,.70)}
 report={}
 for cid in ONLY:
     clear_scene();car=Car(cid,RECIPES[cid]);car.build();info=stats(cid)

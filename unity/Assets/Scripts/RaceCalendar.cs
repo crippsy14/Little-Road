@@ -18,7 +18,11 @@ namespace LittleRoad
             public Event(string id,string venue,string raceClass,float rewardScale){this.id=id;this.venue=venue;this.raceClass=raceClass;this.rewardScale=rewardScale;}
         }
         // Event ids are the race tracks (RaceRoster.Track).
-        public static readonly Event[] All={
+        public static readonly Event[] All=QuarryHills.Enabled?new Event[]{
+            new("bayview","Bayview Coast","C",1f),
+            new("hillcrest","Hillcrest Raceway","C",1.5f),
+            // Quarry Hills Rallycross (--quarry-hills): loose slate on the quarry floor, the town's off-roaders.
+            new("quarry","Quarry Hills Rallycross","C",1.8f)}:new Event[]{
             new("bayview","Bayview Coast","C",1f),
             new("hillcrest","Hillcrest Raceway","C",1.5f)};
         public static Event Get(string id){foreach(var e in All)if(e.id==id)return e;throw new ArgumentException("Unknown race: "+id);}

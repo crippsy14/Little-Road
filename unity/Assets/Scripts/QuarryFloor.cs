@@ -9,10 +9,13 @@ namespace LittleRoad
     // over with slate rubble as one smooth ellipse (the 2.5 m terrain grid's cells left a saw-tooth edge).
     public static class QuarryFloor
     {
-        // The Quarry Sprint (docs/59 races): a 1.2 km gravel loop round the floor, clockwise from the start gate.
-        static readonly Vector2[] LoopControl={new(-2470,-2935),new(-2200,-2935),new(-2110,-2975),new(-2105,-3050),new(-2170,-3095),new(-2260,-3090),
-            new(-2320,-3050),new(-2390,-3060),new(-2440,-3110),new(-2540,-3105),new(-2600,-3040),new(-2580,-2965)};
-        public const float LoopWidth=9;
+        // The Quarry Hills Rallycross circuit (Richard, 3 Oct: a class C dirt race here): about 1.5 km of loose slate round the
+        // floor, 16 m wide like every race circuit (Circuit.Width), clockwise from the start line. A long start straight, a
+        // sweeper east, a hairpin, the chicane past the grandstand, the dive south and the long west loop back. The Quarry
+        // Sprint time trial and Gwen's mini-stage run it too.
+        static readonly Vector2[] LoopControl={new(-2470,-2935),new(-2300,-2935),new(-2160,-2938),new(-2085,-2965),new(-2058,-3025),new(-2088,-3082),new(-2155,-3118),
+            new(-2228,-3098),new(-2262,-3040),new(-2318,-3012),new(-2378,-3048),new(-2420,-3110),new(-2500,-3132),new(-2570,-3095),new(-2600,-3040),new(-2595,-2985),new(-2550,-2952)};
+        public const float LoopWidth=Circuit.Width;
         public static Vector3[] Loop=>loop??=MakeLoop();static Vector3[] loop;
         static Vector3[] MakeLoop()
         {
@@ -48,8 +51,15 @@ namespace LittleRoad
             }
             // Start gate on the north straight, the grandstand facing it from the infield, flags along the start.
             int s0=HillcrestRoute.Index(Loop,new Vector3(-2335,0,-2935));var f=Loop[(s0+2)%n]-Loop[(s0+n-2)%n];f.y=0;f.Normalize();
-            Put("town_gate",Loop[s0]+Vector3.down*.02f,Quaternion.LookRotation(-f).eulerAngles.y,T(0xf4f1ea,0,0xc0392b,0),"QUARRY SPRINT",root);
-            var stand=new Vector3(-2330,QuarryHills.FloorY-.05f,-2978);Put("grandstand",stand,Yaw(stand,Loop[s0]),T(0x8c9095,0xc0392b,0xf1c40f,0x229954),"YSGOL RALI",root);
+            // (No gate over the circuit: a 16 m race track is wider than the gate, and its piers stopped the field.) Painted lines
+            // across the track instead, chequered at the race start (index 0) and white at the Sprint's line.
+            var paint=TrialWorld.Material("Start line paint",new Color(.95f,.95f,.93f),0,.3f);var dark=TrialWorld.Material("Start line check",new Color(.08f,.08f,.09f),0,.3f);
+            void Across(int idx,bool chequer){var c=Loop[idx];var d=Loop[(idx+1)%Loop.Length]-Loop[(idx+Loop.Length-1)%Loop.Length];d.y=0;var side=Vector3.Cross(Vector3.up,d.normalized);
+                for(int k=0;k<16;k++){var p=c+side*(k-7.5f);p.y=ValleyField.Height(p.x,p.z)+.09f;var g=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(g.GetComponent<Collider>());g.name="Start line";g.transform.SetParent(root);
+                    g.transform.SetPositionAndRotation(p,Quaternion.LookRotation(d));g.transform.localScale=new Vector3(1,.02f,chequer?1.2f:.6f);g.GetComponent<Renderer>().sharedMaterial=chequer&&k%2==1?dark:paint;}}
+            Across(0,true);Across(s0,false);
+            if(BayviewKit.Has("ad_board")){var side0=Vector3.Cross(Vector3.up,(Loop[1]-Loop[0]).normalized);var b=Loop[0]+side0*(LoopWidth*.5f+5);b.y=QuarryHills.FloorY-.02f;Put("ad_board",b,Quaternion.LookRotation(-side0).eulerAngles.y,T(0xffffff,0xc0392b,0,0),"START · FINISH",root);}
+            var stand=new Vector3(-2405,QuarryHills.FloorY-.05f,-2990);Put("grandstand",stand,Yaw(stand,Loop[s0]),T(0x8c9095,0xc0392b,0xf1c40f,0x229954),"YSGOL RALI",root);
             foreach(float d in new[]{-24f,-12f,12f,24f}){var q=Loop[s0]+f*d+Vector3.Cross(Vector3.up,f)*(LoopWidth*.5f+2.2f);q.y=QuarryHills.FloorY;Put("flag_pole",q,0,T(0xffffff,0x229954,0xc0392b,0),null,root);}
             // The rally school: the old quarry hospital, long and low, its front to the loop; cars outside.
             var school=T(0x969089,0xf4f1ea,0xc0392b,0x229954);school.roof=Toy.Hex(0x4b5158);Put("station",School+Vector3.down*.04f,180,school,"RALLY SCHOOL",root);

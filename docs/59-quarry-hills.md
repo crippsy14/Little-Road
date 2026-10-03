@@ -219,6 +219,21 @@ Load time is 18 s, against 9 s without the flag.
 | Road-edge lips | 1 | 0 |
 | Banks too steep | 2 | 8 |
 
+### Phase three (3 October, night): Richard's tidy-up list
+
+| Asked for | Done |
+|---|---|
+| Carry on from where you were | The save keeps the car's position (`spot`: x, y, z, yaw). It's written every 15 s on the move and on quitting, and the game resumes there if the spot is still clear ground. |
+| Warp back to a garage | The pause menu's map tab has "Back to the <town> Pit Stop": the nearest garage you've visited, with a fade. |
+| Train station; the map stops short | Slate Quay joins the train network (Mari sells tickets). The station moved off the end of Quay Lane. The map and fog of war now cover Quarry Hills (the map is 5.9 km square, 4096 px), and old explored masks carry over. Quarry Hills has area names for the banner. |
+| Hard-to-drive road joins; the quay unreachable | The new **road seam audit** drives every road, wheel track and junction and reports steps of 6 cm or more; it's part of the area audit now. Junctions sit on a fitted plane, with the ground kept below them. The quay's rails are flush and no longer solid. |
+| Floating barriers by the bridge | Guardrail posts now stand from the ground up, and the placement audit checks every post. |
+| The quarry looks shiny and odd | A new matte **split-slate** pattern in the kit shader: world-anchored beds, cleavage lines, cracks, rust runs, and rubble chips on flat tops. It's used on the galleries, tips, floor and inclines. |
+| Mountain paths clip and are only S-curves | The **Gallery Climb is rebuilt**: 12 ramps buried in the faces with spoil banks on the drop side, hairpin landings, the 500 m **Long Bench** with only marker posts at the edge, and switchbacks to a rim viewpoint. Six checkpoints split the time, and going over the edge puts you back at the last one (+5 s). |
+| A Class C dirt race here | **Quarry Hills Rallycross**: 1.5 km, 16 m wide, 3 laps, 24 cars, all in off-roaders. Enter it from Gwen. Three seeds: 24/24 finished each time, no assisted recoveries. |
+| Off-road stock cars filling the town | Six new models: **Cob** 4x4, **Drover** pickup, **Scamp** raised hatch, **Fell** wagon, **Tumbler** soft-top jeep and **Hauler** kei truck. They come with new builder parts: bull bars, snorkels, rear spares, light bars, side steps, pickup beds and knobbly tyres. They race the rallycross, fill the town's traffic and parking, and Nia sells them. |
+| More life, less bare grass | `QuarryHillsCountry`: four hill farms with about 500 grazing sheep, the rugby ground, the quarry workshops with the turning **Great Wheel** and its leat, a campsite by the tarn, and a moorland wind farm. Along the roads: dry-stone walls with field gates and telegraph poles with wires. Plus the welcome gate, phone and post boxes, the chapel graveyard, and two balloons over the quarry. |
+
 ### Next for Quarry Hills
 
 - ~~The Blondin ride, the rally school and rally parts, the slate carvings, the Gallery Climb~~ (round two).

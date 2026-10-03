@@ -32,7 +32,7 @@ public static class PitStopChecks
             } finally{UnityEngine.Object.DestroyImmediate(go);}
         }
         // Body catalogue: looks only, every body sold races in the standard envelope, prices rise to the Zenith.
-        Check(CarBodies.ForSale.All(o=>CarBodies.UsesStandardEnvelope(o.id)&&o.price>0&&o.shop=="hillcrest"),"Every body for sale uses the standard racing envelope (looks only) and is sold at Hillcrest");
+        Check(CarBodies.ForSale.All(o=>CarBodies.UsesStandardEnvelope(o.id)&&o.price>0&&(o.shop=="hillcrest"||o.shop=="quarry"&&System.Array.IndexOf(CarBodies.OffRoad,o.id)>=0)),"Every body for sale uses the standard racing envelope (looks only) and is sold at Hillcrest (Quarry Hills sells its off-roaders)");
         Check(CarBodies.ForSale.Select(o=>o.id).Distinct().Count()==CarBodies.ForSale.Length&&!CarBodies.Sellable(CarBodies.Starter),"Body offers are unique and the starter is not for sale");
         Check(CarBodies.Price("zenith")==CarBodies.ForSale.Max(o=>o.price),"The Zenith GT is the top prize");
         string folder=Path.Combine(evidenceRoot,"bodies-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(folder);

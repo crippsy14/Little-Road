@@ -26,16 +26,17 @@ namespace LittleRoad
             for(float u=-QuarryHills.QuayHalf+6;u<QuarryHills.QuayHalf-5;u+=12)Box(irons,P(u,-QuarryHills.QuaySea+1.6f,Y+.45f),new Vector3(.55f,.9f,.55f),0);
             // The railway terminus: two tracks along the quay (rails and sleepers), buffer stops, the station facing them.
             var slate=WorldLook.Kit("Stacked slate",new Color(.36f,.38f,.43f),WorldLook.Pattern.Rock,0,.15f,true);var slates=new List<Matrix4x4>();
-            var sleeper=new List<Matrix4x4>();
+            var sleeper=new List<Matrix4x4>();var rails=new List<Matrix4x4>();
             foreach(float v in new[]{4f,9f}) {
-                for(float u=-80;u<=70;u+=.9f)Box(sleeper,P(u,v,Y+.08f),new Vector3(.25f,.16f,2.5f),alongYaw+90);
-                foreach(float r in new[]{-.72f,.72f})Box(irons,P(-5,v+r,Y+.24f),new Vector3(.1f,.14f,151),alongYaw);
+                for(float u=-80;u<=70;u+=.9f)Box(sleeper,P(u,v,Y+.005f),new Vector3(.25f,.02f,2.5f),alongYaw+90);
+                // Rails let into the quay's setts (flush, so a car crosses them anywhere: Richard, 3 Oct, couldn't get onto the quay).
+                foreach(float r in new[]{-.72f,.72f})Box(rails,P(-5,v+r,Y+.025f),new Vector3(.1f,.06f,151),alongYaw);
                 Box(rusts,P(-81.5f,v,Y+.7f),new Vector3(2.6f,1.2f,.6f),alongYaw); // buffer stop
             }
             var wood=TrialWorld.Material("Sleepers",Toy.Hex(0x5a4632),0,.2f);
-            QuarryFloor.Combine("Quay sleepers",sleeper,wood,root,false);
-            var stationAt=P(-30,16.5f,Y-.04f);Put("station",stationAt,seaYaw,Tint(0x8c9095,0xf4f1ea,0xc0392b,0x229954,0x4b5158),"SLATE QUAY",root);
-            QuarryHillsTown.Spots["slatequay"]=(P(-30,12.5f,Y),alongYaw);
+            QuarryFloor.Combine("Quay sleepers",sleeper,wood,root,false);QuarryFloor.Combine("Quay rails",rails,dark,root,false);
+            var stationAt=P(18,16.5f,Y-.04f);   // (east of where Quay Lane comes in at u -30)Put("station",stationAt,seaYaw,Tint(0x8c9095,0xf4f1ea,0xc0392b,0x229954,0x4b5158),"SLATE QUAY",root);
+            QuarryHillsTown.Spots["slatequay"]=(P(18,12.2f,Y),alongYaw);
             // The engine shed at the east end over the inner track, its engine outside, and a rake of loaded wagons.
             Put("motors",P(55,13,Y-.04f),seaYaw,Tint(0x7f868d,0x3b4047,0xc0392b,0x3b4047,0x40464d),"ENGINE SHED",root);
             if(BayviewKit.Has("train_loco"))BayviewKit.Spawn("train_loco",P(36,9,Y+.3f),alongYaw,root,null,null,true,1);

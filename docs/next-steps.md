@@ -42,6 +42,18 @@ Gwen's Quarry Sprint time trial is playable. Against doc 57's standards, Quarry 
 
 Test windows now open without stealing focus (`tools/quiet-start.ps1`). Next is the Sprint as a 24-car race, Heavy Haul and the Blast Run, the railway, then **Bramblewick**, the first village.
 
+**Phase three (3 October, night; doc 59 "Phase three"):**
+- the saved position and warp to a garage;
+- the map covering Quarry Hills, and the Slate Quay station;
+- the road seam audit;
+- the matte slate;
+- the rebuilt Gallery Climb with checkpoints;
+- the Quarry Hills Rallycross (Class C, 24 off-roaders);
+- six off-road car models;
+- the countryside: farms, sheep, the rugby ground, the Great Wheel, walls and gates.
+
+An outsider's review with ideas is [doc 60](60-outsider-review.md).
+
 **Update, 2 October, night: Richard's list, tied off** ([doc 56](56-wider-game-round.md) §13–20; [doc 57](57-new-area-standards.md)).
 - **In-race pause:** resume, restart, view the field, options and retire. The race truly pauses.
 - **Options screen:** six tabs. New settings: units, vibration, motion blur, speed effects, camera shake, minimap, button prompts, ambience. Opens from the title, the pause hub and the race pause.

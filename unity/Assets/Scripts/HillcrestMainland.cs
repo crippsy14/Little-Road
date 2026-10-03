@@ -405,6 +405,17 @@ namespace LittleRoad
                 float reach=Mathf.Min(FillReach,fillInner[k]+rise/FillSlope);if(fillNearest[k]>=reach)continue;
                 h[k]=Mathf.Max(h[k],Mathf.Lerp(before[k],road,1-Blend(fillInner[k],reach,fillNearest[k])));
             }
+            // Quarry Hills' junctions: within 24 m of each, the ground stays 0.2 m under the lowest road near it (the corridors
+            // follow whichever road is nearest, so a junction's surface, which blends its roads' heights, could be buried).
+            if(QuarryHills.Enabled)foreach(var node in QuarryHills.JunctionPoints()) {
+                int i0=Mathf.Max(0,(int)((node.x-24-X0)/Cell)),i1=Mathf.Min(NX-1,(int)((node.x+24-X0)/Cell)+1),j0=Mathf.Max(0,(int)((node.z-24-Z0)/Cell)),j1=Mathf.Min(NZ-1,(int)((node.z+24-Z0)/Cell)+1);
+                var near=new List<HillcrestRoute.Road>();foreach(var road in HillcrestRoute.All())if(HillcrestRoute.Distance(road.line,node.x,node.z,out _)<40)near.Add(road);
+                for(int j=j0;j<=j1;j++)for(int i=i0;i<=i1;i++) {
+                    float x=X0+i*Cell,z=Z0+j*Cell;float r=Mathf.Sqrt((x-node.x)*(x-node.x)+(z-node.z)*(z-node.z));if(r>24)continue;
+                    float low=float.MaxValue;foreach(var road in near){float d=HillcrestRoute.Distance(road.line,x,z,out float ry);if(d<road.width*.5f+4)low=Mathf.Min(low,ry-.2f);}
+                    if(low<float.MaxValue){int k=j*NX+i;h[k]=Mathf.Lerp(Mathf.Min(h[k],low),h[k],Blend(18,24,r));}
+                }
+            }
             // Causeway approach: keep the cliff foot below the deck; railway cuttings.
             Cut(mainline.line,0,portalN,7,14,4);
             Cut(HillcrestRoute.Rail.line,0,HillcrestRoute.Rail.line.Length-1,3.5f,11,.35f);

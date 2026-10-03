@@ -60,6 +60,8 @@ namespace LittleRoad
         public string explored;public List<string> discovered;
         // Gearbox tunes from the tuning shop (docs/48). Older saves have none.
         public List<GearTune> tunes;
+        // Where the car was when last saved (x, y, z, yaw): the game resumes there. Older saves have none (empty).
+        public float[] spot;
         // Speed traps (SpeedTraps). Older saves have none.
         public List<TrapRecord> traps;
         public GearTune Tune(){var box=fitted?.Find(f=>f.slot=="transmission")?.id;return box==null?null:tunes?.Find(t=>t.transmission==box);}
@@ -70,6 +72,7 @@ namespace LittleRoad
         public void Validate()
         {
             if(traps!=null&&(traps.Any(t=>t==null||!(SpeedTraps.Known(t.id)||TrainRace.Known(t.id)||DukeDrive.Known(t.id)||RallySchool.Known(t.id)||GalleryClimb.Known(t.id))||t.stars<0||t.stars>3||t.best<0||t.best>500)||traps.Select(t=>t.id).Distinct().Count()!=traps.Count))throw new InvalidDataException("A speed trap record is invalid or repeated.");
+            if(spot!=null&&spot.Length!=0&&(spot.Length!=4||spot.Any(v=>float.IsNaN(v)||float.IsInfinity(v))||Mathf.Abs(spot[0])>20000||Mathf.Abs(spot[2])>20000||Mathf.Abs(spot[1])>2000))throw new InvalidDataException("The saved position is invalid.");
             if(tunes!=null&&(tunes.Any(t=>t==null||!t.Valid)||tunes.Select(t=>t.transmission).Distinct().Count()!=tunes.Count))throw new InvalidDataException("A gearbox tune is invalid or repeated.");
             if(version!=1||credits<0||credits>10000000||questStage<0||questStage>3||paintIndex<0||paintIndex>=PaintCatalog.All.Length||
                 raceSerial<0||settledSerial<0||settledSerial>raceSerial||raceWins<0||raceWins>settledSerial||bestPlace<0||bestPlace>24)
@@ -140,6 +143,7 @@ namespace LittleRoad
         public bool BuyBody(string id)=>Change(p=>{int price=CarBodies.Price(id);if(price<0||p.bodies.Contains(id)||p.credits<price)return false;p.credits-=price;p.bodies.Add(id);return true;});
         public bool SwitchBody(string id)=>Change(p=>{if(!p.bodies.Contains(id)||p.bodyId==id)return false;p.bodyId=id;return true;});
         public bool Discover(string place)=>Change(p=>{if(p.discovered.Contains(place))return false;p.discovered.Add(place);return true;});
+        public bool SaveSpot(Vector3 at,float yaw)=>Change(p=>{p.spot=new[]{Mathf.Round(at.x*10)/10,Mathf.Round(at.y*100)/100,Mathf.Round(at.z*10)/10,Mathf.Round(yaw)};return true;});
         public bool SaveExplored(string mask)=>Change(p=>{if(p.explored==mask)return false;p.explored=mask;return true;});
         public bool Buy(string id)=>Change(p=>{var part=EquipmentCatalog.Get(id);if(p.owned.Contains(id)||p.credits<part.price)return false;p.credits-=part.price;p.owned.Add(id);return true;});
         // The tuning shop (docs/48): replace the fitted gearbox's tune (null returns it to its defaults).

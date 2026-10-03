@@ -67,6 +67,13 @@ namespace LittleRoad
                 if(bottom-highestGround>.3f){floating.Add($"{where} gap {bottom-highestGround:0.00} m");if(bottom>CoastalLandscape.SeaLevel-1)FloatingAt.Add(b.center);}
                 else if(centreGround!=float.MinValue&&centreGround-bottom>1.2f&&centreGround<b.max.y)sunk.Add($"{where} buried {centreGround-bottom:0.00} m");
             }
+            // Structures that aren't kit pieces (guardrail posts, corner walls' pieces): the same test on each post.
+            foreach(var t in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None)) {
+                if(t.name!="Guardrail post"||!t.gameObject.activeInHierarchy)continue;var r=t.GetComponent<Renderer>();if(r==null)continue;var b=r.bounds;checkedCount++;
+                float ground=float.MinValue;foreach(var hit in Physics.RaycastAll(new Vector3(b.center.x,b.max.y+.5f,b.center.z),Vector3.down,b.size.y+60))
+                    if(!hit.collider.isTrigger&&hit.collider.transform!=t&&hit.collider.GetComponentInParent<RoadCar>()==null&&hit.point.y<=b.max.y)ground=Mathf.Max(ground,hit.point.y);
+                if(ground!=float.MinValue&&b.min.y-ground>.3f){floating.Add($"Guardrail post at ({b.center.x:0},{b.min.y:0.0},{b.center.z:0}) gap {b.min.y-ground:0.00} m");FloatingAt.Add(b.center);}
+            }
             // Bunting ends: each must touch a placed piece (lamp, flag pole, building, gate) within 0.8 m.
             var loose=new List<string>();int ends=0;
             foreach(var (a,b) in HillcrestTown.BuntingEnds)foreach(var e in new[]{a,b}) {
@@ -79,6 +86,52 @@ namespace LittleRoad
             foreach(var l in loose)sb.AppendLine("  "+l);
             sb.AppendLine("floating (gap under the whole footprint):");foreach(var f in floating.OrderBy(s=>s))sb.AppendLine("  "+f);
             sb.AppendLine("sunk (centre below ground):");foreach(var s in sunk.OrderBy(s=>s))sb.AppendLine("  "+s);
+            return sb.ToString();
+        }
+        // Road seams (Richard, 3 Oct: "joins in roads being difficult to traverse"): driving lines along every road (the centre
+        // and both wheel tracks) and through every junction (each arm's mouth to every other's, via the node), the top
+        // surface sampled every 0.5 m. A step is where the surface jumps by 6 cm or more against the slope on either side
+        // (a smooth grade or a crest doesn't count; a ledge, a lip between a ribbon and a junction, or a hump does).
+        public static readonly List<Vector3> SeamAt=new();
+        public static string Seams(Circuit bayview=null)
+        {
+            Physics.SyncTransforms();SeamAt.Clear();var sb=new StringBuilder();int lines=0;var found=new List<string>();
+            string topName="";
+            float Top(Vector3 p){float best=float.MinValue;topName="";foreach(var h in Physics.RaycastAll(p+Vector3.up*3,Vector3.down,7))if(!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null&&!h.collider.CompareTag("Respawn")&&h.point.y>best){best=h.point.y;topName=h.collider.name;}return best;}
+            void Drive(string name,IList<Vector3> path,bool closed)
+            {
+                // Resample at 0.5 m.
+                var pts=new List<Vector3>();int n=path.Count;
+                for(int i=0;i<(closed?n:n-1);i++){var a=path[i];var b=path[(i+1)%n];float len=Vector2.Distance(new(a.x,a.z),new(b.x,b.z));for(float d=0;d<len;d+=.5f)pts.Add(Vector3.Lerp(a,b,d/len));}
+                if(pts.Count<5)return;lines++;
+                var h=new float[pts.Count];var names=new string[pts.Count];for(int i=0;i<pts.Count;i++){h[i]=Top(pts[i]);names[i]=topName;}
+                Vector3 last=new(1e6f,0,0);
+                for(int i=2;i<pts.Count-2;i++) {
+                    if(h[i]==float.MinValue||h[i-1]==float.MinValue||h[i-2]==float.MinValue||h[i+1]==float.MinValue)continue;
+                    float before=h[i-1]-h[i-2],step=h[i]-h[i-1],after=h[i+1]-h[i];
+                    // Against both neighbouring slopes: a jump that the road on either side doesn't share.
+                    if(Mathf.Abs(step-before)>.06f&&Mathf.Abs(step-after)>.06f&&Mathf.Abs(step)>.06f) {
+                        var p=pts[i];if(Vector3.Distance(p,last)<3)continue;last=p;SeamAt.Add(p);
+                        found.Add($"  {name} step {step:+0.00;-0.00} m at ({p.x:0},{h[i]:0.0},{p.z:0}) [{names[i-1]} -> {names[i]}]");
+                    }
+                }
+            }
+            if(bayview!=null)Drive("Bayview road",bayview.points,true);
+            foreach(var road in HillcrestRoute.All()) {
+                var line=road.line;Drive(road.name,line,false);
+                foreach(int side in new[]{-1,1}){var track=new List<Vector3>();for(int i=0;i<line.Length;i++){var f=line[Mathf.Min(line.Length-1,i+1)]-line[Mathf.Max(0,i-1)];f.y=0;f.Normalize();track.Add(line[i]+Vector3.Cross(Vector3.up,f)*side*(road.width*.5f-1.1f));}Drive(road.name+(side<0?" (left track)":" (right track)"),track,false);}
+            }
+            Drive("Hillcrest Raceway",HillcrestRoute.Circuit,true);
+            if(QuarryHills.Enabled){Drive("Quarry Sprint",QuarryFloor.Loop,true);if(GalleryClimb.Path.Count>4)Drive("Gallery Climb",GalleryClimb.Path,false);}
+            var net=CoastalLandscape.Network;
+            if(net!=null)foreach(var node in net.nodes) {
+                if(node.arms.Count<2)continue;
+                var mouths=node.arms.ConvertAll(a=>(a.MouthLeft+a.MouthRight)*.5f);
+                for(int i=0;i<mouths.Count;i++)for(int j=0;j<mouths.Count;j++)if(i!=j){var a=mouths[i];var b=mouths[j];
+                    // From 8 m out along arm i, through the node, to 8 m out along arm j.
+                    var ai=a-node.at;ai.y=0;var bj=b-node.at;bj.y=0;Drive($"junction ({node.at.x:0},{node.at.z:0})",new List<Vector3>{a+ai.normalized*8,a,node.at,b,b+bj.normalized*8},false);}
+            }
+            sb.AppendLine($"seam lines={lines} steps={SeamAt.Count}");foreach(var f in found)sb.AppendLine(f);
             return sb.ToString();
         }
         // Road edges you can't drive back up (--edge-audit): along every valley road, steps out from the

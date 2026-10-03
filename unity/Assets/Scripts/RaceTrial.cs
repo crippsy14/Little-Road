@@ -84,7 +84,7 @@ namespace LittleRoad
             career=AdventureSession.Racing;
             if(!career&&!Has("--trial-auto")&&!Has("--trial-race")){freeRoam=true;gameObject.AddComponent<AdventureGame>();yield break;}
             sampleInterval=Arg("--traffic-case","").StartsWith("draft-")?1f/120:1;
-            automation=Has("--trial-auto")||AdventureSession.Smoke||(career&&(Has("--valley-race-review")||Has("--duke-race-review")));int.TryParse(Arg("--trial-cars","24"),out field);field=Mathf.Clamp(field,1,24);
+            automation=Has("--trial-auto")||AdventureSession.Smoke||(career&&(Has("--valley-race-review")||Has("--duke-race-review")||Has("--quarry-race-review")));int.TryParse(Arg("--trial-cars","24"),out field);field=Mathf.Clamp(field,1,24);
             float.TryParse(Arg("--trial-duration","240"),out duration);int.TryParse(Arg("--trial-seed","1709"),out seed);
             int.TryParse(Arg("--trial-laps","3"),out requiredLaps);requiredLaps=Mathf.Max(1,requiredLaps);
             setup=Arg("--trial-setup","stock");reportPath=Arg("--trial-report");captureFolder=Arg("--trial-captures");
@@ -114,11 +114,13 @@ namespace LittleRoad
             else if(trackId=="bayview"){track=new Circuit();yield return TrialWorld.CreateRoutine(track);}
             // Hillcrest Raceway: the valley circuit (built with the mainland); the island loop is scenery.
             else if(trackId=="hillcrest"){yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(HillcrestRoute.Circuit);RenderSettings.fogDensity=.00026f;}
+            // Quarry Hills Rallycross (--quarry-hills): the quarry floor's circuit, built with the mainland.
+            else if(trackId=="quarry"&&QuarryHills.Enabled){yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(QuarryFloor.Loop);RenderSettings.fogDensity=.00026f;}
             else throw new ArgumentException("Unknown trial track: "+trackId);
             reportTrack=trackId;
             // The elevated Hillcrest Raceway always races grade-aware (its context drivers could not race it
             // otherwise; the model is exactly neutral on level circuits, study 124). Elsewhere it is opt-in.
-            GradeModel.Enabled=Has("--grade-aware")||(trackId=="hillcrest"&&track.hasElevation);GradeModel.Physics=GradeModel.Enabled&&!Has("--grade-no-physics");
+            GradeModel.Enabled=Has("--grade-aware")||((trackId=="hillcrest"||trackId=="quarry")&&track.hasElevation);GradeModel.Physics=GradeModel.Enabled&&!Has("--grade-no-physics");
             RoadCar.GateFirst=Has("--gate-first");PhysicalRecovery.RejoinAtSpeed=Has("--rejoin-at-speed");
             if(track.hasElevation&&Arg("--driver-policy","legacy")!="legacy"&&!GradeModel.Enabled&&!career)Debug.LogWarning("Elevated circuit without --grade-aware: context forecasts will refuse it.");
             bool connectedModern=career&&AdventureSession.EnteredRoster?.Modern==true;
@@ -127,7 +129,7 @@ namespace LittleRoad
             if(RaceAiPreset.RacerV2&&policy=="context")policy="racer";
             if(Has("--dynamic-rejoin")&&((career&&!connectedModern)||policy!="context"||(field!=1&&!Has("--dynamic-traffic"))||!Has("--road-feasibility")))throw new ArgumentException("Dynamic rejoin requires declared context fixtures and physical road checks.");
             bool bayviewStudy=Has("--bayview-transfer-study")||connectedModern;
-            if(bayviewStudy&&((career&&!connectedModern)||(trackId!="bayview"&&trackId!="hillcrest")||(policy!="legacy"&&policy!="context"&&policy!="racer")||!((field==24&&Arg("--traffic-case")=="field")||(field==RaceGrid.ClassSortCars&&Arg("--traffic-case")=="class-sort")||(field==1&&Arg("--traffic-case")=="standing-solo")||(career&&connectedModern&&field==AdventureSession.EnteredRoster.Entries.Count))))throw new ArgumentException("Bayview transfer requires explicit standalone legacy/context standing-solo or24-car field.");
+            if(bayviewStudy&&((career&&!connectedModern)||(trackId!="bayview"&&trackId!="hillcrest"&&trackId!="quarry")||(policy!="legacy"&&policy!="context"&&policy!="racer")||!((field==24&&Arg("--traffic-case")=="field")||(field==RaceGrid.ClassSortCars&&Arg("--traffic-case")=="class-sort")||(field==1&&Arg("--traffic-case")=="standing-solo")||(career&&connectedModern&&field==AdventureSession.EnteredRoster.Entries.Count))))throw new ArgumentException("Bayview transfer requires explicit standalone legacy/context standing-solo or24-car field.");
             bool dynamicFieldStudy=Has("--dynamic-field-study");
             if(Has("--dynamic-blocking-target")&&!Has("--dynamic-traffic"))throw new ArgumentException("Dynamic blocking targets require the dynamic traffic study.");
             if(Has("--dynamic-traffic-fallback")&&!Has("--dynamic-traffic"))throw new ArgumentException("Dynamic traffic fallback requires the dynamic traffic study.");
@@ -143,7 +145,7 @@ namespace LittleRoad
                 // Hillcrest's line is baked from the live circuit (same method as the Bayview/Cedar seeds).
                 // Cedar Hills reuses Cedar's authored line (same layout), so only the elevation differs.
                 ReferenceLine=trackId=="cedar-hills"?new RacingLine(track,RacingLine.Transfer(track,"cedar-smooth-v2","cedar-hills")):
-                    trackId=="hillcrest"||trackId=="test-loop"?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+"-smooth-v1",trackId)):
+                    trackId=="hillcrest"||trackId=="quarry"||trackId=="test-loop"?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+"-smooth-v1",trackId)):
                     new RacingLine(track,Arg("--racing-line","cedar-mincurve-v1"),technical==null?"bayview":technical.definition.id,technical==null?"bayview-v1":technical.definition.version);DriverPolicyId=policy=="traffic"?"traffic-v1":policy=="context"?"context-v1":policy=="racer"?"racer-v2":"reference-v1";
             }else if(policy!="legacy")throw new ArgumentException("Unknown driver policy: "+policy);
             if(Has("--driver-roster")&&((career&&!connectedModern)||(policy!="context"&&policy!="racer")))throw new ArgumentException("Driver roster currently requires standalone context comparisons.");
@@ -168,7 +170,7 @@ namespace LittleRoad
             if(Has("--path-probe"))gameObject.AddComponent<PathPredictionFixture>().Setup(this,technical);
             if((!career||connectedModern)&&(Has("--shared-driver-snapshot")||ReferenceLine!=null||Has("--physical-recovery"))){DriverSnapshot=gameObject.AddComponent<RaceWorldSnapshot>();DriverSnapshot.Setup(this);}
             if(ReferenceLine!=null&&!career&&!RaceHud.Requested&&!Has("--clean-view"))gameObject.AddComponent<RacingLineOverlay>().Setup(this,cars[0].referenceProfile);
-            chase=new GameObject("Chase camera").AddComponent<Camera>();chase.tag="MainCamera";chase.fieldOfView=52;chase.nearClipPlane=.12f;chase.farClipPlane=trackId=="hillcrest"?6000:1800;
+            chase=new GameObject("Chase camera").AddComponent<Camera>();chase.tag="MainCamera";chase.fieldOfView=52;chase.nearClipPlane=.12f;chase.farClipPlane=trackId=="hillcrest"||trackId=="quarry"?6000:1800;
             chase.gameObject.AddComponent<AudioListener>();WorldLook.Camera(chase);
             if(GrassField.Wanted)gameObject.AddComponent<GrassField>().Setup(chase);
             if(!Application.isBatchMode)WorldLook.RaceBlur();
@@ -391,8 +393,8 @@ namespace LittleRoad
             int place=finishOrder.IndexOf(cars[0])+1;
             if(Roster?.Event==RaceRoster.DukeEvent){SettleDuke(place);return;}
             try {
-                bool valley=Roster?.Track=="hillcrest";var data=AdventureSession.Store.Data;string openBefore=RaceCalendar.Open(data);bool doneBefore=RaceCalendar.Complete(data,openBefore);
-                int reward=AdventureSession.Store.FinishRace(AdventureSession.RaceSerial,place,valley?"hillcrest":"bayview");
+                bool valley=Roster?.Track=="hillcrest";string venue=RaceCalendar.Known(Roster?.Track??"")?Roster.Track:"bayview";var data=AdventureSession.Store.Data;string openBefore=RaceCalendar.Open(data);bool doneBefore=RaceCalendar.Complete(data,openBefore);
+                int reward=AdventureSession.Store.FinishRace(AdventureSession.RaceSerial,place,venue);
                 careerReward=reward;string openNow=RaceCalendar.Open(AdventureSession.Store.Data);
                 AdventureSession.Notice=openNow!=openBefore?$"Finished {place}/24 · +{reward} credits · Class {openBefore} complete! Class {openNow} is open.":
                     !doneBefore&&RaceCalendar.Complete(AdventureSession.Store.Data,openBefore)?$"Finished {place}/24 · +{reward} credits · Class {openBefore} complete! New races and parts are on the way.":
@@ -434,7 +436,7 @@ namespace LittleRoad
             var data=AdventureSession.Store.Data;
             // A rematch with the Duke starts straight away (the race preview is the 24-car grid).
             if(Roster?.Event==RaceRoster.DukeEvent){AdventureSession.StartRace(RaceRoster.DukeChallenge(data));return;}
-            var roster=Roster?.Event=="hillcrest"?RaceRoster.AdventureHillcrest(data):RaceRoster.Adventure(data);
+            var roster=RaceRoster.ForEvent(Roster?.Event,data);
             float resume=Time.timeScale;Time.timeScale=0;careerUI.Close();careerUI.SetVisible(false);
             if(racePreview==null)racePreview=gameObject.AddComponent<RacePreviewUI>();
             racePreview.Open(roster,()=>AdventureSession.StartRace(roster),()=>{Time.timeScale=resume;careerUI.SetVisible(true);ShowCareerResult();});

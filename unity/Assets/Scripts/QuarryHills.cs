@@ -79,10 +79,16 @@ namespace LittleRoad
                 G(tip.b+(tip.a-tip.b).normalized*90),
                 Off(haul,haul.Length*.55f,9),
                 new Vector3(ledge.x,FloorY,ledge.z),
-                Off(kettle,kettle.Length-22,7),
+                Off(kettle,kettle.Length-22,0),
                 G(QuayCentre+QuayAlong*(-QuayHalf-30)+QuayInland*20),
                 G(Tips[2].a+new Vector2(30,25)),
                 Off(high,high.Length-8,-7)};
+        }
+        // The town's road junctions (ValleyField keeps the ground below the roads round them).
+        public static IEnumerable<Vector3> JunctionPoints()
+        {
+            yield return TeeOnRaceway;yield return new Vector3(Square.x,SquareY,Square.y);yield return HillcrestRoute.Find(HighStreetName).line[^1];
+            yield return ChapelFrom;yield return ChapelTo;yield return TerraceFrom;yield return TerraceTo;
         }
         // How far into the quarry floor's ellipse (1 at its edge).
         public static float FloorQ(float x,float z)=>Mathf.Sqrt(Mathf.Pow((x-FloorCentre.x)/FloorRX,2)+Mathf.Pow((z-FloorCentre.y)/FloorRZ,2));
@@ -178,7 +184,7 @@ namespace LittleRoad
             if(mask>0&&e>-40) {
                 float carve=Mathf.Min(h,GalleryStep(Mathf.Max(0,ew)));
                 float under=Mathf.Min(h,GalleryStep(Mathf.Max(0,ew-3.5f))-1);
-                h=Mathf.Lerp(h,Mathf.Lerp(carve,under,Blend(MeshMask,MeshMask+.15f,mask)),mask);
+                h=Mathf.Lerp(h,Mathf.Lerp(carve,under,Blend(MeshMask-.04f,MeshMask,mask)),mask);
             }
             // The pit: the mesh's wall stands at the rim (e 0) from the lake bed to the floor, with a 5 m ledge at floor level;
             // the ground drops behind the wall and under the ledge, so no grid stair-step shows at the rim and the water is deep
@@ -204,6 +210,8 @@ namespace LittleRoad
         public static IEnumerable<(Vector2 centre,float inner,float outer,float y)> Pads()
         {
             yield return (Square,30,48,SquareY);
+            // The rugby ground (QuarryHillsCountry): a level pitch with room for its in-goals and touchlines.
+            yield return (QuarryHillsCountry.Pitch,72,92,PitchY);
             var ps=PitStopSite.at;yield return (new Vector2(ps.x,ps.z),22,34,ps.y);
         }
         // The Pit Stop: on Quarry Road's south side 210 m before the square, the first thing a visitor passes (as Hillcrest's).
@@ -213,6 +221,7 @@ namespace LittleRoad
             var r=HillcrestRoute.Find(QuarryRoadName);float s=r.Length-210;var at=r.At(s);var right=r.Right(s);var south=right.z<0?right:-right;
             var centre=at+south*(r.width*.5f+15);centre.y=at.y;var face=-south;face.y=0;return (centre,Quaternion.LookRotation(face).eulerAngles.y);
         }
+        public static float PitchY=>pitchY??=ValleyField.Natural(QuarryHillsCountry.Pitch.x,QuarryHillsCountry.Pitch.y);static float? pitchY;
         public static float SquareY=>squareY??=Mathf.Max(ValleyField.Natural(Square.x,Square.y),8);static float? squareY;
 
         // ---------------------------------------------------------------- roads

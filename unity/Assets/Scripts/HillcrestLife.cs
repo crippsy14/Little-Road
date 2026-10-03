@@ -46,11 +46,11 @@ namespace LittleRoad
                 var quarryRoads=new List<(string road,float from,float back)>{(QuarryHills.QuarryRoadName,30,40),(QuarryHills.QuarryRoadName,30,40),(QuarryHills.HighStreetName,10,10),(QuarryHills.QuayLaneName,10,12),(QuarryHills.ChapelStreetName,8,8),(QuarryHills.TerraceRowName,8,8)};
                 for(int i=0;i<quarryRoads.Count;i++) {
                     var road=HillcrestRoute.Find(quarryRoads[i].road);float from=quarryRoads[i].from,to=road.Length-quarryRoads[i].back;Color paint=PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color;
-                    var go=TrialWorld.Car(bodies[(i+3)%bodies.Length],paint);go.name="Quarry traffic "+i;go.transform.SetParent(root);
+                    var go=TrialWorld.Car(i%3==2?bodies[(i+3)%bodies.Length]:CarBodies.OffRoad[i%CarBodies.OffRoad.Length],paint);go.name="Quarry traffic "+i;go.transform.SetParent(root);
                     go.AddComponent<RoadCruiser>().Setup(road,from,to,Mathf.Lerp(from,to,(float)rng.NextDouble()),rng.Next(2)*2-1,player);
                     var chatter=go.AddComponent<NpcChatter>();chatter.speaker=new[]{"Delyth","Rhodri","Nerys","Ifan","Carys","Geraint"}[i%6];chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=welsh;
                 }
-                var haul=HillcrestRoute.Find(QuarryHills.HaulRoadName);var dumper=TrialWorld.Car("tallboy",Toy.Hex(0xf1c40f));dumper.name="Dai's dumper";dumper.transform.SetParent(root);
+                var haul=HillcrestRoute.Find(QuarryHills.HaulRoadName);var dumper=TrialWorld.Car("hauler",Toy.Hex(0xf1c40f));dumper.name="Dai's dumper";dumper.transform.SetParent(root);
                 dumper.AddComponent<RoadCruiser>().Setup(haul,12,haul.Length-12,haul.Length*.5f,1,player);
                 var dai=dumper.AddComponent<NpcChatter>();dai.speaker="Dai the Dumper";dai.colour=Toy.Sun;dai.title="Quarry haulage";
                 dai.lines=new[]{"Twelve tonnes of slate on here, butt. Give way!","Haul road's mine till noon!","Brakes? Who needs brakes going UP?","Race you to the floor. Go on. I dare you."};
@@ -73,7 +73,9 @@ namespace LittleRoad
                 foreach(float o in new[]{0f,2.5f,-2.5f,5f,-5f,7.5f,-7.5f}){var c=spotAt+along*o;float gy=ValleyField.Height(c.x,c.z);
                     if(!BayviewKit.Occupied(new Bounds(new Vector3(c.x,gy+.9f,c.z),new Vector3(3.2f,1.4f,3.2f)))){at=c;break;}}
                 var p=at;p.y=Mathf.Max(ValleyField.Height(p.x,p.z),at.y>0?at.y:-99)+.02f;
-                var go=TrialWorld.Car(bodies[rng.Next(bodies.Length)],PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color);go.name="Parked car";go.transform.SetParent(root);
+                // (In Quarry Hills, the rally town, most cars are its off-roaders.)
+                bool rally=QuarryHills.Enabled&&QuarryHills.Contains(p.x,p.z);
+                var go=TrialWorld.Car(rally&&rng.NextDouble()<.8?CarBodies.OffRoad[rng.Next(CarBodies.OffRoad.Length)]:bodies[rng.Next(bodies.Length)],PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color);go.name="Parked car";go.transform.SetParent(root);
                 go.transform.SetPositionAndRotation(p,Quaternion.Euler(0,yaw,0));
                 var renderers=go.GetComponentsInChildren<Renderer>();var bounds=renderers[0].bounds;foreach(var x in renderers)bounds.Encapsulate(x.bounds);
                 var box=go.AddComponent<BoxCollider>();box.center=go.transform.InverseTransformPoint(bounds.center);box.size=new Vector3(1.8f,1.5f,3.8f);go.tag="Respawn";
@@ -143,7 +145,7 @@ namespace LittleRoad
             int quarryPlaced=0;
             for(int i=0;i<QuarryHillsTown.Homes.Count&&quarryPlaced<110;i++) {
                 if(rng.NextDouble()>.36)continue;var (yard,yaw,_)=QuarryHillsTown.Homes[i];
-                string body=bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
+                string body=rng.NextDouble()<.55?CarBodies.OffRoad[rng.Next(CarBodies.OffRoad.Length)]:bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
                 Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color,yard,yaw,QuarryNames[quarryPlaced%QuarryNames.Length],"Quarry Hills",new[]{QuarryGossip[rng.Next(QuarryGossip.Length)],QuarryGossip[rng.Next(QuarryGossip.Length)]});quarryPlaced++;
             }
             void Special(string spot,string body,Color paint,string who,string title,params string[] lines){if(HillcrestTown.Spots.TryGetValue(spot,out var s))Spawn(root,body,paint,s.at,s.yaw,who,title,lines);}
@@ -173,6 +175,9 @@ namespace LittleRoad
                 if(i<2){var p=new Vector3(field.x+(i==0?-18:20),0,field.y+(i==0?6:-10));p.y=ValleyField.Height(p.x,p.z)+(i==0?.1f:12);drift.Tethered(p,i);}
                 else drift.Wander(new Vector3(150,0,-1080),380+i*90,95+i*18,i);
             }
+            // Quarry Hills (--quarry-hills): two balloons in the town's red and green drifting over the quarry and the town.
+            if(QuarryHills.Enabled)for(int i=0;i<2;i++){var tint=new BayviewKit.Tint(Color.white,Toy.Hex(i==0?0x229954:0xffffff),Toy.Hex(i==0?0xc0392b:0x229954),Color.white);
+                var b=BayviewKit.Spawn("balloon",Vector3.zero,i*90,root,tint,solid:false,scale:1.2f);b.AddComponent<BalloonDrift>().Wander(new Vector3(-2450,0,-2650),420+i*160,150+i*25,i+7);}
         }
         void Birds(Transform root)
         {
@@ -352,6 +357,9 @@ namespace LittleRoad
         {
             var list=new List<Station>{new Station{id="bayview",name="Bayview Halt",resident="bayhalt",arrival=CoastalLandscape.HaltArrival,yaw=180,open=_=>true}};
             if(HillcrestTown.Spots.TryGetValue("station",out var st))list.Add(new Station{id="hillcrest",name="Hillcrest",resident="station",arrival=HillcrestRoute.StationYard+new Vector3(-2,0,4),yaw=0,open=p=>p.collected.Contains(Collectibles.VisitHillcrest)});
+            // Slate Quay (--quarry-hills): the Pine & Peak line's terminus; open once you've been to Quarry Hills.
+            if(QuarryHillsTown.Spots.TryGetValue("slatequay",out var sq)){var a=QuarryHills.QuayPoint(2,12.2f,QuarryHills.QuayY);
+                list.Add(new Station{id="quarry",name="Slate Quay",resident="slatequay",arrival=a,yaw=Quaternion.LookRotation(new Vector3(QuarryHills.QuayAlong.x,0,QuarryHills.QuayAlong.y)).eulerAngles.y,open=p=>p.discovered.Contains("QUARRY HILLS")||p.discovered.Contains("SLATE QUAY")});}
             return list;
         }
     }
@@ -407,6 +415,16 @@ namespace LittleRoad
             if(p.z>-300)return "BAYVIEW";
             if(along>HillcrestRoute.PortalNorthRun-2&&along<HillcrestRoute.PortalSouthRun+2&&Mathf.Abs(lateral)<8)return "HEADLAND TUNNEL";
             if(p.z>-452)return "THE CAUSEWAY";
+            // Quarry Hills (--quarry-hills).
+            if(QuarryHills.Enabled&&QuarryHills.Contains(p.x,p.z)&&p.x<QuarryHills.SeamX-60) {
+                QuarryHills.QuayLocal(p.x,p.z,out float qu,out float qv);if(QuarryHills.OnQuay(qu,qv,40))return "SLATE QUAY";
+                QuarryHills.PitMetric(p.x,p.z,out float q,out float e,out float mask);
+                if(QuarryHills.FloorQ(p.x,p.z)<1.15f)return "THE QUARRY FLOOR";
+                if(q<1.02f||mask>.45f&&e<QuarryHills.Benches*QuarryHills.BenchWidth+10)return "THE GALLERIES";
+                if(Vector2.Distance(new(p.x,p.z),QuarryHills.Square)<520)return "QUARRY HILLS";
+                if(ValleyField.Height(p.x,p.z)>125)return "THE MOOR";
+                return "QUARRY HILLS COUNTRY";
+            }
             var hill=new Vector2(p.x-HillcrestRoute.HillCentre.x,p.z-HillcrestRoute.HillCentre.y).magnitude;
             if(hill<55)return "HILLCREST CASTLE";
             if(hill<200||(p.z<-880&&p.z>-960&&p.x>-100&&p.x<470))return "HILLCREST";
@@ -418,7 +436,9 @@ namespace LittleRoad
         }
         public static string Subtitle(string area)=>area switch{
             "BAYVIEW"=>"Home island · Harbour town","HEADLAND TUNNEL"=>"Mind the echo!","THE CAUSEWAY"=>"To the mainland","HILLCREST"=>"Market town on the hill",
-            "HILLCREST CASTLE"=>"Views for miles","SILVER FALLS"=>"Hold on to your hat","HILLCREST RACEWAY"=>"Home of the Valley Cup","VALLEY VIEWPOINT"=>"Say cheese!",_=>"The mainland · Beyond the headland"};
+            "HILLCREST CASTLE"=>"Views for miles","SILVER FALLS"=>"Hold on to your hat","HILLCREST RACEWAY"=>"Home of the Valley Cup","VALLEY VIEWPOINT"=>"Say cheese!",
+            "QUARRY HILLS"=>"Croeso · The town the mountain built","SLATE QUAY"=>"Where the slate trains end","THE QUARRY FLOOR"=>"Rally school · Quarry Sprint",
+            "THE GALLERIES"=>"Twelve benches of slate","THE MOOR"=>"Heather, sheep and sky","QUARRY HILLS COUNTRY"=>"Hill farms and dry-stone walls",_=>"The mainland · Beyond the headland"};
         public void Setup(Transform playerCar){car=playerCar;current=Area(car.position);}
         void Update()
         {

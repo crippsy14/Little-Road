@@ -185,7 +185,7 @@ namespace LittleRoad
             // The road network (docs/52): junctions are nodes, roads are trimmed back to rounded corners and each
             // junction gets one surface at the roads' heights, so edges, kerbs and lines meet (Richard, 1 Oct: the joins
             // had gaps and markings that didn't line up).
-            var net=network=new RoadNetwork{Fillet=FilletRadius};
+            var net=network=Network=new RoadNetwork{Fillet=FilletRadius};
             var nMain=net.Add(main.line[^1]);var nCrest=net.Add(crest.line[0]);var nStation=net.Add(stationRoad[0]);
             var nIsland=net.Add(main.line[0]);
             { float d=track.Nearest(main.line[0],out _);var at=track.At(d);nIsland.at=new Vector3(at.x,main.line[0].y,at.z);var f=track.Forward(d);
@@ -398,12 +398,37 @@ namespace LittleRoad
         static Vector3[] Chain(params Vector3[][] parts){var all=new List<Vector3>(parts[0]);for(int k=1;k<parts.Length;k++)for(int i=1;i<parts[k].Length;i++)all.Add(parts[k][i]);return all.ToArray();}
         // Inside a junction (shoulders and guardrails stop here); the road network (docs/52) knows where they are.
         RoadNetwork network;
+        // The last valley road network built (for the seam audit).
+        public static RoadNetwork Network;
         bool NearMouth(Vector3 p,float pad)=>network!=null&&network.NearJunction(p,pad);
         bool OnJunction(Vector3 p,float pad)=>network!=null&&network.OnJunction(p,pad);
         // Gravel ramps round a junction's kerbs (its fillets and the far side of a T), as the road shoulders have
         // along the roads: before these, a car on the grass by a junction met a 16 cm step it couldn't climb
         // (edge audit, 2 Oct: lips 22 -> 60 after the junction rework skipped shoulders within its radius).
         Material cornerStone;
+        // Hill junctions (Richard, 3 Oct): six rings from the centre to the rim. Inside, each point takes the blend of its roads'
+        // heights (inverse square of the distance to each centreline), so there are no folds between the fan's triangles;
+        // toward the rim it eases onto the rim's own heights, which meet the road ribbons exactly.
+        static void SmoothJunction(RoadNetwork.Node n,List<Vector3> v,List<int> t)
+        {
+            var roads=new List<HillcrestRoute.Road>();foreach(var r in HillcrestRoute.All())if(HillcrestRoute.Distance(r.line,n.at.x,n.at.z,out _)<n.Radius+6)roads.Add(r);
+            float Blend(Vector3 p){double sw=0,sy=0;foreach(var r in roads){float d=HillcrestRoute.Distance(r.line,p.x,p.z,out float ry);double w=1.0/(d*d+.5);sw+=w;sy+=w*ry;}return sw>0?(float)(sy/sw)+.02f:p.y;}
+            var rim=n.polygon;int m=rim.Count;const int rings=6;var c=n.at;c.y=Blend(c);int c0=v.Count;v.Add(c);
+            for(int r=1;r<=rings;r++){float f=r/(float)rings,e=f*f*f;
+                for(int k=0;k<m;k++){var p=Vector3.Lerp(c,rim[k],f);float inner=Blend(p);p.y=r==rings?rim[k].y:Mathf.Lerp(inner,rim[k].y,e);v.Add(p);}}
+            int Idx(int r,int k)=>r==0?c0:c0+1+(r-1)*m+((k%m)+m)%m;
+            void Tri(int a,int b,int d){var nrm=Vector3.Cross(v[b]-v[a],v[d]-v[a]);if(nrm.y>0)t.AddRange(new[]{a,b,d});else t.AddRange(new[]{a,d,b});}
+            for(int k=0;k<m;k++)Tri(Idx(0,0),Idx(1,k),Idx(1,k+1));
+            for(int r=1;r<rings;r++)for(int k=0;k<m;k++){Tri(Idx(r,k),Idx(r+1,k),Idx(r+1,k+1));Tri(Idx(r,k),Idx(r+1,k+1),Idx(r,k+1));}
+        }
+        // The height at `at` of the plane that best fits `pts` (least squares, z = a x + b z + c about their centroid).
+        static float PlaneAt(List<Vector3> pts,Vector3 at)
+        {
+            double mx=0,my=0,mz=0;foreach(var p in pts){mx+=p.x;my+=p.y;mz+=p.z;}int n=pts.Count;mx/=n;my/=n;mz/=n;
+            double sxx=0,sxz=0,szz=0,sxy=0,szy=0;foreach(var p in pts){double dx=p.x-mx,dz=p.z-mz,dy=p.y-my;sxx+=dx*dx;sxz+=dx*dz;szz+=dz*dz;sxy+=dx*dy;szy+=dz*dy;}
+            double det=sxx*szz-sxz*sxz;if(System.Math.Abs(det)<1e-6)return (float)my;
+            double a=(sxy*szz-szy*sxz)/det,b=(szy*sxx-sxy*sxz)/det;return (float)(my+a*(at.x-mx)+b*(at.z-mz));
+        }
         void MouthShoulders(RoadNetwork.Node n,Transform parent,Material material)
         {
             var v=new List<Vector3>();var t=new List<int>();var walls=new List<Matrix4x4>();
@@ -482,15 +507,11 @@ namespace LittleRoad
                 for(int k=0;k<last;k++){int a=c0+1+k,b=c0+1+(k+1)%count;var nrm=Vector3.Cross(v[a]-v[c0],v[b]-v[c0]);if(nrm.y>0)t.AddRange(new[]{c0,a,b});else t.AddRange(new[]{c0,b,a});}
             }
             if(!n.HasExternal){float y=0;foreach(var p in n.polygon)y+=p.y;var centre=n.at;centre.y=y/n.polygon.Count;
-                // Quarry Hills' hill streets fall away from some junctions: the rim's average sat ~0.4 m under the node, and the
-                // ground (laid 0.14 m under the road at the node) buried the middle. The centre stays at the road's own height.
-                // Its rim too never dips under the ground (the fillets of a hill junction ran into the bank behind them).
+                // Quarry Hills' hill junctions (Richard, 3 Oct: joins hard to drive over): the centre on the plane that best fits the
+                // rim (least squares), so the fan has no hump or hollow in the middle; the ground under them is kept below by
+                // ValleyField (JunctionPoints), so nothing is buried.
                 var rim=n.polygon;
-                if(QuarryHills.Enabled&&QuarryHills.Contains(n.at.x,n.at.z)){centre.y=Mathf.Max(centre.y,Mathf.Max(n.at.y+.02f,ValleyField.Height(n.at.x,n.at.z)+.05f));
-                    // (Not the arms' mouth corners: they must meet the roads' ribbons exactly.)
-                    bool Mouth(Vector3 p){foreach(var a in n.arms)if(Vector3.Distance(p,a.MouthLeft)<.1f||Vector3.Distance(p,a.MouthRight)<.1f)return true;return false;}
-                    rim=n.polygon.ConvertAll(p=>{if(!Mouth(p))p.y=Mathf.Max(p.y,ValleyField.Height(p.x,p.z)+.05f);return p;});}
-                Fan(centre,rim,true);}
+                if(QuarryHills.Enabled&&QuarryHills.Contains(n.at.x,n.at.z))SmoothJunction(n,v,t);else Fan(centre,rim,true);}
             else foreach(var piece in n.corners)Fan(piece[0],piece.GetRange(1,piece.Count-1),false);
             if(t.Count>0) {
                 // World-space texture coordinates (the ribbons' scale): the asphalt pattern carries on across the junction.
@@ -767,7 +788,10 @@ namespace LittleRoad
                         foreach(var road in HillcrestRoute.All()){if(road.line==line||road.line==own)continue;float d=HillcrestRoute.Distance(road.line,edge.x,edge.z,out _);if(d<Mathf.Min(road.width*.5f+2.5f,ownDist-1)){crossing=true;break;}}
                         if(crossing)continue;}
                     var rail=Piece("Guardrail",edge+Vector3.up*.62f,new Vector3(.12f,.32f,len+.08f),i%2==0?white:red,true);rail.transform.rotation=Quaternion.LookRotation(f);
-                    if(i%2==0)Piece("Guardrail post",a+right*side*(width*.5f+.55f)+Vector3.up*.35f,new Vector3(.16f,.7f,.16f),white,true);
+                    // Posts stand on the ground (Richard, 3 Oct: barriers floating by the bridge out of Hillcrest, where the
+                    // road runs above the bank): from the ground, or the road if that's lower, up to the rail.
+                    if(i%2==0){var foot=a+right*side*(width*.5f+.55f);float g=Mathf.Min(foot.y,ValleyField.Height(foot.x,foot.z))-.15f;float top=foot.y+.7f;
+                        Piece("Guardrail post",new Vector3(foot.x,(g+top)*.5f,foot.z),new Vector3(.16f,top-g,.16f),white,true);}
                 }
             }
         }

@@ -40,9 +40,10 @@ namespace LittleRoad
             S("floating pieces","any",false,0,c=>c.floating),
             S("loose bunting ends","any",false,0,c=>c.looseBunting),
             S("road-edge lips","any",false,0,c=>c.lips),
+            S("road seams (steps you drive over)","any",false,0,c=>c.seams),
             S("banks too steep (no barrier)","any",false,0,c=>c.banks),
             S("cars not on the ground","any",false,0,c=>c.carsOffGround)};
-        public static string CarContactReport="";
+        public static string CarContactReport="",SeamReport="";
         static Standard S(string m,string k,bool atLeast,float bar,System.Func<Column,float> v)=>new(){measure=m,kind=k,atLeast=atLeast,bar=bar,value=v};
         public static List<string> Failures(Column c)=>Standards.Where(x=>x.kind=="any"||x.kind==c.kind).Where(x=>x.atLeast?x.value(c)<x.bar-1e-4f:x.value(c)>x.bar+1e-4f)
             .Select(x=>$"{x.measure}: {x.value(c):0.##} (needs {(x.atLeast?"at least":"at most")} {x.bar:0.##})").ToList();
@@ -51,14 +52,14 @@ namespace LittleRoad
             public string id,name,kind;public List<string> failures=new();
             public float roadKm;public int pieces,buildings,designs,wallColours,roofColours,furniture,nature,lamps,residents,folk,parked,cruisers,keepsakes,traps,photos,pitStops,spots;
             public float topDesignShare,sameNeighbourShare,piecesPerRoadKm,buildingsPerRoadKm,lampsPerRoadKm,furniturePerRoadKm,naturePerRoadKm,lifePerRoadKm;
-            public int floating,looseBunting,lips,banks,carsChecked,carsOffGround;
+            public int floating,looseBunting,lips,banks,seams,carsChecked,carsOffGround;
         }
         [System.Serializable] class Report{public List<Column> regions=new();}
 
         public static string Run(List<(string name,string role,Vector3 at)> residents,Circuit bayview,out string json)
         {
             // Defects first: these fill PlacementAudit's position lists.
-            PlacementAudit.Run();PlacementAudit.Edges(bayview);
+            PlacementAudit.Run();PlacementAudit.Edges(bayview);SeamReport=PlacementAudit.Seams(bayview);
             var regions=MapRegions.All;var cols=regions.Select(r=>new Column{id=r.id,name=r.name,kind=r.kind}).ToList();
             Column Of(Vector3 p){var r=MapRegions.At(p);return cols[regions.ToList().IndexOf(r)];}
             // Drivable road length per region (Bayview's loop, every valley road, the raceway).
@@ -106,6 +107,7 @@ namespace LittleRoad
             CarContactReport=CarContact.Audit(out _);foreach(var car in CarContact.Cars())Of(car.transform.position).carsChecked++;foreach(var p in CarContact.Floating)Of(p).carsOffGround++;
             foreach(var p in PlacementAudit.LooseBunting)Of(p).looseBunting++;
             foreach(var (p,lip) in PlacementAudit.EdgeFindings){var c=Of(p);if(lip)c.lips++;else c.banks++;}
+            foreach(var p in PlacementAudit.SeamAt)Of(p).seams++;
             foreach(var c in cols) {
                 float km=Mathf.Max(.1f,c.roadKm);
                 c.designs=designs[c].Count;c.topDesignShare=c.buildings>0?designs[c].Values.Max()/(float)c.buildings:0;
@@ -131,10 +133,11 @@ namespace LittleRoad
             sb.AppendLine("-- things to do");
             Row("keepsakes",c=>$"{c.keepsakes}");Row("speed traps",c=>$"{c.traps}");Row("photo sights",c=>$"{c.photos}");Row("Pit Stops",c=>$"{c.pitStops}");Row("event / story spots",c=>$"{c.spots}");
             sb.AppendLine("-- defects (must be 0 in a new area)");
-            Row("floating pieces",c=>$"{c.floating}");Row("loose bunting ends",c=>$"{c.looseBunting}");Row("road-edge lips",c=>$"{c.lips}");Row("banks too steep",c=>$"{c.banks}");Row("cars checked",c=>$"{c.carsChecked}");Row("cars not on the ground",c=>$"{c.carsOffGround}");
+            Row("floating pieces",c=>$"{c.floating}");Row("loose bunting ends",c=>$"{c.looseBunting}");Row("road-edge lips",c=>$"{c.lips}");Row("road seams",c=>$"{c.seams}");Row("banks too steep",c=>$"{c.banks}");Row("cars checked",c=>$"{c.carsChecked}");Row("cars not on the ground",c=>$"{c.carsOffGround}");
             sb.AppendLine("-- against the standard (docs/57)");
             foreach(var c in cols){sb.AppendLine($"{c.name} ({c.kind}): {(c.failures.Count==0?"PASS":"FAIL, "+c.failures.Count+" short")}");foreach(var f in c.failures)sb.AppendLine("    "+f);}
             sb.AppendLine("-- cars: "+CarContactReport.TrimEnd());
+            sb.AppendLine("-- road seams: "+SeamReport.TrimEnd());
             return sb.ToString();
         }
     }

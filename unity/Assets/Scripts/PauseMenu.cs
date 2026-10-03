@@ -19,6 +19,8 @@ namespace LittleRoad
             public Minimap minimap;public Func<List<Minimap.Mark>> marks;public RenderTexture map;
             public Func<List<(string label,Action act)>> settings;public Action quit;
             public Func<(string body,Color paint,string paintName,List<string> parts,int rating,string ladder)> car_;
+            // Back to the nearest Pit Stop garage you've visited (null label: none).
+            public Func<string> warpLabel;public Action warp;
         }
         static readonly string[] Tabs={"MAP","COLLECTION","CAR","RECORDS","CONTROLS","SETTINGS"};const int Settings=5;public const int SettingsTab=Settings;
         Context ctx;Canvas canvas;RectTransform root,body;Text areaText,creditText,footer,objectiveText;readonly List<(ToyShape pill,Text text)> tabPills=new();
@@ -94,8 +96,10 @@ namespace LittleRoad
             regionName=Toy.Title(panel.transform,"Region name","",52,new Vector2(660,70),new Vector2(0,150),Toy.Sun,TextAnchor.MiddleCenter);
             regionBlurb=Toy.Label(panel.transform,"Region blurb","",24,new Vector2(660,40),new Vector2(0,92),Toy.Soft,TextAnchor.MiddleCenter,true);
             countsHolder=Toy.Rect(panel.transform,"Counts",new Vector2(660,240),new Vector2(0,-60));
-            var open=Toy.Candy(body,"Choice Open full map","Open the full map",null,new Vector2(560,86),new Vector2(400,-210),Toy.Blue,()=>ctx.minimap?.OpenFull(true));
-            Toy.Label(body,"Legend","■ Pit Stop   ◆ Zipline   ★ Objective   ● People",20,new Vector2(760,30),new Vector2(400,-290),Toy.Navy,TextAnchor.MiddleCenter,true);
+            var open=Toy.Candy(body,"Choice Open full map","Open the full map",null,new Vector2(560,76),new Vector2(400,-180),Toy.Blue,()=>ctx.minimap?.OpenFull(true));
+            string warp=ctx.warpLabel?.Invoke();
+            if(warp!=null)Toy.Candy(body,"Choice Warp",warp,null,new Vector2(560,76),new Vector2(400,-270),Toy.Mint,()=>ctx.warp?.Invoke());
+            Toy.Label(body,"Legend","■ Pit Stop   ◆ Zipline   ★ Objective   ● People",20,new Vector2(760,30),new Vector2(400,-340),Toy.Navy,TextAnchor.MiddleCenter,true);
             hovered=null;UpdateMap();
         }
         Vector2 MapPoint(Vector3 world)=>(WorldMap.Uv(world)-new Vector2(.5f,.5f))*MapSize;

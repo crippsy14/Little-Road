@@ -24,7 +24,8 @@ namespace LittleRoad
             for(int k=0;k<96;k++){float a=k*Mathf.PI*2/96;var d=new Vector2(Mathf.Sin(a),Mathf.Cos(a));float r=0;for(float s=0;s<520;s+=4)if(InTown(c.x+d.x*s,c.y+d.y*s))r=s;town.outline.Add(c+d*r);}
             // The valley: the rest of the mainland.
             var valley=new Region{id="valley",name="Hillcrest Valley",blurb="Farms, falls, the raceway and the lake",colour=Toy.Mint,contains=(x,z)=>z<=-452&&!InTown(x,z)};
-            float x0=WorldMap.X0+40,x1=WorldMap.X0+WorldMap.Size-40,z1=WorldMap.Z0+40;
+            // (With Quarry Hills the map reaches far west and south: the valley's outline keeps to the valley.)
+            float x0=QuarryHills.Enabled?QuarryHills.SeamX:WorldMap.X0+40,x1=WorldMap.X0+WorldMap.Size-40,z1=QuarryHills.Enabled?-2060:WorldMap.Z0+40;
             foreach(var p in new[]{new Vector2(x0,-452),new Vector2(x1,-452),new Vector2(x1,z1),new Vector2(x0,z1)})valley.outline.Add(p);
             // Quarry Hills (docs/59): west of the valley's hills. Listed first so its test wins over the valley's.
             if(QuarryHills.Enabled) {

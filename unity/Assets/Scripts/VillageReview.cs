@@ -25,6 +25,7 @@ namespace LittleRoad
             ui.SetVisible(false);
             if(RaceTrial.Has("--world-map")){yield return WorldMap.Capture(cameraView,folder,GetComponent<AdventureGame>().ResidentDirectory(),world.track);Application.Quit(0);yield break;}
             if(RaceTrial.Has("--edge-audit")){File.WriteAllText(Path.Combine(folder,"edge-audit.txt"),PlacementAudit.Edges(world.track));Application.Quit(0);yield break;}
+            if(RaceTrial.Has("--seam-audit")){File.WriteAllText(Path.Combine(folder,"seam-audit.txt"),PlacementAudit.Seams(world.track));Application.Quit(0);yield break;}
             // --rejoin-test (Richard, 30 Sep: at Bayview Halt, once on the station grass you can't get back onto the
             // road): the car starts on the grass either side of the mainline, pointing at it at several angles, and
             // drives at it; each run reports whether it got onto the tarmac, and where and how it stopped if not.

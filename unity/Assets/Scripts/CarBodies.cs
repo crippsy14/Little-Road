@@ -18,6 +18,9 @@ namespace LittleRoad
         public static readonly string[] Sporty={"sprint","comet","rally","roadster"};
         // Hillcrest townsfolk: free-roam residents only, never dealt into race fields.
         public static readonly string[] Townsfolk={"bubble","beetle","taxi","camper","gelato","minibus","ritz","postvan"};
+        // Quarry Hills' off-roaders (Richard, 3 Oct): stock class C cars with an off-road look. They race the rallycross and fill
+        // the rally town's streets; sold at Nia's body shop.
+        public static readonly string[] OffRoad={"cob","drover","scamp","fell","tumbler","hauler"};
         // Teasers of the later classes: free-roam only, never sold or raced yet. The Regale is Duke Rolo's prototype
         // (docs/53), the sort of car the S and E classes will race.
         public const string Prototype="regale";
@@ -30,15 +33,15 @@ namespace LittleRoad
         // Each body's collision width: its shoulders and tyres, not its mirrors (the 99.5th percentile of vertex |x|
         // across the model, measured in Blender, +2 cm; review/map-sweep/contact-*). Length and height come from
         // the model itself (RoadCar.CollisionBox).
-        static readonly System.Collections.Generic.Dictionary<string,float> Shoulders=new(){["regale"]=2.03f,["beetle"]=1.98f,["bramble"]=2.04f,["bubble"]=1.78f,["camper"]=2.08f,["comet"]=2.10f,["compact_v1"]=2.10f,["doodle"]=1.99f,["dover"]=2.01f,["gelato"]=2.01f,["heron"]=2.09f,["kipper"]=2.09f,["little_car"]=2.19f,["marlow"]=2.02f,["minibus"]=2.14f,["otter"]=2.06f,["pebble"]=2.03f,["picnic"]=2.03f,["postvan"]=2.09f,["puddle"]=1.97f,["rally"]=2.15f,["ritz"]=2.06f,["roadster"]=2.10f,["sprint"]=2.10f,["tallboy"]=1.98f,["taxi"]=2.02f,["zenith"]=2.20f};
+        static readonly System.Collections.Generic.Dictionary<string,float> Shoulders=new(){["regale"]=2.03f,["beetle"]=1.98f,["bramble"]=2.04f,["bubble"]=1.78f,["camper"]=2.08f,["comet"]=2.10f,["compact_v1"]=2.10f,["doodle"]=1.99f,["dover"]=2.01f,["gelato"]=2.01f,["heron"]=2.09f,["kipper"]=2.09f,["little_car"]=2.19f,["marlow"]=2.02f,["minibus"]=2.14f,["otter"]=2.06f,["pebble"]=2.03f,["picnic"]=2.03f,["postvan"]=2.09f,["puddle"]=1.97f,["rally"]=2.15f,["ritz"]=2.06f,["roadster"]=2.10f,["sprint"]=2.10f,["tallboy"]=1.98f,["taxi"]=2.02f,["zenith"]=2.20f,["cob"]=2.15f,["drover"]=2.13f,["scamp"]=2.07f,["fell"]=2.15f,["tumbler"]=2.07f,["hauler"]=2.07f};
         public static float? ShoulderWidth(string id)=>id!=null&&Shoulders.TryGetValue(id,out float w)?w:null;
         // Bumper-to-bumper length of each model (Blender, +1 cm): the renderer bounds (LODs included) ran ~8 cm long.
-        static readonly System.Collections.Generic.Dictionary<string,float> Lengths=new(){["regale"]=5.01f,["beetle"]=3.427f,["bramble"]=3.288f,["bubble"]=2.542f,["camper"]=4.152f,["comet"]=3.700f,["compact_v1"]=3.171f,["doodle"]=3.201f,["dover"]=3.780f,["gelato"]=3.920f,["heron"]=3.740f,["kipper"]=3.600f,["little_car"]=3.110f,["marlow"]=3.660f,["minibus"]=4.500f,["otter"]=3.640f,["pebble"]=3.167f,["picnic"]=3.590f,["postvan"]=3.600f,["puddle"]=3.193f,["rally"]=3.727f,["ritz"]=4.240f,["roadster"]=3.490f,["sprint"]=3.328f,["tallboy"]=3.240f,["taxi"]=3.740f,["zenith"]=3.790f};
+        static readonly System.Collections.Generic.Dictionary<string,float> Lengths=new(){["regale"]=5.01f,["beetle"]=3.427f,["bramble"]=3.288f,["bubble"]=2.542f,["camper"]=4.152f,["comet"]=3.700f,["compact_v1"]=3.171f,["doodle"]=3.201f,["dover"]=3.780f,["gelato"]=3.920f,["heron"]=3.740f,["kipper"]=3.600f,["little_car"]=3.110f,["marlow"]=3.660f,["minibus"]=4.500f,["otter"]=3.640f,["pebble"]=3.167f,["picnic"]=3.590f,["postvan"]=3.600f,["puddle"]=3.193f,["rally"]=3.727f,["ritz"]=4.240f,["roadster"]=3.490f,["sprint"]=3.328f,["tallboy"]=3.240f,["taxi"]=3.740f,["zenith"]=3.790f,["cob"]=4.187f,["drover"]=4.097f,["scamp"]=3.427f,["fell"]=4.229f,["tumbler"]=3.967f,["hauler"]=3.579f};
         public static float? Length(string id)=>id!=null&&Lengths.TryGetValue(id,out float l)?l:null;
         public static readonly UnityEngine.Bounds Envelope=new(new UnityEngine.Vector3(0,.845f,0),new UnityEngine.Vector3(CollisionWidth,1.69f,3.175f));
         // (The Regale too: the Duke races it, and you can win it and drive it anywhere, as every body shop body does.)
-        public static bool UsesStandardEnvelope(string id)=>id==Starter||id==Flagship||id==Prototype||Array.IndexOf(Family,id)>=0||Array.IndexOf(Sporty,id)>=0||Array.IndexOf(Townsfolk,id)>=0;
-        public static bool IsKnown(string id)=>Array.IndexOf(Teasers,id)>=0||Array.IndexOf(Owned,id)>=0||Array.IndexOf(Family,id)>=0||Array.IndexOf(Sporty,id)>=0||id==Flagship||Array.IndexOf(Townsfolk,id)>=0;
+        public static bool UsesStandardEnvelope(string id)=>id==Starter||id==Flagship||id==Prototype||Array.IndexOf(Family,id)>=0||Array.IndexOf(Sporty,id)>=0||Array.IndexOf(Townsfolk,id)>=0||Array.IndexOf(OffRoad,id)>=0;
+        public static bool IsKnown(string id)=>Array.IndexOf(Teasers,id)>=0||Array.IndexOf(Owned,id)>=0||Array.IndexOf(Family,id)>=0||Array.IndexOf(Sporty,id)>=0||id==Flagship||Array.IndexOf(Townsfolk,id)>=0||Array.IndexOf(OffRoad,id)>=0;
         public static string Name(string id)=>id switch{
             "puddle"=>"Puddle starter","compact_v1"=>"Pocket compact",
             "pebble"=>"Pebble city car","tallboy"=>"Tallboy kei wagon","marlow"=>"Marlow saloon","dover"=>"Dover classic",
@@ -46,7 +49,8 @@ namespace LittleRoad
             "doodle"=>"Doodle roll-top","otter"=>"Otter fastback","sprint"=>"Sprint hot hatch","comet"=>"Comet coupe",
             "rally"=>"Rally saloon","roadster"=>"Roadster hardtop","zenith"=>"Zenith GT",
             "regale"=>"Regale prototype","bubble"=>"Bubble micro","beetle"=>"Beetle bug","taxi"=>"Bayview taxi","camper"=>"Camper van","gelato"=>"Gelato van",
-            "minibus"=>"Minibus","ritz"=>"Ritz tourer","postvan"=>"Post van",_=>id};
+            "minibus"=>"Minibus","ritz"=>"Ritz tourer","postvan"=>"Post van",
+            "cob"=>"Cob 4x4","drover"=>"Drover pickup","scamp"=>"Scamp 4x4","fell"=>"Fell wagon","tumbler"=>"Tumbler jeep","hauler"=>"Hauler kei truck",_=>id};
         // Pit Stop body shops: whole new models, looks only (every one races in the standard
         // envelope with the player's own fitted equipment). Bought once, switched at any garage bay.
         // Bayview (the tutorial town) has no body shop; Hillcrest sells everything, everyday cars
@@ -57,7 +61,9 @@ namespace LittleRoad
             new("dover","hillcrest",700),new("bramble","hillcrest",750),new("picnic","hillcrest",800),new("taxi","hillcrest",850),new("doodle","hillcrest",900),
             new("kipper","hillcrest",950),new("heron","hillcrest",1000),new("camper","hillcrest",1100),new("otter","hillcrest",1200),
             new("gelato","hillcrest",900),new("ritz","hillcrest",1300),new("sprint","hillcrest",1800),new("comet","hillcrest",2200),
-            new("roadster","hillcrest",2600),new("rally","hillcrest",3000),new("zenith","hillcrest",4800)};
+            new("roadster","hillcrest",2600),new("rally","hillcrest",3000),new("zenith","hillcrest",4800),
+            // Quarry Hills' body shop (Nia): the off-roaders.
+            new("scamp","quarry",900),new("tumbler","quarry",1100),new("hauler","quarry",1200),new("cob","quarry",1500),new("drover","quarry",1600),new("fell","quarry",1800)};
         public static int Price(string id){foreach(var o in ForSale)if(o.id==id)return o.price;return -1;}
         public static bool Sellable(string id)=>Price(id)>=0;
         // Bodies a save may hold: the starter and the compact plus everything sold.

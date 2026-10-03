@@ -17,7 +17,7 @@ namespace LittleRoad
             new(){id="lesson_2",name="Handbrake hairpin",how="Out to the tyre stack, round it, and back through the start gate. Brake, turn in, then the handbrake to swing her round.",gold=14,silver=16.5f,bronze=30},
             new(){id="lesson_3",name="Scandinavian flick",how="Through the three gates of the S. Flick away from each bend before you turn in, and let the weight do the work.",gold=10.5f,silver=12.5f,bronze=25},
             new(){id="lesson_4",name="Crest and landing",how="Straight over the crest, keep it pointing true in the air, land and stop in the box beyond.",gold=11,silver=13,bronze=25},
-            new(){id="lesson_5",name="Mini-stage",how="Everything together: one flying lap of the Quarry Sprint loop.",gold=72,silver=80,bronze=95}};
+            new(){id="lesson_5",name="Mini-stage",how="Everything together: one flying lap of the rallycross circuit.",gold=86,silver=95,bronze=115}};
         public static readonly int[] Prizes={60,100,150};
         public static bool Known(string id){foreach(var l in Lessons)if(l.id==id)return true;return false;}
         public static int Medal(Lesson l,float t)=>t<=l.gold?3:t<=l.silver?2:t<=l.bronze?1:0;
@@ -45,20 +45,20 @@ namespace LittleRoad
         {
             End();lesson=i;step=0;penalty=0;course=new GameObject("Rally lesson "+i).transform;var l=Lessons[i];
             switch(i) {
-                case 0:Lane();Box(BrakeBoxMin,BrakeBoxMax);Start(G(LaneStart,LaneZ),90);break;
-                case 1:Lane();for(int k=0;k<6;k++)Cone(G(-2440+k*16,LaneZ));Start(G(LaneStart,LaneZ),90);break;
+                case 0:Lane();Box(BrakeBoxMin,BrakeBoxMax);Setoff(G(LaneStart,LaneZ),90);break;
+                case 1:Lane();for(int k=0;k<6;k++)Cone(G(-2440+k*16,LaneZ));Setoff(G(LaneStart,LaneZ),90);break;
                 case 2:Paint(G(PinStart.x,PinStart.y-5),G(PinStart.x,PinStart.y+5),.4f);foreach(int s in new[]{-1,1})Cone(G(PinStart.x,PinStart.y+s*5.5f));
                     if(BayviewKit.Has("tyre_wall"))BayviewKit.Spawn("tyre_wall",G(Pylon.x,Pylon.y),0,course,null,null,true,1);else Cone(G(Pylon.x,Pylon.y));
-                    Start(G(PinStart.x-14,PinStart.y),90);break;
-                case 3:Lane();for(int k=0;k<3;k++)foreach(int s in new[]{-1,1})Cone(G(FlickX[k],FlickZ[k]+s*2.8f));Start(G(LaneStart,LaneZ),90);break;
-                case 4:Paint(G(CrestStart+8,CrestZ-4),G(CrestStart+8,CrestZ+4),.4f);Box(CrestBoxMin,CrestBoxMax);Start(G(CrestStart,CrestZ),90);break;
+                    Setoff(G(PinStart.x-14,PinStart.y),90);break;
+                case 3:Lane();for(int k=0;k<3;k++)foreach(int s in new[]{-1,1})Cone(G(FlickX[k],FlickZ[k]+s*2.8f));Setoff(G(LaneStart,LaneZ),90);break;
+                case 4:Paint(G(CrestStart+8,CrestZ-4),G(CrestStart+8,CrestZ+4),.4f);Box(CrestBoxMin,CrestBoxMax);Setoff(G(CrestStart,CrestZ),90);break;
                 case 5:{var loop=QuarryFloor.Loop;int n=loop.Length,s0=StartIndex();var f=loop[(s0+2)%n]-loop[(s0+n-2)%n];f.y=0;
-                    Start(loop[(s0-12+n)%n],Quaternion.LookRotation(f).eulerAngles.y);break;}
+                    Setoff(loop[(s0-12+n)%n],Quaternion.LookRotation(f).eulerAngles.y);break;}
             }
             notify($"Rally school · {l.name} · Ready... GO in 3!");
         }
         void Lane(){Paint(G(LaneStart+10,LaneZ-4),G(LaneStart+10,LaneZ+4),.4f);Paint(G(LaneFinish,LaneZ-12),G(LaneFinish,LaneZ+12),.4f);}
-        void Start(Vector3 at,float yaw){place(at,yaw);go=Time.time+3;last=at;}
+        void Setoff(Vector3 at,float yaw){place(at,yaw);go=Time.time+3;last=at;}
         static int StartIndex()=>HillcrestRoute.Index(QuarryFloor.Loop,new Vector3(-2335,0,-2935));
         public void End(){lesson=-1;cones.Clear();if(course!=null)Destroy(course.gameObject);course=null;}
 

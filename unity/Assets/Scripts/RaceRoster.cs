@@ -66,7 +66,7 @@ namespace LittleRoad
                 entries[i]=new RaceEntrant(i,RaceGrid.TrialSlot(i,count,scenario),body,paint,equipment,EquipmentCatalog.TestLoadout(equipment),
                     driverMode==null?null:DriverIdentity.ForRace(i,seed,driverMode,form));
             }
-            return new RaceRoster(seed,laps,track,track=="bayview"?"BAYVIEW COAST":track=="hillcrest"?"HILLCREST RACEWAY":"CEDAR TECHNICAL",driverMode!=null,entries);
+            return new RaceRoster(seed,laps,track,track=="bayview"?"BAYVIEW COAST":track=="hillcrest"?"HILLCREST RACEWAY":track=="quarry"?"QUARRY HILLS RALLYCROSS":"CEDAR TECHNICAL",driverMode!=null,entries);
         }
         public static readonly Color FlagshipPaint=new(.05f,.22f,.62f);
         // The Duke's Challenge (docs/54; Richard, 2 Oct: "a great full circle moment at the end of the game... beat him
@@ -114,6 +114,21 @@ namespace LittleRoad
             entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
             return new RaceRoster(seed,2,"hillcrest","HILLCREST RACEWAY / CLASS C",modern,entries);
         }
+        // Quarry Hills Rallycross (--quarry-hills): class C, three laps of the floor, the whole field in the town's off-roaders
+        // (street and club kit; the pole-sitter on club kit).
+        public static RaceRoster AdventureQuarry(AdventureProgress save,bool modern=true)
+        {
+            save.Validate();int seed=1709+(save.raceSerial+1)*11;
+            var trial=Trial(24,3,seed,"quarry","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
+            var entries=new RaceEntrant[24];var off=CarBodies.Deal(CarBodies.OffRoad,24,seed);int o=0;
+            for(int i=1;i<24;i++){
+                var e=trial.Entries[i];string kit=e.Slot==0||i%3==0?"club":"street";
+                entries[i]=new RaceEntrant(e.Id,e.Slot,off[o++],e.Paint,kit,EquipmentCatalog.TestLoadout(kit),e.Driver);
+            }
+            entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
+            return new RaceRoster(seed,3,"quarry","QUARRY HILLS RALLYCROSS / CLASS C",modern,entries);
+        }
+        public static RaceRoster ForEvent(string id,AdventureProgress save)=>id=="hillcrest"?AdventureHillcrest(save):id=="quarry"?AdventureQuarry(save):Adventure(save);
         public bool MatchesPlayer(AdventureProgress save)
         {
             if(Seed!=1709+(save.raceSerial+1)*11||Entries[0].Body!=save.bodyId||Entries[0].Paint!=AdventureGame.Paints[save.paintIndex])return false;

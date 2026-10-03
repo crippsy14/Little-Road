@@ -12,7 +12,7 @@ Shader "LittleRoad/Kit"
         _BaseColor("Colour",Color)=(1,1,1,1)
         _Smoothness("Smoothness",Float)=.2
         _Metallic("Metallic",Float)=0
-        _Pattern("Pattern (0 plain,1 plaster,2 stone,3 tile,4 wood,5 leaf,6 paint,7 glass,8 rock,9 asphalt)",Float)=0
+        _Pattern("Pattern (0 plain,1 plaster,2 stone,3 tile,4 wood,5 leaf,6 paint,7 glass,8 rock,9 asphalt,10 slate)",Float)=0
         _WorldSpace("World-space coordinates",Float)=0
         _Wear("Weathering",Float)=1
         _BaseMap("Shadow base",2D)="white"{}
@@ -136,6 +136,26 @@ Shader "LittleRoad/Kit"
                     // Hairline cracks only in a few worn stretches.
                     half crack=(1-smoothstep(.0,.006,abs(N(s*.09+.77)-.5)))*smoothstep(.62,.72,N(s*.02+.2))*Resolve(.06,fp);m-=crack*.15*near*(1-patch);
                     m*=lerp(.94,1.04,mottle);bump=agg*.3*near;smooth=_Smoothness*(1+patch*.1);
+                } else if(pattern==10) { // split slate (Quarry Hills): world-anchored (no seams where a curved face's columns turn):
+                    // horizontal beds of purple, blue and grey, near-vertical cleavage lines, cracks and rust runs on faces; flat tops
+                    // are slate rubble (chips of every shade). Always matte.
+                    if(up>.7) {
+                        float2 c=floor(p.xz*2.2);half chip=Hash(c),chip2=N(p.xz*5.1+.3);m=.84+chip*.28+(chip2-.5)*.12;
+                        tint=lerp(half3(1.05,.97,1.07),half3(.94,1,1.05),Hash(c+3.7));bump=chip*.7+chip2*.3;occlusion=1-(1-smoothstep(.0,.12,min(frac(p.x*2.2),frac(p.z*2.2))))*.25*near;
+                    } else {
+                        half wz=abs(n.z)/(abs(n.x)+abs(n.z)+1e-4);
+                        #define SN(sc,off) lerp(N(p.zy*(sc)+(off)),N(p.xy*(sc)+(off)),wz)
+                        half wob=SN(.05,.2);float bed=floor((p.y+wob*3)/1.7);half tone=Hash(float2(bed,4.7));
+                        float cl=dot(p.xz,float2(.8,.6))*2.6+SN(.4,.6)*.7;half cleave=(1-smoothstep(.0,.09,abs(frac(cl)-.5)))*Resolve(.05,fp);
+                        half crack=(1-smoothstep(.0,.07,abs(SN(.21,.9)-.5)))*Resolve(.12,fp);
+                        half rust=smoothstep(.7,.85,N(float2(cl*.11,p.y*.03+.5)))*smoothstep(.4,.7,SN(.09,.3));
+                        half fine2=SN(1.7,.1);
+                        m=1+(tone-.5)*.3+(fine2-.5)*.1+(wob-.5)*.12-cleave*.08*near-crack*.12*near;
+                        tint=lerp(half3(1.07,.95,1.08),half3(.93,1,1.06),tone);tint=lerp(tint,half3(1.12,.97,.84),rust*.55);
+                        bump=tone*.4+fine2*.3-cleave*.3-crack*.4;occlusion=1-crack*.3*near;
+                        #undef SN
+                    }
+                    smooth=min(_Smoothness,.08);
                 } else if(pattern==7) { // glass: darker at the bottom, a sky sheen at the top
                     m=1;smooth=.92;
                 } else m=1+(fine-.5)*.04;
@@ -150,7 +170,7 @@ Shader "LittleRoad/Kit"
                 // Derivative bump from the pattern height (no tangents needed).
                 float3 dpdx=ddx(p),dpdy=ddy(p);float dhx=ddx(bump),dhy=ddy(bump);
                 float3 r1=cross(dpdy,n),r2=cross(n,dpdx);float det=dot(dpdx,r1);
-                float strength=pattern==2?.04:pattern==3?.035:pattern==5?.06:pattern==8?.04:.02;
+                float strength=pattern==2?.04:pattern==3?.035:pattern==5?.06:pattern==8||pattern==10?.045:.02;
                 float3 grad=sign(det)*(dhx*r1+dhy*r2)*strength*(.35+.65*near);half3 bumped=normalize(abs(det)*n-grad);
                 if(abs(det)>1e-8&&near>0)n=bumped;
                 SurfaceData surface=(SurfaceData)0;
