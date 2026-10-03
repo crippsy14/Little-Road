@@ -60,7 +60,13 @@ namespace LittleRoad
             var group=go.AddComponent<LODGroup>();group.fadeMode=LODFadeMode.CrossFade;group.animateCrossFading=true;
             group.SetLODs(new[]{new LOD(size/(cull*2*Mathf.Tan(27.5f*Mathf.Deg2Rad)),renderers)});group.RecalculateBounds();
         }
+        // Load profiling (W1 world tiles): time and count spent instantiating kit pieces, reported per load step.
+        public static readonly System.Diagnostics.Stopwatch SpawnClock=new();public static int Spawned;
         public static GameObject Spawn(string id,Vector3 position,float yaw,Transform parent,Tint tint=null,string sign=null,bool solid=true,float scale=1)
+        {
+            SpawnClock.Start();Spawned++;try{return SpawnNow(id,position,yaw,parent,tint,sign,solid,scale);}finally{SpawnClock.Stop();}
+        }
+        static GameObject SpawnNow(string id,Vector3 position,float yaw,Transform parent,Tint tint,string sign,bool solid,float scale)
         {
             var source=Resources.Load<GameObject>("Bayview/"+id);
             if(source==null)throw new System.InvalidOperationException("Missing Bayview kit asset: "+id);

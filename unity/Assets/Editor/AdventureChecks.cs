@@ -107,7 +107,13 @@ public static class AdventureChecks
         // Keepsake set rewards (docs/60): the set's paint is locked until every keepsake in it is found.
         Check(!paints.Repaint(PaintCatalog.Standard,0)&&PaintCatalog.LockedBy(paints.Data,PaintCatalog.Standard)=="Bayview postcards","A set reward paint is locked until its set is complete");
         Check(PaintCatalog.RewardFor(Collectibles.Carving(3))==18&&PaintCatalog.RewardFor(Collectibles.Stamp(0))==17&&PaintCatalog.RewardFor("duke_beaten")==-1,"Each keepsake set has its own reward paint");
-        // Fingerposts read in miles, to the quarter (Wayfinding).
+        // World tiles (W1): far decoration waits on its tile with its spot reserved; near decoration builds at once; Complete builds the rest.
+        int built=0;WorldTiles.Plan(Vector3.zero);WorldTiles.Begin(true);
+        WorldTiles.Place(new Vector3(100,0,0),0,()=>built++);WorldTiles.Place(new Vector3(2000,0,600),1.5f,()=>built++);
+        bool queued=built==1&&WorldTiles.Pending==1&&WorldTiles.Blocked(new Vector3(2001,0,600),1)&&!WorldTiles.Blocked(new Vector3(2010,0,600),1);
+        WorldTiles.Complete();bool done=built==2&&WorldTiles.Pending==0&&!WorldTiles.Blocked(new Vector3(2001,0,600),1);
+        WorldTiles.Begin(false);WorldTiles.Place(new Vector3(2000,0,600),1.5f,()=>built++);
+        Check(queued&&done&&built==3,"World tiles: far decoration waits on its tile (spot reserved), near builds at once, races never wait");
         Check(Wayfinding.Miles(1609)=="1"&&Wayfinding.Miles(300)=="¼"&&Wayfinding.Miles(2414)=="1½"&&Wayfinding.Miles(1207)=="¾","Fingerpost distances read in quarter miles");
         // Scratch profile: kept only when a check fails (the exception above leaves it as evidence).
         Directory.Delete(folder,true);

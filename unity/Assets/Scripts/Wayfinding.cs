@@ -41,6 +41,8 @@ namespace LittleRoad
         static bool Clear(Vector3 centre,Vector3 half,Quaternion rotation,Collider ground,out string what)
         {
             what=null;
+            // (A tree still to stream in counts as there: WorldTiles.)
+            if(WorldTiles.Blocked(centre,Mathf.Max(half.x,half.z))){what="a streamed tree";return false;}
             foreach(var c in Physics.OverlapBox(centre,half,rotation,~0,QueryTriggerInteraction.Ignore))if(c!=ground&&!c.name.Contains("mainland collider")&&!c.name.Contains("Terrain")){what=c.name;return false;}
             return true;
         }

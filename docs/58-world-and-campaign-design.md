@@ -306,6 +306,7 @@ Richard's instruction: generate the map, then go **city by city, town by town, t
 |---|---|---|
 | **W0** | **Scale test** (§11, built now). The generated continent as rough terrain, graybox roads and blocks for towns. Drive it in any class's car. Measure drive times and grades. | Richard has driven it and judged the scale and pacing. Distances are adjusted in the blueprint if needed. |
 | **W1** | **Foundations:** world grid and tiles, terrain streaming and LOD, floating origin, data-driven regions (replacing `MapRegions`' hard-coded z thresholds), race rows as data, world-state layers (pre-frenzy / frenzy / post-game). | Bayview and Hillcrest load inside the continent with no visible seam, and the frame cost stays inside the doc 57 budget. |
+|  | *W1 first pass (3 Oct): the world grid with streamed woodland and a cached map ([doc 61](61-world-tiles.md)).* | |
 | **W2** | **The C ring:** Vinelands, Quarry Hills and the five C villages, each through doc 57's process. The first railway branch. | Each passes `--area-audit`. Every C race has 24 finishes on 3 seeds. |
 | **W3** | **A vertical slice of B:** Harbour Point plus the Dive kit and Coral Key. The undersea mode is proven here. | The undersea pacing rule holds (§6). |
 | **W4+** | The rest, one town at a time, in class order. Then the frenzy layer, Aurora, the Endurance, the credits, and the post-game. | Principle 23: the graybox path to the credits exists before polish. |

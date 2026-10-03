@@ -265,16 +265,20 @@ namespace LittleRoad
                 return new Vector2(at.x,at.z)+dir*out_;
             }
             var chapelVia=new[]{new Vector2(ChapelFrom.x-110,ChapelFrom.z-30),new Vector2(ChapelFrom.x-240,ChapelFrom.z-40),new Vector2(ChapelTo.x+70,ChapelTo.z-80)};
-            list.Add(HillcrestRoute.Make(ChapelStreetName,Profile(ChapelFrom,new[]{SquareOn(haulRoad,ChapelFrom,chapelVia[0],10),SquareOn(haulRoad,ChapelFrom,chapelVia[0],28),chapelVia[0],chapelVia[1],chapelVia[2],SquareOn(highRoad,ChapelTo,chapelVia[2],28),SquareOn(highRoad,ChapelTo,chapelVia[2],10)},ChapelTo,.1f,14),6.5f,6,16));
+            list.Add(HillcrestRoute.Make(ChapelStreetName,Profile(ChapelFrom,new[]{SquareOn(haulRoad,ChapelFrom,chapelVia[0],10),SquareOn(haulRoad,ChapelFrom,chapelVia[0],28),chapelVia[0],chapelVia[1],chapelVia[2],SquareOn(highRoad,ChapelTo,chapelVia[2],28),SquareOn(highRoad,ChapelTo,chapelVia[2],10)},ChapelTo,.1f,14,BackStreetLanding),6.5f,6,16));
             var terraceVia=new[]{new Vector2(TerraceFrom.x-90,TerraceFrom.z-10),new Vector2(TerraceTo.x+40,TerraceTo.z+90)};
-            list.Add(HillcrestRoute.Make(TerraceRowName,Profile(TerraceFrom,new[]{SquareOn(quayRoad,TerraceFrom,terraceVia[0],10),SquareOn(quayRoad,TerraceFrom,terraceVia[0],28),terraceVia[0],terraceVia[1],SquareOn(highRoad,TerraceTo,terraceVia[1],28),SquareOn(highRoad,TerraceTo,terraceVia[1],10)},TerraceTo,.1f,14),6.5f,6,16));
+            list.Add(HillcrestRoute.Make(TerraceRowName,Profile(TerraceFrom,new[]{SquareOn(quayRoad,TerraceFrom,terraceVia[0],10),SquareOn(quayRoad,TerraceFrom,terraceVia[0],28),terraceVia[0],terraceVia[1],SquareOn(highRoad,TerraceTo,terraceVia[1],28),SquareOn(highRoad,TerraceTo,terraceVia[1],10)},TerraceTo,.1f,14,BackStreetLanding),6.5f,6,16));
             // (Kettle Falls isn't built yet: the gravel road stops at a gate short of the district's edge hills.)
             list.Add(HillcrestRoute.Make(KettleRoadName,Profile(new Vector3(-3050,float.NaN,-2450),new Vector2[]{new(-3250,-2520),new(-3400,-2556)},new Vector3(-3520,float.NaN,-2590),.11f,24),7,5,16));
             return list;
         }
         // A road line from `start` through `via` to `end` (a NaN height takes the ground's): densified every 2 m, its height
         // the natural ground smoothed over `smooth` metres, then held inside a grade limit between its two ends.
-        static Vector3[] Profile(Vector3 start,Vector2[] via,Vector3 end,float grade,float smooth)
+        // The back streets come off their through roads level (1%) for their first and last 20 m, then climb: at a full 10%
+        // right up to the tee they met it 1.1-1.3 m above or below the through road, which tilted the junctions (the area
+        // audit's lips, the bank and the seams at Chapel Street's and Terrace Row's four junctions).
+        public const float BackStreetLanding=20,LandingGrade=.01f;
+        static Vector3[] Profile(Vector3 start,Vector2[] via,Vector3 end,float grade,float smooth,float landing=0)
         {
             var c=new List<Vector3>{new(start.x,0,start.z)};foreach(var v in via)c.Add(new Vector3(v.x,0,v.y));c.Add(new Vector3(end.x,0,end.z));
             var line=HillcrestRoute.Dense(c.ToArray(),2);int n=line.Length;var y=new float[n];
@@ -285,10 +289,13 @@ namespace LittleRoad
             var s=new float[n];for(int i=0;i<n;i++){int a=Mathf.Max(0,i-half),b=Mathf.Min(n-1,i+half);s[i]=(float)((sum[b+1]-sum[a])/(b-a+1));}
             // Inside the corridor the grade allows between the ends, then a forward and back pass of the grade limit.
             float[] run=new float[n];for(int i=1;i<n;i++)run[i]=run[i-1]+Vector2.Distance(new(line[i].x,line[i].z),new(line[i-1].x,line[i-1].z));float L=run[n-1];
+            // (How far the road can rise or fall in `d` metres from an end: the landing's gentle grade first, then the full grade.)
+            float Reach(float d)=>LandingGrade*Mathf.Min(d,landing)+grade*Mathf.Max(0,d-landing);
+            float Grade(float r)=>landing>0&&(r<landing||L-r<landing)?LandingGrade:grade;
             for(int pass=0;pass<3;pass++) {
-                for(int i=0;i<n;i++){float lo=Mathf.Max(y0-grade*run[i],y1-grade*(L-run[i])),hi=Mathf.Min(y0+grade*run[i],y1+grade*(L-run[i]));if(lo>hi)lo=hi=(lo+hi)*.5f;s[i]=Mathf.Clamp(s[i],lo,hi);}
-                for(int i=1;i<n;i++){float g=grade*(run[i]-run[i-1]);s[i]=Mathf.Clamp(s[i],s[i-1]-g,s[i-1]+g);}
-                for(int i=n-2;i>=0;i--){float g=grade*(run[i+1]-run[i]);s[i]=Mathf.Clamp(s[i],s[i+1]-g,s[i+1]+g);}
+                for(int i=0;i<n;i++){float lo=Mathf.Max(y0-Reach(run[i]),y1-Reach(L-run[i])),hi=Mathf.Min(y0+Reach(run[i]),y1+Reach(L-run[i]));if(lo>hi)lo=hi=(lo+hi)*.5f;s[i]=Mathf.Clamp(s[i],lo,hi);}
+                for(int i=1;i<n;i++){float g=Grade((run[i]+run[i-1])*.5f)*(run[i]-run[i-1]);s[i]=Mathf.Clamp(s[i],s[i-1]-g,s[i-1]+g);}
+                for(int i=n-2;i>=0;i--){float g=Grade((run[i]+run[i+1])*.5f)*(run[i+1]-run[i]);s[i]=Mathf.Clamp(s[i],s[i+1]-g,s[i+1]+g);}
             }
             s[0]=y0;s[n-1]=y1;
             for(int i=0;i<n;i++)line[i].y=s[i];

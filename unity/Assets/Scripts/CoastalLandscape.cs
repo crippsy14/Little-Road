@@ -392,13 +392,19 @@ namespace LittleRoad
         void Sea(){CoastalWater.Create(root);}
         // Load timing (every race entry and return rebuilds the world): LITTLE_ROAD_LOAD_STEP lines.
         static System.Diagnostics.Stopwatch stepClock;
-        static void Step(string name){if(stepClock!=null)Debug.Log($"LITTLE_ROAD_LOAD_STEP {name} ms={stepClock.ElapsedMilliseconds}");stepClock=System.Diagnostics.Stopwatch.StartNew();}
+        static long kitMsAt;static int kitAt;
+        static void Step(string name)
+        {
+            long kitMs=BayviewKit.SpawnClock.ElapsedMilliseconds;int kits=BayviewKit.Spawned;
+            if(stepClock!=null)Debug.Log($"LITTLE_ROAD_LOAD_STEP {name} ms={stepClock.ElapsedMilliseconds} kit_ms={kitMs-kitMsAt} kits={kits-kitAt}");
+            kitMsAt=kitMs;kitAt=kits;stepClock=System.Diagnostics.Stopwatch.StartNew();
+        }
         // Progress for the loading card (fraction of the usual build time, next step's label).
         static void Next(float done,string label)=>LoadingScreen.Progress(done,label);
         public void Build()=>TrialWorld.RunNow(BuildRoutine());
         public System.Collections.IEnumerator BuildRoutine()
         {
-            stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;
+            WorldTiles.Begin(ValleyDetail);stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;
             LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;
             Mainland();Step("mainland");Next(.33f,"Building the bridge");yield return null;
             Bridge();Roadside();masonry.Finish();Step("bridge-roadside-masonry");Next(.35f,"Carving the cliffs");yield return null;
@@ -420,7 +426,8 @@ namespace LittleRoad
             StaticBatchingUtility.Combine(root.gameObject);Step("static-batching");
             Sea();new CoastalGroundCover(this,track,root).Build();Step("sea-ground-cover");
             GroundCoverGeometryAudit.Record("after-batching",root);
-            Debug.Log("LITTLE_ROAD_LANDSCAPE_READY bridgeDistance="+bridgeDistance+" sea="+SeaLevel);
+            WorldTiles.EndBuild();
+            Debug.Log("LITTLE_ROAD_LANDSCAPE_READY bridgeDistance="+bridgeDistance+" sea="+SeaLevel+" deferred="+WorldTiles.Deferred);
         }
     }
 }

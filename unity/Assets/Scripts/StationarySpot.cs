@@ -45,12 +45,12 @@ namespace LittleRoad
         // `allowed` limits where it may go (the Castle Climb keeps its crowd off the route).
         public static float Settle(GameObject car,System.Func<Vector3,bool> allowed)
         {
-            Physics.SyncTransforms();var at=car.transform.position;if(Overlaps(car,at).Count==0&&(allowed==null||allowed(at)))return 0;
+            Physics.SyncTransforms();var at=car.transform.position;if(Overlaps(car,at).Count==0&&!WorldTiles.Blocked(at,2.2f)&&(allowed==null||allowed(at)))return 0;
             var right=car.transform.right;var fwd=car.transform.forward;
             for(float r=1.5f;r<=14;r+=1.5f)for(int k=0;k<12;k++) {
                 float a=k*Mathf.PI*2/12;var p=at+(right*Mathf.Cos(a)+fwd*Mathf.Sin(a))*r;p.y=Ground(p,car)+.03f;
                 if(Mathf.Abs(p.y-at.y)>2.5f||allowed!=null&&!allowed(p))continue;
-                if(Overlaps(car,p).Count==0){car.transform.position=p;Physics.SyncTransforms();return r;}
+                if(Overlaps(car,p).Count==0&&!WorldTiles.Blocked(p,2.2f)){car.transform.position=p;Physics.SyncTransforms();return r;}
             }
             return -1;
         }

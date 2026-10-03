@@ -93,7 +93,7 @@ namespace LittleRoad
             paving=WorldLook.Kit("Quarry Hills square flags",Toy.Hex(0x8f9296),WorldLook.Pattern.Stone,0,.15f,true);
             laneGravel=WorldLook.Kit("Quarry Hills back lane",Toy.Hex(0x6f7174),WorldLook.Pattern.Rock,0,.1f,true);
             stone=WorldLook.Kit("Quarry Hills yard wall",Toy.Hex(0x80858a),WorldLook.Pattern.Stone,0,.1f,true);
-            Square();PitStopAndShops();Streets();FlushWalls();KettleGate();
+            Square();PitStopAndShops();Streets();RetainingWalls();FlushWalls();KettleGate();
             Debug.Log($"LITTLE_ROAD_QUARRY_TOWN buildings={buildings} back={backHouses} plinths={plinths} lamps={lamps} homes={Homes.Count}");
         }
         // ---------------------------------------------------------------- the square
@@ -214,6 +214,54 @@ namespace LittleRoad
         {
             float g=H(mid.x,mid.z);if(ValleyField.RoadDistance(mid.x,mid.z)<4.5f)return;
             walls.Add(Matrix4x4.TRS(new Vector3(mid.x,g+.3f,mid.z),Quaternion.LookRotation(along),new Vector3(.4f,2.2f,length+.4f)));
+        }
+        // Retaining walls (doc 57 banks; the area audit's Terrace Row banks): where the ground beside a town street stays
+        // level a few metres then drops away more than 1.2 m into the gardens below, a slate wall along the top of the drop,
+        // so a car off the pavement stops there instead of tumbling into a garden it can't climb out of. Clear of junctions.
+        public static int Retaining;
+        void RetainingWalls()
+        {
+            Retaining=0;var junctions=new List<Vector3>(QuarryHills.JunctionPoints());
+            foreach(var name in new[]{QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName,QuarryHills.QuarryRoadName}) {
+                var road=HillcrestRoute.Find(name);if(road==null)continue;float half=road.width*.5f;
+                foreach(int side in new[]{-1,1}) {
+                    // Each side's wall points in order along the street; neighbours (2 m apart along it) join into one wall.
+                    var run=new List<(Vector3 top,float low)>();
+                    void Lay()
+                        {
+                        // (Each run carries on 1.5 m past its ends, so a short one reads as a garden wall, not a stub.)
+                        if(run.Count>=2){var (f0,l0)=run[0];var (f1,_)=run[1];var d0=f0-f1;d0.y=0;if(d0.sqrMagnitude>.01f)run.Insert(0,(f0+d0.normalized*1.5f,l0));
+                            var (e0,le)=run[^1];var (e1,_)=run[^2];var d1=e0-e1;d1.y=0;if(d1.sqrMagnitude>.01f)run.Add((e0+d1.normalized*1.5f,le));}
+                        if(run.Count==1){var (t,l)=run[0];walls.Add(Matrix4x4.TRS(new Vector3(t.x,(t.y+.8f+l)*.5f,t.z),Quaternion.LookRotation(road.At(road.Nearest(t,out _)+1)-road.At(road.Nearest(t,out _)-1)),new Vector3(.45f,t.y+.8f-l,5f)));Retaining++;}
+                        for(int i=1;i<run.Count;i++) {
+                            var (a0,l0)=run[i-1];var (a1,l1)=run[i];var d=a1-a0;d.y=0;float len=d.magnitude;if(len<.05f)continue;
+                            float top=Mathf.Max(a0.y,a1.y)+.8f,low=Mathf.Min(l0,l1);var mid=(a0+a1)*.5f;
+                            walls.Add(Matrix4x4.TRS(new Vector3(mid.x,(top+low)*.5f,mid.z),Quaternion.LookRotation(d),new Vector3(.45f,top-low,len+.45f)));Retaining++;
+                        }
+                        run.Clear();
+                    }
+                    for(float s=4;s<road.Length-4;s+=2) {
+                        var p=road.At(s);var ahead=road.At(s+1)-road.At(s-1);ahead.y=0;if(ahead.sqrMagnitude<1e-4f){Lay();continue;}ahead.Normalize();var right=Vector3.Cross(Vector3.up,ahead);
+                        bool nearJunction=false;foreach(var j in junctions)if(new Vector2(j.x-p.x,j.z-p.z).magnitude<26)nearJunction=true;if(nearJunction){Lay();continue;}
+                        float Ground(float k){var q=p+right*side*(half+k);return H(q.x,q.z);}
+                        bool placed=false;
+                        for(float k=1.5f;k<=11;k+=.5f) {
+                            float top=Ground(k),low=Mathf.Min(Ground(k+1),Mathf.Min(Ground(k+2),Ground(k+3)));
+                            // (The drop starts: more than 0.5 m down over the next 1.5 m, and over 1.2 m below the road within 3 m.)
+                            if(top-Ground(k+1.5f)<.5f||p.y-low<1.2f||p.y-top>1.4f)continue;
+                            // (Another street within reach on this side: its own edge, not a garden.)
+                            var at=p+right*side*(half+k);if(ValleyField.RoadDistance(at.x,at.z)<k+half-.5f)break;
+                            // (Not through a house or a yard: the buildings already stand.)
+                            bool inside=false;foreach(var b in BayviewKit.Footprints){var e=b;e.Expand(new Vector3(.8f,40,.8f));if(e.Contains(new Vector3(at.x,b.center.y,at.z))){inside=true;break;}}
+                            if(inside)break;
+                            at.y=top;run.Add((at,low-.2f));placed=true;break;
+                        }
+                        if(!placed)Lay();
+                    }
+                    Lay();
+                }
+            }
+            Debug.Log("LITTLE_ROAD_QUARRY_RETAINING segments="+Retaining);
         }
         void FlushWalls(){Combine("Yard walls",walls,stone,true);Combine("Footpaths",paths,paving,false);}
         void Combine(string name,List<Matrix4x4> boxes,Material material,bool solid)

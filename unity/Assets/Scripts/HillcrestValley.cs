@@ -240,7 +240,9 @@ namespace LittleRoad
                 // Free ends (the road just stops) get their gravel ramps and leave 3 m of paint off; junction ends meet the surface.
                 // Quarry Hills' haul road and Kettle Falls road are gravel: they grip like dirt (no RoadSurface) and carry no paint.
                 if(QuarryHills.Gravel(r.name)){var g=Ribbon(r.name,r.trimmed,r.width,r.lift,holder,quarryGravel??=WorldLook.Kit("Slate gravel road",new Color(.50f,.49f,.47f),WorldLook.Pattern.Rock,0,.12f,true),true,false,r.start==null,r.end==null);Object.DestroyImmediate(g.GetComponent<RoadSurface>());continue;}
-                Ribbon(r.name,r.trimmed,r.width,r.lift,holder,asphaltMainland,true,false,r.start==null,r.end==null);
+                // (Quarry Hills' streets bend and change grade within a vertex or two: 1 m segments keep the ribbon's quads flat,
+                // where a 2 m quad across a bend folded into a 10 cm crease - the area audit's Terrace Row seam.)
+                Ribbon(r.name,QuarryHills.Owns(r.name)?Subdivide(r.trimmed,1):r.trimmed,r.width,r.lift,holder,asphaltMainland,true,false,r.start==null,r.end==null);
                 Stripes(r.trimmed,r.width,r.start==null?3:0,r.end==null?(r==crestRoad?6:3):0,holder,r.noCentre);
             }
             foreach(var (line,width) in new[]{(valleyRoad,valleyWidth),(stationRoad,stationWidth)})Guardrails(line,width,holder,0,true);
@@ -413,6 +415,13 @@ namespace LittleRoad
         // Edge lines and centre dashes, left off `trimStart`/`trimEnd` metres at junctions.
         // ---------------------------------------------------------------- junctions
         const float FilletRadius=6;
+        // The same polyline with no segment longer than `step` (straight subdivision: the shape doesn't change).
+        static Vector3[] Subdivide(Vector3[] line,float step)
+        {
+            var o=new List<Vector3>{line[0]};
+            for(int i=1;i<line.Length;i++){int n=Mathf.Max(1,Mathf.CeilToInt(Vector3.Distance(line[i-1],line[i])/step));for(int k=1;k<=n;k++)o.Add(Vector3.Lerp(line[i-1],line[i],k/(float)n));}
+            return o.ToArray();
+        }
         static Vector3[] Reverse(Vector3[] line){var r=(Vector3[])line.Clone();System.Array.Reverse(r);return r;}
         static Vector3[] Chain(params Vector3[][] parts){var all=new List<Vector3>(parts[0]);for(int k=1;k<parts.Length;k++)for(int i=1;i<parts[k].Length;i++)all.Add(parts[k][i]);return all.ToArray();}
         // Inside a junction (shoulders and guardrails stop here); the road network (docs/52) knows where they are.
@@ -804,7 +813,8 @@ namespace LittleRoad
                     // Another road here (a side road, a crossing): no rail across it. A stretch of the same chained road
                     // sits as far from the edge as our own centreline, so only a road clearly nearer counts.
                     if(steep){bool crossing=false;float ownDist=width*.5f+.55f;
-                        foreach(var road in HillcrestRoute.All()){if(road.line==line||road.line==own)continue;float d=HillcrestRoute.Distance(road.line,edge.x,edge.z,out _);if(d<Mathf.Min(road.width*.5f+2.5f,ownDist-1)){crossing=true;break;}}
+                        // (A road a metre or more below isn't a crossing: it's the street under the drop, and the drop keeps its rail.)
+                        foreach(var road in HillcrestRoute.All()){if(road.line==line||road.line==own)continue;float d=HillcrestRoute.Distance(road.line,edge.x,edge.z,out float ry);if(d<Mathf.Min(road.width*.5f+2.5f,ownDist-1)&&ry>edge.y-1){crossing=true;break;}}
                         if(crossing)continue;}
                     var rail=Piece("Guardrail",edge+Vector3.up*.62f,new Vector3(.12f,.32f,len+.08f),i%2==0?white:red,true);rail.transform.rotation=Quaternion.LookRotation(f);
                     // Posts stand on the ground (Richard, 3 Oct: barriers floating by the bridge out of Hillcrest, where the
@@ -1113,10 +1123,12 @@ namespace LittleRoad
             float R()=>(float)rng.NextDouble();
             bool Open(float x,float z,float road=13)=>ValleyField.RoadDistance(x,z)>=road&&!HillcrestTown.Reserved(x,z)&&HillcrestRoute.Distance(HillcrestRoute.Rail.line,x,z,out _)>=9;
             // Trees and bushes carry a far stand-in (KitLod), which is what lets the woods be dense.
-            GameObject Plant(string id,float x,float z,float scale,bool solid=true)
+            // (Decided now, in the same order; built now or streamed in on its tile: WorldTiles.)
+            void Plant(string id,float x,float z,float scale,bool solid=true)
             {
-                var g=BayviewKit.Spawn(id,new Vector3(x,ValleyField.Height(x,z)-.1f,z),R()*360,holder,solid:solid,scale:scale);
-                if(id.StartsWith("tree_")||id=="olive_tree"||id=="bush"||id=="flower_bush")KitLod.Attach(g,id);return g;
+                var at=new Vector3(x,ValleyField.Height(x,z)-.1f,z);float yaw=R()*360;
+                WorldTiles.Place(at,solid?1.2f*scale:0,()=>{var g=BayviewKit.Spawn(id,at,yaw,holder,solid:solid,scale:scale);
+                    if(id.StartsWith("tree_")||id=="olive_tree"||id=="bush"||id=="flower_bush")KitLod.Attach(g,id);if(WorldTiles.Late)PlacementAudit.SettleOne(g);});
             }
             bool Woodland(float x,float z)=>ValleyField.Height(x,z)>=HillcrestRoute.LakeY+1.2f&&Open(x,z)&&ValleyField.Normal(x,z).y>=.8f&&Vector2.Distance(new(x,z),HillcrestRoute.BalloonField)>=110&&
                 HillcrestRoute.Distance(HillcrestRoute.River.line,x,z,out _)>=16;

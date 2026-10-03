@@ -10,13 +10,15 @@ namespace LittleRoad
         {
             if(!QuarryHills.Enabled||!BayviewKit.Has("tree_round"))return;
             var holder=new GameObject("Quarry Hills scenery").transform;holder.SetParent(root);
-            new QuarryHillsTown(holder).Build();Physics.SyncTransforms();QuarryHillsCountry.Build(holder);Physics.SyncTransforms();
+            new QuarryHillsTown(holder).Build();Physics.SyncTransforms();Step("qh-town");QuarryHillsCountry.Build(holder);Physics.SyncTransforms();Step("qh-country");
             var rng=new System.Random(5903);float R()=>(float)rng.NextDouble();int trees=0,tufts=0;
             bool nature=BayviewKit.Has("tree_fir");
-            GameObject Plant(string id,float x,float z,float scale,bool solid=true)
+            // (Streamed in on its tile away from where you start: WorldTiles.)
+            void Plant(string id,float x,float z,float scale,bool solid=true)
             {
-                var g=BayviewKit.Spawn(id,new Vector3(x,ValleyField.Height(x,z)-.1f,z),R()*360,holder,solid:solid,scale:scale);
-                if(id.StartsWith("tree_")||id=="bush"||id=="flower_bush")KitLod.Attach(g,id);return g;
+                var at=new Vector3(x,ValleyField.Height(x,z)-.1f,z);float yaw=R()*360;
+                WorldTiles.Place(at,solid?1.2f*scale:0,()=>{var g=BayviewKit.Spawn(id,at,yaw,holder,solid:solid,scale:scale);
+                    if(id.StartsWith("tree_")||id=="bush"||id=="flower_bush")KitLod.Attach(g,id);if(WorldTiles.Late)PlacementAudit.SettleOne(g);});
             }
             // Where trees may stand: off the roads, the town core, the quarry floor, the pit and galleries, the tips, the
             // shore and steep rock, and above the moorland tree line.

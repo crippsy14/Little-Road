@@ -65,6 +65,17 @@ An outsider's review with ideas is [doc 60](60-outsider-review.md).
 
 New tests: `--wayfinding-test` and `--festival --festival-test`.
 
+**W1, first pass (3 October, late; [doc 61](61-world-tiles.md)): world tiles and the audit findings.**
+- The baked map is cached on disk.
+- About 19,000 woodland pieces stream in on a 250 m grid around you, settling and reserving their spots.
+- Free-roam load fell from 18.6 s to 13.5 s on a warm cache, with the same world piece for piece and the same frame cost.
+- In Quarry Hills:
+  - the back streets now have level landings at their junctions;
+  - the street ribbons are cut into 1 m segments;
+  - retaining walls stand along garden drops.
+- The audit went from 6 lips, 3 seams and 1 bank to 1 lip.
+- Still to do in W1: streaming the towns, floating origin, data-driven regions, and keeping the world across races.
+
 **Update, 2 October, night: Richard's list, tied off** ([doc 56](56-wider-game-round.md) §13–20; [doc 57](57-new-area-standards.md)).
 - **In-race pause:** resume, restart, view the field, options and retire. The race truly pauses.
 - **Options screen:** six tabs. New settings: units, vibration, motion blur, speed effects, camera shake, minimap, button prompts, ambience. Opens from the title, the pause hub and the race pause.

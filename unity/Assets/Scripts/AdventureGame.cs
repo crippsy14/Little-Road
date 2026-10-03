@@ -45,8 +45,13 @@ namespace LittleRoad
             TitleScreen title=null;if(TitleScreen.Wanted){title=gameObject.AddComponent<TitleScreen>();yield return title.Run();}
             try{AdventureSession.Load();}catch(Exception e){ui.Show("Your save needs attention",e.Message+"\nThe existing save has been left intact.",new List<AdventureUI.Choice>{new("Quit",()=>Application.Quit())});yield break;}
             WorldLook.PlayPacing();Time.fixedDeltaTime=1f/120;
-            LoadingScreen.Begin("Little Road");
-            world=GetComponent<RaceTrial>();world.freeRoam=true;world.track=new Circuit();world.elapsed=1;yield return TrialWorld.CreateRoutine(world.track,false);
+            LoadingScreen.Begin("Little Road");Mark("begin");
+            // World tiles (W1): the woods near where the car will start are built now, the rest stream in around you.
+            WorldTiles.Plan(AdventureSession.ReturnSpot??(!Testing&&Store.Data.spot!=null&&Store.Data.spot.Length==4?new Vector3(Store.Data.spot[0],Store.Data.spot[1],Store.Data.spot[2]):new Vector3(-63,0,-94)));
+            world=GetComponent<RaceTrial>();world.freeRoam=true;world.track=new Circuit();world.elapsed=1;yield return TrialWorld.CreateRoutine(world.track,false);Mark("world");
+            // (Tests and audits see the whole world at once; --world-tiles-test watches it stream.)
+            if(Testing&&!RaceTrial.Has("--world-tiles-test"))WorldTiles.Complete();
+            Debug.Log($"LITTLE_ROAD_WORLD_TILES ready deferred={WorldTiles.Deferred} pending={WorldTiles.Pending} spawned={BayviewKit.Spawned}");
             residents["garage"]=new Vector3(-62,0,-100);
             // Pit Stop bay hosts (Bayview: garage + parts). Hillcrest's arrive through HillcrestTown.Spots.
             foreach(var (id,key) in new[]{("garage","bayview/garage"),("parts","bayview/parts")})if(PitStop.Hosts.TryGetValue(key,out var host)){residents[id]=host.at;residentYaw[id]=host.yaw;}
@@ -56,7 +61,7 @@ namespace LittleRoad
             // Quarry Hills (--quarry-hills): Gwen at the rally school.
             foreach(var id in new[]{"rallyschool","qgarage","qparts","qbody","caban","slatequay"})if(QuarryHillsTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
             residents["post"]=world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
-            CreatePlaces();BuildWayfinding();
+            CreatePlaces();Mark("places");BuildWayfinding();Mark("wayfinding");
             if(AdventureSession.MaxBuildTest&&!AdventureSession.TestPlaced){AdventureSession.TestPlaced=true;FaceDuke();}
             var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));
             if(AdventureSession.ReturnSpot is Vector3 back)car.transform.SetPositionAndRotation(back+Vector3.up*.15f,Quaternion.Euler(0,AdventureSession.ReturnYaw,0));
@@ -69,7 +74,7 @@ namespace LittleRoad
             player.Bumped+=(other,speed)=>{if(speed>1f&&!ui.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen)other.GetComponentInParent<NpcChatter>()?.TrySay(bubbles);};
             if(RaceTrial.Has("--vertical-audit"))gameObject.AddComponent<VerticalMotionAudit>().Setup(world);
             if(RaceTrial.Has("--ambient-traffic"))AmbientTraffic();
-            if(!RaceTrial.Has("--no-valley-life"))gameObject.AddComponent<ValleyLife>().Setup(player);
+            Mark("player");if(!RaceTrial.Has("--no-valley-life"))gameObject.AddComponent<ValleyLife>().Setup(player);Mark("valley-life");
             // Fireworks over Bayview harbour at night (docs/51).
             var fireworks=gameObject.AddComponent<Fireworks>();fireworks.Setup();fireworks.Announce=Notify;
             // Speed traps on seven roads (docs/51).
@@ -94,7 +99,7 @@ namespace LittleRoad
             if(GrassField.Wanted)gameObject.AddComponent<GrassField>().Setup(cameraView);
             CameraPose(true);if(!string.IsNullOrEmpty(AdventureSession.Notice)){Notify(AdventureSession.Notice);AdventureSession.Notice=null;}
             else if(Store.Data.questStage==0)Notify("Welcome to Bayview · Mara has a parcel for the lighthouse");
-            yield return WarmUp();CameraPose(true);
+            Mark("camera");yield return WarmUp();CameraPose(true);Mark("warm-up");
             // Free-roam map: the world baked from above once, behind the loading card.
             ExploredMap.Load(Store.Data.explored);
             // Only where you've been (Richard: no free reveals; viewpoints will fill empty country later).
@@ -104,13 +109,15 @@ namespace LittleRoad
                 banner.known=place=>Store.Data.discovered.Contains(place);
                 banner.discovered=(place,subtitle)=>Attempt(()=>{if(Store.Discover(place))ui.Discovery(place,subtitle);});
 }
-            RenderTexture mapTexture=null;
+            Mark("explored");RenderTexture mapTexture=null;
             if(!Application.isBatchMode&&!RaceTrial.Has("--no-minimap")){mapTexture=WorldMap.Bake();minimap=gameObject.AddComponent<Minimap>();minimap.Setup(player,mapTexture,MapMarks,()=>WorldMap.Labels(ResidentDirectory(),world.track));}
             GraphicsOptions.Changed+=OnOptionChanged;
             pause=gameObject.AddComponent<PauseMenu>();pause.Setup(new PauseMenu.Context{save=()=>Store.Data,area=()=>AreaBanner.Area(player.transform.position),objective=()=>GoalText(false),car=player.transform,
                 minimap=minimap,marks=MapMarks,map=mapTexture,settings=SettingsItems,quit=Application.Quit,car_=CarSummary,warpLabel=WarpLabel,warp=WarpToGarage});
-            CarContact.SeatAll(); // every standing car onto its four wheels (docs/57, 2.5)
+            Mark("map-pause");CarContact.SeatAll(); // every standing car onto its four wheels (docs/57, 2.5)
             Debug.Log("LITTLE_ROAD_ADVENTURE_READY save="+Store.path+" quest="+Store.Data.questStage+" credits="+Store.Data.credits+" "+RaceTrial.LoadTime);LoadingScreen.Ready();
+            // --load-timing: measure the load (LITTLE_ROAD_LOAD_STEP lines) and quit (W1 world tiles).
+            if(RaceTrial.Has("--load-timing")){yield return new WaitForSeconds(2);Application.Quit(0);yield break;}
             if(RaceTrial.Has("--geometry-audit-only")){Application.Quit();yield break;}
             if(RaceTrial.Has("--minimap-review")){reviewing=true;yield return MinimapReview();yield break;}
             if(RaceTrial.Has("--pause-review")){yield return PauseReview();yield break;}
@@ -142,6 +149,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--sprint-test")&&residents.ContainsKey("rallyschool")){StartCoroutine(SprintTest());yield break;}
             if(RaceTrial.Has("--carving-test")&&QuarryHillsTown.Spots.Count>0){StartCoroutine(CarvingTest());yield break;}
             if(RaceTrial.Has("--wayfinding-test")){reviewing=true;StartCoroutine(WayfindingTest());yield break;}
+            if(RaceTrial.Has("--world-tiles-test")){StartCoroutine(WorldTilesTest());yield break;}
             if(RaceTrial.Has("--festival-test")&&QuarryHillsTown.Spots.Count>0){reviewing=true;StartCoroutine(FestivalTest());yield break;}
             if(RaceTrial.Has("--blondin-test")){StartCoroutine(BlondinTest());yield break;}
             if(RaceTrial.Has("--climb-test")){StartCoroutine(ClimbTest());yield break;}
@@ -245,6 +253,16 @@ namespace LittleRoad
             yield return new WaitForSeconds(1f);Capture("festival-choir");
             bool pass=QuarryFestival.Flags>=6&&QuarryFestival.Parade==6&&moved>5&&choir>=4;
             Debug.Log($"LITTLE_ROAD_FESTIVAL_TEST flags={QuarryFestival.Flags} parade={QuarryFestival.Parade} moved={moved:0.0}m choir={choir} pass={pass}");
+            Application.Quit(pass?0:1);
+        }
+        // Test (--world-tiles-test): the woods away from the start stream in on their own within a minute, the car standing
+        // still; compare `spawned` with a --no-world-tiles --load-timing run (the same world, piece for piece).
+        IEnumerator WorldTilesTest()
+        {
+            int deferred=WorldTiles.Deferred;float start=Time.realtimeSinceStartup;
+            while(WorldTiles.Pending>0&&Time.realtimeSinceStartup-start<90)yield return null;
+            bool pass=deferred>0&&WorldTiles.Pending==0;
+            Debug.Log($"LITTLE_ROAD_WORLD_TILES_TEST deferred={deferred} pending={WorldTiles.Pending} seconds={Time.realtimeSinceStartup-start:0.0} spawned={BayviewKit.Spawned} pass={pass}");
             Application.Quit(pass?0:1);
         }
         // Test (--wayfinding-test, with or without --quarry-hills): read every board (pin the first line, check the objective
@@ -882,6 +900,8 @@ namespace LittleRoad
             if(!snap&&!riding)CameraShake.Apply(cameraView);
         }
         void Notify(string value)=>ui.Toast(value);
+        // Load profiling (W1 world tiles): seconds since the scene began loading, at each start-up stage.
+        static void Mark(string stage)=>Debug.Log($"LITTLE_ROAD_LOAD_MARK {stage} {RaceTrial.LoadTime}");
         Horn playerHorn;bool honking;TrainRace trainRace;PhotoMode photo;FinishBeacon beacon;Vector3? beaconAt;
         // Reviews (--horn-test): one honk and its answers.
         public void TestHonk(){playerHorn?.Toot(.35f,0);HornHeard();}

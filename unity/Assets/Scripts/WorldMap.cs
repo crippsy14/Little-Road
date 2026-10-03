@@ -46,13 +46,45 @@ namespace LittleRoad
         public static RenderTexture Bake(int pixels=0)
         {
             if(pixels<=0)pixels=BakePixels;
+            var clock=System.Diagnostics.Stopwatch.StartNew();
+            string cache=CachePath(pixels);
+            if(cache!=null&&File.Exists(cache)) {
+                try {
+                    var bytes=File.ReadAllBytes(cache);var tex=new Texture2D(pixels,pixels,TextureFormat.DXT1,false);tex.LoadRawTextureData(bytes);tex.Apply(false,false);
+                    var rt=Target(pixels);Graphics.Blit(tex,rt);UnityEngine.Object.Destroy(tex);
+                    Debug.Log($"LITTLE_ROAD_MAP_CACHE hit ms={clock.ElapsedMilliseconds} file={Path.GetFileName(cache)}");return rt;
+                } catch(Exception e){Debug.LogWarning("LITTLE_ROAD_MAP_CACHE unreadable, baking: "+e.Message);}
+            }
+            WorldTiles.Complete();   // (the map shows every tree)
+            var baked=Render(pixels);
+            if(cache!=null)try {
+                var prev=RenderTexture.active;RenderTexture.active=baked;var read=new Texture2D(pixels,pixels,TextureFormat.RGB24,false);read.ReadPixels(new Rect(0,0,pixels,pixels),0,0,false);RenderTexture.active=prev;
+                read.Compress(false);Directory.CreateDirectory(Path.GetDirectoryName(cache));File.WriteAllBytes(cache,read.GetRawTextureData());UnityEngine.Object.Destroy(read);
+                // Keep the four newest (the play copy and the dev build each have their own).
+                var old=new DirectoryInfo(Path.GetDirectoryName(cache)).GetFiles("map-*.dxt1");System.Array.Sort(old,(a,b)=>b.LastWriteTimeUtc.CompareTo(a.LastWriteTimeUtc));
+                for(int i=4;i<old.Length;i++)old[i].Delete();
+            } catch(Exception e){Debug.LogWarning("LITTLE_ROAD_MAP_CACHE not saved: "+e.Message);}
+            Debug.Log($"LITTLE_ROAD_MAP_CACHE baked ms={clock.ElapsedMilliseconds}");
+            return baked;
+        }
+        static RenderTexture Target(int pixels)=>new RenderTexture(pixels,pixels,24,RenderTextureFormat.ARGB32){name="World map",useMipMap=true,autoGenerateMips=true,filterMode=FilterMode.Trilinear,anisoLevel=4,wrapMode=TextureWrapMode.Clamp};
+        // One file per build, map size and world (the flags that change what's built); none in the editor or with --no-map-cache.
+        static string CachePath(int pixels)
+        {
+            if(Application.isEditor||string.IsNullOrEmpty(Application.buildGUID)||RaceTrial.Has("--no-map-cache"))return null;
+            var flags=new List<string>();foreach(var a in System.Environment.GetCommandLineArgs())if(a.StartsWith("--")&&!a.EndsWith("-test")&&!a.EndsWith("-review")&&!a.EndsWith("-audit")&&a!="--load-timing"&&a!="--start-windowed"&&a!="--silent")flags.Add(a);
+            flags.Sort();uint hash=2166136261;foreach(char ch in Application.buildGUID+"|"+pixels+"|"+QualitySettings.GetQualityLevel()+"|"+string.Join(",",flags)){hash^=ch;hash*=16777619;}
+            return Path.Combine(Application.persistentDataPath,"map-cache",$"map-{hash:x8}.dxt1");
+        }
+        static RenderTexture Render(int pixels)
+        {
             var go=new GameObject("Map bake camera");var cam=go.AddComponent<Camera>();cam.enabled=false;
             var data=cam.GetUniversalAdditionalCameraData();data.renderPostProcessing=true;data.antialiasing=AntialiasingMode.SubpixelMorphologicalAntiAliasing;data.renderShadows=true;
             cam.orthographic=true;cam.orthographicSize=Size/2;cam.nearClipPlane=5;cam.farClipPlane=1600;cam.aspect=1;cam.clearFlags=CameraClearFlags.SolidColor;cam.backgroundColor=new Color(.10f,.25f,.52f);
             cam.transform.SetPositionAndRotation(new Vector3(X0+Size/2,900,Z0+Size/2),Quaternion.Euler(90,0,0));
             bool fog=RenderSettings.fog;var cookie=RenderSettings.sun!=null?RenderSettings.sun.cookie:null;float lodBias=QualitySettings.lodBias,hour=TimeOfDay.Hour;
             var urp=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;float shadowDistance=urp!=null?urp.shadowDistance:0;
-            var rt=new RenderTexture(pixels,pixels,24,RenderTextureFormat.ARGB32){name="World map",useMipMap=true,autoGenerateMips=true,filterMode=FilterMode.Trilinear,anisoLevel=4,wrapMode=TextureWrapMode.Clamp};
+            var rt=Target(pixels);
             try {
                 TimeOfDay.Set(14.5f);RenderSettings.fog=false;Shader.SetGlobalVector("_HeightFogParams",Vector4.zero);if(RenderSettings.sun!=null)RenderSettings.sun.cookie=null;
                 QualitySettings.lodBias=40;if(urp!=null)urp.shadowDistance=1500;

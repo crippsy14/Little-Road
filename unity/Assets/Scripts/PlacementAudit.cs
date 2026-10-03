@@ -23,25 +23,30 @@ namespace LittleRoad
         public static int Settle()
         {
             int moved=0;
-            foreach(var go in BayviewKit.Placed) {
-                if(go==null||!Settleable.Any(id=>id.EndsWith("_")?go.name.StartsWith(id):go.name==id))continue;
-                var renderers=go.GetComponentsInChildren<Renderer>();if(renderers.Length==0)continue;
+            foreach(var go in BayviewKit.Placed)if(SettleOne(go))moved++;
+            if(moved>0)Physics.SyncTransforms();
+            Debug.Log("LITTLE_ROAD_SETTLED_PLANTING moved="+moved);return moved;
+        }
+        // One piece onto the ground beneath it (also each streamed tree as it's built: WorldTiles).
+        public static bool SettleOne(GameObject go)
+        {
+            {
+                if(go==null||!Settleable.Any(id=>id.EndsWith("_")?go.name.StartsWith(id):go.name==id))return false;
+                var renderers=go.GetComponentsInChildren<Renderer>();if(renderers.Length==0)return false;
                 var b=renderers[0].bounds;foreach(var r in renderers)b.Encapsulate(r.bounds);
-                if(b.min.y<CoastalLandscape.SeaLevel-1)continue; // sea rocks stand on the seabed by their own rule
+                if(b.min.y<CoastalLandscape.SeaLevel-1)return false; // sea rocks stand on the seabed by their own rule
                 // Quick test first: ground within 0.3 m under the centre (nearly every piece) needs nothing more.
                 bool near=false;foreach(var h in Physics.RaycastAll(new Vector3(b.center.x,b.min.y+.2f,b.center.z),Vector3.down,.5f))if(!h.collider.isTrigger&&!h.collider.transform.IsChildOf(go.transform)){near=true;break;}
-                if(near)continue;
+                if(near)return false;
                 float ground=float.MinValue;var ex=b.extents*.7f;
                 foreach(var o in new[]{Vector3.zero,new Vector3(ex.x,0,ex.z),new Vector3(-ex.x,0,ex.z),new Vector3(ex.x,0,-ex.z),new Vector3(-ex.x,0,-ex.z)})
                     foreach(var hit in Physics.RaycastAll(new Vector3(b.center.x+o.x,b.max.y+.5f,b.center.z+o.z),Vector3.down,b.size.y+60)) {
                         if(hit.collider.isTrigger||hit.collider.transform.IsChildOf(go.transform)||hit.collider.GetComponentInParent<RoadCar>()!=null)continue;
                         if(hit.point.y<=b.max.y)ground=Mathf.Max(ground,Mathf.Min(hit.point.y,b.min.y+5));
                     }
-                if(ground==float.MinValue||b.min.y-ground<=.3f)continue;
-                go.transform.position+=Vector3.down*(b.min.y-ground+.05f);moved++;
+                if(ground==float.MinValue||b.min.y-ground<=.3f)return false;
+                go.transform.position+=Vector3.down*(b.min.y-ground+.05f);return true;
             }
-            if(moved>0)Physics.SyncTransforms();
-            Debug.Log("LITTLE_ROAD_SETTLED_PLANTING moved="+moved);return moved;
         }
         public static string Run()
         {
@@ -114,8 +119,10 @@ namespace LittleRoad
                         var p=pts[i];if(Vector3.Distance(p,last)<3)continue;last=p;SeamAt.Add(p);
                         // (With the drawn line's own heights either side, to tell a ribbon fault from a line fault.)
                         int near=0;float nd=float.MaxValue;for(int q=0;q<path.Count;q++){float dd=Vector2.Distance(new(path[q].x,path[q].z),new(p.x,p.z));if(dd<nd){nd=dd;near=q;}}
-                        var around=new List<string>();for(int q=Mathf.Max(0,near-2);q<=Mathf.Min(path.Count-1,near+2);q++)around.Add($"{path[q].y:0.00}@{Vector2.Distance(new(path[q].x,path[q].z),new(p.x,p.z)):0.0}");
-                        found.Add($"  {name} step {step:+0.00;-0.00} m at ({p.x:0},{h[i]:0.0},{p.z:0}) [{names[i-1]} -> {names[i]}] surface {h[i-2]:0.00},{h[i-1]:0.00},{h[i]:0.00},{h[i+1]:0.00} line {string.Join(" ",around)}");
+                        var around=new List<string>();for(int q=Mathf.Max(0,near-2);q<=Mathf.Min(path.Count-1,near+2);q++)around.Add($"{path[q].y:0.00}@({path[q].x:0.0},{path[q].z:0.0})");
+                        // (Every surface under the two samples either side of the step: name, kind, height, parent.)
+                        string Hits(Vector3 q){const string none="none";var l=new List<string>();foreach(var hh in Physics.RaycastAll(q+Vector3.up*3,Vector3.down,7))if(!hh.collider.isTrigger)l.Add($"{hh.collider.name}/{hh.collider.GetType().Name}/{hh.point.y:0.00}/{(hh.collider.transform.parent!=null?hh.collider.transform.parent.name:none)}/{hh.collider.GetEntityId()}");return string.Join(" ; ",l);}
+                        found.Add($"  {name} step {step:+0.00;-0.00} m at ({p.x:0},{h[i]:0.0},{p.z:0}) [{names[i-1]} -> {names[i]}] surface {h[i-2]:0.00},{h[i-1]:0.00},{h[i]:0.00},{h[i+1]:0.00} line {string.Join(" ",around)}\n      before: {Hits(pts[i-1])}\n      after: {Hits(pts[i])}");
                     }
                 }
             }
@@ -165,6 +172,13 @@ namespace LittleRoad
             // A barrier between the edge and `upTo` metres out from the centreline.
             // A gap between barriers narrower than a car (1.1 m either side along the road) is closed too: the gap between
             // two terraced houses on a hillside.
+            // (For the bank list: the surface height and what it is, every metre out from the edge.)
+            IEnumerable<string> ProfileOut(Vector3 at,Vector3 r,float half)
+            {
+                for(int k=0;k<=12;k+=1){var p=at+r*(half+k);float best=float.MinValue;string what="none";
+                    foreach(var h in Physics.RaycastAll(p+Vector3.up*4,Vector3.down,10))if(!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null&&!h.collider.CompareTag("Respawn")&&h.point.y>best){best=h.point.y;what=h.collider.name;}
+                    yield return $"{best-at.y:+0.0;-0.0}:{what}";}
+            }
             bool Guarded(Vector3 at,Vector3 r,float half,float upTo,Vector3 along)
             {
                 for(float o=half+.1f;o<=upTo;o+=.04f){var p=at+r*o;if(Barrier(p)||Barrier(p+along*1.1f)&&Barrier(p-along*1.1f))return true;}
@@ -186,7 +200,7 @@ namespace LittleRoad
                         for(float o=half-.2f;o<=half+4;o+=.1f){float h=Top(line[i]+r*side*o);if(float.IsNaN(h))break;float rise=prev-h;if(rise>worst){worst=rise;at=o;}prev=h;}
                         // A barrier between the edge and the step keeps a car on the road: a step behind one isn't a trap.
                         bool guarded=worst>.12f&&Guarded(line[i],r*side,half,at+1f,f);
-                        if(worst>.12f&&worst<2&&!guarded){lips++;EdgeFindings.Add((line[i],true));found.Add($"  {name} run {run:0} side {(side>0?"R":"L")} lip {worst:0.00} m at {at-half:0.0} m past the edge ({line[i].x:0},{line[i].y:0.0},{line[i].z:0})");}
+                        if(worst>.12f&&worst<2&&!guarded){lips++;EdgeFindings.Add((line[i],true));found.Add($"  {name} run {run:0} side {(side>0?"R":"L")} lip {worst:0.00} m at {at-half:0.0} m past the edge ({line[i].x:0},{line[i].y:0.0},{line[i].z:0}) edge {half:0.0} m, out every metre: {string.Join(" ",ProfileOut(line[i],r*side,half-1))}");}
                         // Banks (Richard, 30 Sep: roads by the railway you can't get back onto): out to 12 m, the
                         // steepest climb back towards the road over any metre, where the climb is at least 40 cm.
                         // (Drops of 2 m and more are bridges and sea walls, which have parapets.)
@@ -197,7 +211,7 @@ namespace LittleRoad
                             int kSteep=0;for(int k=0;k+4<hs.Length;k++)if(hs[k]-hs[k+4]>=steep-1e-4f){kSteep=k;break;}
                             // A barrier between the edge and the top of the drop (a sea-wall railing, a parapet) guards it.
                             if(steep>.55f&&rise>.4f&&Guarded(line[i],r*side,half,half+kSteep*.25f+1f,f)){guardedEdges++;continue;}
-                            if(steep>.55f&&rise>.4f){banks++;EdgeFindings.Add((line[i],false));bankList.Add($"  {name} run {run:0} side {(side>0?"R":"L")} bank {Mathf.Atan(steep)*Mathf.Rad2Deg:0}° climbing {rise:0.0} m ({line[i].x:0},{line[i].y:0.0},{line[i].z:0})");}
+                            if(steep>.55f&&rise>.4f){banks++;EdgeFindings.Add((line[i],false));bankList.Add($"  {name} run {run:0} side {(side>0?"R":"L")} bank {Mathf.Atan(steep)*Mathf.Rad2Deg:0}° climbing {rise:0.0} m ({line[i].x:0},{line[i].y:0.0},{line[i].z:0}) edge {half:0.0} m, out every metre: {string.Join(" ",ProfileOut(line[i],r*side,half))}");}
                         }
                     }
                 }
