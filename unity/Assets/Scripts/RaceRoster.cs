@@ -122,8 +122,8 @@ namespace LittleRoad
             var trial=Trial(24,3,seed,"quarry","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
             var entries=new RaceEntrant[24];var off=CarBodies.Deal(CarBodies.OffRoad,24,seed);int o=0;
             for(int i=1;i<24;i++){
-                var e=trial.Entries[i];string kit=e.Slot==0||i%3==0?"club":"street";
-                entries[i]=new RaceEntrant(e.Id,e.Slot,off[o++],e.Paint,kit,EquipmentCatalog.TestLoadout(kit),e.Driver);
+                var e=trial.Entries[i];string kit=e.Slot==0||i%3==0?"club":"street";var parts=EquipmentCatalog.TestLoadout(kit);parts["tyres"]=kit=="club"?"tyres_rally":"tyres_trail";
+                entries[i]=new RaceEntrant(e.Id,e.Slot,off[o++],e.Paint,kit+" on gravel tyres",parts,e.Driver);
             }
             entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
             return new RaceRoster(seed,3,"quarry","QUARRY HILLS RALLYCROSS / CLASS C",modern,entries);

@@ -155,4 +155,35 @@ namespace LittleRoad
             return (Sine.At(phase)*.7f+Sine.At(phase*2)*.2f+Sine.At(phase*3)*.1f)*env*.3f;
         }
     }
+
+    // Quarry Hills' blasting (docs/60, ambience by area): the motor siren winds up, holds and runs down, then the shot
+    // thumps out of the pit and rumbles round the benches. Fire() starts one (from the main thread); silent between.
+    public sealed class BlastSynth
+    {
+        public const float SirenEnd=14,Shot=21,End=31;
+        readonly float fs;Noise n;Biquad thump,rumble,rotor;float t=End,phase;volatile bool fire;
+        public BlastSynth(float sampleRate,uint seed){fs=sampleRate;n=new Noise(seed*23+3);thump=Biquad.LowPass(fs,70,.9f);rumble=Biquad.LowPass(fs,260,.6f);rotor=Biquad.BandPass(fs,900,.7f);}
+        public void Fire()=>fire=true;
+        public bool Busy=>t<End;
+        public float Next()
+        {
+            if(fire){fire=false;t=0;}
+            if(t>=End)return 0;
+            t+=1/fs;float x=0;
+            if(t<SirenEnd) {
+                // Wind-up 0-4 s, hold to 10 s (a slow wobble), run-down to 14 s: pitch and loudness follow the rotor.
+                float spin=t<4?Smooth(t/4):t<10?1+.015f*MathF.Sin(t*2.1f):Smooth(1-(t-10)/4);
+                float f=90+540*spin;phase+=f/fs;if(phase>1)phase-=1;
+                float tone=Sine.At(phase)*.6f+Sine.At(phase*2)*.25f+Sine.At(phase*3)*.12f+rotor.Process(n.White())*.25f;
+                x+=tone*spin*spin*.55f;
+            }
+            if(t>=Shot) {
+                float a=t-Shot;
+                x+=thump.Process(n.White())*MathF.Exp(-a/.35f)*5.5f;          // the shot
+                x+=rumble.Process(n.Pink())*MathF.Exp(-a/2.6f)*Math.Min(1,a/.15f)*1.6f;   // its rumble round the pit
+            }
+            return x;
+        }
+        static float Smooth(float k){k=Math.Clamp(k,0,1);return k*k*(3-2*k);}
+    }
 }

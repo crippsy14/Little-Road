@@ -38,7 +38,7 @@ namespace LittleRoad
         {
             if(!QuarryHills.Enabled)return;
             root=new GameObject("Quarry Hills country").transform;root.SetParent(parent);rng=new System.Random(8823);
-            walls.Clear();caps.Clear();posts.Clear();gates.Clear();lines.Clear();SheepFields.Clear();Sheep=Farms=WallMetres=0;
+            walls.Clear();caps.Clear();posts.Clear();gates.Clear();lines.Clear();SheepFields.Clear();Sheep=Farms=WallMetres=LaneSheep=0;
             RugbyGround();Workshops();Farms_();Campsite();WindFarm();Roadsides();TownBits();
             var stone=WorldLook.Kit("Dry-stone wall",new Color(.43f,.44f,.45f),WorldLook.Pattern.Stone,0,.08f,true,1.6f);
             var cap=WorldLook.Kit("Wall coping",new Color(.36f,.37f,.39f),WorldLook.Pattern.Rock,0,.08f,true);
@@ -46,7 +46,7 @@ namespace LittleRoad
             QuarryFloor.Combine("Telegraph wires",lines,TrialWorld.Material("Wire",new Color(.12f,.12f,.13f),.3f,.4f),root,false);
             QuarryFloor.Combine("Field gates",gates,TrialWorld.Material("Gate paint",new Color(.92f,.92f,.88f),0,.3f),root,true);
             QuarryFloor.Combine("Gate posts",posts,WorldLook.Kit("Gate post stone",new Color(.45f,.45f,.46f),WorldLook.Pattern.Stone,0,.1f,true),root,true);
-            Debug.Log($"LITTLE_ROAD_QUARRY_COUNTRY farms={Farms} sheep={Sheep} wall_m={WallMetres} gates={gates.Count/5}");
+            Debug.Log($"LITTLE_ROAD_QUARRY_COUNTRY farms={Farms} sheep={Sheep} lane_sheep={LaneSheep} wall_m={WallMetres} gates={gates.Count/5}");
         }
 
         // ---------------------------------------------------------------- the rugby ground
@@ -136,6 +136,8 @@ namespace LittleRoad
             for(float a=0;a<360;a+=12){float r=28;var p=at+Quaternion.Euler(0,a,0)*Vector3.forward*r;var q=at+Quaternion.Euler(0,a+12,0)*Vector3.forward*r;if(a<24)continue;Wall(G(p.x,p.z),G(q.x,q.z));}
             Vector3 road=default;float rd=float.MaxValue;foreach(var r in HillcrestRoute.All()){if(!QuarryHills.Owns(r.name))continue;float s=r.Nearest(at,out float lat);if(Mathf.Abs(lat)<rd){rd=Mathf.Abs(lat);road=r.At(s);}}
             Lane(at+rot*Vector3.forward*26,road);
+            // A few sheep loose in the lane (docs/60): they amble off when a car comes, and scatter for the horn.
+            var mid=Vector3.Lerp(at+rot*Vector3.forward*26,road,.55f);mid.y=H(mid.x,mid.z);LaneFlock(mid,3+rng.Next(3));
             for(int k=0;k<3;k++){float a=R()*Mathf.PI*2,r=60+R()*140;var f=new Vector3(at.x+Mathf.Cos(a)*r,0,at.z+Mathf.Sin(a)*r);f.y=H(f.x,f.z);if(Open(f.x,f.z,10)&&Slope(f.x,f.z,6)<.4f)Flock(f,7+rng.Next(10));}
             QuarryHillsTown.Spots["farm "+name]=(P(-8,10),yaw);
         }
@@ -151,6 +153,16 @@ namespace LittleRoad
                 foreach(var (x,z) in new[]{(-.22f,.32f),(.22f,.32f),(-.22f,-.32f),(.22f,-.32f)})Part(s,"Leg",sheepLeg,face,new Vector3(x,.18f,z),new Vector3(.1f,.18f,.1f));
                 s.AddComponent<Grazer>().Setup(centre,15);Sheep++;}
         }
+        static void LaneFlock(Vector3 centre,int n)
+        {
+            Flock(centre,0);   // (makes the meshes)
+            for(int i=0;i<n;i++){float a=R()*Mathf.PI*2,r=R()*4;var p=new Vector3(centre.x+Mathf.Cos(a)*r,0,centre.z+Mathf.Sin(a)*r);p.y=H(p.x,p.z);
+                var s=new GameObject("Lane sheep");s.transform.SetParent(root);s.transform.SetPositionAndRotation(p,Quaternion.Euler(0,R()*360,0));s.transform.localScale=Vector3.one*(.85f+R()*.3f);
+                Part(s,"Body",sheepBody,wool,new Vector3(0,.62f,0),new Vector3(.78f,.62f,1.1f));Part(s,"Head",sheepHead,face,new Vector3(0,.78f,.62f),new Vector3(.32f,.36f,.42f));
+                foreach(var (x,z) in new[]{(-.22f,.32f),(.22f,.32f),(-.22f,-.32f),(.22f,-.32f)})Part(s,"Leg",sheepLeg,face,new Vector3(x,.18f,z),new Vector3(.1f,.18f,.1f));
+                var g=s.AddComponent<Grazer>();g.Setup(centre,5);g.lane=true;Sheep++;LaneSheep++;}
+        }
+        public static int LaneSheep;
         static Mesh Prim(PrimitiveType t){var g=GameObject.CreatePrimitive(t);var m=g.GetComponent<MeshFilter>().sharedMesh;Object.Destroy(g);return m;}
         static void Part(GameObject parent,string name,Mesh mesh,Material mat,Vector3 at,Vector3 size)
         {
@@ -245,18 +257,34 @@ namespace LittleRoad
     // Slow constant turning about the local x axis (the Great Wheel).
     public sealed class Spin:MonoBehaviour{public float degreesPerSecond=10;void Update()=>transform.Rotate(degreesPerSecond*Time.deltaTime,0,0,Space.Self);}
     // A sheep: grazes (head down), ambles a few metres now and then within its field, never far from home; only near the player.
+    // Startled (the horn, or a car bearing down on a lane sheep) it trots off away from the noise, then drifts back.
     public sealed class Grazer:MonoBehaviour
     {
-        Vector3 home,target;float radius,wait,headPhase;Transform head;
+        Vector3 home,target;float radius,wait,headPhase,trot;Transform head;
+        public bool lane;public static Transform Car;static Vector3 carLast;static float carSpeed;static int carFrame=-1;
+        public void Startle(Vector3 from)
+        {
+            var away=transform.position-from;away.y=0;if(away.sqrMagnitude<.01f)away=transform.right;
+            away=Quaternion.Euler(0,Random.Range(-35f,35f),0)*away.normalized;target=transform.position+away*Random.Range(9f,15f);trot=Random.Range(2.2f,3f);wait=Random.Range(6f,12f);
+        }
+        public static readonly List<Grazer> All=new();   // (Ambience counts the sheep near you)
+        void OnEnable()=>All.Add(this);
+        void OnDisable()=>All.Remove(this);
         public void Setup(Vector3 field,float r){home=field;radius=r;target=transform.position;wait=Random.Range(1f,8f);head=transform.Find("Head");headPhase=Random.value*6;}
         void Update()
         {
             var cam=Camera.main;if(cam!=null&&(cam.transform.position-transform.position).sqrMagnitude>250*250)return;
-            if(head!=null)head.localPosition=new Vector3(0,.78f-Mathf.Max(0,Mathf.Sin(Time.time*.6f+headPhase))*.35f,.62f);
+            // A lane sheep steps out of the way of a car coming at more than walking pace.
+            if(lane&&Car!=null) {
+                if(carFrame!=Time.frameCount){carFrame=Time.frameCount;carSpeed=Time.deltaTime>0?Vector3.Distance(Car.position,carLast)/Time.deltaTime:0;carLast=Car.position;}
+                if(trot<=0&&carSpeed>2&&(Car.position-transform.position).sqrMagnitude<11*11)Startle(Car.position);
+            }
+            float gait=trot>0?trot:.6f;if(trot>0&&(target-transform.position).sqrMagnitude<.1f)trot=0;
+            if(head!=null)head.localPosition=new Vector3(0,trot>0?.86f:.78f-Mathf.Max(0,Mathf.Sin(Time.time*.6f+headPhase))*.35f,.62f);
             var d=target-transform.position;d.y=0;
-            if(d.magnitude<.2f){wait-=Time.deltaTime;if(wait<=0){var a=Random.value*Mathf.PI*2;target=home+new Vector3(Mathf.Cos(a),0,Mathf.Sin(a))*Random.Range(0f,radius);wait=Random.Range(4f,14f);}return;}
-            var step=d.normalized*Mathf.Min(d.magnitude,.6f*Time.deltaTime);var p=transform.position+step;p.y=ValleyField.Height(p.x,p.z);transform.position=p;
-            transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(d),90*Time.deltaTime);
+            if(d.magnitude<.2f){trot=0;wait-=Time.deltaTime;if(wait<=0){var a=Random.value*Mathf.PI*2;target=home+new Vector3(Mathf.Cos(a),0,Mathf.Sin(a))*Random.Range(0f,radius);wait=Random.Range(4f,14f);}return;}
+            var step=d.normalized*Mathf.Min(d.magnitude,gait*Time.deltaTime);var p=transform.position+step;p.y=ValleyField.Height(p.x,p.z);transform.position=p;
+            transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(d),(trot>0?360:90)*Time.deltaTime);
         }
     }
 }

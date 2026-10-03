@@ -103,7 +103,12 @@ public static class AdventureChecks
         paints.Change(p=>{p.credits=400;return true;});
         Check(!paints.Repaint(0,150)&&paints.Repaint(5,150)&&paints.Data.credits==250&&!paints.Repaint(5,150),"Repaint charges once and refuses the current colour");
         paints=new AdventureStore(paints.path);Check(paints.Data.paintIndex==5&&paints.Data.credits==250,"Repaint persists across reload");
-        Check(PaintCatalog.All.Length==16&&PaintCatalog.All[0].color==new Color(.08f,.56f,.49f),"Paint catalogue keeps the original first colours for old saves");
+        Check(PaintCatalog.Standard==16&&PaintCatalog.All.Length==PaintCatalog.Standard+PaintCatalog.Rewards.Length&&PaintCatalog.All[0].color==new Color(.08f,.56f,.49f),"Paint catalogue keeps the original first colours for old saves");
+        // Keepsake set rewards (docs/60): the set's paint is locked until every keepsake in it is found.
+        Check(!paints.Repaint(PaintCatalog.Standard,0)&&PaintCatalog.LockedBy(paints.Data,PaintCatalog.Standard)=="Bayview postcards","A set reward paint is locked until its set is complete");
+        Check(PaintCatalog.RewardFor(Collectibles.Carving(3))==18&&PaintCatalog.RewardFor(Collectibles.Stamp(0))==17&&PaintCatalog.RewardFor("duke_beaten")==-1,"Each keepsake set has its own reward paint");
+        // Fingerposts read in miles, to the quarter (Wayfinding).
+        Check(Wayfinding.Miles(1609)=="1"&&Wayfinding.Miles(300)=="¼"&&Wayfinding.Miles(2414)=="1½"&&Wayfinding.Miles(1207)=="¾","Fingerpost distances read in quarter miles");
         // Scratch profile: kept only when a check fails (the exception above leaves it as evidence).
         Directory.Delete(folder,true);
         return checks;

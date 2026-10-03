@@ -56,6 +56,13 @@ public static class QuarryHillsChecks
         Check(RallySchool.AllGold(school)&&PartDiscovery.Met(school,RallySchool.Unlock),"Gold in all six lessons releases it");
         var tyres=EquipmentCatalog.Get("tyres_c_gravel");
         Check(tyres.dirt>EquipmentCatalog.All.parts.Where(p=>p.slot=="tyres"&&p.tier=="C"&&p.id!=tyres.id).Max(p=>p.dirt),"The gravel tyres have the best loose-ground grip in class C");
+        // The rallycross is loose: gravel tyres out-grip road tyres there, road tyres lose grip (docs/60).
+        var kit=EquipmentCatalog.TestLoadout("street");kit["tyres"]="tyres_stock";var stock=EquipmentCatalog.Stats(kit);kit["tyres"]="tyres_rally";var rally=EquipmentCatalog.Stats(kit);
+        Check(stock.Loose().roadGrip<stock.roadGrip&&rally.Loose().roadGrip>stock.Loose().roadGrip*1.8f,"On loose slate rally tyres grip about twice as hard as stock road tyres");
+        // Town routines (QuarryFestival): half past seven in the evening is choir night, the Caban's shut and the quarry quiet.
+        float hour=TimeOfDay.Hour;TimeOfDay.Hour=19.5f;bool evening=QuarryFestival.ChoirHours&&!QuarryFestival.CabanOpen&&!QuarryFestival.WorkingHours;
+        TimeOfDay.Hour=10;bool morning=!QuarryFestival.ChoirHours&&QuarryFestival.CabanOpen&&QuarryFestival.WorkingHours;TimeOfDay.Hour=hour;
+        Check(evening&&morning,"Quarry Hills keeps its hours: choir in the evening, Caban and blasting by day");
         return checks;
     }
 }

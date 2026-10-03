@@ -89,27 +89,41 @@ namespace LittleRoad
             mainlandGround.SetColor("_RockColor",new Color(.64f,.60f,.53f));mainlandGround.SetFloat("_RockDesat",.4f);mainlandGround.SetFloat("_MeadowBias",.17f);
             const int size=64;int built=0,triangles=0;
             var quarryGround=QuarryHills.Enabled?QuarryGround():null;
+            // Load time (docs/60): the chunks' geometry is worked out on every core at once, then the meshes are made here, and
+            // their colliders are cooked in parallel too (Physics.BakeMesh) before they're assigned. The same meshes as before.
+            var clock=System.Diagnostics.Stopwatch.StartNew();
+            var specs=new List<(int ci,int cj,int i0,int j0,int i1,int j1,bool quarry)>();
             for(int cj=0;cj*size<ValleyField.NZ-1;cj++)for(int ci=0;ci*size<ValleyField.NX-1;ci++) {
                 int i0=ci*size,j0=cj*size,i1=Mathf.Min(i0+size,ValleyField.NX-1),j1=Mathf.Min(j0+size,ValleyField.NZ-1);
                 float cx0=ValleyField.X0+i0*ValleyField.Cell,cz1=ValleyField.Z0+j1*ValleyField.Cell;
                 if(cx0>=QuarryHills.SeamX-.1f&&cz1<-2000)continue; // south of the valley, east of Quarry Hills: neither region
                 float high=-999;for(int j=j0;j<=j1;j++)for(int i=i0;i<=i1;i++)high=Mathf.Max(high,ValleyField.Raw(i,j));
                 if(high<-22)continue;
-                bool quarry=quarryGround!=null&&cx0<QuarryHills.SeamX-.1f;
-                var go=new GameObject($"Mainland chunk {ci},{cj}");go.transform.SetParent(chunks);
+                specs.Add((ci,cj,i0,j0,i1,j1,quarryGround!=null&&cx0<QuarryHills.SeamX-.1f));
+            }
+            var data=new ChunkData[specs.Count*4];
+            System.Threading.Tasks.Parallel.For(0,data.Length,k=>{var s=specs[k/4];int l=k%4;data[k]=ChunkGeometry(s.i0,s.j0,s.i1,s.j1,l==3?1:l==0?1:l==1?2:4,l!=3);});
+            long geometryMs=clock.ElapsedMilliseconds;
+            var colliders=new List<(MeshCollider c,Mesh m)>();
+            for(int s=0;s<specs.Count;s++) {
+                var spec=specs[s];var go=new GameObject($"Mainland chunk {spec.ci},{spec.cj}");go.transform.SetParent(chunks);
                 var lods=new LOD[3];
                 for(int l=0;l<3;l++) {
-                    int step=l==0?1:l==1?2:4;
-                    var mesh=ChunkMesh(i0,j0,i1,j1,step,true);triangles+=l==0?mesh.triangles.Length/3:0;
+                    var mesh=data[s*4+l].ToMesh();triangles+=l==0?data[s*4+l].t.Length/3:0;
                     var part=new GameObject("LOD"+l,typeof(MeshFilter),typeof(MeshRenderer));part.transform.SetParent(go.transform);
-                    part.GetComponent<MeshFilter>().sharedMesh=mesh;var r=part.GetComponent<MeshRenderer>();r.sharedMaterial=quarry?quarryGround:mainlandGround;
+                    part.GetComponent<MeshFilter>().sharedMesh=mesh;var r=part.GetComponent<MeshRenderer>();r.sharedMaterial=spec.quarry?quarryGround:mainlandGround;
                     r.shadowCastingMode=l==2?ShadowCastingMode.Off:ShadowCastingMode.On;
                     lods[l]=new LOD(l==0?.26f:l==1?.085f:0,new Renderer[]{r});
                 }
                 go.AddComponent<LODGroup>().SetLODs(lods);
                 var collider=new GameObject("Hillcrest mainland collider",typeof(MeshCollider));collider.transform.SetParent(go.transform);
-                collider.GetComponent<MeshCollider>().sharedMesh=ChunkMesh(i0,j0,i1,j1,1,false);built++;
+                colliders.Add((collider.GetComponent<MeshCollider>(),data[s*4+3].ToMesh()));built++;
             }
+            long meshMs=clock.ElapsedMilliseconds;
+            var ids=colliders.ConvertAll(c=>c.m.GetEntityId()).ToArray();
+            System.Threading.Tasks.Parallel.For(0,ids.Length,k=>Physics.BakeMesh(ids[k],false));
+            foreach(var (c,m) in colliders)c.sharedMesh=m;
+            Debug.Log($"LITTLE_ROAD_MAINLAND_TIMING geometry={geometryMs}ms meshes={meshMs-geometryMs}ms colliders={clock.ElapsedMilliseconds-meshMs}ms");
             DistantMountains();
             Debug.Log($"LITTLE_ROAD_MAINLAND chunks={built} lod0Triangles={triangles}");
         }
@@ -127,7 +141,13 @@ namespace LittleRoad
         }
         // Grid patch [i0..i1]x[j0..j1] at `step`; skirts hide cracks between chunk LODs.
         // Triangles crossing the road envelope at the tunnel portals are left out.
-        static Mesh ChunkMesh(int i0,int j0,int i1,int j1,int step,bool skirts)
+        // A chunk's geometry, worked out off the main thread (ValleyField is built by then); ToMesh() runs on the main thread.
+        struct ChunkData
+        {
+            public Vector3[] v,n;public Vector2[] uv;public int[] t;
+            public Mesh ToMesh(){var mesh=new Mesh{name="Mainland patch",indexFormat=v.Length>65000?IndexFormat.UInt32:IndexFormat.UInt16};mesh.SetVertices(v);mesh.SetNormals(n);mesh.SetUVs(0,uv);mesh.SetTriangles(t,0);mesh.RecalculateBounds();return mesh;}
+        }
+        static ChunkData ChunkGeometry(int i0,int j0,int i1,int j1,int step,bool skirts)
         {
             var v=new List<Vector3>();var n=new List<Vector3>();var uv=new List<Vector2>();var t=new List<int>();
             int cols=(i1-i0)/step+1,rows=(j1-j0)/step+1;
@@ -151,8 +171,7 @@ namespace LittleRoad
                     t.AddRange(new[]{a,b,s+1,a,s+1,s,a,s+1,b,a,s,s+1});
                 }
             }
-            var mesh=new Mesh{name="Mainland patch",indexFormat=v.Count>65000?IndexFormat.UInt32:IndexFormat.UInt16};
-            mesh.SetVertices(v);mesh.SetNormals(n);mesh.SetUVs(0,uv);mesh.SetTriangles(t,0);mesh.RecalculateBounds();return mesh;
+            return new ChunkData{v=v.ToArray(),n=n.ToArray(),uv=uv.ToArray(),t=t.ToArray()};
         }
         static bool PortalHole(Vector3 a,Vector3 b,Vector3 c)
         {

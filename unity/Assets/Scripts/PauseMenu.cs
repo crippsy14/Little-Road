@@ -146,6 +146,9 @@ namespace LittleRoad
                 float pitch=Mathf.Min(195,1560f/count),cardW=pitch-25;
                 int found=Enumerable.Range(0,count).Count(i=>save.collected.Contains(id(i)));
                 Toy.Title(body,title+" title",$"{title}  {found}/{count}",40,new Vector2(1200,56),new Vector2(-180,y),colour,TextAnchor.MiddleLeft);
+                // The full set's reward (a paint, docs/60).
+                int paint=PaintCatalog.RewardFor(id(0));
+                if(paint>=0)Toy.Label(body,title+" reward",found==count?$"Full set: {PaintCatalog.All[paint].name} paint earned":$"Full set reward: {PaintCatalog.All[paint].name} paint",24,new Vector2(560,40),new Vector2(500,y),found==count?Toy.Hex(0x2e9e5b):Toy.Soft,TextAnchor.MiddleRight,true);
                 for(int i=0;i<count;i++) {
                     bool has=save.collected.Contains(id(i));float cx=-760+i*pitch;
                     var card=Toy.Card(body,title+" "+i,new Vector2(cardW,cardH),new Vector2(cx+cardW*.5f,y-40-cardH*.5f),has?colour:Toy.Silver,18,5,6);card.rectTransform.localRotation=Quaternion.Euler(0,0,(i%2==0?-2:2));

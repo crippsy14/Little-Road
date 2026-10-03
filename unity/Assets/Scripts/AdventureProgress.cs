@@ -138,7 +138,7 @@ namespace LittleRoad
         public bool ClaimTrial(string id,int prize)=>Change(p=>{if(p.collected.Contains(id)||prize<0)return false;p.collected.Add(id);p.credits+=prize;return true;});
         public bool Collect(string id)=>Change(p=>{if(p.collected.Contains(id))return false;p.collected.Add(id);p.credits+=50;return true;});
         // Paid repaint at Bayview Paints: charges once; the current colour or a short wallet is refused.
-        public bool Repaint(int index,int price)=>Change(p=>{if(index==p.paintIndex||index<0||index>=PaintCatalog.All.Length||price<0||p.credits<price)return false;p.credits-=price;p.paintIndex=index;return true;});
+        public bool Repaint(int index,int price)=>Change(p=>{if(index==p.paintIndex||index<0||index>=PaintCatalog.All.Length||price<0||p.credits<price||PaintCatalog.LockedBy(p,index)!=null)return false;p.credits-=price;p.paintIndex=index;return true;});
         // Body shop: buy a body once; switching bodies (garage bay) is free and changes looks only.
         public bool BuyBody(string id)=>Change(p=>{int price=CarBodies.Price(id);if(price<0||p.bodies.Contains(id)||p.credits<price)return false;p.credits-=price;p.bodies.Add(id);return true;});
         public bool SwitchBody(string id)=>Change(p=>{if(!p.bodies.Contains(id)||p.bodyId==id)return false;p.bodyId=id;return true;});

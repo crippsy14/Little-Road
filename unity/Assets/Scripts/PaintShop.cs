@@ -17,7 +17,19 @@ namespace LittleRoad
             new("Bay blue",new Color(.30f,.45f,.75f),150),new("Sunflower",new Color(.88f,.70f,.25f),150),
             new("Cherry red",Toy.Hex(0xd92b3a),150),new("Candy pink",Toy.Hex(0xff7ac8),150),new("Lilac",Toy.Hex(0xa98be8),150),new("Lime",Toy.Hex(0x9bd63a),150),
             new("Mint",Toy.Hex(0x5fd9b0),150),new("Sky",Toy.Hex(0x5ec8ff),150),new("Navy",Toy.Hex(0x22336e),150),new("Cream",Toy.Hex(0xf2e6c4),150),
-            new("Snow white",Toy.Hex(0xf4f6f8),200),new("Graphite",Toy.Hex(0x3a3f46),200),new("Tangerine",Toy.Hex(0xff9a1f),200),new("Racing green",Toy.Hex(0x1f6b3a),200)};
+            new("Snow white",Toy.Hex(0xf4f6f8),200),new("Graphite",Toy.Hex(0x3a3f46),200),new("Tangerine",Toy.Hex(0xff9a1f),200),new("Racing green",Toy.Hex(0x1f6b3a),200),
+            // Keepsake set rewards (docs/60): free once the album is full.
+            new("Seaglass",Toy.Hex(0x8fd3c8),0),new("Heather",Toy.Hex(0x8a5a9e),0),new("Quarry slate",Toy.Hex(0x51606e),0)};
+        // The shop's sixteen (traffic and residents pick from these); the rest are set rewards.
+        public const int Standard=16;
+        public static readonly (int paint,Func<string,bool> kind,int count,string set)[] Rewards={
+            (16,Collectibles.IsPostcard,Collectibles.Postcards,"Bayview postcards"),(17,Collectibles.IsStamp,Collectibles.Stamps,"Hillcrest stamps"),(18,Collectibles.IsCarving,Collectibles.Carvings,"Quarry Hills carvings")};
+        public static int Found(AdventureProgress p,Func<string,bool> kind){int n=0;if(p?.collected!=null)foreach(var c in p.collected)if(kind(c))n++;return n;}
+        // A set reward not yet earned (-1 when the paint is an ordinary one).
+        public static string LockedBy(AdventureProgress p,int index){foreach(var r in Rewards)if(r.paint==index&&Found(p,r.kind)<r.count)return r.set;return null;}
+        // The reward paint for the set a keepsake belongs to (-1 if none).
+        public static int RewardFor(string keepsake){foreach(var r in Rewards)if(r.kind(keepsake))return r.paint;return -1;}
+        public static (int paint,Func<string,bool> kind,int count,string set) Reward(int paint){foreach(var r in Rewards)if(r.paint==paint)return r;return default;}
         public static Color[] Colors(){var c=new Color[All.Length];for(int i=0;i<c.Length;i++)c[i]=All[i].color;return c;}
     }
 
@@ -27,6 +39,7 @@ namespace LittleRoad
     {
         Canvas canvas;AdventureStore store;PartPreviewStage stage;Action<int> painted;Action back;
         RawImage carImage;Text wallet,swatchName,price,status,hint;readonly List<Button> swatches=new();readonly List<ToyShape> rings=new();int focus=-1;
+        readonly Dictionary<int,(ToyShape blob,Text mark)> rewardSwatches=new();
         public bool IsOpen=>canvas!=null&&canvas.gameObject.activeSelf;
         public int LastCloseFrame {get;private set;}=-1;
         public void Open(AdventureStore inventory,Action<int> onPainted,Action onBack)
@@ -34,6 +47,7 @@ namespace LittleRoad
             store=inventory;painted=onPainted;back=onBack;if(canvas==null)Build();
             stage?.Dispose();stage=new PartPreviewStage(store.Data.bodyId,PaintCatalog.All[store.Data.paintIndex].color,Array.Empty<EquipmentCatalog.Part>(),Color.clear,lightScale:.5f); // true-to-swatch colour
             carImage.texture=stage.Car;status.text="";Toy.UseMenuCamera(canvas);canvas.gameObject.SetActive(true);
+            foreach(var pair in rewardSwatches){bool locked=PaintCatalog.LockedBy(store.Data,pair.Key)!=null;pair.Value.blob.SetFill(locked?Toy.Silver:PaintCatalog.All[pair.Key].color);pair.Value.mark.text=locked?"?":"";}
             Focus(store.Data.paintIndex);Toy.RefreshButtons(canvas.transform);StartCoroutine(FocusNextFrame());
         }
         IEnumerator FocusNextFrame(){yield return null;if(IsOpen)EventSystem.current.SetSelectedGameObject(swatches[store.Data.paintIndex].gameObject);}
@@ -52,9 +66,12 @@ namespace LittleRoad
             var board=Toy.Card(bg,"Swatch board",new Vector2(820,760),new Vector2(-450,-20),Toy.Cream,40,7,10);
             Toy.Title(board.transform,"Board heading","PICK A COLOUR",40,new Vector2(700,60),new Vector2(0,330),Toy.Pink,TextAnchor.MiddleCenter);
             for(int i=0;i<PaintCatalog.All.Length;i++) {
-                int index=i;var p=PaintCatalog.All[i];var pos=new Vector2(-285+(i%4)*190,215-(i/4)*150);
-                var ring=Toy.Card(board.transform,"Swatch ring "+i,new Vector2(128,128),pos,Toy.White,64,6,6);ring.raycastTarget=true;rings.Add(ring);
-                var blob=Toy.Card(ring.transform,"Swatch paint",new Vector2(96,96),Vector2.zero,p.color,48,0,0);
+                // (Four rows of the shop's colours, then the set rewards, centred on a fifth row.)
+                int index=i;var p=PaintCatalog.All[i];bool reward=i>=PaintCatalog.Standard;int rewards=PaintCatalog.All.Length-PaintCatalog.Standard;
+                var pos=new Vector2(-285+(i%4)*190+(reward?(4-rewards)*95:0),230-(i/4)*125);
+                var ring=Toy.Card(board.transform,"Swatch ring "+i,new Vector2(112,112),pos,Toy.White,56,6,6);ring.raycastTarget=true;rings.Add(ring);
+                var blob=Toy.Card(ring.transform,"Swatch paint",new Vector2(84,84),Vector2.zero,p.color,42,0,0);
+                if(reward)rewardSwatches[i]=(blob,Toy.Label(blob.transform,"Locked mark","?",44,new Vector2(84,84),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter,true));
                 var button=ring.gameObject.AddComponent<Button>();button.targetGraphic=ring;button.transition=Selectable.Transition.None;button.name="SWATCH "+p.name;
                 button.onClick.AddListener(()=>Buy(index));
                 var trigger=ring.gameObject.AddComponent<EventTrigger>();
@@ -63,9 +80,9 @@ namespace LittleRoad
                 swatches.Add(button);
             }
             for(int i=0;i<swatches.Count;i++) {
-                int r=i/4,c=i%4;
+                int r=i/4,c=i%4,n=swatches.Count;
                 swatches[i].navigation=new Navigation{mode=Navigation.Mode.Explicit,
-                    selectOnLeft=c>0?swatches[i-1]:null,selectOnRight=c<3?swatches[i+1]:null,selectOnUp=r>0?swatches[i-4]:null,selectOnDown=r<3?swatches[i+4]:null};
+                    selectOnLeft=c>0?swatches[i-1]:null,selectOnRight=c<3&&i+1<n?swatches[i+1]:null,selectOnUp=r>0?swatches[i-4]:null,selectOnDown=i+4<n?swatches[i+4]:r<(n-1)/4?swatches[n-1]:null};
             }
             // Preview and info
             var showcase=Toy.Card(bg,"Showroom",new Vector2(900,560),new Vector2(470,60),Toy.White,40,7,10);
@@ -82,14 +99,17 @@ namespace LittleRoad
         void Focus(int index)
         {
             if(stage==null||index==focus)return;focus=index;var p=PaintCatalog.All[index];bool owned=index==store.Data.paintIndex;
-            stage.Repaint(p.color);swatchName.text=p.name.ToUpperInvariant();
-            price.text=owned?"ON YOUR CAR":p.price+" credits";wallet.text=store.Data.credits+" CREDITS";
+            stage.Repaint(p.color);swatchName.text=p.name.ToUpperInvariant();string set=PaintCatalog.LockedBy(store.Data,index);
+            price.text=owned?"ON YOUR CAR":set!=null?"FULL SET":index>=PaintCatalog.Standard?"SET REWARD":p.price+" credits";wallet.text=store.Data.credits+" CREDITS";
+            if(set!=null){var r=PaintCatalog.Reward(index);status.text=$"Find all {r.count} {set} to earn {p.name} ({PaintCatalog.Found(store.Data,r.kind)} so far).";}
+            else if(index>=PaintCatalog.Standard)status.text=$"Yours for completing the {PaintCatalog.Reward(index).set}. Free!";
             for(int i=0;i<rings.Count;i++)rings[i].SetBorder(i==index?Toy.Orange:i==store.Data.paintIndex?Toy.Mint:Toy.Navy);
         }
         void Buy(int index)
         {
             var p=PaintCatalog.All[index];
             if(index==store.Data.paintIndex){status.text="That's already your colour!";return;}
+            if(PaintCatalog.LockedBy(store.Data,index) is string set){status.text=$"Complete the {set} to earn {p.name}.";return;}
             if(store.Data.credits<p.price){status.text="Not enough credits for "+p.name+". Every race pays out!";return;}
             if(!store.Repaint(index,p.price)){status.text="Could not save that change.";return;}
             painted?.Invoke(index);focus=-1;Focus(index);status.text="Fresh paint! Your car is now "+p.name+".";

@@ -21,7 +21,7 @@ namespace LittleRoad
         // stopped; the controls hint for the first 15 s and after 3 s stopped.
         string lastGoal;float goalUntil,controlsUntil=-1,stoppedSince=-1;
         // Fog of war (ExploredMap): reveal around the car a few times a second, save now and then.
-        float nextReveal,nextExploreSave;readonly HashSet<string> viewpointsSeen=new();
+        float nextReveal,nextExploreSave;readonly HashSet<string> viewpointsSeen=new();const float RimReveal=1500;
         string nearest;float interactionReadyTime;ValleyLife.Folk nearFolk;NpcChatter nearChat;ZipLine.Station nearZip;ZipLine nearLine;bool riding;
         // Interaction prompts: a badge over each resident (discover), the bottom card when in range (act).
         readonly Dictionary<string,TalkBadge> badges=new();TalkBadge roamBadge;GameObject roamOwner;string objectiveResident;
@@ -56,14 +56,15 @@ namespace LittleRoad
             // Quarry Hills (--quarry-hills): Gwen at the rally school.
             foreach(var id in new[]{"rallyschool","qgarage","qparts","qbody","caban","slatequay"})if(QuarryHillsTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
             residents["post"]=world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
-            CreatePlaces();
+            CreatePlaces();BuildWayfinding();
             if(AdventureSession.MaxBuildTest&&!AdventureSession.TestPlaced){AdventureSession.TestPlaced=true;FaceDuke();}
             var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));
             if(AdventureSession.ReturnSpot is Vector3 back)car.transform.SetPositionAndRotation(back+Vector3.up*.15f,Quaternion.Euler(0,AdventureSession.ReturnYaw,0));
             // Otherwise carry on from where you were (Richard, 3 Oct): the saved spot, if it's still clear ground in this world.
             else if(!Testing&&Store.Data.spot!=null&&Store.Data.spot.Length==4){var s=Store.Data.spot;var at=new Vector3(s[0],s[1],s[2]);
                 if(ClearSpot(ref at)){car.transform.SetPositionAndRotation(at+Vector3.up*.2f,Quaternion.Euler(0,s[3],0));resumed=true;}else Debug.Log("LITTLE_ROAD_RESUME refused "+at);}
-            player=car.AddComponent<RoadCar>();player.Setup(world,0,EquipmentCatalog.Stats(Store.Data.Loadout(),Store.Data.Tune()),false,1709,"owned equipment");world.cars.Add(player);world.running=true;FrameProbe.Attach(player.transform);CameraShake.Reset();CameraShake.Watch(player);
+            player=car.AddComponent<RoadCar>();player.Setup(world,0,EquipmentCatalog.Stats(Store.Data.Loadout(),Store.Data.Tune()),false,1709,"owned equipment");world.cars.Add(player);world.running=true;FrameProbe.Attach(player.transform);Grazer.Car=player.transform;
+            if(QuarryHills.Enabled&&QuarryHillsTown.Spots.Count>0)QuarryFestival.Build(transform,Store.Data,player);CameraShake.Reset();CameraShake.Watch(player);
             playerHorn=Horn.Attach(car,Horn.PitchFor(Store.Data.bodyId),player:true);
             player.Bumped+=(other,speed)=>{if(speed>1f&&!ui.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen)other.GetComponentInParent<NpcChatter>()?.TrySay(bubbles);};
             if(RaceTrial.Has("--vertical-audit"))gameObject.AddComponent<VerticalMotionAudit>().Setup(world);
@@ -140,10 +141,136 @@ namespace LittleRoad
             // check the lap is timed and the prize claimed (the result goes to the log, then the game quits).
             if(RaceTrial.Has("--sprint-test")&&residents.ContainsKey("rallyschool")){StartCoroutine(SprintTest());yield break;}
             if(RaceTrial.Has("--carving-test")&&QuarryHillsTown.Spots.Count>0){StartCoroutine(CarvingTest());yield break;}
+            if(RaceTrial.Has("--wayfinding-test")){reviewing=true;StartCoroutine(WayfindingTest());yield break;}
+            if(RaceTrial.Has("--festival-test")&&QuarryHillsTown.Spots.Count>0){reviewing=true;StartCoroutine(FestivalTest());yield break;}
             if(RaceTrial.Has("--blondin-test")){StartCoroutine(BlondinTest());yield break;}
             if(RaceTrial.Has("--climb-test")){StartCoroutine(ClimbTest());yield break;}
             if(RaceTrial.Has("--lesson-test")&&residents.ContainsKey("rallyschool")){StartCoroutine(LessonTest());yield break;}
             yield return null;if(AdventureSession.Smoke)StartCoroutine(Smoke());
+        }
+        // ---------------------------------------------------------------- notice boards, pins and fingerposts (Wayfinding, docs/60)
+        Wayfinding.Board nearBoard;Vector3? pin;string pinLabel;
+        void BuildWayfinding()
+        {
+            Wayfinding.Clear();var holder=new GameObject("Wayfinding").transform;
+            // (Bayview's loop isn't tagged as road: measured from its centreline, 8 m to the edge.)
+            Wayfinding.PlaceBoard(holder,"Bayview",residents["cafe"],p=>{float d=world.track.Nearest(new Vector3(p.x,0,p.z),out _);var on=world.track.At(d);var way=new Vector3(on.x-p.x,0,on.z-p.z);
+                return (way.magnitude-8,way.normalized);});
+            if(HillcrestTown.Spots.Count==0)return;
+            Wayfinding.PlaceBoard(holder,"Hillcrest",HillcrestRoute.Square);
+            var places=new List<(string,Vector3)>{("Bayview",HillcrestRoute.Mainline.line[0]),("Hillcrest",HillcrestRoute.Square),("Hillcrest Castle",HillcrestRoute.CastleCourt),("Raceway",HillcrestRoute.Paddock),
+                ("Silver Falls",HillcrestRoute.Lookout),("Golden Acre Farm",HillcrestRoute.Farm(0,0)),("Valley Viewpoint",HillcrestRoute.Vista)};
+            if(residents.TryGetValue("station",out var station))places.Add(("Station",station));
+            if(QuarryHills.Enabled) {
+                var square=new Vector3(QuarryHills.Square.x,QuarryHills.SquareY,QuarryHills.Square.y);Wayfinding.PlaceBoard(holder,"Quarry Hills",square);places.Add(("Quarry Hills",square));
+                if(residents.TryGetValue("slatequay",out var quay))places.Add(("Slate Quay",quay));
+                if(residents.TryGetValue("rallyschool",out var school))places.Add(("Rally School",school));
+                places.Add(("Kettle Falls",HillcrestRoute.Find(QuarryHills.KettleRoadName).line[^1]));
+            }
+            Wayfinding.Fingerposts(holder,CoastalLandscape.Network,places);
+        }
+        static Wayfinding.Board NearestBoard(Vector3 p){Wayfinding.Board best=null;float d=float.MaxValue;foreach(var b in Wayfinding.Boards){float e=Vector3.Distance(p,b.at);if(e<d){d=e;best=b;}}return best;}
+        // What's on in the board's town: each line pins its place (a null label can't be pinned).
+        List<(string text,Vector3 at,string label)> BoardEntries(Wayfinding.Board b)
+        {
+            var e=new List<(string text,Vector3 at,string label)>();var d=Store.Data;
+            string Podium(string id)=>d.podiums!=null&&d.podiums.Contains(id)?"podium won":"no podium yet";
+            void Resident(string id,string text,string label){if(residents.TryGetValue(id,out var at))e.Add((text,at,label));}
+            void Keepsakes(Func<string,bool> kind,int total,string plural,string one)
+            {
+                int got=0;foreach(string c in d.collected)if(kind(c))got++;
+                string best=null;float bd=float.MaxValue;foreach(var f in finds)if(kind(f.Key)&&f.Value!=null){float dd=Vector3.Distance(f.Value.transform.position,b.at);if(dd<bd){bd=dd;best=f.Key;}}
+                if(best==null){e.Add(($"{plural}: all {total} found",b.at,null));return;}
+                string hint=MapRegions.Keepsakes.TryGetValue(best,out var k)?k.place:b.town;
+                e.Add(($"{plural}: {got} of {total} · someone saw one near {hint}",finds[best].transform.position,$"a {one} near {hint}"));
+            }
+            void Traps()
+            {
+                int n=0,three=0;SpeedTraps.Trap next=null;float nd=float.MaxValue;
+                foreach(var t in SpeedTraps.All){if(NearestBoard(t.at)!=b)continue;n++;if((SpeedTraps.Record(d,t.id)?.stars??0)>=3)three++;else{float dd=Vector3.Distance(t.at,b.at);if(dd<nd){nd=dd;next=t;}}}
+                if(n>0)e.Add(next==null?($"Speed traps: all {n} at three stars",b.at,null):($"Speed traps: {three} of {n} at three stars · next: {next.name}",next.at,$"the {next.name} speed trap"));
+            }
+            void Zip(){foreach(var line in ZipLine.All)if(NearestBoard(line.bottom.bay)==b)e.Add(($"{line.title} · ride it from either station",line.bottom.bay,line.title));}
+            if(b.town=="Bayview") {
+                if(d.questStage<3)Resident(d.questStage==1?"post":"garage",d.questStage==1?"Mara's parcel · deliver it to Pip at the lighthouse":"Mara at the Pit Stop has a job for you",d.questStage==1?"Pip at the lighthouse":"Mara at the Pit Stop");
+                Resident("cafe",$"Coast Run race with Rowan · {Podium("bayview")}","Rowan at the café");
+                Resident("bayhalt","Bayview Halt · trains to the valley","Bayview Halt");
+                Resident("paint","Dot's paints · a new colour for your car","Dot's paints");
+                Keepsakes(Collectibles.IsPostcard,Collectibles.Postcards,"Postcards","postcard");
+            }
+            else if(b.town=="Hillcrest") {
+                Resident("raceway",$"Valley Cup at the raceway with Vito · {Podium("hillcrest")}","Vito at the raceway");
+                Resident("castle","Castle Climb with the Duke · "+(d.collected.Contains(Collectibles.CastleTrial)?"par beaten":$"par {NormalPar:0} s"),"the Duke at the castle");
+                Resident("station","Beat the Train · ask Stella at the station","Stella at the station");
+                Resident("vista","Wren's photo requests at the viewpoint","Wren at the viewpoint");
+                Keepsakes(Collectibles.IsStamp,Collectibles.Stamps,"Hillcrest stamps","stamp");
+            }
+            else {
+                if(QuarryFestival.Festival)e.Add(("Rally Day! The parade's on the High Street",QuarryFestival.ParadeAt,"the Rally Day parade"));
+                if(QuarryFestival.ChoirHours&&QuarryHillsTown.Spots.TryGetValue("chapel",out var chapel))e.Add(("Choir night at Capel Bethel · all welcome",chapel.at,"Capel Bethel"));
+                Resident("rallyschool",$"Quarry Hills Rallycross with Gwen · {Podium("quarry")}","Gwen at the rally school");
+                int golds=0;for(int i=0;i<RallySchool.Lessons.Length;i++){var r=RallySchool.Record(d,i);if(r!=null&&r.stars==3)golds++;}
+                Resident("rallyschool",$"Rally lessons · gold in {golds} of {RallySchool.Lessons.Length}","the rally school");
+                Resident("rallyschool","Quarry Sprint · "+(d.collected.Contains(Collectibles.QuarrySprint)?"par beaten":$"par {SprintPar:0} s"),"the Quarry Sprint");
+                var climb=d.traps?.Find(x=>x.id==GalleryClimb.Id);
+                e.Add(("Gallery Climb · "+(climb!=null?$"best {climb.best:0.0} s":"not tried yet")+$" · par {GalleryClimb.Par:0} s",GalleryClimb.Start,"the Gallery Climb start"));
+                Resident("slatequay","Slate Quay · trains to the valley","Slate Quay");
+                Keepsakes(Collectibles.IsCarving,Collectibles.Carvings,"Slate carvings","slate carving");
+            }
+            Traps();Zip();return e;
+        }
+        void ReadBoard(Wayfinding.Board b)
+        {
+            var choices=new List<AdventureUI.Choice>();
+            foreach(var (text,at,label) in BoardEntries(b)){var where=at;var name=label;choices.Add(new(text,()=>{pin=where;pinLabel=name;Close();Notify("Pinned on your map: "+name);},label!=null));}
+            if(pin!=null)choices.Add(new("Clear the pin · "+pinLabel,()=>{pin=null;Close();}));
+            choices.Add(new("Back to the road",Close));
+            Show($"Notice board / {b.town}",$"What's on in {b.town}. Pick one to pin it on your map: the objective line follows it, and the pin clears when you get there.",choices);
+        }
+        // Test (--quarry-hills --festival --festival-test): Rally Day in the square and on the High Street by day, then choir night at
+        // the chapel at half past seven. Pass: flags, the banner's parade and the choir all there, the parade moving.
+        IEnumerator FestivalTest()
+        {
+            yield return new WaitForSeconds(1.5f);var sq=new Vector3(QuarryHills.Square.x,QuarryHills.SquareY,QuarryHills.Square.y);
+            Place(sq+new Vector3(30,0,-30));
+            var parade=new List<Transform>();foreach(var c in RoadCruiser.All)if(c.name.StartsWith("Rally Day parade"))parade.Add(c.transform);
+            var before=parade.ConvertAll(t=>t.position);
+            cameraView.transform.position=sq+new Vector3(46,34,-46);cameraView.transform.LookAt(sq+Vector3.up*2);WorldLook.Cut(cameraView);yield return new WaitForSeconds(1.2f);Capture("festival-square");
+            var high=HillcrestRoute.Find(QuarryHills.HighStreetName);var at=high.At(Mathf.Min(45,high.Length*.3f));
+            cameraView.transform.position=at-high.Right(Mathf.Min(45,high.Length*.3f))*12+Vector3.up*5+(at-sq).normalized*-14;cameraView.transform.LookAt(at+Vector3.up*3);WorldLook.Cut(cameraView);yield return new WaitForSeconds(2f);Capture("festival-banner");
+            float moved=0;for(int i=0;i<parade.Count;i++)moved=Mathf.Max(moved,Vector3.Distance(parade[i].position,before[i]));
+            TimeOfDay.Hour=19.5f;TimeOfDay.Apply();yield return new WaitForSeconds(.5f);
+            int choir=0;foreach(var c in NpcChatter.All)if(c!=null&&c.gameObject.activeInHierarchy&&c.title=="Capel Bethel choir")choir++;
+            if(QuarryHillsTown.Spots.TryGetValue("chapel",out var chapel)){var face=(sq-chapel.at);face.y=0;cameraView.transform.position=sq+face.normalized*-4+Vector3.up*7;cameraView.transform.LookAt(chapel.at+Vector3.up*3);WorldLook.Cut(cameraView);}
+            yield return new WaitForSeconds(1f);Capture("festival-choir");
+            bool pass=QuarryFestival.Flags>=6&&QuarryFestival.Parade==6&&moved>5&&choir>=4;
+            Debug.Log($"LITTLE_ROAD_FESTIVAL_TEST flags={QuarryFestival.Flags} parade={QuarryFestival.Parade} moved={moved:0.0}m choir={choir} pass={pass}");
+            Application.Quit(pass?0:1);
+        }
+        // Test (--wayfinding-test, with or without --quarry-hills): read every board (pin the first line, check the objective
+        // follows it), and picture each board and fingerpost. Pass: a board in every town, fingerposts at the junctions.
+        IEnumerator WayfindingTest()
+        {
+            yield return new WaitForSeconds(1);int pinned=0;int expected=1+(HillcrestTown.Spots.Count>0?1:0)+(QuarryHills.Enabled?1:0);
+            foreach(var b in Wayfinding.Boards) {
+                player.body.rotation=Quaternion.LookRotation(-b.front);Place(b.at+b.front*4.5f);yield return new WaitForSeconds(.5f);
+                ReadBoard(b);yield return new WaitForSeconds(.3f);Capture("board-"+b.town.Replace(' ','-').ToLowerInvariant()+"-menu");
+                var entries=BoardEntries(b);int first=entries.FindIndex(x=>x.label!=null);
+                if(first>=0&&ui.InvokeChoice(entries[first].text)&&GoalText(true).StartsWith("Pinned: "+entries[first].label))pinned++;
+                Debug.Log($"LITTLE_ROAD_BOARD {b.town} at=({b.at.x:0},{b.at.y:0.0},{b.at.z:0}) entries={entries.Count} goal=\"{GoalText(true)}\" : "+string.Join(" | ",entries.ConvertAll(x=>x.text)));
+                Close();pin=null;
+                cameraView.transform.position=b.at+b.front*5.5f+Vector3.Cross(Vector3.up,b.front)*1.5f+Vector3.up*1.9f;cameraView.transform.LookAt(b.at+Vector3.up*1.6f);WorldLook.Cut(cameraView);
+                yield return new WaitForSeconds(.4f);Capture("board-"+b.town.Replace(' ','-').ToLowerInvariant());
+            }
+            int shot=0;
+            foreach(var (at,text) in Wayfinding.Posts) {
+                Place(at+new Vector3(9,0,9));yield return new WaitForSeconds(.3f);
+                var look=at+Vector3.up*2.6f;var from=at+new Vector3(4.5f,2.4f,3.5f);
+                cameraView.transform.position=from;cameraView.transform.LookAt(look);WorldLook.Cut(cameraView);yield return new WaitForSeconds(.4f);Capture($"fingerpost-{shot++}");
+            }
+            bool pass=Wayfinding.Boards.Count==expected&&pinned==expected&&(HillcrestTown.Spots.Count==0||Wayfinding.Posts.Count>=3);
+            Debug.Log($"LITTLE_ROAD_WAYFINDING_TEST boards={Wayfinding.Boards.Count}/{expected} pinned={pinned} fingerposts={Wayfinding.Posts.Count} pass={pass}");
+            Application.Quit(pass?0:1);
         }
         // Test (--quarry-hills --carving-test): every carving is clear of buildings and props, and collecting all twelve pays.
         IEnumerator CarvingTest()
@@ -471,9 +598,13 @@ namespace LittleRoad
                 if(Vector3.Distance(player.body.position,line.top.bay)<6)nearZip=line.top;else if(Vector3.Distance(player.body.position,line.bottom.bay)<6)nearZip=line.bottom;
                 if(nearZip!=null){nearLine=line;nearFolk=null;nearChat=null;break;}
             }
+            // A town's notice board: stopped beside it.
+            nearBoard=null;
+            if(inRange==null&&stopped&&nearZip==null&&climbStart<0&&sprintStart<0&&galleryStart<0&&(school==null||!school.Active))
+                foreach(var b in Wayfinding.Boards)if(Vector3.Distance(player.body.position,b.at)<7.5f){nearBoard=b;nearFolk=null;nearChat=null;break;}
             // Cross / A (and E) talks while someone (or the zipline) is in reach; then it doesn't also shift up (Controls).
-            Controls.InteractionReady=Time.unscaledTime>interactionReadyTime&&(nearest!=null||nearZip!=null||nearFolk!=null||nearChat!=null);
-            if(Time.unscaledTime>interactionReadyTime&&(k?.eKey.wasPressedThisFrame==true||pad?.buttonSouth.wasPressedThisFrame==true)){if(nearest!=null)Interact(nearest);else if(nearZip!=null)StartCoroutine(RideZip(nearLine,nearZip==nearLine.top));else if(nearFolk!=null)TalkFolk(nearFolk);else if(nearChat!=null)TalkChatter(nearChat);}
+            Controls.InteractionReady=Time.unscaledTime>interactionReadyTime&&(nearest!=null||nearZip!=null||nearBoard!=null||nearFolk!=null||nearChat!=null);
+            if(Time.unscaledTime>interactionReadyTime&&(k?.eKey.wasPressedThisFrame==true||pad?.buttonSouth.wasPressedThisFrame==true)){if(nearest!=null)Interact(nearest);else if(nearZip!=null)StartCoroutine(RideZip(nearLine,nearZip==nearLine.top));else if(nearBoard!=null)ReadBoard(nearBoard);else if(nearFolk!=null)TalkFolk(nearFolk);else if(nearChat!=null)TalkChatter(nearChat);}
             if(Controls.Pressed(Controls.Act.Recover))player.TryRecover();
             // The horn (H / L3, docs/51): folk nearby answer, some traffic beeps back, the train whistles.
             bool honk=Controls.Held(Controls.Act.Horn);playerHorn?.Hold(honk&&!player.controlsBlocked);
@@ -488,11 +619,14 @@ namespace LittleRoad
                     if(Store.Collect(pair.Key)){Destroy(pair.Value);finds.Remove(pair.Key);Confetti.Burst(at);
                         Func<string,bool> kind=Collectibles.IsCarving(pair.Key)?Collectibles.IsCarving:Collectibles.IsStamp(pair.Key)?Collectibles.IsStamp:Collectibles.IsPostcard;
                         int got=0;foreach(string c in Store.Data.collected)if(kind(c))got++;
+                        int reward=PaintCatalog.RewardFor(pair.Key);
+                        if(reward>=0&&got==PaintCatalog.Reward(reward).count)Notify($"Full set! {PaintCatalog.All[reward].name} paint is yours, free at any paint counter · +50 credits");else
                         Notify(Collectibles.IsCarving(pair.Key)?$"Slate carving {got} of {Collectibles.Carvings} found · +50 credits":Collectibles.IsStamp(pair.Key)?$"Hillcrest stamp {got} of {Collectibles.Stamps} found · +50 credits":$"Bayview postcard {got} of {Collectibles.Postcards} found · +50 credits");}});
             }
             // Countdowns hold the car still but let it rev (Richard, 1 Oct).
             player.holdStill=climbStart>=0&&Time.time<climbStart||trainRace!=null&&trainRace.Holding||school!=null&&school.Holding;
 
+            if(pin is Vector3 pinned&&Vector3.Distance(player.body.position,pinned)<20){pin=null;Notify("You're there: "+pinLabel+".");}
             UpdateClimb();UpdateSprint();UpdateGalleryClimb();UpdateVisit();RefreshHUD();SaveSpot();
         }
         // Runs every frame (from LateUpdate), reviews included: they capture the prompt and badges.
@@ -508,6 +642,7 @@ namespace LittleRoad
             string title=null,role=null;Color colour=Toy.Sun;GameObject roam=null;
             if(inRange!=null){var who=People[inRange];title=(stopped?"Talk to ":"Slow down to talk to ")+who.speaker;role=RoleOf(who.label);colour=who.bubble;}
             else if(nearZip!=null&&nearLine!=null&&!riding){title=nearZip.ride;role=nearLine.title;colour=Toy.Sun;}
+            else if(nearBoard!=null){title="Read the notice board";role=nearBoard.town+" notices";colour=Toy.Sun;}
             else if(nearFolk!=null){title="Talk to "+nearFolk.name;role=nearFolk.title;roam=nearFolk.car.gameObject;colour=Toy.Sky;}
             else if(nearChat!=null){title="Talk to "+nearChat.speaker;role=string.IsNullOrEmpty(nearChat.title)?"Local":nearChat.title;roam=nearChat.gameObject;colour=nearChat.colour;}
             ui.Interaction(title,role,colour,stopped);
@@ -534,6 +669,7 @@ namespace LittleRoad
             if(galleryStart>=0)return $"Gallery Climb · {Time.time-galleryStart+galleryPenalty:0.0} s · par {GalleryClimb.Par:0} s · checkpoint {galleryCheckpoint+1}/{GalleryClimb.Checkpoints.Count-1}"+(distance?$"  ·  {Mathf.Max(0,GalleryClimb.Finish.y-player.transform.position.y):0} m to climb":"");
             if(sprintStart>=0)return Time.time<sprintStart?"Quarry Sprint · get ready!":$"Quarry Sprint · {Time.time-sprintStart:0.0} s · par {SprintPar:0} s";
             if(climbStart>=0)return (Time.time<climbStart?"Castle Climb · get ready!":$"Castle Climb · {Time.time-climbStart:0.0} s · par {ClimbPar:0} s · to the castle")+(distance?$"  ·  {Vector3.Distance(player.transform.position,HillcrestRoute.CastleCourt):0} m":"");
+            if(pin is Vector3 pinned)return "Pinned: "+pinLabel+(distance?$"  ·  {Vector3.Distance(player.transform.position,pinned):0} m":"");
             return objectives[Store.Data.questStage]+(distance?$"  ·  {Vector3.Distance(player.transform.position,residents[target]):0} m":"");
         }
         void RefreshHUD()
@@ -571,6 +707,7 @@ namespace LittleRoad
             foreach(var trap in SpeedTraps.All)if(ExploredMap.Seen(trap.at))mapMarks.Add(new(trap.at,(SpeedTraps.Record(Store.Data,trap.id)?.stars??0)>=3?Toy.Mint:Toy.Orange,Minimap.Shape.Trap));
             if(trainRace!=null&&trainRace.Active)mapMarks.Add(new(trainRace.Goal,Toy.Red,Minimap.Shape.Objective));
             else if(climbStart>=0)mapMarks.Add(new(HillcrestRoute.CastleCourt,Toy.Sun,Minimap.Shape.Objective));
+            else if(pin is Vector3 pinned)mapMarks.Add(new(pinned,Toy.Sky,Minimap.Shape.Objective));
             else if(objectiveResident!=null&&residents.TryGetValue(objectiveResident,out var goal))mapMarks.Add(new(goal,Toy.Sun,Minimap.Shape.Objective));
             return mapMarks;
         }
@@ -595,6 +732,8 @@ namespace LittleRoad
             if(now>nextReveal) {
                 nextReveal=now+.25f;ExploredMap.Reveal(player.transform.position,ExploredMap.DriveRadius);
                 foreach(var (at,radius) in Viewpoints)if(Vector3.Distance(player.transform.position,at)<30&&viewpointsSeen.Add(at.ToString()))ExploredMap.Reveal(at,radius);
+                // The cairn on the quarry rim (the top of the Gallery Climb) shows you all of Quarry Hills (docs/60).
+                if(QuarryHills.Enabled&&GalleryClimb.Checkpoints.Count>0&&Vector3.Distance(player.transform.position,GalleryClimb.Finish)<30&&viewpointsSeen.Add("rim")){ExploredMap.Reveal(GalleryClimb.Finish,RimReveal);Notify("The view from the rim: all of Quarry Hills is on your map");}
             }
             ExploredMap.Flush();
             if(ExploredMap.Dirty&&now>nextExploreSave){nextExploreSave=now+20;SaveExplored();}
@@ -749,6 +888,8 @@ namespace LittleRoad
         void HornHeard()
         {
             var at=player.body.position;int answered=0;
+            // Sheep within earshot scatter (docs/60).
+            foreach(var g in Grazer.All)if(g!=null&&(g.transform.position-at).sqrMagnitude<35*35)g.Startle(at);
             foreach(var c in NpcChatter.All.OrderBy(c=>c==null?1e9f:(c.transform.position-at).sqrMagnitude).ToArray()) {
                 if(c==null||c.transform==player.transform)continue;float d=Vector3.Distance(c.transform.position,at);if(d>26||answered>=2)break;
                 var train=ValleyTrain.Instance;if(train!=null&&c.transform.IsChildOf(train.transform))continue;
@@ -962,7 +1103,7 @@ namespace LittleRoad
             string done=Store.Data.collected.Contains(Collectibles.QuarrySprint)?" You've beaten the Sprint's par already. Lovely.":$" Beat {SprintPar:0} seconds round the Sprint and I'll pay {SprintPrize} credits.";
             int golds=0;for(int i=0;i<RallySchool.Lessons.Length;i++){var r=RallySchool.Record(Store.Data,i);if(r!=null&&r.stars==3)golds++;}
             string schoolLine=RallySchool.AllGold(Store.Data)?" Gold in every lesson: Bethan at Grit & Gravel has the rally kit for you.":$" Six lessons, bronze to gold: get gold in all six and Bethan sells you the proper rally kit ({golds} of 6 so far).";
-            Show("Gwen \"Granite\" Price / Rally School","Croeso! Gravel's not tarmac, cariad: brake in a straight line, turn in early, and let her slide."+schoolLine+done,
+            Show("Gwen \"Granite\" Price / Rally School",(QuarryFestival.Festival?"It's Rally Day in town, and it's for you, cariad: there's a parade on the High Street! ":"")+"Croeso! Gravel's not tarmac, cariad: brake in a straight line, turn in early, and let her slide. And tyres! On the rallycross your road tyres grip about half as well as gravel ones."+schoolLine+done,
                 new(){new("Race the Quarry Hills Rallycross · C",()=>PreviewRace("quarry",Gwen)),new("Rally lessons",GwenLessons),new($"Quarry Sprint · time trial (par {SprintPar:0} s)",StartSprint),new("Back to the road",Close)});
         }
         void GwenLessons()
@@ -998,7 +1139,7 @@ namespace LittleRoad
             new(){new("Buy parts",()=>OpenParts("quarry",PartsBrowser.Mode.Shop,Bethan)),new("Back to the road",Close)});
         void Nia()=>Show("Nia / Pit Stop Body Shop","New car, same you! Bodies are looks only: your parts decide the pace. Huw swaps them in the bay whenever you like. Fresh paint too. Slate grey's popular round here, funnily enough.",
             new(){new("Browse new bodies",()=>OpenBodyShop(Nia,"Huw")),new("Fresh paint",()=>OpenPaintShop(Nia)),new("Back to the road",Close)});
-        void Megan()=>Show("Megan / Caban","The Caban's where the quarrymen ate, and argued, and sang. Still do, mostly the arguing. The town's betting on motorsport now the quarry's winding down: rally school, the Sprint, and there's talk of a proper stage up through the tips and the moor.",
+        void Megan()=>Show("Megan / Caban",!QuarryFestival.CabanOpen?"We're shut, cariad! Doors open at seven, kettle on at five past. "+(QuarryFestival.ChoirHours?"Choir's at the chapel tonight if you want a song.":"Mind how you go in the dark."):"The Caban's where the quarrymen ate, and argued, and sang. Still do, mostly the arguing. The town's betting on motorsport now the quarry's winding down: rally school, the Sprint, and there's talk of a proper stage up through the tips and the moor.",
             new(){new("Back to the road",Close)});
         void Mari()=>Show("Mari / Slate Quay Station","Mari, from the engine shed. The slate trains come down to the quay by gravity and go back up behind the engine, and the Pine & Peak line runs passengers through to Hillcrest and Bayview Halt. One ticket, you and your car.",
             Tickets("quarry"));

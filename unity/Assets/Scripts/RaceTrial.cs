@@ -117,7 +117,7 @@ namespace LittleRoad
             // Quarry Hills Rallycross (--quarry-hills): the quarry floor's circuit, built with the mainland.
             else if(trackId=="quarry"&&QuarryHills.Enabled){yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(QuarryFloor.Loop);RenderSettings.fogDensity=.00026f;}
             else throw new ArgumentException("Unknown trial track: "+trackId);
-            reportTrack=trackId;
+            reportTrack=trackId;bool loose=trackId=="quarry";RoadCar.LooseRace=loose&&!freeRoam;
             // The elevated Hillcrest Raceway always races grade-aware (its context drivers could not race it
             // otherwise; the model is exactly neutral on level circuits, study 124). Elsewhere it is opt-in.
             GradeModel.Enabled=Has("--grade-aware")||((trackId=="hillcrest"||trackId=="quarry")&&track.hasElevation);GradeModel.Physics=GradeModel.Enabled&&!Has("--grade-no-physics");
@@ -156,7 +156,9 @@ namespace LittleRoad
             foreach(var entrant in Roster.Entries) {
                 int i=entrant.Id;var go=TrialWorld.Car(entrant.Body,entrant.Paint);bool line=gridMode=="line";float grid=RaceGrid.Distance(entrant.Slot,line);
                 go.transform.SetPositionAndRotation(RaceGrid.Position(track,entrant.Slot,line),Quaternion.LookRotation(track.Forward(grid)));
-                var car=go.AddComponent<RoadCar>();car.Setup(this,i,entrant.Tuning,automation||i!=0,seed+i*997,entrant.EquipmentLabel,entrant.Driver);cars.Add(car);
+                // (Quarry Hills Rallycross is loose slate: every car on its gravel grip.)
+                var tuning=loose?entrant.Tuning.Loose():entrant.Tuning;
+                var car=go.AddComponent<RoadCar>();car.Setup(this,i,tuning,automation||i!=0,seed+i*997,entrant.EquipmentLabel,entrant.Driver);cars.Add(car);
                 // The human's car in adventure races sweeps its contacts like free roam: speculative
                 // contacts snag Bayview road-mesh edges mid-corner. AI cars keep their validated mode.
                 if(career&&!car.autonomous&&!Has("--free-roam-speculative"))car.body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;

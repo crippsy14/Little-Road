@@ -10,12 +10,15 @@ namespace LittleRoad
     //   birds - recorded stereo beds (forest birds by day, river birds by the river; synthesised crickets at night), very
     //           faint and only when slow or stopped (Richard, 1 Oct: no 100 mph birds; synthesised calls sounded
     //           "inside your head"). Loops cut from field recordings by tools/ambience-loops.py.
+    //   by area (docs/60): sheep where there are sheep, water lapping at Slate Quay, people in the town squares by day, and
+    //           Quarry Hills' blasting siren and shot every few minutes while you're near the quarry.
     // Created by AudioDirector with the first car; silent in batch mode like the rest of the sound.
     public sealed class Ambience : MonoBehaviour
     {
         static Ambience instance;
         public static float SeaNear {get;private set;}
-        Voice surf,wind,falls,river,crickets;AudioSource forest,riverBirds;
+        Voice surf,wind,falls,river,crickets,blast;AudioSource forest,riverBirds,sheep,harbour,town;BlastSynth blaster;float nextBlast=-1;
+        float sheepNear,quayNear,townNear;
         static readonly bool Probe=RaceTrial.Has("--audio-probe");float nextProbe;
         float nextSurvey;Vector3 riverTarget;bool hasFalls;
 
@@ -59,6 +62,9 @@ namespace LittleRoad
             var r=new RiverSynth(fs,4);river=Make("Silver river",true,6,90);river.mono=r.Next;river.block=r.Block;
             forest=Bed("forest-birds");riverBirds=Bed("river-birds");
             var c=new CricketSynth(fs,7);crickets=Make("Crickets",false,1,1);crickets.stereo=c.NextStereo;crickets.block=c.Block;
+            sheep=Bed("sheep");harbour=Bed("harbour");town=Bed("town-life");
+            blaster=new BlastSynth(fs,11);blast=Make("Quarry blasting",true,90,3200);blast.mono=blaster.Next;
+            if(QuarryHills.Enabled)blast.transform.position=new Vector3(QuarryHills.Pit.x,QuarryHills.FloorY+10,QuarryHills.Pit.y);
             PlaceFalls();
         }
         volatile float windExposure=1;
@@ -97,6 +103,19 @@ namespace LittleRoad
             float nearRiver=riverTarget!=Vector3.zero?Mathf.Clamp01(1-Vector3.Distance(at,riverTarget)/70):0;
             forest.volume=Mathf.MoveTowards(forest.volume,.12f*day*(1-.8f*SeaNear)*(1-nearRiver)*calm,Time.unscaledDeltaTime*.5f);
             riverBirds.volume=Mathf.MoveTowards(riverBirds.volume,.15f*day*nearRiver*calm,Time.unscaledDeltaTime*.5f);
+            // By area: sheep (how many are near), the quay's water, the squares' voices (by day), the quarry's blasting.
+            float move=1-.6f*Mathf.SmoothStep(0,1,Mathf.InverseLerp(4,20,AudioDirector.PlayerSpeed));
+            float live=AudioDirector.SceneFade*effects*(AudioDirector.Muted?0:1);
+            sheep.volume=Mathf.MoveTowards(sheep.volume,.16f*sheepNear*day*move*live,Time.unscaledDeltaTime*.4f);
+            harbour.volume=Mathf.MoveTowards(harbour.volume,.2f*quayNear*live,Time.unscaledDeltaTime*.4f);
+            town.volume=Mathf.MoveTowards(town.volume,.11f*townNear*day*move*live,Time.unscaledDeltaTime*.4f);
+            blast.level=QuarryHills.Enabled?effects:0;
+            if(QuarryHills.Enabled) {
+                float pit=Vector2.Distance(new(at.x,at.z),QuarryHills.Pit);float now=Time.unscaledTime;
+                if(pit>1800)nextBlast=-1;
+                else if(nextBlast<0)nextBlast=now+Random.Range(40f,90f);
+                else if(now>nextBlast&&!blaster.Busy&&QuarryFestival.WorkingHours){blaster.Fire();nextBlast=now+Random.Range(240f,420f);if(Probe)Debug.Log($"LITTLE_ROAD_AMBIENCE_BLAST pit={pit:0}m");}
+            }
             // Crickets off for now (Richard, 1 Oct: the crickets and birds sounded wrong together around dusk).
             crickets.level=0;
         }
@@ -117,8 +136,20 @@ namespace LittleRoad
             // has ground within the 20 m ring.
             SeaNear=hits==0?0:Mathf.Clamp01(sea/weight*1.6f);
             windExposure=Mathf.Clamp01((at.y-CoastalLandscape.SeaLevel)/45f*.7f+SeaNear*.3f);
+            int flock=0;foreach(var g in Grazer.All)if(g!=null&&(g.transform.position-at).sqrMagnitude<130*130)flock++;
+            sheepNear=Mathf.Clamp01(flock/8f);
+            quayNear=QuarryHillsTown.Spots.TryGetValue("slatequay",out var quay)?Mathf.Clamp01(1-(Vector3.Distance(at,quay.at)-40)/110):0;
+            townNear=0;
+            foreach(var (centre,radius) in Squares()){float d=Vector2.Distance(new(at.x,at.z),new(centre.x,centre.z));townNear=Mathf.Max(townNear,Mathf.Clamp01(1-(d-radius*.4f)/(radius*.6f)));}
             var line=HillcrestRoute.River?.line;riverTarget=Vector3.zero;
             if(line!=null){float best=float.MaxValue;foreach(var p in line){float d=(p-at).sqrMagnitude;if(d<best){best=d;riverTarget=p;}}if(best>160*160)riverTarget=Vector3.zero;}
+        }
+        // The town squares and how far their bustle carries (only the towns this run has).
+        static System.Collections.Generic.IEnumerable<(Vector3,float)> Squares()
+        {
+            yield return (new Vector3(-30,0,-100),130);
+            if(HillcrestTown.Spots.Count>0)yield return (HillcrestRoute.Square,150);
+            if(QuarryHills.Enabled&&QuarryHillsTown.Spots.Count>0)yield return (new Vector3(QuarryHills.Square.x,QuarryHills.SquareY,QuarryHills.Square.y),220);
         }
         static Transform cached;
         static Transform Listener(){if(cached!=null&&cached.gameObject.activeInHierarchy)return cached;var l=FindAnyObjectByType<AudioListener>();cached=l!=null?l.transform:null;return cached;}

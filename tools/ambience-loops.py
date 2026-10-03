@@ -3,7 +3,7 @@
 # unity/Assets/Resources/Ambience (Unity compresses it in the build; about 0.5 MB each in the game).
 # Sources: Sonniss GDC 2021-2023 bundle (royalty-free for games, no attribution), fetched with fetch-sonniss.py
 # into ../little-road-audio-sources. Usage: python tools/ambience-loops.py
-import os, struct, math, importlib.util
+import os, sys, struct, math, importlib.util
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -15,6 +15,11 @@ OUT = os.path.join(HERE, '..', 'unity', 'Assets', 'Resources', 'Ambience')
 LOOPS = {
     'forest-birds': ('344 Audio- UK Canals, Parks & Forests/Forest, Daytime, Birds, Outdoors, Nature, Spring.wav', 30),
     'river-birds': ('Federica Vairani - Italian ambience/09_River close shot, nature, birds, no people.wav', 30),
+    # Ambience by area (docs/60): sheep on the moor and the farms, water at Slate Quay, people in the town squares.
+    # 'lively' picks the stretch with the most calls (bleats, voices) that still has no close call.
+    'sheep': ('344 Audio- UK Canals, Parks & Forests/Sheeps & Lamps.wav', 40, 'lively'),
+    'harbour': ('Ivo Vicic - Northern Mediterranean soundscapes - Adriatic sea/157 Urban_island_small town_harbour_water lapping against harbour wall and ship hull 02.wav', 30),
+    'town-life': ('344 Audio- UK Canals, Parks & Forests/Park, People, Distant Traffic, Children Playing.wav', 40, 'lively'),
 }
 TARGET_RMS = 0.06   # about -24 dBFS: a bed, set far quieter still in the game
 
@@ -46,10 +51,24 @@ def steadiest(x, seconds):
         if sc < score: score, best = sc, s
     return x[best * hop:best * hop + int((seconds + 2.5) * FS)], score
 
+def lively(x, seconds):
+    # The window with the most moments clearly above its median (calls), none of them a close call (over 5x).
+    hop = FS // 2; n = len(x) // hop; lvl = np.array([math.sqrt(np.mean(x[i * hop:(i + 1) * hop] ** 2)) + 1e-9 for i in range(n)])
+    win = int(seconds * 2) + 5; best = 0; score = -1
+    for s in range(0, n - win):
+        w = lvl[s:s + win]; med = np.median(w)
+        if w.max() / med > 5: continue
+        sc = int(np.sum(w > 1.6 * med))
+        if sc > score: score, best = sc, s
+    return x[best * hop:best * hop + int((seconds + 2.5) * FS)], score
+
 def main():
     os.makedirs(OUT, exist_ok=True)
-    for name, (file, seconds) in LOOPS.items():
-        x = read_stereo(os.path.join(SOURCES, file)); seg, score = steadiest(x, seconds)
+    only = sys.argv[1:]
+    for name, spec in LOOPS.items():
+        if only and name not in only: continue
+        file, seconds = spec[0], spec[1]; pick = lively if len(spec) > 2 and spec[2] == 'lively' else steadiest
+        x = read_stereo(os.path.join(SOURCES, file)); seg, score = pick(x, seconds)
         fade = int(2.5 * FS); body = seg[:-fade].copy(); tail = seg[-fade:]
         ramp = np.sin(np.linspace(0, math.pi / 2, fade))[:, None]
         body[:fade] = body[:fade] * ramp + tail * np.cos(np.linspace(0, math.pi / 2, fade))[:, None]   # seamless loop
@@ -57,6 +76,6 @@ def main():
         pcm = (body * 32767).astype('<i2').tobytes(); path = os.path.join(OUT, name + '.wav')
         with open(path, 'wb') as f:
             f.write(b'RIFF' + struct.pack('<I', 36 + len(pcm)) + b'WAVEfmt ' + struct.pack('<IHHIIHH', 16, 1, 2, FS, FS * 4, 4, 16) + b'data' + struct.pack('<I', len(pcm)) + pcm)
-        print(f'AMBIENCE_LOOP {name}: {len(body) / FS:.1f} s, steadiness {score:.2f} (peak/median loudness), {os.path.getsize(path) / 1e6:.1f} MB source file')
+        print(f'AMBIENCE_LOOP {name}: {len(body) / FS:.1f} s, score {score:.2f} ({'calls' if pick is lively else 'peak/median loudness'}), {os.path.getsize(path) / 1e6:.1f} MB source file')
 
 if __name__ == '__main__': main()

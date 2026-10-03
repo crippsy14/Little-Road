@@ -54,6 +54,17 @@ Test windows now open without stealing focus (`tools/quiet-start.ps1`). Next is 
 
 An outsider's review with ideas is [doc 60](60-outsider-review.md).
 
+**Phase four (3 October, late; doc 60 "Phase four"): the review's recommendations, built.**
+- Loose-surface grip for the Rallycross: 24/24 finishers on three serials, no recoveries, and gravel tyres now matter.
+- Notice boards with map pins in all three towns, and fingerposts in miles at the nine mainland junctions.
+- Load time: parallel terrain chunks, collider cooking and valley corridors. World tiles (W1) are still to do.
+- Ambience by area: sheep, quay water and town squares, plus Quarry Hills' blasting siren in working hours.
+- A paint reward for each full keepsake set.
+- Quarry Hills routines and Rally Day.
+- Sheep in the farm lanes that move for cars and the horn, and the rim cairn revealing the map.
+
+New tests: `--wayfinding-test` and `--festival --festival-test`.
+
 **Update, 2 October, night: Richard's list, tied off** ([doc 56](56-wider-game-round.md) §13–20; [doc 57](57-new-area-standards.md)).
 - **In-race pause:** resume, restart, view the field, options and retire. The race truly pauses.
 - **Options screen:** six tabs. New settings: units, vibration, motion blur, speed effects, camera shake, minimap, button prompts, ambience. Opens from the title, the pause hub and the race pause.

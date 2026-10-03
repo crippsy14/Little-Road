@@ -34,7 +34,7 @@ namespace LittleRoad
                 (HillcrestRoute.StationSpur,6,HillcrestRoute.StationSpur.Length-6),(HillcrestRoute.RacewayAccess,6,HillcrestRoute.RacewayAccess.Length-10)};
             var rng=new System.Random(88);
             for(int i=0;i<roads.Count;i++) {
-                var (road,from,to)=roads[i];Color paint=PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color;
+                var (road,from,to)=roads[i];Color paint=PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color;
                 var go=TrialWorld.Car(bodies[i%bodies.Length],paint);go.name="Valley traffic "+i;go.transform.SetParent(root);
                 var cruiser=go.AddComponent<RoadCruiser>();cruiser.Setup(road,from,to,Mathf.Lerp(from,to,(float)rng.NextDouble()),rng.Next(2)*2-1,player);
                 var chatter=go.AddComponent<NpcChatter>();chatter.speaker=names[i%names.Length];chatter.colour=paint;chatter.title="Out for a drive";
@@ -45,7 +45,7 @@ namespace LittleRoad
                 string[] welsh={"Bore da! Mind the slate dust!","Iawn? Off to the Caban?","Wrong side of the road, butt!","Chapel's at six. Don't be late!","Seen the Blondin running? Lush.","Rain later. Always is.","Hwyl fawr! See you at the quay!"};
                 var quarryRoads=new List<(string road,float from,float back)>{(QuarryHills.QuarryRoadName,30,40),(QuarryHills.QuarryRoadName,30,40),(QuarryHills.HighStreetName,10,10),(QuarryHills.QuayLaneName,10,12),(QuarryHills.ChapelStreetName,8,8),(QuarryHills.TerraceRowName,8,8)};
                 for(int i=0;i<quarryRoads.Count;i++) {
-                    var road=HillcrestRoute.Find(quarryRoads[i].road);float from=quarryRoads[i].from,to=road.Length-quarryRoads[i].back;Color paint=PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color;
+                    var road=HillcrestRoute.Find(quarryRoads[i].road);float from=quarryRoads[i].from,to=road.Length-quarryRoads[i].back;Color paint=PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color;
                     var go=TrialWorld.Car(i%3==2?bodies[(i+3)%bodies.Length]:CarBodies.OffRoad[i%CarBodies.OffRoad.Length],paint);go.name="Quarry traffic "+i;go.transform.SetParent(root);
                     go.AddComponent<RoadCruiser>().Setup(road,from,to,Mathf.Lerp(from,to,(float)rng.NextDouble()),rng.Next(2)*2-1,player);
                     var chatter=go.AddComponent<NpcChatter>();chatter.speaker=new[]{"Delyth","Rhodri","Nerys","Ifan","Carys","Geraint"}[i%6];chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=welsh;
@@ -75,7 +75,7 @@ namespace LittleRoad
                 var p=at;p.y=Mathf.Max(ValleyField.Height(p.x,p.z),at.y>0?at.y:-99)+.02f;
                 // (In Quarry Hills, the rally town, most cars are its off-roaders.)
                 bool rally=QuarryHills.Enabled&&QuarryHills.Contains(p.x,p.z);
-                var go=TrialWorld.Car(rally&&rng.NextDouble()<.8?CarBodies.OffRoad[rng.Next(CarBodies.OffRoad.Length)]:bodies[rng.Next(bodies.Length)],PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color);go.name="Parked car";go.transform.SetParent(root);
+                var go=TrialWorld.Car(rally&&rng.NextDouble()<.8?CarBodies.OffRoad[rng.Next(CarBodies.OffRoad.Length)]:bodies[rng.Next(bodies.Length)],PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color);go.name="Parked car";go.transform.SetParent(root);
                 go.transform.SetPositionAndRotation(p,Quaternion.Euler(0,yaw,0));
                 var renderers=go.GetComponentsInChildren<Renderer>();var bounds=renderers[0].bounds;foreach(var x in renderers)bounds.Encapsulate(x.bounds);
                 var box=go.AddComponent<BoxCollider>();box.center=go.transform.InverseTransformPoint(bounds.center);box.size=new Vector3(1.8f,1.5f,3.8f);go.tag="Respawn";
@@ -139,14 +139,14 @@ namespace LittleRoad
             for(int i=0;i<homes.Count&&placed<72;i++) {
                 if(rng.NextDouble()>.42)continue;var (yard,yaw,_)=homes[i];
                 string body=bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
-                Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color,yard,yaw,FolkNames[name++%FolkNames.Length],"Hillcrest",new[]{Gossip[rng.Next(Gossip.Length)],Gossip[rng.Next(Gossip.Length)]});placed++;
+                Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color,yard,yaw,FolkNames[name++%FolkNames.Length],"Hillcrest",new[]{Gossip[rng.Next(Gossip.Length)],Gossip[rng.Next(Gossip.Length)]});placed++;
             }
             // Quarry Hills' residents, outside their terraces (--quarry-hills).
             int quarryPlaced=0;
             for(int i=0;i<QuarryHillsTown.Homes.Count&&quarryPlaced<110;i++) {
                 if(rng.NextDouble()>.36)continue;var (yard,yaw,_)=QuarryHillsTown.Homes[i];
                 string body=rng.NextDouble()<.55?CarBodies.OffRoad[rng.Next(CarBodies.OffRoad.Length)]:bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
-                Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.All.Length)].color,yard,yaw,QuarryNames[quarryPlaced%QuarryNames.Length],"Quarry Hills",new[]{QuarryGossip[rng.Next(QuarryGossip.Length)],QuarryGossip[rng.Next(QuarryGossip.Length)]});quarryPlaced++;
+                Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color,yard,yaw,QuarryNames[quarryPlaced%QuarryNames.Length],"Quarry Hills",new[]{QuarryGossip[rng.Next(QuarryGossip.Length)],QuarryGossip[rng.Next(QuarryGossip.Length)]});quarryPlaced++;
             }
             void Special(string spot,string body,Color paint,string who,string title,params string[] lines){if(HillcrestTown.Spots.TryGetValue(spot,out var s))Spawn(root,body,paint,s.at,s.yaw,who,title,lines);}
             // (Gwen at the rally school is a resident: AdventureGame.)
@@ -206,6 +206,7 @@ namespace LittleRoad
         public bool OnRoad(HillcrestRoute.Road r)=>road==r;
         HillcrestRoute.Road road;float from,to,s,speed,cruise,lane,laneNow,blocked;int dir;RoadCar player;Rigidbody body;
         public float Speed=>speed;
+        public float Cruise{set=>cruise=value;}   // (the Rally Day parade goes at walking-the-dog pace)
         public void Setup(HillcrestRoute.Road r,float a,float b,float start,int direction,RoadCar playerCar)
         {
             road=r;from=a;to=b;s=start;dir=direction;player=playerCar;cruise=Random.Range(7.5f,10.5f);lane=road.width*.5f-1.5f;laneNow=dir*lane;
@@ -494,14 +495,14 @@ namespace LittleRoad
     public sealed class DustTrail:PuffPool
     {
         RoadCar car;float timer;readonly Vector3?[] lastWheel=new Vector3?[2];
-        static readonly Color Dirt=new(.74f,.66f,.52f),Grass=new(.62f,.62f,.48f),Smoke=new(.86f,.86f,.86f);
+        static readonly Color Dirt=new(.74f,.66f,.52f),Grass=new(.62f,.62f,.48f),Smoke=new(.86f,.86f,.86f),Slate=new(.62f,.63f,.66f);
         public void Setup(RoadCar c){car=c;soft=true;material=SoftMaterial("Kicked-up dust",Dirt);transform.SetParent(null);}
         void Update()
         {
             float dt=Time.deltaTime;Step(dt);if(car==null||car.body==null)return;
             float speed=Mathf.Abs(car.speed);var v=car.body.linearVelocity;var f=car.transform.forward;var r=car.transform.right;
             float slide=Mathf.Abs(Vector3.Dot(v,r));
-            bool offRoad=car.Grip>0&&car.Grip<car.tuning.roadGrip-.01f&&speed>2.5f&&car.ContactBottom>-9;
+            bool offRoad=(car.Grip>0&&car.Grip<car.tuning.roadGrip-.01f||RoadCar.LooseRace)&&speed>2.5f&&car.ContactBottom>-9;
             bool skid=!offRoad&&car.Grip>0&&slide>3.2f&&speed>4;
             // Tyre marks from each rear wheel: rubber while sliding, ruts off road.
             bool marking=(skid||offRoad&&speed>5)&&car.ContactBottom>-9;
@@ -518,7 +519,7 @@ namespace LittleRoad
             foreach(int side in new[]{-1,1}) {
                 var at=car.transform.position-f*1.25f+r*side*.72f;at.y=y;at+=Random.insideUnitSphere*.08f;
                 if(offRoad) {
-                    var colour=Color.Lerp(Grass,Dirt,Mathf.PerlinNoise(at.x*.3f,at.z*.3f));
+                    var colour=RoadCar.LooseRace?Color.Lerp(Slate,Dirt,.25f*Mathf.PerlinNoise(at.x*.3f,at.z*.3f)):Color.Lerp(Grass,Dirt,Mathf.PerlinNoise(at.x*.3f,at.z*.3f));
                     Emit(at,-v*.18f+Vector3.up*Random.Range(.25f,.6f)+r*side*Random.Range(.1f,.5f),Random.Range(.35f,.6f)+amount*.35f,Random.Range(.6f,1.1f),Mathf.Lerp(.35f,.6f,amount),.55f,colour);
                 } else Emit(at,-v*.1f+Vector3.up*Random.Range(.3f,.7f),Random.Range(.4f,.65f),Random.Range(.7f,1.2f),Mathf.Lerp(.2f,.45f,amount),.75f,Smoke);
             }

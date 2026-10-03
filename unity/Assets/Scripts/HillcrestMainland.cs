@@ -370,17 +370,17 @@ namespace LittleRoad
             var mainline=HillcrestRoute.Mainline;int portalN=Index(mainline,HillcrestRoute.PortalNorth),portalS=Index(mainline,HillcrestRoute.PortalSouth);
             var nearest=new float[NX*NZ];var nearestY=new float[NX*NZ];var inner=new float[NX*NZ];var outer=new float[NX*NZ];
             for(int k=0;k<nearest.Length;k++)nearest[k]=1e6f;
+            // (Load time, docs/60: the segments are gathered, then stamped row by row on every core; see Rows.)
+            var corridors=new List<(Vector3 p,Vector3 q,float a,float b)>();
             void Corridor(Vector3[] line,int from,int to,float a,float b,bool closed)
             {
                 int n=line.Length;
-                for(int s=from;s<to;s++) {
-                    if(!closed&&s+1>=n)break;Vector3 p=line[s],q=line[(s+1)%n];
-                    Segment(p,q,b,(k,d,t)=>{if(d<nearest[k]){nearest[k]=d;nearestY[k]=Mathf.Lerp(p.y,q.y,t);inner[k]=a;outer[k]=b;}if(d<roadDistance[k])roadDistance[k]=d;});
-                }
+                for(int s=from;s<to;s++){if(!closed&&s+1>=n)break;corridors.Add((line[s],line[(s+1)%n],a,b));}
             }
             Corridor(mainline.line,portalS,mainline.line.Length-1,mainline.inner,mainline.outer,false);
             foreach(var road in HillcrestRoute.All())if(road!=mainline)Corridor(road.line,0,road.line.Length-1,road.inner,road.outer,false);
             Corridor(HillcrestRoute.Circuit,0,HillcrestRoute.Circuit.Length,11,32,true);
+            Rows(corridors.Count,s=>(corridors[s].p,corridors[s].q,corridors[s].b),(k,d,t,s)=>{var c=corridors[s];if(d<nearest[k]){nearest[k]=d;nearestY[k]=Mathf.Lerp(c.p.y,c.q.y,t);inner[k]=c.a;outer[k]=c.b;}if(d<roadDistance[k])roadDistance[k]=d;});
             for(int k=0;k<h.Length;k++)if(nearest[k]<outer[k])h[k]=Mathf.Lerp(h[k],nearestY[k]-.14f,1-Blend(inner[k],outer[k],nearest[k]));
             // Embankments (Richard, 30 Sep: roads you can't get back onto after leaving them). The corridors above blend
             // to the ground over a fixed width however high the road runs, so the mainline's descent from the tunnel sat
@@ -390,13 +390,11 @@ namespace LittleRoad
             // hill, the lake or the gorge.
             var fillNearest=new float[NX*NZ];var fillY=new float[NX*NZ];var fillInner=new float[NX*NZ];
             for(int k=0;k<fillNearest.Length;k++)fillNearest[k]=1e6f;
-            void Fill(Vector3[] line,int from,int to,float a)
-            {
-                for(int s=from;s<to&&s+1<line.Length;s++){Vector3 p=line[s],q=line[s+1];
-                    Segment(p,q,FillReach,(k,d,t)=>{if(d<fillNearest[k]){fillNearest[k]=d;fillY[k]=Mathf.Lerp(p.y,q.y,t);fillInner[k]=a;}});}
-            }
+            var fills=new List<(Vector3 p,Vector3 q,float a)>();
+            void Fill(Vector3[] line,int from,int to,float a){for(int s=from;s<to&&s+1<line.Length;s++)fills.Add((line[s],line[s+1],a));}
             Fill(mainline.line,portalS,mainline.line.Length-1,mainline.inner);
             foreach(var road in HillcrestRoute.All())if(road!=mainline)Fill(road.line,0,road.line.Length-1,road.inner);
+            Rows(fills.Count,s=>(fills[s].p,fills[s].q,FillReach),(k,d,t,s)=>{var f=fills[s];if(d<fillNearest[k]){fillNearest[k]=d;fillY[k]=Mathf.Lerp(f.p.y,f.q.y,t);fillInner[k]=f.a;}});
             for(int j=0;j<NZ;j++)for(int i=0;i<NX;i++) {
                 int k=j*NX+i;if(fillNearest[k]>=FillReach)continue;
                 float x=X0+i*Cell,z=Z0+j*Cell;
@@ -455,7 +453,7 @@ namespace LittleRoad
                 float m=Blend(-451,-446.5f,z)*(1-Blend(0,8,Mathf.Max(74-x,x-158,0)));
                 int k=j*NX+i;h[k]=Mathf.Min(h[k],Mathf.Lerp(h[k],-24,m));
             }
-            Debug.Log($"LITTLE_ROAD_VALLEY_FIELD cells={h.Length} ms={clock.ElapsedMilliseconds}");
+            double check=0;for(int k=0;k<h.Length;k+=7)check+=h[k]+(roadDistance[k]<1e5f?roadDistance[k]:0);Debug.Log($"LITTLE_ROAD_VALLEY_FIELD cells={h.Length} ms={clock.ElapsedMilliseconds} checksum={check:0.000}");
         }
         const float FillSlope=.25f,FillReach=80;
         // Portal shelf height above the road: just over the bore (the terrain hole ends below it).
@@ -482,6 +480,26 @@ namespace LittleRoad
                 Vector2 P=new(X0+i*Cell,Z0+j*Cell);float t=Mathf.Clamp01(Vector2.Dot(P-A,AB)/len2);float d=Vector2.Distance(P,A+AB*t);
                 if(d<=reach)visit(j*NX+i,d,t);
             }
+        }
+        // Segment for many segments at once, on every core: each grid row is one thread's, and within a row the segments are
+        // visited in their order, so every cell sees the same sequence as one Segment call after another (same result).
+        static void Rows(int count,System.Func<int,(Vector3 p,Vector3 q,float reach)> segment,System.Action<int,float,float,int> visit)
+        {
+            var rows=new List<int>[NZ];var spans=new (int i0,int i1,Vector2 A,Vector2 AB,float len2,float reach)[count];
+            for(int s=0;s<count;s++) {
+                var (p,q,reach)=segment(s);
+                int i0=Mathf.Max(0,(int)((Mathf.Min(p.x,q.x)-reach-X0)/Cell)),i1=Mathf.Min(NX-1,(int)((Mathf.Max(p.x,q.x)+reach-X0)/Cell)+1);
+                int j0=Mathf.Max(0,(int)((Mathf.Min(p.z,q.z)-reach-Z0)/Cell)),j1=Mathf.Min(NZ-1,(int)((Mathf.Max(p.z,q.z)+reach-Z0)/Cell)+1);
+                var AB=new Vector2(q.x-p.x,q.z-p.z);spans[s]=(i0,i1,new Vector2(p.x,p.z),AB,Mathf.Max(AB.sqrMagnitude,1e-4f),reach);
+                for(int j=j0;j<=j1;j++)(rows[j]??=new List<int>()).Add(s);
+            }
+            System.Threading.Tasks.Parallel.For(0,NZ,j=>{
+                var list=rows[j];if(list==null)return;
+                foreach(int s in list) {
+                    var (i0,i1,A,AB,len2,reach)=spans[s];
+                    for(int i=i0;i<=i1;i++){Vector2 P=new(X0+i*Cell,Z0+j*Cell);float t=Mathf.Clamp01(Vector2.Dot(P-A,AB)/len2);float d=Vector2.Distance(P,A+AB*t);if(d<=reach)visit(j*NX+i,d,t,s);}
+                }
+            });
         }
         static void Stamp(Vector2 centre,float radius,System.Func<float,float,float> shape)
         {

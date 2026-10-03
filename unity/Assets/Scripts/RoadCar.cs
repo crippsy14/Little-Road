@@ -374,6 +374,8 @@ namespace LittleRoad
         }
         readonly RaycastHit[] surfaceHits=new RaycastHit[6];
         // Free roam: tarmac off the Bayview loop (causeway, country roads) is marked with RoadSurface.
+        // A race on a loose surface (the Quarry Hills Rallycross): dust and gravel noise for every car on the circuit.
+        public static bool LooseRace;
         public bool OnRoadSurface()
         {
             int count=Physics.RaycastNonAlloc(body.position+Vector3.up,Vector3.down,surfaceHits,2.6f,~0,QueryTriggerInteraction.Collide);

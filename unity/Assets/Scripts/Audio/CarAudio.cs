@@ -99,7 +99,7 @@ namespace LittleRoad
             float used=yawRate*Mathf.Abs(speed)/budget,slide=Mathf.Abs(car.lateralSpeed);
             float brakeSlip=throttle< -.7f&&Mathf.Abs(speed)>6&&car.tuning.braking>budget?.55f:0;
             float slip=Mathf.Max(Mathf.Max((used-.82f)/.3f,(slide-.6f)/2.5f),brakeSlip);
-            float dirt=car.Grip>0&&car.Grip<car.tuning.roadGrip*.9f?1:0;
+            float dirt=car.Grip>0&&car.Grip<car.tuning.roadGrip*.9f||RoadCar.LooseRace?1:0;
             noise.Set(speed,slip,dirt,impacts,impact);
             if(capture!=null&&Time.time>=nextLog){nextLog=Time.time+.01f;captureLog.Append($"{captured/(float)AudioSettings.outputSampleRate:0.000},{(box!=null?box.Rpm:0):0},{(box!=null?box.Gear+1:0)},{throttle:0.00},{speed:0.0},{(box!=null?box.Boost:0):0.00},{(box!=null&&box.Shifting?1:0)},{(box!=null&&box.Limiter?1:0)}\n");}
             if(Probe&&Player&&Time.unscaledTime>=nextProbe) {

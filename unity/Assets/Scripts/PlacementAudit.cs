@@ -112,7 +112,10 @@ namespace LittleRoad
                     // Against both neighbouring slopes: a jump that the road on either side doesn't share.
                     if(Mathf.Abs(step-before)>.06f&&Mathf.Abs(step-after)>.06f&&Mathf.Abs(step)>.06f) {
                         var p=pts[i];if(Vector3.Distance(p,last)<3)continue;last=p;SeamAt.Add(p);
-                        found.Add($"  {name} step {step:+0.00;-0.00} m at ({p.x:0},{h[i]:0.0},{p.z:0}) [{names[i-1]} -> {names[i]}]");
+                        // (With the drawn line's own heights either side, to tell a ribbon fault from a line fault.)
+                        int near=0;float nd=float.MaxValue;for(int q=0;q<path.Count;q++){float dd=Vector2.Distance(new(path[q].x,path[q].z),new(p.x,p.z));if(dd<nd){nd=dd;near=q;}}
+                        var around=new List<string>();for(int q=Mathf.Max(0,near-2);q<=Mathf.Min(path.Count-1,near+2);q++)around.Add($"{path[q].y:0.00}@{Vector2.Distance(new(path[q].x,path[q].z),new(p.x,p.z)):0.0}");
+                        found.Add($"  {name} step {step:+0.00;-0.00} m at ({p.x:0},{h[i]:0.0},{p.z:0}) [{names[i-1]} -> {names[i]}] surface {h[i-2]:0.00},{h[i-1]:0.00},{h[i]:0.00},{h[i+1]:0.00} line {string.Join(" ",around)}");
                     }
                 }
             }

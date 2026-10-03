@@ -67,3 +67,68 @@ Little Road is a cosy racing adventure. You drive a toy-like car round a small, 
 4. Ambience per area.
 5. Rewards for full keepsake sets.
 6. Festivals and routines, starting with Quarry Hills.
+
+## Phase four: the recommendations, built (3 October, late)
+
+Richard asked for all six. Five are built and tested; the third is partly done (a faster load, not world tiles). Two ideas from the list came along too.
+
+**1. Loose-surface grip (`CarTuning.Loose`).**
+- The Quarry Hills Rallycross is loose slate. Every car in it races on a grip 60% of the way from its tyres' road grip to their gravel grip. The physics and the drivers' planning use the same number.
+- Results: stock tyres drop from 7 to 4.9; rally tyres rise from 8.5 to 10.9. Gwen now says road tyres grip about half as well there.
+- The field runs on gravel tyres: club kit on rally tyres, street kit on trail tyres.
+- Dust is slate grey for every car, and the gravel sound plays all race.
+- Results on the same build, serials 2, 3 and 4:
+  - 24 of 24 finished each time, with no recoveries;
+  - total field time 3,860, 3,826 and 3,860 s, against 3,932, 3,907 and 3,923 s before (about 2% faster);
+  - the autopilot player car, still on stock tyres, finished last each time (22nd to 23rd before).
+- An editor check confirms rally tyres out-grip stock by more than 1.8× on loose ground.
+
+**2. Notice boards, map pins and fingerposts (`Wayfinding`).**
+- **Notice boards:**
+  - A board stands in each town: by the café in Bayview, and on the squares in Hillcrest and Quarry Hills.
+  - Each is placed by search: clear, level ground, 3 to 7 m from a road, facing it. Bayview's loop isn't tagged as road, so it is measured from its centre line.
+  - "Read the notice board" lists what the town offers, with your progress: races and podiums, trials and pars, lessons, keepsakes (with a hint where the next one is), speed traps, rides, Rally Day and choir night.
+  - Picking a line pins it. The map shows a sky-blue star, and the objective line reads "Pinned: … · 425 m". The pin clears within 20 m of the place.
+- **Fingerposts:**
+  - White fingerposts stand at the nine mainland junctions.
+  - Each finger shows up to two places reached that way, with the shortest network route in quarter miles (for example "Hillcrest 2½ / Bayview 2¾").
+- `--wayfinding-test` passes with and without `--quarry-hills`: every board is placed, the pin drives the objective line, and the fingerposts are pictured.
+
+**3. Load time (partial).**
+- The terrain chunks' geometry is built on every core, and their colliders are cooked in parallel with `Physics.BakeMesh`. The mainland step fell from 4.9 s to 3.3 s; total load with Quarry Hills went from about 15.9 s to 14.4 s.
+- The valley field's road corridors and embankments now run row by row on every core: 2.1 s fell to 0.9 s. It is the same field: the ground heights at all eleven junctions match the earlier build, and a `checksum` is now logged for future comparisons.
+- World tiles and streaming (doc 58 W1) are still to do before the next town.
+
+**Still open from the area audit (Quarry Hills).**
+- **3 road seams**, each a 10 cm step about 15 m from a junction: two on Chapel Street, one on Terrace Row. The seam report now prints the road line's heights alongside. The line is a smooth 10% grade, but just before the step the surface sits 3–5 cm above it, so some piece overlaps the street near the junction rim (radius 15–16 m). Next: name every collider the probe hits there.
+- **6 road-edge lips and 1 steep bank**, as before.
+
+**4. Ambience by area.**
+- Three new loops cut from the Sonniss GDC 2023 bundle (raw files outside the repo):
+  - sheep and lambs, where there are sheep (up to 8 within 130 m);
+  - water lapping at Slate Quay;
+  - people in the three town squares by day.
+- Quarry Hills' blasting, synthesised: the motor siren winds up, holds and runs down, then the shot thumps out of the pit and rumbles. It plays every 4 to 7 minutes within 1.8 km of the pit, in working hours only.
+- No brass band or gulls: the bundle has neither.
+
+**5. Keepsake set rewards.**
+- A full album earns a paint, free at any paint counter: Seaglass (Bayview postcards), Heather (Hillcrest stamps) and Quarry Slate (the carvings).
+- The paint board gains a fifth row, which shows "?" until the set is earned. The album shows each set's reward.
+- Traffic still picks from the shop's sixteen colours.
+
+**6. Festivals and routines (`QuarryFestival`).**
+- **Routines:**
+  - The Caban opens from 7 to 7; Megan has a "we're shut" line.
+  - The quarry blasts from 8 to 5.
+  - Choir night runs from 6:30 to 9:45 pm: seven cars park outside Capel Bethel, each with something to say about Calon Lân.
+- **Rally Day:** once you've a Rallycross podium (or with `--festival`):
+  - twelve flags round the square;
+  - a "RALLY DAY · DIWRNOD RALI" banner over the High Street;
+  - six off-roaders with pennants parading up and down it;
+  - confetti over the square;
+  - a line on the notice board, and Gwen's greeting.
+- `--festival-test` passes: 12 flags, 6 parade cars moving, and 7 choir cars at half past seven.
+
+**From the ideas list:**
+- Sheep in the farm lanes (17 of them) step out of the way of a car, and every sheep within 35 m scatters at the horn.
+- The rim cairn at the top of the Gallery Climb reveals all of Quarry Hills on the map (1.5 km).

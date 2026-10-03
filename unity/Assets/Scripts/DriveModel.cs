@@ -27,6 +27,11 @@ namespace LittleRoad
                 acceleration=torque*pull*turboTorque/weight, mass=weight, gearCeiling=gearing,
                 braking=brake/weight, roadGrip=grip, dirtGrip=dirt, response=rack, yaw=yawRate};
         }
+        // Loose surface (docs/60, Richard's 3 Oct review list): a race on gravel grips between the tyre's road and gravel grip,
+        // nearer gravel. The whole race uses it (physics and the drivers' planning read the same number), so tyres made for
+        // the loose stuff win there: stock grips about half as hard as rally tyres.
+        public const float LooseShare=.6f;
+        public CarTuning Loose(){var t=this;t.roadGrip=Mathf.Lerp(roadGrip,dirtGrip,LooseShare);return t;}
         public float AttainableSpeed
         {
             get {float low=0, high=gearCeiling; for(int i=0;i<24;i++) {float mid=(low+high)*.5f;
