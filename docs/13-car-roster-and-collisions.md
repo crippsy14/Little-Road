@@ -9,7 +9,7 @@ Added 16 September 2026 from the user's request for varied bodies from ordinary 
 
 ## Body roster
 
-17 September update: the user requested a fidelity review, assessment of existing assets, and a route toward roughly 100 body shapes with decals. [The fidelity and production plan](15-car-fidelity-assets-and-100-body-plan.md) supersedes the 12-body planning target below. Body variants must be visually distinct; recolours and decal layouts remain separate. The six-body milestone is retained as an intermediate delivery step.
+17 September update: the user requested a fidelity review, assessment of existing assets, and a route toward roughly 100 body shapes with decals. The fidelity plan that followed (doc 15, retired 4 October; see git history) superseded the 12-body planning target below. Body variants must be visually distinct; recolours and decal layouts remain separate. The six-body milestone is retained as an intermediate delivery step.
 
 The completed game should have a broad catalogue of original, recognisable silhouettes. A working production target is at least 12 distinct bodies across compact hatchbacks, small saloons, vans/utility cars, classic coupes, modern sports cars, rally cars, GT/endurance cars, sports prototypes and open-wheel/F1-style racers. These are original designs; exact licensed real-world replicas are not required.
 

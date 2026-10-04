@@ -124,7 +124,7 @@ The initial complete build must demonstrate 24-car racing and the stock-to-upgra
 Research gate is complete at the design level. Exact original-game physics, region-dependent payout tables and firsthand feel remain unverified. Our prices, unlock conditions, field loadouts and performance targets above are original proposals and must be tuned from the implemented game.
 # Live driving feedback: track width, acceleration and recovery
 
-19 September expansion: [document 18](18-endurance-fuel-and-mass.md) adds required endurance events, load-dependent fuel usage, tank capacity/empty-mass upgrades, changing fuel weight, tyre life, pit services and strategic AI. The opening sprint economy's no-wear/repair-bill promise does not exclude endurance tyre degradation; initial event services are included, with race time as their cost. [Document 17](17-scope-and-priorities.md) sets the 12-hour content target and current priority order.
+19 September expansion: [document 18](18-endurance-fuel-and-mass.md) adds required endurance events, load-dependent fuel usage, tank capacity/empty-mass upgrades, changing fuel weight, tyre life, pit services and strategic AI. The opening sprint economy's no-wear/repair-bill promise does not exclude endurance tyre degradation; initial event services are included, with race time as their cost. Document 17 sets the 12-hour content target and current priority order.
 
 16 September 2026, after the user watched the race test. These are priority requirements for the next driving iteration:
 

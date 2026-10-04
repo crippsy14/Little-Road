@@ -1,6 +1,6 @@
 # Parts tiers, names, looks and the progression economy
 
-Written 29 September 2026 for Richard's request to plan how the parts split between tiers, name them, plan their look, and balance progression early around tracks, races and grinding. This is a plan for review, not yet implemented. It builds on [09](09-racing-and-parts-progression.md) (economy and classes), [10](10-expanded-ownership-and-parts.md) (the >60 variant target), [13](13-car-roster-and-collisions.md) (bodies per class), [17](17-scope-and-priorities.md) (12-hour campaign) and [18](18-endurance-fuel-and-mass.md) (endurance).
+Written 29 September 2026 for Richard's request to plan how the parts split between tiers, name them, plan their look, and balance progression early around tracks, races and grinding. This is a plan for review, not yet implemented. It builds on [09](09-racing-and-parts-progression.md) (economy and classes), [10](10-expanded-ownership-and-parts.md) (the >60 variant target), [13](13-car-roster-and-collisions.md) (bodies per class) and [18](18-endurance-fuel-and-mass.md) (endurance).
 
 ## Five classes
 
@@ -12,7 +12,7 @@ This keeps Richard's shape and the existing C → B → A → S ladder, and adds
 | B | **Tuner** | Aftermarket catalogue parts and weekend track days | Hot hatches, tuner coupés, rally-bred saloons | Hillcrest's valley shop, then a new hill/quarry region |
 | A | **Touring** | Works touring cars: door-to-door on real circuits | Touring saloons and GT-lite coupés | A coastal-city / street-circuit region |
 | S | **Racing** | Purpose-built race machinery | GT racers, sports racers, open-wheel | A grand-prix park |
-| E | **Endurance** | Prototype hybrids, day into night | Le Mans-inspired prototypes and GTs (doc 15) | An endurance ring with pit lane (doc 18) |
+| E | **Endurance** | Prototype hybrids, day into night | Le Mans-inspired prototypes and GTs | An endurance ring with pit lane (doc 18) |
 
 ## How many parts per slot and class
 
@@ -26,7 +26,7 @@ With three steps, each purchase is an obvious jump (about +10% on its main stat)
 
 Sidegrades (tyres for gravel or wet, gearboxes short or long, an efficient engine for endurance) add choice without adding rungs to the ladder.
 
-That gives 7 stock parts + 105 ladder parts + about 12 sidegrades, roughly **125 parts** across the campaign. This fits doc 10's ">60 meaningful variants" and doc 17's scope.
+That gives 7 stock parts + 105 ladder parts + about 12 sidegrades, roughly **125 parts** across the campaign. This fits doc 10's ">60 meaningful variants" and the 12-hour campaign scope.
 
 **Rules for the ladder:**
 - **Within a slot:** Better is about 10% up on Good, and Best about 10% up on Better, on the slot's main stat. The next class's Good is about 5% over this class's Best.

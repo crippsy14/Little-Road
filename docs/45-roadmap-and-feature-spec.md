@@ -12,7 +12,7 @@ It sets the order so that early work is never torn up later, while each feature 
 
 **Campaign length:** at least 12 hours and open-ended. 12 hours is a floor, not a cap; every region, class and activity added makes it longer, and that's welcome.
 
-It supersedes the "later" notes in [doc 20](20-driver-personality-and-teammate-progression.md) and [doc 21](21-performance-rating-and-race-preview.md) where they overlap, and keeps their principles.
+It replaced the earlier driver-personality and performance-rating notes (docs 20 and 21, retired on 4 October; see git history), keeping their principles.
 
 ## How we decide the order
 
@@ -84,7 +84,7 @@ Instead of one "risk" slider, each racer has **six abilities (0–100)** drawn a
 - **Earning XP:** teammates earn XP per race from distance raced, result against their expected place, and clean laps. It tapers if the race is far below the class they're in, so you can't farm easy races. Rivals don't level.
 - **Growth:** each racer has a growth profile (fast or slow learner, which abilities grow first) and a **potential cap per ability**. XP raises abilities toward the cap and never past it. That's why exploring for better racers matters: a local hero may cap at 60 while a racer hidden in the mountains caps at 90.
 - **Levels:** a readable 1–20 that summarises progress; the radar shows the actual abilities.
-- **Track familiarity** (doc 20) comes later and small: per-track comfort that adds a little to Line on that track, only for the player's team.
+- **Track familiarity** comes later and small: per-track comfort that adds a little to Line on that track, only for the player's team.
 - **First slice:** XP and growth on the prototype teammate. Tune the rates by feel on a handful of races before any numbers are fixed.
 
 ### F5. Finding racers around the world
