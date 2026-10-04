@@ -24,17 +24,12 @@ $shell=New-Object -ComObject WScript.Shell
 $link=$shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Desktop')) 'Little Road.lnk'))
 $link.TargetPath=Join-Path $to $exe;$link.Arguments='-monitor 1';$link.WorkingDirectory=$to;$link.IconLocation=(Join-Path $to $exe)+',0'
 $link.Description="Little Road (play copy, $branch $(($commit -split ' ')[0]))";$link.Save()
-# Max build test drives (docs/54): the fastest car in the game, for feeling the top of the ladder. Hot laps is a
-# timed session on Hillcrest Raceway (5 laps, lap times on screen); Test Drive is free roam on a copy of the
-# live save with the maximum build fitted, by the Duke (race him from there). Neither writes the real slots.
-foreach($extra in @(
-  @{Name='Little Road - Max Build Hot Laps';Args='-monitor 1 --trial-race --trial-track hillcrest --trial-human --hide-racing-line --trial-cars 1 --trial-laps 5 --trial-duration 1800 --trial-setup max --trial-body regale --sweep-contacts';What='Hot laps of Hillcrest Raceway in the maximum build'},
-  @{Name='Little Road - Max Build Test Drive';Args='-monitor 1 --max-build-test';What='Free roam with the maximum build, by the Duke (a copy of your save)'},
-  # The continent scale test (docs/58 s11): the generated 20 km world to drive; 1-5 switch class in game.
-  @{Name='Little Road - Continent Scale Test';Args='-monitor 1 --scale-test --scale-class C';What='The generated Glasswater continent: drive it in any class (1-5 / D-pad), Tab to jump between towns'},
-  # Quarry Hills (docs/59): the game with the new district built; take Quarry Road west off the raceway road.
-  @{Name='Little Road - Quarry Hills';Args='-monitor 1 --quarry-hills';What='Little Road with Quarry Hills built: Quarry Road heads west off the raceway road'})){
-  $l=$shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Desktop')) ($extra.Name+'.lnk')))
-  $l.TargetPath=Join-Path $to $exe;$l.Arguments=$extra.Args;$l.WorkingDirectory=$to;$l.IconLocation=(Join-Path $to $exe)+',0';$l.Description=$extra.What;$l.Save()
+# One build (Richard, 4 Oct: "we only need this one"): Quarry Hills is part of the game now, and the old extra
+# shortcuts (max build hot laps and test drive, the continent scale test, Quarry Hills) go to the Recycle Bin.
+# The same runs are still there from a terminal: --max-build-test, --scale-test, and so on.
+Add-Type -AssemblyName Microsoft.VisualBasic
+foreach($old in 'Little Road - Max Build Hot Laps','Little Road - Max Build Test Drive','Little Road - Continent Scale Test','Little Road - Quarry Hills'){
+  $lnk=Join-Path ([Environment]::GetFolderPath('Desktop')) ($old+'.lnk')
+  if(Test-Path -LiteralPath $lnk){[Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($lnk,'OnlyErrorDialogs','SendToRecycleBin')}
 }
-Write-Output "Published to $to ($branch $commit); desktop shortcuts 'Little Road', 'Little Road - Max Build Hot Laps', 'Little Road - Max Build Test Drive', 'Little Road - Continent Scale Test' and 'Little Road - Quarry Hills' updated."
+Write-Output "Published to $to ($branch $commit); desktop shortcut 'Little Road' updated (the only one)."

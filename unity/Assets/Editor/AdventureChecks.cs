@@ -32,9 +32,10 @@ public static class AdventureChecks
         // the ladder stops there). Hillcrest pays 1.5x Bayview for the same place.
         Check(RaceCalendar.All.All(e=>e.raceClass=="C")&&EquipmentCatalog.All.parts.All(p=>RaceCalendar.Rank(p.tier)>=0)&&RaceCalendar.Classes.All(c=>EquipmentCatalog.All.parts.Any(p=>p.tier==c)),"Every race is Class C for now; the parts ladder covers all five classes");
         Check(RaceCalendar.Open(store.Data)=="C"&&!store.Data.podiums.Contains("bayview"),"A 24th place is no podium; Class C is open");
-        int s2=store.BeginRace();Check(store.FinishRace(s2,3,"bayview")==330&&store.Data.podiums.SequenceEqual(new[]{"bayview"})&&RaceCalendar.Open(store.Data)=="C","A Bayview podium pays 330 and counts one of two Class C podiums");
-        int s3=store.BeginRace();Check(store.FinishRace(s3,2,"hillcrest")==600&&RaceCalendar.Complete(store.Data,"C")&&RaceCalendar.Open(store.Data)=="C","A Hillcrest podium pays 1.5x and completes Class C; Class B stays shut until it has races");
-        store=new AdventureStore(store.path);Check(RaceCalendar.Complete(store.Data,"C")&&store.Data.podiums.Count==2,"Podiums and the completed class survive reload");
+        int s2=store.BeginRace();Check(store.FinishRace(s2,3,"bayview")==330&&store.Data.podiums.SequenceEqual(new[]{"bayview"})&&RaceCalendar.Open(store.Data)=="C","A Bayview podium pays 330 and counts one of three Class C podiums");
+        int s3=store.BeginRace();Check(store.FinishRace(s3,2,"hillcrest")==600&&!RaceCalendar.Complete(store.Data,"C")&&RaceCalendar.Open(store.Data)=="C","A Hillcrest podium pays 1.5x; Class C still wants the Quarry Hills Rallycross");
+        int s4=store.BeginRace();Check(store.FinishRace(s4,3,"quarry")==(int)(EquipmentCatalog.Reward(3,"C")*RaceCalendar.Get("quarry").rewardScale)&&RaceCalendar.Complete(store.Data,"C")&&RaceCalendar.Open(store.Data)=="C","A Rallycross podium pays 1.8x and completes Class C; Class B stays shut until it has races");
+        store=new AdventureStore(store.path);Check(RaceCalendar.Complete(store.Data,"C")&&store.Data.podiums.Count==3,"Podiums and the completed class survive reload");
         Check(!EquipmentCatalog.All.parts.Any(p=>RaceCalendar.Rank(p.tier)>0&&RaceCalendar.PartOpen(store.Data,p)),"Parts above Class C stay locked while Class B has no races");
         // Save slots (docs/50): the pre-slot save becomes slot 1's autosave; a new game, a save into another slot and
         // loading each land where they should; a slot's summary reads its class and credits.

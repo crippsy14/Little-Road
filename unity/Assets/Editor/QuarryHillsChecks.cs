@@ -13,7 +13,7 @@ public static class QuarryHillsChecks
     {
         var checks=new List<string>();
         void Check(bool condition,string message){if(!condition)throw new InvalidOperationException(message);checks.Add(message);}
-        Check(!QuarryHills.Enabled,"Quarry Hills is off unless --quarry-hills is passed");
+        Check(QuarryHills.Enabled,"Quarry Hills is part of the game (--no-quarry-hills leaves it out)");
         // Galleries: twelve 15 m benches up to the rim.
         Check(QuarryHills.Benches==12&&Mathf.Abs(QuarryHills.BenchHeight-15)<.01f&&Mathf.Abs(QuarryHills.GalleryStep(QuarryHills.Benches*QuarryHills.BenchWidth+1)-QuarryHills.RimY)<.01f,
             $"The galleries are {QuarryHills.Benches} benches of {QuarryHills.BenchHeight} m up to the rim at {QuarryHills.RimY} m");

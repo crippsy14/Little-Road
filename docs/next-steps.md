@@ -25,7 +25,7 @@ You can drive it in any class's strongest build:
 
 Results are in doc 58 §12. **Next (W1):** foundations (world tiles, streaming, floating origin, data-driven regions, race rows, world-state layers), then the C ring town by town.
 
-**Quarry Hills is built behind `--quarry-hills` (3 October, afternoon; [doc 59](59-quarry-hills.md) "Build status").** The play copy has a "Little Road - Quarry Hills" shortcut. What's in it:
+**Quarry Hills is part of the game (since 4 October; built behind `--quarry-hills` on 3 October, [doc 59](59-quarry-hills.md) "Build status").** `--no-quarry-hills` leaves it out. The play copy has one shortcut, "Little Road". What's in it:
 - the slate town of about 1,560 buildings in terrace blocks, with the square and the Pit Stop;
 - the galleries with inclines, Glas, the tips, the quarry floor, the rally school and the Quarry Sprint;
 - the Blondin, and Slate Quay with its rail terminus;

@@ -12,7 +12,8 @@ namespace LittleRoad
     // blends into the valley's own west hills over 320 m, and Hillcrest's ground (x >= -1100) is unchanged.
     public static class QuarryHills
     {
-        public static bool Enabled=>enabled??=RaceTrial.Has("--quarry-hills");static bool? enabled;
+        // Part of the game since 4 October (Richard: one build with everything); --no-quarry-hills leaves it out (A/B, old studies).
+        public static bool Enabled=>enabled??=!RaceTrial.Has("--no-quarry-hills");static bool? enabled;
         public const float SeamX=-1100,West=-4300,South=-4000;
         // The region's map outline (world x/z).
         public static bool Contains(float x,float z)=>Enabled&&x<SeamX&&x>=West&&z>=South;

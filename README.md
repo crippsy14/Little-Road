@@ -51,7 +51,7 @@ Run `Launch Little Road Unity.cmd`, or `../little-road-dev-build/Little Road Uni
 | `capture-map.ps1 -Name x -Flags @('--trap-test')` | Claude's additions (doc 51): `--trap-test`, `--train-race-test [bayview]` (also checks the countdown hold and captures the finish beacon), `--horn-test`, `--photo-review`, `--photo-requests-test`, `--fireworks-review --fireworks-now --time night`; `sound-harness.ps1 -Filter horns\|fireworks` |
 | `run-frame-cost.ps1 -Rendered -Extra @('--frame-probe','probe')` | Rendered race frame timing (CPU, GPU, AI, physics per frame) |
 | `drive-benchmark.ps1`, `route-drive.ps1` | Free-roam frame cost and an autopilot drive to the castle |
-| `publish-play.ps1` | Richard's play copy: copies the dev build to `../little-road-play/` (changes only when this runs) and points the "Little Road" desktop shortcut at it, plus "Max Build Hot Laps" and "Max Build Test Drive" (doc 54). Run after a build passes its checks and smoke tests |
+| `publish-play.ps1` | Richard's play copy: copies the dev build to `../little-road-play/` (changes only when this runs) and points the "Little Road" desktop shortcut at it, the only one (4 Oct: one build with everything; old extra shortcuts go to the Recycle Bin). |
 | `cleanup.ps1` | Prunes old evidence to the Recycle Bin (dry run without arguments) |
 
 Working rules for Claude are in `CLAUDE.md`.
