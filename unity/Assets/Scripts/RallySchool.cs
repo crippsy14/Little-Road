@@ -35,10 +35,11 @@ namespace LittleRoad
         static readonly float[] FlickX={-2420,-2394,-2368},FlickZ={-2902,-2892,-2902};
 
         public bool Active=>lesson>=0;public bool Holding=>Active&&Time.time<go;
-        RoadCar player;Func<AdventureStore> store;Action<string> notify;Action<Vector3,float> place;
+        RoadCar player;Func<AdventureStore> store;Action<string> notify;Action<Vector3,float> place;Action<LicenceScreen.Attempt> finished;
         int lesson=-1,step;float go,penalty;Transform course;Vector3 last;
         readonly List<(Transform t,bool down)> cones=new();
-        public void Setup(RoadCar car,Func<AdventureStore> s,Action<string> n,Action<Vector3,float> p){player=car;store=s;notify=n;place=p;}
+        public void Setup(RoadCar car,Func<AdventureStore> s,Action<string> n,Action<Vector3,float> p,Action<LicenceScreen.Attempt> f=null){player=car;store=s;notify=n;place=p;finished=f;}
+        public int Current=>lesson;
         static Vector3 G(float x,float z)=>new(x,ValleyField.Height(x,z),z);
 
         public void Begin(int i)
@@ -160,14 +161,22 @@ namespace LittleRoad
             last=p;
         }
         static bool In(Vector3 p,Vector2 min,Vector2 max)=>p.x>=min.x&&p.x<=max.x&&p.z>=min.y&&p.z<=max.y;
-        void Fail(string why){notify($"{Lessons[lesson].name} · {why}. Gwen says: again!");End();}
+        void Fail(string why)
+        {
+            int i=lesson;End();
+            if(finished!=null)finished(new LicenceScreen.Attempt{index=i,failed=true,reason=why+". Gwen says: again!"});else notify($"{Lessons[i].name} · {why}. Gwen says: again!");
+        }
         void Done(float t)
         {
-            int i=lesson;var l=Lessons[i];int medal=Medal(l,t);End();Confetti.Burst(player.body.position+Vector3.up*2);
-            if(medal==0){notify($"{l.name} {t:0.0} s · no medal (bronze is {l.bronze:0} s). Again!");return;}
-            bool allBefore=AllGold(store().Data);int paid=store().RecordLesson(l.id,t,medal,Prizes);
+            int i=lesson;var l=Lessons[i];int medal=Medal(l,t);float cones=penalty;End();Confetti.Burst(player.body.position+Vector3.up*2);
+            var attempt=new LicenceScreen.Attempt{index=i,time=t,penalty=cones,medal=medal};
+            if(medal==0){if(finished!=null)finished(attempt);else notify($"{l.name} {t:0.0} s · no medal (bronze is {l.bronze:0} s). Again!");return;}
+            bool allBefore=AllGold(store().Data);float before=Record(store().Data,i)?.best??float.MaxValue;
+            int paid=store().RecordLesson(l.id,t,medal,Prizes);attempt.paid=paid;attempt.newBest=t<before;
+            if(!allBefore&&AllGold(store().Data))attempt.extra="Gold in every test! Bethan at Grit & Gravel has the rally kit for you now.";
+            if(finished!=null){finished(attempt);return;}
             string line=$"{l.name} {t:0.0} s · {MedalName(medal)}!"+(paid>0?$" +{paid} credits":"");
-            if(!allBefore&&AllGold(store().Data))line+=" · Gold in every lesson! Bethan has the rally parts for you now.";
+            if(attempt.extra!=null)line+=" · Gold in every lesson! Bethan has the rally parts for you now.";
             notify(line);
         }
     }

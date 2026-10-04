@@ -48,6 +48,11 @@ public static class QuarryHillsChecks
         // Gwen's rally school: six lessons with medal times in order, ids the save accepts, and the rally parts locked behind it.
         Check(RallySchool.Lessons.Length==6&&RallySchool.Lessons.All(l=>l.gold<l.silver&&l.silver<l.bronze&&RallySchool.Known(l.id))&&!RallySchool.Known("lesson_6"),
             "Six rally lessons, each with gold faster than silver faster than bronze");
+        // The rally licence screen (4 Oct): times read as a stopwatch, one tile per lesson.
+        Check(LicenceScreen.Clock(9.14f)=="9.1 s"&&LicenceScreen.Clock(86)=="1:26.0","Licence times read 9.1 s and 1:26.0");
+        // The working quarry (4 Oct): every machine spot and route point on the floor, clear of the rallycross and the school.
+        Check(QuarryWorks.LayoutPoints().All(p=>QuarryHills.FloorQ(p.x,p.y)<.95f&&HillcrestRoute.Distance(loop,p.x,p.y,out _)>QuarryFloor.LoopWidth*.5f+10&&Vector2.Distance(p,new(QuarryFloor.School.x,QuarryFloor.School.z))>40),
+            "The quarry's machines work on the floor, 10 m or more off the circuit and 40 m from the rally school");
         var gravel=EquipmentCatalog.All.parts.Where(p=>p.shop=="quarry").ToList();
         Check(gravel.Count==2&&gravel.All(p=>p.unlock==RallySchool.Unlock&&p.tier=="C")&&PartDiscovery.Valid(RallySchool.Unlock),$"Grit & Gravel's own rally kit ({string.Join(", ",gravel.Select(p=>p.name))}) waits for gold in every lesson");
         var school=new AdventureProgress{traps=new List<TrapRecord>()};

@@ -139,31 +139,57 @@ namespace LittleRoad
             for(int i=0;i<homes.Count&&placed<72;i++) {
                 if(rng.NextDouble()>.42)continue;var (yard,yaw,_)=homes[i];
                 string body=bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
-                Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color,yard,yaw,FolkNames[name++%FolkNames.Length],"Hillcrest",new[]{Gossip[rng.Next(Gossip.Length)],Gossip[rng.Next(Gossip.Length)]});placed++;
+                if(Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color,yard,yaw,FolkNames[name++%FolkNames.Length],"Hillcrest",new[]{Gossip[rng.Next(Gossip.Length)],Gossip[rng.Next(Gossip.Length)]},true))placed++;
             }
             // Quarry Hills' residents, outside their terraces (--quarry-hills).
             int quarryPlaced=0;
             for(int i=0;i<QuarryHillsTown.Homes.Count&&quarryPlaced<110;i++) {
-                if(rng.NextDouble()>.36)continue;var (yard,yaw,_)=QuarryHillsTown.Homes[i];
+                if(rng.NextDouble()>.7)continue;var (yard,yaw,_)=QuarryHillsTown.Homes[i]; // (only houses with a drive are homes)
                 string body=rng.NextDouble()<.55?CarBodies.OffRoad[rng.Next(CarBodies.OffRoad.Length)]:bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
-                Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color,yard,yaw,QuarryNames[quarryPlaced%QuarryNames.Length],"Quarry Hills",new[]{QuarryGossip[rng.Next(QuarryGossip.Length)],QuarryGossip[rng.Next(QuarryGossip.Length)]});quarryPlaced++;
+                if(Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color,yard,yaw,QuarryNames[quarryPlaced%QuarryNames.Length],"Quarry Hills",new[]{QuarryGossip[rng.Next(QuarryGossip.Length)],QuarryGossip[rng.Next(QuarryGossip.Length)]},true))quarryPlaced++;
             }
             void Special(string spot,string body,Color paint,string who,string title,params string[] lines){if(HillcrestTown.Spots.TryGetValue(spot,out var s))Spawn(root,body,paint,s.at,s.yaw,who,title,lines);}
             // (Gwen at the rally school is a resident: AdventureGame.)
             Special("gelato","gelato",Toy.Hex(0xffd6e8),"Gelato Gina","Gelato van","Gelato! Twelve flavours, all of them pistachio. Well, nearly.","Best seat in town: right by the fountain, watching the market.");
             Special("postvan","postvan",Toy.Hex(0xd92b3a),"Postie Percival","Hillcrest Post","Letters for the castle, parcels for the hotel, postcards for everyone!","Pip on Bayview and I swap postcards every week. Island news travels slow!");
-            if(HillcrestTown.Spots.TryGetValue("taxirank",out var rank))for(int k=0;k<2;k++)Spawn(root,"taxi",Toy.Hex(0xffd23f),rank.at+new Vector3(0,0,k*5.5f),rank.yaw,k==0?"Cabbie Carmine":"Cabbie Lou","Station taxis",new[]{k==0?"Taxi? Where to? Anywhere in the valley, as long as it's downhill.":"The train brings the tourists, I bring them up the hill. Teamwork!"});
-            Debug.Log("LITTLE_ROAD_TOWNSFOLK placed="+People.Count);
+            if(HillcrestTown.Spots.TryGetValue("taxirank",out var rank))for(int k=0;k<2;k++)Spawn(root,"taxi",Toy.Hex(0xffd23f),rank.at+Quaternion.Euler(0,rank.yaw,0)*Vector3.forward*(k*5.8f),rank.yaw,k==0?"Cabbie Carmine":"Cabbie Lou","Station taxis",new[]{k==0?"Taxi? Where to? Anywhere in the valley, as long as it's downhill.":"The train brings the tourists, I bring them up the hill. Teamwork!"});
+            // Each home car on a hard-standing (Quarry Hills slate, Hillcrest stone), so the garden reads as a drive.
+            if(standings.Count>0)QuarryFloor.Combine("Front-garden hard-standings",standings,WorldLook.Kit("Hard-standing flags",Toy.Hex(0x8a8d90),WorldLook.Pattern.Stone,0,.12f,true),root,false);
+            if(standingsWarm.Count>0)QuarryFloor.Combine("Front-garden hard-standings (Hillcrest)",standingsWarm,WorldLook.Kit("Hard-standing stone",Toy.Hex(0xc9b48f),WorldLook.Pattern.Stone,0,.12f,true),root,false);
+            Debug.Log("LITTLE_ROAD_TOWNSFOLK placed="+People.Count+" homeSkipped="+homeSkipped);
         }
-        void Spawn(Transform root,string body,Color paint,Vector3 at,float yaw,string who,string title,string[] lines)
+        readonly List<Matrix4x4> standings=new(),standingsWarm=new();int homeSkipped;
+        // Clear of garden and pavement furniture: a bush, bench or lamp within 1 m of the car's outline.
+        static bool NearProp(Vector3 p,Quaternion rot,float halfLength)
+        {
+            bool Hit(Vector3 q){var l=Quaternion.Inverse(rot)*(q-p);return Mathf.Abs(l.x)<.95f+1f&&Mathf.Abs(l.z)<halfLength+1f;}
+            foreach(var q in QuarryHillsTown.GardenProps)if(Hit(q))return true;
+            foreach(var q in HillcrestTown.StreetLamps)if(Hit(q))return true;
+            return false;
+        }
+        bool Spawn(Transform root,string body,Color paint,Vector3 at,float yaw,string who,string title,string[] lines,bool home=false)
         {
             var p=at;p.y=Mathf.Max(at.y,ValleyField.Height(at.x,at.z))+.03f;
             var go=TrialWorld.Car(body,paint);go.name="Resident "+who;go.transform.SetParent(root);go.transform.SetPositionAndRotation(p,Quaternion.Euler(0,yaw,0));
-            var box=go.AddComponent<BoxCollider>();box.center=new Vector3(0,.9f,0);box.size=new Vector3(1.9f,1.8f,body=="minibus"?4.4f:body=="camper"||body=="ritz"?4.1f:3.7f);go.tag="Respawn";
-            if(StationarySpot.Settle(go)<0){Destroy(go);return;} // front yards sat against the house fronts; no clear spot: leave them out
+            float length=body=="minibus"?4.4f:body=="camper"||body=="ritz"?4.1f:3.7f;
+            var box=go.AddComponent<BoxCollider>();box.center=new Vector3(0,.9f,0);box.size=new Vector3(1.9f,1.8f,length);go.tag="Respawn";
+            if(home) {
+                // A car at home stays in its own front garden (street review, 4 Oct: settling it anywhere within 14 m put
+                // cars on pavements, through lamps and benches, and into doorways). It may slide along the frontage only.
+                Physics.SyncTransforms();bool placed=false;var fwd=go.transform.forward;
+                foreach(float o in new[]{0f,1.2f,-1.2f}) {
+                    var q=p+fwd*o;q.y=Mathf.Max(at.y,ValleyField.Height(q.x,q.z))+.03f;
+                    if(StationarySpot.Overlaps(go,q).Count>0||WorldTiles.Blocked(q,2.2f)||NearProp(q,go.transform.rotation,length*.5f))continue;
+                    go.transform.position=q;Physics.SyncTransforms();placed=true;break;
+                }
+                if(!placed){homeSkipped++;Destroy(go);return false;}
+                var pad=go.transform.position;pad.y=Mathf.Max(ValleyField.Height(pad.x,pad.z),at.y)+.01f;
+                (QuarryHills.Enabled&&QuarryHills.Contains(pad.x,pad.z)?standings:standingsWarm).Add(Matrix4x4.TRS(pad,go.transform.rotation,new Vector3(2.4f,.06f,length+.7f)));
+            }
+            else if(StationarySpot.Settle(go)<0){Destroy(go);return false;} // no clear spot: leave them out
             var chatter=go.AddComponent<NpcChatter>();chatter.speaker=who;chatter.colour=Toy.Party[People.Count%Toy.Party.Length];chatter.lines=FolkBump;chatter.talkable=false;
             go.AddComponent<ResidentIdle>();
-            People.Add(new Folk{car=go.transform,name=who,title=title,lines=lines});
+            People.Add(new Folk{car=go.transform,name=who,title=title,lines=lines});return true;
         }
         void Balloons(Transform root)
         {

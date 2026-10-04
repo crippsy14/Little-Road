@@ -202,24 +202,35 @@ namespace LittleRoad
                 float pole=0;Vector3? lastPole=null;
                 foreach(int side in new[]{-1,1}) {
                     Vector3? prev=null;float sinceGate=40+R()*60;
+                    // Each stretch is laid once it ends, and only when 8 m or longer, with a pier at each end (street review,
+                    // 4 Oct: walls 2-4 m long stopped and started along Kettle Falls road).
+                    var run=new List<Vector3>();
+                    void Lay(){if(run.Count>=5){for(int i=1;i<run.Count;i++)Wall(run[i-1],run[i]);Pier(run[0]);Pier(run[^1]);}run.Clear();}
                     for(float s=10;s<road.Length-10;s+=2) {
                         var c=road.At(s);var right=road.Right(s)*side;var p=c+right*(road.width*.5f+4.5f);
                         // Not in town (the terraces have their own yards), by the river, near junctions or another road, or the quarry.
-                        bool ok=Vector2.Distance(new(p.x,p.z),QuarryHills.Square)>520&&Open(p.x,p.z,road.width*.5f+3.5f)&&HillcrestRoute.Distance(HillcrestRoute.River.line,p.x,p.z,out _)>30&&Mathf.Abs(H(p.x,p.z)-c.y)<3;
+                        bool ok=Vector2.Distance(new(p.x,p.z),QuarryHills.Square)>520&&Open(p.x,p.z,road.width*.5f+3.5f)&&HillcrestRoute.Distance(HillcrestRoute.River.line,p.x,p.z,out _)>30&&Mathf.Abs(H(p.x,p.z)-c.y)<1.6f;
+                        // (Street review, 4 Oct: on a cutting bank a wall stood halfway up the slope, holding nothing back.) Only on
+                        // ground that's roughly level across the wall's line.
+                        if(ok){var i0=c+right*(road.width*.5f+3.2f);var o0=c+right*(road.width*.5f+5.8f);ok=Mathf.Abs(H(i0.x,i0.z)-H(o0.x,o0.z))<.9f;}
                         foreach(var node in QuarryHills.JunctionPoints())if(Vector3.Distance(new(p.x,0,p.z),new(node.x,0,node.z))<30)ok=false;
                         var g=G(p.x,p.z);
-                        if(ok&&prev.HasValue){sinceGate-=2;if(sinceGate<=0){Gate(prev.Value,g,road.Forward(s));sinceGate=90+R()*80;prev=null;s+=4;continue;}Wall(prev.Value,g);}
+                        if(ok&&prev.HasValue){sinceGate-=2;if(sinceGate<=0&&run.Count>=5){Lay();Gate(prev.Value,g,road.Forward(s));sinceGate=90+R()*80;prev=null;s+=4;continue;}if(run.Count==0)run.Add(prev.Value);run.Add(g);}
+                        else Lay();
                         prev=ok?g:null;
                         // Telegraph poles along the left side every 45 m, with wires between them.
                         if(side<0&&ok&&(pole-=2)<=0){var tp=c+right*(road.width*.5f+6.5f);tp.y=H(tp.x,tp.z);var obj=Put("telegraph_pole",tp,Quaternion.LookRotation(road.Forward(s)).eulerAngles.y+90);
                             if(obj!=null){if(lastPole.HasValue&&Vector3.Distance(lastPole.Value,tp)<60){var a=lastPole.Value+Vector3.up*7.2f;var b=tp+Vector3.up*7.2f;var d=b-a;lines.Add(Matrix4x4.TRS((a+b)*.5f+Vector3.down*.3f,Quaternion.LookRotation(d),new Vector3(.04f,.04f,d.magnitude)));}lastPole=tp;}pole=45;}
                     }
+                    Lay();
                 }
             }
             // The welcome gate on Quarry Road where the town begins, and Slate Quay's at the bottom of Quay Lane.
             var q=HillcrestRoute.Find(QuarryHills.QuarryRoadName);float gs=q.Length-560;Put("town_gate",q.At(gs)+Vector3.down*.02f,Quaternion.LookRotation(q.Forward(gs)).eulerAngles.y,T(0xffffff,0,0xc0392b,0),"CROESO I QUARRY HILLS");
             var ql=HillcrestRoute.Find(QuarryHills.QuayLaneName);float qs=ql.Length-40;Put("town_gate",ql.At(qs)+Vector3.down*.02f,Quaternion.LookRotation(ql.Forward(qs)).eulerAngles.y,T(0xffffff,0,0x1f3a93,0),"SLATE QUAY");
         }
+        // A squared end pier, a little taller than the wall, where a stretch stops.
+        static void Pier(Vector3 p){walls.Add(Matrix4x4.TRS(p+Vector3.up*.45f,Quaternion.identity,new Vector3(.95f,1.9f,.95f)));caps.Add(Matrix4x4.TRS(p+Vector3.up*1.45f,Quaternion.identity,new Vector3(1.1f,.18f,1.1f)));}
         // A length of dry-stone wall between two ground points: a battered body and a row of upright copes.
         static void Wall(Vector3 a,Vector3 b)
         {

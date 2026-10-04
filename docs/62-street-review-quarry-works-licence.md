@@ -1,0 +1,107 @@
+# 62 · Street review fixes, the working quarry, and the rally licence (4 October)
+
+Richard asked for four things on 4 October:
+- Review every street in every town from photos. Sub-agents reported; the fixing stayed in the main session.
+- Raise material fidelity in the quarry, where the floor "looked like a kitchen floor's repeating tiles".
+- Add standing rocks and working machines that watch the race when you race.
+- Make the rally licence work like Gran Turismo's.
+
+## The street review
+
+**Photos.**
+- `--street-review` (in `VillageReview`) photographs every town street every 40 m: a driver's-eye view ahead and both frontages.
+- Output goes to `review/quarry-hills/streets-1/`: 408 photos across 13 streets, with `streets.json` giving each camera.
+
+**Reviewers.**
+- Seven reviewers each took a group of streets.
+- Richard paused them part-way to save usage. Their findings, and where to continue, are in `review/street-review/*.md` and its `README.md`.
+
+**Fixed.** The finding ids are the reviewers'.
+
+| Finding | Fix |
+|---|---|
+| Residents' cars on pavements, through lamps and benches, into doorways (QH-HS-01/02/03, QR-1/2/6, QL-8, VC-1/2, HCL-5) | The front-garden spot sat inside the house's collider (Quarry Hills) or across the pavement (Hillcrest), so settling pushed cars anywhere within 14 m. A home car now stands in the middle of its garden and may only slide 1.2 m along the frontage. It must be 1 m clear of lamps, benches, bushes and fences, or it's left out. Each car stands on a slate (or stone) hard-standing. |
+| Shop names behind the balcony railings (VC-7, HCL-3, QH-HS-04, QR-7, QL-9, CH-3) | Shop terraces (`terrace_b`) have no balcony now. The sign board sits clear above the awning. |
+| "SIOP" read as STOP | The square's corner shop is SIOP Y GORNEL; the street grocer is GROSER. |
+| Black arched loggias with floating flowers (QH-HS-05, CH-4) | A stone back wall with glazed doors in each bay, and terracotta pots under the flowers (`house_d`, `house_c`). |
+| The same front twice in a row | No two of the same design side by side, in both towns. |
+| Lamps doubled 2–4 m apart (QR-5, QH-HS-06) | No lamp within 6 m of another. Bunting snaps to the nearest lamp within 6 m. |
+| Grass in the Pit Stop's bays and on the square (QR-3, QL-13), and in the road out of Bayview (BV-1) | Verge tufts and meadow grass stay off Quarry Hills' plots, square and Pit Stop, and off the mainline's first stretch. |
+| Sunk bench ("beams on the paving") and the map board lying face-up (QL-12/13) | Square furniture stands on whichever is higher, the paving or the ground. |
+| Retaining-wall and field-wall stubs (CH-1, HR-1, KF-1) | A retaining wall needs 6 m of points, and one missing point doesn't break it. Field walls are laid in runs of 8 m or more with an end pier. A gate only follows a real wall. |
+| A wall halfway up a cutting bank (QL-3) | Field walls only on ground that's level across the wall's line, within 1.6 m of the road. |
+| Gate boards blank from behind (QL-4, HCL-6) | The town gate has its name on both faces. |
+| Houses hanging over banks (QL-1, BV-2) | Plinths are sized from a 5 × 5 grid under the footprint, not just its corners. The Bayview farmhouse and barn get stone plinths. |
+| Farm tracks draped down road cuttings (BV-3/4) | Each track starts after the last step steeper than 30%. |
+| Guardrail along the kerb in front of house doors (HCL-1) | Once the towns are built, rail pieces with a building within 9 m behind them are removed (10 this build). |
+| A bush standing in the river (HCL-2) | Bushes and tufts stay out of the river. |
+| The Pit Stop has no way in (QR-4) | A 16 m paved apron from Quarry Road to the forecourt, with the pavement broken across it. |
+| Square flags not Welsh (QR-12) | Y Ddraig Goch either side of the square's centre pole (`flag_wales`). |
+| Quarry Hills reads as Ligurian (CH-5, QL-10) | Three quarrymen's cottages: grey rubble stone, slate roofs, small white sashes, a porch, a bay and dormer (`cottage_a/b/c`). They make up most houses away from the square and a quarter in the middle. |
+| Every front garden is the same lawn (QH-HS-14, CH-6) | Gardens without a car get a fence of upright slate slabs (crawiau, as in the slate valleys) with a gap for the gate. |
+
+**Not done yet:**
+- **Bayview:** the sign in the rock (BV-5) and the wall gap (BV-6).
+- **Via Crest:** the castle gate lip (VC-3), the fork-island sign and kerb (VC-4/5), and the planter against a window (VC-6).
+- **Hillcrest:** the Pit Stop's two waiting cars and disc signs (HCL-4), the zipline plaza (HCL-7) and the café chairs (HCL-8).
+- **Quarry Hills:**
+  - stray step slabs, doors above walls and pillar stubs (QH-HS-07–10);
+  - pavement ends (QL-11, QR-10);
+  - awning height (QR-8);
+  - a bench at a door (HR-2);
+  - the gallery's stretched end (HR-5).
+- **Improvements:**
+  - gardens on the bare lawns (the memorial garden found no free plot once the cottages filled the lawn by the square);
+  - town-edge signs;
+  - quay dressing;
+  - the Bayview lay-by.
+
+## The quarry: fidelity
+
+- **The floor (Kit shader, split slate's flat tops).** The 45 cm grid of random squares is gone. It's now:
+  - compacted gravel speckle at two sizes, with a scatter of loose stones;
+  - outlines of broken bedrock slabs, only in a few patches;
+  - drifts of pale dust and damp dark hollows that shine a little.
+
+  Per-chip colour fades once a chip is under a few pixels, so it doesn't shimmer at range.
+- **The rallycross.** It was a flat cream strip. It's now darker slate gravel, finer, with two polished wheel ruts and loose stones on the berms. The ruts come from the strip's across-coordinate in its second UV.
+- **The floor's edge.** Ragged bays and spurs at two scales, instead of a smooth painted line.
+- **The galleries.**
+  - Split slate keeps its beds at any range (the cheap far path made one flat dark band).
+  - They now show broad paler faces and dark wet streaks down from each bench.
+  - The gallery slate is a little lighter.
+- **Standing rocks** (`rock_stand_a`–`d`):
+  - 63 placed round the floor's edge: slate monoliths, leaning slab pairs, split boulders and boulder clusters, with rubble at their feet;
+  - a ring of nine standing stones on the moor by the Kettle Falls road.
+- **Spoil heaps.** Three rubble heaps on the floor. You can drive up them.
+
+## The working quarry (`QuarryWorks`)
+
+**In free roam.** In the floor's north-east corner, clear of the circuit and the rally school:
+- **The excavator** (`excavator_base` and `excavator_top`) digs at the heap and slews round to load. Its arm is a hinged part.
+- **Two articulated dump trucks** (`haul_truck`) run a circuit:
+  1. load under the excavator;
+  2. drive out to the tip and reverse up to it;
+  3. tip (the body lifts on its rear hinge);
+  4. come back round.
+
+  Only one truck at a time uses the loading bay or the tip.
+- **A wheel loader** (`wheel_loader`) shuttles between a stockpile and the slate stacks, lifting and dumping its bucket.
+
+**In a quarry race** (`RoadCar.LooseRace`), the trucks and the loader park side by side behind the start straight, facing the track, 28 m off it. The excavator turns to watch with its arm raised.
+
+**Review flags.** `--works-pose` and `--works-raceday` freeze them for stills.
+
+## The rally licence (`LicenceScreen`)
+
+- **Opening it.** "Rally licence" in Gwen's menu opens the licence screen:
+  - **The test list:** the six tests down the left, each with its medal chip.
+  - **The card:** the focused test's brief, its gold, silver and bronze times with their prizes, and your best.
+  - **Navigation:** pick a test to start it, or Exit licences (circle / Esc), which puts the car back beside Gwen.
+- **After every attempt,** a result card shows "Test cleared!", "No medal" or "Test failed". It gives the medal, the time, cone penalties, credits and new bests. It offers Try again (cross), Next test (square) and Back to licences (circle).
+- **The test.** `--lesson-test` drives the whole flow:
+  - Gwen, the licence screen, test 1;
+  - then Next test from each result card;
+  - then Back to licences and Exit.
+
+  It passes (`screen=True started=True resultCards=6 back=True exitToGwen=True`, all gold).

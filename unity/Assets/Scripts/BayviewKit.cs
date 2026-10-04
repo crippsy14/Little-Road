@@ -129,7 +129,7 @@ namespace LittleRoad
             var go=new GameObject("Sign / "+words);go.transform.SetParent(anchor,false);go.transform.rotation=building.rotation*Quaternion.Euler(0,anchor.name.EndsWith("back")?0:180,0); // "...back" anchors face the rear
             // Lettering sized to its board: small viewpoint maps and track boards, big tunnel and stand banners.
             string kind=anchor.name.Substring(anchor.name.LastIndexOf('_')+1);
-            go.transform.localScale=Vector3.one*(kind switch{"brand"=>1.1f,"garage"=>.95f,"parts"=>.95f,"body"=>.95f,"map"=>.3f,"board"=>.62f,"portal"=>2.1f,"railway"=>1.35f,"stand"=>1.7f,"standback"=>1.15f,"paddockback"=>.85f,"control"=>.95f,_ when kind.StartsWith("bay")=>.78f,"gate"=>words.Length>12?.9f:1.2f,_=>1f});
+            go.transform.localScale=Vector3.one*(kind switch{"brand"=>1.1f,"garage"=>.95f,"parts"=>.95f,"body"=>.95f,"map"=>.3f,"board"=>.62f,"portal"=>2.1f,"railway"=>1.35f,"stand"=>1.7f,"standback"=>1.15f,"paddockback"=>.85f,"control"=>.95f,_ when kind.StartsWith("bay")=>.78f,"gate" or "gateback"=>words.Length>12?.9f:1.2f,_=>1f});
             var text=go.AddComponent<TextMesh>();text.text=words;text.anchor=TextAnchor.MiddleCenter;text.alignment=TextAlignment.Center;
             text.font=Toy.Display;text.fontSize=90;text.characterSize=.075f;text.color=kind=="brand"?Toy.White:Toy.Navy;
             go.GetComponent<Renderer>().sharedMaterial=text.font.material;go.AddComponent<WorldText>();

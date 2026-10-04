@@ -325,19 +325,34 @@ namespace LittleRoad
         IEnumerator LessonTest()
         {
             yield return new WaitForSeconds(1);float credits=Store.Data.credits;var report=new List<string>();
+            // Through the licence screen (LicenceScreen): Gwen → Rally licence → test 1; each attempt must end on its result
+            // card, from which Next test starts the next; after the last, Back to licences then Exit puts the car by Gwen.
+            string folder=RaceTrial.Arg("--trial-captures");if(folder!=null)Directory.CreateDirectory(folder);
+            Place(residents["rallyschool"]+Vector3.forward*5);yield return new WaitForSeconds(.5f);
+            bool opened=Interact("rallyschool")&&ui.InvokeChoice("Rally licence");yield return new WaitForSeconds(.5f);
+            opened&=ui.Licence!=null&&!ui.Licence.IsResult;if(folder!=null)ui.Capture(Path.Combine(folder,"licence-1-list.png"));
+            if(opened){EventSystem.current.SetSelectedGameObject(ui.Licence.Choices[2].gameObject);yield return new WaitForSeconds(.3f);opened&=ui.Licence.Focused==2;
+                if(folder!=null)ui.Capture(Path.Combine(folder,"licence-2-focus-3.png"));}
+            bool started=opened&&ui.InvokeChoice("Test 1 ");int cards=0;
             for(int i=0;i<RallySchool.Lessons.Length;i++) {
-                StartLesson(i);yield return new WaitForSeconds(3.2f);var path=RallySchool.TestPath(i);float speed=i==5?20:14;
+                if(i>0){bool next=ui.Licence!=null&&ui.Licence.IsResult&&ui.InvokeChoice("Next test");if(!next)StartLesson(i);}
+                yield return new WaitForSeconds(3.2f);var path=RallySchool.TestPath(i);float speed=i==5?20:14;
                 player.body.isKinematic=true;
                 for(int k=0;k+1<path.Count&&school.Active;k++){var a=path[k];var b=path[k+1];float len=Vector3.Distance(a,b);
                     for(float d=0;d<len&&school.Active;d+=speed*Time.fixedDeltaTime){var p=Vector3.Lerp(a,b,d/len);p.y=ValleyField.Height(p.x,p.z)+.6f;player.body.MovePosition(p);
                         var f=b-a;f.y=0;if(f.sqrMagnitude>.01f)player.body.MoveRotation(Quaternion.LookRotation(f));yield return new WaitForFixedUpdate();}}
                 for(int k=0;k<30&&school.Active;k++)yield return new WaitForFixedUpdate();
                 player.body.isKinematic=false;var r=RallySchool.Record(Store.Data,i);report.Add($"{i}:{(r==null?"none":RallySchool.MedalName(r.stars)+" "+r.best)}");
-                school.End();yield return new WaitForSeconds(.3f);
+                yield return new WaitForSeconds(.4f);if(ui.Licence!=null&&ui.Licence.IsResult)cards++;
+                if(folder!=null&&(i==0||i==5))ui.Capture(Path.Combine(folder,$"licence-3-result-{i+1}.png"));
             }
+            bool back=ui.InvokeChoice("Back to licences");yield return new WaitForSeconds(.4f);back&=ui.Licence!=null&&!ui.Licence.IsResult&&ui.Licence.Focused==5;
+            if(folder!=null)ui.Capture(Path.Combine(folder,"licence-4-after.png"));
+            bool exited=ui.InvokeChoice("Back Exit licences");yield return new WaitForSeconds(.4f);
+            exited&=!ui.IsOpen&&Vector3.Distance(player.body.position,residents["rallyschool"])<14;
             bool unlocked=PartDiscovery.Met(Store.Data,RallySchool.Unlock);
-            Debug.Log($"LITTLE_ROAD_LESSON_TEST {string.Join(" ",report)} allGold={RallySchool.AllGold(Store.Data)} partsUnlocked={unlocked} credits={credits}->{Store.Data.credits}");
-            Application.Quit(unlocked?0:1);
+            Debug.Log($"LITTLE_ROAD_LESSON_TEST {string.Join(" ",report)} allGold={RallySchool.AllGold(Store.Data)} partsUnlocked={unlocked} credits={credits}->{Store.Data.credits} screen={opened} started={started} resultCards={cards} back={back} exitToGwen={exited}");
+            Application.Quit(unlocked&&opened&&started&&cards==6&&back&&exited?0:1);
         }
         // Test (--quarry-hills --climb-test): carried up the Gallery Climb's middle line at 15 m/s from the bottom flags, the
         // run must start itself and finish at the top; a still from part-way up, looking across the galleries.
@@ -1124,27 +1139,39 @@ namespace LittleRoad
             int golds=0;for(int i=0;i<RallySchool.Lessons.Length;i++){var r=RallySchool.Record(Store.Data,i);if(r!=null&&r.stars==3)golds++;}
             string schoolLine=RallySchool.AllGold(Store.Data)?" Gold in every lesson: Bethan at Grit & Gravel has the rally kit for you.":$" Six lessons, bronze to gold: get gold in all six and Bethan sells you the proper rally kit ({golds} of 6 so far).";
             Show("Gwen \"Granite\" Price / Rally School",(QuarryFestival.Festival?"It's Rally Day in town, and it's for you, cariad: there's a parade on the High Street! ":"")+"Croeso! Gravel's not tarmac, cariad: brake in a straight line, turn in early, and let her slide. And tyres! On the rallycross your road tyres grip about half as well as gravel ones."+schoolLine+done,
-                new(){new("Race the Quarry Hills Rallycross · C",()=>PreviewRace("quarry",Gwen)),new("Rally lessons",GwenLessons),new($"Quarry Sprint · time trial (par {SprintPar:0} s)",StartSprint),new("Back to the road",Close)});
+                new(){new("Race the Quarry Hills Rallycross · C",()=>PreviewRace("quarry",Gwen)),new("Rally licence",()=>OpenLicences(-1)),new($"Quarry Sprint · time trial (par {SprintPar:0} s)",StartSprint),new("Back to the road",Close)});
         }
-        void GwenLessons()
+        // The rally licence, Gran Turismo style (LicenceScreen; Richard, 4 Oct): the test list with each test's brief, medal
+        // times and your best; every attempt ends on a result card (try again, next test, back to the licences), and
+        // exiting the licences puts the car back beside Gwen. focus<0 opens on the first test without gold.
+        List<LicenceScreen.Test> LicenceTests()
         {
-            var choices=new List<AdventureUI.Choice>();
-            for(int i=0;i<RallySchool.Lessons.Length;i++){int k=i;var l=RallySchool.Lessons[i];var r=RallySchool.Record(Store.Data,i);
-                string mark=r==null||r.stars==0?"":$" · {RallySchool.MedalName(r.stars)} {r.best:0.0} s";
-                choices.Add(new($"{i+1}. {l.name}{mark}",()=>GwenLesson(k)));}
-            choices.Add(new("Back",Gwen));
-            Show("Gwen / Rally lessons",$"Pick a lesson. Medals pay once each: bronze {RallySchool.Prizes[0]}, silver {RallySchool.Prizes[1]}, gold {RallySchool.Prizes[2]} credits.",choices);
+            var list=new List<LicenceScreen.Test>();
+            for(int i=0;i<RallySchool.Lessons.Length;i++){var l=RallySchool.Lessons[i];var r=RallySchool.Record(Store.Data,i);
+                list.Add(new LicenceScreen.Test{name=l.name,how=l.how,gold=l.gold,silver=l.silver,bronze=l.bronze,best=r?.best??0,medal=r?.stars??0});}
+            return list;
         }
-        void GwenLesson(int i)
+        void OpenLicences(int focus)
         {
-            var l=RallySchool.Lessons[i];
-            Show($"Gwen / {l.name}",$"{l.how}\nGold {l.gold:0.0} s · silver {l.silver:0.0} s · bronze {l.bronze:0} s. Knocked cones cost 2 s each.",
-                new(){new("Go!",()=>{Close();StartLesson(i);}),new("Back",GwenLessons)});
+            school?.End();var tests=LicenceTests();
+            if(focus<0){focus=tests.FindIndex(t=>t.medal<3);if(focus<0)focus=0;}
+            player.controlsBlocked=true;
+            ui.ShowLicences("Gwen's rally school · Quarry Hills",tests,RallySchool.Prizes,focus,i=>{ui.Close();StartLesson(i);},ExitLicences);
+        }
+        void ExitLicences()
+        {
+            Close();school?.End();
+            if(QuarryHillsTown.Spots.TryGetValue("rallyschool",out var gwen)){player.body.rotation=Quaternion.Euler(0,90,0);Place(gwen.at+new Vector3(0,0,-8));}
+        }
+        void LessonFinished(LicenceScreen.Attempt a)
+        {
+            var tests=LicenceTests();int i=a.index;player.controlsBlocked=true;
+            ui.ShowLicenceResult(tests[i],tests.Count,a,()=>{ui.Close();StartLesson(i);},i+1<tests.Count?()=>{ui.Close();StartLesson(i+1);}:null,()=>OpenLicences(i));
         }
         void StartLesson(int i)
         {
-            if(school==null){school=gameObject.AddComponent<RallySchool>();school.Setup(player,()=>Store,Notify,(p,yaw)=>{player.body.rotation=Quaternion.Euler(0,yaw,0);Place(p);});}
-            sprintStart=-1;school.Begin(i);
+            if(school==null){school=gameObject.AddComponent<RallySchool>();school.Setup(player,()=>Store,Notify,(p,yaw)=>{player.body.rotation=Quaternion.Euler(0,yaw,0);Place(p);},LessonFinished);}
+            sprintStart=-1;player.controlsBlocked=false;interactionReadyTime=Time.unscaledTime+.25f;school.Begin(i);
         }
         // Quarry Hills' Pit Stop (uniform with every town's) and its people.
         void Huw()

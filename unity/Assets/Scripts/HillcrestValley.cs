@@ -797,6 +797,21 @@ namespace LittleRoad
             for(int k=0;k+4<hs.Length;k++)worst=Mathf.Max(worst,hs[k]-hs[k+4]);
             return worst>1.1f&&top-lowest>.4f;
         }
+        // Every rail and post with the way it faces out from the road (TrimRails reads them once the towns stand).
+        static readonly List<(GameObject piece,Vector3 edge,Vector3 outward)> railPieces=new();
+        // (Street review, 4 Oct: on Quay road the rail guarded a drop behind the houses, and ran along the kerb in front of their
+        // doors.) After the towns are built: no rail where a building stands within 9 m beyond it.
+        public static int TrimRails()
+        {
+            int removed=0;
+            foreach(var (piece,edge,outward) in railPieces) {
+                if(piece==null)continue;bool house=false;
+                foreach(var b in BayviewKit.Footprints){if(b.size.x<4.5f||b.size.z<4.5f||b.size.y<4)continue;
+                    for(float o=1;o<=9&&!house;o+=2){var q=edge+outward*o;if(b.Contains(new Vector3(q.x,b.center.y,q.z)))house=true;}if(house)break;}
+                if(house){Object.Destroy(piece);removed++;}
+            }
+            railPieces.Clear();return removed;
+        }
         void Guardrails(Vector3[] line,float width,Transform parent,int start,bool steep=false,Vector3[] own=null,bool riverside=false)
         {
             var white=TrialWorld.Material("Guardrail white",new Color(.97f,.97f,.95f),.2f,.4f);var red=TrialWorld.Material("Guardrail red",Toy.Red,.1f,.4f);
@@ -816,11 +831,11 @@ namespace LittleRoad
                         // (A road a metre or more below isn't a crossing: it's the street under the drop, and the drop keeps its rail.)
                         foreach(var road in HillcrestRoute.All()){if(road.line==line||road.line==own)continue;float d=HillcrestRoute.Distance(road.line,edge.x,edge.z,out float ry);if(d<Mathf.Min(road.width*.5f+2.5f,ownDist-1)&&ry>edge.y-1){crossing=true;break;}}
                         if(crossing)continue;}
-                    var rail=Piece("Guardrail",edge+Vector3.up*.62f,new Vector3(.12f,.32f,len+.08f),i%2==0?white:red,true);rail.transform.rotation=Quaternion.LookRotation(f);
+                    var rail=Piece("Guardrail",edge+Vector3.up*.62f,new Vector3(.12f,.32f,len+.08f),i%2==0?white:red,true);rail.transform.rotation=Quaternion.LookRotation(f);railPieces.Add((rail,edge,right*side));
                     // Posts stand on the ground (Richard, 3 Oct: barriers floating by the bridge out of Hillcrest, where the
                     // road runs above the bank): from the ground, or the road if that's lower, up to the rail.
                     if(i%2==0){var foot=a+right*side*(width*.5f+.55f);float g=Mathf.Min(foot.y,ValleyField.Height(foot.x,foot.z))-.15f;float top=foot.y+.7f;
-                        Piece("Guardrail post",new Vector3(foot.x,(g+top)*.5f,foot.z),new Vector3(.16f,top-g,.16f),white,true);}
+                        railPieces.Add((Piece("Guardrail post",new Vector3(foot.x,(g+top)*.5f,foot.z),new Vector3(.16f,top-g,.16f),white,true),foot,right*side));}
                 }
             }
         }
@@ -1127,6 +1142,8 @@ namespace LittleRoad
             void Plant(string id,float x,float z,float scale,bool solid=true)
             {
                 var at=new Vector3(x,ValleyField.Height(x,z)-.1f,z);float yaw=R()*360;
+                // Bushes and tufts stay out of the river (street review, 4 Oct: a shrub stood on the water at the quay).
+                if((id=="bush"||id=="flower_bush"||id=="grass_tuft")&&HillcrestRoute.Distance(HillcrestRoute.River.line,x,z,out _)<HillcrestRoute.River.width*.5f+1.5f)return;
                 WorldTiles.Place(at,solid?1.2f*scale:0,()=>{var g=BayviewKit.Spawn(id,at,yaw,holder,solid:solid,scale:scale);
                     if(id.StartsWith("tree_")||id=="olive_tree"||id=="bush"||id=="flower_bush")KitLod.Attach(g,id);if(WorldTiles.Late)PlacementAudit.SettleOne(g);});
             }

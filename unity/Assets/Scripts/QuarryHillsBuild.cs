@@ -70,6 +70,8 @@ namespace LittleRoad
                 for(float d=0;d<road.Length;d+=2.6f) {
                     int side=R()<.5f?-1:1;var q=road.At(d)+road.Right(d)*side*(road.width*.5f+2.6f+R()*6);
                     if(!QuarryHills.Contains(q.x,q.z)||QuarryHills.Bare(q.x,q.z)||ValleyField.RoadDistance(q.x,q.z)<road.width*.5f+2.3f||ValleyField.Height(q.x,q.z)<road.At(d).y-3)continue;
+                    // Not on the square, the Pit Stop's forecourt or any plot (street review, 4 Oct: tufts in the garage bays).
+                    if(QuarryHillsTown.Last!=null&&!QuarryHillsTown.Last.Clear(new Vector2(q.x,q.z),new Vector2(.6f,.6f),0))continue;
                     if(R()<.1f)Plant("bush",q.x,q.z,.7f+R()*.5f,false);else Plant("grass_tuft",q.x,q.z,.9f+R()*.8f,false);tufts++;
                 }
             }
@@ -123,7 +125,7 @@ namespace LittleRoad
         {
             // Split slate (Richard, 3 Oct: the quarry looked shiny and odd): the kit shader's matte slate pattern in world space, so
             // the faces show beds and cleavage instead of the terrain shader's stretched rock; Penrhyn's blue-grey with purple beds.
-            var m=WorldLook.Kit("Quarry Hills gallery slate",new Color(.30f,.31f,.36f),WorldLook.Pattern.Slate,0,.05f,true);
+            var m=WorldLook.Kit("Quarry Hills gallery slate",new Color(.38f,.39f,.44f),WorldLook.Pattern.Slate,0,.05f,true);
             // Penrhyn slate: blue-grey with a purple cast, lighter than the tips (fresh faces catch the light).
 
             float axis=Mathf.Atan2(QuarryHills.GalleryAxis.y,QuarryHills.GalleryAxis.x)*Mathf.Rad2Deg;

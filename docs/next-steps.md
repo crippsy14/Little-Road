@@ -1,5 +1,13 @@
 # Next steps (3 October 2026)
 
+**4 October:** [doc 62](62-street-review-quarry-works-licence.md) covers four things:
+- The street review's fixes: parked cars, shop signs, Welsh cottages and slate fences, and more.
+- The quarry's new look: a gravel floor, a rutted rallycross, standing rocks and spoil heaps.
+- The working machines: an excavator, dump trucks and a loader, which line up to watch the rallycross.
+- The Gran Turismo-style rally licence screens.
+
+The street review was paused part-way. Its findings and where to continue are in `review/street-review/README.md`; resume it with cheaper agents. The list of findings still to fix is in doc 62.
+
 **Plan of record (29 September):** [doc 45](45-roadmap-and-feature-spec.md) sets the order of work, Phases 0–5; the parts ladder is in [doc 44](44-parts-tiers-and-progression.md). The campaign is at least 12 hours and open-ended. Next is **Phase 0**: world grid with per-tile map and fog, Racer records, radar chart, a traffic-aware launch, save and IDs, and track standards.
 
 **The world plan (3 October):** [doc 58](58-world-and-campaign-design.md) is the design for the whole world and campaign. It covers:
@@ -21,7 +29,7 @@ You can drive it in any class's strongest build:
 - **Map and jumps:** N or View opens the map; Tab or D-pad up/down jumps between towns.
 - **Pacing:** a trip timer logs every drive between places, and `--scale-pacing` writes drive times for every road and class.
 - **Autopilot:** `--scale-autodrive a,b,c` drives real physics along the roads.
-- **Shortcut:** "Little Road - Continent Scale Test", added by `publish-play.ps1`.
+- **Shortcut:** none since 4 October (one build, one "Little Road" shortcut); run the play copy with `--scale-test`.
 
 Results are in doc 58 §12. **Next (W1):** foundations (world tiles, streaming, floating origin, data-driven regions, race rows, world-state layers), then the C ring town by town.
 

@@ -42,8 +42,9 @@ namespace LittleRoad
             var f=Farm;
             var yard=GameObject.CreatePrimitive(PrimitiveType.Cube);yard.name="Farmyard earth";yard.transform.SetParent(root);Object.Destroy(yard.GetComponent<Collider>());
             yard.transform.position=Ground(f+new Vector3(0,0,6))+Vector3.up*.03f;yard.transform.localScale=new Vector3(34,.05f,12);yard.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Farmyard earth",new Color(.62f,.52f,.38f),0,.08f);
-            Put("house_a",f+new Vector3(-11,0,16),180,T(0xfff3dc,0x2e9e5b,0xff4d5e,0x2e9e5b));
-            Put("barn",f+new Vector3(10,0,17),180,T(0xd94040,0xffffff,0xffffff,0xd94040),1.15f);
+            // On stone plinths down to the lowest ground under them (street review, 4 Oct: both hung over the road cutting).
+            Plinth(f+new Vector3(-11,0,16),new Vector2(8.5f,7.5f));Put("house_a",f+new Vector3(-11,0,16),180,T(0xfff3dc,0x2e9e5b,0xff4d5e,0x2e9e5b));
+            Plinth(f+new Vector3(10,0,17),new Vector2(10.5f,9.5f));Put("barn",f+new Vector3(10,0,17),180,T(0xd94040,0xffffff,0xffffff,0xd94040),1.15f);
             Put("tractor",f+new Vector3(-2,0,7),70);
             foreach(var (x,y) in new[]{(19f,0f),(20.3f,0f),(21.6f,0f),(19.65f,1.25f),(20.95f,1.25f),(20.3f,2.45f)}){var b=Put("hay_bale",f+new Vector3(x,0,8),0);b.transform.position+=Vector3.up*y;}
             // Wheat: 30 x 18 m of car-high crop to plough through.
@@ -55,6 +56,15 @@ namespace LittleRoad
             if(BayviewKit.Has("lavender_row"))for(int r=0;r<7;r++)Put("lavender_row",f+new Vector3(24f,0,-18+r*2.3f),0,null,1,false);
             foreach(float z in new[]{-17f,-11f,-5f})Put("fence",f+new Vector3(9.2f,0,z),90);
         }
+        void Plinth(Vector3 at,Vector2 size)
+        {
+            float floor=Ground(at).y,low=floor;
+            for(int i=0;i<5;i++)for(int j=0;j<5;j++)low=Mathf.Min(low,Ground(at+new Vector3((i/2f-1)*(size.x*.5f+.3f),0,(j/2f-1)*(size.y*.5f+.3f))).y);
+            if(floor-low<.25f)return;
+            var g=GameObject.CreatePrimitive(PrimitiveType.Cube);g.name="Stone plinth";g.transform.SetParent(root);g.tag="Respawn";
+            g.transform.position=new Vector3(at.x,(low-.5f+floor)*.5f,at.z);g.transform.localScale=new Vector3(size.x+.5f,floor-low+.5f,size.y+.5f);
+            g.GetComponent<Renderer>().sharedMaterial=WorldLook.Kit("Bayview stone plinth",new Color(.78f,.72f,.6f),WorldLook.Pattern.Stone,0,.12f,true);
+        }
         // Dirt tracks off the inside of the loop: to the farmyard, the campsite and the lookout.
         void Tracks()
         {
@@ -63,6 +73,10 @@ namespace LittleRoad
                 float d=track.Nearest(to,out _);var edge=track.At(d);var dir=to-edge;dir.y=0;dir.Normalize();
                 var start=edge+dir*8.4f;var control=new[]{start,start+dir*6,Vector3.Lerp(start+dir*6,to,.5f)+Vector3.Cross(Vector3.up,dir)*3,to};
                 var line=HillcrestRoute.Dense(control,1.2f);
+                // Start where it can be driven (street review, 4 Oct: the tracks were draped straight down the road cuttings'
+                // faces, and the two strips fought on the steep part): start after the last 1.2 m step steeper than 30%.
+                int first=0;for(int i=0;i+1<line.Length-4;i++)if(Mathf.Abs(Ground(line[i+1]).y-Ground(line[i]).y)>.36f)first=i+1;
+                if(first>0)line=line[first..];
                 Strip("Farm track verge",line,4.6f,.035f,verge);Strip("Farm track",line,3.0f,.06f,dirt);
             }
         }

@@ -12,8 +12,8 @@ namespace LittleRoad
     public static class AreaAudit
     {
         // Kit pieces by what they are (ids from source-art/build_bayview_kit.py).
-        static readonly string[] BuildingIds={"house_","terrace_","shop","cafe","post_office","hotel","town_hall","church","mill","motors","station","barn","pit_stop","pit_garages","beach_hut"};
-        static readonly string[] FurnitureIds={"lamp_post","bench","fountain","kiosk","flower_bed","flower_bush","picnic_table","market_stall","bandstand","map_board","flag_pole","parasol","telescope","chevron_sign","ad_board"};
+        static readonly string[] BuildingIds={"house_","terrace_","cottage_","shop","cafe","post_office","hotel","town_hall","church","mill","motors","station","barn","pit_stop","pit_garages","beach_hut"};
+        static readonly string[] FurnitureIds={"lamp_post","bench","fountain","kiosk","flower_bed","flower_bush","picnic_table","market_stall","bandstand","map_board","flag_pole","parasol","telescope","chevron_sign","ad_board","flag_wales","slate_stack"};
         static readonly string[] NatureIds={"tree_","palm","bush","olive_tree","rock_","reeds","grass_tuft","vine_row","lavender_row","sunflower_row","hay_bale"};
         static bool Is(string id,string[] set)=>set.Any(p=>p.EndsWith("_")?id.StartsWith(p):id==p);
 

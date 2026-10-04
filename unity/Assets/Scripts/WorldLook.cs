@@ -34,6 +34,8 @@ namespace LittleRoad
         public static Pattern PatternFor(string material)
         {
             bool Any(params string[] keys){foreach(var k in keys)if(material.StartsWith(k))return true;return false;}
+            if(Any("Tint_WallStone"))return Pattern.Stone;   // Quarry Hills' rubble-stone cottages (tinted grey per house)
+            if(Any("SlateRock"))return Pattern.Slate;        // standing rocks, loads, sawn blocks
             if(Any("Tint_Wall","PitWhite"))return Pattern.Plaster;
             if(Any("RockDark","Rock"))return Pattern.Rock;
             if(Any("StoneDark","Stone"))return Pattern.Stone;

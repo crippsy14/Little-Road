@@ -68,12 +68,13 @@ namespace LittleRoad
             mesh.RecalculateNormals();mesh.RecalculateBounds();return mesh;
         }
         // Where grass may grow: open meadow, not road, verge paving, buildings, water or reserved plots.
-        static bool onGreen;
+        static bool onGreen;static Vector3[] mainlineStart;
         static bool Open(float x,float z,bool nearRiver)
         {
             onGreen=false;
             if(z<-380) {
                 if(ValleyField.RoadDistance(x,z)<8.5f||HillcrestTown.Reserved(x,z)||QuarryHills.Bare(x,z))return false;
+                if(QuarryHillsTown.Last!=null&&QuarryHills.Contains(x,z)&&!QuarryHillsTown.Last.Clear(new Vector2(x,z),new Vector2(.5f,.5f),0))return false; // the square, the Pit Stop, plots
                 if(Vector2.Distance(new(x,z),HillcrestRoute.Lake)<HillcrestRoute.LakeRadius+4)return false;
                 if(nearRiver&&HillcrestRoute.Distance(HillcrestRoute.River.line,x,z,out _)<17)return false;
                 return true;
@@ -82,6 +83,9 @@ namespace LittleRoad
             // The causeway: its deck is road (refused) so the top surface there was a parapet or lamp: tufts floated
             // at railing height over the sea (seen in photo mode, docs/51).
             if(HillcrestRoute.Distance(HillcrestRoute.Causeway,x,z,out _)<13)return false;
+            // The mainline's first stretch out of Bayview (street review, 4 Oct: tufts stood in both lanes at the town exit).
+            mainlineStart??=System.Array.FindAll(HillcrestRoute.Mainline.line,p=>p.z>-400);
+            if(mainlineStart.Length>1&&HillcrestRoute.Distance(mainlineStart,x,z,out _)<HillcrestRoute.Mainline.width*.5f+2.5f)return false;
             var land=CoastalLandscape.Current;return land!=null&&land.GrassClearance(new Vector3(x,0,z),out onGreen);
         }
         void Begin(Vector2Int key)

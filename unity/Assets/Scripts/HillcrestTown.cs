@@ -89,12 +89,14 @@ namespace LittleRoad
         // Fills one side of a road with a row of houses facing it, between runs [from,to].
         void Row(HillcrestRoute.Road road,int side,float from,float to,float setback=12.2f,float gapChance=.14f)
         {
-            float s=from;
+            float s=from;string last=null;
             while(s<to) {
                 // Terraces (plain, shop, arcade, bay window, four-storey palazzetto, low cottage, painted gable) mostly; villas, tower houses and cottages between.
                 double roll=rng.NextDouble();
                 string id=roll<.62?new[]{"terrace_a","terrace_a","terrace_b","terrace_b","terrace_c","terrace_d","terrace_d","terrace_e","terrace_f","terrace_g"}[rng.Next(10)]:
                     roll<.72?"house_c":roll<.82?"house_d":roll<.91?"house_b":"house_a";
+                // No two of the same front side by side (street review, 4 Oct: twin houses read as copy-paste).
+                if(id==last)id=id=="terrace_f"?"terrace_d":id.StartsWith("house")?"terrace_a":"terrace_f";
                 float w=Footprint(id).x;float mid=s+w*.5f;if(mid+w*.5f>to)break;
                 if(rng.NextDouble()<gapChance){Greenery(road,side,s+3,setback);GardenGaps.Add((road,side,s,s+7));s+=7;continue;}
                 Vector3 at=road.At(mid),right=road.Right(mid);var centre=at+right*side*(setback+Footprint(id).y*.5f-4);centre.y=at.y+.02f;
@@ -103,7 +105,11 @@ namespace LittleRoad
                 if(Vector2.Distance(new(centre.x,centre.z),new(HillcrestRoute.PitStopSite.at.x,HillcrestRoute.PitStopSite.at.z))<24||InZipLanding(centre.x,centre.z)){s+=3;continue;}
                 if(Building(id,centre,Yaw(centre,at),RandomTint(),id=="terrace_b"?ShopNames[shopName++%ShopNames.Length]:null)) {
                     // The front yard between pavement and door: where the resident parks.
-                    var yard=at+right*side*(road.width*.5f+2.9f);yard.y=at.y;Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));
+                    last=id;
+                    // (Street review, 4 Oct: the old spot, 2.9 m out, put cars half on the pavement.) The middle of the garden
+                    // between the pavement's back (2.3 m) and the house front; gardens under 2 m deep have no parking.
+                    float garden0=road.width*.5f+2.3f,garden1=setback-4-.15f;
+                    if(garden1-garden0>=2f&&id!="terrace_f"){var yard=at+right*side*((garden0+garden1)*.5f);yard.y=at.y;Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));}
                     // Chimney tops (kit x mirrors on import): some of them smoke.
                     if(id!="house_b"&&id!="house_d"&&rng.NextDouble()<.35)Chimneys.Add(centre+Quaternion.Euler(0,Yaw(centre,at),0)*(id switch{"house_a"=>new Vector3(-2.6f,10.5f,-1.2f),"house_c"=>new Vector3(-2.8f,10.2f,-1.4f),
                         "terrace_e"=>new Vector3(-1.9f,15.2f,2.7f),"terrace_f"=>new Vector3(-1.9f,10.7f,-.6f),"terrace_g"=>new Vector3(1.6f,13.1f,-2.4f),_=>new Vector3(-1.4f,12.1f,-1.5f)}));

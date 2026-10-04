@@ -94,7 +94,9 @@ Shader "LittleRoad/Kit"
                 float fp=max(length(ddx(s)),length(ddy(s)));
                 half m=1,bump=0,occlusion=1,smooth=_Smoothness;half3 tint=1;
                 // Beyond 150 m the fine pattern has faded out: take the cheap path (broad drift only).
-                if(near<=0&&pattern!=7){pattern=0;m=1+(mottle-.5)*.08;}
+                // (Split slate keeps its beds and stains at any range: the quarry's galleries are seen from 200-600 m away, and
+                // the cheap path turned them into one flat dark band.)
+                if(near<=0&&pattern!=7&&pattern!=10){pattern=0;m=1+(mottle-.5)*.08;}
                 else if(pattern==1) { // plaster: soft mottling, sandy grain, faint vertical runs
                     m=1+(mottle-.5)*.16+(fine-.5)*.07;bump=fine*.5+grain*.25;
                     half runs=N(float2(s.x*2.3,s.y*.12+.4));m-=smoothstep(.55,.8,runs)*.05*_Wear;
@@ -140,8 +142,43 @@ Shader "LittleRoad/Kit"
                     // horizontal beds of purple, blue and grey, near-vertical cleavage lines, cracks and rust runs on faces; flat tops
                     // are slate rubble (chips of every shade). Always matte.
                     if(up>.7) {
-                        float2 c=floor(p.xz*2.2);half chip=Hash(c),chip2=N(p.xz*5.1+.3);m=.84+chip*.28+(chip2-.5)*.12;
-                        tint=lerp(half3(1.05,.97,1.07),half3(.94,1,1.05),Hash(c+3.7));bump=chip*.7+chip2*.3;occlusion=1-(1-smoothstep(.0,.12,min(frac(p.x*2.2),frac(p.z*2.2))))*.25*near;
+                        // Rubble, not tiles (Richard, 4 Oct: the floor looked like a kitchen floor's repeating squares): irregular
+                        // chips from two Voronoi scales (broken slabs and the small stuff between), drifts of pale dust, damp
+                        // dark patches; _Wear >= 2 is loose gravel (chips that much finer) with two polished wheel ruts along
+                        // the strip's own across-coordinate (kit.x, 0..1) and loose stones on the berms.
+                        bool gravel=_Wear>=2;float scale=gravel?_Wear*1.3:1.1;
+                        float2 wob=float2(N(p.xz*.11+.2),N(p.xz*.11+.7))-.5;
+                        float2 q=p.xz*scale+wob*1.2;float2 cell=floor(q),f=frac(q);float d1=8,d2=8;float2 id=0;
+                        [unroll]for(int j=-1;j<=1;j++)[unroll]for(int k=-1;k<=1;k++){float2 g=float2(k,j);float2 o=float2(Hash(cell+g),Hash(cell+g+17.3))*.85+.075;float2 r=g+o-f;float dd=dot(r,r);if(dd<d1){d2=d1;d1=dd;id=cell+g;}else if(dd<d2)d2=dd;}
+                        half gap=(1-smoothstep(.0,.16,sqrt(d2)-sqrt(d1)))*Resolve(.08/scale,fp);
+                        float2 q2=p.xz*scale*3.1+wob*2;float2 c2=floor(q2),f2=frac(q2);float e1=8,e2=8;float2 id2=0;
+                        [unroll]for(int j2=-1;j2<=1;j2++)[unroll]for(int k2=-1;k2<=1;k2++){float2 g=float2(k2,j2);float2 o=float2(Hash(c2+g+5.1),Hash(c2+g+9.7))*.85+.075;float2 r=g+o-f2;float dd=dot(r,r);if(dd<e1){e2=e1;e1=dd;id2=c2+g;}else if(dd<e2)e2=dd;}
+                        half gap2=(1-smoothstep(.0,.14,sqrt(e2)-sqrt(e1)))*Resolve(.03/scale,fp);
+                        // (Per-chip colour fades out once a chip is under a few pixels, or it shimmers at range.)
+                        half big=lerp(.5,Hash(id),Resolve(.45/scale,fp)),small=lerp(.5,Hash(id2),Resolve(.15/scale,fp));
+                        // Mostly compacted gravel (speckle at two sizes) with a scatter of loose stones; the broken-slab
+                        // outlines only where a few bedrock slabs show through (a patch mask), so no cell grid reads.
+                        half slabs=smoothstep(.58,.72,N(p.xz*.05+.4));gap*=slabs;
+                        half stone=(1-smoothstep(.08,.16,sqrt(e1)))*step(.72,Hash(id2+4.4))*Resolve(.06/scale,fp);gap2*=stone*.6;
+                        if(gravel)gap=0;
+                        half speck=(N(p.xz*6.5*scale/1.1+.3)-.5)*.16+(N(p.xz*15*scale/1.1+.8)-.5)*.12*Resolve(.04,fp);
+                        if(gravel)slabs=0;
+                        half chip=lerp(.5+(big-.5)*.2,big,slabs);
+                        half dust=smoothstep(.5,.75,N(p.xz*.035+.15))*(1-gap*.5);   // pale dust drifts
+                        half damp=smoothstep(.62,.8,N(p.xz*.021+.55));                 // dark damp hollows
+                        m=.8+chip*.18+speck+stone*(small*.22+.04)-(gap*.18+gap2*.1)*near;
+                        tint=lerp(half3(1.05,.97,1.08),half3(.93,1,1.05),lerp(.5,Hash(id+3.7),Resolve(.45/scale,fp)));tint=lerp(tint,half3(.95,.98,1.04),Hash(id2+1.3)*.4*Resolve(.15/scale,fp));
+                        m=lerp(m,1.18+(small-.5)*.08,dust*.55);tint=lerp(tint,half3(1.06,1.03,.97),dust*.6);
+                        m*=lerp(1,.78,damp);smooth=lerp(min(_Smoothness,.08),.32,damp*damp);
+                        if(gravel) {
+                            float u=i.kit.x+(N(float2(i.kit.y*.02,.3))-.5)*.08;half rut=0;
+                            rut=max(1-smoothstep(.03,.075,abs(u-.34)),1-smoothstep(.03,.075,abs(u-.66)));
+                            half berm=smoothstep(.1,.02,u)+smoothstep(.9,.98,u);
+                            m=lerp(m,.84+(small-.5)*.05,rut*.7);smooth=lerp(smooth,.2,rut*.6);tint=lerp(tint,half3(.97,.98,1.02),rut*.5);
+                            m=lerp(m,.9+big*.36,berm*.6);
+                            gap*=1-rut*.8;
+                        }
+                        bump=chip*.3+speck*1.5+stone*.7-gap*.5-gap2*.3+dust*.1;occlusion=1-(gap*.25+gap2*.2)*near;
                     } else {
                         half wz=abs(n.z)/(abs(n.x)+abs(n.z)+1e-4);
                         #define SN(sc,off) lerp(N(p.zy*(sc)+(off)),N(p.xy*(sc)+(off)),wz)
@@ -151,11 +188,14 @@ Shader "LittleRoad/Kit"
                         half rust=smoothstep(.7,.85,N(float2(cl*.11,p.y*.03+.5)))*smoothstep(.4,.7,SN(.09,.3));
                         half fine2=SN(1.7,.1);
                         m=1+(tone-.5)*.3+(fine2-.5)*.1+(wob-.5)*.12-cleave*.08*near-crack*.12*near;
+                        // Broad weathering: paler worked faces, darker wet streaks down from each bench, at gallery scale.
+                        m*=lerp(.84,1.14,N(float2(dot(p.xz,float2(.8,.6))*.006,p.y*.012)+.37));
+                        m-=smoothstep(.55,.8,N(float2(dot(p.xz,float2(.8,.6))*.09,p.y*.008+.2)))*.12;
                         tint=lerp(half3(1.07,.95,1.08),half3(.93,1,1.06),tone);tint=lerp(tint,half3(1.12,.97,.84),rust*.55);
                         bump=tone*.4+fine2*.3-cleave*.3-crack*.4;occlusion=1-crack*.3*near;
                         #undef SN
+                        smooth=min(_Smoothness,.08);
                     }
-                    smooth=min(_Smoothness,.08);
                 } else if(pattern==7) { // glass: darker at the bottom, a sky sheen at the top
                     m=1;smooth=.92;
                 } else m=1+(fine-.5)*.04;

@@ -26,7 +26,7 @@ SOURCE=ROOT/'source-art/bayview'
 
 PALETTE={
     'Tint_Wall':(.97,.89,.72),'Tint_Shutter':(.10,.55,.62),'Tint_Awning':(.92,.22,.24),'Tint_Door':(.12,.42,.62),
-    'WhiteTrim':(.97,.96,.92),'RoofTile':(.86,.34,.18),'RoofTileLight':(.95,.48,.26),'RoofSlate':(.30,.36,.46),
+    'WhiteTrim':(.97,.96,.92),'RoofTile':(.86,.34,.18),'RoofTileLight':(.95,.48,.26),'RoofSlate':(.30,.36,.46),'RoofSlateDark':(.22,.26,.33),'Tint_WallStone':(.55,.57,.6),'SlateRock':(.33,.34,.38),
     'Stone':(.86,.80,.66),'StoneDark':(.66,.60,.50),'Wood':(.56,.34,.17),'WoodDark':(.36,.22,.12),
     'Glass':(.16,.34,.52),'GlassLit':(1.0,.86,.52),'Metal':(.30,.33,.36),'MetalLight':(.72,.75,.78),'Gold':(.98,.74,.16),
     'Leaf':(.23,.48,.17),'LeafLight':(.36,.60,.21),'LeafDark':(.11,.31,.14),'Bark':(.42,.28,.16),
@@ -668,6 +668,9 @@ def town_gate():
     box('Arch beam',(0,0,6.9),(13.6,1.2,1.0),'Stone',.08)
     for k in range(9):box('Arch voussoir',(-4.8+k*1.2,-.62,6.9),(1.1,.1,.9),'StoneDark' if k%2 else 'Stone',.03)
     sign_board(0,-.6,5.7,7.0,1.2,'WhiteTrim','gate')
+    # The same name on the far side (street review, 4 Oct: from behind the board was blank).
+    for k in range(9):box('Arch voussoir',(-4.8+k*1.2,.62,6.9),(1.1,.1,.9),'StoneDark' if k%2 else 'Stone',.03)
+    sign_board(0,.6,5.7,7.0,1.2,'WhiteTrim','gateback',face=1)
     collision('Left pier',(-6,0,3.2),(1.6,1.6,6.4));collision('Right pier',(6,0,3.2),(1.6,1.6,6.4))
 
 def vine_row():
@@ -979,7 +982,8 @@ def terrace(kind='a'):
     for z in(1.7,5.0,8.0):
         for x in((-1.25,) if z<3 else (-1.25,1.25)):window(x,d/2,z,.9,1.3,shutters=False,flowers=False,face=1)
     door(1.3,d/2,0,1.0,2.3,face=1,canopy=False)
-    if kind in('a','b'):
+    # Shops ('b') have no balcony: its railing stood in front of the sign board (street review, 4 Oct).
+    if kind=='a':
         box('Juliet balcony',(0,-d/2-.55,4.05),(w-1.2,1.1,.16),'Stone',.04)
         for k in range(9):cyl('Balcony rail',(-(w-1.4)/2+k*(w-1.4)/8,-d/2-1.05,4.5),.03,.8,'Metal','Z',6)
         box('Balcony top',(0,-d/2-1.05,4.92),(w-1.3,.07,.07),'Metal',.02)
@@ -1080,7 +1084,7 @@ def house_c():
     hip_roof(0,0,w,d,h,2.2)
     for k in range(9):box('Eave bracket',(-4.4+k*1.1,-d/2-.25,h-.3),(.16,.5,.3),'WhiteTrim',.03)
     # Loggia: three arches on columns, shadowed recess behind.
-    box('Loggia shadow',(0,-d/2-.02,1.5),(6.4,.06,2.9),'Black',0)
+    box('Loggia shadow',(0,-d/2-.02,1.5),(6.4,.06,2.9),'StoneDark',0)
     for x in(-2.1,0,2.1):arch_ring('Loggia arch',x,-d/2-.35,2.2,.85,.6,.3,.5,'WhiteTrim',9)
     for x in(-3.15,-1.05,1.05,3.15):cyl('Loggia column',(x,-d/2-.35,1.1),.18,2.2,'Stone','Z',12)
     box('Loggia entablature',(0,-d/2-.35,3.25),(6.8,.6,.35),'Stone',.04)
@@ -1101,12 +1105,18 @@ def house_d():
     hip_roof(0,0,w,d,h,1.4,.55)
     door(-1.2,-d/2,0,1.1,2.4);window(1.2,-d/2,1.7,1.1,1.3,flowers=False)
     for x in(-1.2,1.2):window(x,-d/2,4.6,1.0,1.5)
-    # Top-floor loggia: two openings on a centre pier, dark recess, flower pots on the sill.
-    box('Top loggia shadow',(0,-d/2-.02,8.2),(4.0,.06,2.0),'Black',0)
+    # Top-floor loggia: two openings on a centre pier; behind them a shaded back wall with a glazed door in each bay
+    # (street review, 4 Oct: a flat black panel read as a void), and potted flowers on the sill.
+    box('Top loggia back',(0,-d/2-.02,8.2),(4.0,.06,2.0),'StoneDark',0)
+    for x in(-1.0,1.0):
+        box('Loggia door frame',(x,-d/2-.06,8.05),(.86,.05,1.62),'WhiteTrim',.02);box('Loggia door glass',(x,-d/2-.09,8.08),(.66,.04,1.42),'Glass',.01)
+        box('Loggia door bar',(x,-d/2-.11,8.08),(.05,.03,1.42),'WhiteTrim',.0)
     for x in(-1.0,1.0):arch_ring('Top arch',x,-d/2-.25,7.9,.8,.5,.28,.4,'WhiteTrim',9)
     for x in(-1.95,0,1.95):box('Top pier',(x,-d/2-.25,8.0),(.35,.4,1.9),'Stone',.03)
     box('Top sill',(0,-d/2-.35,7.1),(4.4,.6,.16),'Stone',.03)
-    for k in range(5):sphere('Sill pot flowers',(-1.6+k*.8,-d/2-.4,7.35),(.18,.18,.16),['FlowerRed','FlowerPink','FlowerYellow','FlowerWhite','FlowerRed'][k],1)
+    for k in range(5):
+        cyl('Sill pot',(-1.6+k*.8,-d/2-.4,7.3),.13,.22,'RoofTile','Z',10,r2=.17)
+        sphere('Sill pot flowers',(-1.6+k*.8,-d/2-.4,7.5),(.18,.18,.14),['FlowerRed','FlowerPink','FlowerYellow','FlowerWhite','FlowerRed'][k],1)
     box('String course',(0,0,6.6),(w+.25,d+.25,.2),'WhiteTrim',.03)
     for x in(-1.2,1.2):window(x,d/2,4.6,.9,1.3,shutters=False,flowers=False,face=1)
     window(0,d/2,8.2,1.1,1.4,flowers=False,face=1)
@@ -1667,6 +1677,202 @@ def flag_pole():
     box('Flag',(.95,0,7.3),(1.9,.05,1.2),'Tint_Awning',.02);box('Flag stripe',(.95,-.03,7.3),(1.9,.04,.4),'Tint_Shutter',.01)
     collision('Pole',(0,0,4),(.4,.4,8))
 
+def flag_wales():
+    """Y Ddraig Goch on a pole (Quarry Hills' square; street review, 4 Oct): white over green, a red dragon passant."""
+    cyl('Flag pole base',(0,0,.2),.35,.4,'Stone','Z',12);cyl('Flag pole',(0,0,4.2),.07,8,'MetalLight','Z',8);sphere('Flag knob',(0,0,8.25),(.12,.12,.12),'Gold',1)
+    box('Flag white',(1.05,0,7.6),(2.1,.05,.66),'WhiteTrim',.0);box('Flag green',(1.05,0,6.94),(2.1,.05,.66),'Green',.0)
+    # The dragon: one flat outline (head toward the pole, wing raised, tail curled up), on both faces.
+    outline=[(.08,.66),(.16,.74),(.22,.70),(.26,.62),(.34,.66),(.40,.86),(.50,.80),(.56,.92),(.62,.76),(.70,.64),(.82,.66),(.92,.80),(.96,.74),
+        (.88,.58),(.76,.52),(.74,.36),(.80,.24),(.72,.24),(.66,.40),(.50,.42),(.42,.28),(.46,.18),(.38,.18),(.34,.36),(.28,.50),(.20,.56),(.10,.60)]
+    for y,rev in((-.035,False),(.035,True)):
+        v=[(.05+u*2.0,y,6.61+w*1.32) for u,w in outline];f=list(range(len(v)))
+        poly('Dragon',v,[tuple(reversed(f)) if rev else tuple(f)],'Red')
+    collision('Pole',(0,0,4),(.4,.4,8))
+
+# ---------------------------------------------------------------- Quarry Hills: Welsh cottages, quarry plant, rocks (4 Oct)
+
+def slate_roof(cx,cy,w,d,eave,rise,over=.35):
+    """Blue-grey slate gable roof (ridge along X): thin courses, a clay ridge, stone gable copings; gables in the wall stone."""
+    half=d/2+over;length=w+2*over;slope=math.atan2(rise,d/2);rows=max(4,int(math.hypot(d/2,rise)/.3))
+    for side in(-1,1):
+        for i in range(rows):
+            t=(i+.5)/rows;y=cy+side*half*(1-t);z=eave+rise*t-.05
+            box('Slate course',(cx,y,z+.08),(length,math.hypot(half,rise)/rows+.05,.09),'RoofSlateDark' if i%4==1 else 'RoofSlate',.02,rot=(-side*slope,0,0))
+        cyl('Gutter',(cx,cy+side*(half-.02),eave+.02),.08,length,'Metal','X',10)
+    cyl('Ridge tile',(cx,cy,eave+rise+.1),.16,length+.05,'RoofTile','X',12)
+    for side in(-1,1):
+        x=cx+side*(w/2)
+        wedge('Gable',(x,cy-d/2,eave),(x,cy+d/2,eave),(x,cy,eave+rise),(side,0,0),'Tint_WallStone')
+        for s in(-1,1):box('Gable coping',(cx+side*(w/2+.05),cy+s*half*.5,eave+rise*.5+.1),(.4,math.hypot(half,rise)+.1,.16),'StoneDark',.03,rot=(-s*slope,0,0))
+
+def cottage(kind='a'):
+    """Quarrymen's cottage (Quarry Hills; street review, 4 Oct: the town read as Ligurian): two low storeys of grey rubble
+    stone under slate, small white sashes, a painted door under a stone lintel, quoins, a gable chimney. 'b' has a slate
+    porch and three windows up; 'c' a bay and a dormer."""
+    w,d,h=5.4,7.0,5.3
+    box('Walls',(0,0,h/2),(w,d,h),'Tint_WallStone',.08,segments=3)
+    box('Plinth',(0,0,.2),(w+.12,d+.12,.4),'StoneDark',.04)
+    for sx in(-1,1):
+        for k in range(7):box('Quoin',(sx*(w/2-.02),-d/2-.02,.45+k*.68),(.5 if k%2 else .34,.08,.3),'StoneDark',.03)
+    slate_roof(0,0,w,d,h,2.3)
+    box('Chimney',(w/2-.45,0,h+2.6),(.8,.9,1.9),'StoneDark',.05);box('Chimney cap',(w/2-.45,0,h+3.6),(1.0,1.1,.12),'StoneDark',.02)
+    for k in range(2):cyl('Chimney pot',(w/2-.45,-.18+k*.36,h+3.8),.11,.38,'RoofTile','Z',12)
+    dx=0 if kind=='b' else -1.35
+    door(dx,-d/2,0,1.0,2.2,canopy=False)
+    box('Door lintel',(dx,-d/2-.06,2.42),(1.5,.14,.26),'StoneDark',.03)
+    ups=(-1.55,0,1.55) if kind=='b' else (-1.3,1.3)
+    if kind=='b':
+        for x in(-1.8,1.8):window(x,-d/2,1.45,.95,1.15,shutters=False,flowers=False)
+        # Slate porch: two stone cheeks and a little slate roof.
+        for sx in(-1,1):box('Porch cheek',(sx*.85,-d/2-.55,1.15),(.25,1.1,2.3),'Tint_WallStone',.04)
+        for s in(-1,1):box('Porch slate',(s*.55,-d/2-.6,2.62),(1.2,1.3,.08),'RoofSlate',.02,rot=(0,s*.45,0))
+    elif kind=='c':
+        box('Bay',(1.3,-d/2-.4,1.3),(2.1,.8,2.2),'Tint_WallStone',.05);box('Bay roof',(1.3,-d/2-.45,2.5),(2.4,1.0,.12),'RoofSlate',.03,rot=(.15,0,0))
+        for x in(.7,1.3,1.9):box('Bay glass',(x,-d/2-.82,1.4),(.48,.04,1.1),'Glass',.01)
+        box('Dormer',(-1.2,-1.6,h+1.0),(1.4,1.3,1.4),'Tint_WallStone',.04);box('Dormer roof',(-1.2,-1.65,h+1.8),(1.7,1.6,.14),'RoofSlate',.03,rot=(.12,0,0))
+        box('Dormer glass',(-1.2,-2.27,h+1.0),(.8,.04,.8),'Glass',.01)
+    else:
+        window(1.3,-d/2,1.45,1.0,1.2,shutters=False,flowers=False)
+    for x in ups:window(x,-d/2,3.9,.9,1.05,shutters=False,flowers=(kind=='a'))
+    for z in(1.45,3.9):window(-1.3,d/2,z,.85,1.05,shutters=False,flowers=False,face=1)
+    door(1.3,d/2,0,.95,2.1,face=1,canopy=False)
+    collision('Body',(0,0,h/2),(w+.3,d+.3,h))
+def cottage_a():cottage('a')
+def cottage_b():cottage('b')
+def cottage_c():cottage('c')
+
+def tyre(name,loc,r,width):
+    cyl(name,loc,r,width,'Black','X',24,.08)
+    cyl('Hub',(loc[0]+(width/2+.01)*(1 if loc[0]>0 else -1),loc[1],loc[2]),r*.45,.05,'Yellow','X',16)
+
+def haul_truck():
+    """Articulated quarry dump truck (~10 m): cab and engine at the front (-Y), the tipper body (Spin_X, hinged at the
+    back so Unity can tip it), six big tyres, a ladder and a beacon."""
+    global SPIN_HUB,SPIN_AXIS
+    box('Front frame',(0,-2.6,1.35),(2.0,4.0,.6),'Metal',.06)
+    box('Engine hood',(0,-3.4,2.15),(2.2,2.4,1.2),'Yellow',.12)
+    box('Grille',(0,-4.62,2.05),(1.7,.08,.9),'Black',.02)
+    box('Cab',(-.3,-1.85,3.05),(1.9,1.6,1.5),'Yellow',.1)
+    box('Cab glass',(-.3,-2.66,3.15),(1.5,.04,.85),'Glass',.01)
+    box('Cab side glass',(-1.27,-1.85,3.15),(.04,1.2,.85),'Glass',.01)
+    box('Cab roof',(-.3,-1.85,3.85),(2.2,1.9,.12),'Yellow',.03)
+    cyl('Beacon',(-.3,-1.7,4.02),.12,.2,'Autumn','Z',12)
+    cyl('Exhaust',(.85,-2.4,3.2),.08,1.6,'Metal','Z',8)
+    for k in range(4):box('Ladder rung',(1.15,-1.2,.9+k*.35),(.06,.5,.05),'Metal',.01)
+    box('Hitch',(0,-.4,1.3),(1.0,1.0,.8),'Metal',.05)
+    box('Rear frame',(0,2.2,1.3),(2.1,5.6,.5),'Metal',.06)
+    for y in(-3.2,1.2,3.4):
+        for sx in(-1,1):tyre('Tyre',(sx*1.35,y,1.0),1.0,.85)
+    # Tipper body: a steel box with a raised front lip over the cab; hinged at the back axle.
+    bin=[]
+    bin.append(box('Tipper floor',(0,2.15,2.0),(2.9,5.6,.2),'Yellow',.04))
+    for sx in(-1,1):bin.append(box('Tipper side',(sx*1.45,2.15,2.75),(.14,5.6,1.5),'Yellow',.04))
+    bin.append(box('Tipper front',(0,-.65,3.0),(2.9,.16,2.0),'Yellow',.04))
+    bin.append(box('Tipper canopy',(0,-.95,3.95),(2.9,.8,.12),'Yellow',.03,rot=(-.2,0,0)))
+    for y in(.4,1.9,3.4):
+        for sx in(-1,1):bin.append(box('Tipper rib',(sx*1.53,y,2.75),(.08,.18,1.5),'Metal',.02))
+    bin.append(box('Load',(0,2.0,3.15),(2.6,5.0,.9),'SlateRock',.2))
+    for k in range(5):bin.append(sphere('Load lump',(-.9+k*.45,1.0+(k%3)*1.1,3.6),(.45,.5,.35),'SlateRock',1))
+    SPIN.extend(bin);SPIN_HUB=(0,4.9,1.9);SPIN_AXIS='X'
+    collision('Truck',(0,0,2.0),(3.2,10.0,4.0))
+
+def excavator_base():
+    """Tracked excavator undercarriage: two crawler tracks and the slewing ring (the upper house is excavator_top)."""
+    for sx in(-1,1):
+        box('Track frame',(sx*1.35,0,.55),(.75,4.4,.8),'Metal',.1)
+        box('Track',(sx*1.35,0,.55),(.85,4.7,1.0),'Black',.3)
+        for k in range(5):cyl('Roller',(sx*1.8,-1.6+k*.8,.35),.22,.06,'Yellow','X',12)
+    box('Car body',(0,0,1.05),(2.0,2.4,.5),'Metal',.06)
+    cyl('Slew ring',(0,0,1.35),1.1,.2,'Black','Z',24)
+    collision('Base',(0,0,.7),(3.4,4.8,1.4))
+
+def excavator_top():
+    """Excavator upper house (slews in Unity about its centre): cab, engine housing, counterweight; the boom, stick and
+    bucket are one Spin_X part pivoted at the boom foot, so the arm can dip and lift."""
+    global SPIN_HUB,SPIN_AXIS
+    box('House',(.2,.6,2.15),(2.6,3.4,1.5),'Yellow',.12)
+    box('Counterweight',(.2,2.35,1.95),(2.7,.7,1.1),'Metal',.1)
+    box('Cab',(-.75,-.9,2.75),(1.0,1.4,1.8),'Yellow',.08)
+    box('Cab glass',(-.75,-1.62,2.95),(.85,.04,1.2),'Glass',.01);box('Cab side',(-1.27,-.9,2.95),(.04,1.1,1.1),'Glass',.01)
+    cyl('Exhaust',(.9,1.5,3.3),.08,1.0,'Metal','Z',8)
+    arm=[]
+    foot=Vector((.35,-1.2,2.2));elbow=Vector((.35,-4.6,5.0));tip=Vector((.35,-6.6,1.6))
+    for a,b,t in((foot,elbow,.55),(elbow,tip,.42)):
+        d=b-a;o=box('Boom',tuple((a+b)/2),(t,d.length,t*1.3),'Yellow',.06);o.rotation_mode='QUATERNION';o.rotation_quaternion=Vector((0,1,0)).rotation_difference(d.normalized());arm.append(o)
+    arm.append(cyl('Ram',(.35,-2.7,2.9),.11,2.4,'MetalLight','Y',8))
+    arm.append(box('Bucket back',(.35,-6.7,1.15),(1.3,.18,1.0),'Metal',.05,rot=(.4,0,0)))
+    arm.append(box('Bucket floor',(.35,-7.15,.7),(1.3,.9,.14),'Metal',.04,rot=(-.3,0,0)))
+    for sx in(-1,1):arm.append(box('Bucket cheek',(.35+sx*.62,-7.0,1.0),(.08,1.0,.9),'Metal',.03))
+    for k in range(4):arm.append(box('Bucket tooth',(-.1+k*.3,-7.6,.5),(.1,.3,.1),'MetalLight',.02))
+    SPIN.extend(arm);SPIN_HUB=tuple(foot);SPIN_AXIS='X'
+    collision('House',(.2,.6,2.15),(2.8,3.6,1.8))
+
+def wheel_loader():
+    """Wheel loader: articulated body, cab, and the lift arms with the bucket as one Spin_X part pivoted at the front frame."""
+    global SPIN_HUB,SPIN_AXIS
+    box('Rear body',(0,1.4,1.6),(2.2,2.8,1.4),'Yellow',.12);box('Rear grille',(0,2.82,1.6),(1.6,.06,.9),'Black',.02)
+    box('Front frame',(0,-1.2,1.3),(1.6,2.2,.7),'Yellow',.08)
+    box('Cab',(0,.1,2.95),(1.6,1.5,1.5),'Yellow',.08);box('Cab glass',(0,-.66,3.05),(1.35,.04,1.0),'Glass',.01)
+    for sx in(-1,1):box('Cab side glass',(sx*.81,.1,3.05),(.04,1.1,1.0),'Glass',.01)
+    box('Cab roof',(0,.1,3.75),(1.8,1.7,.1),'Yellow',.03);cyl('Beacon',(0,.4,3.9),.11,.18,'Autumn','Z',12)
+    cyl('Exhaust',(.6,1.9,2.8),.07,.9,'Metal','Z',8)
+    for y in(-1.4,1.6):
+        for sx in(-1,1):tyre('Tyre',(sx*1.2,y,.85),.85,.7)
+    arm=[]
+    for sx in(-1,1):arm.append(box('Lift arm',(sx*.7,-2.2,1.55),(.22,2.6,.32),'Yellow',.04,rot=(.25,0,0)))
+    arm.append(box('Bucket back',(0,-3.55,1.05),(2.5,.16,1.1),'Metal',.04))
+    arm.append(box('Bucket floor',(0,-4.0,.55),(2.5,.9,.12),'Metal',.03,rot=(-.15,0,0)))
+    for sx in(-1,1):arm.append(box('Bucket cheek',(sx*1.22,-3.85,.95),(.08,.9,.9),'Metal',.03))
+    arm.append(box('Bucket edge',(0,-4.45,.5),(2.5,.12,.08),'MetalLight',.02))
+    SPIN.extend(arm);SPIN_HUB=(0,-1.0,1.85);SPIN_AXIS='X'
+    collision('Loader',(0,-.4,1.8),(2.8,7.6,3.6))
+
+def rock_mesh(name,loc,size,material,seed,layers=0,rough=.14):
+    """A weathered rock: an ico sphere stretched to `size`, roughened with noise, flattened underneath; `layers` steps it
+    into beds (split slate)."""
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=3,radius=1,location=(0,0,0));o=bpy.context.object
+    s=Vector((seed*1.7+.3,seed*2.9+1.1,seed*.7+2.3))
+    for v in o.data.vertices:
+        c=v.co.copy();n0=v.normal.copy();c.x*=size[0]/2;c.y*=size[1]/2;c.z*=size[2]/2
+        c+=n0*(noise.noise(c*.9+s)*rough+noise.noise(c*2.6+s)*rough*.35)*min(size)
+        if layers>0:q=round(c.z/layers)*layers;c.z=c.z*.45+q*.55
+        c.z=max(c.z,-size[2]*.3)
+        v.co=c
+    o.data.update();o.location=(loc[0],loc[1],loc[2]+size[2]*.3)
+    return _finish(o,name,material,0)
+
+def rock_stand_a():
+    """Standing stone: a tall slate monolith (about 2.8 m) with a fallen slab and a stone at its foot."""
+    rock_mesh('Monolith',(0,0,0),(1.1,.6,3.4),'SlateRock',1,.22,.1)
+    rock_mesh('Fallen slab',(1.4,.5,0),(1.8,.9,.6),'SlateRock',2,.12,.1)
+    rock_mesh('Stone',(-1.0,.7,0),(.7,.6,.5),'RockDark',3)
+    collision('Monolith',(0,0,1.2),(1.1,.7,2.6))
+def rock_stand_b():
+    """A pair of slate slabs leaning together, like a tumbled gateway."""
+    o=rock_mesh('Slab',(-.55,0,0),(.6,1.5,3.0),'SlateRock',4,.2,.08);o.rotation_euler=(0,.18,0)
+    o=rock_mesh('Slab',(.65,.1,0),(.55,1.3,2.4),'SlateRock',5,.2,.08);o.rotation_euler=(0,-.15,.2)
+    rock_mesh('Boulder',(0,1.2,0),(.9,.8,.6),'RockDark',6)
+    collision('Slabs',(0,0,1.1),(2.0,1.6,2.2))
+def rock_stand_c():
+    """A big split boulder (about 3 m across) with a rubble skirt."""
+    rock_mesh('Boulder half',(-.6,0,0),(1.8,2.4,2.2),'SlateRock',7,.35,.16)
+    rock_mesh('Boulder half',(.75,.1,0),(1.4,2.2,1.9),'SlateRock',8,.35,.16)
+    for k in range(6):a=k*1.05;rock_mesh('Rubble',(math.cos(a)*1.9,math.sin(a)*1.7,0),(.5,.45,.35),'RockDark',9+k)
+    collision('Boulder',(0,0,.9),(3.2,2.6,1.8))
+def rock_stand_d():
+    """A low cluster of three rounded field boulders."""
+    for k,(x,y,s) in enumerate(((0,0,1.6),(1.3,.4,1.0),(-1.0,.6,.8))):rock_mesh('Field boulder',(x,y,0),(s*1.2,s,s*.8),'RockDark' if k else 'Rock',20+k,0,.18)
+    collision('Boulders',(0,0,.5),(3.2,2.0,1.0))
+
+def slate_stack():
+    """Split roofing slates stood on edge in wooden racks, and a sawn block (the quay and the quarry yard)."""
+    for k in range(2):
+        x=-.8+k*1.6
+        box('Pallet',(x,0,.1),(1.4,1.1,.2),'Wood',.02)
+        for i in range(14):box('Slate',(x-.6+i*.092,0,.55),(.05,1.0,.7),'RoofSlateDark' if i%3==0 else 'RoofSlate',.01)
+        for sx in(-1,1):box('Rack post',(x+sx*.68,0,.45),(.06,1.12,.9),'WoodDark',.01)
+    box('Block',(0,1.2,.45),(1.6,.9,.9),'SlateRock',.05)
+    collision('Stack',(0,.3,.5),(3.2,2.0,1.0))
 
 def tyre_wall():
     """4.8 m trackside tyre wall: two rows of stacked tyres, painted red/white every other stack."""
@@ -2045,7 +2251,7 @@ ASSETS={'house_a':house_a,'house_b':house_b,'shop':shop,'cafe':cafe,'post_office
     'tunnel_portal':tunnel_portal,'headland_gate':headland_gate,'rail_gate':rail_gate,'town_hall':town_hall,'terrace_a':terrace_a,'terrace_b':terrace_b,'terrace_c':terrace_c,'terrace_d':terrace_d,'terrace_e':terrace_e,'terrace_f':terrace_f,'terrace_g':terrace_g,'house_c':house_c,'house_d':house_d,'castle_tower':castle_tower,'castle_wall':castle_wall,
     'castle_gatehouse':castle_gatehouse,'castle_keep':castle_keep,'castle_donjon':castle_donjon,'castle_palace':castle_palace,'zip_tower':zip_tower,'zip_station':zip_station,'zip_trolley':zip_trolley,'station':station,'mill':mill,'bandstand':bandstand,'wind_turbine':wind_turbine,
     'balloon':balloon,'grandstand':grandstand,'train_loco':train_loco,'train_coach':train_coach,'olive_tree':olive_tree,'lavender_row':lavender_row,
-    'sunflower_row':sunflower_row,'hotel':hotel,'map_board':map_board,'flag_pole':flag_pole,'tyre_wall':tyre_wall,'ad_board':ad_board,
+    'sunflower_row':sunflower_row,'hotel':hotel,'map_board':map_board,'flag_pole':flag_pole,'flag_wales':flag_wales,'cottage_a':cottage_a,'cottage_b':cottage_b,'cottage_c':cottage_c,'haul_truck':haul_truck,'excavator_base':excavator_base,'excavator_top':excavator_top,'wheel_loader':wheel_loader,'rock_stand_a':rock_stand_a,'rock_stand_b':rock_stand_b,'rock_stand_c':rock_stand_c,'rock_stand_d':rock_stand_d,'slate_stack':slate_stack,'tyre_wall':tyre_wall,'ad_board':ad_board,
     'tree_fir':tree_fir,'tree_poplar':tree_poplar,'tree_blossom':tree_blossom,'tree_birch':tree_birch,'tree_autumn':tree_autumn,
     'rock_a':rock_a,'rock_b':rock_b,'rock_cluster':rock_cluster,'reeds':reeds,'grass_tuft':grass_tuft,'flower_bush':flower_bush,'pit_stop_2':pit_stop_2,'pit_stop_3':pit_stop_3,'pit_garages':pit_garages}
 ONLY=[a for a in args if a in ASSETS] or list(ASSETS)
@@ -2176,6 +2382,8 @@ if __name__=='__main__':
         render_lineup([n for n in ONLY if n in('tree_fir','tree_poplar','tree_blossom','tree_birch','tree_autumn','rock_a','rock_b','rock_cluster','reeds','grass_tuft','flower_bush')],RENDER/'valley-nature.png')
         render_lineup([n for n in ONLY if n in('castle_donjon','castle_palace','castle_gatehouse','castle_tower','castle_wall')],RENDER/'castle-grand.png')
         render_lineup([n for n in ONLY if n in('zip_tower','zip_station','zip_trolley')],RENDER/'zipline.png')
+        render_lineup([n for n in ONLY if n in('cottage_a','cottage_b','cottage_c','terrace_b','house_d','town_gate','flag_wales')],RENDER/'quarry-town.png')
+        render_lineup([n for n in ONLY if n in('haul_truck','excavator_base','wheel_loader','rock_stand_a','rock_stand_b','rock_stand_c','rock_stand_d','slate_stack')],RENDER/'quarry-plant.png')
         render_lineup([n for n in ONLY if n in('pit_stop_2','pit_stop_3')],RENDER/'pit-stop.png')
         render_lineup([n for n in ONLY if n in('pit_garages','grandstand')],RENDER/'raceway.png')
         render_lineup([n for n in ONLY if n in('wind_turbine','balloon','grandstand','train_loco','train_coach','olive_tree','lavender_row','sunflower_row','map_board','flag_pole')],RENDER/'valley-props.png')

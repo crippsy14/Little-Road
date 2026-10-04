@@ -36,11 +36,11 @@ namespace LittleRoad
             int wall=rng.NextDouble()>painted?Stone[rng.Next(Stone.Length)]:Painted[rng.Next(Painted.Length)];int door=Doors[rng.Next(Doors.Length)];
             return T(wall,rng.NextDouble()<.5?0xf4f1ea:door,Doors[rng.Next(Doors.Length)],door,Roofs[rng.Next(Roofs.Length)]);
         }
-        static readonly string[] ShopNames={"CAFFI","BARA","SIOP","POST","CIGYDD","LLYFRAU","CHIPS","HARDWARE","SLATE CRAFTS","CHEMIST","BAKERY","WOOL","SWEETS","TOOLS","PIES","BIKES"};
+        static readonly string[] ShopNames={"CAFFI","BARA","GROSER","POST","CIGYDD","LLYFRAU","CHIPS","HARDWARE","SLATE CRAFTS","CHEMIST","BAKERY","WOOL","SWEETS","TOOLS","PIES","BIKES"};
         int shopName;
         static Vector2 Footprint(string id)=>id switch{"terrace_a"=>new(5.4f,8),"terrace_b"=>new(5.4f,8),"terrace_c"=>new(5.4f,8),"terrace_d"=>new(5.4f,8),"terrace_e"=>new(5.4f,8),"terrace_f"=>new(5.4f,8),"terrace_g"=>new(5.4f,8),
             "house_a"=>new(8.5f,7.5f),"house_b"=>new(6.2f,7.5f),"house_c"=>new(10.8f,8.5f),"house_d"=>new(5.6f,7.4f),"cafe"=>new(9,8),"shop"=>new(9,8),"post_office"=>new(9,8),
-            "church"=>new(12,14),"town_hall"=>new(20,16),"station"=>new(22,8),"mill"=>new(12,11),_=>new(8,8)};
+            "cottage_a"=>new(5.4f,7),"cottage_b"=>new(5.4f,7),"cottage_c"=>new(5.4f,7),"church"=>new(12,14),"town_hall"=>new(20,16),"station"=>new(22,8),"mill"=>new(12,11),_=>new(8,8)};
         GameObject Box(string name,Vector3 p,Vector3 size,Quaternion rotation,Material material,bool solid=true)
         {
             var go=GameObject.CreatePrimitive(PrimitiveType.Cube);go.name=name;go.transform.SetParent(root);go.transform.SetPositionAndRotation(p,rotation);go.transform.localScale=size;
@@ -73,27 +73,29 @@ namespace LittleRoad
             var size=Footprint(id);var rot=Quaternion.Euler(0,yaw,0);float floor=centre.y,low=floor,high=floor;
             var c2=new Vector2(centre.x,centre.z);var half=size*.5f-new Vector2(.2f,.2f);
             if(!force&&!Free(c2,half,yaw))return false;
-            foreach(var c in new[]{new Vector2(-1,-1),new Vector2(1,-1),new Vector2(-1,1),new Vector2(1,1),new Vector2(0,0)}) {
-                var p=centre+rot*new Vector3(c.x*size.x*.5f,0,c.y*size.y*.5f);float g=H(p.x,p.z);low=Mathf.Min(low,g);high=Mathf.Max(high,g);
-                if(!force&&ValleyField.RoadDistance(p.x,p.z)<5.3f)return false;
+            // A 5 x 5 grid over the footprint, 0.3 m past its edges (street review, 4 Oct: corners alone missed a bank between
+            // them, and a house on Quay Lane hung over it with no plinth).
+            for(int i=0;i<5;i++)for(int j=0;j<5;j++) {
+                var c=new Vector2(i/2f-1,j/2f-1);var p=centre+rot*new Vector3(c.x*(size.x*.5f+.3f),0,c.y*(size.y*.5f+.3f));float g=H(p.x,p.z);low=Mathf.Min(low,g);high=Mathf.Max(high,g);
+                var q=centre+rot*new Vector3(c.x*size.x*.5f,0,c.y*size.y*.5f);if(!force&&(i%2==0&&j%2==0)&&ValleyField.RoadDistance(q.x,q.z)<5.3f)return false;
             }
             if(!force&&(floor-low>7.5f||high-floor>bury))return false;
             if(floor-low>.25f){Box("Stone plinth",new Vector3(centre.x,(low-.5f+floor)*.5f,centre.z),new Vector3(size.x+.5f,floor-low+.5f,size.y+.5f),rot,plinth);plinths++;}
             Put(id,new Vector3(centre.x,floor-.03f,centre.z),yaw,tint,sign);buildings++;Take(c2,half,yaw);
             // Chimney tops (kit x mirrors on import): some of them smoke, as coal fires do.
-            if((id.StartsWith("terrace")||id=="house_a"||id=="house_c")&&rng.NextDouble()<.3)HillcrestTown.Chimneys.Add(centre+rot*(id switch{"house_a"=>new Vector3(-2.6f,10.5f,-1.2f),"house_c"=>new Vector3(-2.8f,10.2f,-1.4f),
-                "terrace_e"=>new Vector3(-1.9f,15.2f,2.7f),"terrace_f"=>new Vector3(-1.9f,10.7f,-.6f),"terrace_g"=>new Vector3(1.6f,13.1f,-2.4f),_=>new Vector3(-1.4f,12.1f,-1.5f)}));
+            if((id.StartsWith("terrace")||id.StartsWith("cottage")||id=="house_a"||id=="house_c")&&rng.NextDouble()<.3)HillcrestTown.Chimneys.Add(centre+rot*(id switch{"house_a"=>new Vector3(-2.6f,10.5f,-1.2f),"house_c"=>new Vector3(-2.8f,10.2f,-1.4f),
+                "cottage_a" or "cottage_b" or "cottage_c"=>new Vector3(-2.25f,9.4f,0),"terrace_e"=>new Vector3(-1.9f,15.2f,2.7f),"terrace_f"=>new Vector3(-1.9f,10.7f,-.6f),"terrace_g"=>new Vector3(1.6f,13.1f,-2.4f),_=>new Vector3(-1.4f,12.1f,-1.5f)}));
             return true;
         }
         public void Build()
         {
             if(!QuarryHills.Enabled||!BayviewKit.Has("terrace_a"))return;
-            Spots.Clear();Homes.Clear();
+            Spots.Clear();Homes.Clear();GardenProps.Clear();
             plinth=WorldLook.Kit("Quarry Hills slate plinth",Toy.Hex(0x7d838a),WorldLook.Pattern.Stone,0,.12f,true);
             paving=WorldLook.Kit("Quarry Hills square flags",Toy.Hex(0x8f9296),WorldLook.Pattern.Stone,0,.15f,true);
             laneGravel=WorldLook.Kit("Quarry Hills back lane",Toy.Hex(0x6f7174),WorldLook.Pattern.Rock,0,.1f,true);
             stone=WorldLook.Kit("Quarry Hills yard wall",Toy.Hex(0x80858a),WorldLook.Pattern.Stone,0,.1f,true);
-            Square();PitStopAndShops();Streets();RetainingWalls();FlushWalls();KettleGate();
+            Square();PitStopAndShops();Driveway();Streets();RetainingWalls();FlushWalls();KettleGate();
             Debug.Log($"LITTLE_ROAD_QUARRY_TOWN buildings={buildings} back={backHouses} plinths={plinths} lamps={lamps} homes={Homes.Count}");
         }
         // ---------------------------------------------------------------- the square
@@ -101,14 +103,21 @@ namespace LittleRoad
         {
             var c=new Vector3(QuarryHills.Square.x,QuarryHills.SquareY,QuarryHills.Square.y);
             // Paved square (slate flags) under the junction's edges; nothing else builds on it.
-            var pave=Box("Square paving",c+Vector3.down*.18f,new Vector3(46,.4f,46),Quaternion.identity,paving,false);
+            // (4 Oct: a flat 46 m slab stood up to 0.8 m clear of the ground where the junction cut is low, with benches and
+            // stalls on its top and nothing under them.) The flags drape the ground on a 2 m grid, 3 cm up.
+            {const int n=23;var v=new List<Vector3>();var tri=new List<int>();
+                for(int j=0;j<=n;j++)for(int i=0;i<=n;i++){float x=c.x-23+i*2,z=c.z-23+j*2;v.Add(new Vector3(x,H(x,z)+(ValleyField.RoadDistance(x,z)<5.5f?-.15f:.03f),z));} // (tucked under the junction's road surface)
+                for(int j=0;j<n;j++)for(int i=0;i<n;i++){int a=j*(n+1)+i;tri.AddRange(new[]{a,a+n+1,a+1,a+1,a+n+1,a+n+2});}
+                var mesh=new Mesh{name="Square paving"};mesh.SetVertices(v);mesh.SetTriangles(tri,0);mesh.RecalculateNormals();
+                if(mesh.normals[0].y<0){for(int t=0;t<tri.Count;t+=3)(tri[t+1],tri[t+2])=(tri[t+2],tri[t+1]);mesh.SetTriangles(tri,0);mesh.RecalculateNormals();}
+                var pave=new GameObject("Square paving",typeof(MeshFilter),typeof(MeshRenderer));pave.transform.SetParent(root);pave.GetComponent<MeshFilter>().sharedMesh=mesh;pave.GetComponent<MeshRenderer>().sharedMaterial=paving;}
             Take(new Vector2(c.x,c.z),new Vector2(25,25),0);
             Vector3 Corner(float bearing,float r){float a=bearing*Mathf.Deg2Rad;var p=c+new Vector3(Mathf.Sin(a)*r,0,Mathf.Cos(a)*r);p.y=QuarryHills.SquareY;return p;}
             // The roads come in roughly from the four quarters: the landmarks stand on the diagonals, facing in.
             var inst=Corner(135,36);Building("town_hall",inst,Yaw(inst,c),T(0x8c9095,0xf4f1ea,0xc0392b,0x1f3a93,0x40464d),"INSTITUTE",true);
             var chapel=Corner(225,34);Building("church",chapel,Yaw(chapel,c),T(0x969089,0xf4f1ea,0x2e86c1,0x229954,0x4b5158),"CAPEL BETHEL",true);
             var caban=Corner(315,30);Building("cafe",caban,Yaw(caban,c),T(0xe9e3d3,0xc0392b,0xc0392b,0xc0392b,0x4b5158),"CABAN",true);Spots["caban"]=(Corner(315,21),Yaw(caban,c)+90);
-            var shop=Corner(45,30);Building("terrace_b",shop,Yaw(shop,c),T(0xf0dc9a,0x1f3a93,0x2e86c1,0x1f3a93,0x565c63),"SIOP",true);
+            var shop=Corner(45,30);Building("terrace_b",shop,Yaw(shop,c),T(0xf0dc9a,0x1f3a93,0x2e86c1,0x1f3a93,0x565c63),"SIOP Y GORNEL",true); // (not "SIOP": it read as STOP at the junction)
             Spots["institute"]=(inst,Yaw(inst,c));Spots["chapel"]=(chapel,Yaw(chapel,c));
             // Each landmark's neighbours: a short run of terraces either side, so the square is enclosed.
             foreach(var (b,r) in new[]{(135f,36f),(225f,34f),(315f,30f),(45f,30f)})
@@ -118,11 +127,14 @@ namespace LittleRoad
                 }
             // A fountain in the middle, stalls on market day (every day), benches, flags in the Welsh colours, bunting (all
             // stood on the ground itself: the junction's cut leaves it a little under the square's level in places).
+            // (The paving now drapes the ground, so everything stands on the ground: street review, 4 Oct, a bench sank into the
+            // old flat slab to its back slats and the map board lay face-up in it.)
             Vector3 OnGround(Vector3 p){p.y=H(p.x,p.z);return p;}
             Put("fountain",OnGround(c)+Vector3.down*.02f,0);
             int k=0;foreach(float b in new[]{60f,120f,240f,300f}){var p=OnGround(Corner(b,11));Put("market_stall",p,Yaw(p,c),T(0xffffff,0,new[]{0xc0392b,0x229954,0xf1c40f,0x2e86c1}[k++%4],0,0x4b5158));}
             foreach(float b in new[]{90f,180f,270f,0f}){var p=OnGround(Corner(b+40,17));Put("bench",p,Yaw(p,c)+180);}
-            foreach(float x in new[]{-4f,0f,4f}){var p=OnGround(Corner(180,6)+new Vector3(x,0,0));Put("flag_pole",p,0,T(0xffffff,x==0?0xc0392b:0x229954,x==0?0xffffff:0xc0392b,0,0xffffff));}
+            // Y Ddraig Goch either side of a white-and-green pole (street review, 4 Oct: plain stripes didn't read as Welsh).
+            foreach(float x in new[]{-4f,0f,4f}){var p=OnGround(Corner(180,6)+new Vector3(x,0,0));if(x!=0&&BayviewKit.Has("flag_wales"))Put("flag_wales",p,0);else Put("flag_pole",p,0,T(0xffffff,x==0?0xc0392b:0x229954,x==0?0xffffff:0xc0392b,0,0xffffff));}
             var ring=new List<Vector3>();
             foreach(float b in new[]{20f,70f,110f,160f,200f,250f,290f,340f}){var p=Corner(b,21);p.y=H(p.x,p.z);if(Put("lamp_post",p,0,T(0xffffff,0x1f3a93,0xffffff,0xffffff,0xffffff),null,1,false)!=null){lamps++;streetLamps.Add(p);ring.Add(p);}}
             // Round the square lamp to lamp, and two runs across it.
@@ -130,7 +142,10 @@ namespace LittleRoad
             if(ring.Count==8)foreach(int i in new[]{1,3})HillcrestTown.BuntingLine(root,ring[i]+Vector3.up*4.4f,ring[i+4]+Vector3.up*4.4f,2.2f);
             Spots["square"]=(c,0);
         }
-        void Lamp(Vector3 p){if(Put("lamp_post",p,0,T(0xffffff,0x1f3a93,0xffffff,0xffffff,0xffffff),null,1,false)!=null){lamps++;streetLamps.Add(p);}}
+        // Garden and pavement furniture a parked car must keep clear of (ValleyLife): bushes, benches and lamps.
+        public static readonly List<Vector3> GardenProps=new();
+        // (Street review, 4 Oct: the approach run and the town's own lamps doubled up 2-4 m apart.) None within 6 m of another.
+        void Lamp(Vector3 p){foreach(var o in streetLamps)if((o-p).sqrMagnitude<36)return;GardenProps.Add(p);if(Put("lamp_post",p,0,T(0xffffff,0x1f3a93,0xffffff,0xffffff,0xffffff),null,1,false)!=null){lamps++;streetLamps.Add(p);}}
         // The end of the Kettle Falls road for now: a gate across it, closed, with chevrons behind.
         void KettleGate()
         {
@@ -139,6 +154,21 @@ namespace LittleRoad
             foreach(float x in new[]{-2.5f,0f,2.5f}){var p=road.At(road.Length-1)+Vector3.Cross(Vector3.up,f)*x+f*2;p.y=H(p.x,p.z);Put("chevron_sign",p,Quaternion.LookRotation(-f).eulerAngles.y);}
         }
         // ---------------------------------------------------------------- Pit Stop
+        // (Street review, 4 Oct: the pavement ran unbroken past the forecourt, so you crossed a kerb and grass to reach the bays.)
+        // A 16 m paved apron from Quarry Road's edge to the forecourt, the pavement broken across it.
+        static bool InDriveway(Vector3 p)
+        {
+            var site=QuarryHills.PitStopSite;var l=Quaternion.Inverse(Quaternion.Euler(0,site.yaw,0))*(p-site.at);return Mathf.Abs(l.x)<9&&l.z>4&&l.z<20;
+        }
+        void Driveway()
+        {
+            var road=HillcrestRoute.Find(QuarryHills.QuarryRoadName);var site=QuarryHills.PitStopSite;var face=Quaternion.Euler(0,site.yaw,0)*Vector3.forward;
+            float s=road.Nearest(site.at,out _);var edge=road.At(s)-face*(road.width*.5f-.3f);
+            var front=site.at+face*6;float len=Vector3.Distance(new Vector3(edge.x,0,edge.z),new Vector3(front.x,0,front.z));var mid=(edge+front)*.5f;
+            float y0=edge.y,y1=Mathf.Max(H(front.x,front.z),site.at.y);
+            var apron=Box("Pit Stop apron",new Vector3(mid.x,(y0+y1)*.5f-.12f,mid.z),new Vector3(16,.3f,len),Quaternion.LookRotation(new Vector3(edge.x-front.x,(y0-y1),edge.z-front.z)),paving,true);
+            apron.tag="Untagged";
+        }
         void PitStopAndShops()
         {
             var site=QuarryHills.PitStopSite;
@@ -178,29 +208,52 @@ namespace LittleRoad
             var p=road.At(s)+road.Right(s)*side*(road.width*.5f+Pave-.45f);p.y=road.At(s).y;
             foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,p.x,p.z,out _)<other.width*.5f+6)return;
             if(Vector2.Distance(new(p.x,p.z),QuarryHills.Square)<30||Vector2.Distance(new(p.x,p.z),new(QuarryHills.PitStopSite.at.x,QuarryHills.PitStopSite.at.z))<30)return;
-            Put("bench",p,Quaternion.LookRotation(-road.Right(s)*side).eulerAngles.y,null,null,1,false);
+            Put("bench",p,Quaternion.LookRotation(-road.Right(s)*side).eulerAngles.y,null,null,1,false);GardenProps.Add(p);
         }
         float RowCentre(HillcrestRoute.Road road,float depth)=>road.width*.5f+Pave+Garden+depth*.5f;
         void StreetRow(HillcrestRoute.Road road,int side,float from,float to)
         {
-            float s=from;var core=QuarryHills.Square;
+            float s=from;var core=QuarryHills.Square;string last=null;
             while(s<to) {
                 double roll=rng.NextDouble();
                 string id=roll<.8?new[]{"terrace_a","terrace_a","terrace_c","terrace_d","terrace_d","terrace_e","terrace_f","terrace_f","terrace_g","terrace_b"}[rng.Next(10)]:roll<.9?"house_c":"house_d";
+                // Quarrymen's cottages (street review, 4 Oct: the town read as Ligurian): most houses away from the square,
+                // a quarter of them in the middle.
+                {var p0=road.At(s);if(rng.NextDouble()<(Vector2.Distance(new(p0.x,p0.z),core)<230?.25:.62))id=new[]{"cottage_a","cottage_b","cottage_c"}[rng.Next(3)];}
+                // No two of the same front side by side (street review, 4 Oct: twin loggia houses read as copy-paste).
+                if(id==last)id=id.StartsWith("cottage")?(id=="cottage_a"?"cottage_b":"cottage_a"):id=="terrace_f"?"terrace_d":id=="house_d"?"terrace_a":"terrace_f";
                 var size=Footprint(id);float mid=s+size.x*.5f;if(mid+size.x*.5f>to)break;
                 var at=road.At(mid);var right=road.Right(mid);var centre=at+right*side*RowCentre(road,size.y);centre.y=at.y+.05f;
                 if(rng.NextDouble()<.04){s+=6;continue;}
                 // Shops crowd the middle of town; houses further out.
                 bool central=Vector2.Distance(new(centre.x,centre.z),core)<230;if(central&&id.StartsWith("t")&&rng.NextDouble()<.3)id="terrace_b";
                 if(Building(id,centre,Yaw(centre,at),RandomTint(),id=="terrace_b"?ShopNames[shopName++%ShopNames.Length]:null)) {
-                    var yard=at+right*side*(road.width*.5f+Pave+Garden*.5f+.4f);yard.y=at.y;Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));
+                    // The middle of the front garden (street review, 4 Oct: 0.4 m further out it overlapped the house, and settling
+                    // then pushed cars onto the pavement, benches and lamps). Not in front of a cottage's porch bench.
+                    // About half the gardens are a drive with a car on it (no porch or bay in the way); the rest keep a front
+                    // fence of upright slate slabs (crawiau, as the slate valleys have), with a gap for the gate.
+                    last=id;var yard=at+right*side*(road.width*.5f+Pave+Garden*.5f-.05f);yard.y=at.y;
+                    bool drive=id!="terrace_f"&&id!="cottage_b"&&id!="cottage_c"&&rng.NextDouble()<.55;
+                    if(drive)Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));else Crawiau(road,side,mid,size.x);
                     if(lamps<900&&((int)(mid/16))%2==(side>0?0:1)&&Mathf.Repeat(mid,16)<size.x){var lp=at+right*side*(road.width*.5f+.7f);lp.y=at.y;Lamp(lp);}
                     // Now and then a flowering bush at the corner of the front garden (clear of the parking spot's middle).
-                    if(rng.NextDouble()<.16){var fb=at+right*side*(road.width*.5f+Pave+Garden-.7f)+road.Forward(mid)*(size.x*.5f-.7f);fb.y=at.y;Put("flower_bush",fb,(float)rng.NextDouble()*360,null,null,.8f,false);}
+                    if(rng.NextDouble()<.16){var fb=at+right*side*(road.width*.5f+Pave+Garden-.7f)+road.Forward(mid)*(size.x*.5f-.7f);fb.y=at.y;Put("flower_bush",fb,(float)rng.NextDouble()*360,null,null,.8f,false);GardenProps.Add(fb);}
                     // The back yard behind it: a wall along the lane and one between it and next door.
                     YardWalls(centre,Yaw(centre,at),size,Yard);
                     s+=size.x+.02f;
                 } else s+=2;
+            }
+        }
+        readonly List<Matrix4x4> slabs=new();
+        void Crawiau(HillcrestRoute.Road road,int side,float mid,float width)
+        {
+            float off=road.width*.5f+Pave+.12f;
+            for(float s=mid-width*.5f+.35f;s<=mid+width*.5f-.35f;s+=.64f) {
+                if(Mathf.Abs(s-mid)<.75f)continue; // the gate
+                var p=road.At(s)+road.Right(s)*side*off;float g=H(p.x,p.z);if(ValleyField.RoadDistance(p.x,p.z)<road.width*.5f+1.5f)continue;
+                float h=.75f+(float)rng.NextDouble()*.3f,tilt=((float)rng.NextDouble()-.5f)*6;
+                GardenProps.Add(p); // (parked cars keep clear of the fence: ValleyLife.NearProp)
+                slabs.Add(Matrix4x4.TRS(new Vector3(p.x,g+h*.5f-.15f,p.z),Quaternion.LookRotation(road.Forward(s))*Quaternion.Euler(0,0,tilt),new Vector3(.07f,h+.15f,.6f)));
             }
         }
         // The yard walls behind a house facing away along `yaw` (wall height ~1.4 m, slate stone).
@@ -229,10 +282,11 @@ namespace LittleRoad
                     var run=new List<(Vector3 top,float low)>();
                     void Lay()
                         {
-                        // (Each run carries on 1.5 m past its ends, so a short one reads as a garden wall, not a stub.)
+                        // (Street review, 4 Oct: runs of one or two points stood alone as stubs on banks and corners.) A run needs
+                        // four points (6 m) to be built; each carries on 1.5 m past its ends.
+                        if(run.Count<4){run.Clear();return;}
                         if(run.Count>=2){var (f0,l0)=run[0];var (f1,_)=run[1];var d0=f0-f1;d0.y=0;if(d0.sqrMagnitude>.01f)run.Insert(0,(f0+d0.normalized*1.5f,l0));
                             var (e0,le)=run[^1];var (e1,_)=run[^2];var d1=e0-e1;d1.y=0;if(d1.sqrMagnitude>.01f)run.Add((e0+d1.normalized*1.5f,le));}
-                        if(run.Count==1){var (t,l)=run[0];walls.Add(Matrix4x4.TRS(new Vector3(t.x,(t.y+.8f+l)*.5f,t.z),Quaternion.LookRotation(road.At(road.Nearest(t,out _)+1)-road.At(road.Nearest(t,out _)-1)),new Vector3(.45f,t.y+.8f-l,5f)));Retaining++;}
                         for(int i=1;i<run.Count;i++) {
                             var (a0,l0)=run[i-1];var (a1,l1)=run[i];var d=a1-a0;d.y=0;float len=d.magnitude;if(len<.05f)continue;
                             float top=Mathf.Max(a0.y,a1.y)+.8f,low=Mathf.Min(l0,l1);var mid=(a0+a1)*.5f;
@@ -240,6 +294,7 @@ namespace LittleRoad
                         }
                         run.Clear();
                     }
+                    int misses=0;
                     for(float s=4;s<road.Length-4;s+=2) {
                         var p=road.At(s);var ahead=road.At(s+1)-road.At(s-1);ahead.y=0;if(ahead.sqrMagnitude<1e-4f){Lay();continue;}ahead.Normalize();var right=Vector3.Cross(Vector3.up,ahead);
                         bool nearJunction=false;foreach(var j in junctions)if(new Vector2(j.x-p.x,j.z-p.z).magnitude<26)nearJunction=true;if(nearJunction){Lay();continue;}
@@ -256,14 +311,15 @@ namespace LittleRoad
                             if(inside)break;
                             at.y=top;run.Add((at,low-.2f));placed=true;break;
                         }
-                        if(!placed)Lay();
+                        // One missing point doesn't break a wall (a gap of 4 m read as two stubs).
+                        if(placed)misses=0;else if(++misses>=2)Lay();
                     }
                     Lay();
                 }
             }
             Debug.Log("LITTLE_ROAD_QUARRY_RETAINING segments="+Retaining);
         }
-        void FlushWalls(){Combine("Yard walls",walls,stone,true);Combine("Footpaths",paths,paving,false);}
+        void FlushWalls(){Combine("Yard walls",walls,stone,true);Combine("Footpaths",paths,paving,false);Combine("Crawiau",slabs,WorldLook.Kit("Crawiau slate",new Color(.36f,.38f,.43f),WorldLook.Pattern.Slate,0,.1f,true),true);}
         void Combine(string name,List<Matrix4x4> boxes,Material material,bool solid)
         {
             if(boxes.Count==0)return;
@@ -311,6 +367,7 @@ namespace LittleRoad
             var core=QuarryHills.Square;
             for(float s=from;s<to;) {
                 string id=rng.NextDouble()<.85?new[]{"terrace_a","terrace_c","terrace_d","terrace_d","terrace_f","terrace_f","terrace_g"}[rng.Next(7)]:"house_d";
+                if(rng.NextDouble()<.5)id=new[]{"cottage_a","cottage_b","cottage_c"}[rng.Next(3)];
                 var size=Footprint(id);
                 var basePt=road.At(s);var right=road.Right(s);
                 var centre=basePt+right*side*(d+size.y*.5f);
@@ -341,6 +398,8 @@ namespace LittleRoad
                     // (Not into a back street's junction: its fillets reach ~15 m from the node.)
                     foreach(var node in new[]{QuarryHills.ChapelFrom,QuarryHills.ChapelTo,QuarryHills.TerraceFrom,QuarryHills.TerraceTo})if(Vector2.Distance(new(p.x,p.z),new(node.x,node.z))<15)clear=false;
                     if(clear)foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,p.x,p.z,out _)<other.width*.5f+2.4f){clear=false;break;}
+                    // The Pit Stop's driveway: no pavement across it (its apron runs from the kerb to the forecourt).
+                    if(clear&&road.name==QuarryHills.QuarryRoadName&&InDriveway(p))clear=false;
                     if(clear)run.Add(p);else Flush();
                 }
                 Flush();
@@ -376,7 +435,7 @@ namespace LittleRoad
                 p.y=road.At(s).y;ends[i]=p;
             }
             for(int i=0;i<2;i++) {
-                bool lit=false;foreach(var l in streetLamps)if(Vector2.Distance(new(l.x,l.z),new(ends[i].x,ends[i].z))<2.5f){ends[i]=l;lit=true;break;}
+                bool lit=false;foreach(var l in streetLamps)if(Vector2.Distance(new(l.x,l.z),new(ends[i].x,ends[i].z))<6f){ends[i]=l;lit=true;break;}
                 if(!lit)Lamp(ends[i]);
             }
             HillcrestTown.BuntingLine(root,ends[0]+Vector3.up*4.4f,ends[1]+Vector3.up*4.4f,.9f);

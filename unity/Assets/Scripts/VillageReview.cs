@@ -16,6 +16,39 @@ namespace LittleRoad
         [Serializable] public sealed class Evidence {public string scope="Static car-sized clearance and road/shoulder support samples, not continuous collision proof";public int roadSamples,garageSamples,forecourtSamples,supportSamples;public List<string> obstructions=new();public bool passed;}
         [Serializable] public sealed class DrivingEvidence {public string scope="Physical garage entry and reverse exit using synthetic trigger input; not a manual route playtest";public bool entered,exited,passed;public int contacts,recoveries;public float entryZ,exitZ,maxLateralError;public Vector3 exitPosition,exitVelocity;public string[] exitContacts;}
         AdventureUI ui;Camera cameraView;RoadCar player;string folder;
+        // --street-review (Richard, 4 Oct: review every street in every town for misplaced assets and room to improve):
+        // every road through Bayview, Hillcrest and Quarry Hills, every 40 m: a driver's-eye view along it and each
+        // frontage from across the road, into captures/<town>/<street>/, with streets.json listing every photo's camera
+        // and look-at point (so a close-up can repeat the view with capture-quarry.ps1 -Shots).
+        IEnumerator StreetReview(RaceTrial world)
+        {
+            string Town(Vector3 p){var a=AreaBanner.Area(p);return a=="BAYVIEW"||a=="BAYVIEW HALT"?"bayview":a=="HILLCREST"||a=="HILLCREST CASTLE"?"hillcrest":a=="QUARRY HILLS"||a=="SLATE QUAY"?"quarry-hills":null;}
+            string Slug(string s)=>new string(s.ToLowerInvariant().Select(c=>char.IsLetterOrDigit(c)?c:'-').ToArray()).Trim('-');
+            var streets=new List<(string name,Vector3[] line,float half,bool closed)>{("Bayview road",world.track.points,Circuit.Width*.5f,true)};
+            foreach(var road in HillcrestRoute.All())streets.Add((road.name,road.line,road.width*.5f,false));
+            player.body.isKinematic=true;player.body.position+=Vector3.down*30;
+            var manifest=new List<string>();int shots=0;
+            foreach(var (name,line,half,closed) in streets) {
+                int n=line.Length;var run=new List<float>{0};for(int i=1;i<n;i++)run.Add(run[^1]+Vector3.Distance(line[i],line[i-1]));float length=run[^1];
+                Vector3 At(float s){s=Mathf.Clamp(s,0,length);int i=1;while(i<n-1&&run[i]<s)i++;return Vector3.Lerp(line[i-1],line[i],Mathf.InverseLerp(run[i-1],run[i],s));}
+                int index=0;
+                for(float s=10;s<length-10;s+=40) {
+                    var p=At(s);string town=Town(p);if(town==null)continue;
+                    var ahead=At(s+3)-At(s-3);ahead.y=0;if(ahead.sqrMagnitude<1e-4f)continue;ahead.Normalize();var right=Vector3.Cross(Vector3.up,ahead);
+                    var views=new List<(string kind,Vector3 cam,Vector3 look)>{("along",p+Vector3.up*1.7f-right*1.2f,At(s+28)+Vector3.up*1.2f)};
+                    foreach(int side in new[]{-1,1})views.Add((side<0?"left":"right",p-right*side*(half+2)+Vector3.up*6.5f-ahead*4,p+right*side*(half+9)+Vector3.up*3+ahead*4));
+                    string dir=Path.Combine(folder,"streets",town,Slug(name));Directory.CreateDirectory(dir);
+                    foreach(var (kind,cam,look) in views) {
+                        cameraView.transform.position=cam;cameraView.transform.LookAt(look);cameraView.fieldOfView=55;WorldLook.Cut(cameraView);
+                        yield return new WaitForSeconds(.3f);string file=$"{index:000}-{kind}.png";ui.Capture(Path.Combine(dir,file));shots++;
+                        manifest.Add($"{{\"town\":\"{town}\",\"street\":\"{name}\",\"file\":\"streets/{town}/{Slug(name)}/{file}\",\"along_m\":{s:0},\"kind\":\"{kind}\",\"camera\":\"{cam.x:0.0},{cam.y:0.0},{cam.z:0.0}\",\"look\":\"{look.x:0.0},{look.y:0.0},{look.z:0.0}\"}}");
+                    }
+                    index++;
+                }
+            }
+            File.WriteAllText(Path.Combine(folder,"streets.json"),"[\n"+string.Join(",\n",manifest)+"\n]\n");
+            Debug.Log($"LITTLE_ROAD_STREET_REVIEW shots={shots} streets={manifest.Select(m=>m.Split(',')[1]).Distinct().Count()}");
+        }
         IEnumerator Start()
         {
             folder=RaceTrial.Arg("--trial-captures");if(string.IsNullOrEmpty(folder))throw new Exception("World review requires --trial-captures");Directory.CreateDirectory(folder);
@@ -187,6 +220,7 @@ namespace LittleRoad
                 }
                 Application.Quit(0);yield break;
             }
+            if(RaceTrial.Has("--street-review")){yield return StreetReview(world);Application.Quit(0);yield break;}
             if(RaceTrial.Has("--car-audit")){yield return new WaitForSeconds(1);File.WriteAllText(Path.Combine(folder,"car-audit.txt"),StationarySpot.Audit());Application.Quit(0);yield break;}
             if(RaceTrial.Has("--area-audit")){yield return new WaitForSeconds(1);var text=AreaAudit.Run(GetComponent<AdventureGame>().ResidentDirectory(),world.track,out string json);
                 File.WriteAllText(Path.Combine(folder,"area-audit.txt"),text);File.WriteAllText(Path.Combine(folder,"area-audit.json"),json);Application.Quit(0);yield break;}

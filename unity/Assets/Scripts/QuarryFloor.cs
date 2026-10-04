@@ -36,7 +36,9 @@ namespace LittleRoad
             var rng=new System.Random(7711);
             Overlay(root);
             // The loop: loose slate gravel (no tarmac grip: the floor's own dirt grip under it).
-            var gravel=WorldLook.Kit("Rallycross gravel",new Color(.55f,.53f,.50f),WorldLook.Pattern.Rock,0,.1f,true);
+            // (4 Oct: a flat cream strip before.) Loose slate gravel: fine chips, two polished wheel ruts, stones on the berms
+            // (Kit shader, slate flats with _Wear 3.2; the strip's second UV carries the across-coordinate).
+            var gravel=WorldLook.Kit("Rallycross gravel",new Color(.39f,.39f,.41f),WorldLook.Pattern.Slate,0,.1f,true,3.2f);
             Strip("Quarry Sprint",Loop,LoopWidth,.07f,gravel,root,true);
             RallySchool.BuildCrest(root,gravel);
             int n=Loop.Length;
@@ -68,6 +70,7 @@ namespace LittleRoad
             foreach(float x in new[]{-16f,16f})Put("lamp_post",School+new Vector3(x,-.02f,-7),0,T(0xffffff,0x1f3a93,0xffffff,0xffffff),null,root);
             Put("map_board",School+new Vector3(-14,-.02f,-12),180,null,null,root);
             Blondin(root);
+            QuarryWorks.Build(root);
         }
         static bool Clear(Vector3 q,float fromLoop)
         {
@@ -84,7 +87,9 @@ namespace LittleRoad
             var c=QuarryHills.FloorCentre;
             for(int k=0;k<=rings;k++)for(int j=0;j<around;j++) {
                 float a=j*Mathf.PI*2/around,rr=1.08f*k/rings;
-                if(k==rings)rr+=(Mathf.PerlinNoise(j*.21f,4.2f)-.5f)*.05f; // a slightly ragged outer edge
+                // A ragged outer edge, in bays and spurs at two scales (4 Oct: a smooth line read as paint on the grass).
+                if(k==rings)rr+=(Mathf.PerlinNoise(j*.21f,4.2f)-.5f)*.09f+(Mathf.PerlinNoise(j*.9f,1.3f)-.5f)*.04f;
+                else if(k==rings-1)rr+=(Mathf.PerlinNoise(j*.21f,4.2f)-.5f)*.04f;
                 float x=c.x+Mathf.Cos(a)*QuarryHills.FloorRX*rr,z=c.y+Mathf.Sin(a)*QuarryHills.FloorRZ*rr;
                 v.Add(new Vector3(x,ValleyField.Height(x,z)+.035f,z));nrm.Add(ValleyField.Normal(x,z));uv.Add(new Vector2(x,z)*.2f);
             }
@@ -97,13 +102,13 @@ namespace LittleRoad
         }
         static void Strip(string name,Vector3[] line,float width,float lift,Material material,Transform root,bool closed)
         {
-            int n=line.Length,count=closed?n+1:n;var v=new Vector3[count*2];var uv=new Vector2[count*2];var t=new List<int>();float run=0;
+            int n=line.Length,count=closed?n+1:n;var v=new Vector3[count*2];var uv=new Vector2[count*2];var across=new Vector2[count*2];var t=new List<int>();float run=0;
             for(int k=0;k<count;k++) {
                 int i=k%n;Vector3 f=line[(i+1)%n]-line[(i+n-1)%n];f.y=0;f.Normalize();var right=Vector3.Cross(Vector3.up,f);if(k>0)run+=Vector3.Distance(line[i],line[(k-1)%n]);
                 Vector3 a=line[i]-right*width*.5f,b=line[i]+right*width*.5f;a.y=ValleyField.Height(a.x,a.z)+lift;b.y=ValleyField.Height(b.x,b.z)+lift;
-                v[k*2]=a;v[k*2+1]=b;uv[k*2]=new(0,run/5);uv[k*2+1]=new(1,run/5);if(k<count-1){int q=k*2;t.AddRange(new[]{q,q+2,q+1,q+1,q+2,q+3});}
+                v[k*2]=a;v[k*2+1]=b;uv[k*2]=new(0,run/5);uv[k*2+1]=new(1,run/5);across[k*2]=new(0,run);across[k*2+1]=new(1,run);if(k<count-1){int q=k*2;t.AddRange(new[]{q,q+2,q+1,q+1,q+2,q+3});}
             }
-            var mesh=new Mesh{name=name,vertices=v,uv=uv};mesh.SetTriangles(t,0);mesh.RecalculateNormals();
+            var mesh=new Mesh{name=name,vertices=v,uv=uv};mesh.SetUVs(1,across);mesh.SetTriangles(t,0);mesh.RecalculateNormals();
             var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root);go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;
         }
         // ---------------------------------------------------------------- the Blondin
