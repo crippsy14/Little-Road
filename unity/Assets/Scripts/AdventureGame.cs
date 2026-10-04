@@ -336,7 +336,7 @@ namespace LittleRoad
             bool started=opened&&ui.InvokeChoice("Test 1 ");int cards=0;
             for(int i=0;i<RallySchool.Lessons.Length;i++) {
                 if(i>0){bool next=ui.Licence!=null&&ui.Licence.IsResult&&ui.InvokeChoice("Next test");if(!next)StartLesson(i);}
-                yield return new WaitForSeconds(3.2f);var path=RallySchool.TestPath(i);float speed=i==5?20:14;
+                yield return new WaitForSeconds(3.2f);var path=RallySchool.TestPath(i);float speed=i==5?20:i==3?15:14;   // (the flick at 14 m/s landed on gold's 10.5 s exactly; under load it read silver)
                 player.body.isKinematic=true;
                 for(int k=0;k+1<path.Count&&school.Active;k++){var a=path[k];var b=path[k+1];float len=Vector3.Distance(a,b);
                     for(float d=0;d<len&&school.Active;d+=speed*Time.fixedDeltaTime){var p=Vector3.Lerp(a,b,d/len);p.y=ValleyField.Height(p.x,p.z)+.6f;player.body.MovePosition(p);

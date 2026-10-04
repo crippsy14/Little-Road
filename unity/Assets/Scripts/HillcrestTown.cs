@@ -65,8 +65,33 @@ namespace LittleRoad
             railWhite=TrialWorld.Material("Balustrade white",Toy.Hex(0xfff8ec),0,.25f);
             // A race away from the town (RaceArea) builds only the raceway's own buildings.
             if(RaceArea.Active&&!RaceArea.Near(Square,500)){if(RaceArea.Near(HillcrestRoute.Circuit[0],600))Raceway();Debug.Log($"LITTLE_ROAD_HILLCREST race-area only buildings={buildings}");return;}
-            ReserveZipLanding();MarketSquare();Castle();LowerTown();Station();Streets();Vista();Lookout();Raceway();Countryside();HillSlopes();Patchwork();ZipLineBuild();TunnelFrame();
+            ReserveZipLanding();MarketSquare();Castle();LowerTown();Station();Streets();Vista();Lookout();Raceway();Countryside();HillSlopes();Patchwork();ZipLineBuild();TunnelFrame();Gardens();
             Debug.Log($"LITTLE_ROAD_HILLCREST buildings={buildings} plinths={plinths} spots={Spots.Count}");
+        }
+        // ---------------------------------------------------------------- public gardens
+        // (Street review, 4 Oct: bare lawns at the castle's arrival, on Station Road and by the river at the quay.) A small
+        // garden on the nearest clear, level 16 m plot to each: a gravel cross of paths, four flower beds, benches facing in,
+        // cypresses at the corners and an urn of flowers in the middle.
+        void Gardens()
+        {
+            var gravel=WorldLook.Kit("Garden gravel",Toy.Hex(0xd8c9a8),WorldLook.Pattern.Rock,0,.1f,true);int made=0,road=0,river=0,steep=0,taken=0;
+            foreach(var near in new[]{new Vector2(232,-1145),new Vector2(400,-950),new Vector2(110,-890)}) {
+                for(float r=0;r<=30;r+=3){bool done=false;for(float a=0;a<360&&!done;a+=r<1?360:30) {
+                    var c=near+new Vector2(Mathf.Cos(a*Mathf.Deg2Rad),Mathf.Sin(a*Mathf.Deg2Rad))*r;
+                    if(ValleyField.RoadDistance(c.x,c.y)<11){road++;continue;}if(HillcrestRoute.Distance(HillcrestRoute.River.line,c.x,c.y,out _)<HillcrestRoute.River.width*.5f+5){river++;continue;}
+                    float h0=H(c.x,c.y),lo=h0,hi=h0;for(int i=-1;i<=1;i++)for(int j=-1;j<=1;j++){float h=H(c.x+i*8,c.y+j*8);lo=Mathf.Min(lo,h);hi=Mathf.Max(hi,h);}
+                    if(hi-lo>1.6f){steep++;continue;}if(BayviewKit.Occupied(new Bounds(new Vector3(c.x,h0+1,c.y),new Vector3(16,3,16)))){taken++;continue;}
+                    var at=new Vector3(c.x,h0,c.y);float yaw=Yaw(at,new Vector3(near.x,h0,near.y)+new Vector3(.01f,0,.01f));var rot=Quaternion.Euler(0,yaw,0);
+                    foreach(var (along,len) in new[]{(rot*Vector3.forward,16f),(rot*Vector3.right,16f)})
+                        Box("Garden path",at+Vector3.up*.03f,new Vector3(1.8f,.06f,len),Quaternion.LookRotation(along),gravel,false);
+                    foreach(var (x,z) in new[]{(-4f,-4f),(4f,-4f),(-4f,4f),(4f,4f)}){var p=at+rot*new Vector3(x,0,z);p.y=H(p.x,p.z)-.02f;Put("flower_bed",p,yaw,null,null,.9f,false);}
+                    foreach(var (x,z) in new[]{(-7f,-7f),(7f,-7f),(-7f,7f),(7f,7f)}){var p=at+rot*new Vector3(x,0,z);p.y=H(p.x,p.z)-.04f;Put("tree_cypress",p,0,null,null,.9f,true);}
+                    foreach(var (x,z,f) in new[]{(0f,-6.2f,0f),(0f,6.2f,180f),(-6.2f,0f,90f),(6.2f,0f,270f)}){var p=at+rot*new Vector3(x,0,z);p.y=H(p.x,p.z)-.02f;p+=rot*(x==0?Vector3.right:Vector3.forward)*2.2f;Put("bench",p,yaw+f,null,null,1,false);}
+                    Put("fountain",new Vector3(at.x,h0-.02f,at.z),yaw,null,null,.55f,true);
+                    reserved.Add((c,10));made++;done=true;}
+                    if(done)break;}
+            }
+            Debug.Log($"LITTLE_ROAD_HILLCREST_GARDENS made={made} refused road={road} river={river} steep={steep} taken={taken}");
         }
         // ---------------------------------------------------------------- buildings on slopes
         // Kit footprints (width along the frontage, depth).

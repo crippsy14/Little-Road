@@ -494,8 +494,10 @@ namespace LittleRoad
                 var go=new GameObject("Junction mouth shoulder",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(parent);
                 go.GetComponent<MeshFilter>().sharedMesh=mesh;var mr=go.GetComponent<MeshRenderer>();mr.sharedMaterial=material;mr.shadowCastingMode=ShadowCastingMode.Off;go.GetComponent<MeshCollider>().sharedMesh=mesh;
             }
-            cornerStone??=WorldLook.Kit("Quarry Hills corner wall",new Color(.50f,.52f,.55f),WorldLook.Pattern.Stone,0,.12f,true);
-            QuarryFloor.Combine("Corner walls",walls,cornerStone,parent,true);
+            cornerStone??=WorldLook.Kit("Quarry Hills corner wall",new Color(.50f,.52f,.55f),WorldLook.Pattern.Stone,0,.12f,true);cornerStoneShared=cornerStone;
+            // (Combined once the towns stand: TrimRails drops any piece with a building close behind it, as in front of the
+            // doors by Terrace Row's mouth: street review, 4 Oct.)
+            cornerWalls.Add((new List<Matrix4x4>(walls),parent));
         }
         void KerbShoulders(RoadNetwork.Node n,Transform parent,Material material)
         {
@@ -799,6 +801,7 @@ namespace LittleRoad
         }
         // Every rail and post with the way it faces out from the road (TrimRails reads them once the towns stand).
         static readonly List<(GameObject piece,Vector3 edge,Vector3 outward)> railPieces=new();
+        static readonly List<(List<Matrix4x4> walls,Transform parent)> cornerWalls=new();static Material cornerStoneShared;
         // (Street review, 4 Oct: on Quay road the rail guarded a drop behind the houses, and ran along the kerb in front of their
         // doors.) After the towns are built: no rail where a building stands within 9 m beyond it.
         public static int TrimRails()
@@ -810,7 +813,16 @@ namespace LittleRoad
                     for(float o=1;o<=9&&!house;o+=2){var q=edge+outward*o;if(b.Contains(new Vector3(q.x,b.center.y,q.z)))house=true;}if(house)break;}
                 if(house){Object.Destroy(piece);removed++;}
             }
-            railPieces.Clear();return removed;
+            railPieces.Clear();
+            // The junctions' corner walls, less any piece within 3 m of a building.
+            foreach(var (list,parent) in cornerWalls) {
+                if(parent==null)continue;var kept=new List<Matrix4x4>();
+                foreach(var m in list){var p=(Vector3)m.GetColumn(3);bool house=false;
+                    foreach(var b in BayviewKit.Footprints){if(b.size.x<4.5f||b.size.z<4.5f||b.size.y<4)continue;var e=b;e.Expand(new Vector3(6,40,6));if(e.Contains(new Vector3(p.x,b.center.y,p.z))){house=true;break;}}
+                    if(house)removed++;else kept.Add(m);}
+                QuarryFloor.Combine("Corner walls",kept,cornerStoneShared,parent,true);
+            }
+            cornerWalls.Clear();return removed;
         }
         void Guardrails(Vector3[] line,float width,Transform parent,int start,bool steep=false,Vector3[] own=null,bool riverside=false)
         {

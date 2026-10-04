@@ -425,7 +425,9 @@ namespace LittleRoad
             // circuit: Bayview races skip them (ValleyDetail false) and keep their frame cost.
             // (A race leaves Hillcrest's town and railway out unless they're in its area: RaceArea.)
             bool hillcrest=RaceArea.Near(HillcrestRoute.Square,500);
-            if(ValleyDetail){if(hillcrest)Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");QuarryHillsScenery();Step("quarry-hills");Debug.Log("LITTLE_ROAD_RAILS_TRIMMED "+TrimRails());Next(.93f,"Filling the sea");yield return null;}RegisterRoads();
+            if(ValleyDetail){if(hillcrest)Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");QuarryHillsScenery();Step("quarry-hills");Next(.93f,"Filling the sea");yield return null;}
+            Debug.Log("LITTLE_ROAD_RAILS_TRIMMED "+TrimRails());   // (rails and junction corner walls in front of buildings; every build)
+            RegisterRoads();
             // Runtime static batching converts combined geometry to 16-bit
             // chunks. Keep the large grass mesh and displaced sea independent.
             Physics.SyncTransforms();PlacementAudit.Settle();CarContact.SeatAll();Step("settle-planting");

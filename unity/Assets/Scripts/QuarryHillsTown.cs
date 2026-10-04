@@ -276,7 +276,9 @@ namespace LittleRoad
         }
         void WallBox(Vector3 mid,Vector3 along,float length)
         {
-            float g=H(mid.x,mid.z);if(ValleyField.RoadDistance(mid.x,mid.z)<4.5f)return;
+            // (Street review, 4 Oct: where two streets run close, one row's back-yard walls stood across the next street's front
+            // gardens, in front of its doors. Within 9 m of a road's centreline is pavement and front garden.)
+            float g=H(mid.x,mid.z);if(ValleyField.RoadDistance(mid.x,mid.z)<9f)return;
             if(Vector2.Distance(new(mid.x,mid.z),QuarryHills.Square)<36)return;   // (a lone yard wall stood on the square's edge: street review, 4 Oct)
             walls.Add(Matrix4x4.TRS(new Vector3(mid.x,g+.3f,mid.z),Quaternion.LookRotation(along),new Vector3(.4f,2.2f,length+.4f)));
         }
@@ -319,7 +321,9 @@ namespace LittleRoad
                             // (Another street within reach on this side: its own edge, not a garden.)
                             var at=p+right*side*(half+k);if(ValleyField.RoadDistance(at.x,at.z)<k+half-.5f)break;
                             // (Not through a house or a yard: the buildings already stand.)
-                            bool inside=false;foreach(var b in BayviewKit.Footprints){var e=b;e.Expand(new Vector3(.8f,40,.8f));if(e.Contains(new Vector3(at.x,b.center.y,at.z))){inside=true;break;}}
+                            // (Street review, 4 Oct: a wall across a front garden stood in front of the door. Within 4 m of a house
+                            // the drop is its garden; the plinth and its door steps handle it.)
+                            bool inside=false;foreach(var b in BayviewKit.Footprints){if(b.size.x<4&&b.size.z<4)continue;var e=b;e.Expand(new Vector3(8,40,8));if(e.Contains(new Vector3(at.x,b.center.y,at.z))){inside=true;break;}}
                             if(inside)break;
                             at.y=top;run.Add((at,low-.2f));placed=true;break;
                         }

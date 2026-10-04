@@ -150,8 +150,18 @@ Richard asked for four things on 4 October:
 - **Square edge (QH-HS-10, HR-1).** No yard walls within 36 m of the Quarry Hills square, so the lone wall block there is gone.
 - **Fork-island sign (VC-4).** No change: the reviewer saw the plain grey back of a correct give-way sign.
 
+**Round three (same afternoon)**
+- **Garden-front wall.** The stone wall across a Quarry Hills front garden, in front of the doors, was a junction corner wall from the road builder.
+  - Junction corner walls are now combined after the towns stand, and any piece within 3 m of a building is dropped (`TrimRails`, now run in every build).
+  - Back-yard walls keep 9 m from any road's centreline, so one street's yards no longer stand in the next street's front gardens.
+  - Retaining walls keep 4 m from buildings.
+- **Gardens.** Public gardens on bare lawns in Hillcrest (gravel paths, flower beds, benches, cypresses, a small fountain). Two of three were placed: Station Road and the river corner. The castle lawn is too close to the castle approach roads.
+- **Gallery faces (HR-5).** Split slate takes a third, top-down projection on leaning faces, so the galleries' curved end no longer streaks.
+- **Test runs ignore real controllers** (`TestInputIsolation`). In `--silent`, batch-mode, `--trial-auto` and any `-test`, `-review` or `-audit` run, the real gamepads, keyboards and mice are disabled. A player's controller is read by every running copy, focus or not. The tests' virtual pads still work.
+- **View shots.** They accept a bare "g" for ground level, and wait in real time.
+- **Lesson test.** It carries the car through the flick at 15 m/s; at 14 m/s it landed exactly on gold's 10.5 s and read silver under load.
+
 **Still open**
-- **Garden-front walls:** on one Quarry Hills street, a stone wall runs along the front of raised gardens with no steps.
 - **Castle gate lip (VC-3):** not reproduced in a close-up.
 - **Bayview's sign in the rock and wall gap (BV-5/6):** the close-up tool takes its heights from the mainland, so these weren't checked.
 - **The gallery's stretched end (HR-5).**

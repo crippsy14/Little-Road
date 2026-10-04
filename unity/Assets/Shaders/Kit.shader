@@ -181,7 +181,10 @@ Shader "LittleRoad/Kit"
                         bump=chip*.3+speck*1.5+stone*.7-gap*.5-gap2*.3+dust*.1;occlusion=1-(gap*.25+gap2*.2)*near;
                     } else {
                         half wz=abs(n.z)/(abs(n.x)+abs(n.z)+1e-4);
-                        #define SN(sc,off) lerp(N(p.zy*(sc)+(off)),N(p.xy*(sc)+(off)),wz)
+                        // (Triplanar: leaning faces, like the galleries' curved ends, also take a top-down sample, which the two
+                        // side projections stretched into vertical streaks: street review, 4 Oct.)
+                        half wy=smoothstep(.35,.7,up);
+                        #define SN(sc,off) lerp(lerp(N(p.zy*(sc)+(off)),N(p.xy*(sc)+(off)),wz),N(p.xz*(sc)+(off)),wy)
                         half wob=SN(.05,.2);float bed=floor((p.y+wob*3)/1.7);half tone=Hash(float2(bed,4.7));
                         float cl=dot(p.xz,float2(.8,.6))*2.6+SN(.4,.6)*.7;half cleave=(1-smoothstep(.0,.09,abs(frac(cl)-.5)))*Resolve(.05,fp);
                         half crack=(1-smoothstep(.0,.07,abs(SN(.21,.9)-.5)))*Resolve(.12,fp);
