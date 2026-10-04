@@ -10,6 +10,8 @@ namespace LittleRoad
     {
         public const float SeaLevel=-11.8f;
         public static bool ValleyDetail=true;
+        // Whether this build includes Bayview island (always, except a race whose area is far from it: RaceArea).
+        public static bool Island=>RaceArea.Near(Vector2.zero,250);   // (the raceway sits behind the headland ridge from it)
         public readonly float bridgeDistance;
         readonly Circuit track;
         readonly Transform root;
@@ -405,26 +407,30 @@ namespace LittleRoad
         public System.Collections.IEnumerator BuildRoutine()
         {
             WorldTiles.Begin(ValleyDetail);stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;
-            LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;
+            // (A race far from Bayview builds none of the island: RaceArea. Its heights stay analytic for everything else.)
+            bool island=Island;
+            if(island)LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;
             Mainland();Step("mainland");Next(.33f,"Building the bridge");yield return null;
             Bridge();Roadside();masonry.Finish();Step("bridge-roadside-masonry");Next(.35f,"Carving the cliffs");yield return null;
             var cliffMaterial=TerrainMaterial("Weathered cliff limestone",new Color(.35f,.43f,.24f),new Color(.60f,.56f,.46f));cliffMaterial.SetFloat("_RockOnly",1);
-            new CoastalCliffs(this,root,cliffMaterial).Build();Step("cliffs");Next(.53f,"Planting Bayview");yield return null;
-            Physics.SyncTransforms();BayviewCountryside.ChoosePlots(this);Planting();Step("planting");
-            if(BayviewKit.Has("windmill")) {
+            if(island)new CoastalCliffs(this,root,cliffMaterial).Build();Step("cliffs");Next(.53f,"Planting Bayview");yield return null;
+            if(island){Physics.SyncTransforms();BayviewCountryside.ChoosePlots(this);Planting();}Step("planting");
+            if(island&&BayviewKit.Has("windmill")) {
                 var hill=new Vector3(-24,0,12);hill.y=Height(hill.x,hill.z)-.4f;
                 BayviewKit.Spawn("windmill",hill,200,BayviewKit.AnimatedRoot,new BayviewKit.Tint(Color.white,Toy.Hex(0x3a7bd5),Toy.Hex(0xff4d5e),Toy.Hex(0x3a7bd5)));
             }
-            new BayviewCountryside(this,track,root).Build();Step("countryside");
+            if(island)new BayviewCountryside(this,track,root).Build();Step("countryside");
             Physics.SyncTransforms();ValleyRoads();ValleyWater();Step("valley-roads-water");Next(.6f,"Laying the railway and Hillcrest");yield return null;
             // The town, railway and woods sit behind the headland ridge, out of sight of the Bayview
             // circuit: Bayview races skip them (ValleyDetail false) and keep their frame cost.
-            if(ValleyDetail){Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");QuarryHillsScenery();Step("quarry-hills");Debug.Log("LITTLE_ROAD_RAILS_TRIMMED "+TrimRails());Next(.93f,"Filling the sea");yield return null;}RegisterRoads();
+            // (A race leaves Hillcrest's town and railway out unless they're in its area: RaceArea.)
+            bool hillcrest=RaceArea.Near(HillcrestRoute.Square,500);
+            if(ValleyDetail){if(hillcrest)Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");QuarryHillsScenery();Step("quarry-hills");Debug.Log("LITTLE_ROAD_RAILS_TRIMMED "+TrimRails());Next(.93f,"Filling the sea");yield return null;}RegisterRoads();
             // Runtime static batching converts combined geometry to 16-bit
             // chunks. Keep the large grass mesh and displaced sea independent.
             Physics.SyncTransforms();PlacementAudit.Settle();CarContact.SeatAll();Step("settle-planting");
             StaticBatchingUtility.Combine(root.gameObject);Step("static-batching");
-            Sea();new CoastalGroundCover(this,track,root).Build();Step("sea-ground-cover");
+            Sea();if(island)new CoastalGroundCover(this,track,root).Build();Step("sea-ground-cover");
             GroundCoverGeometryAudit.Record("after-batching",root);
             WorldTiles.EndBuild();
             Debug.Log("LITTLE_ROAD_LANDSCAPE_READY bridgeDistance="+bridgeDistance+" sea="+SeaLevel+" deferred="+WorldTiles.Deferred);

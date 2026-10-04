@@ -80,7 +80,13 @@ namespace LittleRoad
                 var q=centre+rot*new Vector3(c.x*size.x*.5f,0,c.y*size.y*.5f);if(!force&&(i%2==0&&j%2==0)&&ValleyField.RoadDistance(q.x,q.z)<5.3f)return false;
             }
             if(!force&&(floor-low>7.5f||high-floor>bury))return false;
-            if(floor-low>.25f){Box("Stone plinth",new Vector3(centre.x,(low-.5f+floor)*.5f,centre.z),new Vector3(size.x+.5f,floor-low+.5f,size.y+.5f),rot,plinth);plinths++;}
+            if(floor-low>.25f){Box("Stone plinth",new Vector3(centre.x,(low-.5f+floor)*.5f,centre.z),new Vector3(size.x+.5f,floor-low+.5f,size.y+.5f),rot,plinth);plinths++;
+                // Steps up to the door from the garden where the plinth stands high at the front (street review, 4 Oct: doors
+                // above a stone wall with no way up): 18 cm risers, 30 cm treads, across the middle of the frontage.
+                var fwd=rot*Vector3.forward;var foot=centre+fwd*(size.y*.5f+.25f);float drop=floor-H(foot.x,foot.z);
+                if(drop>.35f){int n=Mathf.CeilToInt(drop/.18f);float rise=drop/n;
+                    for(int k=0;k<n;k++){var p=centre+fwd*(size.y*.5f+.25f+.3f*(k+.5f));float top=floor-rise*(k+1),g=H(p.x,p.z);if(top<=g)break;
+                        Box("Door steps",new Vector3(p.x,(top+g-.1f)*.5f,p.z),new Vector3(Mathf.Min(2.6f,size.x-.6f),top-g+.1f,.3f),rot,plinth);}}}
             Put(id,new Vector3(centre.x,floor-.03f,centre.z),yaw,tint,sign);buildings++;Take(c2,half,yaw);
             // Chimney tops (kit x mirrors on import): some of them smoke, as coal fires do.
             if((id.StartsWith("terrace")||id.StartsWith("cottage")||id=="house_a"||id=="house_c")&&rng.NextDouble()<.3)HillcrestTown.Chimneys.Add(centre+rot*(id switch{"house_a"=>new Vector3(-2.6f,10.5f,-1.2f),"house_c"=>new Vector3(-2.8f,10.2f,-1.4f),
@@ -203,8 +209,12 @@ namespace LittleRoad
             for(float s=quarry.Length-300;s<quarry.Length-50;s+=80)StreetBunting(quarry,s);
         }
         // A bench at the back of the pavement facing the street, where no other road or bench is near.
+        // Where one house meets the next along each street side (a bench there stands between two doors, not in front of one:
+        // street review, 4 Oct).
+        readonly Dictionary<(string,int),List<float>> partyWalls=new();
         void Bench(HillcrestRoute.Road road,float s,int side)
         {
+            if(partyWalls.TryGetValue((road.name,side),out var walls)){float best=float.MaxValue;foreach(float w in walls)if(Mathf.Abs(w-s)<Mathf.Abs(best-s))best=w;if(Mathf.Abs(best-s)<6)s=best;}
             var p=road.At(s)+road.Right(s)*side*(road.width*.5f+Pave-.45f);p.y=road.At(s).y;
             foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,p.x,p.z,out _)<other.width*.5f+6)return;
             if(Vector2.Distance(new(p.x,p.z),QuarryHills.Square)<30||Vector2.Distance(new(p.x,p.z),new(QuarryHills.PitStopSite.at.x,QuarryHills.PitStopSite.at.z))<30)return;
@@ -232,7 +242,8 @@ namespace LittleRoad
                     // then pushed cars onto the pavement, benches and lamps). Not in front of a cottage's porch bench.
                     // About half the gardens are a drive with a car on it (no porch or bay in the way); the rest keep a front
                     // fence of upright slate slabs (crawiau, as the slate valleys have), with a gap for the gate.
-                    last=id;var yard=at+right*side*(road.width*.5f+Pave+Garden*.5f-.05f);yard.y=at.y;
+                    last=id;if(!partyWalls.TryGetValue((road.name,side),out var pw))partyWalls[(road.name,side)]=pw=new();pw.Add(mid-size.x*.5f);pw.Add(mid+size.x*.5f);
+                    var yard=at+right*side*(road.width*.5f+Pave+Garden*.5f-.05f);yard.y=at.y;
                     bool drive=id!="terrace_f"&&id!="cottage_b"&&id!="cottage_c"&&rng.NextDouble()<.55;
                     if(drive)Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));else Crawiau(road,side,mid,size.x);
                     if(lamps<900&&((int)(mid/16))%2==(side>0?0:1)&&Mathf.Repeat(mid,16)<size.x){var lp=at+right*side*(road.width*.5f+.7f);lp.y=at.y;Lamp(lp);}
@@ -266,6 +277,7 @@ namespace LittleRoad
         void WallBox(Vector3 mid,Vector3 along,float length)
         {
             float g=H(mid.x,mid.z);if(ValleyField.RoadDistance(mid.x,mid.z)<4.5f)return;
+            if(Vector2.Distance(new(mid.x,mid.z),QuarryHills.Square)<36)return;   // (a lone yard wall stood on the square's edge: street review, 4 Oct)
             walls.Add(Matrix4x4.TRS(new Vector3(mid.x,g+.3f,mid.z),Quaternion.LookRotation(along),new Vector3(.4f,2.2f,length+.4f)));
         }
         // Retaining walls (doc 57 banks; the area audit's Terrace Row banks): where the ground beside a town street stays
@@ -387,11 +399,24 @@ namespace LittleRoad
             }
         }
         // Pavement strips either side of a street, broken where another road crosses (as Hillcrest's).
+        // A pavement's own end (not a break at a junction or the square, where a post would stand in the way of turning cars).
+        static bool PavementEnd(HillcrestRoute.Road road,Vector3 p)
+        {
+            if(Vector2.Distance(new(p.x,p.z),QuarryHills.Square)<40)return false;
+            foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,p.x,p.z,out _)<other.width*.5f+20)return false;
+            return true;
+        }
         void Pavements(HillcrestRoute.Road road,float from,float to)
         {
             foreach(int side in new[]{-1,1}) {
                 var run=new List<Vector3>();
-                void Flush(){if(run.Count>3)StripLine("Pavement",run.ToArray(),Pave,.06f,paving);run.Clear();}
+                // (Street review, 4 Oct: pavements stopped in a square edge on the verge.) Each run ends at a slate post on its
+                // garden side.
+                void Flush(){if(run.Count>3){StripLine("Pavement",run.ToArray(),Pave,.06f,paving);
+                    foreach(var (end,next) in new[]{(run[0],run[1]),(run[^1],run[^2])}){if(!PavementEnd(road,end))continue;var d=end-next;d.y=0;var outward=Vector3.Cross(Vector3.up,d.normalized)*side;
+                        if(Vector3.Dot(outward,end-road.At(road.Nearest(end,out _)))<0)outward=-outward;var post=end+outward*(Pave*.5f-.3f)+d.normalized*.2f;
+                        walls.Add(Matrix4x4.TRS(new Vector3(post.x,H(post.x,post.z)+.45f,post.z),Quaternion.LookRotation(d),new Vector3(.5f,1.1f,.5f)));}}
+                    run.Clear();}
                 for(float s=Mathf.Max(0,from);s<=Mathf.Min(road.Length,to);s+=2) {
                     Vector3 p=road.At(s)+road.Right(s)*side*(road.width*.5f+Pave*.5f);
                     bool clear=Vector2.Distance(new(p.x,p.z),QuarryHills.Square)>26;

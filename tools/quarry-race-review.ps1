@@ -3,7 +3,7 @@
 # player's car on autopilot (--quarry-hills --quarry-race-review), waits for the player to finish and the reward to settle,
 # then closes. -Seed n sets the save's raceSerial to n (each serial is a different field and seed). Writes
 # review/quarry-hills/race-<Name>/ (player.log, save.json, race.json).
-param([Parameter(Mandatory)][ValidatePattern('^[a-z0-9-]+$')][string]$Name,[int]$Serial=-1,[int]$TimeoutSeconds=600)
+param([Parameter(Mandatory)][ValidatePattern('^[a-z0-9-]+$')][string]$Name,[int]$Serial=-1,[int]$TimeoutSeconds=600,[string[]]$Flags=@())
 $ErrorActionPreference='Stop'
 . "$PSScriptRoot/quiet-start.ps1"
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -15,7 +15,7 @@ $save=Join-Path $folder 'save.json';$fixture=Get-Content (Join-Path $root 'tools
 if($Serial -ge 0){$fixture=$fixture -replace '"raceSerial":\s*\d+',"`"raceSerial`": $Serial" -replace '"settledSerial":\s*\d+',"`"settledSerial`": $Serial"}
 Set-Content -LiteralPath $save -Value $fixture -Encoding utf8
 $log=Join-Path $folder 'player.log'
-$run=Start-Quiet -FilePath $exe -WindowStyle Hidden -ArgumentList @('-batchmode','--quarry-hills','--quarry-race-review','--adventure-save',('"'+$save+'"'),'--trial-report',('"'+(Join-Path $folder 'race.json')+'"'),'-logFile',('"'+$log+'"'))
+$run=Start-Quiet -FilePath $exe -WindowStyle Hidden -ArgumentList (@('-batchmode','--quarry-hills','--quarry-race-review','--adventure-save',('"'+$save+'"'),'--trial-report',('"'+(Join-Path $folder 'race.json')+'"'),'-logFile',('"'+$log+'"'))+$Flags)
 $deadline=(Get-Date).AddSeconds($TimeoutSeconds)
 while(-not $run.HasExited -and (Get-Date) -lt $deadline){
   Start-Sleep -Seconds 5

@@ -48,7 +48,7 @@ namespace LittleRoad
             LoadingScreen.Begin("Little Road");Mark("begin");
             // World tiles (W1): the woods near where the car will start are built now, the rest stream in around you.
             WorldTiles.Plan(AdventureSession.ReturnSpot??(!Testing&&Store.Data.spot!=null&&Store.Data.spot.Length==4?new Vector3(Store.Data.spot[0],Store.Data.spot[1],Store.Data.spot[2]):new Vector3(-63,0,-94)));
-            world=GetComponent<RaceTrial>();world.freeRoam=true;world.track=new Circuit();world.elapsed=1;yield return TrialWorld.CreateRoutine(world.track,false);Mark("world");
+            RaceArea.Clear();world=GetComponent<RaceTrial>();world.freeRoam=true;world.track=new Circuit();world.elapsed=1;yield return TrialWorld.CreateRoutine(world.track,false);Mark("world");
             // (Tests and audits see the whole world at once; --world-tiles-test watches it stream.)
             if(Testing&&!RaceTrial.Has("--world-tiles-test"))WorldTiles.Complete();
             Debug.Log($"LITTLE_ROAD_WORLD_TILES ready deferred={WorldTiles.Deferred} pending={WorldTiles.Pending} spawned={BayviewKit.Spawned}");
@@ -409,15 +409,17 @@ namespace LittleRoad
             go.AddComponent<ResidentLabel>();
             go.AddComponent<WorldText>();
         }
+        static readonly Color PitTeal=new(.08f,.72f,.66f),PitYellow=new(1,.74f,.06f),PitPink=new(1,.34f,.64f);
         static readonly Dictionary<string,(string body,Color colour,string label,string speaker,Color bubble,string[] lines)> People=new(){
-            ["garage"]=("kipper",new Color(.85f,.38f,.19f),"MARA / PIT STOP GARAGE","Mara",Toy.Orange,new[]{"Careful! I only just fixed that dent.","Bring it round the garage and I'll take a look!","Ha! You drive like I did at your age."}),
-            ["parts"]=("bubble",Toy.Hex(0xffbd10),"SID / PIT STOP PARTS","Sid",Toy.Sun,new[]{"Mind the shelves! That's a whole engine up there.","Tyres, turbos, brakes... just not bumpers.","Need parts? Try buying them, not headbutting them!"}),
-            ["hcparts"]=("beetle",Toy.Hex(0xffbd10),"ROSA / PIT STOP PARTS","Rosa",Toy.Sun,new[]{"Careful! The Valley V6 bruises easily.","Hill grip tyres would have stopped that.","Parts are for fitting, not for dents!"}),
-            ["hcbody"]=("roadster",Toy.Hex(0xff57a6),"LINA / PIT STOP BODY SHOP","Lina",Toy.Pink,new[]{"Easy on the show car's cousin!","That dent? I could sell you a whole new car instead.","Ooh, a bump. Fancy a new look while you're here?"}),
+            // (Pit Stop hosts drive the Pit Stop's own vehicles in its colours in every town: CarBodies.PitStop.)
+            ["garage"]=(CarBodies.PitGarage,PitTeal,"MARA / PIT STOP GARAGE","Mara",Toy.Orange,new[]{"Careful! I only just fixed that dent.","Bring it round the garage and I'll take a look!","Ha! You drive like I did at your age."}),
+            ["parts"]=(CarBodies.PitParts,PitYellow,"SID / PIT STOP PARTS","Sid",Toy.Sun,new[]{"Mind the shelves! That's a whole engine up there.","Tyres, turbos, brakes... just not bumpers.","Need parts? Try buying them, not headbutting them!"}),
+            ["hcparts"]=(CarBodies.PitParts,PitYellow,"ROSA / PIT STOP PARTS","Rosa",Toy.Sun,new[]{"Careful! The Valley V6 bruises easily.","Hill grip tyres would have stopped that.","Parts are for fitting, not for dents!"}),
+            ["hcbody"]=(CarBodies.PitBody,PitPink,"LINA / PIT STOP BODY SHOP","Lina",Toy.Pink,new[]{"Easy on the show car's cousin!","That dent? I could sell you a whole new car instead.","Ooh, a bump. Fancy a new look while you're here?"}),
             ["post"]=("pebble",new Color(.9f,.7f,.23f),"PIP / LIGHTHOUSE","Pip",Toy.Sun,new[]{"Whoa! The lighthouse is that way, not through me!","Letters, parcels... and now bumps. Busy day!"}),
             ["paint"]=("picnic",Toy.Hex(0xff7ac8),"DOT / PAINTS","Dot",Toy.Pink,new[]{"Ooh, that scrape would look lovely in candy pink.","Fancy a fresh coat after that?","Mind my wet paint!"}),
             ["cafe"]=("otter",new Color(.38f,.48f,.68f),"ROWAN / COAST RUN","Rowan",Toy.Sky,new[]{"Save it for the race!","Rubbing's racing... but not by the café!","Is that a challenge? See you on the grid!"}),
-            ["motors"]=("comet",Toy.Hex(0xffb400),"GIO / PIT STOP GARAGE","Gio",Toy.Sun,new[]{"Easy! Hill brakes are a work of art.","That knock? Sounds like you need better tyres.","Welcome to Hillcrest, speedy!"}),
+            ["motors"]=(CarBodies.PitGarage,PitTeal,"GIO / PIT STOP GARAGE","Gio",Toy.Sun,new[]{"Easy! Hill brakes are a work of art.","That knock? Sounds like you need better tyres.","Welcome to Hillcrest, speedy!"}),
             ["hillcafe"]=("tallboy",Toy.Hex(0x3ee6a4),"FERN / BELLA VISTA","Fern",Toy.Mint,new[]{"Careful, the espresso's still hot!","You drove up that hill in THAT?","Save the bumping for the raceway!"}),
             ["raceway"]=("rally",Toy.Hex(0xff4d5e),"VITO / RACEWAY","Vito",Toy.Red,new[]{"Whoa! Save that for the Valley Cup!","You call that a bump? Wait till turn one!","Sign up, then we'll see who's bumping who!"}),
             ["station"]=("heron",Toy.Hex(0x2e9e5b),"STELLA / STATION","Stella",Toy.Mint,new[]{"Mind the gap! And my bonnet!","The 3:15 is never late. Unlike you!","Tickets, please! Oh, you're a car."}),
@@ -426,9 +428,9 @@ namespace LittleRoad
             ["bayhalt"]=("minibus",Toy.Hex(0x1d6fa8),"STANLEY / BAYVIEW HALT","Stanley",Toy.Sky,new[]{"Mind the platform edge! And my wing mirror!","All aboard! Well... not you, you're a car.","The 4:10 to Hillcrest is running early!"}),
             ["lookout"]=("bramble",Toy.Hex(0x3ee6a4),"MOSS / FALLS","Moss",Toy.Mint,new[]{"Shh! You'll scare the fish!","Oof. That's the third bump today.","Mind the drop, it's a long way down!"}),
             ["rallyschool"]=("rally",Toy.Hex(0x229954),"GWEN / RALLY SCHOOL","Gwen",Toy.Mint,new[]{"Oi! Save the contact for the rallycross!","Lift and turn, cariad, lift and turn.","That's a sump guard's job, that is!"}),
-            ["qgarage"]=("kipper",Toy.Hex(0xc0392b),"HUW / PIT STOP GARAGE","Huw",Toy.Red,new[]{"Easy, butt! I only just swept the bay.","Gravel in the arches again? Bring her in.","Duw, that was a clatter!"}),
-            ["qparts"]=("bubble",Toy.Hex(0xf1c40f),"BETHAN / GRIT & GRAVEL","Bethan",Toy.Sun,new[]{"Mind the shelves! Mud flaps everywhere now.","Parts are for fitting, not for bumping, cariad.","Ooh, that'll want a sump guard."}),
-            ["qbody"]=("roadster",Toy.Hex(0x8e44ad),"NIA / PIT STOP BODY SHOP","Nia",Toy.Pink,new[]{"Slate grey would hide that scratch, you know.","Careful! That's my show car's nan.","New look? I've got just the thing."}),
+            ["qgarage"]=(CarBodies.PitGarage,PitTeal,"HUW / PIT STOP GARAGE","Huw",Toy.Red,new[]{"Easy, butt! I only just swept the bay.","Gravel in the arches again? Bring her in.","Duw, that was a clatter!"}),
+            ["qparts"]=(CarBodies.PitParts,PitYellow,"BETHAN / GRIT & GRAVEL","Bethan",Toy.Sun,new[]{"Mind the shelves! Mud flaps everywhere now.","Parts are for fitting, not for bumping, cariad.","Ooh, that'll want a sump guard."}),
+            ["qbody"]=(CarBodies.PitBody,PitPink,"NIA / PIT STOP BODY SHOP","Nia",Toy.Pink,new[]{"Slate grey would hide that scratch, you know.","Careful! That's my show car's nan.","New look? I've got just the thing."}),
             ["caban"]=("otter",Toy.Hex(0xe9e3d3),"MEGAN / CABAN","Megan",Toy.Sky,new[]{"Careful! The cawl's still hot!","Tea's brewing, no need to knock!","Duw, you'll have the cakes off the shelf!"}),
             ["slatequay"]=("heron",Toy.Hex(0x1f3a93),"MARI / SLATE QUAY","Mari",Toy.Mint,new[]{"Mind the wagons! They're loaded!","Engine's warming up, keep clear of the shed!","Whoa! The quay's for slate, not stunts!"}),
         };
@@ -1176,10 +1178,11 @@ namespace LittleRoad
         // Quarry Hills' Pit Stop (uniform with every town's) and its people.
         void Huw()
         {
-            var choices=new List<AdventureUI.Choice>{new("Fit parts",()=>OpenParts("quarry",PartsBrowser.Mode.Fit,Huw)),new("Tune gearbox",()=>OpenTuning("hillcrest",Huw))};
+            // (Richard, 4 Oct: the town's race at its garage, as Mara and Gio offer theirs.)
+            var choices=new List<AdventureUI.Choice>{new("Race the Quarry Hills Rallycross · C",()=>PreviewRace("quarry",Huw)),new("Fit parts",()=>OpenParts("quarry",PartsBrowser.Mode.Fit,Huw)),new("Tune gearbox",()=>OpenTuning("hillcrest",Huw))};
             if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Huw)));
             choices.Add(new("Back to the road",Close));
-            Show("Huw / Pit Stop Garage","Croeso i'r Pit Stop! Bring her in: I'll fit anything you own, set up the gearbox, or swap to another of your bodies. Bethan sells the parts next door, Nia the new rides.",choices);
+            Show("Huw / Pit Stop Garage","Croeso i'r Pit Stop! Sign up for the Rallycross down on the quarry floor right here, or bring her in: I'll fit anything you own, set up the gearbox, or swap to another of your bodies. Bethan sells the parts next door, Nia the new rides.",choices);
         }
         void Bethan()=>Show("Bethan / Grit & Gravel",RallySchool.AllGold(Store.Data)?"Gwen says you're ready, so here it is: our gravel tyres and the gravel rack. Knobbly, loud and quick on the loose. Plus everything else you've found on your travels.":
             "Everything you've found on your travels, right here. Our own rally kit (gravel tyres, the gravel rack) comes once Gwen at the rally school says you're ready: gold in all six lessons.",

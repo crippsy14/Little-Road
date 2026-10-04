@@ -91,7 +91,11 @@ public static class SoundChecks
             double Rms(float load,int count){double e=0;for(int i=0;i<count;i++){float x=g.Next(at,load,false);e+=x*x;}return Math.Sqrt(e/count);}
             Rms(1,fs);double pulling=Rms(1,fs/4),early=Rms(0,fs/4);Rms(0,fs*2);double late=Rms(0,fs/4);
             double dEarly=20*Math.Log10(early/pulling),dLate=20*Math.Log10(late/pulling);
-            Check(dEarly>-4&&dLate<dEarly-2&&dLate>-bank.liftDb-4,$"Skyline lift-off fades: {dEarly:0.0} dB in the first quarter second, {dLate:0.0} dB after two seconds (measured drop {bank.liftDb:0.0} dB)");
+            // (Since 4 Oct the lift plays the pull itself, revs falling, eased down to ReverseLiftLevel: Richard found the
+            // coasting recordings all off. --coast-recording keeps the old check's behaviour.)
+            if(GrainSynth.ReverseLift){double aim=20*Math.Log10(GrainSynth.ReverseLiftLevel);
+                Check(dEarly>-4&&dLate<dEarly&&Math.Abs(dLate-aim)<1.5,$"Skyline lift-off eases down on the pull itself: {dEarly:0.0} dB in the first quarter second, {dLate:0.0} dB after two seconds (aim {aim:0.0} dB)");}
+            else Check(dEarly>-4&&dLate<dEarly-2&&dLate>-bank.liftDb-4,$"Skyline lift-off fades: {dEarly:0.0} dB in the first quarter second, {dLate:0.0} dB after two seconds (measured drop {bank.liftDb:0.0} dB)");
         }
         // Turbo and hybrid-motor sounds are off unless asked for (Richard, 2 Oct: "remove the turbo noises all together").
         {

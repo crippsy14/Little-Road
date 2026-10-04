@@ -2,7 +2,7 @@
 # Enters the Valley Cup from adventure mode (Vito's preview, confirm) on a copy of the watch-cars
 # save with the player's car on autopilot (--valley-race-review), waits for the player to finish and the
 # reward to settle, then closes. Writes review/hillcrest-race/<Name>/ (player.log, save.json).
-param([Parameter(Mandatory)][ValidatePattern('^[a-z0-9-]+$')][string]$Name,[int]$TimeoutSeconds=420)
+param([Parameter(Mandatory)][ValidatePattern('^[a-z0-9-]+$')][string]$Name,[int]$TimeoutSeconds=420,[string[]]$Flags=@())
 $ErrorActionPreference='Stop'
 . "$PSScriptRoot/quiet-start.ps1"
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -12,7 +12,7 @@ New-Item -ItemType Directory -Path $folder | Out-Null
 $exe=[IO.Path]::GetFullPath((Join-Path $root '../little-road-dev-build/Little Road Unity.exe'))
 $save=Join-Path $folder 'save.json';Copy-Item (Join-Path $root 'tools/fixtures/watch-cars-save.json') $save
 $log=Join-Path $folder 'player.log'
-$run=Start-Quiet -FilePath $exe -WindowStyle Hidden -PassThru -ArgumentList @('-batchmode','--valley-race-review','--adventure-save',('"'+$save+'"'),'-logFile',('"'+$log+'"'))
+$run=Start-Quiet -FilePath $exe -WindowStyle Hidden -PassThru -ArgumentList (@('-batchmode','--valley-race-review','--adventure-save',('"'+$save+'"'),'-logFile',('"'+$log+'"'))+$Flags)
 $deadline=(Get-Date).AddSeconds($TimeoutSeconds)
 while(-not $run.HasExited -and (Get-Date) -lt $deadline){
   Start-Sleep -Seconds 5

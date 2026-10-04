@@ -226,7 +226,7 @@ def house_a():
     for x in(-2.2,2.2):window(x,d/2,4.4,1.2,1.3,face=1,flowers=False)
     box('Chimney',(2.6,1.2,h+2.5),(.9,.9,2.4),'Stone',.06);box('Chimney cap',(2.6,1.2,h+3.75),(1.15,1.15,.18),'WhiteTrim',.04)
     for k in range(2):cyl('Chimney pot',(2.45+k*.3,1.2,h+4.05),.12,.4,'RoofTile','Z',12)
-    planter_box(2.9,-d/2-.9,1.8)
+    planter_box(3.1,-d/2-1.2,1.6)   # (clear of the window's flower box: street review, 4 Oct)
     side_paint(w,(1.7,4.4))
     collision('Body',(0,0,h/2),(w+.3,d+.3,h))
 
@@ -260,10 +260,11 @@ def shop(kind='shop'):
         box('Display frame',(x,-d/2-.19,1.75),(2.85,.1,2.35),'WhiteTrim',.04)
         box('Display bar',(x,-d/2-.28,1.75),(.07,.06,2.1),'WhiteTrim',.02)
     door(0,-d/2-.1,0,1.4,2.6,canopy=False)
-    awning(0,-d/2-.1,3.55,w-.6,1.8)
+    awning(0,-d/2-.1,3.95,w-.6,1.8)   # (clear of the door head: street review, 4 Oct)
     sign_board(0,-d/2-.15,4.55,w-2.2,.85,'WhiteTrim',kind)
     if kind=='cafe':
-        for i,(x,y) in enumerate([(-3.3,-d/2-4.0),(0,-d/2-4.6),(3.3,-d/2-4.0)]):
+        # (Closer in: the outer chairs stood at the kerb, street review, 4 Oct.)
+        for i,(x,y) in enumerate([(-3.3,-d/2-2.9),(0,-d/2-3.3),(3.3,-d/2-2.9)]):
             cyl('Table top',(x,y,.78),.55,.06,'WhiteTrim','Z',20);cyl('Table leg',(x,y,.4),.05,.78,'Metal','Z',8)
             cyl('Parasol pole',(x,y,1.6),.04,2.4,'WhiteTrim','Z',8)
             cyl('Parasol',(x,y,2.62),1.35,.5,'Tint_Awning' if i%2==0 else 'Canvas','Z',8,.02,r2=.06)
@@ -948,8 +949,9 @@ def terrace(kind='a'):
         box('Shopfront',(0,-d/2-.08,1.55),(w-.6,.2,2.9),'Tint_Door',.05)
         box('Display window',(-.9,-d/2-.2,1.8),(2.4,.08,2.0),'GlassLit',.02);box('Display frame',(-.9,-d/2-.17,1.8),(2.65,.1,2.25),'WhiteTrim',.04)
         door(1.6,-d/2-.08,0,1.0,2.4,canopy=False)
-        awning(0,-d/2-.08,3.5,w-.3,1.5,6)
-        sign_board(0,-d/2-.12,4.25,w-1.0,.62,'WhiteTrim','shop')
+        # (Street review, 4 Oct: the valance hung below the door head; raised 0.3 m.)
+        awning(0,-d/2-.08,3.8,w-.3,1.5,6)
+        sign_board(0,-d/2-.12,4.3,w-1.0,.62,'WhiteTrim','shop')
     elif kind=='c':
         # Arcaded ground floor: a deep round arch over the door and a shop window.
         box('Arcade shadow',(0,-d/2-.02,1.75),(w-1.3,.06,3.4),'Black',0)

@@ -1141,7 +1141,7 @@ namespace LittleRoad
             // (Decided now, in the same order; built now or streamed in on its tile: WorldTiles.)
             void Plant(string id,float x,float z,float scale,bool solid=true)
             {
-                var at=new Vector3(x,ValleyField.Height(x,z)-.1f,z);float yaw=R()*360;
+                var at=new Vector3(x,ValleyField.Height(x,z)-.1f,z);float yaw=R()*360;if(!RaceArea.Near(x,z,60))return;   // (a race: its area only)
                 // Bushes and tufts stay out of the river (street review, 4 Oct: a shrub stood on the water at the quay).
                 if((id=="bush"||id=="flower_bush"||id=="grass_tuft")&&HillcrestRoute.Distance(HillcrestRoute.River.line,x,z,out _)<HillcrestRoute.River.width*.5f+1.5f)return;
                 WorldTiles.Place(at,solid?1.2f*scale:0,()=>{var g=BayviewKit.Spawn(id,at,yaw,holder,solid:solid,scale:scale);

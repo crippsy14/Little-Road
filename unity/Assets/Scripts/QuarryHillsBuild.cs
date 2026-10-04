@@ -10,13 +10,15 @@ namespace LittleRoad
         {
             if(!QuarryHills.Enabled||!BayviewKit.Has("tree_round"))return;
             var holder=new GameObject("Quarry Hills scenery").transform;holder.SetParent(root);
-            new QuarryHillsTown(holder).Build();Physics.SyncTransforms();Step("qh-town");QuarryHillsCountry.Build(holder);Physics.SyncTransforms();Step("qh-country");
+            // (A race builds only its area: RaceArea. The town 690 m from the quarry floor stays; the farms and walls go.)
+            if(RaceArea.Near(QuarryHills.Square,350))new QuarryHillsTown(holder).Build();else QuarryHillsTown.Last=null;
+            Physics.SyncTransforms();Step("qh-town");if(!RaceArea.Active)QuarryHillsCountry.Build(holder);Physics.SyncTransforms();Step("qh-country");
             var rng=new System.Random(5903);float R()=>(float)rng.NextDouble();int trees=0,tufts=0;
             bool nature=BayviewKit.Has("tree_fir");
             // (Streamed in on its tile away from where you start: WorldTiles.)
             void Plant(string id,float x,float z,float scale,bool solid=true)
             {
-                var at=new Vector3(x,ValleyField.Height(x,z)-.1f,z);float yaw=R()*360;
+                var at=new Vector3(x,ValleyField.Height(x,z)-.1f,z);float yaw=R()*360;if(!RaceArea.Near(x,z,60))return;
                 WorldTiles.Place(at,solid?1.2f*scale:0,()=>{var g=BayviewKit.Spawn(id,at,yaw,holder,solid:solid,scale:scale);
                     if(id.StartsWith("tree_")||id=="bush"||id=="flower_bush")KitLod.Attach(g,id);if(WorldTiles.Late)PlacementAudit.SettleOne(g);});
             }
@@ -75,7 +77,7 @@ namespace LittleRoad
                     if(R()<.1f)Plant("bush",q.x,q.z,.7f+R()*.5f,false);else Plant("grass_tuft",q.x,q.z,.9f+R()*.8f,false);tufts++;
                 }
             }
-            int slate=SlateFaces(holder);Galleries(holder);Physics.SyncTransforms();GalleryClimb.Build(holder);GalleryDressing(holder);QuarryFloor.Build(holder);QuarryQuay.Build(holder);
+            int slate=SlateFaces(holder);Galleries(holder);Physics.SyncTransforms();GalleryClimb.Build(holder);GalleryDressing(holder);QuarryFloor.Build(holder);if(RaceArea.Near(QuarryHills.QuayCentre,250))QuarryQuay.Build(holder);
             Debug.Log($"LITTLE_ROAD_QUARRY_SCENERY trees={trees} tufts={tufts} slateCells={slate}");
         }
         // Worked slate: the galleries (benches and faces alike), the pit's walls above the water and the tips are all bare

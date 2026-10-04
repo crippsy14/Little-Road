@@ -48,6 +48,11 @@ public static class QuarryHillsChecks
         // Gwen's rally school: six lessons with medal times in order, ids the save accepts, and the rally parts locked behind it.
         Check(RallySchool.Lessons.Length==6&&RallySchool.Lessons.All(l=>l.gold<l.silver&&l.silver<l.bronze&&RallySchool.Known(l.id))&&!RallySchool.Known("lesson_6"),
             "Six rally lessons, each with gold faster than silver faster than bronze");
+        // A quarry race builds only its area (4 Oct): the floor, the school and the town, not Hillcrest.
+        RaceArea.Set(QuarryFloor.Loop,450);bool area=RaceArea.Active&&RaceArea.Near(QuarryFloor.School)&&RaceArea.Near(QuarryHills.Square,350)&&!RaceArea.Near(HillcrestRoute.Square,500);RaceArea.Clear();
+        Check(area&&!RaceArea.Active,"The quarry race's area holds the floor, the rally school and the town, and leaves Hillcrest out");
+        // The Pit Stop's own vehicles (4 Oct): known bodies with measured sizes.
+        Check(CarBodies.PitStop.All(id=>CarBodies.IsKnown(id)&&CarBodies.Length(id)>3&&CarBodies.ShoulderWidth(id)>2),"The Pit Stop's recovery truck, parts van and panel truck are known bodies with sizes");
         // The rally licence screen (4 Oct): times read as a stopwatch, one tile per lesson.
         Check(LicenceScreen.Clock(9.14f)=="9.1 s"&&LicenceScreen.Clock(86)=="1:26.0","Licence times read 9.1 s and 1:26.0");
         // The working quarry (4 Oct): every machine spot and route point on the floor, clear of the rallycross and the school.

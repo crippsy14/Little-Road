@@ -105,3 +105,54 @@ Richard asked for four things on 4 October:
   - then Back to licences and Exit.
 
   It passes (`screen=True started=True resultCards=6 back=True exitToGwen=True`, all gold).
+
+## Round two (4 October, afternoon)
+
+**Richard's five requests**
+- **Pause menu in races.**
+  - The cause: Restart threw "Race entry changed". The entered roster was seeded for the race number before the race began, so it no longer matched the save.
+  - The fix: Restart now builds a fresh roster for the same event, seeded for the next number (`AdventureSession.RestartRoster`).
+  - The failed restart also left the menu up with the race unpaused, so Resume did nothing. If a restart can't start now, the race simply carries on.
+  - The race pause review checks that Restart can enter the same event.
+- **Quarry Hills garage.** Huw's garage offers the Rallycross, as Mara's and Gio's offer their races.
+- **Lift-off sound.**
+  - Lifting off now plays the pulling recording stepped back down through the revs, eased to about −2 dB and a little darker (`GrainSynth.ReverseLift`). It replaces the coasting recordings, which were all off by a lot.
+  - `--coast-recording` plays the old coasting sound, for A/B.
+  - The sound check now tests the new ease-down. The sound smoke reads 6835 (6890 before).
+- **Pit Stop vehicles.** There are three new models, each in the Pit Stop's colours (`source-art/family_recipes.py`):
+  - the garage's recovery truck (`pitgarage`): a tow crane, hook, wheel-lift and roof lights;
+  - the parts van (`pitparts`): tyres stacked on its roof rack;
+  - the body shop's panel truck (`pitbody`): a rack of coloured body panels.
+
+  Each carries a door badge: a spanner, a tyre or a paint drop. Every town's garage, parts and body-shop host drives the matching one, and the hosts keep their local names.
+- **Race loading (`RaceArea`).**
+  - The area: the Hillcrest and Quarry Hills races build only the world around their circuit (its bounding circle plus 450 m).
+  - Always built: the terrain, and Hillcrest's raceway buildings.
+  - Left out unless inside the area: the towns, the railway, woods and farms, the quay, and Bayview island with its village and loop.
+  - The leash: a car more than 160 m off the circuit is put back on it.
+  - A/B: `--race-full-world` builds everything, as before.
+
+  | Race (world build) | Before | Area |
+  |---|---|---|
+  | Quarry Hills Rallycross | 12.8 s | 6.4 s |
+  | Hillcrest Raceway | 14.1 s | 9.3 s (measured with the regression running alongside) |
+
+  Every race finished 24 of 24. Returning to free roam still rebuilds the whole world; keeping the world across races (doc 61) is the next big win.
+
+**More street fixes**
+- **Awnings (QR-8).** Shop awnings are raised clear of the door heads (the shop terrace and the shop, café and post office).
+- **Benches (HR-2).** Benches snap to the party wall between two houses, so none stands in front of a door.
+- **Planter (VC-6).** The house planter is moved clear of the window's flower box.
+- **Café (HCL-8).** The café's outside tables are pulled 1.1 m closer to the building.
+- **Zipline plaza (HCL-7).** The flower beds are clear of the gateway's piers, and the picnic tables are away from the kiosk.
+- **Pavement ends (QR-10, QL-11, HCL-10, QH-HS-11).** A pavement's own end, away from junctions and the square, finishes at a stone post.
+- **Plinths (QH-HS-08/09).** A house on a high plinth gets steps up to its door from the garden.
+- **Square edge (QH-HS-10, HR-1).** No yard walls within 36 m of the Quarry Hills square, so the lone wall block there is gone.
+- **Fork-island sign (VC-4).** No change: the reviewer saw the plain grey back of a correct give-way sign.
+
+**Still open**
+- **Garden-front walls:** on one Quarry Hills street, a stone wall runs along the front of raised gardens with no steps.
+- **Castle gate lip (VC-3):** not reproduced in a close-up.
+- **Bayview's sign in the rock and wall gap (BV-5/6):** the close-up tool takes its heights from the mainland, so these weren't checked.
+- **The gallery's stretched end (HR-5).**
+- **The improvements list:** gardens on lawns, town-edge signs, quay dressing and the Bayview lay-by.

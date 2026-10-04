@@ -63,6 +63,8 @@ namespace LittleRoad
             Spots.Clear();reserved.Clear();Homes.Clear();Chimneys.Clear();StreetLamps.Clear();ZipTop=null;ZipLine.Active=null;ZipLine.All.Clear();
             paving=WorldLook.Kit("Hillcrest paving",Toy.Hex(0xb3a68c),WorldLook.Pattern.Stone,0,.15f,true);plinth=WorldLook.Kit("Hillcrest stone plinth",Toy.Hex(0xc2b08e),WorldLook.Pattern.Stone,0,.12f,true);
             railWhite=TrialWorld.Material("Balustrade white",Toy.Hex(0xfff8ec),0,.25f);
+            // A race away from the town (RaceArea) builds only the raceway's own buildings.
+            if(RaceArea.Active&&!RaceArea.Near(Square,500)){if(RaceArea.Near(HillcrestRoute.Circuit[0],600))Raceway();Debug.Log($"LITTLE_ROAD_HILLCREST race-area only buildings={buildings}");return;}
             ReserveZipLanding();MarketSquare();Castle();LowerTown();Station();Streets();Vista();Lookout();Raceway();Countryside();HillSlopes();Patchwork();ZipLineBuild();TunnelFrame();
             Debug.Log($"LITTLE_ROAD_HILLCREST buildings={buildings} plinths={plinths} spots={Spots.Count}");
         }
@@ -129,7 +131,12 @@ namespace LittleRoad
         {
             foreach(int side in new[]{-1,1}) {
                 var run=new List<Vector3>();
-                void Flush(){if(run.Count>3)Strip("Pavement",run.ToArray(),2.3f,.06f);run.Clear();}
+                // (Street review, 4 Oct: a pavement ending square on bare grass.) Each run ends at a stone post on its outer side.
+                void Flush(){if(run.Count>3){Strip("Pavement",run.ToArray(),2.3f,.06f);
+                    foreach(var (end,next) in new[]{(run[0],run[1]),(run[^1],run[^2])}){bool junction=false;foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,end.x,end.z,out _)<other.width*.5f+20)junction=true;
+                        if(junction||Vector3.Distance(end,Square)<50)continue;var d=end-next;d.y=0;var outward=end-road.At(road.Nearest(end,out _));outward.y=0;outward.Normalize();
+                        var post=end+outward*.85f+d.normalized*.2f;post.y=H(post.x,post.z);Box("Pavement end post",post+Vector3.up*.45f,new Vector3(.5f,1.1f,.5f),Quaternion.LookRotation(d),plinth,true);}}
+                    run.Clear();}
                 for(float s=from;s<=to;s+=2) {
                     Vector3 p=road.At(s)+road.Right(s)*side*(road.width*.5f+1.15f);
                     bool clear=true;foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,p.x,p.z,out _)<other.width*.5f+2.4f){clear=false;break;}
@@ -322,8 +329,10 @@ namespace LittleRoad
             Bunting(P(-13,-13)+Vector3.up*7.5f,P(14,-13)+Vector3.up*7.5f,1.2f);Bunting(P(-13,13)+Vector3.up*7.5f,P(14,13)+Vector3.up*7.5f,1.2f);
             foreach(var s in new[]{-8f,6f,Mathf.Min(18,laneEnd)})foreach(int sd in new[]{-1,1})Put("lamp_post",P(s,sd*(s>16?7.8f:14.2f)),Quaternion.LookRotation(-v*sd).eulerAngles.y);
             foreach(var s in new[]{0f,8f})Put("bench",P(s,12.6f),Quaternion.LookRotation(-v).eulerAngles.y);
-            foreach(var (s,t) in new[]{(-9f,-10f),(-9f,10f),(9f,-13.5f),(Mathf.Min(20,laneEnd),-8f),(Mathf.Min(20,laneEnd),8f)})Put("flower_bed",P(s,t),face);
-            foreach(var (s,t) in new[]{(1f,-8.5f),(-1f,-7.8f)})Put("picnic_table",P(s,t),face+90);
+            // (Street review, 4 Oct: the beds by the gateway sat inside its piers' feet, and the picnic tables were jammed against
+            // the kiosk.) Beds 3.5 m clear of the piers; the tables on the other side of the paving from the kiosk's counter.
+            foreach(var (s,t) in new[]{(-9f,-10f),(-9f,10f),(9f,-13.5f),(Mathf.Min(20,laneEnd),-9.8f),(Mathf.Min(20,laneEnd),9.8f)})Put("flower_bed",P(s,t),face);
+            foreach(var (s,t) in new[]{(-4f,-6.5f),(-6.5f,-3f)})Put("picnic_table",P(s,t),face+90);
         }
         public static float ZipTopTheta;public static GameObject ZipTop;public static readonly float[] CurtainRuns=new float[6];
         const float ZipBottomTheta=336,ZipBottomRadius=195;

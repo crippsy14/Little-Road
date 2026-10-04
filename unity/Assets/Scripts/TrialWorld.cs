@@ -93,6 +93,8 @@ namespace LittleRoad
             CoastalLandscape.ValleyDetail=!racing;yield return new CoastalLandscape(track).BuildRoutine();
             // Both road and shoulder have actual matching mesh surfaces across
             // the inlet. The bridge is not a road painted on an invisible island.
+            // (The island's loop, its dressing and the village: not in a race far from Bayview, CoastalLandscape.Island.)
+            if(CoastalLandscape.Island){
             Ribbon(track,"Generous limestone runoff",0,24,.011f,sand);
             Ribbon(track,"16 metre race surface",0,Circuit.Width,.025f,asphalt);
             RubberedLine(track);
@@ -105,8 +107,9 @@ namespace LittleRoad
                 if(track.Curvature(d)>.012f)continue;var mark=Box("Grid guide",track.At(d)+Vector3.up*.04f,new Vector3(.12f,.015f,3),white);mark.transform.rotation=Quaternion.LookRotation(track.Forward(d));}
             if(racing)for(int i=0;i<16;i++)for(int j=0;j<2;j++) {
                 var checker=Box("Start finish",track.At(j*.55f)+track.Right(0)*(-7.5f+i)+Vector3.up*.046f,new Vector3(1,.02f,.55f),(i+j)%2==0?white:asphalt);checker.transform.rotation=Quaternion.LookRotation(track.Forward(0));}
+            }
             var shutter=Material("Teal joinery",new Color(.12f,.38f,.37f));
-            VillageKit.Create();
+            if(CoastalLandscape.Island)VillageKit.Create();
             new GameObject("Coastal reflected light").AddComponent<CoastalReflections>();
             TimeOfDay.Apply(); // light, sky, fog and valley mist for the chosen time of day
             if(racing){

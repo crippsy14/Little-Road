@@ -889,6 +889,47 @@ class Car:
             for side in [-1,1]:
                 w,lo,hi=self.section((yb0+yb1)*.5);x=side*(w-.06)
                 cylinder('Bed rail',(x,(yb0+yb1)*.5,hi+.05),.02,yb1-yb0-.1,M['alloy'],'Y',12,0)
+        if 'tow_crane' in E:
+            # An A-frame crane at the back of the bed, its boom out over the tail with a hook on a chain, a winch drum,
+            # and a wheel-lift bar under the rear bumper.
+            yb0=yR+.13;w,lo,hi=self.section(yb0+.3);z0=hi+.02
+            for side in [-1,1]:curve('Crane leg',[(side*(w-.14),yb0+.55,z0),(side*.12,yb0+.18,z0+1.05)],M['amber'],.045,poly=True)
+            curve('Crane boom',[(0,yb0+.55,z0+.62),(0,yb0+.12,z0+1.08),(0,yR-.42,z0+.86)],M['amber'],.05,poly=True)
+            cylinder('Winch drum',(0,yb0+.62,z0+.12),.11,.46,M['steel'],'X',20)
+            for k in range(6):sphere('Tow chain link',(0,yR-.42,z0+.78-k*.07),(.018,.018,.03),M['steel'],8,6)
+            curve('Tow hook',[(0,yR-.42,z0+.36),(0,yR-.48,z0+.30),(0,yR-.42,z0+.24),(0,yR-.36,z0+.30)],M['steel'],.02)
+            box('Wheel-lift bar',(0,yR-.28,.32),(1.2,.10,.08),M['amber'],.02)
+            for side in [-1,1]:box('Wheel-lift cradle',(side*.48,yR-.38,.32),(.16,.22,.06),M['steel'],.015)
+        if 'roof_tyres' in E:
+            # Spare tyres stacked flat on the rack (the parts van).
+            z0=r+G['crown']*.25+.14
+            for k,(y,stack) in enumerate([(G['yr1']+.45,3),(G['yr1']+1.15,2)]):
+                for j in range(stack):
+                    cylinder('Roof tyre',(0,y,z0+.06+j*.13),.30,.12,M['rubber'],'Z',28,.03)
+                    cylinder('Roof tyre rim',(0,y,z0+.07+j*.13),.16,.122,M['alloy'],'Z',20,0)
+            for side in [-1,1]:box('Rack strap',(side*.16,G['yr1']+.8,z0+.22),(.04,1.2,.02),M['amber'],.005)
+        if 'panel_rack' in E:
+            # An A-frame rack on the bed with fresh body panels leaning on it, each a different colour (the body shop).
+            yb0=yR+.12;yb1=G['yr0']-.1;w,lo,hi=self.section((yb0+yb1)*.5);z0=hi+.02;ym=(yb0+yb1)*.5
+            for y in [yb0+.12,yb1-.12]:curve('Rack frame',[(-.5,y,z0),(0,y,z0+.95),(.5,y,z0)],M['steel'],.03,poly=True)
+            cylinder('Rack ridge',(0,ym,z0+.95),.03,yb1-yb0-.2,M['steel'],'Y',12)
+            for k,(side,mat) in enumerate([(-1,M['livery']),(1,M['cream']),(-1,M['amber']),(1,M['paint'])]):
+                off=.06*(k//2)
+                box('Body panel',(side*(.28+off),ym+(k-1.5)*.08,z0+.48),(.03,yb1-yb0-.45,.80),mat,.03,rot=(0,side*-.5,0))
+        if 'pit_badge' in E:
+            # A door roundel: spanner (garage), tyre (parts) or paint drop (body shop).
+            yd=(G['pillars'][0]+min(G['yf0'],self.fa-self.wr))*.5-.05;zd=G['belt']-.22;kind=self.R.get('badge','spanner')
+            for side in [-1,1]:
+                x=side*(self.surface_x(yd,zd)+.006)
+                cylinder('Pit badge',(x,yd,zd),.16,.012,M['cream'],'X',40,0);cylinder('Pit badge ring',(x-side*.002,yd,zd),.175,.01,M['trim'],'X',40,0)
+                xs=x+side*.009
+                if kind=='spanner':
+                    box('Spanner shaft',(xs,yd,zd),(.01,.2,.035),M['trim'],.004,rot=(.78,0,0))
+                    for s2 in[-1,1]:cylinder('Spanner jaw',(xs,yd+s2*.075,zd+s2*.075),.04,.012,M['trim'],'X',16,0)
+                elif kind=='tyre':
+                    cylinder('Badge tyre',(xs,yd,zd),.10,.012,M['trim'],'X',28,0);cylinder('Badge hub',(xs+side*.004,yd,zd),.045,.012,M['amber'],'X',20,0)
+                else:
+                    sphere('Paint drop',(xs,yd,zd-.02),(.01,.06,.06),M['livery'],12,8);box('Paint drop tip',(xs,yd,zd+.05),(.01,.05,.05),M['livery'],.01,rot=(.78,0,0))
         if 'livery' in E:self.livery()
         if 'antenna' in E:
             y=self.fa-.1;x=-.66;z=self.surface_z(x,y)
@@ -1124,7 +1165,8 @@ PAINTS={'pebble':(.85,.30,.25),'tallboy':(.95,.75,.20),'marlow':(.20,.35,.70),'d
         'bramble':(.30,.55,.20),'picnic':(.40,.65,.85),'kipper':(.90,.45,.15),'doodle':(.55,.75,.70),'otter':(.60,.35,.10),
         'sprint':(.85,.85,.82),'comet':(.10,.12,.14),'rally':(.15,.30,.75),'roadster':(.75,.08,.08),'zenith':(.05,.20,.55),'puddle':(.08,.56,.49),
         'bubble':(.95,.55,.70),'beetle':(.45,.70,.90),'taxi':(.98,.78,.10),'camper':(.35,.70,.55),'gelato':(.98,.85,.88),'minibus':(.95,.62,.15),'ritz':(.12,.18,.30),'postvan':(.80,.06,.05),
-        'cob':(.30,.42,.30),'drover':(.85,.85,.82),'scamp':(.90,.55,.12),'fell':(.55,.12,.10),'tumbler':(.75,.68,.45),'hauler':(.20,.45,.70)}
+        'cob':(.30,.42,.30),'drover':(.85,.85,.82),'scamp':(.90,.55,.12),'fell':(.55,.12,.10),'tumbler':(.75,.68,.45),'hauler':(.20,.45,.70),
+        'pitgarage':(.08,.72,.66),'pitparts':(1.0,.74,.06),'pitbody':(1.0,.34,.64)}
 report={}
 for cid in ONLY:
     clear_scene();car=Car(cid,RECIPES[cid]);car.build();info=stats(cid)

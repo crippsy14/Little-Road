@@ -252,7 +252,32 @@ RECIPES = {
    doors=2, rear='boot', lamps=dict(style='round',x=.58,z=.80,r=.12), grille='slot',
    tail=dict(style='vertical',x=.70,z=.80,w=.12,h=.24), bumper=dict(front='dark',rear='dark',z=.48,h=.18,d=.10),
    arches='dark', mirrors='modern', extras=['bed','light_bar','mudflaps']),
+
+ # Pit Stop vehicles (Richard, 4 Oct: one model per job in every town, made for it, so the player always knows who's
+ # who; the names stay local). Painted in the Pit Stop's colours: garage teal, parts yellow, body-shop pink.
+ 'pitgarage': dict(name='Pit Stop Recovery', blurb='Recovery truck with a tow crane and wheel-lift',
+   shell=[(-1.88,.84,.48,1.02),(-1.84,.90,.44,1.04),(-1.40,.91,.42,1.05),(.40,.91,.42,1.05),(1.10,.90,.44,1.02),(1.66,.86,.48,.97),(1.90,.76,.54,.92)],
+   shape=(.22,.28), axles=(1.22,-1.18), wheel=dict(r=.45,track=.84,style='steel',hub='paint',width=1.1),
+   glass=dict(wb=.84,wr=.76,roof=1.94,yf0=.74,yf1=.32,yr1=-.30,yr0=-.36,pillars=[-.02],quarter='glass',crown=.03),
+   doors=2, rear='boot', lamps=dict(style='rect',x=.56,z=.84,w=.30,h=.15), grille='chrome',
+   tail=dict(style='vertical',x=.74,z=.80,w=.12,h=.26), bumper=dict(front='dark',rear='dark',z=.50,h=.20,d=.12),
+   arches='dark', mirrors='modern', badge='spanner', extras=['bed','tow_crane','light_bar','mudflaps','side_steps','pit_badge']),
+ 'pitparts': dict(name='Pit Stop Parts Van', blurb='Parts van with tyres on the roof rack',
+   shell=[(-1.68,.80,.40,1.00),(-1.64,.87,.34,1.00),(-1.20,.88,.32,1.00),(.40,.88,.32,1.00),(1.00,.87,.34,.97),
+          (1.44,.83,.38,.91),(1.68,.72,.44,.86)],
+   shape=(.34,.40), axles=(1.02,-1.02), wheel=dict(r=.40,track=.82,style='steel',hub='paint'),
+   glass=dict(wb=.82,wr=.77,roof=1.96,yf0=.86,yf1=.40,yr1=-1.62,yr0=-1.64,pillars=[.04],quarter='panel',crown=.04),
+   doors=2, rear='barn', lamps=dict(style='round',x=.52,z=.80,r=.14), grille='chrome',
+   tail=dict(style='vertical',x=.70,z=.74,w=.13,h=.28), bumper=dict(front='dark',rear='dark',z=.46,h=.18,d=.10),
+   arches='dark', mirrors='modern', badge='tyre', extras=['roof_rack','roof_tyres','mudflaps','pit_badge']),
+ 'pitbody': dict(name='Pit Stop Panel Truck', blurb='Cab-over truck carrying a rack of fresh body panels',
+   shell=[(-1.70,.78,.46,.98),(-1.66,.84,.42,1.00),(-1.20,.86,.40,1.00),(.40,.86,.40,1.00),(1.10,.86,.42,.99),(1.56,.82,.46,.95),(1.70,.74,.52,.90)],
+   shape=(.20,.26), axles=(1.12,-1.08), wheel=dict(r=.40,track=.82,style='steel',hub='paint',width=1.05),
+   glass=dict(wb=.82,wr=.78,roof=1.92,yf0=1.40,yf1=.92,yr1=.50,yr0=.46,pillars=[.98],quarter='glass',crown=.03),
+   doors=2, rear='boot', lamps=dict(style='round',x=.58,z=.80,r=.12), grille='slot',
+   tail=dict(style='vertical',x=.70,z=.80,w=.12,h=.24), bumper=dict(front='dark',rear='dark',z=.48,h=.18,d=.10),
+   arches='dark', mirrors='modern', badge='brush', extras=['bed','panel_rack','mudflaps','pit_badge']),
 }
 
 ORDER=['pebble','tallboy','marlow','dover','heron','bramble','picnic','kipper','doodle','otter','sprint','comet','rally','roadster','zenith','puddle',
-       'bubble','beetle','taxi','camper','gelato','minibus','ritz','postvan','cob','drover','scamp','fell','tumbler','hauler']
+       'bubble','beetle','taxi','camper','gelato','minibus','ritz','postvan','cob','drover','scamp','fell','tumbler','hauler','pitgarage','pitparts','pitbody']

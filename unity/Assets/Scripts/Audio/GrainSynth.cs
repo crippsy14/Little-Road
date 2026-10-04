@@ -178,7 +178,7 @@ namespace LittleRoad
         // recording at part throttle played two unrelated stretches of engine together. Now the stream switches
         // between pulling and coasting sweeps (with hysteresis, through the tail crossfade), and part throttle only
         // shapes that one voice's level and brightness.
-        readonly Stream stream=new();bool pullingMode,wasShifting;float bright,lpState,modeLevel=1,liftEnv=1,shiftClock=9;
+        readonly Stream stream=new();bool pullingMode,coasting=true,wasShifting;float bright,lpState,modeLevel=1,liftEnv=1,shiftClock=9;
         // Lifting off (docs/55, the engine scorecard): real engines lose 1-4 dB in the first 0.7 s, and the overrun keeps
         // its own tone (the Escort's has its crackle, 19 dB more at 8 kHz than the muffled version). The bank now carries
         // each recording's own lifted-against-pulling level (tools/engine-grains.py), so the switch adds no step of its
@@ -192,6 +192,11 @@ namespace LittleRoad
         public static float ShiftLevel=.6f;
         public static float LiftFade=1.4f;   // 1/s: the lift-off fade's rate (a 0.7 s time constant)
         public static bool LegacyLift=Array.IndexOf(Environment.GetCommandLineArgs(),"--legacy-lift")>=0;
+        // Lifting off plays the pulling recording backwards through its revs (Richard, 4 Oct: the lift-off recordings were
+        // all off by a lot; the pull heard as the revs fall, as when climbing a hill with the throttle held, sounds right).
+        // A little quieter and darker than pulling. --coast-recording plays the coasting recordings, for A/B.
+        public static bool ReverseLift=Array.IndexOf(Environment.GetCommandLineArgs(),"--coast-recording")<0;
+        public static float ReverseLiftLevel=.78f,ReverseLiftBright=.6f;
         Biquad toneHigh,toneLow;float toneAt=-1,toneGain=1,levelIn,levelOut;bool toneOn;
         public static bool ToneCorrection=true,SustainLoop=true,PulseOverlap=true;
         // The sustain loop only this far above the recording's top (docs/55): just above it, the recording's own top
@@ -235,8 +240,8 @@ namespace LittleRoad
             float l=Math.Clamp(load,0,1);
             // (During a gearshift the load drops for a moment: stay on the pulling recording, just quieter; switching
             // to the coasting one there sounded like the engine stopping dead between gears.)
-            bool was=pullingMode;
-            if(!shifting){if(pullingMode&&l<.2f)pullingMode=false;else if(!pullingMode&&l>.4f)pullingMode=true;}
+            if(!shifting){if(!coasting&&l<.2f)coasting=true;else if(coasting&&l>.4f)coasting=false;}
+            bool lifted=coasting;pullingMode=!coasting||ReverseLift&&!LegacyLift;   // (lifted, ReverseLift: the pull, revs falling)
             // Lifted, the engine fades by the bank's measured drop over most of a second (real lift-offs lose 1-2 dB in the
             // first half second, 1-6 dB by one second); back on the throttle the pull returns at once.
             // (The bank's two kinds are levelled alike; the drop is a gain here, whichever cycles are playing.)
@@ -267,7 +272,7 @@ namespace LittleRoad
                 float s0=(lpState*(1-bright)+x*bright)*(pullingMode?.6f+.4f*l:.75f);
                 return cut?s0*.08f:s0;
             }
-            if(!(shifting&&!LegacyLift))bright+=((pullingMode?(shifting?Math.Max(.35f+.65f*l,ShiftLevel):.35f+.65f*l):1)-bright)*.0005f;
+            if(!(shifting&&!LegacyLift))bright+=((pullingMode?(shifting?Math.Max(.35f+.65f*l,ShiftLevel):lifted?Math.Max(ReverseLiftBright,.35f+.65f*l):.35f+.65f*l):1)-bright)*.0005f;
             float k=Math.Clamp(bright*bright,.05f,1);lpState+=(x-lpState)*k;
             // Part throttle and gearchanges dip quickly (real shifts dip 1-11 dB within a tenth of a second); only the
             // lift-off itself fades slowly.
@@ -278,7 +283,7 @@ namespace LittleRoad
             if(curveShift&&shifting&&!wasShifting)shiftClock=0;wasShifting=shifting;
             float shiftGain=1;
             if(curveShift&&shiftClock<.6f){float u=shiftClock/.05f;int ki=Math.Min(10,(int)u);float db=bank.shiftCurve[ki]+(bank.shiftCurve[ki+1]-bank.shiftCurve[ki])*Math.Min(1,u-ki);shiftGain=MathF.Pow(10,db/20);shiftClock+=1/fs;}
-            modeLevel+=((pullingMode?(shifting?(curveShift?1:ShiftLevel):.6f+.4f*l):1)-modeLevel)*25f/fs;liftEnv+=(liftAim-liftEnv)*(liftEnv>liftAim?LiftFade:30f)/fs;
+            modeLevel+=((pullingMode?(shifting?(curveShift?1:ShiftLevel):lifted?ReverseLiftLevel:.6f+.4f*l):1)-modeLevel)*(lifted?6f:25f)/fs;liftEnv+=(liftAim-liftEnv)*(liftEnv>liftAim?LiftFade:30f)/fs;
             float s=(lpState*(1-bright)+x*bright)*modeLevel*liftEnv*shiftGain;
             // Above the recording the engine keeps getting louder with the revs at the recording's own rate (bank v4
             // riseDb per doubling, up to +12 dB): squeezed or looped top cycles held the level flat, where real engines

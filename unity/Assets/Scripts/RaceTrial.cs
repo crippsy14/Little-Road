@@ -111,11 +111,11 @@ namespace LittleRoad
             // The test loop: two 1-mile straights and two wide turns (2.5 miles) for gearing, top speed and sound
             // tests up to class E (Richard, 1 Oct). Run it with --trial-duration: a slow car takes a while.
             else if(trackId=="test-loop") {technical=new TechnicalCircuit("test-loop");track=technical.track;TechnicalCircuitWorld.Create(technical);}
-            else if(trackId=="bayview"){track=new Circuit();yield return TrialWorld.CreateRoutine(track);}
+            else if(trackId=="bayview"){RaceArea.Clear();track=new Circuit();yield return TrialWorld.CreateRoutine(track);}
             // Hillcrest Raceway: the valley circuit (built with the mainland); the island loop is scenery.
-            else if(trackId=="hillcrest"){yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(HillcrestRoute.Circuit);RenderSettings.fogDensity=.00026f;}
+            else if(trackId=="hillcrest"){RaceArea.Set(HillcrestRoute.Circuit,450);yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(HillcrestRoute.Circuit);RenderSettings.fogDensity=.00026f;}
             // Quarry Hills Rallycross (--quarry-hills): the quarry floor's circuit, built with the mainland.
-            else if(trackId=="quarry"&&QuarryHills.Enabled){yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(QuarryFloor.Loop);RenderSettings.fogDensity=.00026f;}
+            else if(trackId=="quarry"&&QuarryHills.Enabled){RaceArea.Set(QuarryFloor.Loop,450);yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(QuarryFloor.Loop);RenderSettings.fogDensity=.00026f;}
             else throw new ArgumentException("Unknown trial track: "+trackId);
             reportTrack=trackId;bool loose=trackId=="quarry";RoadCar.LooseRace=loose&&!freeRoam;
             // The elevated Hillcrest Raceway always races grade-aware (its context drivers could not race it
@@ -234,6 +234,11 @@ namespace LittleRoad
             if(technical!=null&&Keyboard.current?.cKey.wasPressedThisFrame==true)overview=!overview;
             if(elapsed>5)frameTimes.Add(Time.unscaledDeltaTime*1000);
             if(!cars[0].finished&&Controls.Pressed(Controls.Act.Recover))PlayerRecoveryPending=true;
+            // Off the edge of a race's built area (RaceArea): back onto the circuit.
+            if(RaceArea.Active&&!cars[0].finished&&!PlayerRecoveryPending&&Time.frameCount%15==0) {
+                track.Nearest(cars[0].body.position,out float off);
+                if(Mathf.Abs(off)>RaceArea.Leash){PlayerRecoveryPending=true;careerUI?.Toast("Back to the track!");Debug.Log("LITTLE_ROAD_RACE_LEASH offset="+off.ToString("0"));}
+            }
             if(PlayerRecoveryPending&&cars[0].TryRecover())PlayerRecoveryPending=false;
             if(!career&&(Keyboard.current?.tabKey.wasPressedThisFrame==true || Gamepad.current?.selectButton.wasPressedThisFrame==true))cars[0].autonomous=!cars[0].autonomous;
             if(pausePressed) {if(career){AdventureSession.Notice=cars[0].finished?"Back in Bayview. Your result and reward are saved.":"Race retired · no payout. Your equipment is unchanged.";AdventureSession.ReturnToTown();}else{WriteReport();Application.Quit();}}
@@ -292,6 +297,8 @@ namespace LittleRoad
             OptionsScreen.Instance.Close();yield return new WaitForSecondsRealtime(.3f);
             if(!Paused||!careerUI.IsOpen)throw new Exception("Closing Options did not return to the pause menu.");
             if(Mathf.Abs(elapsed-before)>.001f)throw new Exception("The race moved while paused.");
+            // Restart must be able to enter the same event again (Richard, 4 Oct: it threw "Race entry changed").
+            var restart=AdventureSession.RestartRoster();if(restart==null||!restart.MatchesPlayer(AdventureSession.Store.Data)||restart.Event!=AdventureSession.EnteredRoster.Event)throw new Exception("Restart race would not enter the same event.");
             if(!careerUI.InvokeChoice("Back to the race"))throw new Exception("Pause menu has no Back to the race.");
             yield return new WaitForSecondsRealtime(.5f);
             if(Paused||Time.timeScale<=0||elapsed<=before)throw new Exception("The race did not resume.");
@@ -327,7 +334,12 @@ namespace LittleRoad
             if(!Paused)return;
             careerUI.Close();Paused=false;Time.timeScale=pausedScale;AudioListener.pause=false;
         }
-        void RestartRace(){AudioListener.pause=false;Paused=false;AdventureSession.RestartRace();}
+        void RestartRace()
+        {
+            // (If the restart can't start, the race carries on rather than leaving the menu up with nothing working.)
+            try{AdventureSession.RestartRace();Paused=false;AudioListener.pause=false;}
+            catch(Exception e){Debug.LogException(e);ResumeRace();careerUI.Toast("Couldn't restart: "+e.Message);}
+        }
         void RetireRace()
         {
             AudioListener.pause=false;Paused=false;

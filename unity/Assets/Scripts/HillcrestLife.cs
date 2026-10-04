@@ -178,12 +178,12 @@ namespace LittleRoad
                 // cars on pavements, through lamps and benches, and into doorways). It may slide along the frontage only.
                 Physics.SyncTransforms();bool placed=false;var fwd=go.transform.forward;
                 foreach(float o in new[]{0f,1.2f,-1.2f}) {
-                    var q=p+fwd*o;q.y=Mathf.Max(at.y,ValleyField.Height(q.x,q.z))+.03f;
+                    var q=p+fwd*o;q.y=ValleyField.Height(q.x,q.z)+.03f;   // (on the garden's own ground: a sloping drive left wheels in the air at road height)
                     if(StationarySpot.Overlaps(go,q).Count>0||WorldTiles.Blocked(q,2.2f)||NearProp(q,go.transform.rotation,length*.5f))continue;
                     go.transform.position=q;Physics.SyncTransforms();placed=true;break;
                 }
                 if(!placed){homeSkipped++;Destroy(go);return false;}
-                var pad=go.transform.position;pad.y=Mathf.Max(ValleyField.Height(pad.x,pad.z),at.y)+.01f;
+                var pad=go.transform.position;pad.y=ValleyField.Height(pad.x,pad.z)+.01f;
                 (QuarryHills.Enabled&&QuarryHills.Contains(pad.x,pad.z)?standings:standingsWarm).Add(Matrix4x4.TRS(pad,go.transform.rotation,new Vector3(2.4f,.06f,length+.7f)));
             }
             else if(StationarySpot.Settle(go)<0){Destroy(go);return false;} // no clear spot: leave them out

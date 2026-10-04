@@ -261,8 +261,15 @@ namespace LittleRoad
         // is entered again from the grid.
         public static void RestartRace()
         {
+            // (Richard, 4 Oct: Restart did nothing. The entered roster was seeded for the serial before BeginRace, so it no
+            // longer matched the save and StartRace threw.) A fresh roster for the same event, seeded for the next serial.
             var roster=EnteredRoster;if(roster==null){ReturnToTown();return;}
-            Racing=false;StartRace(roster);
+            Racing=false;StartRace(RestartRoster());
+        }
+        public static RaceRoster RestartRoster()
+        {
+            var roster=EnteredRoster;if(roster==null)return null;
+            return roster.Event==RaceRoster.DukeEvent?RaceRoster.DukeChallenge(Store.Data):RaceRoster.ForEvent(roster.Event,Store.Data);
         }
         public static void ReturnToTown()
         {
