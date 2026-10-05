@@ -134,10 +134,15 @@ namespace LittleRoad
             for(int i=0;i<6;i++)Put("hay_bale",P(26+(i%3)*1.4f,6+(i/3)*1.4f),yaw);
             // A farmyard wall round the yard and a lane to the nearest road.
             for(float a=0;a<360;a+=12){float r=28;var p=at+Quaternion.Euler(0,a,0)*Vector3.forward*r;var q=at+Quaternion.Euler(0,a+12,0)*Vector3.forward*r;if(a<24)continue;Wall(G(p.x,p.z),G(q.x,q.z));}
-            Vector3 road=default;float rd=float.MaxValue;foreach(var r in HillcrestRoute.All()){if(!QuarryHills.Owns(r.name))continue;float s=r.Nearest(at,out float lat);if(Mathf.Abs(lat)<rd){rd=Mathf.Abs(lat);road=r.At(s);}}
-            Lane(at+rot*Vector3.forward*26,road);
-            // A few sheep loose in the lane (docs/60): they amble off when a car comes, and scatter for the horn.
-            var mid=Vector3.Lerp(at+rot*Vector3.forward*26,road,.55f);mid.y=H(mid.x,mid.z);LaneFlock(mid,3+rng.Next(3));
+            // (Street review, 5 Oct: a farm near town ran its lane to Chapel Street, straight through the back gardens and over
+            // a yard wall.) The lane meets the nearest road outside the built-up town (its rows stop 520 m from the square).
+            Vector3 road=default;float rd=float.MaxValue;foreach(var r in HillcrestRoute.All()){if(!QuarryHills.Owns(r.name))continue;
+                for(float s=0;s<r.Length;s+=4){var q=r.At(s);if(Vector2.Distance(new(q.x,q.z),QuarryHills.Square)<540)continue;float d=Vector2.Distance(new(q.x,q.z),new(at.x,at.z));if(d<rd){rd=d;road=q;}}}
+            if(rd<float.MaxValue) {
+                Lane(at+rot*Vector3.forward*26,road);
+                // A few sheep loose in the lane (docs/60): they amble off when a car comes, and scatter for the horn.
+                var mid=Vector3.Lerp(at+rot*Vector3.forward*26,road,.55f);mid.y=H(mid.x,mid.z);LaneFlock(mid,3+rng.Next(3));
+            }
             for(int k=0;k<3;k++){float a=R()*Mathf.PI*2,r=60+R()*140;var f=new Vector3(at.x+Mathf.Cos(a)*r,0,at.z+Mathf.Sin(a)*r);f.y=H(f.x,f.z);if(Open(f.x,f.z,10)&&Slope(f.x,f.z,6)<.4f)Flock(f,7+rng.Next(10));}
             QuarryHillsTown.Spots["farm "+name]=(P(-8,10),yaw);
         }
@@ -173,7 +178,13 @@ namespace LittleRoad
         static void Lane(Vector3 from,Vector3 to)
         {
             var d=to-from;d.y=0;float len=d.magnitude;if(len<4)return;var v=new List<Vector3>();var t=new List<int>();var side=Vector3.Cross(Vector3.up,d.normalized)*2.2f;
-            for(float s=0;s<=len;s+=2){var p=from+d.normalized*s;var a=p-side;var b=p+side;a.y=H(a.x,a.z)+.05f;b.y=H(b.x,b.z)+.05f;int k=v.Count;v.Add(a);v.Add(b);if(k>=2)t.AddRange(new[]{k-2,k,k-1,k-1,k,k+1});}
+            // Every metre, each edge on the highest of the ground there, at the centre and half a metre either way (street
+            // review, 5 Oct: at 2 m steps the grass bulged up through it on a convex bank, so it showed in broken pieces).
+            // (Street review, 5 Oct: at 6 cm the terrain's own triangles covered it everywhere but the dips, so a lane showed as a
+            // chain of pale patches across the fields.) 0.2 m clear of the sampled ground.
+            float Top(Vector3 q,Vector3 f){float h=H(q.x,q.z);foreach(var o in new[]{f*1.5f,-f*1.5f,side*.4f,-side*.4f})h=Mathf.Max(h,H(q.x+o.x,q.z+o.z));return h+.2f;}
+            var dir=d.normalized;
+            for(float s=0;s<=len;s+=1){var p=from+dir*s;var a=p-side;var b=p+side;a.y=Top(a,dir);b.y=Top(b,dir);int k=v.Count;v.Add(a);v.Add(b);if(k>=2)t.AddRange(new[]{k-2,k,k-1,k-1,k,k+1});}
             var mesh=new Mesh{name="Farm lane"};mesh.SetVertices(v);mesh.SetTriangles(t,0);mesh.RecalculateNormals();
             var go=new GameObject("Farm lane",typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root);go.GetComponent<MeshFilter>().sharedMesh=mesh;
             go.GetComponent<MeshRenderer>().sharedMaterial=WorldLook.Kit("Farm lane gravel",new Color(.55f,.52f,.46f),WorldLook.Pattern.Rock,0,.08f,true);
@@ -234,8 +245,9 @@ namespace LittleRoad
         // A length of dry-stone wall between two ground points: a battered body and a row of upright copes.
         static void Wall(Vector3 a,Vector3 b)
         {
-            var d=b-a;float len=new Vector2(d.x,d.z).magnitude;if(len<.5f||len>4)return;var m=(a+b)*.5f;var rot=Quaternion.LookRotation(new Vector3(d.x,0,d.z));
-            float h=1.15f+(Mathf.PerlinNoise(m.x*.05f,m.z*.05f)-.5f)*.3f;
+            // (Street review, 5 Oct: level blocks stepped up a slope like a broken stair.) Each length follows the ground.
+            var d=b-a;float len=new Vector2(d.x,d.z).magnitude;if(len<.5f||len>4)return;var m=(a+b)*.5f;var rot=Quaternion.LookRotation(d);len=d.magnitude;
+            float h=1.15f+(Mathf.PerlinNoise(m.x*.012f,m.z*.012f)-.5f)*.3f;
             walls.Add(Matrix4x4.TRS(m+Vector3.up*(h*.5f-.25f),rot,new Vector3(.7f,h+.5f,len+.05f)));
             caps.Add(Matrix4x4.TRS(m+Vector3.up*(h-.12f),rot,new Vector3(.5f,.28f,len+.02f)));WallMetres+=(int)len;
         }

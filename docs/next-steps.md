@@ -6,7 +6,9 @@
 - The working machines: an excavator, dump trucks and a loader, which line up to watch the rallycross.
 - The Gran Turismo-style rally licence screens.
 
-The street review was paused part-way. Its findings and where to continue are in `review/street-review/README.md`; resume it with cheaper agents. The list of findings still to fix is in doc 62.
+**5 October, later:** in free time I built the Blast Run (race Dai up the haul road before the quarry blast) and the Tip Leap (a danger-sign jump off the big tip): [doc 63](63-blast-run-and-tip-leap.md).
+
+**5 October:** the street review is finished and its findings fixed, low-severity ones included (doc 62, round four). The reviewer is the Sonnet `street-reviewer-high` agent (`review/street-review/effort-comparison.md`).
 
 **Plan of record (29 September):** [doc 45](45-roadmap-and-feature-spec.md) sets the order of work, Phases 0–5; the parts ladder is in [doc 44](44-parts-tiers-and-progression.md). The campaign is at least 12 hours and open-ended. Next is **Phase 0**: world grid with per-tile map and fog, Racer records, radar chart, a traffic-aware launch, save and IDs, and track standards.
 

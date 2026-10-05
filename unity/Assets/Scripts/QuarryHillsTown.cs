@@ -53,7 +53,7 @@ namespace LittleRoad
         readonly Dictionary<(int,int),List<(Vector2 c,Vector2 half,float yaw)>> taken=new();
         const float Cell=24;
         static (Vector2 x,Vector2 z) Axes(float yaw){float a=yaw*Mathf.Deg2Rad;return (new Vector2(Mathf.Cos(a),-Mathf.Sin(a)),new Vector2(Mathf.Sin(a),Mathf.Cos(a)));}
-        static bool Overlap(Vector2 c1,Vector2 h1,float y1,Vector2 c2,Vector2 h2,float y2)
+        internal static bool Overlap(Vector2 c1,Vector2 h1,float y1,Vector2 c2,Vector2 h2,float y2)
         {
             var (x1,z1)=Axes(y1);var (x2,z2)=Axes(y2);var d=c2-c1;
             foreach(var a in new[]{x1,z1,x2,z2}) {
@@ -180,6 +180,16 @@ namespace LittleRoad
             var site=QuarryHills.PitStopSite;
             PitStop.Build("quarry",true,new Vector3(site.at.x,site.at.y-.03f,site.at.z),site.yaw,root);
             Take(new Vector2(site.at.x,site.at.z),new Vector2(24,19),site.yaw);
+            // Paved yard under the bays and in front of them, to the back of the pavement (street review, 5 Oct: the pad's
+            // grass showed through the 4 cm bay floors beside the driveway, so the body shop stood on a lawn).
+            // Draped on a 1 m grid, never under the ground (the terrain stands a few cm over the pad in places, so a flat slab
+            // at the pad's height was still hidden under the grass).
+            {var fq=Quaternion.Euler(0,site.yaw,0);const int nx=31,nz=20;var v=new List<Vector3>();var tri=new List<int>();
+                for(int j=0;j<=nz;j++)for(int i=0;i<=nx;i++){var q=site.at+fq*new Vector3(i-nx*.5f,0,j-7f);v.Add(new Vector3(q.x,Mathf.Max(H(q.x,q.z),site.at.y)+.04f,q.z));}
+                for(int j=0;j<nz;j++)for(int i=0;i<nx;i++){int a=j*(nx+1)+i;tri.AddRange(new[]{a,a+nx+1,a+1,a+1,a+nx+1,a+nx+2});}
+                var mesh=new Mesh{name="Pit Stop yard"};mesh.SetVertices(v);mesh.SetTriangles(tri,0);mesh.RecalculateNormals();
+                if(mesh.normals[0].y<0){for(int t=0;t<tri.Count;t+=3)(tri[t+1],tri[t+2])=(tri[t+2],tri[t+1]);mesh.SetTriangles(tri,0);mesh.RecalculateNormals();}
+                var yard=new GameObject("Pit Stop yard",typeof(MeshFilter),typeof(MeshRenderer));yard.transform.SetParent(root);yard.GetComponent<MeshFilter>().sharedMesh=mesh;yard.GetComponent<MeshRenderer>().sharedMaterial=paving;}
             if(PitStop.Hosts.TryGetValue("quarry/garage",out var g))Spots["qgarage"]=g;
             if(PitStop.Hosts.TryGetValue("quarry/parts",out var p))Spots["qparts"]=p;
             if(PitStop.Hosts.TryGetValue("quarry/body",out var b))Spots["qbody"]=b;
@@ -215,7 +225,8 @@ namespace LittleRoad
         void Bench(HillcrestRoute.Road road,float s,int side)
         {
             if(partyWalls.TryGetValue((road.name,side),out var walls)){float best=float.MaxValue;foreach(float w in walls)if(Mathf.Abs(w-s)<Mathf.Abs(best-s))best=w;if(Mathf.Abs(best-s)<6)s=best;}
-            var p=road.At(s)+road.Right(s)*side*(road.width*.5f+Pave-.45f);p.y=road.At(s).y;
+            // (Street review, 5 Oct: 0.45 m from the pavement's back, the bench's back went into the slate fence behind it.)
+            var p=road.At(s)+road.Right(s)*side*(road.width*.5f+Pave-.8f);p.y=road.At(s).y;
             foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,p.x,p.z,out _)<other.width*.5f+6)return;
             if(Vector2.Distance(new(p.x,p.z),QuarryHills.Square)<30||Vector2.Distance(new(p.x,p.z),new(QuarryHills.PitStopSite.at.x,QuarryHills.PitStopSite.at.z))<30)return;
             Put("bench",p,Quaternion.LookRotation(-road.Right(s)*side).eulerAngles.y,null,null,1,false);GardenProps.Add(p);
@@ -244,7 +255,9 @@ namespace LittleRoad
                     // fence of upright slate slabs (crawiau, as the slate valleys have), with a gap for the gate.
                     last=id;if(!partyWalls.TryGetValue((road.name,side),out var pw))partyWalls[(road.name,side)]=pw=new();pw.Add(mid-size.x*.5f);pw.Add(mid+size.x*.5f);
                     var yard=at+right*side*(road.width*.5f+Pave+Garden*.5f-.05f);yard.y=at.y;
-                    bool drive=id!="terrace_f"&&id!="cottage_b"&&id!="cottage_c"&&rng.NextDouble()<.55;
+                    // (Street review, 5 Oct: cars in a shop's front garden stood against its window and door, and an arcade's piers
+                    // stand out into the garden.) No drive in front of a shop or an arcade.
+                    bool drive=id!="terrace_f"&&id!="cottage_b"&&id!="cottage_c"&&id!="terrace_b"&&id!="terrace_c"&&rng.NextDouble()<.55;
                     if(drive)Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));else Crawiau(road,side,mid,size.x);
                     if(lamps<900&&((int)(mid/16))%2==(side>0?0:1)&&Mathf.Repeat(mid,16)<size.x){var lp=at+right*side*(road.width*.5f+.7f);lp.y=at.y;Lamp(lp);}
                     // Now and then a flowering bush at the corner of the front garden (clear of the parking spot's middle).
@@ -396,8 +409,12 @@ namespace LittleRoad
                     backHouses++;
                     if(!facing){YardWalls(centre,yaw,size,Yard);if(lanePath!=null)onLane?.Add(lanePath.Nearest(centre,out _));}
                     else YardWalls(centre,yaw,size,Yard);
-                    // Its footpath, a short flag strip at the door.
-                    var p=front+outward*(facing?-1.3f:1.3f);paths.Add(Matrix4x4.TRS(new Vector3(p.x,H(p.x,p.z)-.05f,p.z),Quaternion.Euler(0,yaw,0),new Vector3(size.x+.1f,.3f,2.2f)));
+                    // Its footpath, a short flag strip at the door, only where the ground under it is near flat and clear of
+                    // any street (street review, 5 Oct: on a bank the strip stood out over the drop as a ledge, and next to a
+                    // neighbouring street's front gardens only its tilted edge showed, as a stray slab on the lawn).
+                    var p=front+outward*(facing?-1.3f:1.3f);var pr=Quaternion.Euler(0,yaw,0);float lo=float.MaxValue,hi=float.MinValue;
+                    foreach(var (cx,cz) in new[]{(-1f,-1f),(1f,-1f),(-1f,1f),(1f,1f),(0f,0f)}){var q=p+pr*new Vector3(cx*(size.x*.5f+.05f),0,cz*1.1f);float g=H(q.x,q.z);lo=Mathf.Min(lo,g);hi=Mathf.Max(hi,g);}
+                    if(hi-lo<.3f&&ValleyField.RoadDistance(p.x,p.z)>9f)paths.Add(Matrix4x4.TRS(new Vector3(p.x,hi-.12f,p.z),pr,new Vector3(size.x+.1f,.3f,2.2f)));
                     s+=size.x+.3f;
                 } else s+=3;
             }

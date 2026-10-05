@@ -166,3 +166,64 @@ Richard asked for four things on 4 October:
 - **Bayview's sign in the rock and wall gap (BV-5/6):** the close-up tool takes its heights from the mainland, so these weren't checked.
 - **The gallery's stretched end (HR-5).**
 - **The improvements list:** gardens on lawns, town-edge signs, quay dressing and the Bayview lay-by.
+
+## Round four (5 October): the full street review and a clean sweep
+
+**The review.** An effort comparison chose the reviewer: Sonnet at high effort equalled Opus on a 24-photo checklist (12 of 14
+known defects each) for about the same tokens at Sonnet prices; medium found no more than low
+(`review/street-review/effort-comparison.md`). Six `street-reviewer-high` batches then covered the 154 photos left from 4 October:
+73 findings (`full-review-summary.md`). A fresh capture (`streets-2`) showed which were already fixed by the 4 October rounds.
+Richard asked for a clean sweep, low-severity items included. Each fix was checked in a close-up (`sr-fix-1` to `-5`), and the
+whole set was photographed again (`streets-3`) and rechecked by reviewer agents.
+
+**Fixed.**
+
+| Finding | Fix |
+|---|---|
+| Water wheel turning inside the house next door (Hillcrest Quay Road) | Rows keep clear of landmark footprints (`OnLandmark`); the mill keeps 3 m on its wheel side, and its race holds water. |
+| Arched shopfronts: jagged voussoirs, a blue panel half-filling the arch, a black slot (`terrace_c`, every town) | `spandrel` is laid from the ring's outer edge and sits behind it; the arch holds a shaded stone back wall, a framed window, the door and a glazed fanlight. |
+| Town Hall arcade's arches broken at the pier tops (Via Crest) | The arches stand on the arcade's front edge with spandrels between; the end pier no longer stands 2 m past the building. |
+| Shop names half hidden by the first-floor window boxes | On a shop the first-floor windows sit higher with plain sills; the board sits between the awning and the sills. |
+| Awning scallops over the door heads | Shop awnings raised 0.2 m more. |
+| Door steps lying tilted on lawns | A deep stone step block, sunk, at front doors; no step at back doors (buried, only a sliver showed on the next street's lawn). |
+| Beige slabs on lawns and ledges over banks (Quarry Hills back-row footpaths) | A footpath only where the ground under it is near flat and clear of streets. |
+| Grass in the Pit Stop's body-shop bay | A paved yard draped over the pad under the bays and forecourt. |
+| Sand strip pasted up the bank and broken (Chapel Street) | Farm lanes run to the nearest road outside the built-up town, drape every metre, and stand 0.2 m clear of the ground. |
+| Pale teal patches across the fields (Quay Lane) | Quarry Hills' tint no longer paints field edges (the shader drew them as broken see-through blobs); the crop patchwork stays. |
+| Houses half buried in the hillside (Via Crest) | Over 5 m of hillside against a house: not built there (47 sites). Between 0.5 and 5 m: a stepped stone footing up the side and back walls (one combined mesh). |
+| Plinths stopping short of a dip | Hillcrest plinths are sized from a 5 x 5 grid, as Quarry Hills'. |
+| Slits between terrace houses showing the hill | Hillcrest's row neighbours meet (5 cm). |
+| Open drop beside the market square's pavement | A stone parapet round the square's rim where the ground falls away; road parapets run up to the square's edge. |
+| White road lines across the square's paving | No road paint over the market paving. |
+| Pavement corner standing into the junction (Quay Road) | Pavements stop at a junction's surface. |
+| Cars against shop windows, arcade piers and doors; cars half on the pavement | No drive in front of a shop or arcade (both towns); Hillcrest gardens need 2.5 m depth for a car; a standing sits on the highest ground under it, or the car stands on grass. Parked residents: 113 to 67. |
+| Benches into the slate fences behind them | Benches 0.35 m further forward. |
+| Porch bench under the window box (`terrace_f`) | The window over it has a plain sill; the bench has a back rail and stands clear of the wall. |
+| Planter merged with a window box (`house_a`) | Between the door and the window. |
+| Field walls stepping up slopes in level blocks | Each length follows the ground. |
+| Speed-trap line broken into white patches; pole beside a front door | A white band kerb to kerb with dark chequers; the pole moves to either side or 7 m along to stay clear of buildings. |
+| Gravel haul road ending in a hard line at Chapel Street's mouth | A junction whose arms are mostly gravel roads is gravel. |
+| Pale glass columns under the viaduct piers | Pier stone below the sea is wet and dark (both viaducts); the sea shader colours a steep underwater face as deep water. |
+| Lone wall on the lawn north of Bayview Halt | A sea wall needs sea along most of its length. |
+| Halt van against the flower bed; the board's heading too small | The resident spot is 1 m further from the building; the board at full size. |
+| Chimney smoke drawn as solid balls (every town) | Puffs start invisible and use a new `LittleRoad/SoftPuff` shader. Builds strip URP Lit's transparent variant, so the runtime "transparent" puffs (smoke and dust) drew opaque. |
+| Black void in the rooftop altana (`terrace_e`) | Shaded stone. |
+
+**Also.** The garage-driving test failed whenever its window opened without focus: by default the Input System disables every
+device, the test's virtual pad too, in an unfocused game. Test runs now set `backgroundBehavior=IgnoreFocus`
+(`TestInputIsolation`; real devices are already off in test runs). Two review flags were added for diagnosis:
+`--renderers-at "x,z;..."` (every renderer over a point) and `--renderers-high "x,z,r"` (small objects above the rooftops).
+
+**Not changed.**
+- The round-three "still open" list above (castle gate lip, Bayview sign and wall gap, the gallery end, the improvements list) was
+  not part of this review's photos and stays open.
+- The streaky texture on the steep Chapel Street banks is the terrain's triplanar rock: by design.
+- The small dark tablet flat on the Haul Road bank is a slate carving collectible.
+- The give-way sign seen from behind is correct (its face points at the traffic it serves).
+
+**Regression (sr13).** Every test passes (both adventure smokes, lesson all gold, climb, sprint, carvings 12/12, Blondin,
+wayfinding, world tiles; sound smoke 6832, 6835 before). The area audit fails the same four regions it failed before (sr12), with
+one count worse: Hillcrest's "banks too steep (no barrier)" went from 7 to 10, all beside Via Crest's front gardens (e.g. near
+(137,-1225), (84,-1126), (216,-1248)). Moving the row neighbours together and skipping houses on steep plots reshuffled the rows, so
+other garden dips meet the road. Not yet fixed: a test of the parapet's gate gaps changed nothing, so the cause needs a closer
+look at the edge audit's lines there.

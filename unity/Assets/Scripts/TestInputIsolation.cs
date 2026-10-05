@@ -16,6 +16,10 @@ namespace LittleRoad
             bool test=Application.isBatchMode||args.Any(a=>a=="--silent"||a=="--audio-capture-silent"||a=="--trial-auto"||a.StartsWith("--")&&(a.EndsWith("-test")||a.EndsWith("-review")||a.EndsWith("-audit")));
             if(!test)return;
             foreach(var d in InputSystem.devices.ToArray())Off(d);
+            // (5 Oct: the garage drive test failed whenever its window opened without the focus, as Start-Quiet opens it: by
+            // default an unfocused game resets and disables every device, the test's virtual pad too.) Real devices are off in a
+            // test run, so the virtual ones may ignore the focus.
+            InputSystem.settings.backgroundBehavior=InputSettings.BackgroundBehavior.IgnoreFocus;
             InputSystem.onDeviceChange+=(d,change)=>{if(change==InputDeviceChange.Added||change==InputDeviceChange.Reconnected)Off(d);};
             Debug.Log("LITTLE_ROAD_TEST_INPUT real devices ignored (a test run)");
         }

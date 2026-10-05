@@ -424,6 +424,7 @@ namespace LittleRoad
         }
         static Vector3[] Reverse(Vector3[] line){var r=(Vector3[])line.Clone();System.Array.Reverse(r);return r;}
         static Vector3[] Chain(params Vector3[][] parts){var all=new List<Vector3>(parts[0]);for(int k=1;k<parts.Length;k++)for(int i=1;i<parts[k].Length;i++)all.Add(parts[k][i]);return all.ToArray();}
+        Material submerged;
         // Inside a junction (shoulders and guardrails stop here); the road network (docs/52) knows where they are.
         RoadNetwork network;
         // The last valley road network built (for the seam audit).
@@ -547,7 +548,11 @@ namespace LittleRoad
                 // World-space texture coordinates (the ribbons' scale): the asphalt pattern carries on across the junction.
                 var mesh=new Mesh{name="Junction"};mesh.SetVertices(v);mesh.SetUVs(0,v.ConvertAll(p=>new Vector2(p.x/8,p.z/5)));mesh.SetTriangles(t,0);mesh.RecalculateNormals();
                 var go=new GameObject("Junction",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(parent);
-                go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=asphaltMainland;go.GetComponent<MeshCollider>().sharedMesh=mesh;go.AddComponent<RoadSurface>();
+                // (Street review, 5 Oct: the haul road's gravel stopped in a hard line across the road at Chapel Street's mouth.) A
+                // junction where most arms are gravel roads is gravel, so the change falls at the side street's mouth.
+                int gravelArms=0;foreach(var a in n.arms)if(a.road!=null&&QuarryHills.Enabled&&QuarryHills.Gravel(a.road.name))gravelArms++;
+                var surface=gravelArms*2>n.arms.Count&&quarryGravel!=null?quarryGravel:asphaltMainland;
+                go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=surface;go.GetComponent<MeshCollider>().sharedMesh=mesh;if(surface!=quarryGravel)go.AddComponent<RoadSurface>(); // (gravel grips as the gravel road does)
             }
             // Edge lines 0.35 m in from every kerb (only round the corners where an external road keeps its own paint).
             var lv=new List<Vector3>();var lt=new List<int>();
@@ -616,6 +621,8 @@ namespace LittleRoad
             for(int i=0;i<line.Length-1;i++) {
                 run+=Vector3.Distance(line[i],line[i+1]);if(run<from||run>to||(dash>0&&Mathf.Repeat(run,dash*2)>dash))continue;
                 Vector3 a=line[i],b=line[i+1],ra=Side(i),rb=Side(i+1);int s=v.Count;
+                // (Street review, 5 Oct: Via Crest's edge lines ran on across the market square's paving.)
+                if(HillcrestTown.OnMarketPaving((a+b)*.5f))continue;
                 v.Add(a+ra*(offset-width*.5f)+Vector3.up*.047f);v.Add(a+ra*(offset+width*.5f)+Vector3.up*.047f);v.Add(b+rb*(offset-width*.5f)+Vector3.up*.047f);v.Add(b+rb*(offset+width*.5f)+Vector3.up*.047f);
                 t.AddRange(new[]{s,s+2,s+1,s+1,s+2,s+3});
             }
@@ -670,7 +677,11 @@ namespace LittleRoad
                 Vector3 p=main.At(d),f=main.Forward(d),right=Vector3.Cross(Vector3.up,f);float ground=Seabed(p,f,right,width);
                 if(ground>p.y-2.4f){hasLast=false;continue;}
                 float top=p.y-1.2f,h=top-ground+.5f;var rot=Quaternion.LookRotation(f);
-                Piece("Causeway pier",new Vector3(p.x,top-h*.5f+.25f,p.z),new Vector3(width-1,h,2.4f),girderStone,true).transform.rotation=rot;
+                // (Street review, 5 Oct: under the clear water the pale pier read as glass slabs.) Below the sea, wet dark stone.
+                float wet=Mathf.Clamp(SeaLevel-.15f-(ground-.25f),0,h);
+                Piece("Causeway pier",new Vector3(p.x,top-(h-wet)*.5f+.25f,p.z),new Vector3(width-1,h-wet,2.4f),girderStone,true).transform.rotation=rot;
+                if(wet>0){submerged??=WorldLook.Kit("Submerged pier stone",new Color(.13f,.2f,.22f),WorldLook.Pattern.Stone,0,.3f,true);
+                    Piece("Causeway pier footing",new Vector3(p.x,ground-.25f+wet*.5f,p.z),new Vector3(width-1,wet,2.4f),submerged,true).transform.rotation=rot;}
                 Piece("Pier impost",new Vector3(p.x,top-Mathf.Min(h*.45f,7)+.2f,p.z),new Vector3(width-.6f,.4f,2.8f),trim).transform.rotation=rot;
                 if(ground<SeaLevel) {
                     Piece("Pier cutwater",new Vector3(p.x,SeaLevel+.7f,p.z),new Vector3(width,1.6f,3.4f),copingStone).transform.rotation=rot;
@@ -920,7 +931,11 @@ namespace LittleRoad
                 // Stand on the lowest ground under the whole footprint (no stubs hanging over slopes).
                 foreach(var o in new[]{f*1.4f,-f*1.4f,side*2f,-side*2f})ground=Mathf.Min(ground,Ground(p+o));
                 float top=p.y-1.1f,bottom=Mathf.Min(ground,HillcrestRoute.River.At(HillcrestRoute.River.Nearest(p,out _)).y-3)-.5f;
-                var pier=Piece("Viaduct pier",new Vector3(p.x,(top+bottom)*.5f,p.z),new Vector3(3.6f,top-bottom,2.4f),deck,true);pier.transform.rotation=Quaternion.LookRotation(f);
+                // (Street review, 5 Oct: under the clear sea the pale piers read as glass columns.) Below the water, wet dark stone.
+                float wet=Mathf.Clamp(SeaLevel-.15f-bottom,0,top-bottom);
+                var pier=Piece("Viaduct pier",new Vector3(p.x,(top+bottom+wet)*.5f,p.z),new Vector3(3.6f,top-bottom-wet,2.4f),deck,true);pier.transform.rotation=Quaternion.LookRotation(f);
+                if(wet>0){submerged??=WorldLook.Kit("Submerged pier stone",new Color(.13f,.2f,.22f),WorldLook.Pattern.Stone,0,.3f,true);
+                    Piece("Viaduct pier footing",new Vector3(p.x,bottom+wet*.5f,p.z),new Vector3(3.6f,wet,2.4f),submerged,true).transform.rotation=pier.transform.rotation;}
                 Piece("Pier cap",new Vector3(p.x,top-.3f,p.z),new Vector3(4.6f,.6f,3.0f),copingStone).transform.rotation=pier.transform.rotation;
                 // Arches only on straight-ish spans (a chord arch would miss the deck on the loops).
                 if(hasLast&&Vector3.Angle(lastForward,f)<9)ArchSpan("Viaduct arch",lastPier+Flat(p-lastPier).normalized*1.2f,p-Flat(p-lastPier).normalized*1.2f,lastTop,top,Mathf.Max(ground,SeaLevel-1),3.6f,deck,copingStone,holder,Ground);
@@ -942,7 +957,7 @@ namespace LittleRoad
         // flattened to it, see Height). The mainline crosses its west side; a paved forecourt,
         // the station and its platform face the loop's west straight; the causeway gateway
         // stands where the road leaves the quay.
-        public static readonly Vector3 HaltResident=new(84.6f,0,-142),HaltArrival=new(82.5f,.02f,-128);
+        public static readonly Vector3 HaltResident=new(83.6f,0,-142),HaltArrival=new(82.5f,.02f,-128);
         void BayviewHalt()
         {
             if(!BayviewKit.Has("station"))return;
@@ -950,7 +965,9 @@ namespace LittleRoad
             float west=HillcrestRoute.QuayWest,east=HillcrestRoute.QuayEast,south=HillcrestRoute.QuaySouth,railX=HillcrestRoute.BayPlatform.x;
             var blue=new BayviewKit.Tint(Color.white,Toy.Hex(0x1d6fa8),Color.white,Color.white);
             // Sea walls wherever the quay meets the sea, promenade rails on top (gaps for road and rail).
-            bool Sea(Vector3 a,Vector3 b){for(int k=0;k<=4;k++){var q=Vector3.Lerp(a,b,k/4f);if(Height(q.x,q.z)< -3)return true;}return false;}
+            // (Street review, 5 Oct: a wall with sea off one end only stood alone on the lawn at the quay's north end.) Sea along
+            // most of the wall's length.
+            bool Sea(Vector3 a,Vector3 b){int n=0;for(int k=0;k<=4;k++){var q=Vector3.Lerp(a,b,k/4f);if(Height(q.x,q.z)< -3)n++;}return n>=3;}
             void Wall(Vector3 at,float yaw,Vector3 outward,Vector3 along,System.Func<Vector3,bool> railGap)
             {
                 if(!BayviewKit.Has("sea_wall")||!Sea(at+outward*2.5f-along*5,at+outward*2.5f+along*5))return;
@@ -975,7 +992,7 @@ namespace LittleRoad
             if(BayviewKit.Has("lamp_post"))foreach(float z in new[]{-110f,-130f,-160f})BayviewKit.Spawn("lamp_post",new Vector3(roadEdge+.9f,0,z),0,holder,blue,solid:false);
             if(BayviewKit.Has("bench"))foreach(float z in new[]{-129f,-155f})BayviewKit.Spawn("bench",new Vector3(building-.9f,0,z),270,holder);
             if(BayviewKit.Has("flower_bed"))foreach(float z in new[]{-111f,-139.5f,-144.5f,-159f})BayviewKit.Spawn("flower_bed",new Vector3(building-1.2f,0,z),z*7,holder);
-            if(BayviewKit.Has("map_board"))BayviewKit.Spawn("map_board",new Vector3(roadEdge+1.4f,0,-128.5f),270,holder,null,"HILLCREST LINE",true,.8f);
+            if(BayviewKit.Has("map_board"))BayviewKit.Spawn("map_board",new Vector3(roadEdge+1.4f,0,-128.5f),270,holder,null,"HILLCREST LINE",true,1f); // (full size: at .8 its heading was too small to read)
             // The verge west of the road: palms, a bench, lamps along the sea rail.
             if(BayviewKit.Has("palm"))foreach(var (x,z) in new[]{(60.5f,-104f),(62f,-121f),(60.5f,-139f),(62f,-156f),(104.5f,-100f)})BayviewKit.Spawn("palm",new Vector3(x,0,z),x*z,holder);
             if(BayviewKit.Has("bench"))BayviewKit.Spawn("bench",new Vector3(58.3f,0,-130),90,holder);

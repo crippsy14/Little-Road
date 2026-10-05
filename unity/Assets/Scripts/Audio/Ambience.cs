@@ -22,6 +22,13 @@ namespace LittleRoad
         static readonly bool Probe=RaceTrial.Has("--audio-probe");float nextProbe;
         float nextSurvey;Vector3 riverTarget;bool hasFalls;
 
+        // The Blast Run's charge (BlastRun): the siren from the charge's position now, the shot `shotAt` seconds later. The
+        // ambient blasting waits until it's over.
+        public static void FireBlast(Vector3 at,float shotAt)
+        {
+            if(instance==null||instance.blaster==null)return;instance.blast.transform.position=at;instance.blaster.Fire(shotAt);
+            instance.nextBlast=Time.unscaledTime+shotAt+240;
+        }
         public static void Ensure(){if(instance!=null||!AudioDirector.Enabled)return;var go=new GameObject("World ambience");DontDestroyOnLoad(go);instance=go.AddComponent<Ambience>();}
 
         // One synthesised source (a constant carrier multiplied by the synth, as CarAudio does).
@@ -114,7 +121,7 @@ namespace LittleRoad
                 float pit=Vector2.Distance(new(at.x,at.z),QuarryHills.Pit);float now=Time.unscaledTime;
                 if(pit>1800)nextBlast=-1;
                 else if(nextBlast<0)nextBlast=now+Random.Range(40f,90f);
-                else if(now>nextBlast&&!blaster.Busy&&QuarryFestival.WorkingHours){blaster.Fire();nextBlast=now+Random.Range(240f,420f);if(Probe)Debug.Log($"LITTLE_ROAD_AMBIENCE_BLAST pit={pit:0}m");}
+                else if(now>nextBlast&&!blaster.Busy&&QuarryFestival.WorkingHours){blast.transform.position=new Vector3(QuarryHills.Pit.x,QuarryHills.FloorY+10,QuarryHills.Pit.y);blaster.Fire();nextBlast=now+Random.Range(240f,420f);if(Probe)Debug.Log($"LITTLE_ROAD_AMBIENCE_BLAST pit={pit:0}m");}
             }
             // Crickets off for now (Richard, 1 Oct: the crickets and birds sounded wrong together around dusk).
             crickets.level=0;

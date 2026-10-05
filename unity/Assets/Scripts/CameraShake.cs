@@ -29,5 +29,7 @@ namespace LittleRoad
             camera.transform.position+=camera.transform.rotation*new Vector3(N(4),N(5),0)*MaxOffset*s;
         }
         public static void Reset()=>trauma=0;
+        // A jolt from the world (the Blast Run's shot): adds trauma, up to full.
+        public static void Kick(float amount){if(RaceTrial.Has("--no-camera-shake")||Application.isBatchMode)return;trauma=Mathf.Clamp01(trauma+amount);}
     }
 }

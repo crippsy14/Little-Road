@@ -96,8 +96,13 @@ Shader "LittleRoad/CoastalWater"
                 float3 refractedFloor=ComputeWorldSpacePosition(refractedUV,SceneDepth(refractedUV),UNITY_MATRIX_I_VP);
                 if(refractedFloor.y>p.y)refractedUV=uv;
                 half3 bottom=SampleSceneColor(refractedUV);
-                half transmission=exp(-depth*.36);
-                half3 scatter=lerp(_ShallowColor.rgb,_DeepColor.rgb,1-exp(-depth*.18));
+                // (Street review, 5 Oct: the faces of piers just under the surface took the shallow-beach turquoise, so each pier
+                // showed a pale glassy column down into the sea.) Shallow colour is for a shelving bottom: where the surface
+                // seen through the water is steep (a pier, a sea wall), it reads as the deep water around it.
+                float3 floorNormal=normalize(cross(ddy(floorPoint),ddx(floorPoint)));half steep=smoothstep(.55,.25,abs(floorNormal.y));
+                float colourDepth=lerp(depth,max(depth,14),steep);
+                half transmission=exp(-colourDepth*.36);
+                half3 scatter=lerp(_ShallowColor.rgb,_DeepColor.rgb,1-exp(-colourDepth*.18));
                 Light light=GetMainLight(TransformWorldToShadowCoord(p));
                 half shade=lerp(.68,1,light.shadowAttenuation);
                 // Body colour takes the light (sky SH + sun) so the sea darkens with the day; ~1 at afternoon.

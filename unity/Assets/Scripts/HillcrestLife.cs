@@ -50,10 +50,11 @@ namespace LittleRoad
                     go.AddComponent<RoadCruiser>().Setup(road,from,to,Mathf.Lerp(from,to,(float)rng.NextDouble()),rng.Next(2)*2-1,player);
                     var chatter=go.AddComponent<NpcChatter>();chatter.speaker=new[]{"Delyth","Rhodri","Nerys","Ifan","Carys","Geraint"}[i%6];chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=welsh;
                 }
-                var haul=HillcrestRoute.Find(QuarryHills.HaulRoadName);var dumper=TrialWorld.Car("hauler",Toy.Hex(0xf1c40f));dumper.name="Dai's dumper";dumper.transform.SetParent(root);
+                var haul=HillcrestRoute.Find(QuarryHills.HaulRoadName);var dumper=TrialWorld.Car("hauler",Toy.Hex(0xf1c40f));dumper.name="Emrys's dumper";dumper.transform.SetParent(root);
                 dumper.AddComponent<RoadCruiser>().Setup(haul,12,haul.Length-12,haul.Length*.5f,1,player);
-                var dai=dumper.AddComponent<NpcChatter>();dai.speaker="Dai the Dumper";dai.colour=Toy.Sun;dai.title="Quarry haulage";
-                dai.lines=new[]{"Twelve tonnes of slate on here, butt. Give way!","Haul road's mine till noon!","Brakes? Who needs brakes going UP?","Race you to the floor. Go on. I dare you."};
+                // (Dai himself waits on the quarry floor for the Blast Run, doc 63: this is his mate Emrys.)
+                var dai=dumper.AddComponent<NpcChatter>();dai.speaker="Emrys";dai.colour=Toy.Sun;dai.title="Quarry haulage";
+                dai.lines=new[]{"Twelve tonnes of slate on here, butt. Give way!","Haul road's mine till noon!","Brakes? Who needs brakes going UP?","Dai's down on the floor. Ask him about the Blast Run. If you dare."};
             }
         }
         // Parked cars where people gather: paddock, square, station, viewpoints.
@@ -183,8 +184,13 @@ namespace LittleRoad
                     go.transform.position=q;Physics.SyncTransforms();placed=true;break;
                 }
                 if(!placed){homeSkipped++;Destroy(go);return false;}
-                var pad=go.transform.position;pad.y=ValleyField.Height(pad.x,pad.z)+.01f;
-                (QuarryHills.Enabled&&QuarryHills.Contains(pad.x,pad.z)?standings:standingsWarm).Add(Matrix4x4.TRS(pad,go.transform.rotation,new Vector3(2.4f,.06f,length+.7f)));
+                // The standing sits on the highest ground under its corners, deep enough to reach the lowest (street review,
+                // 5 Oct: a 6 cm slab at the centre's height sank into a garden sloping across it, and only a thin tilted edge
+                // showed on the lawn). Where the garden falls more than 0.3 m under it, the car stands on the grass instead.
+                var pad=go.transform.position;var rot=go.transform.rotation;float lo=float.MaxValue,hi=float.MinValue;
+                foreach(var (cx,cz) in new[]{(-1f,-1f),(1f,-1f),(-1f,1f),(1f,1f),(0f,0f)}){var c=pad+rot*new Vector3(cx*1.2f,0,cz*(length+.7f)*.5f);float g=ValleyField.Height(c.x,c.z);lo=Mathf.Min(lo,g);hi=Mathf.Max(hi,g);}
+                if(hi-lo<.3f){float depth=hi-lo+.1f;pad.y=hi+.02f-depth*.5f;
+                    (QuarryHills.Enabled&&QuarryHills.Contains(pad.x,pad.z)?standings:standingsWarm).Add(Matrix4x4.TRS(pad,rot,new Vector3(2.4f,depth,length+.7f)));}
             }
             else if(StationarySpot.Settle(go)<0){Destroy(go);return false;} // no clear spot: leave them out
             var chatter=go.AddComponent<NpcChatter>();chatter.speaker=who;chatter.colour=Toy.Party[People.Count%Toy.Party.Length];chatter.lines=FolkBump;chatter.talkable=false;
@@ -488,6 +494,8 @@ namespace LittleRoad
         protected bool soft;static MaterialPropertyBlock block;
         protected static Material SoftMaterial(string name,Color colour)
         {
+            // (Street review, 5 Oct: builds strip URP Lit's transparent variant, so these puffs drew solid.) The puff shader.
+            var puff=Shader.Find("LittleRoad/SoftPuff");if(puff!=null){var p=new Material(puff){name=name};p.SetColor("_BaseColor",WorldLook.Surface(colour));return p;}
             var m=TrialWorld.Material(name,colour,0,0);m.SetFloat("_Surface",1);m.SetFloat("_Blend",0);m.SetFloat("_ZWrite",0);
             m.SetFloat("_SrcBlend",(float)UnityEngine.Rendering.BlendMode.SrcAlpha);m.SetFloat("_DstBlend",(float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             m.SetFloat("_SrcBlendAlpha",(float)UnityEngine.Rendering.BlendMode.One);m.SetFloat("_DstBlendAlpha",(float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
@@ -498,6 +506,9 @@ namespace LittleRoad
         {
             var t=spare.Count>0?spare.Pop():Make();t.gameObject.SetActive(true);t.position=at;t.localScale=Vector3.one*size*.3f;t.rotation=Quaternion.Euler(0,Random.value*360,0);
             live.Add(new Puff{t=t,r=t.GetComponent<Renderer>(),velocity=velocity,size=size,life=life,alpha=alpha,flat=flat,spin=Random.Range(-40f,40f),colour=colour??material.color});
+            // (Street review, 5 Oct: a soft puff drew at full opacity until its first Step, so every chimney showed a solid ball
+            // whenever time stood still, as in the review captures or the pause menu.) It starts invisible.
+            if(soft){block??=new MaterialPropertyBlock();var c=live[^1].colour;c.a=0;block.SetColor("_BaseColor",c);live[^1].r.SetPropertyBlock(block);}
         }
         Transform Make()
         {
@@ -555,13 +566,14 @@ namespace LittleRoad
     public sealed class ChimneySmoke:PuffPool
     {
         List<Vector3> tops;Transform near;float[] timers;
-        public void Setup(List<Vector3> chimneys,Transform player){tops=new List<Vector3>(chimneys);near=player;timers=new float[tops.Count];material=TrialWorld.Material("Chimney smoke",new Color(.9f,.9f,.92f),0,.05f);}
+        // (Street review, 4-5 Oct: opaque white spheres read as balls stuck on the chimneys.) Soft puffs that swell and fade.
+        public void Setup(List<Vector3> chimneys,Transform player){tops=new List<Vector3>(chimneys);near=player;timers=new float[tops.Count];soft=true;material=SoftMaterial("Chimney smoke",new Color(.9f,.9f,.92f));}
         void Update()
         {
             float dt=Time.deltaTime;Step(dt);var cam=Camera.main!=null?Camera.main.transform.position:Vector3.zero;
             for(int i=0;i<tops.Count;i++) {
                 if((tops[i]-cam).sqrMagnitude>320*320)continue;timers[i]-=dt;if(timers[i]>0)continue;timers[i]=Random.Range(.7f,1.2f);
-                Emit(tops[i],new Vector3(.35f,.9f,.2f)+Random.insideUnitSphere*.15f,Random.Range(.9f,1.4f),Random.Range(3.2f,4.4f));
+                Emit(tops[i],new Vector3(.35f,.9f,.2f)+Random.insideUnitSphere*.15f,Random.Range(1.1f,1.7f),Random.Range(3.2f,4.4f),.4f);
             }
         }
     }

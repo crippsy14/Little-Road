@@ -12,6 +12,8 @@ namespace LittleRoad
     public sealed class HillcrestTown
     {
         public static readonly Vector3 Square=HillcrestRoute.Square;
+        // The market square's paving disc (MarketSquare): 33 m round a point 3 m out from the square's centre, away from the hill.
+        public static bool OnMarketPaving(Vector3 p){var outward=new Vector3(Square.x-HillcrestRoute.HillCentre.x,0,Square.z-HillcrestRoute.HillCentre.y).normalized;var c=Square+outward*3;return new Vector2(p.x-c.x,p.z-c.z).sqrMagnitude<34.5f*34.5f;}
         // Where residents stand (filled in by Build; read by AdventureGame).
         public static readonly Dictionary<string,(Vector3 at,float yaw)> Spots=new();
         // Front yards of the street houses (parking spot, parallel yaw, house kit).
@@ -27,6 +29,10 @@ namespace LittleRoad
         }
         public static readonly List<Vector3> Chimneys=new();
         static readonly List<(Vector2 centre,float radius)> reserved=new();
+        // Footprints of the landmarks placed before the rows (street review, 5 Oct: a terrace stood over the mill's water
+        // wheel, which turned inside the house next door). The mill keeps 3 m clear on its wheel sides.
+        static readonly List<(Vector2 c,Vector2 half,float yaw)> landmarks=new();
+        static bool OnLandmark(Vector3 centre,Vector2 size,float yaw){var c=new Vector2(centre.x,centre.z);foreach(var l in landmarks)if(QuarryHillsTown.Overlap(c,size*.5f,yaw,l.c,l.half,l.yaw))return true;return false;}
         public static bool Reserved(float x,float z)
         {
             if(Vector2.Distance(new(x,z),HillcrestRoute.HillCentre)<196)return true;
@@ -34,7 +40,7 @@ namespace LittleRoad
             return false;
         }
         readonly Transform root;readonly System.Random rng=new(2207);
-        Material paving,plinth,railWhite;int buildings,plinths;
+        Material paving,plinth,railWhite;int buildings,plinths,buried,footings;readonly List<Matrix4x4> footingBoxes=new(); // (one mesh: ~2000 pieces)
         public HillcrestTown(CoastalLandscape landscape,Transform parent){root=new GameObject("Hillcrest town").transform;root.SetParent(parent);}
         static BayviewKit.Tint T(int wall,int shutter,int awning,int door)=>new(Toy.Hex(wall),Toy.Hex(shutter),Toy.Hex(awning),Toy.Hex(door));
         // Earth pigments of a Ligurian hill town: ochres, saffron, terracotta, Pompeian red, rose, sienna, sage.
@@ -60,13 +66,14 @@ namespace LittleRoad
         public void Build()
         {
             if(!BayviewKit.Has("terrace_a"))return;
-            Spots.Clear();reserved.Clear();Homes.Clear();Chimneys.Clear();StreetLamps.Clear();ZipTop=null;ZipLine.Active=null;ZipLine.All.Clear();
+            Spots.Clear();reserved.Clear();landmarks.Clear();Homes.Clear();Chimneys.Clear();StreetLamps.Clear();ZipTop=null;ZipLine.Active=null;ZipLine.All.Clear();
             paving=WorldLook.Kit("Hillcrest paving",Toy.Hex(0xb3a68c),WorldLook.Pattern.Stone,0,.15f,true);plinth=WorldLook.Kit("Hillcrest stone plinth",Toy.Hex(0xc2b08e),WorldLook.Pattern.Stone,0,.12f,true);
             railWhite=TrialWorld.Material("Balustrade white",Toy.Hex(0xfff8ec),0,.25f);
             // A race away from the town (RaceArea) builds only the raceway's own buildings.
             if(RaceArea.Active&&!RaceArea.Near(Square,500)){if(RaceArea.Near(HillcrestRoute.Circuit[0],600))Raceway();Debug.Log($"LITTLE_ROAD_HILLCREST race-area only buildings={buildings}");return;}
-            ReserveZipLanding();MarketSquare();Castle();LowerTown();Station();Streets();Vista();Lookout();Raceway();Countryside();HillSlopes();Patchwork();ZipLineBuild();TunnelFrame();Gardens();
-            Debug.Log($"LITTLE_ROAD_HILLCREST buildings={buildings} plinths={plinths} spots={Spots.Count}");
+            ReserveZipLanding();MarketSquare();Castle();LowerTown();Station();Streets();SquareRim();Vista();Lookout();Raceway();Countryside();HillSlopes();Patchwork();ZipLineBuild();TunnelFrame();Gardens();
+            if(footingBoxes.Count>0){QuarryFloor.Combine("Hillside footings",footingBoxes,plinth,root,false);footingBoxes.Clear();}
+            Debug.Log($"LITTLE_ROAD_HILLCREST buildings={buildings} plinths={plinths} buried={buried} footings={footings} spots={Spots.Count}");
         }
         // ---------------------------------------------------------------- public gardens
         // (Street review, 4 Oct: bare lawns at the castle's arrival, on Station Road and by the river at the quay.) A small
@@ -102,14 +109,37 @@ namespace LittleRoad
         // Stands a building with its frontage on `centre`'s height; a stone plinth fills any drop.
         bool Building(string id,Vector3 centre,float yaw,BayviewKit.Tint tint,string sign=null,bool force=false)
         {
-            var size=Footprint(id);var rot=Quaternion.Euler(0,yaw,0);float floor=centre.y,low=floor;
-            foreach(var c in new[]{new Vector2(-1,-1),new Vector2(1,-1),new Vector2(-1,1),new Vector2(1,1),new Vector2(0,0)}) {
-                var p=centre+rot*new Vector3(c.x*size.x*.5f,0,c.y*size.y*.5f);low=Mathf.Min(low,H(p.x,p.z));
-                if(!force&&ValleyField.RoadDistance(p.x,p.z)<5.3f)return false;
+            var size=Footprint(id);var rot=Quaternion.Euler(0,yaw,0);float floor=centre.y,low=floor,high=floor;
+            // A 5 x 5 grid over the footprint (as Quarry Hills': street review, 5 Oct, corners alone missed a dip between them, so
+            // a plinth stopped short and the house stood over a gap). The road test stays on the corners and middle.
+            for(int i=0;i<5;i++)for(int j=0;j<5;j++) {
+                var c=new Vector2(i/2f-1,j/2f-1);var p=centre+rot*new Vector3(c.x*size.x*.5f,0,c.y*size.y*.5f);float g=H(p.x,p.z);low=Mathf.Min(low,g);high=Mathf.Max(high,g);
+                if(!force&&(i%2==0&&j%2==0)&&ValleyField.RoadDistance(p.x,p.z)<5.3f)return false;
             }
             if(floor-low>7.5f&&!force)return false;
+            // (Street review, 5 Oct: on Via Crest's steep side the hill rose 3-4 m up a house's side wall on a diagonal, so it
+            // read as half-buried.) No more than 5 m of hillside against a house; below that, a stepped stone footing on
+            // each side and back wall up to just above the grass, so the hill meets stone, as on a real hillside house
+            // (3 m as a hard limit took a third of the town away).
+            if(high-floor>5f&&!force){buried++;return false;}
+            if(high-floor>.5f) {
+                float hx=size.x*.5f,hz=size.y*.5f;
+                void Footing(Vector3 a,Vector3 b,Vector3 outward)
+                {
+                    int n=Mathf.Max(1,Mathf.CeilToInt(Vector3.Distance(a,b)/1.2f));bool alongZ=Mathf.Abs(outward.x)>.5f;
+                    for(int k=0;k<n;k++) {
+                        Vector3 p0=Vector3.Lerp(a,b,k/(float)n),p1=Vector3.Lerp(a,b,(k+1)/(float)n),w0=centre+rot*p0,w1=centre+rot*p1,wm=(w0+w1)*.5f;
+                        float top=Mathf.Max(H(w0.x,w0.z),H(w1.x,w1.z),H(wm.x,wm.z))+.3f;if(top-floor<.45f)continue;
+                        float len=Vector3.Distance(p0,p1)+.02f,tall=top-floor+.3f;var mid=centre+rot*((p0+p1)*.5f+outward*.09f);mid.y=floor-.3f+tall*.5f;
+                        footingBoxes.Add(Matrix4x4.TRS(mid,rot,alongZ?new Vector3(.16f,tall,len):new Vector3(len,tall,.16f)));footings++;
+                    }
+                }
+                Footing(new(-hx,0,-hz),new(-hx,0,hz),Vector3.left);Footing(new(hx,0,-hz),new(hx,0,hz),Vector3.right);Footing(new(-hx,0,-hz),new(hx,0,-hz),Vector3.back);
+            }
             if(floor-low>.25f){Box("Stone plinth",new Vector3(centre.x,(low-.5f+floor)*.5f,centre.z),new Vector3(size.x+.5f,floor-low+.5f,size.y+.5f),rot,plinth,true);plinths++;}
-            Put(id,new Vector3(centre.x,floor-.03f,centre.z),yaw,tint,sign);buildings++;return true;
+            Put(id,new Vector3(centre.x,floor-.03f,centre.z),yaw,tint,sign);buildings++;
+            if(force)landmarks.Add((new(centre.x,centre.z),size*.5f+(id=="mill"?new Vector2(3,1):new Vector2(.5f,.5f)),yaw));
+            return true;
         }
         static readonly string[] ShopNames={"BAKERY","GELATO","FLORIST","BOOKS","TOYS","BARBER","PASTA","CHEESE","TAILOR","CHEMIST","MUSIC","CAMERAS","SWEETS","BIKES","HATS","WINE","OLIVES","KITES","PIZZA","SOAP"};
         int shopName;
@@ -130,17 +160,19 @@ namespace LittleRoad
                 if(Vector2.Distance(new(centre.x,centre.z),new(Square.x,Square.z))<44||Vector2.Distance(new(centre.x,centre.z),HillcrestRoute.HillCentre)<50){s+=3;continue;}
                 // Keep the Pit Stop plot and forecourt clear, and the zipline landing and its lane.
                 if(Vector2.Distance(new(centre.x,centre.z),new(HillcrestRoute.PitStopSite.at.x,HillcrestRoute.PitStopSite.at.z))<24||InZipLanding(centre.x,centre.z)){s+=3;continue;}
+                if(OnLandmark(centre,Footprint(id),Yaw(centre,at))){s+=3;continue;}
                 if(Building(id,centre,Yaw(centre,at),RandomTint(),id=="terrace_b"?ShopNames[shopName++%ShopNames.Length]:null)) {
                     // The front yard between pavement and door: where the resident parks.
                     last=id;
                     // (Street review, 4 Oct: the old spot, 2.9 m out, put cars half on the pavement.) The middle of the garden
-                    // between the pavement's back (2.3 m) and the house front; gardens under 2 m deep have no parking.
+                    // between the pavement's back (2.3 m) and the house front; gardens under 2.5 m deep have no parking (street review, 5 Oct: at 2 m a car stood half on the pavement, across a door).
                     float garden0=road.width*.5f+2.3f,garden1=setback-4-.15f;
-                    if(garden1-garden0>=2f&&id!="terrace_f"){var yard=at+right*side*((garden0+garden1)*.5f);yard.y=at.y;Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));}
+                    if(garden1-garden0>=2.5f&&id!="terrace_f"&&id!="terrace_b"&&id!="terrace_c"){var yard=at+right*side*((garden0+garden1)*.5f);yard.y=at.y;Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));}
                     // Chimney tops (kit x mirrors on import): some of them smoke.
                     if(id!="house_b"&&id!="house_d"&&rng.NextDouble()<.35)Chimneys.Add(centre+Quaternion.Euler(0,Yaw(centre,at),0)*(id switch{"house_a"=>new Vector3(-2.6f,10.5f,-1.2f),"house_c"=>new Vector3(-2.8f,10.2f,-1.4f),
                         "terrace_e"=>new Vector3(-1.9f,15.2f,2.7f),"terrace_f"=>new Vector3(-1.9f,10.7f,-.6f),"terrace_g"=>new Vector3(1.6f,13.1f,-2.4f),_=>new Vector3(-1.4f,12.1f,-1.5f)}));
-                    s+=w+.35f+(rng.NextDouble()<.2?2.5f:0);
+                    // (Street review, 5 Oct: a 35 cm slit between neighbours showed the hillside through the row.) Neighbours meet.
+                    s+=w+.05f+(rng.NextDouble()<.2?2.5f:0);
                 }
                 else s+=3;
             }
@@ -165,6 +197,9 @@ namespace LittleRoad
                 for(float s=from;s<=to;s+=2) {
                     Vector3 p=road.At(s)+road.Right(s)*side*(road.width*.5f+1.15f);
                     bool clear=true;foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,p.x,p.z,out _)<other.width*.5f+2.4f){clear=false;break;}
+                    // (Street review, 5 Oct: at a junction the strip's square end stood past the rounded kerb, in the road.)
+                    // Nor inside a junction's surface.
+                    if(clear&&CoastalLandscape.Network!=null&&CoastalLandscape.Network.OnJunction(p,1.5f))clear=false;
                     if(clear)run.Add(p);else Flush();
                 }
                 Flush();
@@ -480,6 +515,29 @@ namespace LittleRoad
         // left for house yards, side roads, the market square and the castle approach's gate.
         // Garden gaps between houses (Row): on a hillside's downhill side a low wall closes each (docs/57, 2.4).
         readonly List<(HillcrestRoute.Road road,int side,float from,float to)> GardenGaps=new();
+        // (Street review, 5 Oct: on the vineyard side the market square's paving ended at a 3 m grass drop with no wall.) A stone
+        // parapet round the paving's rim wherever the ground beyond falls more than 1.2 m within 6 m, clear of roads and buildings.
+        void SquareRim()
+        {
+            var stone=WorldLook.Kit("Hillcrest parapet",Toy.Hex(0xc2b08e),WorldLook.Pattern.Stone,0,.12f,true);var cap=TrialWorld.Material("Parapet cap",Toy.Hex(0xefe6d2),0,.25f);
+            var outward=new Vector3(Square.x-HillcrestRoute.HillCentre.x,0,Square.z-HillcrestRoute.HillCentre.y).normalized;var c=Square+outward*3;float y=HillcrestRoute.SquareY;int pieces=0;
+            Vector3 Rim(float a){var p=c+Quaternion.Euler(0,a,0)*Vector3.forward*32.6f;p.y=y;return p;}
+            bool Open(float a)
+            {
+                var p=Rim(a);var r=(p-c).normalized;float lowest=float.MaxValue;for(float d=1;d<=6;d+=1){var b=p+r*d;lowest=Mathf.Min(lowest,H(b.x,b.z));}
+                if(lowest>y-1.2f||ValleyField.RoadDistance(p.x,p.z)<6.5f)return false; // (a road leaving the square, and its pavement)
+                return !BayviewKit.Occupied(new Bounds(p+Vector3.up*1.2f,new Vector3(1.5f,2,1.5f)));
+            }
+            const float step=4;
+            for(float a=0;a<360;a+=step) {
+                if(!Open(a)||!Open(a+step))continue;
+                Vector3 p0=Rim(a),p1=Rim(a+step),mid=(p0+p1)*.5f;var f=p1-p0;f.y=0;var rot=Quaternion.LookRotation(f);float len=f.magnitude+.06f;
+                float bottom=Mathf.Min(H(p0.x,p0.z),H(p1.x,p1.z),y)-.4f,top=y+.75f;
+                Box("Square parapet",new Vector3(mid.x,(top+bottom)*.5f,mid.z),new Vector3(.34f,top-bottom,len),rot,stone,true);
+                Box("Square parapet cap",new Vector3(mid.x,top+.06f,mid.z),new Vector3(.46f,.12f,len+.02f),rot,cap,false);pieces++;
+            }
+            Debug.Log("LITTLE_ROAD_SQUARE_RIM pieces="+pieces);
+        }
         void Parapets(HillcrestRoute.Road road,float from,float to)
         {
             var stone=WorldLook.Kit("Hillcrest parapet",Toy.Hex(0xc2b08e),WorldLook.Pattern.Stone,0,.12f,true);
@@ -491,7 +549,9 @@ namespace LittleRoad
                 float lowest=float.MaxValue;for(float d=1;d<=8;d+=1){var b=at+r*(off+d);lowest=Mathf.Min(lowest,H(b.x,b.z));}
                 if(lowest>at.y-1.2f)return false;
                 foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,wall.x,wall.z,out _)<other.width*.5f+5)return false;
-                if(Vector2.Distance(new(wall.x,wall.z),new(Square.x,Square.z))<46)return false;
+                // (Street review, 5 Oct: 46 m round the square left a 3 m drop beside its pavement open.) Only where the square's
+                // paving lies beyond the wall (it must stay open to the road).
+                if(OnMarketPaving(at+r*(off+1.5f)))return false;
                 if(gap)return true; // a garden gap between houses is clear by construction
                 foreach(var h in Homes)if(Vector2.Distance(new(h.yard.x,h.yard.z),new(wall.x,wall.z))<3.2f)return false; // a gate-wide gap at each front yard
                 var probe=new Bounds(wall+Vector3.up*1.2f,new Vector3(1.5f,2,1.5f));if(BayviewKit.Occupied(probe))return false;

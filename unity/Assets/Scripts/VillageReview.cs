@@ -173,6 +173,30 @@ namespace LittleRoad
                 }}
                 File.WriteAllText(Path.Combine(folder,"probe-line.txt"),sb.ToString());Application.Quit(0);yield break;
             }
+            // --renderers-at "x,z;x,z": every renderer whose bounds stand over each point (name, material, bounds' height span),
+            // for finding what draws an unexplained patch in a photo.
+            if(RaceTrial.Has("--renderers-at")) {
+                var sb=new System.Text.StringBuilder();
+                foreach(var spot in RaceTrial.Arg("--renderers-at").Split(';')) {
+                    var v=spot.Split(',').Select(s=>float.Parse(s,System.Globalization.CultureInfo.InvariantCulture)).ToArray();sb.AppendLine("at "+spot);
+                    foreach(var r in FindObjectsByType<Renderer>(FindObjectsSortMode.None)) {
+                        var b=r.bounds;if(v[0]<b.min.x||v[0]>b.max.x||v[1]<b.min.z||v[1]>b.max.z||b.size.x>3000)continue;
+                        string path=r.name;for(var t=r.transform.parent;t!=null&&path.Length<120;t=t.parent)path=t.name+"/"+path;
+                        sb.AppendLine($"  {path} [{(r.sharedMaterial!=null?r.sharedMaterial.name+" / "+r.sharedMaterial.shader.name:"none")}] y {b.min.y:0.0}..{b.max.y:0.0} size {b.size.x:0}x{b.size.z:0}");
+                    }
+                }
+                // --renderers-high "x,z,r": small renderers (under 3 m) centred within r of the point and over 6 m above the ground,
+                // counted by name and material (what stands on the rooftops).
+                if(RaceTrial.Has("--renderers-high")) {
+                    var v=RaceTrial.Arg("--renderers-high").Split(',').Select(s=>float.Parse(s,System.Globalization.CultureInfo.InvariantCulture)).ToArray();var counts=new Dictionary<string,int>();
+                    foreach(var r in FindObjectsByType<Renderer>(FindObjectsSortMode.None)) {
+                        var b=r.bounds;if(b.size.magnitude>3||new Vector2(b.center.x-v[0],b.center.z-v[1]).magnitude>v[2]||b.center.y<ValleyField.Height(b.center.x,b.center.z)+6)continue;
+                        string key=r.name+" ("+(r.transform.parent!=null?r.transform.parent.name:"-")+") ["+(r.sharedMaterial!=null?r.sharedMaterial.name:"none")+"]";counts[key]=counts.TryGetValue(key,out int n)?n+1:1;
+                    }
+                    sb.AppendLine("high near "+RaceTrial.Arg("--renderers-high"));foreach(var kv in counts.OrderByDescending(k=>k.Value))sb.AppendLine($"  {kv.Value,5} {kv.Key}");
+                }
+                File.WriteAllText(Path.Combine(folder,"renderers-at.txt"),sb.ToString());Application.Quit(0);yield break;
+            }
             // --spot-views "x,z,yaw;x,z,yaw;...": the car parked at each spot, seen from 14 m up and 22 m back, and
             // from straight above (road edges, banks and lips, in context).
             if(RaceTrial.Has("--spot-views")) {

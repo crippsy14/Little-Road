@@ -73,6 +73,14 @@ public static class QuarryHillsChecks
         float hour=TimeOfDay.Hour;TimeOfDay.Hour=19.5f;bool evening=QuarryFestival.ChoirHours&&!QuarryFestival.CabanOpen&&!QuarryFestival.WorkingHours;
         TimeOfDay.Hour=10;bool morning=!QuarryFestival.ChoirHours&&QuarryFestival.CabanOpen&&QuarryFestival.WorkingHours;TimeOfDay.Hour=hour;
         Check(evening&&morning,"Quarry Hills keeps its hours: choir in the evening, Caban and blasting by day");
+        // The Blast Run (doc 63): the siren wails, falls quiet 7 s before the shot, and the shot lands when asked.
+        {
+            const float fs=2000;var synth=new BlastSynth(fs,11);synth.Fire(30);float siren=0,hush=0,shot=0;
+            for(int i=0;i<fs*42;i++){float t=i/fs,x=Mathf.Abs(synth.Next());if(t>8&&t<20)siren=Mathf.Max(siren,x);else if(t>23.5f&&t<29.9f)hush=Mathf.Max(hush,x);else if(t>30&&t<30.5f)shot=Mathf.Max(shot,x);}
+            Check(siren>.1f&&hush<.01f&&shot>.5f,$"The Blast Run's siren wails ({siren:0.00}), falls quiet ({hush:0.000}), and the shot lands at 30 s ({shot:0.00})");
+            Check(Collectibles.Known(Collectibles.BlastRunWin)&&BlastRun.Known(BlastRun.Id),"The Blast Run's prize and record are known to save validation");
+            Check(BlastRun.ShotFactor>BlastRun.DaiFactor&&BlastRun.DaiFactor>1.1f,"Dai is slower than the stock car's ideal, and the shot later than Dai");
+        }
         return checks;
     }
 }

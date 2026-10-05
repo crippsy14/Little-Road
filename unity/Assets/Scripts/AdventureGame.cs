@@ -60,6 +60,8 @@ namespace LittleRoad
             foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
             // Quarry Hills (--quarry-hills): Gwen at the rally school.
             foreach(var id in new[]{"rallyschool","qgarage","qparts","qbody","caban","slatequay"})if(QuarryHillsTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
+            // Dai the Dumper on the quarry floor, at the foot of the haul road: the Blast Run (BlastRun, doc 63).
+            if(QuarryHillsTown.Spots.Count>0){BlastRun.Plan();if(BlastRun.Ready){residents["blast"]=BlastRun.DaiSpot.at;residentYaw["blast"]=BlastRun.DaiSpot.yaw;}}
             residents["post"]=world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
             CreatePlaces();Mark("places");BuildWayfinding();Mark("wayfinding");
             if(AdventureSession.MaxBuildTest&&!AdventureSession.TestPlaced){AdventureSession.TestPlaced=true;FaceDuke();}
@@ -78,6 +80,8 @@ namespace LittleRoad
             // Fireworks over Bayview harbour at night (docs/51).
             var fireworks=gameObject.AddComponent<Fireworks>();fireworks.Setup();fireworks.Announce=Notify;
             // Speed traps on seven roads (docs/51).
+            if(TipLeap.Ready){leap=gameObject.AddComponent<TipLeap>();leap.Setup(player,()=>Store,Notify,(title,detail)=>ui.Card(title,detail,Toy.Orange,"TIP LEAP"));}
+            if(BlastRun.Ready){blast=gameObject.AddComponent<BlastRun>();blast.Crossed+=BlastCrossed;blast.Shot+=BlastShot;}
             trainRace=gameObject.AddComponent<TrainRace>();trainRace.Setup(player,()=>Store,Notify,(title,detail)=>ui.Card(title,detail,Toy.Red,"BEAT THE TRAIN"));
             // (After the player's car exists.) The Duke's drive (DukeDrive, docs/51) is parked behind --duke-drive (Richard, 2 Oct:
             // the town traffic isn't built for a car at pace; it returns with a traffic overhaul). He stays at the castle.
@@ -147,6 +151,12 @@ namespace LittleRoad
             // Test (--quarry-hills --sprint-test): talk to Gwen, start the Quarry Sprint, carry the car round the loop at 22 m/s and
             // check the lap is timed and the prize claimed (the result goes to the log, then the game quits).
             if(RaceTrial.Has("--sprint-test")&&residents.ContainsKey("rallyschool")){StartCoroutine(SprintTest());yield break;}
+            // Test (--quarry-hills --blast-test): talk to Dai, start the Blast Run, carry the car up the course a fifth faster
+            // than Dai, then wait for the shot. Passes if it cleared, beat Dai, paid once and the shot fired.
+            if(RaceTrial.Has("--blast-test")&&residents.ContainsKey("blast")){StartCoroutine(BlastTest());yield break;}
+            // Test (--quarry-hills --leap-test): the car at the top of the run-up at 32 m/s (about 72 mph), physics from
+            // there; passes if it takes off and lands past the first star.
+            if(RaceTrial.Has("--leap-test")&&leap!=null){StartCoroutine(LeapTest());yield break;}
             if(RaceTrial.Has("--carving-test")&&QuarryHillsTown.Spots.Count>0){StartCoroutine(CarvingTest());yield break;}
             if(RaceTrial.Has("--wayfinding-test")){reviewing=true;StartCoroutine(WayfindingTest());yield break;}
             if(RaceTrial.Has("--world-tiles-test")){StartCoroutine(WorldTilesTest());yield break;}
@@ -223,6 +233,8 @@ namespace LittleRoad
                 var climb=d.traps?.Find(x=>x.id==GalleryClimb.Id);
                 e.Add(("Gallery Climb · "+(climb!=null?$"best {climb.best:0.0} s":"not tried yet")+$" · par {GalleryClimb.Par:0} s",GalleryClimb.Start,"the Gallery Climb start"));
                 Resident("slatequay","Slate Quay · trains to the valley","Slate Quay");
+                if(TipLeap.Ready){var tl=SpeedTraps.Record(d,TipLeap.Id);e.Add(("Tip Leap · "+(tl!=null?$"best {tl.best:0} m · {tl.stars}/3 stars":"take the Blondin up the big tip, then jump"),TipLeap.RunUp,"the Tip Leap"));}
+                if(residents.ContainsKey("blast")){var br=d.traps?.Find(x=>x.id==BlastRun.Id);Resident("blast","Blast Run with Dai · "+(d.collected.Contains(Collectibles.BlastRunWin)?$"Dai beaten · best {br?.best:0.0} s":br!=null?$"best {br.best:0.0} s · Dai's {BlastRun.DaiTime:0} s":"beat the shot, and Dai"),"Dai on the quarry floor");}
                 Keepsakes(Collectibles.IsCarving,Collectibles.Carvings,"Slate carvings","slate carving");
             }
             Traps();Zip();return e;
@@ -371,6 +383,46 @@ namespace LittleRoad
             Debug.Log($"LITTLE_ROAD_CLIMB_TEST started={started} finished={(r!=null)} best={(r!=null?r.best:0)} rise={GalleryClimb.Finish.y-GalleryClimb.Start.y:0} points={path.Count}");
             Application.Quit(started&&r!=null?0:1);
         }
+        IEnumerator LeapTest()
+        {
+            yield return new WaitForSeconds(1);string folder=RaceTrial.Arg("--trial-captures");
+            var start=TipLeap.Lip-TipLeap.Dir*70;start.y=ValleyField.Height(start.x,start.z);player.body.rotation=Quaternion.LookRotation(TipLeap.Dir);Place(start);yield return new WaitForSeconds(.6f);
+            player.body.linearVelocity=TipLeap.Dir*32;float until=Time.time+16;bool shot=false;
+            while(leap.Last<=0&&Time.time<until) {
+                if(folder!=null&&!shot&&Vector3.Dot(player.body.position-TipLeap.Lip,TipLeap.Dir)>28){shot=true;reviewing=true;ui.SetVisible(false);var side=Vector3.Cross(Vector3.up,TipLeap.Dir);
+                    cameraView.transform.position=TipLeap.Lip+TipLeap.Dir*30+side*55+Vector3.up*2;cameraView.transform.LookAt(player.body.position);yield return null;Directory.CreateDirectory(folder);ui.Capture(Path.Combine(folder,"leap-1-air.png"));reviewing=false;ui.SetVisible(true);}
+                else if(player.speed<26&&Vector3.Dot(player.body.position-TipLeap.Lip,TipLeap.Dir)<0)player.body.linearVelocity=TipLeap.Dir*32+Vector3.up*player.body.linearVelocity.y;   // (hold the run-up speed: a test throttle)
+                yield return new WaitForFixedUpdate();
+            }
+            yield return new WaitForSeconds(2.5f);var r=SpeedTraps.Record(Store.Data,TipLeap.Id);
+            Debug.Log($"LITTLE_ROAD_LEAP_TEST distance={leap.Last:0.0} stars={r?.stars??0} best={r?.best??0} upright={Vector3.Dot(player.transform.up,Vector3.up):0.00} credits={Store.Data.credits}");
+            Application.Quit(leap.Last>=TipLeap.Marks[0]?0:1);
+        }
+        IEnumerator BlastTest()
+        {
+            yield return new WaitForSeconds(1);
+            Place(residents["blast"]+Quaternion.Euler(0,residentYaw["blast"],0)*Vector3.forward*5);yield return new WaitForSeconds(.5f);
+            bool talked=Interact("blast");bool started=talked&&ui.InvokeChoice("Blast Run");float credits=Store.Data.credits;
+            yield return new WaitForSeconds(BlastRun.Countdown+.2f);
+            var path=BlastRun.Path;float speed=BlastRun.Length/(BlastRun.DaiTime*.8f);player.body.isKinematic=true;float d=0;int i=0;
+            while(i<path.Count-1) {
+                d+=speed*Time.fixedDeltaTime;while(i<path.Count-1&&d>Vector3.Distance(path[i],path[i+1])){d-=Vector3.Distance(path[i],path[i+1]);i++;}
+                var p=i<path.Count-1?Vector3.Lerp(path[i],path[i+1],d/Vector3.Distance(path[i],path[i+1])):path[^1];p.y=ValleyField.Height(p.x,p.z)+.6f;player.body.position=p;
+                yield return new WaitForFixedUpdate();
+            }
+            var end=path[^1]+(path[^1]-path[^2]).normalized*4;end.y=ValleyField.Height(end.x,end.z)+.6f;player.body.position=end;
+            float deadline=Time.time+BlastRun.ShotTime+5;while(!blast.LastShot&&Time.time<deadline)yield return null;
+            // Photos of the shot from the crest, looking back down at the floor (with --trial-captures).
+            string folder=RaceTrial.Arg("--trial-captures");
+            if(folder!=null){Directory.CreateDirectory(folder);player.controlsBlocked=true;reviewing=true;ui.SetVisible(false);
+                foreach(var (name,wait) in new[]{("blast-1-shot",1.2f),("blast-2-cloud",3f),("blast-3-settling",6f)}) {
+                    yield return new WaitForSeconds(wait);var top=path[path.Count/2];cameraView.transform.position=top+Vector3.up*45;cameraView.transform.LookAt(Vector3.Lerp(path[0],BlastRun.BlastAt,.45f));cameraView.fieldOfView=60;
+                    yield return null;ui.Capture(Path.Combine(folder,name+".png"));}}
+            player.body.isKinematic=false;yield return new WaitForSeconds(1);
+            bool claimed=Store.Data.collected.Contains(Collectibles.BlastRunWin);
+            Debug.Log($"LITTLE_ROAD_BLAST_TEST talked={talked} started={started} cleared={blast.LastCleared} time={blast.LastTime:0.0} beatDai={blast.LastBeatDai} shot={blast.LastShot} claimed={claimed} credits={credits}->{Store.Data.credits} course={BlastRun.Length:0}m dai={BlastRun.DaiTime:0}s shotAt={BlastRun.ShotTime:0}s");
+            Application.Quit(talked&&started&&blast.LastCleared&&blast.LastBeatDai&&blast.LastShot&&claimed?0:1);
+        }
         IEnumerator SprintTest()
         {
             yield return new WaitForSeconds(1);
@@ -432,6 +484,7 @@ namespace LittleRoad
             ["qparts"]=(CarBodies.PitParts,PitYellow,"BETHAN / GRIT & GRAVEL","Bethan",Toy.Sun,new[]{"Mind the shelves! Mud flaps everywhere now.","Parts are for fitting, not for bumping, cariad.","Ooh, that'll want a sump guard."}),
             ["qbody"]=(CarBodies.PitBody,PitPink,"NIA / PIT STOP BODY SHOP","Nia",Toy.Pink,new[]{"Slate grey would hide that scratch, you know.","Careful! That's my show car's nan.","New look? I've got just the thing."}),
             ["caban"]=("otter",Toy.Hex(0xe9e3d3),"MEGAN / CABAN","Megan",Toy.Sky,new[]{"Careful! The cawl's still hot!","Tea's brewing, no need to knock!","Duw, you'll have the cakes off the shelf!"}),
+            ["blast"]=("hauler",Toy.Hex(0xf1c40f),"DAI / QUARRY FLOOR","Dai",Toy.Sun,new[]{"Oi! Twelve tonnes of dumper says you lose that one, butt.","Bump me again and I'll tip slate on your bonnet!","Save it for the haul road, go on."}),
             ["slatequay"]=("heron",Toy.Hex(0x1f3a93),"MARI / SLATE QUAY","Mari",Toy.Mint,new[]{"Mind the wagons! They're loaded!","Engine's warming up, keep clear of the shed!","Whoa! The quay's for slate, not stunts!"}),
         };
         void CreatePlaces()
@@ -628,14 +681,14 @@ namespace LittleRoad
             // Zipline bays (castle Zip Tower and the lower-town station): stopped in the bay.
             // (Every line: the castle zipline and Quarry Hills' Blondin.)
             nearZip=null;nearLine=null;
-            if(inRange==null&&stopped&&climbStart<0&&sprintStart<0&&(school==null||!school.Active))foreach(var line in ZipLine.All) {
+            if(inRange==null&&stopped&&climbStart<0&&sprintStart<0&&(school==null||!school.Active)&&(blast==null||!blast.Active))foreach(var line in ZipLine.All) {
                 if(line.Busy)continue;
                 if(Vector3.Distance(player.body.position,line.top.bay)<6)nearZip=line.top;else if(Vector3.Distance(player.body.position,line.bottom.bay)<6)nearZip=line.bottom;
                 if(nearZip!=null){nearLine=line;nearFolk=null;nearChat=null;break;}
             }
             // A town's notice board: stopped beside it.
             nearBoard=null;
-            if(inRange==null&&stopped&&nearZip==null&&climbStart<0&&sprintStart<0&&galleryStart<0&&(school==null||!school.Active))
+            if(inRange==null&&stopped&&nearZip==null&&climbStart<0&&sprintStart<0&&galleryStart<0&&(school==null||!school.Active)&&(blast==null||!blast.Active))
                 foreach(var b in Wayfinding.Boards)if(Vector3.Distance(player.body.position,b.at)<7.5f){nearBoard=b;nearFolk=null;nearChat=null;break;}
             // Cross / A (and E) talks while someone (or the zipline) is in reach; then it doesn't also shift up (Controls).
             Controls.InteractionReady=Time.unscaledTime>interactionReadyTime&&(nearest!=null||nearZip!=null||nearBoard!=null||nearFolk!=null||nearChat!=null);
@@ -702,6 +755,7 @@ namespace LittleRoad
             if(trainRace!=null&&trainRace.Active)return trainRace.Goal_Text(player.transform.position,distance);
             if(school!=null&&school.Active)return school.GoalText();
             if(galleryStart>=0)return $"Gallery Climb · {Time.time-galleryStart+galleryPenalty:0.0} s · par {GalleryClimb.Par:0} s · checkpoint {galleryCheckpoint+1}/{GalleryClimb.Checkpoints.Count-1}"+(distance?$"  ·  {Mathf.Max(0,GalleryClimb.Finish.y-player.transform.position.y):0} m to climb":"");
+            if(blast!=null&&blast.Active)return blast.Elapsed<=0?"Blast Run · siren's going · get ready!":$"Blast Run · {blast.Elapsed:0.0} s · shot in {Mathf.Max(0,BlastRun.ShotTime-blast.Elapsed):0} s · up the haul road past Chapel Street";
             if(sprintStart>=0)return Time.time<sprintStart?"Quarry Sprint · get ready!":$"Quarry Sprint · {Time.time-sprintStart:0.0} s · par {SprintPar:0} s";
             if(climbStart>=0)return (Time.time<climbStart?"Castle Climb · get ready!":$"Castle Climb · {Time.time-climbStart:0.0} s · par {ClimbPar:0} s · to the castle")+(distance?$"  ·  {Vector3.Distance(player.transform.position,HillcrestRoute.CastleCourt):0} m":"");
             if(pin is Vector3 pinned)return "Pinned: "+pinLabel+(distance?$"  ·  {Vector3.Distance(player.transform.position,pinned):0} m":"");
@@ -710,10 +764,10 @@ namespace LittleRoad
         void RefreshHUD()
         {
             float now=Time.unscaledTime;if(controlsUntil<0)controlsUntil=now+15;
-            string goal=GoalText(false);if(goal!=lastGoal&&climbStart<0&&sprintStart<0&&(school==null||!school.Active)){lastGoal=goal;goalUntil=now+8;}
+            string goal=GoalText(false);if(goal!=lastGoal&&climbStart<0&&sprintStart<0&&(school==null||!school.Active)&&(blast==null||!blast.Active)){lastGoal=goal;goalUntil=now+8;}
             if(Mathf.Abs(player.speed)<=1.2f){if(stoppedSince<0)stoppedSince=now;}else stoppedSince=-1;
             float stopped=stoppedSince<0?0:now-stoppedSince;
-            bool timed=climbStart>=0||sprintStart>=0||galleryStart>=0||school!=null&&school.Active;
+            bool timed=climbStart>=0||sprintStart>=0||galleryStart>=0||school!=null&&school.Active||blast!=null&&blast.Active;
             ui.Roam(GoalText(true),timed||now<goalUntil||stopped>1.5f,null,false,player);
         }
         // Pause hub > Settings: the Options screen (every setting, in tabs), then Save and Quit (added by the hub).
@@ -794,7 +848,7 @@ namespace LittleRoad
         {
             if(Testing||player==null||riding||AdventureSession.Racing)return;
             if(!now&&Time.unscaledTime<nextSpotSave)return;nextSpotSave=Time.unscaledTime+15;
-            if(climbStart>=0||sprintStart>=0||galleryStart>=0||school!=null&&school.Active||trainRace!=null&&trainRace.Active)return;
+            if(climbStart>=0||sprintStart>=0||galleryStart>=0||school!=null&&school.Active||trainRace!=null&&trainRace.Active||blast!=null&&blast.Active)return;
             var p=player.body.position;if(Vector3.Distance(p,lastSpot)<20&&!now)return;
             if(!Physics.Raycast(p+Vector3.up*.5f,Vector3.down,2.5f,~0,QueryTriggerInteraction.Ignore))return;   // airborne
             lastSpot=p;Attempt(()=>Store.SaveSpot(p,player.transform.eulerAngles.y));
@@ -815,7 +869,7 @@ namespace LittleRoad
         void WarpToGarage()
         {
             var g=NearestGarage();if(g==null)return;
-            if(climbStart>=0||sprintStart>=0||galleryStart>=0||school!=null&&school.Active||trainRace!=null&&trainRace.Active||riding){Notify("Finish what you're doing first!");return;}
+            if(climbStart>=0||sprintStart>=0||galleryStart>=0||school!=null&&school.Active||trainRace!=null&&trainRace.Active||blast!=null&&blast.Active||riding){Notify("Finish what you're doing first!");return;}
             pause.Close();StartCoroutine(Warp(g.Value.at,g.Value.yaw,$"Back at the {g.Value.name} Pit Stop"));
         }
         IEnumerator Warp(Vector3 at,float yaw,string note)
@@ -998,7 +1052,7 @@ namespace LittleRoad
         {
             if(!residents.ContainsKey(id)||Vector3.Distance(player.body.position,residents[id])>7||Mathf.Abs(player.speed)>1.2f)return false;
             switch(id){case "garage":Mara();break;case "parts":Sid();break;case "hcparts":Rosa();break;case "hcbody":Lina();break;case "post":Pip();break;case "paint":Dot();break;case "motors":Gio();break;case "hillcafe":Fern();break;
-                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;default:Rowan();break;}
+                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;case "blast":Dai();break;default:Rowan();break;}
             return true;
         }
         void Mara()
@@ -1191,6 +1245,34 @@ namespace LittleRoad
             new(){new("Browse new bodies",()=>OpenBodyShop(Nia,"Huw")),new("Fresh paint",()=>OpenPaintShop(Nia)),new("Back to the road",Close)});
         void Megan()=>Show("Megan / Caban",!QuarryFestival.CabanOpen?"We're shut, cariad! Doors open at seven, kettle on at five past. "+(QuarryFestival.ChoirHours?"Choir's at the chapel tonight if you want a song.":"Mind how you go in the dark."):"The Caban's where the quarrymen ate, and argued, and sang. Still do, mostly the arguing. The town's betting on motorsport now the quarry's winding down: rally school, the Sprint, and there's talk of a proper stage up through the tips and the moor.",
             new(){new("Back to the road",Close)});
+        // ---------------------------------------------------------------- the Blast Run (BlastRun, doc 63)
+        BlastRun blast;TipLeap leap;
+        void Dai()
+        {
+            var r=Store.Data.traps?.Find(x=>x.id==BlastRun.Id);bool beaten=Store.Data.collected.Contains(Collectibles.BlastRunWin);
+            string record=r!=null?$" Your best's {r.best:0.0} seconds.":"";
+            Show("Dai the Dumper / Quarry Floor",(beaten?"You again! You've had my money, butt. Fancy another go, for the glory?":
+                    $"Shot's set in the face up there. When the siren goes you've got {BlastRun.ShotTime:0} seconds to be up the haul road, over the top and past Chapel Street, or you're eating slate dust. I'll race you up. Beat me out and there's {BlastRun.Prize} credits in it.")+
+                $" Don't come back down after, mind: the shot brings the cutting down on the road.{record}",
+                new(){new($"Blast Run · beat the shot ({BlastRun.ShotTime:0} s) and Dai",StartBlast),new("Back to the road",Close)});
+        }
+        void StartBlast()
+        {
+            Close();school?.End();sprintStart=-1;var (at,rot)=BlastRun.PlayerStart;player.body.rotation=rot;Place(at);
+            blast.Begin(player,GameObject.Find("Resident blast"));Notify("Blast Run · Siren's going! GO in 3!");
+        }
+        void BlastCrossed(float t,bool beatDai)
+        {
+            Confetti.Burst(player.body.position+Vector3.up*2);
+            Attempt(()=>{Store.RecordTime(BlastRun.Id,t,0);
+                if(beatDai&&Store.ClaimTrial(Collectibles.BlastRunWin,BlastRun.Prize))Notify($"Blast Run {t:0.0} s · Out, and ahead of Dai! +{BlastRun.Prize} credits");
+                else Notify($"Blast Run {t:0.0} s · Out! "+(beatDai?"Ahead of Dai again. Wait for it...":$"Dai beat you up ({BlastRun.DaiTime:0} s). Wait for it..."));});
+        }
+        void BlastShot(bool caught)
+        {
+            if(caught)Notify("BOOM! The dust's got you. Dai: \"Told you, butt. Siren means GO.\"");
+            else Notify("BOOM! Look back down the haul road...");
+        }
         void Mari()=>Show("Mari / Slate Quay Station","Mari, from the engine shed. The slate trains come down to the quay by gravity and go back up behind the engine, and the Pine & Peak line runs passengers through to Hillcrest and Bayview Halt. One ticket, you and your car.",
             Tickets("quarry"));
         // The Gallery Climb (GalleryClimb): starts itself when you pass the bottom flags heading up; ends at the top flags.
@@ -1200,7 +1282,7 @@ namespace LittleRoad
         {
             if(!GalleryClimb.Built||riding)return;var p=player.body.position;var moved=(p-galleryLast)/Mathf.Max(Time.deltaTime,1e-3f);galleryLast=p;
             if(galleryStart<0) {
-                if(climbStart>=0||sprintStart>=0||school!=null&&school.Active)return;
+                if(climbStart>=0||sprintStart>=0||school!=null&&school.Active||blast!=null&&blast.Active)return;
                 var d=p-GalleryClimb.Start;d.y=0;var v=moved;v.y=0;
                 if(d.magnitude<5&&Mathf.Abs(p.y-GalleryClimb.Start.y)<3&&Vector3.Dot(v,GalleryClimb.StartDir)>3){galleryStart=Time.time;galleryPenalty=0;galleryCheckpoint=-1;Notify("Gallery Climb · GO! Twelve benches to the rim.");}
                 return;

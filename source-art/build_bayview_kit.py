@@ -180,7 +180,8 @@ def door(x,y,z0=0,w=1.3,h=2.5,face=-1,canopy=True):
     box('Door',(x,y+face*.1,z0+h/2),(w,.1,h),'Tint_Door',.05)
     for k in range(2):box('Door panel',(x,y+face*.16,z0+h*.28+k*h*.42),(w*.7,.05,h*.3),'Tint_Door',.04)
     sphere('Door knob',(x+w*.33,y+face*.2,z0+h*.48),(.07,.07,.07),'Gold',1)
-    box('Step',(x,y+face*.35,z0+.08),(w+.7,.7,.16),'Stone',.05)
+    # (Street review, 5 Oct: a 16 cm slab floated or showed as a wedge where the garden falls away.) A deep block, sunk.
+    if face<0:box('Step',(x,y+face*.35,z0-.17),(w+.7,.7,.66),'Stone',.05)   # (back doors: none; 5 Oct, a buried back step showed as a sliver on the next lawn)
     if canopy:
         box('Door canopy',(x,y+face*.45,z0+h+.35),(w+.9,.9,.16),'RoofTile',.06,rot=(face*-.25,0,0))
         for s in(-1,1):box('Canopy bracket',(x+s*(w/2+.3),y+face*.3,z0+h+.12),(.08,.5,.08),'WhiteTrim',.02,rot=(face*.7,0,0))
@@ -199,7 +200,7 @@ def sign_board(x,y,z,w,h,material='WhiteTrim',text_name='Sign',face=-1):
     anchor('SignAnchor_'+text_name,(x,y+face*.2,z))
 
 def planter_box(x,y,w=1.6,d=.7,face=-1):
-    box('Planter',(x,y,.35),(w,d,.7),'Stone',.08)
+    box('Planter',(x,y,.15),(w,d,1.1),'Stone',.08)   # (down to -0.4 m: on a falling garden it stood in the air)
     box('Planter soil',(x,y,.69),(w-.14,d-.14,.04),'Soil',.01)
     rnd=random.Random(int(x*37+y*11))
     for k in range(int(w/.3)):
@@ -226,7 +227,9 @@ def house_a():
     for x in(-2.2,2.2):window(x,d/2,4.4,1.2,1.3,face=1,flowers=False)
     box('Chimney',(2.6,1.2,h+2.5),(.9,.9,2.4),'Stone',.06);box('Chimney cap',(2.6,1.2,h+3.75),(1.15,1.15,.18),'WhiteTrim',.04)
     for k in range(2):cyl('Chimney pot',(2.45+k*.3,1.2,h+4.05),.12,.4,'RoofTile','Z',12)
-    planter_box(3.1,-d/2-1.2,1.6)   # (clear of the window's flower box: street review, 4 Oct)
+    # (Street review, 4 Oct: clear of the window's flower box; 5 Oct: at x=3.1 it still sat under the window's end and read as
+    # merged with its flower box.) On the plain wall between the door and the window.
+    planter_box(-.45,-d/2-1.0,1.3)
     side_paint(w,(1.7,4.4))
     collision('Body',(0,0,h/2),(w+.3,d+.3,h))
 
@@ -721,7 +724,9 @@ def arch_ring(name,cx,cy,z0,half,rise,thick,depth,material,count=13,face=-1,alt=
         box(name,(x,cy,z),(seg+.08,depth,thick),alt if (alt and k%2) else material,.05,rot=(0,-ang,0))
 
 def spandrel(cx,cy,z0,half,rise,top,depth,material):
-    """Fills between an elliptical arch and a flat top edge (both sides)."""
+    """Fills between an elliptical arch and a flat top edge (both sides). Pass the ring's OUTER half-width and rise and a
+    depth under the ring's (street review, 5 Oct: from the intrados, the steps' corners showed as a staircase inside the
+    opening, and flush faces flickered against the voussoirs)."""
     n=12
     for side in(-1,1):
         for k in range(n):
@@ -891,12 +896,16 @@ def town_hall():
     box('Hall cornice',(0,0,h+.2),(w+.6,d+.6,.4),'WhiteTrim',.06)
     for x in(-w/2+.2,w/2-.2):box('Corner quoin',(x,-d/2+.1,h/2),(.6,.6,h),'Stone',.05)
     gable_roof(0,0,w,d,h+.4,2.8,.5)
+    # (Street review, 5 Oct: the arches stood mid-depth under the slab, which hid their crowns from the street, so only
+    # broken-looking springers showed; and the last pier stood 2 m past the end.) Arches on the arcade's front edge.
+    ay=-d/2-2.9
     for k in range(5):
         x=-8+k*4
-        box('Arcade pier',(x-2,-d/2-1.6,1.9),(.8,.8,3.8),'Stone',.06)
-        arch_ring('Arcade arch',x,-d/2-1.6,2.6,1.6,1.0,.4,.8,'WhiteTrim',9)
+        box('Arcade pier',(x-2,ay,1.9),(.8,.8,3.8),'Stone',.06)
+        arch_ring('Arcade arch',x,ay,2.6,1.6,1.0,.4,.8,'WhiteTrim',9)
+        spandrel(x,ay,2.6,2.0,1.4,3.95,.7,'Stone')
         box('Arcade door',(x,-d/2-.05,1.4),(1.8,.12,2.8),'Tint_Door',.05)
-    box('Arcade pier',(10-2+4,-d/2-1.6,1.9),(.8,.8,3.8),'Stone',.06)
+    box('Arcade pier',(10,ay,1.9),(.8,.8,3.8),'Stone',.06)
     box('Arcade roof',(0,-d/2-1.6,4.1),(w+.2,3.4,.5),'Stone',.06)
     for k in range(5):
         window(-8+k*4,-d/2,6.0,1.3,1.9,flowers=True)
@@ -950,15 +959,21 @@ def terrace(kind='a'):
         box('Display window',(-.9,-d/2-.2,1.8),(2.4,.08,2.0),'GlassLit',.02);box('Display frame',(-.9,-d/2-.17,1.8),(2.65,.1,2.25),'WhiteTrim',.04)
         door(1.6,-d/2-.08,0,1.0,2.4,canopy=False)
         # (Street review, 4 Oct: the valance hung below the door head; raised 0.3 m.)
-        awning(0,-d/2-.08,3.8,w-.3,1.5,6)
-        sign_board(0,-d/2-.12,4.3,w-1.0,.62,'WhiteTrim','shop')
+        awning(0,-d/2-.08,4.0,w-.3,1.5,6)   # (5 Oct: 0.2 m higher, the scallops clear the door frame)
+        # (Street review, 5 Oct: the first-floor window boxes covered the lower half of the letters.) The board sits
+        # between the awning and the first-floor sills, which stand higher on a shop (below).
+        sign_board(0,-d/2-.12,4.42,w-1.0,.56,'WhiteTrim','shop')
     elif kind=='c':
         # Arcaded ground floor: a deep round arch over the door and a shop window.
-        box('Arcade shadow',(0,-d/2-.02,1.75),(w-1.3,.06,3.4),'Black',0)
-        box('Arcade window',(-.9,-d/2-.07,1.5),(1.9,.05,2.0),'Glass',.01);door(1.35,-d/2-.05,0,1.0,2.4,canopy=False)
+        # (Street review, 5 Oct: a black panel behind a part-filled arch read as a hole.) A shaded stone back wall, a
+        # framed shop window, the door, and a glazed fanlight under the arch with a white transom.
+        box('Arcade back wall',(0,-d/2-.02,1.75),(w-1.3,.06,3.4),'StoneDark',0)
+        box('Arcade window',(-.75,-d/2-.07,1.3),(2.1,.05,2.2),'Glass',.01);box('Arcade window frame',(-.75,-d/2-.05,1.3),(2.3,.06,2.4),'WhiteTrim',.02)
+        door(1.35,-d/2-.05,0,1.0,2.4,canopy=False)
+        box('Arcade fanlight',(0,-d/2-.07,2.85),(3.7,.05,.75),'Glass',.01);box('Arcade transom',(0,-d/2-.1,2.5),(3.95,.1,.14),'WhiteTrim',.02)
         for s2 in(-1,1):box('Arcade pier',(s2*(w/2-.35),-d/2-.3,1.25),(.7,.6,2.5),'Stone',.05)
         arch_ring('Arcade arch',0,-d/2-.3,2.5,w/2-.7,.85,.42,.6,'Stone',11)
-        spandrel(0,-d/2-.3,2.5,w/2-.7,.85,3.75,.6,'Stone')
+        spandrel(0,-d/2-.3,2.5,w/2-.7+.42,.85+.42,3.8,.52,'Stone')
         box('Arcade lintel',(0,-d/2-.3,3.95),(w,.6,.4),'Stone',.05)
     elif kind=='d':
         door(-1.3,-d/2,0,1.1,2.4)
@@ -979,7 +994,8 @@ def terrace(kind='a'):
     for z in(5.0,8.0):
         for x in(-1.25,1.25):
             if kind=='d' and z<6:continue
-            window(x,-d/2,z,1.0,1.6,flowers=(kind in('a','c') or z<6))
+            shop_floor=kind=='b' and z<6
+            window(x,-d/2,5.8 if shop_floor else z,1.0,1.6,flowers=(kind in('a','c') or (z<6 and not shop_floor)))
     # The back: plain sash windows and a back door (rows are seen from the next street too).
     for z in(1.7,5.0,8.0):
         for x in((-1.25,) if z<3 else (-1.25,1.25)):window(x,d/2,z,.9,1.3,shutters=False,flowers=False,face=1)
@@ -1021,7 +1037,7 @@ def terrace_e():
     for sx in(-1,1):
         for sy in(-1,1):box('Altana pier',(sx*1.95,ay+sy*1.45,az+1.05),(.34,.34,2.1),'Tint_Wall',.04)
     box('Altana back',(0,ay+1.45,az+1.05),(3.9,.24,2.1),'Tint_Wall',.04)
-    box('Altana shade',(0,ay+1.3,az+1.05),(3.5,.04,1.9),'Black',0)
+    box('Altana shade',(0,ay+1.3,az+1.05),(3.5,.04,1.9),'StoneDark',0)   # (5 Oct: black read as a hole in the roof)
     hip_roof(0,ay,4.2,3.2,az+2.1,.9,.3)
     for x in(-.95,.95):cyl('Altana rail post',(x,ay-1.45,az+.45),.05,.9,'Metal','Z',8)
     box('Altana rail',(0,ay-1.45,az+.88),(3.6,.07,.07),'Metal',.02)
@@ -1038,10 +1054,12 @@ def terrace_f():
     box('Dormer',(0,-1.75,h+1.4),(1.6,1.4,1.6),'Tint_Wall',.05)
     box('Dormer roof',(0,-1.8,h+2.28),(1.95,1.75,.18),'RoofTile',.05,rot=(.12,0,0))
     box('Dormer frame',(0,-2.46,h+1.62),(1.05,.06,.85),'WhiteTrim',.03);box('Dormer glass',(0,-2.5,h+1.62),(.8,.04,.62),'Glass',.01)
-    door(-1.3,-d/2,0,1.1,2.4);window(1.2,-d/2,1.7,1.2,1.4)
+    # (Street review, 5 Oct: the window's flower box sat on the porch bench, in every town.) The window over the bench has a
+    # plain sill, and the bench stands clear of the wall with a back rail.
+    door(-1.3,-d/2,0,1.1,2.4);window(1.2,-d/2,1.9,1.2,1.3,flowers=False)
     for x in(-1.25,1.25):window(x,-d/2,4.6,1.0,1.5)
-    box('Porch bench',(1.2,-d/2-.7,.42),(1.4,.45,.12),'Wood',.03)
-    for s in(-1,1):box('Bench leg',(1.2+s*.55,-d/2-.7,.2),(.1,.4,.4),'Wood',.02)
+    box('Porch bench',(1.2,-d/2-.75,.42),(1.4,.45,.08),'Wood',.03);box('Porch bench back',(1.2,-d/2-.55,.68),(1.4,.06,.22),'Wood',.02)
+    for s in(-1,1):box('Bench leg',(1.2+s*.55,-d/2-.75,.05),(.1,.4,.7),'Wood',.02)
     terrace_back(w,d,(1.7,4.6))
     box('Chimney',(1.9,.6,h+2.4),(.7,.7,2.2),'Stone',.05);box('Chimney cap',(1.9,.6,h+3.56),(.9,.9,.14),'WhiteTrim',.03)
     for k in range(2):cyl('Chimney pot',(1.75+k*.3,.6,h+3.83),.1,.4,'RoofTile','Z',12)
@@ -1514,6 +1532,7 @@ def mill():
         o=box('Spoke',(-w/2-1.4,math.cos(a)*1.6,3.4+math.sin(a)*1.6),(.3,.14,3.1),'Wood',.02,rot=(a-math.pi/2,0,0));parts.append(o)
     SPIN.extend(parts)
     box('Mill race',(-w/2-1.4,0,-.3),(2.2,8,.6),'StoneDark',.04)
+    box('Mill race water',(-w/2-1.4,0,.04),(1.6,7.7,.06),'Water',.01)
     collision('Body',(0,0,h/2),(w+.3,d+.3,h))
 
 def bandstand():

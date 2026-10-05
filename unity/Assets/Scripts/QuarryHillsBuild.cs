@@ -77,7 +77,7 @@ namespace LittleRoad
                     if(R()<.1f)Plant("bush",q.x,q.z,.7f+R()*.5f,false);else Plant("grass_tuft",q.x,q.z,.9f+R()*.8f,false);tufts++;
                 }
             }
-            int slate=SlateFaces(holder);Galleries(holder);Physics.SyncTransforms();GalleryClimb.Build(holder);GalleryDressing(holder);QuarryFloor.Build(holder);if(RaceArea.Near(QuarryHills.QuayCentre,250))QuarryQuay.Build(holder);
+            int slate=SlateFaces(holder);Galleries(holder);Physics.SyncTransforms();GalleryClimb.Build(holder);TipLeap.Plan();TipLeap.Build(holder);GalleryDressing(holder);QuarryFloor.Build(holder);if(RaceArea.Near(QuarryHills.QuayCentre,250))QuarryQuay.Build(holder);
             Debug.Log($"LITTLE_ROAD_QUARRY_SCENERY trees={trees} tufts={tufts} slateCells={slate}");
         }
         // Worked slate: the galleries (benches and faces alike), the pit's walls above the water and the tips are all bare

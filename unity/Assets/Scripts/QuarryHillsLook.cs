@@ -40,7 +40,9 @@ namespace LittleRoad
                     float colW=44+Hash(row,7,5)*50,shift=Hash(row,3,6)*colW;int col=Mathf.FloorToInt((u+shift)/colW);
                     float fu=(u+shift)/colW-col,fv=v/rowH-row;float edge=Mathf.Min(Mathf.Min(fu,1-fu)*colW,Mathf.Min(fv,1-fv)*rowH);
                     float roll=Hash(col,row,9);var crop=roll<.5f?pasture:roll<.75f?C(.27f,.45f,.19f):roll<.92f?C(.34f,.49f,.23f):C(.42f,.47f,.26f);
-                    c=Color.Lerp(c,crop,fields);alpha=Mathf.Lerp(1,Mathf.Clamp01(edge/8),fields);
+                    // (Street review, 5 Oct: the shader's painted field edges broke into pale see-through blobs across the fields; the
+                    // fields' walls are real ones along the roads.) The crops keep their patchwork; no painted edges.
+                    c=Color.Lerp(c,crop,fields);
                 }
                 // Coastal turf near the sea.
                 float dc=QuarryHills.CoastDistance(x,z);c=Color.Lerp(c,coastTurf,(1-Blend(60,260,dc))*Blend(-2,3,h)*.6f);

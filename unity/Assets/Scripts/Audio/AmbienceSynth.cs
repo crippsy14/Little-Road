@@ -161,24 +161,27 @@ namespace LittleRoad
     public sealed class BlastSynth
     {
         public const float SirenEnd=14,Shot=21,End=31;
-        readonly float fs;Noise n;Biquad thump,rumble,rotor;float t=End,phase;volatile bool fire;
+        readonly float fs;Noise n;Biquad thump,rumble,rotor;float t=End,phase,shot=Shot,sirenEnd=SirenEnd;volatile bool fire;volatile float nextShot=Shot;
         public BlastSynth(float sampleRate,uint seed){fs=sampleRate;n=new Noise(seed*23+3);thump=Biquad.LowPass(fs,70,.9f);rumble=Biquad.LowPass(fs,260,.6f);rotor=Biquad.BandPass(fs,900,.7f);}
-        public void Fire()=>fire=true;
-        public bool Busy=>t<End;
+        public void Fire()=>Fire(Shot);
+        // The Blast Run (BlastRun): the shot `shotAt` seconds after the siren starts (15 s or more); the siren holds longer and
+        // still runs down 7 s before the shot.
+        public void Fire(float shotAt){nextShot=Math.Max(15,shotAt);fire=true;}
+        public bool Busy=>t<shot+10;
         public float Next()
         {
-            if(fire){fire=false;t=0;}
-            if(t>=End)return 0;
+            if(fire){fire=false;t=0;shot=nextShot;sirenEnd=shot-7;}
+            if(t>=shot+10)return 0;
             t+=1/fs;float x=0;
-            if(t<SirenEnd) {
-                // Wind-up 0-4 s, hold to 10 s (a slow wobble), run-down to 14 s: pitch and loudness follow the rotor.
-                float spin=t<4?Smooth(t/4):t<10?1+.015f*MathF.Sin(t*2.1f):Smooth(1-(t-10)/4);
+            if(t<sirenEnd) {
+                // Wind-up 0-4 s, hold (a slow wobble), run-down over the last 4 s: pitch and loudness follow the rotor.
+                float spin=t<4?Smooth(t/4):t<sirenEnd-4?1+.015f*MathF.Sin(t*2.1f):Smooth((sirenEnd-t)/4);
                 float f=90+540*spin;phase+=f/fs;if(phase>1)phase-=1;
                 float tone=Sine.At(phase)*.6f+Sine.At(phase*2)*.25f+Sine.At(phase*3)*.12f+rotor.Process(n.White())*.25f;
                 x+=tone*spin*spin*.55f;
             }
-            if(t>=Shot) {
-                float a=t-Shot;
+            if(t>=shot) {
+                float a=t-shot;
                 x+=thump.Process(n.White())*MathF.Exp(-a/.35f)*5.5f;          // the shot
                 x+=rumble.Process(n.Pink())*MathF.Exp(-a/2.6f)*Math.Min(1,a/.15f)*1.6f;   // its rumble round the pit
             }

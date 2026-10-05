@@ -25,6 +25,8 @@ Run-Batch @(
   @{name='wayfinding-noqh';script=".\tools\quarry-run.ps1 -Name $Name-way-noqh -NoReview -Flags @('--wayfinding-test','--no-quarry-hills') $test"},
   @{name='world-tiles';script=".\tools\quarry-run.ps1 -Name $Name-world-tiles -NoReview -Flags @('--world-tiles-test') $test"})
 Run-Batch @(
+  @{name='blast';script=".\tools\quarry-run.ps1 -Name $Name-blast -NoReview -Flags @('--blast-test') $test"},
+  @{name='leap';script=".\tools\quarry-run.ps1 -Name $Name-leap -NoReview -Flags @('--leap-test') $test"},
   @{name='festival';script=".\tools\quarry-run.ps1 -Name $Name-festival -NoReview -Flags @('--festival','--festival-test') $test"},
   @{name='area-audit';script=".\tools\quarry-run.ps1 -Name $Name-area-audit -Flags @('--area-audit') 2>&1 | Out-Null; Get-Content review/quarry-hills/$Name-area-audit/area-audit.txt | Select-String 'FAIL|PASS|^    ' | ForEach-Object Line"})
 # The sound smoke, alone: player-engine.wav RMS (about 6890 since 30 Sep).

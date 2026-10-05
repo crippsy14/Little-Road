@@ -127,11 +127,17 @@ namespace LittleRoad
                 var right=Vector3.Cross(Vector3.up,trap.forward);
                 // Chequered strip across the road: where the camera measures.
                 int tiles=Mathf.RoundToInt(trap.half*2/1f);
-                for(int k=0;k<tiles;k++){var p=trap.at+right*(-trap.half+.5f+k);p.y=Surface(p)+.045f;Block(holder,"Trap strip",p,trap.forward,new Vector3(1,.01f,.6f),k%2==0?white:dark);}
+                // (Street review, 5 Oct: dark squares vanished into the asphalt, so the line read as stray white patches.) A white
+                // band from kerb to kerb, the chequer's dark squares on it, on the highest road surface under each.
+                for(int k=0;k<tiles;k++){var p=trap.at+right*(-trap.half+.5f+k);p.y=Surface(p)+.045f;Block(holder,"Trap strip",p,trap.forward,new Vector3(1.02f,.01f,.9f),white);
+                    if(k%2==1)Block(holder,"Trap chequer",p+Vector3.up*.004f,trap.forward,new Vector3(1,.01f,.45f),dark);}
                 // The camera on a pole beside the road, on whichever side has ground.
-                foreach(int side in new[]{1,-1}) {
-                    var at=trap.at+right*side*(trap.half+2.2f);float g=Ground(at);
+                var tries=new[]{(1,0f),(-1,0f),(1,7f),(-1,7f),(1,-7f),(-1,-7f)};
+                for(int pass=0;pass<2&&trap.camera==null;pass++)foreach(var (side,slide) in tries) {
+                    var at=trap.at+right*side*(trap.half+2.2f)+trap.forward*slide;float g=Ground(at);
                     if(float.IsNaN(g)||Mathf.Abs(g-trap.at.y)>2.5f)continue;at.y=g;
+                    // (Street review, 5 Oct: on Quay road the pole stood beside a front door.) Not within 4 m of a building.
+                    if(pass==0&&BayviewKit.Occupied(new Bounds(at+Vector3.up*2+right*side*2.5f,new Vector3(4,3,4))))continue; // (second pass: anywhere with ground)
                     Block(holder,"Trap pole",at+Vector3.up*2,trap.forward,new Vector3(.18f,4,.18f),pole);
                     var head=Block(holder,"Trap camera",at+Vector3.up*4.1f-right*side*.25f,trap.forward,new Vector3(.55f,.5f,.9f),housing);
                     Block(head,"Trap lens",head.position-right*side*.3f,trap.forward,new Vector3(.12f,.34f,.34f),lens,true);
@@ -141,7 +147,7 @@ namespace LittleRoad
             }
             Debug.Log("LITTLE_ROAD_SPEED_TRAPS "+string.Join(" ",All.Select(t=>$"{t.id}@({t.at.x:0},{t.at.z:0}) marks {t.marks[0]}/{t.marks[1]}/{t.marks[2]} mph")));
         }
-        static float Surface(Vector3 p){foreach(var h in Physics.RaycastAll(p+Vector3.up*6,Vector3.down,14))if(h.collider.GetComponentInParent<RoadSurface>()!=null)return h.point.y;return p.y+.03f;}
+        static float Surface(Vector3 p){float best=float.NaN;foreach(var h in Physics.RaycastAll(p+Vector3.up*6,Vector3.down,14))if(h.collider.GetComponentInParent<RoadSurface>()!=null&&(float.IsNaN(best)||h.point.y>best))best=h.point.y;return float.IsNaN(best)?p.y+.03f:best;}
         static float Ground(Vector3 p){float best=float.NaN;foreach(var h in Physics.RaycastAll(p+Vector3.up*8,Vector3.down,30))if(!h.collider.isTrigger&&(float.IsNaN(best)||h.point.y>best))best=h.point.y;return best;}
         static Transform Block(Transform parent,string name,Vector3 at,Vector3 forward,Vector3 size,Material material,bool local=false)
         {
