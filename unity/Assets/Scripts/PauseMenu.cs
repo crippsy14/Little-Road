@@ -21,6 +21,8 @@ namespace LittleRoad
             public Func<(string body,Color paint,string paintName,List<string> parts,int rating,string ladder)> car_;
             // Back to the nearest Pit Stop garage you've visited (null label: none).
             public Func<string> warpLabel;public Action warp;
+            // The running challenge (ActivityHud, doc 64): its name, restart and exit; null when none is running.
+            public Func<(string title,Action restart,Action exit)?> activity;
         }
         static readonly string[] Tabs={"MAP","COLLECTION","CAR","RECORDS","CONTROLS","SETTINGS"};const int Settings=5;public const int SettingsTab=Settings;
         Context ctx;Canvas canvas;RectTransform root,body;Text areaText,creditText,footer,objectiveText;readonly List<(ToyShape pill,Text text)> tabPills=new();
@@ -75,7 +77,7 @@ namespace LittleRoad
             for(int k=0;k<tabPills.Count;k++){bool on=k==tab;tabPills[k].pill.color=on?Toy.Sun:Toy.Navy;tabPills[k].text.color=on?Toy.Navy:Toy.White;tabPills[k].pill.rectTransform.localScale=Vector3.one*(on?1.06f:1);}
             var sides=InputGlyphs.Name("tabs").Split('/');tabGlyphs[0].text=sides[0].Trim();tabGlyphs[1].text=sides[^1].Trim();
             var save=ctx.save();areaText.text=ctx.area().ToUpperInvariant();creditText.text=$"{save.credits:N0} CREDITS";
-            string goal=ctx.objective();objectiveText.text=string.IsNullOrEmpty(goal)?"":"Next: "+goal;
+            string goal=ctx.objective();var act=ctx.activity?.Invoke();objectiveText.text=act is var (name,_,_)?"In progress: "+name+"  ·  Restart or exit it on the Map tab":string.IsNullOrEmpty(goal)?"":"Next: "+goal;
             switch(tab){case 0:BuildMap();break;case 1:BuildCollection(save);break;case 2:BuildCar(save);break;case 3:BuildRecords(save);break;case 4:BuildControls();break;default:BuildSettings();break;}
             footer.text=tab==0?InputGlyphs.Footer(true,true,"close")+"     Stick / mouse: look around":InputGlyphs.Footer(true,tab==Settings,"close");
         }
@@ -97,9 +99,18 @@ namespace LittleRoad
             regionBlurb=Toy.Label(panel.transform,"Region blurb","",24,new Vector2(660,40),new Vector2(0,92),Toy.Soft,TextAnchor.MiddleCenter,true);
             countsHolder=Toy.Rect(panel.transform,"Counts",new Vector2(660,240),new Vector2(0,-60));
             var open=Toy.Candy(body,"Choice Open full map","Open the full map",null,new Vector2(560,76),new Vector2(400,-180),Toy.Blue,()=>ctx.minimap?.OpenFull(true));
-            string warp=ctx.warpLabel?.Invoke();
-            if(warp!=null)Toy.Candy(body,"Choice Warp",warp,null,new Vector2(560,76),new Vector2(400,-270),Toy.Mint,()=>ctx.warp?.Invoke());
-            Toy.Label(body,"Legend","■ Pit Stop   ◆ Zipline   ★ Objective   ● People",20,new Vector2(760,30),new Vector2(400,-340),Toy.Navy,TextAnchor.MiddleCenter,true);
+            var running=ctx.activity?.Invoke();
+            if(running is var (title,restart,exit)) {
+                // A challenge under way: restart it, or leave it (back to whoever offered it). Warping waits until it's over.
+                var badge=Toy.Card(body,"Challenge badge",new Vector2(560,44),new Vector2(400,-250),Toy.Orange,22,4,4);
+                Toy.Label(badge.transform,"Challenge name","IN PROGRESS · "+title.ToUpperInvariant(),20,new Vector2(540,44),Vector2.zero,Toy.White,TextAnchor.MiddleCenter,true);
+                Toy.Candy(body,"Choice Restart challenge","Restart challenge",null,new Vector2(270,76),new Vector2(265,-312),Toy.Sun,()=>restart());
+                Toy.Candy(body,"Choice Exit challenge","Exit challenge",null,new Vector2(270,76),new Vector2(535,-312),Toy.Red,()=>exit());
+            } else {
+                string warp=ctx.warpLabel?.Invoke();
+                if(warp!=null)Toy.Candy(body,"Choice Warp",warp,null,new Vector2(560,76),new Vector2(400,-270),Toy.Mint,()=>ctx.warp?.Invoke());
+            }
+            Toy.Label(body,"Legend","■ Pit Stop   ◆ Zipline   ★ Objective   ● People",20,new Vector2(760,30),new Vector2(400,-364),Toy.Navy,TextAnchor.MiddleCenter,true);
             hovered=null;UpdateMap();
         }
         Vector2 MapPoint(Vector3 world)=>(WorldMap.Uv(world)-new Vector2(.5f,.5f))*MapSize;

@@ -22,6 +22,7 @@ from compact_lods import export_lods
 args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
 RENDER=Path(args[args.index('--render')+1]).resolve() if '--render' in args else None
 EXPORT='--no-export' not in args
+LINEUP=Path(args[args.index('--lineup')+1]).resolve() if '--lineup' in args else None
 ONLY=[a for a in args if a in RECIPES] or ORDER
 TARGET=ROOT/'unity/Assets/Resources/Cars'
 SOURCE=ROOT/'source-art/family'
@@ -165,6 +166,17 @@ def inset_quad(corners,m):
         t=(w.x*d2.y-w.y*d2.x)/den;q=p1+d1*t;out.append(P[0]+e1*q.x+e2*q.y)
     return out
 
+def pchip(pts,y):
+    """Monotone cubic through (y,z) points: no overshoot, flat at a crest (rooflines, doc 66)."""
+    xs=[q[0] for q in pts];zs=[q[1] for q in pts];n=len(pts)
+    if y<=xs[0]:return zs[0]
+    if y>=xs[-1]:return zs[-1]
+    h=[xs[i+1]-xs[i] for i in range(n-1)];d=[(zs[i+1]-zs[i])/h[i] for i in range(n-1)];m=[d[0]]+[0]*(n-2)+[d[-1]]
+    for i in range(1,n-1):
+        if d[i-1]*d[i]>0:w1=2*h[i]+h[i-1];w2=h[i]+2*h[i-1];m[i]=(w1+w2)/(w1/d[i-1]+w2/d[i])
+    i=max(k for k in range(n-1) if xs[k]<=y);t=(y-xs[i])/h[i]
+    return (2*t**3-3*t*t+1)*zs[i]+(t**3-2*t*t+t)*h[i]*m[i]+(-2*t**3+3*t*t)*zs[i+1]+(t**3-t*t)*h[i]*m[i+1]
+
 # ---------------------------------------------------------------- car
 
 class Car:
@@ -176,9 +188,45 @@ class Car:
         ys=[G['yr0']+(G['yf0']-G['yr0'])*i/20 for i in range(21)]
         G['belt']=min(self.surface_z(G['wb'],y) for y in ys)-.012
         self.roofmat=self.M['cream'] if G.get('two_tone') else self.M['paint']
+        self.C=R.get('cabin');self.rings={}
+        if self.C:
+            # The roofline's ends never sit above the bonnet or deck they meet: they drop to just under it, so the screen
+            # sweeps down into it (the Raijin's ended 11 cm above its bonnet, and a black cowl bridged the drop).
+            C=self.C=dict(self.C);rl=[list(q) for q in C['roofline']]
+            for k,yy in ((-1,G['yf0']),(0,G['yr0'])):
+                lo=self.surface_z(0,yy)-.03
+                if rl[k][1]>lo:rl[k][1]=lo
+            C['roofline']=[tuple(q) for q in rl]
+            G['roof']=max(z for _,z in C['roofline'])
+            G['yf1']=C.get('screen',(G['yf1'],))[0]
+            if C.get('rear_screen'):G['yr1']=C['rear_screen'][1]
         self.grooves=[]
 
     # Shell geometry --------------------------------------------------
+    def shape_at(self,y):
+        """The section's superellipse exponents at y (doc 66): per-station values where a station gives them, else the
+        recipe's global shape."""
+        P=self.P
+        if len(P[0])<6:return self.px,self.pz
+        for i in range(len(P)-1):
+            if y<=P[i+1][0]:break
+        t=max(0,min(1,(y-P[i][0])/max(1e-6,P[i+1][0]-P[i][0])));t=t*t*(3-2*t)
+        return P[i][4]+(P[i+1][4]-P[i][4])*t,P[i][5]+(P[i+1][5]-P[i][5])*t
+    # ---- 2. Fender pods (doc 66): the top surface rises over each axle towards the sides, so the wings can stand above
+    # the bonnet (Z, RX-7) or box out (GT-R). fenders=dict(front=(rise,reach,length), rear=(...)): rise in metres, reach
+    # = how far in from the side the pod starts, length = half-length along the car.
+    def pod(self,x,y):
+        F=self.R.get('fenders')
+        if not F:return 0.0
+        best=0.0;w=self.section(y)[0]
+        for key,cy in (('front',self.fa),('rear',self.ra)):
+            if key not in F:continue
+            rise,reach,length=F[key];dy=abs(y-cy)
+            if dy>=length:continue
+            fy=.5+.5*math.cos(math.pi*dy/length)
+            u=(abs(x)-(w-reach))/max(.05,reach*.55);fx=max(0,min(1,u));fx=fx*fx*(3-2*fx)
+            best=max(best,rise*fx*fy)
+        return best
     def section(self,y):
         P=self.P
         for i in range(len(P)-1):
@@ -189,15 +237,17 @@ class Car:
         return tuple((2*t**3-3*t*t+1)*b[k]+(t**3-2*t*t+t)*span*(c[k]-a[k])/max(1e-6,c[0]-a[0])+
                      (-2*t**3+3*t*t)*c[k]+(t**3-t*t)*span*(d[k]-b[k])/max(1e-6,d[0]-b[0]) for k in [1,2,3])
     def surface_x(self,y,z):
-        w,lo,hi=self.section(y);u=min(.9999,abs((z-(lo+hi)*.5)/((hi-lo)*.5)))
-        return w*max(1e-5,1-u**(2/self.pz))**(self.px/2)
+        w,lo,hi=self.section(y);px,pz=self.shape_at(y);u=min(.9999,abs((z-(lo+hi)*.5)/((hi-lo)*.5)))
+        return w*max(1e-5,1-u**(2/pz))**(px/2)
     def surface_z(self,x,y):
-        w,lo,hi=self.section(y);u=min(.9999,abs(x)/w)
-        return (lo+hi)*.5+(hi-lo)*.5*max(0,1-u**(2/self.px))**(self.pz/2)
+        w,lo,hi=self.section(y);px,pz=self.shape_at(y);u=min(.9999,abs(x)/w)
+        s_=max(0,1-u**(2/px))**(pz/2)
+        return (lo+hi)*.5+(hi-lo)*.5*s_+self.pod(x,y)*s_
     def inside(self,x,y,z):
         if y<self.P[0][0] or y>self.P[-1][0]:return False
-        w,lo,hi=self.section(y);mid=(lo+hi)*.5;half=(hi-lo)*.5
-        return (abs(x)/w)**(2/self.px)+(abs(z-mid)/half)**(2/self.pz)<=1
+        w,lo,hi=self.section(y);px,pz=self.shape_at(y);mid=(lo+hi)*.5;half=(hi-lo)*.5
+        if z>mid:half+=self.pod(x,y)
+        return (abs(x)/w)**(2/px)+(abs(z-mid)/half)**(2/pz)<=1
     def end_y(self,x,z,front=True):
         """Outermost y of the shell at (x,z) at the nose (front) or tail."""
         edge=self.P[-1][0] if front else self.P[0][0];deep=edge-(1.2 if front else -1.2)
@@ -260,10 +310,11 @@ class Car:
     def shell(self):
         P=self.P;M=self.M;v=[];f=[];ny=150;nr=88   # dense enough that boolean arch/lamp edges stay smooth
         for j in range(ny):
-            y=P[0][0]+(P[-1][0]-P[0][0])*j/(ny-1);w,lo,hi=self.section(y)
+            y=P[0][0]+(P[-1][0]-P[0][0])*j/(ny-1);w,lo,hi=self.section(y);px,pz=self.shape_at(y)
             for k in range(nr):
                 a=k*math.tau/nr;c=math.cos(a);s=math.sin(a)
-                v.append(self.fender((w*math.copysign(abs(c)**self.px,c),y,(lo+hi)*.5+(hi-lo)*.5*math.copysign(abs(s)**self.pz,s))))
+                x=w*math.copysign(abs(c)**px,c);sz=math.copysign(abs(s)**pz,s)
+                v.append(self.fender((x,y,(lo+hi)*.5+(hi-lo)*.5*sz+(self.pod(x,y)*sz if sz>0 else 0))))
         for j in range(ny-1):
             for k in range(nr):f.append((j*nr+k,j*nr+(k+1)%nr,(j+1)*nr+(k+1)%nr,(j+1)*nr+k))
         f.extend([tuple(range(nr-1,-1,-1)),tuple((ny-1)*nr+k for k in range(nr))])
@@ -283,8 +334,22 @@ class Car:
         # Open passenger well down to the floor inside the greenhouse.
         G=self.G
         y0=G['yr0']+.05;y1=G['yf0']-.03
+        # A lofted cabin opens the deck only from just ahead of its rear-glass base (doc 66): further back the cabin
+        # skin is still under the deck, and the cut's dark walls showed through the glass.
+        if self.C:
+            # Open the deck only where the cabin stands clear of it (doc 66): ahead of that the bonnet (and behind,
+            # the deck) runs on into the glass. Cut further and a dark band of cut walls showed under the screen.
+            y0=max(y0,self.cab_emerge(False)+.03);y1=min(y1,self.cab_emerge(True)-.03)
         if self.R['rear']=='boot':y0=max(y0,G['yr0']+.05)
-        c=box('Passenger well cutter',(0,(y0+y1)*.5,1.12),(2*(G['wb']-.09),y1-y0,1.16),M['trim'],.045);apply_all(c)
+        if self.C:
+            # Under a lofted cabin the well follows the cabin's plan, 9 cm inside its belt (a straight box left
+            # dark cut walls standing beside a cabin narrower than the old greenhouse).
+            n=24;ys=[y0+(y1-y0)*k/n for k in range(n+1)];loop=[(self.cab_widths(y)[0]-.09,y) for y in ys]+[(-(self.cab_widths(y)[0]-.09),y) for y in reversed(ys)]
+            m=len(loop);v=[(x,y,.54) for x,y in loop]+[(x,y,1.70) for x,y in loop]
+            f=[tuple(range(m-1,-1,-1)),tuple(range(m,2*m))]+[(k,(k+1)%m,m+(k+1)%m,m+k) for k in range(m)]
+            c=mesh('Passenger well cutter',v,f,M['trim'],False)
+        else:c=box('Passenger well cutter',(0,(y0+y1)*.5,1.12),(2*(G['wb']-.09),y1-y0,1.16),M['trim'],.045)
+        apply_all(c)
         cut(body,c,'Open passenger cabin')
         # Pickups: an open load bed behind the cab, down to a floor 0.3 m above the sill line.
         if 'bed' in self.R['extras']:
@@ -346,7 +411,216 @@ class Car:
             for k in range(n):a=ring*n+k;b=ring*n+(k+1)%n;ff.append((a,b,b+n,a+n))
         o=mesh(name,fv,ff,mat);m=o.modifiers.new('Pressed frame thickness','SOLIDIFY');m.thickness=.018;bevel(o,.012,2);return o
 
+    # Lofted cabin (doc 66, phase 2) -----------------------------------
+    # recipe cabin=dict(
+    #   roofline=[(y,z),...]   side-view centre line, rear base to windscreen base (monotone cubic, flat at a crest)
+    #   plan=[(y,wb,wr),...]   belt and roof half-widths along the cabin (default glass wb/wr)
+    #   section=(px,pz)        superellipse of the cabin section (small = boxy)
+    #   edge=q                 where the side meets the roof, as a fraction q of the way round from belt (0) to roof centre (1)
+    #   screen=(y_top,y_base), apillar=(q_base,width)        windscreen glass; the A-pillar runs from the roof edge at
+    #                                                        y_top down to q_base at y_base (low q_base = wrap-around)
+    #   rear_screen=(y_base,y_top), cpillar=(q_base,width)   the same for the rear glass (high q_base = narrow screen,
+    #                                                        broad sail panels); omit for none
+    #   side=[(y,lo,hi),...]   side daylight opening along the car (lo/hi in q; lo rising = a kick-up, lo meeting hi = a point)
+    #   pillars=[y,...], pillar_w, blackout (satin black B-pillars), corner (window corner radius, m), seal ('trim'/'paint'))
+    def cab_widths(self,y):
+        C=self.C;G=self.G;P=C.get('plan') or [(G['yr0'],G['wb'],G['wr']),(G['yf0'],G['wb'],G['wr'])]
+        if y<=P[0][0]:return P[0][1],P[0][2]
+        for i in range(len(P)-1):
+            if y<=P[i+1][0]:
+                t=(y-P[i][0])/max(1e-6,P[i+1][0]-P[i][0]);t=t*t*(3-2*t)
+                return P[i][1]+(P[i+1][1]-P[i][1])*t,P[i][2]+(P[i+1][2]-P[i][2])*t
+        return P[-1][1],P[-1][2]
+    def cab_ring(self,y):
+        """The cabin section at y as a polyline from the right belt (t=0) over the roof to the left belt (t=1), with
+        its cumulative arc length (the cabin is parametrised by arc fraction t, so windows are drawn in metres)."""
+        key=round(y,6)
+        if key in self.rings:return self.rings[key]
+        C=self.C;b=self.G['belt'];T=pchip(C['roofline'],y)
+        if abs(T-b)<.003:T=b+.003
+        T=max(b-.4,T);wb,wr=self.cab_widths(y);px,pz=C.get('section',(.40,.34))   # (T below the belt at an end: the section dips into a low bonnet or deck, doc 66)
+        pts=[];cum=[0.0];NA=160
+        for k in range(NA+1):
+            a=math.pi*k/NA;c=math.cos(a);sn=max(0.0,math.sin(a));h=sn**pz
+            x=(wb+(wr-wb)*h)*math.copysign(abs(c)**px,c);z=b+(T-b)*h
+            if C.get('bubble'):z+=C['bubble']*max(0,math.cos(math.pi*x/max(.05,wr)*1.6))*h**4*max(0,min(1,(T-b)/.35))
+            pts.append(Vector((x,y,z)))
+            if k:cum.append(cum[-1]+(pts[-1]-pts[-2]).length)
+        self.rings[key]=(pts,cum);return pts,cum
+    def cab_len(self,y):return self.cab_ring(y)[1][-1]
+    def cab_emerge(self,front=True):
+        """Where the cabin rises out of the shell at the front (or rear): scanning in from the cabin's end, the first y at
+        which the cabin's surface stands above the shell's top across the middle three-quarters of the well."""
+        G=self.G;key='_em'+('f' if front else 'r')
+        if hasattr(self,key):return getattr(self,key)
+        ya,yb=(G['yf0'],G['yr0']) if front else (G['yr0'],G['yf0']);n=int(abs(yb-ya)/.01);out=yb
+        for k in range(n+1):
+            y=ya+(yb-ya)*k/n;w=(self.cab_widths(y)[0]-.09)*.75
+            if all(self.cab_z(w*i/4,y)>self.surface_z(w*i/4,y)+.005 for i in range(5)):out=y;break
+        setattr(self,key,out);return out
+    def cowl(self):
+        """A satin-black cowl panel along the line where the screen rises out of the bonnet (doc 66): the glass meets
+        the bonnet at a shallow angle, and the long thin wedge between them read as a dark gap with flicker."""
+        G=self.G;M=self.M;ye=self.cab_emerge(True);n=24;v=[];f=[]
+        ws=self.cab_windows()[0];yq=ws['y1']-.03;w=min(self.cab_widths(ye)[0]-.03,abs(self.cab_S(ws['rng'](yq)[0],yq).x)+.02)
+        for i in range(n+1):
+            x=-w+2*w*i/n;y=G['yf0']
+            while y>G['yf1'] and self.cab_z(x,y)<=self.surface_z(x,y)+.003:y-=.005
+            # (the glass runs on down under the bonnet line; the cowl lies over the joint, 4 cm up the glass)
+            for dy,on_cab in ((.045,False),(.0,False),(min(-.03,ye-.01-y),True)):   # (back edge always past the glass's lower seal)
+                # (the cabin skin is 12 mm thick about cab_z, so the cowl's back edge sits 14 mm up to clear its face)
+                yy=y+dy;z=max(self.top_z(x,yy),self.surface_z(x,yy))+(.006 if dy>.02 else .016)   # (clears the glass's lower seal)
+                if on_cab:z=max(z,self.cab_z(x,yy)+.014)
+                v.append((x,yy,z))
+        for i in range(n):
+            for j in range(2):k=i*3+j;f.append((k,k+1,k+4,k+3))
+        o=mesh('Satin cowl panel',v,f,M['trim']);m=o.modifiers.new('Cowl thickness','SOLIDIFY');m.thickness=.010;m.offset=-1;bevel(o,.004,2)
+        for k in range(-3,4):   # vent slots
+            x=k*w*.22;y=G['yf0']
+            while y>G['yf1'] and self.cab_z(x,y)<=self.surface_z(x,y)+.003:y-=.005
+            box('Cowl vent slot',(x,y+.03,max(self.top_z(x,y+.03),self.surface_z(x,y+.03))+.013),(w*.16,.018,.006),M['insert'],.003)
+    def cab_z(self,x,y):
+        """Height of the lofted cabin's outer surface above (x,y) (the belt outside its width)."""
+        pts,_=self.cab_ring(y);x=abs(x);half=pts[:len(pts)//2+1]
+        for a,b in zip(half,half[1:]):
+            if a.x>=x>=b.x:return a.z+(b.z-a.z)*(a.x-x)/max(1e-9,a.x-b.x)
+        return self.G['belt'] if x>half[0].x else half[-1].z
+    def top_z(self,x,y):
+        """Height of the built shell's top at (x,y), found by a ray (surface_z misses the fenders' push-out)."""
+        if not hasattr(self,'_bvh'):
+            from mathutils.bvhtree import BVHTree
+            self._bvh=BVHTree.FromObject(self.body,bpy.context.evaluated_depsgraph_get())
+        hit,_,_,_=self._bvh.ray_cast(Vector((x,y,3)),Vector((0,0,-1)),4)
+        return hit.z if hit is not None else self.surface_z(x,y)
+    def cab_S(self,t,y,off=0.0):
+        pts,cum=self.cab_ring(y);L=cum[-1];d=max(0,min(1,t))*L;lo,hi=0,len(cum)-1
+        while hi-lo>1:
+            m=(lo+hi)//2
+            if cum[m]<=d:lo=m
+            else:hi=m
+        seg=max(1e-9,cum[hi]-cum[lo]);p=pts[lo].lerp(pts[hi],(d-cum[lo])/seg)
+        return p+self.cab_n(t,y)*off if off else p
+    def cab_n(self,t,y):
+        e=.004;ey=.004
+        da=self.cab_S(min(1,t+e),y)-self.cab_S(max(0,t-e),y);dy=self.cab_S(t,y+ey)-self.cab_S(t,y-ey)
+        n=dy.cross(da)
+        if n.length<1e-9:return Vector((0,0,1))
+        n.normalize();p=self.cab_S(t,y)
+        if n.dot(p-Vector((0,y,self.G['belt']-.25)))<0:n=-n
+        return n
+    def cab_windows(self):
+        """Every opening as a band in (t,y): y0..y1 and, per y, a t-range (corners rounded to a radius in metres)."""
+        C=self.C;G=self.G;edge=C.get('edge',.42);rho=C.get('corner',.05)
+        def q2m(y,m):return m/(self.cab_len(y)*.5)          # metres -> q at y (q runs over half the arc)
+        yt,yb=C.get('screen',(G['yf1']+.02,G['yf0']-.02));qa0,wa=C.get('apillar',(.10,.07))
+        RS=C.get('rear_screen');qc0,wc=C.get('cpillar',(.10,.09))
+        def qA(y):return edge+(qa0-edge)*max(0,min(1,(y-yt)/max(1e-6,yb-yt)))
+        def qC(y):
+            if not RS:return edge
+            return edge+(qc0-edge)*max(0,min(1,(RS[1]-y)/max(1e-6,RS[1]-RS[0])))
+        W=[]
+        W.append(dict(name='Curved front windscreen',y0=yt,y1=min(G['yf0']-.005,self.cab_emerge(True)+.02),rng=lambda y:((qA(y)+q2m(y,wa*.5))*.5,1-(qA(y)+q2m(y,wa*.5))*.5)))
+        if RS:W.append(dict(name='Rear glazing',y0=RS[0],y1=RS[1],rng=lambda y:((qC(y)+q2m(y,wc*.5))*.5,1-(qC(y)+q2m(y,wc*.5))*.5)))
+        S=C.get('side') or [(G['yr0']+.10,.07,edge-.04),(yb,.07,edge-.04)]
+        def st(y,k):
+            if y<=S[0][0]:return S[0][k]
+            for i in range(len(S)-1):
+                if y<=S[i+1][0]:t=(y-S[i][0])/max(1e-6,S[i+1][0]-S[i][0]);t=t*t*(3-2*t);return S[i][k]+(S[i+1][k]-S[i][k])*t
+            return S[-1][k]
+        def side_q(y):
+            hi=min(st(y,2),qA(y)-q2m(y,wa*.5),qC(y)-q2m(y,wc*.5));return st(y,1),hi
+        pw=C.get('pillar_w',.07);cuts=[S[0][0]]
+        for py in sorted(C.get('pillars',G['pillars'])):cuts+=[py-pw*.5,py+pw*.5]
+        cuts.append(yb)
+        self.cab_pillars=[]
+        for i in range(0,len(cuts),2):
+            for sd in (1,-1):
+                f=(lambda y,sd=sd:(side_q(y)[0]*.5,side_q(y)[1]*.5)) if sd>0 else (lambda y:(1-side_q(y)[1]*.5,1-side_q(y)[0]*.5))
+                W.append(dict(name='Side glass',y0=cuts[i],y1=cuts[i+1],rng=f,side=sd))
+        for (ry0,ry1,q0,q1) in C.get('roof_glass',[]):   # (T-tops, doc 65: two panels either side of a centre bar)
+            W.append(dict(name='T-top roof glass',y0=ry0,y1=ry1,rng=lambda y,q0=q0,q1=q1:(q0*.5,q1*.5)))
+            W.append(dict(name='T-top roof glass',y0=ry0,y1=ry1,rng=lambda y,q0=q0,q1=q1:(1-q1*.5,1-q0*.5)))
+        for i in range(1,len(cuts)-1,2):
+            for sd in (1,-1):
+                f=(lambda y,sd=sd:(side_q(y)[0]*.5,side_q(y)[1]*.5)) if sd>0 else (lambda y:(1-side_q(y)[1]*.5,1-side_q(y)[0]*.5))
+                self.cab_pillars.append(dict(name='Satin B-pillar',y0=cuts[i],y1=cuts[i+1],rng=f))
+        out=[]
+        for w in W:
+            raw=w['rng']
+            ys=[w['y0']+(w['y1']-w['y0'])*k/400 for k in range(401)];ok=[y for y in ys if raw(y)[1]-raw(y)[0]>.002]
+            if len(ok)<3:continue
+            y0,y1=ok[0],ok[-1]
+            def rng(y,raw=raw,y0=y0,y1=y1):
+                a,b=raw(y);d=min(y-y0,y1-y)
+                if d<rho:
+                    k=rho/self.cab_len(y)*(1-math.sqrt(max(0,1-(1-max(0,d)/rho)**2)));a,b=a+k,b-k
+                return a,max(a,b)
+            out.append(dict(w,y0=y0,y1=y1,rng=rng))
+        return out
+    def cab_patch(self,w,off,mat,name=None,ny=None,nt=14):
+        """Mesh a (t,y) band onto the cabin surface; returns the mesh and its boundary loop in (t,y)."""
+        y0,y1=w['y0'],w['y1'];ny=ny or max(8,int((y1-y0)/.025));v=[];f=[];uv=[]
+        for i in range(ny+1):
+            y=y0+(y1-y0)*i/ny;a,b=w['rng'](y)
+            for j in range(nt+1):
+                t=a+(b-a)*j/nt;uv.append((t,y));v.append(self.cab_S(t,y,off))
+        for i in range(ny):
+            for j in range(nt):k=i*(nt+1)+j;f.append((k,k+1,k+nt+2,k+nt+1))
+        o=mesh(name or w['name'],v,f,mat)
+        idx=[j for j in range(nt+1)]+[i*(nt+1)+nt for i in range(1,ny+1)]+[ny*(nt+1)+j for j in range(nt-1,-1,-1)]+[i*(nt+1) for i in range(ny-1,0,-1)]
+        loop=[]
+        for k in idx:
+            if not loop or abs(uv[k][0]-loop[-1][0])+abs(uv[k][1]-loop[-1][1])>1e-5:loop.append(uv[k])
+        return o,loop
+    def cabin(self):
+        C=self.C;G=self.G;M=self.M;rm=M['trim'] if C.get('roof_mat')=='trim' else self.roofmat
+        W=self.cab_windows();loops=[]
+        for w in W:
+            o,loop=self.cab_patch(w,-.004,M['glass']);loops.append(loop)
+            curve(w['name']+' rubber seal',[self.cab_S(t,y,.003) for t,y in loop],M['paint'] if C.get('seal')=='paint' else M['trim'],.011,True)
+        self.cowl()
+        if C.get('blackout'):
+            for w in self.cab_pillars:self.cab_patch(w,.003,M['trim'])
+        # The skin: a fine (t,y) grid without the faces inside an opening; the hole's edge vertices snap onto the
+        # opening's outline (no booleans, so the thin shell can't trip the exact solver; the seal hides the seam).
+        yA,yB=G['yr0'],G['yf0'];NT=120;NY=max(40,int((yB-yA)/.02));Lm=self.cab_len((yA+yB)*.5)
+        def inside(t,y):
+            for w in W:
+                if w['y0']<=y<=w['y1']:
+                    a,b=w['rng'](y)
+                    if a<t<b:return True
+            return False
+        grid=[(j/NT,yA+(yB-yA)*i/NY) for i in range(NY+1) for j in range(NT+1)];f=[];keep=set();drop=set()
+        for i in range(NY):
+            for j in range(NT):
+                k=i*(NT+1)+j;q=(k,k+1,k+NT+2,k+NT+1)
+                if inside((j+.5)/NT,yA+(yB-yA)*(i+.5)/NY):drop.update(q)
+                else:f.append(q);keep.update(q)
+        edge_v=keep&drop;flat=[(t*Lm,y) for lp in loops for (t,y) in lp]
+        # Densify the outlines so a snapped vertex lands on the curve, not a chord's end.
+        dense=[]
+        for lp in loops:
+            for a,b in zip(lp,lp[1:]+lp[:1]):
+                for k in range(4):u=k/4;dense.append((a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u))
+        from mathutils.kdtree import KDTree
+        kd=KDTree(len(dense))
+        for k,(t,y) in enumerate(dense):kd.insert((t*Lm,y,0),k)
+        kd.balance();pos=list(grid)
+        for k in edge_v:
+            t,y=grid[k];_,i_,_=kd.find((t*Lm,y,0));pos[k]=dense[i_]
+        v=[self.cab_S(t,y) for t,y in pos]
+        skin=mesh('Lofted cabin skin',v,f,rm);sm=skin.modifiers.new('Roof metal thickness','SOLIDIFY');sm.thickness=.012;sm.offset=0
+        # Wipers lie at the screen's base.
+        yt,yb=C.get('screen',(G['yf1']+.02,G['yf0']-.02))
+        for x in [-.32,.18]:
+            yw=self.cab_emerge(True)-.03
+            pts=[self.cab_S(.5-x/Lm+k*.06,yw-.04-k*.03,.02) for k in (-1,0,1)]
+            curve('Front wiper',pts,M['trim'],.008)
+        if self.R['rear']=='hatch' and C.get('rear_screen'):
+            y=C['rear_screen'][0]+.06;curve('Rear wiper',[self.cab_S(.5+k*.08,y+abs(k)*.02,.02) for k in (-1.5,0,1.5)],M['trim'],.011)
+
     def greenhouse(self):
+        if self.C:return self.cabin()
         G=self.G;M=self.M;b=G['belt'];r=G['roof'];wb=G['wb'];wr=G['wr'];inset=.052
         rm=self.roofmat
         def sx(z):return wb+(wr-wb)*(z-b)/(r-b)
@@ -373,7 +647,8 @@ class Car:
         for j in range(17):
             y=ya+(yb-ya)*j/16
             for i in range(21):
-                u=-1+2*i/20;rv.append((u*wr,y,r+G['crown']*(1-u*u)*math.sin(math.pi*j/16)))
+                u=-1+2*i/20;rv.append((u*wr,y,r+G['crown']*(1-u*u)*math.sin(math.pi*j/16)+G.get('arc',0)*math.sin(math.pi*j/16)
+                                      +G.get('bubble',0)*max(0,math.cos(math.pi*u*1.6))*math.sin(math.pi*j/16)))   # (bubble: the RX-7's double hump, doc 66)
         for j in range(16):
             for i in range(20):a=j*21+i;rf.append((a,a+1,a+22,a+21))
         if 'canvas_roof' in self.R['extras']:
@@ -421,6 +696,9 @@ class Car:
     # Details ----------------------------------------------------------
     def bumper(self,front):
         B=self.R['bumper'];style=B['front' if front else 'rear'];M=self.M
+        if style=='none':return
+        if style=='lip':   # (doc 66: an integrated nose; the shell is the bumper, with a dark lip under it)
+            p2,n2=self.outline(B['z']-B['h']*.5,front,-.01,span=92);sweep('Integrated bumper lip',p2,n2,rrect(B['d']*.7,.05,.018,2),M['trim']);return
         mat={'chrome':M['chrome'],'dark':M['trim'],'body':M['paint']}[style]
         pts,nor=self.outline(B['z'],front,-.02,span=98)
         prof=[(a,b) for a,b in rrect(B['d']+.02,B['h'],min(.05,B['h']*.45))]
@@ -464,7 +742,7 @@ class Car:
                 sphere('Pod shell back',(side*L['x'],y-.09,z),(L['r'],.08,L['r']),M['paint'])
                 cylinder('Pod chrome lip',(side*L['x'],y+.09,z),L['r']*.95,.02,M['chrome'],'Y',40)
                 sphere('Convex headlamp lens',(side*L['x'],y+.10,z),(L['r']*.85,.03,L['r']*.85),M['lamp'])
-            if s!='rect':
+            if s not in ('rect','none'):
                 ya=self.end_y(L['x']+.12 if s!='quad' else L['x2']+.12,L['z']-.14)
                 if ya and s!='pod':box('Front indicator',(side*(L['x']+.14 if s!='quad' else L['x2']+.12),ya-.005,L['z']-.14),(.09,.04,.045),M['amber'],.015)
                 elif s=='pod':
@@ -525,6 +803,93 @@ class Car:
                     y=yF-.12-(yF-.12-yc)*i/12;x=k*.09;pts.append((x,y,self.surface_z(x,y)+.004))
                 curve('Corrugated bonnet rib',pts,self.M['paint'],.012)
 
+    # Face outlines (doc 66, phase 2) ---------------------------------
+    # recipe face=[dict(kind='lamp'|'grille'|'intake'|'panel', pts=[(x,z),...] (front view, the right-hand one when
+    #   mirrored), mirror (default: lamps yes, grilles/intakes no), surround=.02 (dark rim, m), round=.25 (corner
+    #   rounding), bars=n (grille/intake blades), projectors=n (round lamp units in a lamp), mat='lamp'|'amber'|...)],
+    #   face_plate=z or None. Each outline is laid onto the built nose (rays, so fenders and pods count), slightly
+    #   proud, as the toy cars' lamps are: no booleans, so any shape is safe.
+    def nose_hit(self,x,z,front=True):
+        if not hasattr(self,'_bvh'):
+            from mathutils.bvhtree import BVHTree
+            self._bvh=BVHTree.FromObject(self.body,bpy.context.evaluated_depsgraph_get())
+        y0=(self.P[-1][0]+1) if front else (self.P[0][0]-1);d=Vector((0,-1,0)) if front else Vector((0,1,0))
+        hit,nrm,_,_=self._bvh.ray_cast(Vector((x,y0,z)),d,3)
+        if hit is None:return None,None
+        if nrm.dot(-d)<0:nrm=-nrm
+        return hit,nrm
+    @staticmethod
+    def grow2d(pts,g):
+        n=len(pts);area=sum(pts[i].x*pts[(i+1)%n].y-pts[(i+1)%n].x*pts[i].y for i in range(n));sg=1 if area>0 else -1;out=[]
+        for i in range(n):
+            a,b,c=pts[i-1],pts[i],pts[(i+1)%n];e1=(b-a);e2=(c-b)
+            if e1.length<1e-6 or e2.length<1e-6:out.append(b.copy());continue
+            e1.normalize();e2.normalize();n1=Vector((e1.y,-e1.x))*sg;n2=Vector((e2.y,-e2.x))*sg;m=(n1+n2)
+            if m.length<1e-6:m=n1
+            m.normalize();k=max(.5,m.dot(n1));out.append(b+m*(g/k))
+        return out
+    def face_patch(self,name,pts2,lift,mat,th,front=True,rings=5):
+        """Fill a front-view outline (2D Vectors x,z) laid on the nose, lifted along the surface normal."""
+        c=sum(pts2,Vector((0,0)))/len(pts2);n=len(pts2);v=[];f=[]
+        def at(q):
+            hit,nrm=self.nose_hit(q.x,q.y,front)
+            if hit is None:return None
+            return hit+nrm*lift
+        cp=at(c)
+        if cp is None:return None
+        v.append(cp)
+        for r in range(1,rings+1):
+            for q in pts2:
+                p_=at(c.lerp(q,r/rings));v.append(p_ if p_ is not None else v[-1])
+        for k in range(n):f.append((0,1+k,1+(k+1)%n))
+        for r in range(rings-1):
+            for k in range(n):a=1+r*n+k;b=1+r*n+(k+1)%n;f.append((a,b,b+n,a+n))
+        o=mesh(name,v,f,mat);m=o.modifiers.new('Face part thickness','SOLIDIFY');m.thickness=th;m.offset=-1
+        return o
+    def face(self,items=None,front=True):
+        M=self.M;items=items if items is not None else self.R.get('face',[])
+        mats={'lamp':M['lamp'],'amber':M['amber'],'trim':M['trim'],'paint':M['paint'],'red':M['red'],'insert':M['insert']}
+        for it in items:
+            kind=it['kind'];sides=[1,-1] if it.get('mirror',kind in ('lamp','panel')) else [1]
+            for sd in sides:
+                if 'oval' in it:   # oval=(cx,cz,rx,rz,p): a superellipse mouth (p<1 squarer)
+                    cx,cz,rx,rz,pe=it['oval'];raw=[]
+                    for k in range(36):
+                        a=k*math.tau/36;c=math.cos(a);sn=math.sin(a)
+                        raw.append(Vector((sd*cx+rx*math.copysign(abs(c)**pe,c),cz+rz*math.copysign(abs(sn)**pe,sn))))
+                    pts=raw
+                else:
+                    raw=[Vector((sd*x,z)) for x,z in it['pts']]
+                    if sd<0:raw.reverse()
+                    pts=rounded_loop(raw,it.get('round',.2)) if it.get('round',.2)>0 else raw
+                pts=[Vector((q.x,q.y)) for q in pts]
+                sur=it.get('surround',.022 if kind=='lamp' else .018)
+                label={'lamp':'Outlined headlamp','grille':'Outlined grille','intake':'Outlined air intake','panel':'Outlined face panel'}[kind]
+                if sur>0:self.face_patch(label+' surround',self.grow2d(pts,sur),.004,M['trim'],.010,front)
+                mat=mats[it.get('mat',{'lamp':'lamp','grille':'trim','intake':'trim','panel':'paint'}[kind])]
+                self.face_patch(label,pts,.010 if kind=='lamp' else .006,mat,.012 if kind=='lamp' else .008,front)
+                zs=[q.y for q in pts];z0,z1=min(zs),max(zs)
+                def span(z):
+                    xs=[]
+                    for a,b in zip(pts,pts[1:]+pts[:1]):
+                        if (a.y-z)*(b.y-z)<0:xs.append(a.x+(b.x-a.x)*(z-a.y)/(b.y-a.y))
+                    return (min(xs),max(xs)) if len(xs)>=2 else None
+                nb=it.get('bars',0)
+                for k in range(nb):
+                    z=z0+(z1-z0)*(k+1)/(nb+1);sp=span(z)
+                    if not sp:continue
+                    xa,xb=sp[0]+.025,sp[1]-.025
+                    if xb-xa<.04:continue
+                    q=[Vector((xa,z-.008)),Vector((xb,z-.008)),Vector((xb,z+.008)),Vector((xa,z+.008))]
+                    self.face_patch(label+' blade',q,.016,M['insert'] if kind=='grille' else M['trim'],.008,front,2)
+                for k in range(it.get('projectors',0)):
+                    cx=sorted(q.x for q in pts);cz=(z0+z1)*.5;xa,xb=cx[0],cx[-1]
+                    x=xa+(xb-xa)*(k+.5)/it['projectors'];r=min((z1-z0)*.36,(xb-xa)/it['projectors']*.36)
+                    hit,nrm=self.nose_hit(x,cz,front)
+                    if hit is None:continue
+                    c_=hit+nrm*.022;cylinder('Lamp projector bezel',c_,r*1.12,.012,M['chrome'],'Y',24)
+                    sphere('Lamp projector lens',c_+nrm*.008,(r,.012,r),M['lamp'])
+
     def tail(self):
         T=self.R['tail'];M=self.M;s=T['style']
         for side in [-1,1]:
@@ -549,6 +914,20 @@ class Car:
                     x=T['x']+dx;y=self.end_y(x,T['z'],False)
                     cylinder('Round lamp bezel',(side*x,y+.01,T['z']),r+.015,.05,M['chrome'],'Y',32)
                     sphere('Round rear lens',(side*x,y-.015,T['z']),(r,.025,r),mat)
+            elif s=='twin_round':
+                # The Tuner's signature (doc 65): two round lamps each side, red with a bright inner ring.
+                for x in (T['x'],T['x2']):
+                    y=self.end_y(x,T['z'],False);r=T['r']
+                    cylinder('Round lamp bezel',(side*x,y+.01,T['z']),r+.016,.05,M['chrome'],'Y',32)
+                    sphere('Round rear lens',(side*x,y-.015,T['z']),(r,.025,r),M['red'])
+                    cylinder('Lamp inner ring',(side*x,y-.04,T['z']),r*.42,.008,M['reverse'],'Y',24,0)
+            elif s=='boomerang':
+                # Across the corner, then a limb swept up and forward along the haunch (doc 65).
+                y=self.end_y(T['x'],T['z'],False);w,h=T['w'],T['h']
+                box('Rear lamp surround',(side*T['x'],y+.03,T['z']),(w+.04,.08,h+.04),M['trim'],.03)
+                box('Red rear lamp',(side*T['x'],y-.012,T['z']),(w,.03,h),M['red'],.015)
+                xo=T['x']+w*.5-.04;yo=y+.14
+                box('Rear lamp sweep',(side*xo,yo,T['z']+.05),(.06,.26,h*.85),M['red'],.015,rot=(-.35,0,0))
             yr=self.end_y(T['x'],.47,False)
             if yr:box('Rear bumper reflector',(side*T['x'],yr-.02,.47),(.12,.014,.034),M['reflector'],.012)
 
@@ -556,10 +935,12 @@ class Car:
         R=self.R;M=self.M;G=self.G;b=G['belt'];yF=self.P[-1][0];yR=self.P[0][0]
         sill=self.section(0)[1]
         # Number plates, badges, exhaust, underbody
-        y=self.end_y(0,.60);box('Front number plate',(0,y+.01,.60 if R['bumper']['z']<.55 else .45),(.40,.02,.10),M['plate'],.014)
+        pz=R.get('face_plate',.60 if R['bumper']['z']<.55 else .45)
+        if pz is not None:y=self.end_y(0,pz if 'face_plate' in R else .60);box('Front number plate',(0,y+.01,pz),(.40,.02,.10),M['plate'],.014)
         y=self.end_y(0,.70,False);box('Rear plate recess',(0,y+.01,.70),(.52,.03,.14),M['seam'],.028)
         box('Rear number plate',(0,y-.006,.70),(.42,.016,.105),M['plate'],.013)
-        box('Rear badge',(.32,self.end_y(.32,.86,False)-.004,.86),(.11,.012,.03),M['chrome'],.01)
+        yb=self.end_y(.32,.86,False)
+        if yb is not None:box('Rear badge',(.32,yb-.004,.86),(.11,.012,.03),M['chrome'],.01)   # (none on a tail lower than the badge)
         cylinder('Exhaust chrome outlet',(-.42,yR+.03,.30),.05,.18,M['chrome'],'Y',24)
         cylinder('Exhaust dark bore',(-.42,yR-.062,.30),.038,.008,M['trim'],'Y',24)
         box('Underbody',(0,(yF+yR)*.5,sill+.01),(1.3,(yF-yR)-.4,.05),M['trim'],.04)
@@ -660,36 +1041,50 @@ class Car:
                     for i in range(1,24):
                         x=xs+.04-2*(xs+.04)*i/24;z=.62;pts.append((x,self.end_y(x,z,False)-.009,z))
             self.groove(pts)
-            box('Hatch release',(0,self.end_y(0,.90,False)-.02,.90),(.22,.04,.04),M['trim'],.016)
+            zh=min(.90,self.surface_z(0,yR+.08)-.06);yh=self.end_y(0,zh,False)   # (below the top of a low tail)
+            if yh is not None:box('Hatch release',(0,yh-.02,zh),(.22,.04,.04),M['trim'],.016)
         elif R['rear']=='boot':
-            xs=self.surface_x(G['yr0']-.1,b-.02)-.14;yl=G['yr0']-.08;pts=[]
-            zl=.66
-            for i in range(9):
-                t=i/8;y=yl+(yR+.05-yl)*t;pts.append((xs,y,self.surface_z(xs,y)+.003))
-            for i in range(9):
-                t=i/8;z=self.surface_z(xs,yR+.05)-(self.surface_z(xs,yR+.05)-zl)*t;y=self.end_y(xs,z,False);pts.append((xs,y-.008,z))
-            for i in range(1,16):
-                x=xs-2*xs*i/16;pts.append((x,self.end_y(x,zl,False)-.008,zl))
-            for i in range(9):
-                t=i/8;z=zl+(self.surface_z(-xs,yR+.05)-zl)*t;y=self.end_y(-xs,z,False);pts.append((-xs,y-.008,z))
-            for i in range(9):
-                t=1-i/8;y=yl+(yR+.05-yl)*t;pts.append((-xs,y,self.surface_z(-xs,y)+.003))
-            self.groove(pts,cyclic=True,width=.007)
-            box('Boot lock',(0,self.end_y(0,.86,False)-.012,.86),(.08,.02,.04),M['chrome'],.01)
+            try:   # (a low tail, as the Regale study's, can miss the probes: then no shut line)
+                xs=self.surface_x(G['yr0']-.1,b-.02)-.14;yl=G['yr0']-.08;pts=[]
+                zl=.66
+                for i in range(9):
+                    t=i/8;y=yl+(yR+.05-yl)*t;pts.append((xs,y,self.surface_z(xs,y)+.003))
+                for i in range(9):
+                    t=i/8;z=self.surface_z(xs,yR+.05)-(self.surface_z(xs,yR+.05)-zl)*t;y=self.end_y(xs,z,False);pts.append((xs,y-.008,z))
+                for i in range(1,16):
+                    x=xs-2*xs*i/16;pts.append((x,self.end_y(x,zl,False)-.008,zl))
+                for i in range(9):
+                    t=i/8;z=zl+(self.surface_z(-xs,yR+.05)-zl)*t;y=self.end_y(-xs,z,False);pts.append((-xs,y-.008,z))
+                for i in range(9):
+                    t=1-i/8;y=yl+(yR+.05-yl)*t;pts.append((-xs,y,self.surface_z(-xs,y)+.003))
+                self.groove(pts,cyclic=True,width=.007)
+            except TypeError:pass
+            yl_=self.end_y(0,.86,False)
+            if yl_ is not None:box('Boot lock',(0,yl_-.012,.86),(.08,.02,.04),M['chrome'],.01)
 
     def interior(self):
         M=self.M;G=self.G;yf0=G['yf0'];yr0=G['yr0'];wb=G['wb'];floor=.52
         box('Cabin carpet floor',(0,(yf0+yr0)*.5,floor),(2*wb-.3,yf0-yr0-.1,.036),M['cloth'],.025)
-        for side in [-1,1]:box('Inner door card',(side*(wb-.14),(yf0+yr0)*.5,.79),(.028,yf0-yr0-.2,.50),M['trim'],.021)
+        for side in [-1,1]:
+            if self.C:   # (under a lofted cabin the cards stop at the belt; on low cars they stood out of the shoulders)
+                top=G['belt']+.03;box('Inner door card',(side*(wb-.14),(yf0+yr0)*.5,(.54+top)*.5),(.028,yf0-yr0-.2,top-.54),M['trim'],.021)
+            else:box('Inner door card',(side*(wb-.14),(yf0+yr0)*.5,.79),(.028,yf0-yr0-.2,.50),M['trim'],.021)
         box('Dashboard',(0,yf0-.20,G['belt']-.02),(2*wb-.3,.30,.17),M['trim'],.055)
         fy=yf0-.78
         for side in [-1,1]:
             box('Seat pedestal',(side*.36,fy,.566),(.34,.37,.08),M['trim'],.015)
             box('Front seat cushion',(side*.36,fy,.68),(.43,.47,.17),M['cloth'],.07)
-            box('Front seat back',(side*.36,fy-.22,.986),(.43,.18,.57),M['cloth'],.065,rot=(-.10,0,0))
-            box('Seat headrest',(side*.36,fy-.25,min(1.311,G['roof']-.2)),(.26,.14,.20),M['cloth'],.045)
+            if self.C:
+                top=min(1.271,self.cab_z(.58,fy-.22)-.06);hz=min(1.311,G['roof']-.2,self.cab_z(.50,fy-.25)-.15)
+                box('Front seat back',(side*.36,fy-.22,(.70+top)*.5),(.43,.18,top-.70),M['cloth'],.065,rot=(-.10,0,0))
+                if hz>top-.02:box('Seat headrest',(side*.36,fy-.25,hz),(.26,.14,.20),M['cloth'],.045)
+            else:
+                box('Front seat back',(side*.36,fy-.22,.986),(.43,.18,.57),M['cloth'],.065,rot=(-.10,0,0))
+                box('Seat headrest',(side*.36,fy-.25,min(1.311,G['roof']-.2)),(.26,.14,.20),M['cloth'],.045)
         ry=fy-.72
-        if ry>yr0+.2 and self.R['rear']!='barn':
+        # (Two-seaters, doc 65: no rear bench; a low parcel shelf under the sloping glass instead.)
+        if 'two_seater' in self.R['extras']:box('Parcel shelf',(0,(fy-.4+yr0)*.5,.70),(2*wb-.4,max(.1,fy-.4-yr0),.04),M['trim'],.01)
+        elif ry>yr0+.2 and self.R['rear']!='barn':
             box('Rear bench cushion',(0,ry,.655),(2*wb-.4,.31,.19),M['cloth'],.05)
             box('Rear bench back',(0,ry-.14,.935),(2*wb-.4,.15,.46),M['cloth'],.055)
         if self.R['rear']=='barn':
@@ -779,7 +1174,8 @@ class Car:
                     cylinder('Fog lamp bezel',(side*.36,y+self.R['bumper']['d']+.02,z+.12),.06,.05,M['trim'],'Y',24)
                     sphere('Fog lamp lens',(side*.36,y+self.R['bumper']['d']+.045,z+.12),(.05,.018,.05),M['amber'])
         if 'spoiler' in E:
-            y=G['yr1']-.02;box('Roof spoiler',(0,y-.06,r-.02),(2*wr-.06,.2,.045),M['paint'],.02,rot=(-.18,0,0))
+            y=G['yr1']-.02;zr=pchip(self.C['roofline'],y-.06) if self.C else r
+            box('Roof spoiler',(0,y-.06,zr-.02),(2*wr-.06,.2,.045),M['paint'],.02,rot=(-.18,0,0))
         if 'louvres' in E:
             q=inset_quad([(G['wb'],G['yr0'],b),(-G['wb'],G['yr0'],b),(-G['wr'],G['yr1'],r),(G['wr'],G['yr1'],r)],.07)
             up=(Vector(q[3])-Vector(q[0])).normalized();nrm=(Vector(q[1])-Vector(q[0])).cross(up).normalized()
@@ -819,15 +1215,173 @@ class Car:
                 box('Mail stripe',(x,(y0+y1)*.5,zc-.3),(.012,(y1-y0)*.95,.06),M['amber'],.01)
         if 'splitter' in E:
             B=self.R['bumper'];p,nm=self.outline(B['z']-B['h']*.5-.02,True,.0,span=90)
-            sweep('Front splitter',p,nm,[(a,b) for a,b in rrect(.10,.025,.01,2)],M['trim'])
+            sweep('Front splitter',p,nm,[(a,b) for a,b in rrect(self.R.get('splitter_d',.10),.025,.01,2)],M['trim'])
         if 'skirts' in E:side_line(sill+.12,self.ra+self.wr+.23,self.fa-self.wr-.23,.0,rrect(.05,.10,.035,3),M['paint'],'Side skirt')
         if 'wing' in E:
             yw=yR+.22;zd=self.surface_z(.5,yw);h=.26 if self.R['rear']=='boot' else .20
             for side in [-1,1]:box('Wing upright',(side*.52,yw,zd+h*.5),(.05,.16,h),M['trim'],.015)
             box('Rear wing aerofoil',(0,yw-.02,zd+h+.02),(2*G['wb']+.12,.34,.05),M['paint'],.022,rot=(.08,0,0))
             for side in [-1,1]:box('Wing endplate',(side*(G['wb']+.07),yw-.02,zd+h+.02),(.02,.38,.16),M['trim'],.01)
+        if 'popup_lids' in E:
+            # Pop-up headlamps closed (the RX-7's): a lid on each wing ahead of the screen, standing a few mm proud
+            # inside a shut line (doc 66).
+            for side in [-1,1]:
+                xl=.56;yl=self.fa+.42;n=6;v=[];f=[]
+                for i_ in range(n+1):
+                    for j_ in range(n+1):
+                        dx=-.12+.24*j_/n;dy=-.15+.29*i_/n;x=side*(xl+dx);v.append((x,yl+dy,self.top_z(x,yl+dy)+.006))
+                for i_ in range(n):
+                    for j_ in range(n):k=i_*(n+1)+j_;f.append((k,k+1,k+n+2,k+n+1))
+                o=mesh('Pop-up headlamp lid',v,f,M['paint']);m=o.modifiers.new('Lid thickness','SOLIDIFY');m.thickness=.012;bevel(o,.005,2)
+                pts=[]
+                for (dx,dy) in [(-.135,-.165),(.135,-.165),(.135,.155),(-.135,.155)]:x=side*(xl+dx);pts.append((x,yl+dy,self.top_z(x,yl+dy)+.002))
+                pts.append(pts[0]);self.groove(pts,width=.007)
+        if 'swept_lamps' in E:
+            # Headlamps swept back up the wings (the Z's, doc 66): a long tapering lens lying on the wing in a dark
+            # surround, wide at the nose and narrowing up the wing.
+            for side in [-1,1]:
+                n=10;rows=[]
+                for k in range(n+1):
+                    t=k/n;yy=yF-.07-.58*t;xc=.64-.10*t;hw=.065-.035*t
+                    rows.append([(side*(xc+d),yy) for d in (-hw,hw)])
+                for label,grow,lift,mat,th in (('Swept headlamp surround',.022,.006,M['trim'],.012),('Swept headlamp lens',0,.016,M['lamp'],.014)):
+                    v=[];f=[]
+                    for k,r_ in enumerate(rows):
+                        for (x,yy),sg in zip(r_,(-1,1)):
+                            x=x+side*sg*grow;v.append((x,yy+(grow if k==0 else 0),self.top_z(x,yy)+lift))
+                    for k in range(n):f.append((2*k,2*k+1,2*k+3,2*k+2))
+                    o=mesh(label,v,f,mat);m=o.modifiers.new('Lens thickness','SOLIDIFY');m.thickness=th;bevel(o,.006,2)
+        if 'hoop_wing' in E:
+            # The A80's hoop wing (doc 65): a low blade on two legs rising from the rear quarters, close over the boot.
+            yw=yR+.30;zq=self.surface_z(.70,yw)
+            if zq is not None:
+                for side in [-1,1]:curve('Hoop wing leg',[(side*.72,yw,zq-.02),(side*.70,yw-.04,zq+.12),(side*.64,yw-.06,zq+.19)],M['paint'],.035)
+                box('Hoop wing blade',(0,yw-.07,zq+.21),(1.36,.26,.035),M['paint'],.015,rot=(-.10,0,0))
+        if 'side_scoop' in E:
+            from mathutils.bvhtree import BVHTree
+            if not hasattr(self,'_bvh'):self._bvh=BVHTree.FromObject(self.body,bpy.context.evaluated_depsgraph_get())
+            for side in [-1,1]:
+                y0,y1=self.ra+self.wr+.12,self.ra+self.wr+.50;z0,z1=G['belt']-.25,G['belt']-.05;n=8;v=[];f=[]
+                for i in range(n+1):
+                    for j in range(n+1):
+                        t=j/n;z=z0+(z1-z0)*t;y=y0+(y1-y0)*i/n;y=y1-(y1-y)*(.55+.45*t)   # (a wedge: longer at the top)
+                        hit,_,_,_=self._bvh.ray_cast(Vector((side*2,y,z)),Vector((-side,0,0)),2)
+                        v.append((hit.x+side*.006,y,z) if hit is not None else (side*self.surface_x(y,z),y,z))
+                for i in range(n):
+                    for j in range(n):k=i*(n+1)+j;f.append((k,k+1,k+n+2,k+n+1))
+                o=mesh('Side air intake',v,f,M['trim']);m=o.modifiers.new('Intake thickness','SOLIDIFY');m.thickness=.010;bevel(o,.004,2)
+                for k in range(3):
+                    zz=z0+(z1-z0)*(k+1)/4;ya=y1-(y1-y0)*(.55+.45*(k+1)/4)+.03
+                    hit,_,_,_=self._bvh.ray_cast(Vector((side*2,(ya+y1)*.5,zz)),Vector((-side,0,0)),2)
+                    if hit is not None:box('Intake blade',(hit.x+side*.016,(ya+y1)*.5,zz),(.012,y1-ya-.04,.012),M['insert'],.004)
+        if 'tail_panel' in E:
+            # A full-width dark panel across the tail, the lamps set into it (doc 65).
+            T=self.R['tail'];yp=self.end_y(0,T['z'],False)
+            if yp is not None:box('Tail lamp panel',(0,yp+.012,T['z']),(2*(T.get('x2',T['x'])+.15),.03,T.get('r',T.get('h',.1)*.5)*2+.08),M['trim'],.02)
         if 'ducktail' in E:
             y=yR+.12;box('Ducktail lip',(0,y,self.surface_z(0,y)+.03),(2*(self.surface_x(y,self.section(y)[2]-.05)-.1),.22,.05),M['paint'],.02,rot=(.30,0,0))
+        # ---- The race ladder (doc 65: a box car climbing from C to S, Richard 6 Oct). Each tier adds on the last.
+        if 'roof_wing' in E or 'gt_wing' in E:
+            # A wing on the roof's rear edge (box cars have no deck): a small one for A, a towering swan-neck one for S.
+            big='gt_wing' in E;r=G['roof'];wr=G['wr'];y=G['yr1']+(.04 if big else .08)
+            h=.32 if big else .10;span=2*wr+(.44 if big else .06);chord=.44 if big else .28;zw=r+G['crown']*.2+h
+            for side in [-1,1]:
+                xs=side*wr*.5
+                if big:curve('Swan-neck wing mount',[(xs,y+.10,r+.01),(xs,y+.02,r+h*.55),(xs,y-.10,zw+.05)],M['trim'],.022)
+                else:box('Roof wing upright',(xs,y,r+h*.5),(.04,.10,h),M['trim'],.01)
+            box('Roof wing aerofoil',(0,y-.08,zw),(span,chord,.045),M['paint'],.02,rot=(.12 if big else .06,0,0))
+            for side in [-1,1]:box('Roof wing endplate',(side*(span*.5+.012),y-.08,zw-.03),(.022,chord+.10,.22 if big else .12),M['trim'],.01)
+            if big:box('Wing gurney flap',(0,y-.08-chord*.5+.01,zw+.035),(span-.02,.014,.045),M['trim'],.004)
+        if 'canards' in E:
+            # Dive planes on the front corners.
+            B=self.R['bumper']
+            for side in [-1,1]:
+                for k,dz in enumerate((.0,.09)):
+                    z=B['z']+dz;y=self.end_y(.60,z)
+                    if y is None:continue
+                    box('Front canard',(side*.64,y+.05,z),(.20,.12,.014),M['trim'],.004,rot=(0,side*.28,side*.15))
+        if 'diffuser' in E:
+            # A rear diffuser: an undertray with fins, out from under the tail.
+            yd=yR+.10;box('Rear diffuser tray',(0,yd-.02,.30),(1.25,.36,.022),M['trim'],.006)
+            for k in range(5):box('Diffuser fin',(-.48+.24*k,yd-.06,.36),(.016,.30,.13),M['trim'],.004)
+        if 'roof_scoop' in E:
+            # An airbox scoop on the roof (the Espace F1's), feeding the engine behind the seats.
+            r=G['roof'];yc=G['yf1']-.55;z=r+G['crown']*.9
+            box('Roof air scoop',(0,yc,z+.07),(.40,.56,.14),M['paint'],.045)
+            box('Roof scoop mouth',(0,yc+.27,z+.09),(.30,.03,.08),M['trim'],.012)
+        if 'side_exhaust' in E:
+            # Twin side pipes ahead of the rear wheels.
+            sill=self.section(0)[1]
+            for side in [-1,1]:
+                for k in range(2):
+                    y=self.ra+self.wr+.22+k*.10;z=sill+.05;x=side*(self.surface_x(y,z)+.035)
+                    cylinder('Side exhaust pipe',(x,y,z),.034,.10,M['chrome'],'X',20)
+                    cylinder('Side exhaust bore',(x+side*.052,y,z),.024,.006,M['trim'],'X',20,0)
+        if 'roundel' in E:
+            # A door roundel with the race number in seven-segment digits.
+            num=str(self.R.get('race_number',7));zd=G['belt']-.2
+            yd=(G['pillars'][0]+min(G['yf0'],self.fa-self.wr))*.5-.05 if G['pillars'] else (self.fa+self.ra)*.5
+            SEG={'0':'abcdef','1':'bc','2':'abged','3':'abgcd','4':'fgbc','5':'afgcd','6':'afgedc','7':'abc','8':'abcdefg','9':'abcdfg'}
+            for side in [-1,1]:
+                x=side*(self.surface_x(yd,zd)+.006)
+                cylinder('Number roundel',(x,yd,zd),.16,.012,M['cream'],'X',40,0)
+                cylinder('Roundel ring',(x-side*.002,yd,zd),.175,.01,M['trim'],'X',40,0)
+                for i,ch in enumerate(num):
+                    cy=yd+side*(i-(len(num)-1)*.5)*.10;xs=x+side*.009;w,h=.035,.06
+                    pos={'a':(0,h,1),'g':(0,0,1),'d':(0,-h,1),'b':(w,h*.5,0),'c':(w,-h*.5,0),'f':(-w,h*.5,0),'e':(-w,-h*.5,0)}
+                    for sg in SEG.get(ch,''):
+                        dy,dz,horiz=pos[sg]
+                        box('Race number segment',(xs,cy+side*dy,zd+dz),(.01,.07 if horiz else .016,.016 if horiz else .062),M['trim'],.003)
+        if 'wheel_tubs' in E and 'bed' in E:
+            # Wheel tubs: dark liners rising from the bed floor over each rear wheel (the tyres showed inside the bed).
+            w,lo,hi=self.section(self.ra)
+            R_=self.wr+.07;n=24
+            for side in [-1,1]:   # (a half-round arch over the wheel only: a full cylinder showed under the tail)
+                xa,xb=side*(w-.08-.34),side*(w-.08);v=[];f=[]
+                for i in range(n+1):
+                    a=math.pi*i/n;y=self.ra+R_*math.cos(a);z=self.wr+R_*math.sin(a);v+=[(xa,y,z),(xb,y,z)]
+                for i in range(n):f.append((2*i,2*i+1,2*i+3,2*i+2))
+                f.append(tuple(range(0,2*n+2,2)));f.append(tuple(range(2*n+1,0,-2)))
+                bevel(mesh('Bed wheel tub',v,f,M['trim']),.015,2)
+        if 'jump_seats' in E and 'bed' in E:
+            # Two rear-facing jump seats bolted in the load bed (the BRAT's), each with a grab handle.
+            yb0=self.P[0][0]+.13;yb1=G['yr0']-.12;w,lo,hi=self.section((yb0+yb1)*.5);fl=lo+.30
+            for side in [-1,1]:
+                x=side*.30;yc=yb1-.30
+                box('Jump seat cushion',(x,yc,fl+.16),(.36,.32,.10),M['cloth'],.03)
+                box('Jump seat back',(x,yb1-.10,fl+.38),(.36,.07,.40),M['cloth'],.03)
+                box('Jump seat frame',(x,yc,fl+.07),(.30,.26,.10),M['trim'],.01)
+                curve('Jump seat grab handle',[(x-side*.16,yb1-.14,fl+.56),(x-side*.16,yb1-.30,fl+.62),(x-side*.16,yb1-.44,fl+.40)],M['chrome'],.014)
+        if 'skid_plate' in E:
+            # An alloy skid plate under the nose (rally raid), with bolt heads.
+            # Tucked in under the bumper and sloping back beneath the car (out in front it read as a loose ramp).
+            B=self.R['bumper'];zf=B['z']-B['h']*.5-.01;yf=self.end_y(0,zf+.04) or yF;a=.30
+            box('Alloy skid plate',(0,yf-.04-.2*math.cos(a),zf-.2*math.sin(a)),(.82,.40,.022),M['alloy'],.008,rot=(a,0,0))
+        if 'race_stripes' in E:
+            # Twin go-faster stripes down the centre: bonnet, roof and boot (doc 65's kit experiments).
+            sm=material('StripeColour',self.R.get('stripe_colour',(.92,.92,.88)),.1,.35);r=G['roof'];wr=G['wr']
+            def strip(pts,width):
+                sweep('Go-faster stripe',[Vector(q)+Vector((0,0,.004)) for q in pts],[Vector((0,0,1))]*len(pts),   # (thickness up, width across)
+                      [(0,-width*.5),(.005,-width*.5),(.005,width*.5),(0,width*.5)],sm,[Vector((1,0,0))]*len(pts))
+            for x in (-.11,.11):
+                strip([(x,y,self.top_z(x,y)) for y in [yF-.06+(G['yf0']+.08-(yF-.06))*i/24 for i in range(25)]],.13)
+                if not self.C:
+                    strip([(x,y,r+G['crown']*(1-(x/wr)**2)*math.sin(math.pi*(y-G['yr1'])/(G['yf1']-G['yr1']))+.012)
+                           for y in [G['yr1']+.05+(G['yf1']-G['yr1']-.10)*i/16 for i in range(17)]],.13)
+                if G['yr0']-.08>yR+.16 and 'bed' not in E:strip([(x,y,self.top_z(x,y)) for y in [yR+.06+(G['yr0']-.08-yR-.06)*i/12 for i in range(13)]],.13)
+        if 'bonnet_vents' in E:
+            # Two louvred vents let into the bonnet (doc 65's kit experiments).
+            yc=yF-(yF-G['yf0'])*.42
+            for side in [-1,1]:
+                xc=side*.30;n=5;v=[];f=[]
+                for i_ in range(n+1):
+                    for j_ in range(n+1):
+                        x=xc-.11+.22*j_/n;y=yc-.12+.24*i_/n;v.append((x,y,self.top_z(x,y)+.005))
+                for i_ in range(n):
+                    for j_ in range(n):k=i_*(n+1)+j_;f.append((k,k+1,k+n+2,k+n+1))
+                o=mesh('Bonnet vent',v,f,M['trim']);m=o.modifiers.new('Vent thickness','SOLIDIFY');m.thickness=.008;bevel(o,.004,2)
+                for k in range(5):
+                    y=yc-.09+.045*k;box('Vent louvre',(xc,y,self.top_z(xc,y)+.014),(.19,.012,.010),M['paint'],.004,rot=(.35,0,0))
         if 'scoop' in E:
             y=(yF+G['yf0'])*.5;z=self.surface_z(0,y)
             box('Bonnet scoop',(0,y,z+.03),(.40,.34,.09),M['paint'],.035)
@@ -970,8 +1524,14 @@ class Car:
     def wheel(self,side,cy,name):
         W=self.R['wheel'];M=self.M;s=self.wr/.425;cx=side*self.track;cz=self.wr
         before=set(bpy.context.scene.objects)
+        road=W.get('tyre') in ('road','slick');self.rimk=1.13 if road else 1.0
         prof=[(-.144,.303),(-.164,.340),(-.164,.378),(-.144,.406),(-.112,.422),(-.075,.425),(-.069,.416),(-.057,.416),(-.051,.425),
               (.051,.425),(.057,.416),(.069,.416),(.075,.425),(.112,.422),(.144,.406),(.164,.378),(.164,.340),(.144,.303)]
+        if road:   # (doc 66: a road-car low profile, square shoulders, two grooves; no tread blocks)
+            prof=[(-.150,.338),(-.168,.360),(-.168,.395),(-.156,.416),(-.128,.425),(-.060,.425),(-.054,.417),(-.040,.417),(-.034,.425),
+                  (.034,.425),(.040,.417),(.054,.417),(.060,.425),(.128,.425),(.156,.416),(.168,.395),(.168,.360),(.150,.338)]
+        if W.get('tyre')=='slick':   # (class S racing: a smooth crown, no grooves)
+            prof=[(-.150,.338),(-.168,.360),(-.168,.395),(-.156,.416),(-.128,.425),(.128,.425),(.156,.416),(.168,.395),(.168,.360),(.150,.338)]
         wv=[];wf=[];n=40
         for u,rr in prof:
             for k in range(n):a=k*math.tau/n;wv.append((cx+u*s*.95*W.get('width',1),cy+rr*s*math.sin(a),cz+rr*s*math.cos(a)))
@@ -979,7 +1539,8 @@ class Car:
             for k in range(n):wf.append((j*n+k,j*n+(k+1)%n,((j+1)%len(prof))*n+(k+1)%n,((j+1)%len(prof))*n+k))
         mesh('Profiled tyre',wv,wf,M['rubber'])
         # Tread blocks on the crown (off-roaders: big staggered knobbly blocks that stand proud of the tyre).
-        if W.get('tread')=='knobbly':
+        if road:pass
+        elif W.get('tread')=='knobbly':
             ww=W.get('width',1)
             for k in range(26):
                 a=k*math.tau/26
@@ -1002,8 +1563,9 @@ class Car:
                 for bb in range(8):tf.append((a*8+bb,((a+1)%seg)*8+bb,((a+1)%seg)*8+(bb+1)%8,a*8+(bb+1)%8))
             return mesh(label,tv,tf,mat)
         cylinder('Brake disc',(cx+side*.066*s,cy,cz),.248*s,.025,M['disc'],vertices=28,r=0)
-        cylinder('Rim barrel',(cx+side*.087*s,cy,cz),.305*s,.09,M['trim'],vertices=32)
-        torus('Tyre sidewall bead',.330*s,.004,cx+side*.160*s,M['rubber'])
+        k_=self.rimk
+        cylinder('Rim barrel',(cx+side*.087*s,cy,cz),.305*s*k_,.09,M['trim'],vertices=32)
+        torus('Tyre sidewall bead',.330*s*k_,.004,cx+side*.160*s,M['rubber'])
         style=W['style']
         if W.get('whitewall'):
             av=[];af=[];ns=56
@@ -1013,19 +1575,31 @@ class Car:
             for k in range(ns):af.append((k*2,k*2+1,((k+1)%ns)*2+1,((k+1)%ns)*2))
             ww=mesh('Whitewall band',av,af,M['cream']);sol=ww.modifiers.new('Band','SOLIDIFY');sol.thickness=.008
         hubmat=M['paint'] if W.get('hub')=='paint' else M['chrome']
-        if style=='alloy5' or style=='star' or style=='spoke4':
-            torus('Alloy rim lip',.29*s,.019,outer,M['alloy'])
-            count={'alloy5':5,'star':8,'spoke4':4}[style];half=.032 if style!='star' else .018
-            if style=='spoke4':half=.055
-            for i in range(count):
-                a=i*math.tau/count;sv=[]
+        fin={'alloy':M['alloy'],'gunmetal':material('RimGunmetal',(.12,.13,.14),.85,.32),'bronze':material('RimBronze',(.40,.26,.09),.85,.30),
+             'white':material('RimWhite',(.86,.87,.86),.3,.30),'black':material('RimBlack',(.03,.035,.04),.4,.35)}[W.get('finish','alloy')]
+        if style in ('alloy5','star','spoke4','six','mesh','split'):
+            k_=self.rimk;dish=W.get('dish',0)   # dish: how deep the spoke face sits inside the lip (doc 66)
+            torus('Alloy rim lip',.29*s*k_,.019,outer,M['chrome'] if W.get('lip')=='polished' else fin)
+            count={'alloy5':5,'star':8,'spoke4':4,'six':6,'mesh':10,'split':6}[style];half={'star':.018,'spoke4':.055,'six':.040,'mesh':.012,'split':.022}.get(style,.032)
+            def spoke(a,r0,r1,h0,h1,label):
+                sv=[]
                 for xx in [-.019,.019]:
-                    for rad,w in [(.077,-half),(.285,-half*.75),(.285,half*.75),(.077,half)]:
-                        sv.append((outer+xx,cy+math.sin(a)*rad*s+math.cos(a)*w,cz+math.cos(a)*rad*s-math.sin(a)*w))
-                sp=mesh('Tapered cast alloy spoke',sv,[(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],M['alloy']);bevel(sp,.007,3)
+                    for rad,w in [(r0,-h0),(r1,-h1),(r1,h1),(r0,h0)]:
+                        xr=outer+xx-side*dish*(1-(rad-.077)/.21)
+                        sv.append((xr,cy+math.sin(a)*rad*s*k_+math.cos(a)*w,cz+math.cos(a)*rad*s*k_-math.sin(a)*w))
+                sp=mesh(label,sv,[(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],fin);bevel(sp,.006,2)
+            for i in range(count):
+                a=i*math.tau/count
+                if style=='split':
+                    spoke(a,.077,.17,half*1.6,half*1.4,'Split spoke root')
+                    for da in (-.11,.11):spoke(a+da*.5,.17,.285,half,half*.8,'Split spoke arm')
+                elif style=='mesh':
+                    for da in (-.30,.30):spoke(a,.077,.285,half,half,'Mesh spoke')   # (pairs cross into a mesh)
+                    spoke(a+.31,.15,.285,half,half,'Mesh spoke')
+                else:spoke(a,.077,.285,half,half*.75,'Tapered cast alloy spoke')
             for i in range(4):
                 a=i*math.tau/4+.4;cylinder('Wheel nut',(outer+side*.028,cy+math.sin(a)*.07*s,cz+math.cos(a)*.07*s),.013,.012,M['trim'],vertices=10,r=0)
-            cylinder('Hub centre',(outer+side*.027,cy,cz),.10*s,.05,M['alloy'])
+            cylinder('Hub centre',(outer+side*.027,cy,cz),.10*s,.05,fin)
             cylinder('Hub badge',(outer+side*.055,cy,cz),.044*s,.008,hubmat,vertices=24)
         elif style=='steel':
             cylinder('Pressed steel wheel',(outer-side*.01,cy,cz),.29*s,.03,M['steel'],vertices=48)
@@ -1099,7 +1673,7 @@ class Car:
         bpy.data.objects.remove(cutter,do_unlink=True)
 
     def build(self):
-        self.shell();self.greenhouse();self.bumper(True);self.bumper(False);self.headlamps();self.grille();self.tail()
+        self.shell();self.greenhouse();self.bumper(True);self.bumper(False);self.headlamps();self.grille();self.face();self.tail()
         self.body_details();self.interior();self.extras();self.cut_grooves()
         if '--profile' in args:
             dg=bpy.context.evaluated_depsgraph_get();tally={}
@@ -1112,6 +1686,7 @@ class Car:
         parts=[o for o in bpy.context.scene.objects if o.type in {'MESH','CURVE'} and o.parent is None]
         for o in parts:o.select_set(True)
         bpy.context.view_layer.objects.active=self.body;bpy.ops.object.convert(target='MESH');bpy.ops.object.join();bpy.context.object.name='Body'
+        if self.R.get('lower'):bpy.context.object.location.z-=self.R['lower']   # (a lowered kit sits down over the same wheels; negative lifts an off-roader)
         for side,letter in [(-1,'L'),(1,'R')]:
             for cy,end in [(self.fa,'F'),(self.ra,'R')]:
                 self.wheel(side,cy,'Wheel_'+end+letter)
@@ -1156,21 +1731,65 @@ def render(cid,paint,out):
     out.mkdir(parents=True,exist_ok=True)
     # Close-ups (--closeups) catch surface faults: the nose/bonnet and a front wheel arch.
     views=[('front',(4.4,6.1,3.0),(0,0,.85),5.2),('rear',(-4.6,-6.0,2.9),(0,0,.85),5.2),('side',(7,0,1.3),(0,0,.85),5.2)]
-    if '--closeups' in args:views+=[('nose',(2.2,5.2,2.4),(0,1.3,.7),2.0),('arch',(4.0,2.6,1.2),(.8,1.0,.55),1.6),('top',(.4,1.0,5.0),(0,.4,.8),3.4)]
+    if '--closeups' in args:views+=[('nose',(2.2,5.2,2.4),(0,1.3,.7),2.0),('arch',(4.0,2.6,1.2),(.8,1.0,.55),1.6),('top',(.4,1.0,5.0),(0,.4,.8),3.4),('cowl',(1.3,2.9,1.9),(0,.35,1.0),1.3)]
     for label,loc,aim,scale in views:
         cam.location=loc;d.ortho_scale=scale;cam.rotation_euler=(Vector(aim)-cam.location).to_track_quat('-Z','Y').to_euler()
         scene.render.filepath=str(out/f'{cid}-{label}.png');bpy.ops.render.render(write_still=True)
+
+def lineup(ids,out):
+    """The whole field in one scene: two staggered rows facing the camera (doc 65)."""
+    clear_scene();scene=bpy.context.scene;per=6 if len(ids)>12 else (len(ids)+1)//2;rows=(len(ids)+per-1)//per
+    depth=(rows-1)*5.6;A=Vector((0,-depth*.5,.6));scale=19.5+max(0,depth-5.6)*.95
+    for i,cid in enumerate(ids):
+        row,col=divmod(i,per);n=min(per,len(ids)-row*per)
+        with bpy.data.libraries.load(str(out/'cars'/(cid+'.blend'))) as (src,dst):dst.objects=list(src.objects)
+        off=Vector((-((col-(n-1)*.5)*3.0+(row%2)*1.5),-row*5.6,0))   # (the camera looks back down -y: first car on the left)
+        for o in dst.objects:
+            if o is None or o.type not in {'MESH','EMPTY','CURVE'} or o.name.startswith('Review floor'):continue   # (each car's own review floor overlapped the rest and shadowed it black)
+            scene.collection.objects.link(o)
+            if o.parent is None:o.location=o.location+off
+    scene.render.engine='CYCLES';scene.cycles.samples=32;scene.cycles.use_denoising=True
+    scene.render.resolution_x=3000;scene.render.resolution_y=1700
+    scene.world=bpy.data.worlds.new('World')
+    try:scene.world.use_nodes=True
+    except Exception:pass
+    bg=scene.world.node_tree.nodes['Background'];bg.inputs[0].default_value=(.65,.72,.76,1);bg.inputs[1].default_value=.3
+    floor=material('Review floor',(.68,.65,.54),0,.85);box('Review floor',(0,0,-.05),(120,120,.1),floor,0)
+    def area(name,loc,power,size,color):
+        d=bpy.data.lights.new(name,'AREA');d.energy=power;d.shape='DISK';d.size=size;d.color=color
+        o=bpy.data.objects.new(name,d);scene.collection.objects.link(o);o.location=A+Vector(loc);o.rotation_euler=(A+Vector((0,0,.2))-o.location).to_track_quat('-Z','Y').to_euler()
+    k=(scale/19.5)**1.2   # (lights back off and brighten with the grid's size; squared washed the paint out)
+    area('Warm key',(-9*scale/19.5,12.8*scale/19.5,16),5200*k,16,(1,.9,.77));area('Cool fill',(12*scale/19.5,4.8,8),2000*k,12,(.7,.86,1));area('Rim',(3,-13.2*scale/19.5,11),3600*k,10,(1,.96,.86))
+    d=bpy.data.cameras.new('Cam');cam=bpy.data.objects.new('Cam',d);scene.collection.objects.link(cam);scene.camera=cam;d.type='ORTHO'
+    scene.view_settings.view_transform='AgX'
+    f=scale/19.5
+    for label,loc,aim,scale in [('field-front',tuple(A+Vector((9*f,19.8*f,10.4*f))),tuple(A),scale),('field-rear',tuple(A+Vector((-9*f,-21.2*f,10.4*f))),tuple(A),scale)]:
+        cam.location=loc;d.ortho_scale=scale;cam.rotation_euler=(Vector(aim)-cam.location).to_track_quat('-Z','Y').to_euler()
+        scene.render.filepath=str(out/f'{label}.png');bpy.ops.render.render(write_still=True)
 
 PAINTS={'pebble':(.85,.30,.25),'tallboy':(.95,.75,.20),'marlow':(.20,.35,.70),'dover':(.15,.45,.40),'heron':(.55,.12,.12),
         'bramble':(.30,.55,.20),'picnic':(.40,.65,.85),'kipper':(.90,.45,.15),'doodle':(.55,.75,.70),'otter':(.60,.35,.10),
         'sprint':(.85,.85,.82),'comet':(.10,.12,.14),'rally':(.15,.30,.75),'roadster':(.75,.08,.08),'zenith':(.05,.20,.55),'puddle':(.08,.56,.49),
         'bubble':(.95,.55,.70),'beetle':(.45,.70,.90),'taxi':(.98,.78,.10),'camper':(.35,.70,.55),'gelato':(.98,.85,.88),'minibus':(.95,.62,.15),'ritz':(.12,.18,.30),'postvan':(.80,.06,.05),
         'cob':(.30,.42,.30),'drover':(.85,.85,.82),'scamp':(.90,.55,.12),'fell':(.55,.12,.10),'tumbler':(.75,.68,.45),'hauler':(.20,.45,.70),
-        'pitgarage':(.08,.72,.66),'pitparts':(1.0,.74,.06),'pitbody':(1.0,.34,.64)}
+        'raijin':(.98,.58,.0),'hoshi':(.62,.04,.04),'regale_toy':(.30,.16,.62),'hayate':(.04,.22,.62),'kaze':(.90,.33,.04),
+        'kumo':(.04,.32,.18),'tsubasa':(.80,.08,.06),'sakura':(.74,.06,.32),'shiro':(.95,.94,.90),
+        'fubuki':(.06,.20,.60),'hachi':(.92,.92,.88),'kogarashi':(.75,.06,.08),'arashi':(.38,.02,.08),'taiyo':(.70,.72,.74),
+        'midori':(.20,.55,.15),'hibari':(.95,.75,.05),'tsuki':(.45,.80,.10),'yoru':(.20,.07,.30),'nagare':(.30,.32,.36),
+        'kage':(.03,.03,.04),'chibi':(.10,.60,.62),'kitsune':(.70,.22,.05),
+        'sabaku':(.92,.92,.88),'yama':(.45,.06,.06),'tanuki':(.95,.78,.08),'tora':(.92,.40,.06),'kaminari':(.78,.06,.08),'kiri':(.70,.55,.12),
+        'sprint_tuner':(.85,.85,.82),'comet_tuner':(.10,.12,.14),'rally_tuner':(.15,.30,.75),'pitgarage':(.08,.72,.66),'pitparts':(1.0,.74,.06),'pitbody':(1.0,.34,.64)}
+def paint_of(cid):
+    """A kit wears its C car's paint unless it has its own."""
+    return PAINTS.get(cid) or PAINTS[cid[:-6] if cid.endswith('_tuner') else cid]
 report={}
 for cid in ONLY:
     clear_scene();car=Car(cid,RECIPES[cid]);car.build();info=stats(cid)
     if EXPORT:info['lods']=export(cid)
-    if RENDER:render(cid,PAINTS[cid],RENDER)
+    if RENDER:render(cid,paint_of(cid),RENDER)
+    if LINEUP:
+        bpy.data.materials['BodyPaint'].node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*paint_of(cid),1)
+        (LINEUP/'cars').mkdir(parents=True,exist_ok=True);bpy.ops.wm.save_as_mainfile(filepath=str(LINEUP/'cars'/(cid+'.blend')),copy=True)
     report[cid]=info;print('FAMILY_CAR_BUILT',json.dumps(info))
 print('FAMILY_CARS_DONE',json.dumps(report))
+if LINEUP:lineup(ONLY,LINEUP)

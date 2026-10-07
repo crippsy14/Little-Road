@@ -166,10 +166,12 @@ namespace LittleRoad
         void PlaceObstacles()
         {
             float end=run[^1];int side=1;var coneMat=TrialWorld.Material("Climb cone",new Color(1,.45f,.1f),0,.4f);var court=HillcrestRoute.CastleCourt;
-            for(float s=80;s<end-50;s+=55) {
-                var (c,f,h)=At(s);if(Flat(c-court).magnitude<45)continue;
-                var (_,f0,_)=At(s-10);var (_,f1,_)=At(s+10);if(Vector3.Angle(f0,f1)>28)continue;   // tight bend: skip
-                var right=Vector3.Cross(Vector3.up,f);var lane=c+right*side*h*.48f;
+            // (Richard, 5 Oct: the obstacles were barely in the way.) A slalom: every 38 m a bale across one lane's middle,
+            // the next across the other, so the line weaves; only the tightest bends are skipped.
+            for(float s=70;s<end-45;s+=38) {
+                var (c,f,h)=At(s);if(Flat(c-court).magnitude<40)continue;
+                var (_,f0,_)=At(s-8);var (_,f1,_)=At(s+8);if(Vector3.Angle(f0,f1)>40)continue;   // hairpin: skip
+                var right=Vector3.Cross(Vector3.up,f);var lane=c+right*side*h*.3f;
                 if(!Ground(lane,c.y,out float y))continue;lane.y=y;
                 if(BayviewKit.Has("hay_bale")) {
                     var bale=BayviewKit.Spawn("hay_bale",lane,Quaternion.LookRotation(right).eulerAngles.y,BayviewKit.AnimatedRoot,scale:1.25f);bale.transform.SetParent(root,true);

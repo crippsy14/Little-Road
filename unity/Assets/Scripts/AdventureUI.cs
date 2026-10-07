@@ -143,6 +143,7 @@ namespace LittleRoad
         public void Discovery(string place,string subtitle)=>toaster.Show(place,subtitle,Toy.Sky,"DISCOVERED");
         public void Card(string headline,string detail,Color colour,string tag)=>toaster.Show(headline,detail,colour,tag);
         public void SetVisible(bool value){canvas.enabled=value;}
+        public bool Visible=>canvas!=null&&canvas.enabled;
         public void SetHudVisible(bool value){topBar.gameObject.SetActive(value);bottomBar.gameObject.SetActive(value);if(!value)dash.gameObject.SetActive(false);}
         void LateUpdate()
         {

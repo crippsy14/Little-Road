@@ -29,6 +29,11 @@ Run-Batch @(
   @{name='leap';script=".\tools\quarry-run.ps1 -Name $Name-leap -NoReview -Flags @('--leap-test') $test"},
   @{name='festival';script=".\tools\quarry-run.ps1 -Name $Name-festival -NoReview -Flags @('--festival','--festival-test') $test"},
   @{name='area-audit';script=".\tools\quarry-run.ps1 -Name $Name-area-audit -Flags @('--area-audit') 2>&1 | Out-Null; Get-Content review/quarry-hills/$Name-area-audit/area-audit.txt | Select-String 'FAIL|PASS|^    ' | ForEach-Object Line"})
+Run-Batch @(
+  @{name='harvest';script=".\tools\quarry-run.ps1 -Name $Name-harvest -NoReview -Flags @('--harvest-test') $test"},
+  @{name='apples';script=".\tools\quarry-run.ps1 -Name $Name-apples -NoReview -Flags @('--apples-test') $test"},
+  @{name='activity-hud';script=".\tools\quarry-run.ps1 -Name $Name-activity-hud -NoReview -Flags @('--activity-hud-review','--trial-captures','review/quarry-hills/$Name-activity-hud') 2>&1 | Select-String '_REVIEW |Exception' | ForEach-Object Line"},
+  @{name='train';script=".\tools\quarry-run.ps1 -Name $Name-train -Flags @('--train-race-test','bayview') 2>&1 | Out-Null; Get-Content review/quarry-hills/$Name-train/train-race-test.txt | Select-String 'countdown|win|lose|ended' | ForEach-Object Line"})
 # The sound smoke, alone: player-engine.wav RMS (about 6890 since 30 Sep).
 . "$PSScriptRoot/quiet-start.ps1"
 $exe=Join-Path $root '../little-road-dev-build/Little Road Unity.exe';$f=Join-Path $root "review/sound/$Name-smoke";New-Item -ItemType Directory -Force $f|Out-Null

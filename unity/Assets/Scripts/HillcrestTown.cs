@@ -692,11 +692,8 @@ namespace LittleRoad
             Kit("tractor",-70,52,55);Kit("tractor",-86,48,-30,null,null,.95f);
             foreach(var (x,z,y) in new[]{(-50f,64f,.65f),(-48.7f,64f,.65f),(-51.3f,64f,.65f),(-49.35f,64f,1.9f),(-50.65f,64f,1.9f),(-50f,64f,3.1f)}) {var b=Kit("hay_bale",x,z,0);b.transform.position+=Vector3.up*(y-.65f);}
             Fence(new(-100,46),new(-52,46),new Vector2(-94,-80));Fence(new(-52,46),new(-52,78));
-            // Farmer Giles: rolls up to chat by the yard.
-            var farmer=TrialWorld.Car("beetle",Toy.Hex(0x2e9e5b));farmer.name="Farmer Giles";farmer.transform.SetParent(holder);farmer.transform.SetPositionAndRotation(F(-60,58)+Vector3.up*.02f,Quaternion.Euler(0,yaw+200,0));
-            var box=farmer.AddComponent<BoxCollider>();box.center=CarBodies.Envelope.center;box.size=CarBodies.Envelope.size;farmer.tag="Respawn";
-            farmer.AddComponent<ResidentIdle>();var chatter=farmer.AddComponent<NpcChatter>();chatter.speaker="Farmer Giles";chatter.title="Golden Acre Farm";chatter.colour=Toy.Hex(0xffd23f);
-            chatter.lines=new[]{"That wheat's taller than you are! Go on, drive through it.","Make me a crop circle. The tourists love a crop circle.","Mind the sunflowers, they bruise easy.","Harvest's next week. Flatten away, it's all the same to the combine!"};
+            // Farmer Giles waits by the yard: a resident now, with the farm's challenges (FarmChallenges, doc 64).
+            Spots["farm"]=(F(-60,58),yaw+200);
             // The wheat: fenced, with gaps on the yard side and the lane side to drive in.
             var wc=HillcrestRoute.Farm(WheatLocal.x,WheatLocal.y);float x0=WheatLocal.x-WheatSize.x*.5f,x1=WheatLocal.x+WheatSize.x*.5f,z0=WheatLocal.y-WheatSize.y*.5f,z1=WheatLocal.y+WheatSize.y*.5f;
             WheatField.Create("Golden Acre wheat",holder,wc,WheatSize,yaw,H,331);
@@ -725,7 +722,9 @@ namespace LittleRoad
             Fence(new(x0-1.5f,-85.5f),new(x1+1.5f,-85.5f));
             // Hay meadow north of the wheat: mown stripes and rows of round bales.
             for(float z=40;z<=76;z+=6)Slab("Mown stripe",WheatLocal.x+8,z,112,.02f,3,mown,.02f);
-            for(int r=0;r<3;r++)for(int c=0;c<8;c++)Kit("hay_bale",-30+c*14+(r%2)*7,46+r*12,(c*37+r*11)%90);
+            // (The meadow's round bales made way for the orchard: Apple Shake, doc 64.) A few bales at its west end.
+            for(int c=0;c<4;c++)Kit("hay_bale",-40+(c%2)*2.6f,74-c*1.6f,(c*37)%90);
+            int apples=Orchard.Build(holder,(x,z)=>F(x,z),yaw);Debug.Log("LITTLE_ROAD_ORCHARD trees="+apples);
             Debug.Log("LITTLE_ROAD_FARM estate=Golden Acre wheat="+WheatSize.x+"x"+WheatSize.y);
         }
         // Olive trees, cypresses and the odd cottage on the slopes between the spiral's loops.

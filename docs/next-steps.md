@@ -6,6 +6,16 @@
 - The working machines: an excavator, dump trucks and a loader, which line up to watch the rallycross.
 - The Gran Turismo-style rally licence screens.
 
+**6 October:** the class B Tuners ([doc 65](65-class-b-tuner-cars.md)) and car builder v2 ([doc 66](66-car-builder-v2.md)):
+- Phase 1 added per-station sections, fender pods, road tyres and wheel finishes.
+- Phase 2 added a lofted cabin with windows by outline, face outlines and integrated noses.
+- The Hayate, Kaze, Raijin and Hoshi now each have their own cabin and face (`review/cars/tuner-v3`).
+- The cars are renders only; export them to the game once Richard is happy.
+
+The farm/HUD round (doc 64) is still uncommitted: the farm autopilot tests need fixing first.
+
+**5 October, evening:** Farmer Giles's Harvest and Apple Shake, a new challenge HUD (title card → corner tracker, quest card) with Restart/Exit in the pause menu, the train race and countdown fixed, and a harder Hard Castle Climb: [doc 64](64-farm-challenges-and-activity-hud.md).
+
 **5 October, later:** in free time I built the Blast Run (race Dai up the haul road before the quarry blast) and the Tip Leap (a danger-sign jump off the big tip): [doc 63](63-blast-run-and-tip-leap.md).
 
 **5 October:** the street review is finished and its findings fixed, low-severity ones included (doc 62, round four). The reviewer is the Sonnet `street-reviewer-high` agent (`review/street-review/effort-comparison.md`).

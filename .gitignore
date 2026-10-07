@@ -108,3 +108,5 @@ review/engine-compare-baseline/
 review/engine-ingame/
 review/duke-race/
 review/map-sweep/*/
+# Car-builder renders and review .blend files (source-art/build_family_cars.py --render/--lineup): regenerated.
+review/cars/

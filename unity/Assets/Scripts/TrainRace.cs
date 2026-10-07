@@ -23,7 +23,8 @@ namespace LittleRoad
         public bool Active {get;private set;}
         public bool ToHillcrest {get;private set;}
         public Vector3 Goal {get;private set;}
-        float goTime=-1,trainTime,headStart;int destStop;bool finished;
+        float goTime=-1,goAt,trainTime,headStart;int destStop;bool finished;
+        public float GoAt=>goAt;public float HeadStart=>headStart;public float TrainTime=>trainTime;
 
         public void Setup(RoadCar car,Func<AdventureStore> saves,Action<string> toast,Action<string,string> showCard){player=car;store=saves;notify=toast;card=showCard;}
         public static string Id(bool toHillcrest)=>toHillcrest?Ids[0]:Ids[1];
@@ -54,17 +55,19 @@ namespace LittleRoad
             if(train.TimeToNext(fromStop,top)<target){float lo=4,hi=top;for(int i=0;i<22;i++){float mid=(lo+hi)*.5f;if(train.TimeToNext(fromStop,mid)>target)lo=mid;else hi=mid;}top=hi;}
             else if(train.TimeToNext(fromStop,top)>target*1.6f){float lo=top,hi=34;for(int i=0;i<22;i++){float mid=(lo+hi)*.5f;if(train.TimeToNext(fromStop,mid)>target*1.6f)lo=mid;else hi=mid;}top=hi;}
             train.MaxSpeed=top;trainTime=train.TimeToNext(fromStop,top);headStart=Mathf.Max(0,trainTime-target);
-            train.Hold(fromStop,1.8f);train.Arrived+=OnArrived;
+            // Bert leaves `headStart` seconds before your GO, and your countdown is at least 3 s (5 Oct: with no head start
+            // the old 3-2-1 lasted a hundredth of a second each).
+            float hold=Mathf.Max(1.8f,3-headStart);goAt=Time.time+hold+headStart;
+            train.Hold(fromStop,hold);train.Arrived+=OnArrived;
             Goal=Arrival(toHillcrest);Active=true;finished=false;goTime=-1;if(player!=null)player.holdStill=true;   // held from the first physics step
             Debug.Log($"LITTLE_ROAD_TRAIN_RACE start to={(toHillcrest?"hillcrest":"bayview")} stock={target/Margin:0.0}s train={trainTime:0.0}s top={train.MaxSpeed*SpeedTraps.Mph:0} mph route={SpeedProfile.Length(Route(toHillcrest)):0}m head={headStart:0.0}s");
             StartCoroutine(Countdown());
         }
+        // (The 3-2-1 and its beeps are the challenge HUD's: ActivityHud and ToyCountdown.)
         IEnumerator Countdown()
         {
-            notify?.Invoke($"Beat the train to {(ToHillcrest?"Hillcrest":"Bayview Halt")}! · Bert gets a {headStart:0}-second head start");
-            yield return new WaitForSeconds(1.8f+Mathf.Max(0,headStart-3));
-            foreach(int n in new[]{3,2,1}){AudioDirector.Beep(880,.14f);notify?.Invoke(n+"...");yield return new WaitForSeconds(Mathf.Min(1,headStart/3+.01f));}
-            AudioDirector.Beep(1760,.5f);notify?.Invoke("GO! Beat the train!");goTime=Time.time;
+            while(Time.time<goAt)yield return null;
+            goTime=Time.time;
         }
         public float Elapsed=>goTime<0?0:Time.time-goTime;
         // Counting down: the car is held (it can rev).

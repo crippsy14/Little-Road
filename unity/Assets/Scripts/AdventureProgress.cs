@@ -73,7 +73,7 @@ namespace LittleRoad
         public Dictionary<string,string> Loadout()=>fitted.ToDictionary(p=>p.slot,p=>p.id);
         public void Validate()
         {
-            if(traps!=null&&(traps.Any(t=>t==null||!(SpeedTraps.Known(t.id)||TrainRace.Known(t.id)||DukeDrive.Known(t.id)||RallySchool.Known(t.id)||GalleryClimb.Known(t.id)||BlastRun.Known(t.id)||TipLeap.Known(t.id))||t.stars<0||t.stars>3||t.best<0||t.best>500)||traps.Select(t=>t.id).Distinct().Count()!=traps.Count))throw new InvalidDataException("A speed trap record is invalid or repeated.");
+            if(traps!=null&&(traps.Any(t=>t==null||!(SpeedTraps.Known(t.id)||TrainRace.Known(t.id)||DukeDrive.Known(t.id)||RallySchool.Known(t.id)||GalleryClimb.Known(t.id)||BlastRun.Known(t.id)||TipLeap.Known(t.id)||FarmChallenges.Known(t.id))||t.stars<0||t.stars>3||t.best<0||t.best>500)||traps.Select(t=>t.id).Distinct().Count()!=traps.Count))throw new InvalidDataException("A speed trap record is invalid or repeated.");
             if(spot!=null&&spot.Length!=0&&(spot.Length!=4||spot.Any(v=>float.IsNaN(v)||float.IsInfinity(v))||Mathf.Abs(spot[0])>20000||Mathf.Abs(spot[2])>20000||Mathf.Abs(spot[1])>2000))throw new InvalidDataException("The saved position is invalid.");
             if(tunes!=null&&(tunes.Any(t=>t==null||!t.Valid)||tunes.Select(t=>t.transmission).Distinct().Count()!=tunes.Count))throw new InvalidDataException("A gearbox tune is invalid or repeated.");
             if(version!=1||credits<0||credits>10000000||questStage<0||questStage>3||paintIndex<0||paintIndex>=PaintCatalog.All.Length||

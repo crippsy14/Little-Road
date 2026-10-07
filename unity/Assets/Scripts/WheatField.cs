@@ -12,6 +12,8 @@ namespace LittleRoad
         public static readonly List<WheatField> All=new();
         // The adventure player's car (set by ValleyLife); only it tramples.
         public static RoadCar Player;
+        // The Harvest (FarmChallenges, doc 64): extra half-width cut by the harvester header on the player's bumper.
+        public static float Header;
         const float Texel=.4f,Chunk=20;
         Vector3 corner,axisX,axisZ;Vector2 size;int w,h;Texture2D trample;Color32[] pixels;bool dirty;int flattened;float chaffTimer;
         Chaff chaff;
@@ -23,6 +25,8 @@ namespace LittleRoad
             var go=new GameObject(name);go.transform.SetParent(parent,false);var field=go.AddComponent<WheatField>();field.Build(centre,size,yaw,ground,seed,height);All.Add(field);return field;
         }
         void OnDestroy()=>All.Remove(this);
+        // Every stalk standing again (a fresh attempt at the Harvest).
+        public void Regrow(){for(int i=0;i<pixels.Length;i++)pixels[i]=new Color32(0,128,128,255);flattened=0;dirty=true;}
 
         void Build(Vector3 centre,Vector2 fieldSize,float yaw,System.Func<float,float,float> ground,int seed,float height)
         {
@@ -111,10 +115,10 @@ namespace LittleRoad
         {
             var car=Player;
             if(car!=null&&car.body!=null&&Contains(car.transform.position,3)&&Mathf.Abs(car.speed)>.4f) {
-                var f=car.transform.forward;int fresh=Press(car.transform.position,f,car.speed>=0?f:-f,2.3f,1.2f);
+                var f=car.transform.forward;int fresh=Press(car.transform.position+f*(Header>0?1.4f:0),f,car.speed>=0?f:-f,2.3f+(Header>0?1:0),1.2f+Header);
                 if(fresh>0) {
-                    // Pushing through standing wheat: a little drag and a spray of chaff.
-                    float drag=Mathf.Clamp01(fresh/30f)*.9f*Time.deltaTime;car.body.linearVelocity*=1-drag;
+                    // Pushing through standing wheat: a little drag and a spray of chaff (a header cuts it, so less drag).
+                    float drag=Mathf.Clamp01(fresh/(30f*(1+Header)))*.9f*Time.deltaTime;car.body.linearVelocity*=1-drag;
                     chaffTimer-=Time.deltaTime;
                     if(chaffTimer<=0){chaffTimer=.05f;var r=car.transform.right;foreach(int side in new[]{-1,1})chaff.Burst(car.transform.position+f*1.9f+r*side*1.1f+Vector3.up*1.1f,f*Mathf.Abs(car.speed)*.25f+r*side*1.4f);}
                 }
@@ -124,7 +128,7 @@ namespace LittleRoad
         // Straw and chaff kicked up from the wheat.
         public sealed class Chaff:PuffPool
         {
-            public void Setup()=>material=TrialWorld.Material("Wheat chaff",new Color(.97f,.84f,.46f),0,.1f);
+            public void Setup(){soft=true;material=SoftMaterial("Wheat chaff",new Color(.97f,.84f,.46f));}   // (soft: opaque, the chaff read as yellow balls)
             public void Burst(Vector3 at,Vector3 velocity)=>Emit(at,velocity+Random.insideUnitSphere*1.2f+Vector3.up*1.6f,Random.Range(.22f,.4f),Random.Range(.7f,1.1f));
             void Update()=>Step(Time.deltaTime);
         }

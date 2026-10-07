@@ -57,7 +57,7 @@ namespace LittleRoad
             foreach(var (id,key) in new[]{("garage","bayview/garage"),("parts","bayview/parts")})if(PitStop.Hosts.TryGetValue(key,out var host)){residents[id]=host.at;residentYaw[id]=host.yaw;}
             residents["cafe"]=new Vector3(-40.5f,0,-101.8f);residents["paint"]=new Vector3(3.5f,0,-102.2f);
             if(HillcrestTown.Spots.Count>0){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}
-            foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
+            foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout","farm"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
             // Quarry Hills (--quarry-hills): Gwen at the rally school.
             foreach(var id in new[]{"rallyschool","qgarage","qparts","qbody","caban","slatequay"})if(QuarryHillsTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
             // Dai the Dumper on the quarry floor, at the foot of the haul road: the Blast Run (BlastRun, doc 63).
@@ -80,6 +80,9 @@ namespace LittleRoad
             // Fireworks over Bayview harbour at night (docs/51).
             var fireworks=gameObject.AddComponent<Fireworks>();fireworks.Setup();fireworks.Announce=Notify;
             // Speed traps on seven roads (docs/51).
+            activityHud=gameObject.AddComponent<ActivityHud>();activityHud.visible=()=>ui.Visible&&!reviewing;
+            gameObject.AddComponent<ToyCountdown>().Setup(()=>activity!=null?activity.Elapsed:9f,()=>activity==null||(pause!=null&&pause.IsOpen)||!ui.Visible);
+            farm=gameObject.AddComponent<FarmChallenges>();farm.Finished+=FarmFinished;
             if(TipLeap.Ready){leap=gameObject.AddComponent<TipLeap>();leap.Setup(player,()=>Store,Notify,(title,detail)=>ui.Card(title,detail,Toy.Orange,"TIP LEAP"));}
             if(BlastRun.Ready){blast=gameObject.AddComponent<BlastRun>();blast.Crossed+=BlastCrossed;blast.Shot+=BlastShot;}
             trainRace=gameObject.AddComponent<TrainRace>();trainRace.Setup(player,()=>Store,Notify,(title,detail)=>ui.Card(title,detail,Toy.Red,"BEAT THE TRAIN"));
@@ -117,7 +120,8 @@ namespace LittleRoad
             if(!Application.isBatchMode&&!RaceTrial.Has("--no-minimap")){mapTexture=WorldMap.Bake();minimap=gameObject.AddComponent<Minimap>();minimap.Setup(player,mapTexture,MapMarks,()=>WorldMap.Labels(ResidentDirectory(),world.track));}
             GraphicsOptions.Changed+=OnOptionChanged;
             pause=gameObject.AddComponent<PauseMenu>();pause.Setup(new PauseMenu.Context{save=()=>Store.Data,area=()=>AreaBanner.Area(player.transform.position),objective=()=>GoalText(false),car=player.transform,
-                minimap=minimap,marks=MapMarks,map=mapTexture,settings=SettingsItems,quit=Application.Quit,car_=CarSummary,warpLabel=WarpLabel,warp=WarpToGarage});
+                minimap=minimap,marks=MapMarks,map=mapTexture,settings=SettingsItems,quit=Application.Quit,car_=CarSummary,warpLabel=WarpLabel,warp=WarpToGarage,
+                activity=()=>activity==null?null:(activity.title,()=>{pause.Close();RestartActivity();},()=>{pause.Close();ExitActivity();})});
             Mark("map-pause");CarContact.SeatAll(); // every standing car onto its four wheels (docs/57, 2.5)
             Debug.Log("LITTLE_ROAD_ADVENTURE_READY save="+Store.path+" quest="+Store.Data.questStage+" credits="+Store.Data.credits+" "+RaceTrial.LoadTime);LoadingScreen.Ready();
             // --load-timing: measure the load (LITTLE_ROAD_LOAD_STEP lines) and quit (W1 world tiles).
@@ -157,6 +161,12 @@ namespace LittleRoad
             // Test (--quarry-hills --leap-test): the car at the top of the run-up at 32 m/s (about 72 mph), physics from
             // there; passes if it takes off and lands past the first star.
             if(RaceTrial.Has("--leap-test")&&leap!=null){StartCoroutine(LeapTest());yield break;}
+            // Tests (doc 64): --harvest-test and --apples-test talk to Giles, start the challenge and drive it with a
+            // velocity autopilot (rows across the wheat; down each orchard row); --activity-hud-review photographs the
+            // intro card, the corner tracker and the pause menu's challenge controls, then exits the challenge.
+            if(RaceTrial.Has("--harvest-test")&&residents.ContainsKey("farm")){StartCoroutine(FarmTest(FarmChallenges.Kind.Harvest));yield break;}
+            if(RaceTrial.Has("--apples-test")&&residents.ContainsKey("farm")){StartCoroutine(FarmTest(FarmChallenges.Kind.Apples));yield break;}
+            if(RaceTrial.Has("--activity-hud-review")&&residents.ContainsKey("farm")){StartCoroutine(ActivityHudReview());yield break;}
             if(RaceTrial.Has("--carving-test")&&QuarryHillsTown.Spots.Count>0){StartCoroutine(CarvingTest());yield break;}
             if(RaceTrial.Has("--wayfinding-test")){reviewing=true;StartCoroutine(WayfindingTest());yield break;}
             if(RaceTrial.Has("--world-tiles-test")){StartCoroutine(WorldTilesTest());yield break;}
@@ -383,6 +393,58 @@ namespace LittleRoad
             Debug.Log($"LITTLE_ROAD_CLIMB_TEST started={started} finished={(r!=null)} best={(r!=null?r.best:0)} rise={GalleryClimb.Finish.y-GalleryClimb.Start.y:0} points={path.Count}");
             Application.Quit(started&&r!=null?0:1);
         }
+        // A test autopilot through the points (the train test's way: the car's own throttle and steering), slowing for the
+        // turns between rows. Gives up on a point after 12 s.
+        IEnumerator DriveThrough(List<Vector3> points,float speed,Func<bool> stop)
+        {
+            int i=0;float since=Time.time;
+            player.commandSource=c=>{
+                if(i>=points.Count)return Vector2.zero;var to=points[i]-c.body.position;to.y=0;float angle=Vector3.SignedAngle(c.transform.forward,to,Vector3.up);
+                float want=Mathf.Lerp(speed,5,Mathf.InverseLerp(20,80,Mathf.Abs(angle)));
+                return new Vector2(DriveModel.PedalForSpeed(c.tuning,c.speed,want),Mathf.Clamp(angle/20,-1,1));};   // (behind: a full-lock turn, never reverse)
+            while(i<points.Count&&!stop()) {
+                var d=points[i]-player.body.position;d.y=0;if(d.magnitude<4||Time.time-since>12){i++;since=Time.time;}
+                yield return new WaitForFixedUpdate();
+            }
+            player.commandSource=null;
+        }
+        IEnumerator FarmTest(FarmChallenges.Kind k)
+        {
+            yield return new WaitForSeconds(1);var giles=residents["farm"];Place(giles+Quaternion.Euler(0,residentYaw["farm"],0)*Vector3.forward*5);yield return new WaitForSeconds(.5f);
+            bool talked=Interact("farm");bool started=talked&&ui.InvokeChoice(k==FarmChallenges.Kind.Harvest?"The Harvest":"Apple Shake");bool hud=activityHud.Busy;float credits=Store.Data.credits;
+            yield return new WaitForSeconds(FarmChallenges.Countdown+.1f);
+            Vector3 F(float x,float z){var q=HillcrestRoute.Farm(x,z);q.y=ValleyField.Height(q.x,q.z);return q;}
+            var route=new List<Vector3>();
+            if(k==FarmChallenges.Kind.Harvest){var w=HillcrestTown.WheatLocal;var size=HillcrestTown.WheatSize;bool east=true;
+                for(float z=w.y+size.y*.5f-3;z>w.y-size.y*.5f;z-=5.4f){route.Add(F(east?w.x-size.x*.5f+2:w.x+size.x*.5f-2,z));route.Add(F(east?w.x+size.x*.5f-2:w.x-size.x*.5f+2,z));east=!east;}}
+            else{const int cols=13;for(int r=0;r*cols<Orchard.All.Count;r++)for(int c=0;c<cols;c++){int n=r*cols+(r%2==0?c:cols-1-c);if(n<Orchard.All.Count)route.Add(Orchard.All[n].transform.position);}}   // (tree by tree, a row at a time)
+            if(Orchard.All.Count>0)Debug.Log($"LITTLE_ROAD_FARM_TEST route first=({route[0].x:0},{route[0].z:0}) tree0=({Orchard.All[0].transform.position.x:0},{Orchard.All[0].transform.position.z:0}) car=({player.body.position.x:0},{player.body.position.z:0})");
+            StartCoroutine(TraceFarm());
+            yield return DriveThrough(route,14,()=>!farm.Active);
+            float until=Time.time+FarmChallenges.Limit(k)+2;while(farm.Active&&Time.time<until)yield return null;
+            var r_=SpeedTraps.Record(Store.Data,FarmChallenges.Ids[(int)k]);
+            Debug.Log($"LITTLE_ROAD_FARM_TEST kind={k} talked={talked} started={started} hud={hud} result={farm.LastResult*100:0.0}% stars={farm.LastStars} best={r_?.best??0} credits={credits}->{Store.Data.credits} trees={Orchard.All.Count}");
+            Application.Quit(talked&&started&&hud&&farm.LastStars>=1?0:1);
+        }
+        IEnumerator TraceFarm(){while(farm.Active){Debug.Log($"LITTLE_ROAD_FARM_TRACE t={Time.time-farm.GoAt:0} car=({player.body.position.x:0},{player.body.position.z:0}) speed={player.speed:0.0} progress={farm.Progress*100:0}%");yield return new WaitForSeconds(4);}}
+        IEnumerator ActivityHudReview()
+        {
+            string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);
+            yield return new WaitForSeconds(1);var giles=residents["farm"];Place(giles+Quaternion.Euler(0,residentYaw["farm"],0)*Vector3.forward*5);yield return new WaitForSeconds(.5f);
+            Interact("farm");yield return new WaitForSeconds(.4f);Toy.Capture(Path.Combine(folder,"h0-giles.png"));
+            ui.InvokeChoice("The Harvest");yield return new WaitForSeconds(.9f);Toy.Capture(Path.Combine(folder,"h1-intro.png"));
+            yield return new WaitForSeconds(1.6f);Toy.Capture(Path.Combine(folder,"h2-flying.png"));
+            yield return new WaitForSeconds(1.5f);
+            var w=HillcrestTown.WheatLocal;var size=HillcrestTown.WheatSize;Vector3 F(float x,float z){var q=HillcrestRoute.Farm(x,z);q.y=ValleyField.Height(q.x,q.z);return q;}
+            yield return DriveThrough(new List<Vector3>{F(w.x-size.x*.5f+2,w.y+size.y*.5f-3),F(w.x+size.x*.5f-2,w.y+size.y*.5f-3),F(w.x+size.x*.5f-2,w.y+size.y*.5f-8.4f),F(w.x-20,w.y+size.y*.5f-8.4f)},14,()=>false);
+            Toy.Capture(Path.Combine(folder,"h3-tracker.png"));
+            pause.Open(0);yield return new WaitForSecondsRealtime(.6f);Toy.Capture(Path.Combine(folder,"h4-pause.png"));
+            bool exitShown=GameObject.Find("Choice Exit challenge")!=null;pause.Close();yield return null;ExitActivity();yield return new WaitForSeconds(1.2f);
+            Toy.Capture(Path.Combine(folder,"h5-after-exit.png"));
+            float fromGiles=Vector3.Distance(player.body.position,residents["farm"]);
+            Debug.Log($"LITTLE_ROAD_ACTIVITY_HUD_REVIEW exitShown={exitShown} backAtGiles={fromGiles:0.0}m active={activity!=null} farm={farm.Active}");
+            Application.Quit(exitShown&&fromGiles<12&&activity==null&&!farm.Active?0:1);
+        }
         IEnumerator LeapTest()
         {
             yield return new WaitForSeconds(1);string folder=RaceTrial.Arg("--trial-captures");
@@ -484,6 +546,7 @@ namespace LittleRoad
             ["qparts"]=(CarBodies.PitParts,PitYellow,"BETHAN / GRIT & GRAVEL","Bethan",Toy.Sun,new[]{"Mind the shelves! Mud flaps everywhere now.","Parts are for fitting, not for bumping, cariad.","Ooh, that'll want a sump guard."}),
             ["qbody"]=(CarBodies.PitBody,PitPink,"NIA / PIT STOP BODY SHOP","Nia",Toy.Pink,new[]{"Slate grey would hide that scratch, you know.","Careful! That's my show car's nan.","New look? I've got just the thing."}),
             ["caban"]=("otter",Toy.Hex(0xe9e3d3),"MEGAN / CABAN","Megan",Toy.Sky,new[]{"Careful! The cawl's still hot!","Tea's brewing, no need to knock!","Duw, you'll have the cakes off the shelf!"}),
+            ["farm"]=("beetle",Toy.Hex(0x2e9e5b),"GILES / GOLDEN ACRE FARM","Farmer Giles",Toy.Sun,new[]{"Mind the sunflowers, they bruise easy.","Steady! That's a working farm, that is.","Save it for the wheat, go on."}),
             ["blast"]=("hauler",Toy.Hex(0xf1c40f),"DAI / QUARRY FLOOR","Dai",Toy.Sun,new[]{"Oi! Twelve tonnes of dumper says you lose that one, butt.","Bump me again and I'll tip slate on your bonnet!","Save it for the haul road, go on."}),
             ["slatequay"]=("heron",Toy.Hex(0x1f3a93),"MARI / SLATE QUAY","Mari",Toy.Mint,new[]{"Mind the wagons! They're loaded!","Engine's warming up, keep clear of the shed!","Whoa! The quay's for slate, not stunts!"}),
         };
@@ -712,7 +775,8 @@ namespace LittleRoad
                         Notify(Collectibles.IsCarving(pair.Key)?$"Slate carving {got} of {Collectibles.Carvings} found · +50 credits":Collectibles.IsStamp(pair.Key)?$"Hillcrest stamp {got} of {Collectibles.Stamps} found · +50 credits":$"Bayview postcard {got} of {Collectibles.Postcards} found · +50 credits");}});
             }
             // Countdowns hold the car still but let it rev (Richard, 1 Oct).
-            player.holdStill=climbStart>=0&&Time.time<climbStart||trainRace!=null&&trainRace.Holding||school!=null&&school.Holding;
+            player.holdStill=climbStart>=0&&Time.time<climbStart||trainRace!=null&&trainRace.Holding||school!=null&&school.Holding||activity!=null&&Time.time<activity.go;
+            if(activity!=null&&activity.running!=null&&!activity.running())EndActivity();
 
             if(pin is Vector3 pinned&&Vector3.Distance(player.body.position,pinned)<20){pin=null;Notify("You're there: "+pinLabel+".");}
             UpdateClimb();UpdateSprint();UpdateGalleryClimb();UpdateVisit();RefreshHUD();SaveSpot();
@@ -768,7 +832,8 @@ namespace LittleRoad
             if(Mathf.Abs(player.speed)<=1.2f){if(stoppedSince<0)stoppedSince=now;}else stoppedSince=-1;
             float stopped=stoppedSince<0?0:now-stoppedSince;
             bool timed=climbStart>=0||sprintStart>=0||galleryStart>=0||school!=null&&school.Active||blast!=null&&blast.Active;
-            ui.Roam(GoalText(true),timed||now<goalUntil||stopped>1.5f,null,false,player);
+            ui.Roam(GoalText(true),false,null,false,player);   // (the objective now lives on ActivityHud's quest card, doc 64)
+            activityHud.Quest(activity!=null?null:GoalText(true),!ui.IsOpen&&(timed||now<goalUntil||stopped>1.5f));
         }
         // Pause hub > Settings: the Options screen (every setting, in tabs), then Save and Quit (added by the hub).
         List<(string label,Action act)> SettingsItems()=>new(){
@@ -1052,7 +1117,7 @@ namespace LittleRoad
         {
             if(!residents.ContainsKey(id)||Vector3.Distance(player.body.position,residents[id])>7||Mathf.Abs(player.speed)>1.2f)return false;
             switch(id){case "garage":Mara();break;case "parts":Sid();break;case "hcparts":Rosa();break;case "hcbody":Lina();break;case "post":Pip();break;case "paint":Dot();break;case "motors":Gio();break;case "hillcafe":Fern();break;
-                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;case "blast":Dai();break;default:Rowan();break;}
+                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;case "blast":Dai();break;case "farm":Giles();break;default:Rowan();break;}
             return true;
         }
         void Mara()
@@ -1113,7 +1178,9 @@ namespace LittleRoad
             var choices=new List<AdventureUI.Choice>();
             // Beat the Train (docs/51): once the line is open both ways.
             bool toHillcrest=here=="bayview";
-            if(trainRace!=null&&trainRace.CanStart&&climbStart<0&&Store.Data.collected.Contains(Collectibles.VisitHillcrest)) {
+            // (Richard, 5 Oct: from Slate Quay it raced a train held at Hillcrest, kilometres away. The train only runs
+            // between Bayview Halt and Hillcrest, so the race is only offered at those two.)
+            if((here=="bayview"||here=="hillcrest")&&trainRace!=null&&trainRace.CanStart&&climbStart<0&&Store.Data.collected.Contains(Collectibles.VisitHillcrest)) {
                 var rec=SpeedTraps.Record(Store.Data,TrainRace.Id(toHillcrest));
                 choices.Add(new($"Race the train to {(toHillcrest?"Hillcrest":"Bayview Halt")}"+(rec!=null&&rec.best>0?$" · best {rec.best:0.0} s":$" · {TrainRace.Prize} cr"),()=>StartCoroutine(RaceTheTrain(toHillcrest))));
             }
@@ -1129,6 +1196,9 @@ namespace LittleRoad
                 train.Hold(from,6);yield return new WaitForSeconds(.3f);yield return fade.To(0,.5f);player.controlsBlocked=false;
             }
             trainRace.Begin(toHillcrest);
+            if(trainRace.Active)BeginActivity(new Activity{title="Beat the Train",goal=$"Race Bert by road to {(toHillcrest?"Hillcrest station":"Bayview Halt")}. He's got a {trainRace.HeadStart:0}-second head start!",
+                giver=toHillcrest?"bayhalt":"station",colour=Toy.Red,go=trainRace.GoAt,running=()=>trainRace.Active,exit=()=>trainRace.End(null),restart=()=>StartCoroutine(RaceTheTrain(toHillcrest)),
+                detail=()=>$"{Vector3.Distance(player.body.position,trainRace.Goal):0} m to go  ·  the train takes {trainRace.TrainTime:0} s"});
         }
         void Travel(TrainNetwork.Station to)
         {
@@ -1176,14 +1246,18 @@ namespace LittleRoad
         }
         // Castle Climb: a timed run from the Hillcrest town gate to the castle courtyard on a closed road
         // (CastleClimb lines it with bollards and moves the town behind them). Hard adds obstacles.
-        const float NormalPar=85,HardPar=80;const int NormalPrize=300,HardPrize=750;float climbStart=-1;bool climbHard;CastleClimb climbEvent;
+        // (Richard, 5 Oct: Hard was generous: 10 s off, and a real slalom in CastleClimb.)
+        const float NormalPar=85,HardPar=70;const int NormalPrize=300,HardPrize=750;float climbStart=-1;bool climbHard;CastleClimb climbEvent;
         float ClimbPar=>climbHard?HardPar:NormalPar;
         void StartClimb(bool hard)
         {
             Close();climbHard=hard;DukeDrive.Instance?.Recall();var main=HillcrestRoute.Mainline;float d=main.Length-26;var start=main.At(d);
             player.body.rotation=Quaternion.LookRotation(main.Forward(d));Place(start);
             if(climbEvent==null)climbEvent=gameObject.AddComponent<CastleClimb>();climbEvent.Begin(hard,player.transform,bubbles);
-            climbStart=Time.time+3;Notify((hard?"Hard Castle Climb":"Castle Climb")+" · Ready... GO in 3!");
+            climbStart=Time.time+3;
+            BeginActivity(new Activity{title=hard?"Hard Castle Climb":"Castle Climb",goal=hard?"Up through the town to the castle courtyard. Hay bales and cones in the way!":"Up through the town to the castle courtyard.",
+                giver="castle",colour=Toy.Pink,go=climbStart,par=ClimbPar,running=()=>climbStart>=0,exit=EndClimb,restart=()=>StartClimb(hard),
+                detail=()=>$"Par {ClimbPar:0} s  ·  {Vector3.Distance(player.transform.position,HillcrestRoute.CastleCourt):0} m to the courtyard"});
         }
         void EndClimb(){climbStart=-1;climbEvent?.End();}
         // The Quarry Sprint (docs/59): one timed lap of the rallycross loop on the quarry floor, from Gwen at the rally
@@ -1245,6 +1319,43 @@ namespace LittleRoad
             new(){new("Browse new bodies",()=>OpenBodyShop(Nia,"Huw")),new("Fresh paint",()=>OpenPaintShop(Nia)),new("Back to the road",Close)});
         void Megan()=>Show("Megan / Caban",!QuarryFestival.CabanOpen?"We're shut, cariad! Doors open at seven, kettle on at five past. "+(QuarryFestival.ChoirHours?"Choir's at the chapel tonight if you want a song.":"Mind how you go in the dark."):"The Caban's where the quarrymen ate, and argued, and sang. Still do, mostly the arguing. The town's betting on motorsport now the quarry's winding down: rally school, the Sprint, and there's talk of a proper stage up through the tips and the moor.",
             new(){new("Back to the road",Close)});
+        // ---------------------------------------------------------------- running challenges (ActivityHud, doc 64)
+        Activity activity;ActivityHud activityHud;FarmChallenges farm;
+        void BeginActivity(Activity a){activity=a;activityHud.Begin(a);}
+        void EndActivity(){activity=null;activityHud.End();}
+        // Pause > Exit challenge: the activity cleans up, then you're put back by whoever offered it.
+        void ExitActivity()
+        {
+            var a=activity;if(a==null)return;a.exit?.Invoke();EndActivity();player.holdStill=false;
+            if(a.giver!=null&&residents.TryGetValue(a.giver,out var at)){float yaw=residentYaw.TryGetValue(a.giver,out var y)?y:0;var front=at+Quaternion.Euler(0,yaw,0)*Vector3.forward*7;
+                var face=at-front;face.y=0;player.body.rotation=Quaternion.LookRotation(face.sqrMagnitude>.01f?face:Vector3.forward);Place(front);}
+            else if(a.returnTo is Vector3 back)Place(back);
+            Notify($"{a.title} · called off");
+        }
+        void RestartActivity(){var a=activity;if(a==null)return;a.exit?.Invoke();EndActivity();a.restart?.Invoke();}
+
+        // ---------------------------------------------------------------- Farmer Giles (FarmChallenges, doc 64)
+        void Giles()
+        {
+            string Line(FarmChallenges.Kind k){var r=SpeedTraps.Record(Store.Data,FarmChallenges.Ids[(int)k]);return r!=null?$" · best {r.best:0}% · {r.stars}/3 stars":$" · {FarmChallenges.Limit(k):0} s";}
+            Show("Farmer Giles / Golden Acre Farm","Harvest's due and the combine's broke! I'll bolt a header on your bumper: cut as much of that wheat as you can before the clock runs out. Or there's the orchard: give the apple trees a good shake. Well, a knock. Stars pay, mind!",
+                new(){new("The Harvest"+Line(FarmChallenges.Kind.Harvest),()=>StartFarm(FarmChallenges.Kind.Harvest)),new("Apple Shake"+Line(FarmChallenges.Kind.Apples),()=>StartFarm(FarmChallenges.Kind.Apples)),new("Back to the road",Close)});
+        }
+        void StartFarm(FarmChallenges.Kind k)
+        {
+            Close();school?.End();var (at,yaw)=FarmChallenges.Start(k);player.body.rotation=Quaternion.Euler(0,yaw,0);Place(at);farm.Begin(k,player);
+            bool harvest=k==FarmChallenges.Kind.Harvest;
+            BeginActivity(new Activity{title=FarmChallenges.Name(k),goal=harvest?"Cut the wheat with Giles's header: drive the field in rows, and don't miss a strip!":"Knock the apple trees down! Weave through the rows.",
+                giver="farm",colour=harvest?Toy.Gold:Toy.Red,go=farm.GoAt,limit=FarmChallenges.Limit(k),marks=FarmChallenges.Marks(k),progress=()=>farm.Progress,
+                progressLabel=harvest?"harvested":"of the trees down",running=()=>farm.Active,exit=farm.Cancel,restart=()=>StartFarm(k)});
+        }
+        void FarmFinished(FarmChallenges.Kind k,float result,int stars)
+        {
+            Confetti.Burst(player.body.position+Vector3.up*2);
+            Attempt(()=>{int paid=Store.RecordTrap(FarmChallenges.Ids[(int)k],Mathf.Round(result*1000)/10,stars,FarmChallenges.Prizes);var best=SpeedTraps.Record(Store.Data,FarmChallenges.Ids[(int)k]);
+                ui.Card($"{result*100:0}% {(k==FarmChallenges.Kind.Harvest?"HARVESTED":"OF THE ORCHARD DOWN")}",$"{new string('★',stars)}{new string('☆',3-stars)}   best {best?.best??0:0}%"+(paid>0?$"   +{paid} credits":"")+(stars<3?$"   next star at {FarmChallenges.Marks(k)[stars]*100:0}%":""),k==FarmChallenges.Kind.Harvest?Toy.Gold:Toy.Red,FarmChallenges.Name(k).ToUpperInvariant());});
+        }
+
         // ---------------------------------------------------------------- the Blast Run (BlastRun, doc 63)
         BlastRun blast;TipLeap leap;
         void Dai()
@@ -1259,7 +1370,11 @@ namespace LittleRoad
         void StartBlast()
         {
             Close();school?.End();sprintStart=-1;var (at,rot)=BlastRun.PlayerStart;player.body.rotation=rot;Place(at);
-            blast.Begin(player,GameObject.Find("Resident blast"));Notify("Blast Run · Siren's going! GO in 3!");
+            blast.Begin(player,GameObject.Find("Resident blast"));
+            BeginActivity(new Activity{title="Blast Run",goal="Up the haul road and past Chapel Street before the shot. Beat Dai for his money!",giver="blast",colour=Toy.Red,
+                go=Time.time+BlastRun.Countdown,limit=BlastRun.ShotTime,running=()=>blast.Active,exit=blast.Cancel,restart=StartBlast,progressLabel="of the way out",
+                progress=()=>{var e=BlastRun.Path[^1];var s0=BlastRun.Path[0];return 1-Vector3.Distance(player.body.position,e)/Mathf.Max(1,Vector3.Distance(s0,e));},
+                detail=()=>$"Dai's time {BlastRun.DaiTime:0} s  ·  get past Chapel Street"});
         }
         void BlastCrossed(float t,bool beatDai)
         {
@@ -1284,7 +1399,9 @@ namespace LittleRoad
             if(galleryStart<0) {
                 if(climbStart>=0||sprintStart>=0||school!=null&&school.Active||blast!=null&&blast.Active)return;
                 var d=p-GalleryClimb.Start;d.y=0;var v=moved;v.y=0;
-                if(d.magnitude<5&&Mathf.Abs(p.y-GalleryClimb.Start.y)<3&&Vector3.Dot(v,GalleryClimb.StartDir)>3){galleryStart=Time.time;galleryPenalty=0;galleryCheckpoint=-1;Notify("Gallery Climb · GO! Twelve benches to the rim.");}
+                if(d.magnitude<5&&Mathf.Abs(p.y-GalleryClimb.Start.y)<3&&Vector3.Dot(v,GalleryClimb.StartDir)>3){galleryStart=Time.time;galleryPenalty=0;galleryCheckpoint=-1;
+                    BeginActivity(new Activity{title="Gallery Climb",goal="Twelve benches to the rim.",colour=Toy.Mint,go=Time.time,par=GalleryClimb.Par,running=()=>galleryStart>=0,exit=()=>galleryStart=-1,
+                        returnTo=GalleryClimb.Start,detail=()=>$"Par {GalleryClimb.Par:0} s  ·  checkpoint {galleryCheckpoint+2} of {GalleryClimb.Checkpoints.Count}"+(galleryPenalty>0?$"  ·  +{galleryPenalty:0} s":"")});}
                 return;
             }
             float t=Time.time-galleryStart+galleryPenalty;var cps=GalleryClimb.Checkpoints;
@@ -1310,7 +1427,9 @@ namespace LittleRoad
             Close();school?.End();var loop=QuarryFloor.Loop;int s0=HillcrestRoute.Index(loop,new Vector3(-2335,0,-2935));int back=(s0-12+loop.Length)%loop.Length;
             var f=loop[(s0+2)%loop.Length]-loop[(s0+loop.Length-2)%loop.Length];f.y=0;
             player.body.rotation=Quaternion.LookRotation(f.normalized);Place(loop[back]);
-            sprintGate=0;sprintStart=Time.time+3;Notify("Quarry Sprint · Ready... GO in 3!");
+            sprintGate=0;sprintStart=Time.time+3;
+            BeginActivity(new Activity{title="Quarry Sprint",goal="One lap of the rallycross loop: through the three gates, back over the line.",giver="rallyschool",colour=Toy.Mint,
+                go=sprintStart,par=SprintPar,running=()=>sprintStart>=0,exit=()=>sprintStart=-1,restart=StartSprint,detail=()=>$"Par {SprintPar:0} s  ·  gate {Mathf.Min(sprintGate+1,3)} of 3"+(sprintGate>=3?"  ·  to the line!":"")});
         }
         void UpdateSprint()
         {
