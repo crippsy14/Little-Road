@@ -6,6 +6,26 @@
 - The working machines: an excavator, dump trucks and a loader, which line up to watch the rallycross.
 - The Gran Turismo-style rally licence screens.
 
+**Paused 8 October (Richard switched to work). Resume here:**
+1. **Per-car lines bug, fixed but not yet raced:** on Harbour Reverse (Bayview reversed), a baked line cut a tight bend past the ±5.6 m corridor and the race stopped at load (`ArgumentException: Cartesian racing-line sample left its local road corridor`, in `CarLines.Prepare`). Fixed in the build: `RacingLine.Sample` puts any point that strays back at its clamped offset; a group whose line still fails drives the shared line with a warning; `CarLinesChecks` now builds both test cars' lines on Bayview reversed. **Still to do:** race Harbour Reverse to confirm. The other five events of the six-race check all finished 24/24.
+2. **Then commit** (Richard: "Lets commit that"): run the full regression first (a landmark), restore line endings, and commit on `claude-additions`. Nothing from 7–8 October is committed yet. git needs `-c safe.directory=<repo>` (the folder's owner differs).
+3. **Next job: map loading and streaming** (Richard, 8 October). The map will grow a lot (the world blueprint), so loading the whole map at game start and again for every race isn't acceptable for adventure mode or races. Research how games handle it (world partition and streaming cells, HLOD, baked data, async loading), then build it in before expanding further. Today: about 16 s to start the game and about 11.7 s to enter a race, because the world is rebuilt from scratch ([doc 71](71-racing-lines-and-fast-cars.md) section 6).
+
+**Next session (Richard, 7 October):** fix the racing AI so it doesn't run off Hillcrest Raceway (~240 m and ~930 m into the lap). "Barriers don't solve the problem, they hide it": the new corner armco catches cars that have already left the road, so judge the AI with them off or by counting barrier touches. See [doc 70](70-race-fields-across-the-map.md) section 5.
+
+**7 October, evening:** race fields across the map ([doc 70](70-race-fields-across-the-map.md), behind `--field-recipe`). Driver ratings are fixed per class (C 12–16, B 17–20). Parts come from each race's class, stars and surface, following the unlock curve. Class C now has planned stars too (21 races, 89★). `tools/field-table.py` gives the PP of the field at every planned C and B race. A DR 17–20 field crashed at Bayview's first corner (Line ~1.0); `--traffic-corner-margin` fixes it (study 221). Also noted as plans: Vinelands' answers (doc 68), the rugby conversion kick (doc 59), and My City as your own city ([doc 69](69-my-city.md)).
+
+**7 October, later:** the Vinelands plan ([doc 68](68-vinelands.md)), step 0 of doc 57. It's Douro-style wine country: a river bend, about 50 stone-walled terraces up to a ridge-top village, and one road from river sweepers to hairpins that becomes the pro Hill Climb. It covers two C races and a 2★ B race, 13 things to do, three recruits, the azulejo-tile keepsakes, the eras and the build order (the map, region thresholds and Valley Road come first). Five questions for Richard are at the end.
+
+**7 October:** the plan for class B races on today's three tracks, and for how equipment unlocks across the whole map
+([doc 67](67-class-b-races-and-unlocks.md)):
+- a Tuner Garage in every town;
+- parts unlocked by results anywhere (Rep);
+- forward and reversed events at three field strengths;
+- a championship finale.
+
+It needs Richard's decisions (doc 67, last section).
+
 **6 October:** the class B Tuners ([doc 65](65-class-b-tuner-cars.md)) and car builder v2 ([doc 66](66-car-builder-v2.md)):
 - Phase 1 added per-station sections, fender pods, road tyres and wheel finishes.
 - Phase 2 added a lofted cabin with windows by outline, face outlines and integrated noses.

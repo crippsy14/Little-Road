@@ -52,6 +52,9 @@ namespace LittleRoad
             hasConstantHeight=true;
             projection=new RouteProjectionIndex(points,distance);
         }
+        // The same closed route driven the other way (docs/67: class B's reversed events). Point 0, the start
+        // line, stays where it is; the road, its world and its features are untouched.
+        public Circuit Reversed(){var r=new Vector3[points.Length];r[0]=points[0];for(int i=1;i<points.Length;i++)r[i]=points[points.Length-i];return new Circuit(r);}
         public Vector3 At(float meters)
         {
             meters=Mathf.Repeat(meters,length);

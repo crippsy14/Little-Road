@@ -143,9 +143,17 @@ namespace LittleRoad
             if(RaceTrial.Has("--valley-tour")){reviewing=true;gameObject.AddComponent<ValleyTour>().Setup(player,cameraView,ui);yield break;}
             if(RaceTrial.Has("--paint-shop-review")){reviewing=true;yield return PaintShopReview();yield break;}
             if(RaceTrial.Has("--body-shop-review")){reviewing=true;yield return BodyShopReview();yield break;}
+            if(RaceTrial.Has("--tuner-garage-review")){reviewing=true;yield return TunerGarageReview();yield break;}
             // Opt-in: enter the Valley Cup straight away (with --trial-auto the player's car drives itself).
             if(RaceTrial.Has("--duke-race-review")&&!AdventureSession.Racing&&Store.Data.settledSerial==Store.Data.raceSerial){yield return new WaitForSeconds(.5f);StartDukeRace(RaceRoster.DukeChallenge(Store.Data));yield break;}
             if(RaceTrial.Has("--quarry-race-review")&&!AdventureSession.Racing&&Store.Data.settledSerial==Store.Data.raceSerial&&QuarryHills.Enabled){yield return new WaitForSeconds(.5f);PreviewRace("quarry");yield return new WaitForSeconds(.5f);racePreview.Confirm();yield break;}
+            // Any calendar event by id (docs/67: the class B races), entered from its preview with the player's car on autopilot.
+            if(RaceTrial.Has("--event-race-review")&&!AdventureSession.Racing&&Store.Data.settledSerial==Store.Data.raceSerial){string ev=RaceTrial.Arg("--event-race-review","bayview");
+                // --claim-tuner <id>: race in the free Tuner (docs/67), the ground truth for class B balance.
+                string tuner=RaceTrial.Arg("--claim-tuner");
+                if(tuner!=null)Store.Change(p=>{foreach(var e in RaceCalendar.All)if(e.raceClass=="C"&&!p.podiums.Contains(e.id))p.podiums.Add(e.id);return true;});
+                if(tuner!=null&&Store.ClaimTunerStarter(tuner))player.ReplaceBody(tuner,Paints[Store.Data.paintIndex]);
+                yield return new WaitForSeconds(.5f);PreviewRace(ev);yield return new WaitForSeconds(.5f);racePreview.Confirm();yield break;}
             if(RaceTrial.Has("--valley-race-review")&&!AdventureSession.Racing&&Store.Data.settledSerial==Store.Data.raceSerial){yield return new WaitForSeconds(.5f);PreviewRace("hillcrest");yield return new WaitForSeconds(.5f);racePreview.Confirm();yield break;}
             if(RaceTrial.Has("--parts-browser-review")){OpenParts("bayview",PartsBrowser.Mode.Shop,Sid);gameObject.AddComponent<PartsBrowserReview>().Setup(browser,Store,player,ui,m=>OpenParts("bayview",m,m==PartsBrowser.Mode.Shop?Sid:Mara));yield break;}
             if(RaceTrial.Has("--sound-bench"))EngineBench.Show(RaceTrial.Arg("--sound-bench"));
@@ -699,6 +707,28 @@ namespace LittleRoad
             bool swapped=Store.Data.bodyId=="comet"&&player.name=="comet";
             Debug.Log("BODY_SHOP_REVIEW swapped="+swapped+" body="+Store.Data.bodyId+" owned="+string.Join(",",Store.Data.bodies)+" credits="+Store.Data.credits);Application.Quit(swapped?0:2);
         }
+        // --tuner-garage-review (own throwaway save, docs/67): class B opened (the class C podiums), then at Gio's garage bay:
+        // the free-Tuner choice, the garage after taking the Sakura, the Tuner body shop, the car, the Tuner races, the parts
+        // counter on the class B tab and a B race preview with its stars. Captures g0-g8.
+        IEnumerator TunerGarageReview()
+        {
+            string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);
+            Store.Change(p=>{foreach(var e in RaceCalendar.All)if(e.raceClass=="C"&&!p.podiums.Contains(e.id))p.podiums.Add(e.id);p.credits=Math.Max(p.credits,30000);return true;});
+            var gio=residents["motors"];Place(gio+Vector3.forward*6);player.body.rotation=Quaternion.Euler(0,residentYaw["motors"]+180,0);yield return new WaitForSeconds(1.2f);
+            Interact("motors");yield return new WaitForSeconds(.4f);ui.Capture(Path.Combine(folder,"g0-gio.png"));
+            ui.InvokeChoice("Tuner Garage");yield return new WaitForSeconds(.4f);ui.Capture(Path.Combine(folder,"g1-free-tuner.png"));
+            ui.InvokeChoice("Take the Sakura");yield return new WaitForSeconds(.6f);ui.Capture(Path.Combine(folder,"g2-garage.png"));
+            ui.InvokeChoice("Browse Tuner bodies");yield return new WaitForSeconds(.9f);ui.Capture(Path.Combine(folder,"g3-tuner-bodies.png"));
+            var hayate=GameObject.Find("BODY hayate");if(hayate!=null){EventSystem.current.SetSelectedGameObject(hayate);yield return new WaitForSeconds(1.0f);ui.Capture(Path.Combine(folder,"g4-hayate.png"));}
+            bodyShop.Leave();Close();yield return new WaitForSeconds(.3f);
+            cameraView.transform.position=player.transform.position+new Vector3(-4,2.2f,6);cameraView.transform.LookAt(player.transform.position+Vector3.up*.8f);yield return new WaitForSeconds(.6f);
+            ui.Capture(Path.Combine(folder,"g5-sakura.png"));
+            Interact("motors");yield return new WaitForSeconds(.3f);ui.InvokeChoice("Tuner races");yield return new WaitForSeconds(.4f);ui.Capture(Path.Combine(folder,"g6-tuner-races.png"));Close();
+            OpenParts("hillcrest",PartsBrowser.Mode.Shop,Rosa);yield return new WaitForSeconds(.9f);ui.Capture(Path.Combine(folder,"g7-parts.png"));browser.Hide();yield return new WaitForSeconds(.3f);
+            PreviewRace("b_valley");yield return new WaitForSeconds(1.2f);ui.Capture(Path.Combine(folder,"g8-preview.png"));
+            bool ok=Store.Data.tunerStarter=="sakura"&&Store.Data.bodyId=="sakura"&&Store.Data.Loadout()["engine"]=="engine_b_twincam";
+            Debug.Log("TUNER_GARAGE_REVIEW ok="+ok+" body="+Store.Data.bodyId+" open="+RaceCalendar.Open(Store.Data));Application.Quit(ok?0:2);
+        }
         IEnumerator PaintShopReview()
         {
             string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);
@@ -1126,6 +1156,8 @@ namespace LittleRoad
             if(stage==0)choices.Add(new("I'll take the parcel",()=>Attempt(()=>{Store.AcceptDelivery();Close();Notify("Parcel aboard. Follow the coast road to Pip's lighthouse.");})));
             if(stage==2)choices.Add(new("Collect 350 credits",()=>Attempt(()=>{Store.ClaimDelivery();Mara();})));
             if(stage>=3)choices.Add(new("Race Bayview Coast · C",()=>PreviewRace("bayview",Mara)));
+            if(stage>=3)AddTunerRaces(choices,"bayview",Mara);
+            if(stage>=3)AddTunerGarage(choices,"Mara",Mara);
             choices.Add(new("Fit parts",()=>OpenParts("bayview",PartsBrowser.Mode.Fit,Mara)));
             choices.Add(new("Tune gearbox",()=>OpenTuning("bayview",Mara)));
             if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Mara)));
@@ -1134,7 +1166,8 @@ namespace LittleRoad
         }
         void Gio()
         {
-            var choices=new List<AdventureUI.Choice>{new("Race the Valley Cup · B",()=>PreviewRace("hillcrest",Gio)),new("Fit parts",()=>OpenParts("hillcrest",PartsBrowser.Mode.Fit,Gio)),new("Tune gearbox",()=>OpenTuning("hillcrest",Gio))};
+            var choices=new List<AdventureUI.Choice>{new("Race the Valley Cup · C",()=>PreviewRace("hillcrest",Gio)),new("Tuner races",()=>TunerRaces("hillcrest",Gio)),new("Fit parts",()=>OpenParts("hillcrest",PartsBrowser.Mode.Fit,Gio)),new("Tune gearbox",()=>OpenTuning("hillcrest",Gio))};
+            AddTunerGarage(choices,"Gio",Gio);
             if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Gio)));
             choices.Add(new("Back to the road",Close));
             Show("Gio / Pit Stop Garage","Benvenuto to the Pit Stop! Sign up for the Valley Cup right here, fit anything you own, or swap to another of your bodies. Rosa next door sells the parts, Lina the new rides.",choices);
@@ -1167,7 +1200,7 @@ namespace LittleRoad
         void Fern()=>Show("Fern / Bella Vista","Best view in the valley! That's the castle up top, the raceway down by the lake and the wind farm on the far ridge. Vito runs the Valley Cup at the raceway: fast cars, big prizes.",
             new(){new("Back to the road",Close)});
         void Vito()=>Show("Vito / Hillcrest Raceway","Hillcrest Raceway · Class C · 24 cars · 2 laps\nRound the lake and past Vine Hill, flat out past the grandstand. The quickest Class C field yet: street and club kit, and the pole-sitter on Gio's valley parts. Every finish pays 150–750 credits.\n"+RaceCalendar.Progress(Store.Data),
-            new(){new("Race Hillcrest Raceway · C",()=>PreviewRace("hillcrest",Vito)),new("Back to the road",Close)});
+            new(){new("Race Hillcrest Raceway · C",()=>PreviewRace("hillcrest",Vito)),new("Tuner races",()=>TunerRaces("hillcrest",Vito)),new("Back to the road",Close)});
         void Stella()=>Show("Stella / Hillcrest Station","The Hillcrest Line! Out over the valley viaduct, across the Silver Falls gorge, through the headland and along the sea viaduct to Bayview Halt. Wave at the driver, Bert loves that. I collect Hillcrest stamps too: eight are hidden around the valley.",
             Tickets("hillcrest"));
         void Stanley()=>Show("Stanley / Bayview Halt",Store.Data.collected.Contains(Collectibles.VisitHillcrest)?"Welcome to Bayview Halt! The Hillcrest Line runs from here, over the sea and through the headland to Hillcrest. One ticket, you and your car, straight to the station forecourt.":
@@ -1269,7 +1302,7 @@ namespace LittleRoad
             int golds=0;for(int i=0;i<RallySchool.Lessons.Length;i++){var r=RallySchool.Record(Store.Data,i);if(r!=null&&r.stars==3)golds++;}
             string schoolLine=RallySchool.AllGold(Store.Data)?" Gold in every lesson: Bethan at Grit & Gravel has the rally kit for you.":$" Six lessons, bronze to gold: get gold in all six and Bethan sells you the proper rally kit ({golds} of 6 so far).";
             Show("Gwen \"Granite\" Price / Rally School",(QuarryFestival.Festival?"It's Rally Day in town, and it's for you, cariad: there's a parade on the High Street! ":"")+"Croeso! Gravel's not tarmac, cariad: brake in a straight line, turn in early, and let her slide. And tyres! On the rallycross your road tyres grip about half as well as gravel ones."+schoolLine+done,
-                new(){new("Race the Quarry Hills Rallycross · C",()=>PreviewRace("quarry",Gwen)),new("Rally licence",()=>OpenLicences(-1)),new($"Quarry Sprint · time trial (par {SprintPar:0} s)",StartSprint),new("Back to the road",Close)});
+                new(){new("Race the Quarry Hills Rallycross · C",()=>PreviewRace("quarry",Gwen)),new("Tuner races",()=>TunerRaces("quarry",Gwen)),new("Rally licence",()=>OpenLicences(-1)),new($"Quarry Sprint · time trial (par {SprintPar:0} s)",StartSprint),new("Back to the road",Close)});
         }
         // The rally licence, Gran Turismo style (LicenceScreen; Richard, 4 Oct): the test list with each test's brief, medal
         // times and your best; every attempt ends on a result card (try again, next test, back to the licences), and
@@ -1307,7 +1340,8 @@ namespace LittleRoad
         void Huw()
         {
             // (Richard, 4 Oct: the town's race at its garage, as Mara and Gio offer theirs.)
-            var choices=new List<AdventureUI.Choice>{new("Race the Quarry Hills Rallycross · C",()=>PreviewRace("quarry",Huw)),new("Fit parts",()=>OpenParts("quarry",PartsBrowser.Mode.Fit,Huw)),new("Tune gearbox",()=>OpenTuning("hillcrest",Huw))};
+            var choices=new List<AdventureUI.Choice>{new("Race the Quarry Hills Rallycross · C",()=>PreviewRace("quarry",Huw)),new("Tuner races",()=>TunerRaces("quarry",Huw)),new("Fit parts",()=>OpenParts("quarry",PartsBrowser.Mode.Fit,Huw)),new("Tune gearbox",()=>OpenTuning("hillcrest",Huw))};
+            AddTunerGarage(choices,"Huw",Huw);
             if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Huw)));
             choices.Add(new("Back to the road",Close));
             Show("Huw / Pit Stop Garage","Croeso i'r Pit Stop! Sign up for the Rallycross down on the quarry floor right here, or bring her in: I'll fit anything you own, set up the gearbox, or swap to another of your bodies. Bethan sells the parts next door, Nia the new rides.",choices);
@@ -1478,11 +1512,49 @@ namespace LittleRoad
         }
         void Rowan()=>Show("Rowan / The Daily Mile","Bayview Coast · Class C · 24 cars · 3 laps\nEvery valid finish pays 100–500 credits. Rival equipment stays fixed as you improve your car. Across the causeway, Hillcrest Raceway's Valley Cup is a quicker Class C race for bigger prizes.\n"+RaceCalendar.Progress(Store.Data),new(){new("Race Bayview Coast · C",()=>PreviewRace("bayview")),new("Back to the road",Close)});
         void PreviewRace(string track)=>PreviewRace(track,track=="hillcrest"?Vito:track=="quarry"?Gwen:Rowan);
+        // Class B (docs/67): once it opens, each town's garage offers its Tuner races, easiest first, with their stars
+        // and a tick for those you've won (each win's stars count once towards the Tuner parts).
+        // The Tuner Garage (docs/67): at every town's garage bay once class B is open. The free Tuner first (a choice of
+        // three, with the seven Good Tuner parts fitted), then the Tuner bodies, all sold at every Pit Stop.
+        void AddTunerGarage(List<AdventureUI.Choice> choices,string fitter,Action back)
+        {
+            if(RaceCalendar.Rank(RaceCalendar.Open(Store.Data))<RaceCalendar.Rank("B"))return;
+            choices.Insert(0,new(string.IsNullOrEmpty(Store.Data.tunerStarter)?"Tuner Garage · your free Tuner!":"Tuner Garage",()=>TunerGarage(fitter,back)));
+        }
+        void TunerGarage(string fitter,Action back)
+        {
+            var choices=new List<AdventureUI.Choice>();string text;
+            if(string.IsNullOrEmpty(Store.Data.tunerStarter)) {
+                foreach(var id in CarBodies.TunerStarters){string b=id;choices.Add(new($"Take the {CarBodies.Name(b)} · {TunerDrive(b)}",()=>Attempt(()=>{
+                    if(Store.ClaimTunerStarter(b)){player.ReplaceBody(b,Paints[Store.Data.paintIndex]);Notify($"Your {CarBodies.Name(b)} · Tuner parts fitted");}TunerGarage(fitter,back);})));}
+                text="Class B is open, and your first Tuner is on us! Pick one: each comes with the seven Good Tuner parts fitted. Tuner parts fit Tuner bodies only.";
+            } else {
+                choices.Add(new("Browse Tuner bodies",()=>{ui.Close();ui.SetVisible(false);player.controlsBlocked=true;
+                    bodyShop.Open(Store,"tuner",()=>Notify("New Tuner in the garage bay · swap to it with "+fitter),()=>{ui.SetVisible(true);TunerGarage(fitter,back);});}));
+                int next=PartDiscovery.NextStars(Store.Data,"B");
+                text=$"{RaceCalendar.StarsWon(Store.Data,"B")}★ won at Tuner races."+(next>0?$" The next Tuner part unlocks at {next}★: harder races give more stars.":" Every Tuner part is unlocked.")+" Tuner parts fit Tuner bodies only; buy them at the parts counter.";
+            }
+            choices.Add(new("Back",back));Show("Tuner Garage",text,choices);
+        }
+        static string TunerDrive(string id)=>id=="tsubasa"?"front-drive, stable, brakes late":id=="sakura"?"rear-drive, light and playful":"four-wheel drive, grip everywhere";
+        void AddTunerRaces(List<AdventureUI.Choice> choices,string track,Action back)
+        {
+            if(RaceCalendar.Rank(RaceCalendar.Open(Store.Data))<RaceCalendar.Rank("B"))return;
+            foreach(var ev in RaceCalendar.AtTrack(track,"B")){var e=ev;choices.Add(new($"{e.venue} · B {e.Stars}{(RaceCalendar.Won(Store.Data,e.id)?"  ✓ won":"")}",()=>PreviewRace(e.id,back)));}
+        }
+        void TunerRaces(string track,Action back)
+        {
+            var choices=new List<AdventureUI.Choice>();AddTunerRaces(choices,track,back);
+            string text=choices.Count==0?"Tuner races start when you've finished class C: a podium at every class C race.":
+                $"{RaceCalendar.Progress(Store.Data)}. Each win's stars count once; harder races give more.";
+            choices.Add(new("Back",back));Show("Tuner races",text,choices);
+        }
         // `back`: whoever offered the race, so backing out of the preview returns to their menu.
         void PreviewRace(string track,Action back)
         {
-            player.controlsBlocked=true;ui.Close();ui.SetVisible(false);bool valley=track=="hillcrest";
-            var roster=RaceRoster.ForEvent(track,Store.Data);
+            player.controlsBlocked=true;ui.Close();ui.SetVisible(false);
+            // (`track` is the event id: a class C event's id is its track; class B events name theirs.)
+            var roster=RaceRoster.ForEvent(track,Store.Data);track=roster.Track;bool valley=track=="hillcrest";
             racePreview.Open(roster,()=>Attempt(()=>{
                 // After the Valley Cup you come back to Hillcrest's Pit Stop, on the garage bay's forecourt
                 // facing out (the raceway paddock is hemmed in by the team garages).

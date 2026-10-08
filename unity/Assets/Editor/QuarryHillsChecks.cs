@@ -58,7 +58,9 @@ public static class QuarryHillsChecks
         // The working quarry (4 Oct): every machine spot and route point on the floor, clear of the rallycross and the school.
         Check(QuarryWorks.LayoutPoints().All(p=>QuarryHills.FloorQ(p.x,p.y)<.95f&&HillcrestRoute.Distance(loop,p.x,p.y,out _)>QuarryFloor.LoopWidth*.5f+10&&Vector2.Distance(p,new(QuarryFloor.School.x,QuarryFloor.School.z))>40),
             "The quarry's machines work on the floor, 10 m or more off the circuit and 40 m from the rally school");
-        var gravel=EquipmentCatalog.All.parts.Where(p=>p.shop=="quarry").ToList();
+        // (Class B's rally tyres also live here, found once 4 stars are won at Tuner races: docs/67.)
+        var gravel=EquipmentCatalog.All.parts.Where(p=>p.shop=="quarry"&&p.tier=="C").ToList();
+        Check(EquipmentCatalog.All.parts.Where(p=>p.shop=="quarry"&&p.tier=="B").All(p=>p.unlock=="stars:B:4"),"Class B's rally tyres at Grit & Gravel wait for 4 Tuner stars");
         Check(gravel.Count==2&&gravel.All(p=>p.unlock==RallySchool.Unlock&&p.tier=="C")&&PartDiscovery.Valid(RallySchool.Unlock),$"Grit & Gravel's own rally kit ({string.Join(", ",gravel.Select(p=>p.name))}) waits for gold in every lesson");
         var school=new AdventureProgress{traps=new List<TrapRecord>()};
         Check(!RallySchool.AllGold(school)&&!PartDiscovery.Met(school,RallySchool.Unlock),"With no lessons done the rally kit stays locked");

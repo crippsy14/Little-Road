@@ -24,9 +24,9 @@ namespace LittleRoad
         Canvas canvas;RaceRoster roster;RaceEntrant[] grid;PartPreviewStage stage;
         Action confirm,cancel;Text driverName,gridLabel,rating,bodyLabel,bubble,speedValue,accelValue,rankValue;
         RectTransform speedBar,accelBar,rankBar;RawImage car;readonly Button[] rows=new Button[Rows];readonly ToyShape[] ratingPills=new ToyShape[Rows],driverPills=new ToyShape[Rows];
-        // Driver rating (DR, 1-20, the mean of the racing abilities) beside PP; its radar shows on hover
+        // Driver rating (DR: the skill, 1-10, from the mean of the racing abilities) beside PP; its radar shows on hover
         // (mouse) or while Triangle / R is held.
-        Text driverRating;RacerRadarCard radarCard;bool radarHover;
+        Text driverRating,venue;RacerRadarCard radarCard;bool radarHover;
         public bool RadarShown=>radarCard!=null&&radarCard.root.activeSelf;
         public string DisplayedDriverRating=>driverRating.text;
         static bool HasDriver(RaceEntrant e)=>e.Id!=0&&e.Driver!=null;
@@ -60,6 +60,9 @@ namespace LittleRoad
             if(canvas==null)Build();
             Toy.UseMenuCamera(canvas);canvas.gameObject.SetActive(true);
             ViewOnly=viewOnly;heading.text=viewOnly?"THE FIELD":"RACE DAY!";start.gameObject.SetActive(!viewOnly);
+            // The event, its class and its difficulty in stars (docs/67: stars on the race, PP on every car).
+            if(RaceCalendar.Known(race.Event)){var ev=RaceCalendar.Get(race.Event);venue.text=$"{ev.venue} · Class {ev.raceClass} · {ev.Stars}";}
+            else venue.text=race.Event==RaceRoster.DukeEvent?"The Duke's Challenge":"Bayview Coast Cup";
             RefreshTiles();selected=-1;SelectEntry(0);StartCoroutine(Focus());SetTour(false);
         }
         IEnumerator Focus(){yield return null;if(IsOpen)EventSystem.current.SetSelectedGameObject(rows[roster.Entries[selected].Slot].gameObject);}
@@ -75,7 +78,7 @@ namespace LittleRoad
             Toy.Bunting(root,1920,505,18);Toy.Checker(root,1920,-525);
 
             heading=Toy.Title(root,"Heading","RACE DAY!",104,new Vector2(640,120),new Vector2(-600,398),Toy.White,TextAnchor.MiddleLeft,3);
-            Toy.Title(root,"Venue","Bayview Coast Cup",50,new Vector2(640,64),new Vector2(-600,308),Toy.Sun,TextAnchor.MiddleLeft,3);
+            venue=Toy.Title(root,"Venue","Bayview Coast Cup",50,new Vector2(640,64),new Vector2(-600,308),Toy.Sun,TextAnchor.MiddleLeft,3);
             var badges=Toy.Rect(root,"Race badges",new Vector2(320,130),new Vector2(-250,372));badges.localRotation=Quaternion.Euler(0,0,3);
             Toy.Pill(badges,"Class","CLASS C",22,new Vector2(150,50),new Vector2(-80,30),Toy.Red,Toy.White);
             Toy.Pill(badges,"Laps","3 LAPS",22,new Vector2(150,50),new Vector2(80,30),Toy.White,Toy.Navy);

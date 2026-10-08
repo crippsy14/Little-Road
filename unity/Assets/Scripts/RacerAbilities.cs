@@ -34,6 +34,20 @@ namespace LittleRoad
                 "Duke"=>(1f,.95f,.75f,.6f),
                 _=>(.7f,.7f,.6f,.5f)
             };
+            if(driver.TargetAbility>=0)a=a.WithMean(driver.TargetAbility);
+            return a;
+        }
+
+        // The five racing abilities moved together until their mean is `mean` (a field recipe's driver rating),
+        // keeping the style's shape; what one ability can't take at 0 or 1 is shared among the others.
+        public RacerAbilities WithMean(float mean)
+        {
+            var a=this;mean=Mathf.Clamp01(mean);
+            for(int pass=0;pass<6;pass++) {
+                float shift=mean-(a.braking+a.line+a.control+a.consistency+a.racecraft)/5;if(Mathf.Abs(shift)<.0005f)break;
+                a.braking=Mathf.Clamp01(a.braking+shift);a.line=Mathf.Clamp01(a.line+shift);a.control=Mathf.Clamp01(a.control+shift);
+                a.consistency=Mathf.Clamp01(a.consistency+shift);a.racecraft=Mathf.Clamp01(a.racecraft+shift);
+            }
             return a;
         }
 
@@ -56,8 +70,9 @@ namespace LittleRoad
 
         // How the abilities turn into driving numbers. Kept together so checks and tuning see one table.
         // Shortfalls count to the power 1.5: a 0.8 driver is only a little off the best, a 0.5 driver clearly slower,
-        // and a novice at 0 up to ~50% slower over a lap (docs/46, "abilities that show"). The rating shown to
-        // players is 1 + 19 x ability, so 1/20 to 20/20.
+        // and a novice at 0 up to ~50% slower over a lap (docs/46, "abilities that show"). The rating shown to players is
+        // the driver skill, 1-10 (Richard, 7 Oct: "simplify it"): the old 1-20 scale's 8 to 18 (abilities 0.368 to 0.895)
+        // spread over ten steps, so neither extreme races (docs/70).
         static float Short(float ability)=>Mathf.Pow(1-Mathf.Clamp01(ability),1.5f);
         public float CornerUse=>.95f-.55f*Short(line);       // share of the steady cornering limit
         public float BrakeUse=>.97f-.5f*Short(braking);      // share of brake/tyre deceleration
@@ -70,7 +85,12 @@ namespace LittleRoad
         public float LateralRate=>3.2f-1.8f*Short(control);  // metres per second of deliberate lateral movement
         public float LaunchDelay=>.06f+.22f*(1-control);     // seconds after the lights
         public float SpellDip=>.01f+.15f*Short(consistency); // grip/brake use lost during an off spell
-        public static int Rating(float ability)=>1+Mathf.RoundToInt(19*Mathf.Clamp01(ability));
+        public const float SkillLow=7f/19f,SkillHigh=17f/19f;
+        public static int Rating(float ability)=>1+Mathf.RoundToInt(9*Mathf.Clamp01((ability-SkillLow)/(SkillHigh-SkillLow)));
+        // The ability (mean) that shows as `skill`, fractional skills between.
+        public static float SkillAbility(float skill)=>SkillLow+(Mathf.Clamp(skill,1,10)-1)/9f*(SkillHigh-SkillLow);
+        // Personality traits aren't skills: 0..1 shown as 1-10.
+        public static int Trait(float value)=>1+Mathf.RoundToInt(9*Mathf.Clamp01(value));
         public float Reaction=>.25f-.13f*racecraft;          // Gipps reaction time in traffic, seconds
         public float Standstill=>1.3f-.7f*aggression;        // metres kept behind a car at low speed
         public float Clearance=>.85f-.55f*aggression;        // metres of side room wanted when passing

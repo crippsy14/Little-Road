@@ -1,0 +1,996 @@
+{
+ "source": "https://claude.ai/artifact/L9zDqLxe29UbkXcLHmfPrb (layout B, Glasswater; docs/58)",
+ "note": "Kilometres on the 20 x 20 km sheet, x east and y north; Bayview island near (6.0, 18.98). Main towns race their tracks (club layout for C and B, pro for A, S and E): one race per class on each layout, plus one more in the town's own class. Villages, the secret and the tours list their own races.",
+ "places": {
+  "bayview": {
+   "x": 6.0,
+   "y": 18.83,
+   "name": "Bayview",
+   "cls": "C",
+   "disc": "Road",
+   "races": {
+    "C": 2
+   },
+   "what": "Where it all starts: the island village, harbour and Pit Stop.",
+   "id": "bayview",
+   "km_from_bayview": 0.0,
+   "kind": "main"
+  },
+  "hillcrest": {
+   "x": 6.1,
+   "y": 17.83,
+   "name": "Hillcrest",
+   "cls": "C",
+   "disc": "Road",
+   "races": {
+    "C": 3
+   },
+   "what": "The hill town, castle, valley and raceway, as built today (2.4 × 1.6 km). Home of the old Continental main line.",
+   "id": "hillcrest",
+   "km_from_bayview": 1.0,
+   "kind": "main"
+  },
+  "quarry": {
+   "x": 3.7,
+   "y": 16.2,
+   "name": "Quarry Hills",
+   "cls": "C",
+   "disc": "Rally (first taste)",
+   "races": {
+    "C": 2
+   },
+   "what": "Gravel roads through working quarries in the Spine's northern foothills. The first rally parts are found here, and the Pine & Peak narrow gauge starts here.",
+   "id": "quarry",
+   "km_from_bayview": 3.5,
+   "kind": "main"
+  },
+  "vinelands": {
+   "x": 9.4,
+   "y": 15.7,
+   "name": "Vinelands",
+   "cls": "C",
+   "disc": "Road",
+   "races": {
+    "C": 2
+   },
+   "what": "Wine country on the road south: terraced hills, a hill climb and a vineyard loop.",
+   "id": "vinelands",
+   "km_from_bayview": 4.6,
+   "kind": "main"
+  },
+  "saltmarsh": {
+   "x": 12.6,
+   "y": 18.2,
+   "name": "Saltmarsh",
+   "cls": "C",
+   "village": true,
+   "labelLeft": true,
+   "features": [
+    "track",
+    "rewards"
+   ],
+   "races": {
+    "C": 1
+   },
+   "rewards": [
+    "Foghorn horn",
+    "Sea-glass paint"
+   ],
+   "what": "Fishing village on the dunes. A beach sprint at low tide, and the harbourmaster's ladder of time trials.",
+   "id": "saltmarsh",
+   "km_from_bayview": 6.6,
+   "kind": "village"
+  },
+  "bramble": {
+   "x": 8.4,
+   "y": 17.2,
+   "name": "Bramblewick",
+   "cls": "C",
+   "village": true,
+   "features": [
+    "parts",
+    "recruit"
+   ],
+   "races": {
+    "C": 1
+   },
+   "rewards": [
+    "Tractor-gauge speedometer"
+   ],
+   "what": "Farm village south-east of Hillcrest. A backyard tuner sells class C parts that aren't in Bayview, and the milk-float champion signs for your team once teams open, if you've beaten her down her lane.",
+   "id": "bramble",
+   "km_from_bayview": 2.9,
+   "kind": "village"
+  },
+  "kettle": {
+   "x": 2.9,
+   "y": 14.6,
+   "name": "Kettle Falls",
+   "cls": "C",
+   "village": true,
+   "features": [
+    "track",
+    "rewards"
+   ],
+   "races": {
+    "C": 1
+   },
+   "rewards": [
+    "Mud-flap body kit",
+    "Waterfall-spray paint"
+   ],
+   "what": "A waterfall hill climb on the rainforest edge, and a junction on the Pine & Peak line.",
+   "id": "kettle",
+   "km_from_bayview": 5.2,
+   "kind": "village"
+  },
+  "cobble": {
+   "x": 11.6,
+   "y": 17.5,
+   "name": "Cobble Cove",
+   "cls": "C",
+   "village": true,
+   "features": [
+    "track"
+   ],
+   "races": {
+    "C": 1
+   },
+   "rewards": [
+    "Cobblestone speedometer"
+   ],
+   "what": "A harbour village at the river mouth: a cobbled sprint along the quay, with a Coast Branch station.",
+   "id": "cobble",
+   "km_from_bayview": 5.8,
+   "kind": "village"
+  },
+  "orchard": {
+   "x": 7.3,
+   "y": 15.3,
+   "name": "Orchard End",
+   "cls": "C",
+   "village": true,
+   "features": [
+    "recruit",
+    "track"
+   ],
+   "races": {
+    "C": 1
+   },
+   "rewards": [
+    "Apple-red paint"
+   ],
+   "what": "Orchard village on the Spine's first slopes, where the Glasswater & Southern line ends. Its apple-cart racer joins if you win the Blossom Run.",
+   "id": "orchard",
+   "km_from_bayview": 3.8,
+   "kind": "village"
+  },
+  "harbour": {
+   "x": 14.6,
+   "y": 18.15,
+   "name": "Harbour Point",
+   "cls": "B",
+   "disc": "Road",
+   "races": {
+    "B": 2,
+    "S": 1
+   },
+   "what": "A fishing port where three railway companies meet, which makes it the first battleground. The Dive kit is found here. An S-class night race runs along the coast road.",
+   "id": "harbour",
+   "km_from_bayview": 8.6,
+   "kind": "main"
+  },
+  "highmoor": {
+   "x": 7.9,
+   "y": 13.4,
+   "name": "Highmoor",
+   "cls": "B",
+   "village": true,
+   "features": [
+    "parts"
+   ],
+   "races": {
+    "B": 1
+   },
+   "rewards": [],
+   "what": "Moorland crossroads in the lee of the Spine. A rally shed sells class B gravel parts.",
+   "id": "highmoor",
+   "km_from_bayview": 5.8,
+   "kind": "village"
+  },
+  "millbrook": {
+   "x": 10.4,
+   "y": 14.3,
+   "name": "Millbrook",
+   "cls": "B",
+   "village": true,
+   "features": [
+    "recruit",
+    "track"
+   ],
+   "races": {
+    "B": 1
+   },
+   "rewards": [
+    "Wheat-gold paint"
+   ],
+   "what": "Mill town on the river below the dam. Win the Harvest Cup and its champion joins you.",
+   "id": "millbrook",
+   "km_from_bayview": 6.3,
+   "kind": "village"
+  },
+  "dunmore": {
+   "x": 13.3,
+   "y": 14.6,
+   "name": "Dunmore Junction",
+   "cls": "B",
+   "village": true,
+   "features": [
+    "recruit",
+    "track"
+   ],
+   "races": {
+    "B": 1
+   },
+   "rewards": [
+    "Steam-whistle horn"
+   ],
+   "what": "A railway town and the headquarters of Glasswater & Southern. A race through the goods yard, and a signalman's daughter who drives faster than the expresses.",
+   "id": "dunmore",
+   "km_from_bayview": 8.4,
+   "kind": "village"
+  },
+  "tollgate": {
+   "x": 4.3,
+   "y": 13.6,
+   "name": "Tollgate",
+   "cls": "B",
+   "village": true,
+   "features": [
+    "track"
+   ],
+   "races": {
+    "B": 1
+   },
+   "rewards": [
+    "Toll-booth speedometer"
+   ],
+   "what": "An old toll house on the Old Quarry Road: a mountain time trial over the pass, and a Pine & Peak halt.",
+   "id": "tollgate",
+   "km_from_bayview": 5.5,
+   "kind": "village"
+  },
+  "summit": {
+   "x": 5.5,
+   "y": 10.6,
+   "name": "Summit Pass",
+   "cls": "B",
+   "disc": "Road (snow at the top)",
+   "races": {
+    "B": 1,
+    "S": 1
+   },
+   "what": "The pass over the Spine, with snow at the top. A class B climb, and an S-class downhill later on.",
+   "id": "summit",
+   "km_from_bayview": 8.2,
+   "kind": "main"
+  },
+  "ridgeway": {
+   "x": 8.5,
+   "y": 7.1,
+   "name": "Ridgeway Circuit",
+   "cls": "B",
+   "village": true,
+   "features": [
+    "track",
+    "rewards"
+   ],
+   "races": {
+    "B": 2
+   },
+   "rewards": [
+    "Chequered speedometer",
+    "Club livery"
+   ],
+   "what": "A club circuit on the lake's west shore, the furthest class B trip from home.",
+   "id": "ridgeway",
+   "km_from_bayview": 12.0,
+   "kind": "village"
+  },
+  "coralkey": {
+   "x": 1.75,
+   "y": 18.95,
+   "name": "Coral Key",
+   "cls": "B",
+   "disc": "Road · island city",
+   "island": true,
+   "races": {
+    "B": 2
+   },
+   "what": "An island city off the north-west coast, visible from Bayview from the start. The only way in is the Undersea Road: about 4 km along the sea floor. Inside: the Reef GP street circuit, a Pit Stop, and island-only paint and body kits.",
+   "id": "coralkey",
+   "km_from_bayview": 4.3,
+   "kind": "island"
+  },
+  "lowtown": {
+   "x": 11.7,
+   "y": 8.5,
+   "name": "Lowtown",
+   "cls": "B",
+   "disc": "Secret · under the lake",
+   "secret": true,
+   "features": [
+    "parts",
+    "recruit",
+    "rewards"
+   ],
+   "races": {
+    "B": 1
+   },
+   "rewards": [
+    "Secret parts (one per class)",
+    "Ghost racer recruit",
+    "Bell-tower horn",
+    "Barnacle body kit"
+   ],
+   "what": "The old valley town, drowned when the Glasswater dam was built. Drive down the dive ramp from My City: secret parts, a ghost racer who only appears at night, and the old town's lost trophy.",
+   "id": "lowtown",
+   "km_from_bayview": 11.8,
+   "kind": "secret"
+  },
+  "mycity": {
+   "x": 11.0,
+   "y": 12.6,
+   "name": "My City",
+   "cls": "A",
+   "disc": "Road",
+   "hub": true,
+   "races": {
+    "A": 3,
+    "S": 1
+   },
+   "what": "The hub, built along the Glasswater dam: the professional league, teams, a harbour circuit on the lake, GP Park, the lake steamer and the dive ramp to Lowtown. Both Grand Tours start and finish here.",
+   "id": "mycity",
+   "km_from_bayview": 8.0,
+   "kind": "hub"
+  },
+  "cinder": {
+   "x": 17.8,
+   "y": 14.0,
+   "name": "Cinder Flats",
+   "cls": "A",
+   "village": true,
+   "features": [
+    "track",
+    "rewards"
+   ],
+   "races": {
+    "A": 1
+   },
+   "rewards": [
+    "Jet-age speedometer",
+    "Salt-flat white paint"
+   ],
+   "what": "A salt flat at the edge of the dry country: a drag strip and top-speed runs.",
+   "id": "cinder",
+   "km_from_bayview": 12.8,
+   "kind": "village"
+  },
+  "portcity": {
+   "x": 18.4,
+   "y": 7.5,
+   "name": "Port City",
+   "cls": "A",
+   "disc": "Road",
+   "races": {
+    "A": 2
+   },
+   "what": "The east-coast metropolis and home of Redline Express: pit-lane circuits, night street races, the container docks.",
+   "id": "portcity",
+   "km_from_bayview": 16.8,
+   "kind": "main"
+  },
+  "lantern": {
+   "x": 18.9,
+   "y": 5.0,
+   "name": "Cape Lantern",
+   "cls": "A",
+   "village": true,
+   "features": [
+    "track",
+    "rewards"
+   ],
+   "races": {
+    "A": 1
+   },
+   "rewards": [
+    "Lighthouse horn",
+    "Retro chrome body kit"
+   ],
+   "what": "A lighthouse village at the end of Redline's Cape Spur, with a cliff-top coastal sprint.",
+   "id": "lantern",
+   "km_from_bayview": 18.9,
+   "kind": "village"
+  },
+  "lowmere": {
+   "x": 12.5,
+   "y": 6.1,
+   "name": "Lowmere",
+   "cls": "A",
+   "village": true,
+   "features": [
+    "track",
+    "rewards"
+   ],
+   "races": {
+    "A": 1
+   },
+   "rewards": [
+    "Glacier-blue paint"
+   ],
+   "what": "A cold village on the south shore, where the lake steamer docks. When the shallows freeze it holds a time trial on the ice.",
+   "id": "lowmere",
+   "km_from_bayview": 14.3,
+   "kind": "village"
+  },
+  "larchwood": {
+   "x": 3.3,
+   "y": 6.3,
+   "name": "Larchwood",
+   "cls": "A",
+   "village": true,
+   "features": [
+    "track",
+    "recruit"
+   ],
+   "races": {
+    "A": 1
+   },
+   "rewards": [
+    "Log-truck air horn"
+   ],
+   "what": "A logging village deep in the pines. Forest stages, and a veteran co-driver who joins once you hold all three stage records.",
+   "id": "larchwood",
+   "km_from_bayview": 12.8,
+   "kind": "village"
+  },
+  "pinewood": {
+   "x": 2.3,
+   "y": 8.7,
+   "name": "Pinewood Coast",
+   "cls": "A",
+   "disc": "Rally · forest",
+   "races": {
+    "A": 2
+   },
+   "what": "Rainforest coast and forest gravel stages. The Pine & Peak railway's workshops are here.",
+   "id": "pinewood",
+   "km_from_bayview": 10.8,
+   "kind": "main"
+  },
+  "fernhollow": {
+   "x": 2.4,
+   "y": 11.6,
+   "name": "Fernhollow",
+   "cls": "A",
+   "village": true,
+   "features": [
+    "recruit",
+    "track"
+   ],
+   "races": {
+    "A": 1
+   },
+   "rewards": [
+    "Fern-green paint"
+   ],
+   "what": "A tree-fern gorge on the west coast with a Pine & Peak halt. A gravel sprint, and a rally driver who only signs if you beat her in the wet.",
+   "id": "fernhollow",
+   "km_from_bayview": 8.1,
+   "kind": "village"
+  },
+  "icefall": {
+   "x": 7.2,
+   "y": 4.3,
+   "name": "Icefall Hut",
+   "cls": "S",
+   "village": true,
+   "features": [
+    "parts"
+   ],
+   "races": {
+    "S": 1
+   },
+   "rewards": [],
+   "what": "A mountain hut at the end of the Pine & Peak line. An S-class glacier time trial, and class E ice parts once you have three podiums at class S races.",
+   "id": "icefall",
+   "km_from_bayview": 14.6,
+   "kind": "village"
+  },
+  "frostcrown": {
+   "x": 9.3,
+   "y": 3.3,
+   "name": "Frostcrown",
+   "cls": "S",
+   "disc": "Ice",
+   "races": {
+    "S": 2
+   },
+   "what": "Glacier country and frozen lakes, and the home of ice racing.",
+   "id": "frostcrown",
+   "km_from_bayview": 15.9,
+   "kind": "main"
+  },
+  "mirage": {
+   "x": 16.1,
+   "y": 10.5,
+   "name": "Mirage Wells",
+   "cls": "S",
+   "village": true,
+   "features": [
+    "track",
+    "recruit"
+   ],
+   "races": {
+    "S": 1
+   },
+   "rewards": [
+    "Heat-haze paint"
+   ],
+   "what": "An oasis town in the dunes on Redline's East Express. A desert sprint across the salt pans, and a racer who only runs at midday.",
+   "id": "mirage",
+   "km_from_bayview": 13.1,
+   "kind": "village"
+  },
+  "redrock": {
+   "x": 17.2,
+   "y": 11.4,
+   "name": "Redrock Mesa",
+   "cls": "S",
+   "disc": "Rally · desert",
+   "races": {
+    "S": 2
+   },
+   "what": "Red canyons and mesas: desert rally and the long high-speed straights.",
+   "id": "redrock",
+   "km_from_bayview": 13.4,
+   "kind": "main"
+  },
+  "copper": {
+   "x": 18.0,
+   "y": 12.9,
+   "name": "Copper Gulch",
+   "cls": "S",
+   "village": true,
+   "features": [
+    "recruit",
+    "parts"
+   ],
+   "races": {
+    "S": 1
+   },
+   "rewards": [
+    "Mine-whistle horn"
+   ],
+   "what": "An old mining town in the red canyons. It sells class S desert rally parts, and a canyon racer joins if you beat her through the gulch at night.",
+   "id": "copper",
+   "km_from_bayview": 13.4,
+   "kind": "village"
+  },
+  "aurora": {
+   "x": 15.9,
+   "y": 2.3,
+   "name": "Aurora Raceway",
+   "cls": "E",
+   "disc": "Road · night",
+   "races": {
+    "E": 10
+   },
+   "what": "The far-south circuit under the southern lights: ten class E races on its layouts, by day and by night, ending in the endurance race.",
+   "id": "aurora",
+   "km_from_bayview": 19.3,
+   "kind": "main"
+  },
+  "polar": {
+   "x": 14.3,
+   "y": 1.95,
+   "name": "Polar Post",
+   "cls": "E",
+   "village": true,
+   "features": [
+    "recruit",
+    "rewards"
+   ],
+   "races": {},
+   "rewards": [
+    "Aurora paint (shifts colour)",
+    "Polar speedometer"
+   ],
+   "what": "The last post before the southern sea. Its ice racer is the final recruit, and joins only after an endurance win at Aurora.",
+   "id": "polar",
+   "km_from_bayview": 18.8,
+   "kind": "village"
+  }
+ },
+ "tracks": {
+  "bayview": [
+   {
+    "name": "Harbour Loop",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 1.1,
+    "note": "Today's island course."
+   },
+   {
+    "name": "Bayview Grand Prix",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 3.4,
+    "note": "The island, the causeway and the valley approach, with a pit lane on the quay."
+   }
+  ],
+  "hillcrest": [
+   {
+    "name": "Hillcrest Raceway",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 1.8,
+    "note": "Today's raceway."
+   },
+   {
+    "name": "Hillcrest Raceway GP",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 4.2,
+    "note": "Extended through the valley and past the castle, with grandstands and a real pit straight. Duke Rolo's home track."
+   }
+  ],
+  "quarry": [
+   {
+    "name": "Quarry Sprint",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 2.0,
+    "note": "A gravel loop through the workings."
+   },
+   {
+    "name": "Quarry Hills Stage",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 6.5,
+    "note": "A full rally stage over the hills."
+   }
+  ],
+  "vinelands": [
+   {
+    "name": "Vineyard Loop",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 1.6,
+    "note": "Lanes between the terraces."
+   },
+   {
+    "name": "Vinelands Hill Climb",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 3.8,
+    "note": "The whole terraced climb: closed roads and a timing tower."
+   }
+  ],
+  "harbour": [
+   {
+    "name": "Quayside Sprint",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 1.4,
+    "note": "Round the fish market and the quay."
+   },
+   {
+    "name": "Coast Road GP",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 5.2,
+    "note": "The closed coast road, raced at night, with a pit lane on the harbour."
+   }
+  ],
+  "summit": [
+   {
+    "name": "Summit Climb",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 3.0,
+    "note": "The lower hairpins."
+   },
+   {
+    "name": "Summit Pass Downhill",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 7.0,
+    "note": "Top to bottom, from snow down to grass."
+   }
+  ],
+  "coralkey": [
+   {
+    "name": "Reef Street Circuit",
+    "layout": "club",
+    "classes": [
+     "B"
+    ],
+    "km": 2.0,
+    "note": "Island streets. You need the Dive kit to get here, so it opens at class B."
+   },
+   {
+    "name": "Reef GP",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 4.0,
+    "note": "Harbour, seafront and the lighthouse hill."
+   }
+  ],
+  "mycity": [
+   {
+    "name": "Waterfront Circuit",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 2.2,
+    "note": "Streets round the dam and the waterfront."
+   },
+   {
+    "name": "GP Park",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 5.5,
+    "note": "The professional circuit: pit buildings, grandstands, and the league's home."
+   }
+  ],
+  "portcity": [
+   {
+    "name": "Docks Street Race",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 2.0,
+    "note": "Between the container stacks."
+   },
+   {
+    "name": "Port City Circuit",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 5.0,
+    "note": "A floodlit pit-lane circuit through the docks."
+   }
+  ],
+  "pinewood": [
+   {
+    "name": "Forest Sprint",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 2.4,
+    "note": "Logging tracks near town."
+   },
+   {
+    "name": "Pinewood Rally Stages",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 8.0,
+    "note": "Three linked forest stages."
+   }
+  ],
+  "redrock": [
+   {
+    "name": "Canyon Sprint",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 2.6,
+    "note": "A short run down the canyon."
+   },
+   {
+    "name": "Redrock Desert Rally",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 9.0,
+    "note": "From the mesa to the salt flat."
+   }
+  ],
+  "frostcrown": [
+   {
+    "name": "Frozen Lake Oval",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 1.5,
+    "note": "Ice racing on the town lake."
+   },
+   {
+    "name": "Glacier Ice Circuit",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S",
+     "E"
+    ],
+    "post": [
+     "E"
+    ],
+    "km": 4.5,
+    "note": "A circuit on the glacier lake, with snow-bank run-off."
+   }
+  ],
+  "aurora": [
+   {
+    "name": "Aurora Club Circuit",
+    "layout": "club",
+    "classes": [
+     "C",
+     "B"
+    ],
+    "km": 2.4,
+    "note": "Club days on the infield loop: a reason to make the long trip early."
+   },
+   {
+    "name": "Aurora GP",
+    "layout": "pro",
+    "classes": [
+     "A",
+     "S"
+    ],
+    "km": 6.0,
+    "note": "The full professional circuit."
+   },
+   {
+    "name": "Aurora Endurance",
+    "layout": "endurance",
+    "classes": [
+     "E"
+    ],
+    "km": 9.0,
+    "count": {
+     "E": 10
+    },
+    "note": "The whole ring, by day and by night: the build-up races, then the yearly Endurance against Duke Rolo."
+   }
+  ]
+ },
+ "tours": [
+  {
+   "cls": "A",
+   "name": "Grand Tour A",
+   "dir": "clockwise",
+   "stops": [
+    "mycity",
+    "cinder",
+    "portcity",
+    "lantern",
+    "lowmere",
+    "larchwood",
+    "pinewood",
+    "fernhollow",
+    "mycity"
+   ]
+  },
+  {
+   "cls": "S",
+   "name": "Grand Tour S",
+   "dir": "anticlockwise",
+   "stops": [
+    "mycity",
+    "summit",
+    "icefall",
+    "frostcrown",
+    "mirage",
+    "redrock",
+    "copper",
+    "harbour",
+    "mycity"
+   ]
+  }
+ ]
+}

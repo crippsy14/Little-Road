@@ -28,22 +28,38 @@ public static class AdventureChecks
         Check(store.FinishRace(abandoned,1)==0&&store.FinishRace(serial,0)==0&&store.FinishRace(serial,25)==0,"Old race IDs and invalid places cannot pay");
         Check(store.FinishRace(serial,24)==100,"Last finisher receives 100 credits");
         store=new AdventureStore(store.path);Check(store.FinishRace(serial,24)==0&&store.Data.credits==100&&store.Data.bestPlace==24,"Race reward and record survive reload without duplicate payment");
-        // Class ladder: every current race is Class C; podiums at both open Class B (which has no races yet, so
-        // the ladder stops there). Hillcrest pays 1.5x Bayview for the same place.
-        Check(RaceCalendar.All.All(e=>e.raceClass=="C")&&EquipmentCatalog.All.parts.All(p=>RaceCalendar.Rank(p.tier)>=0)&&RaceCalendar.Classes.All(c=>EquipmentCatalog.All.parts.Any(p=>p.tier==c)),"Every race is Class C for now; the parts ladder covers all five classes");
+        // Class ladder: podiums at every class C race open class B (docs/67: its Tuner races on today's tracks, with
+        // stars). Hillcrest pays 1.5x Bayview for the same place.
+        Check(RaceCalendar.All.All(e=>RaceCalendar.Rank(e.raceClass)>=0&&e.stars>=1&&e.stars<=10)&&RaceCalendar.Races("B")>0&&EquipmentCatalog.All.parts.All(p=>RaceCalendar.Rank(p.tier)>=0)&&RaceCalendar.Classes.All(c=>EquipmentCatalog.All.parts.Any(p=>p.tier==c)),"Every race has a class and 1-10 stars, class B has races, and the parts ladder covers all five classes");
         Check(RaceCalendar.Open(store.Data)=="C"&&!store.Data.podiums.Contains("bayview"),"A 24th place is no podium; Class C is open");
         int s2=store.BeginRace();Check(store.FinishRace(s2,3,"bayview")==330&&store.Data.podiums.SequenceEqual(new[]{"bayview"})&&RaceCalendar.Open(store.Data)=="C","A Bayview podium pays 330 and counts one of three Class C podiums");
         int s3=store.BeginRace();Check(store.FinishRace(s3,2,"hillcrest")==600&&!RaceCalendar.Complete(store.Data,"C")&&RaceCalendar.Open(store.Data)=="C","A Hillcrest podium pays 1.5x; Class C still wants the Quarry Hills Rallycross");
-        int s4=store.BeginRace();Check(store.FinishRace(s4,3,"quarry")==(int)(EquipmentCatalog.Reward(3,"C")*RaceCalendar.Get("quarry").rewardScale)&&RaceCalendar.Complete(store.Data,"C")&&RaceCalendar.Open(store.Data)=="C","A Rallycross podium pays 1.8x and completes Class C; Class B stays shut until it has races");
+        int s4=store.BeginRace();Check(store.FinishRace(s4,3,"quarry")==(int)(EquipmentCatalog.Reward(3,"C")*RaceCalendar.Get("quarry").rewardScale)&&RaceCalendar.Complete(store.Data,"C")&&RaceCalendar.Open(store.Data)=="B","A Rallycross podium pays 1.8x, completes Class C and opens Class B");
         store=new AdventureStore(store.path);Check(RaceCalendar.Complete(store.Data,"C")&&store.Data.podiums.Count==3,"Podiums and the completed class survive reload");
-        Check(!EquipmentCatalog.All.parts.Any(p=>RaceCalendar.Rank(p.tier)>0&&RaceCalendar.PartOpen(store.Data,p)),"Parts above Class C stay locked while Class B has no races");
+        // Class B parts (docs/67): the Good step on sale at once, Better and Best locked until enough stars are won;
+        // class A and above stay shut. Winning a 1-star and a 2-star Tuner race (3 stars) unlocks Better tyres.
+        Check(!EquipmentCatalog.All.parts.Any(p=>RaceCalendar.Rank(p.tier)>1&&RaceCalendar.PartOpen(store.Data,p)),"Parts above class B stay shut");
+        Check(PartDiscovery.Found(store.Data,EquipmentCatalog.Get("tyres_b_sport"))&&!PartDiscovery.Found(store.Data,EquipmentCatalog.Get("tyres_b_performance"))&&PartDiscovery.NextStars(store.Data,"B")==4,"Good Tuner parts on sale; Better tyres need 4 stars");
+        int s5=store.BeginRace();store.FinishRace(s5,1,"b_coast");int s6=store.BeginRace();store.FinishRace(s6,1,"b_valley");int s7=store.BeginRace();store.FinishRace(s7,1,"b_coast");int s8=store.BeginRace();store.FinishRace(s8,1,"b_slate");
+        Check(RaceCalendar.StarsWon(store.Data,"B")==4&&PartDiscovery.Found(store.Data,EquipmentCatalog.Get("tyres_b_performance"))&&!PartDiscovery.Found(store.Data,EquipmentCatalog.Get("engine_b_highcomp")),"Wins add each event's stars once; 4 stars unlock Better tyres, not the Better engine");
+        Check(RaceCalendar.StarsOnOffer("B")==12&&PartDiscovery.Met(store.Data,"stars:B:4")&&!PartDiscovery.Met(store.Data,"stars:B:28"),"Today's B events are the near end of the map: all 12 of their stars can't reach the Better gearbox (28)");
+        Check(EquipmentCatalog.TestLoadout("b1")["engine"]=="engine_b_twincam"&&EquipmentCatalog.TestLoadout("b7")["tyres"]=="tyres_b_semislick"&&EquipmentCatalog.TestLoadout("b7")["transmission"]=="transmission_b_shortsix"&&EquipmentCatalog.TestLoadout("b9")["transmission"]=="transmission_b_lsd","Tuner fields by stars: Good at 1, the podium build at 7, all Best at 9");
+        // The Tuner Garage (docs/67): with class B open, one free Tuner of three, Good Tuner parts fitted; Tuner parts fit
+        // Tuner bodies only, and swapping back to a class C body refits its slots with the best class C parts owned.
+        {
+            var t=new AdventureStore(Path.Combine(folder,"tuner.json"));t.Change(p=>{p.podiums.AddRange(RaceCalendar.All.Where(e=>e.raceClass=="C").Select(e=>e.id));return true;});
+            Check(!t.ClaimTunerStarter("hayate")&&t.ClaimTunerStarter("sakura")&&!t.ClaimTunerStarter("tsubasa")&&t.Data.bodyId=="sakura"&&t.Data.Loadout()["engine"]=="engine_b_twincam","The free Tuner: one of the three starters, once, with Good Tuner parts fitted");
+            t.Change(p=>{p.credits=5000;return true;});
+            Check(t.Buy("engine_club")&&t.Data.bodies.Contains(CarBodies.Starter)&&t.SwitchBody(CarBodies.Starter)&&t.Data.Loadout()["engine"]=="engine_club"&&t.Data.Loadout()["tyres"]=="tyres_stock"&&!t.Fit("engine_b_twincam"),"Back on a class C body: Tuner parts come off for the best class C parts owned, and won't refit");
+            Check(t.SwitchBody("sakura")&&t.Fit("engine_b_twincam")&&CarBodies.Class("sakura")=="B"&&CarBodies.Price("hayate")>0,"On a Tuner body, Tuner parts fit; Tuner bodies are on sale");
+        }
         // Save slots (docs/50): the pre-slot save becomes slot 1's autosave; a new game, a save into another slot and
         // loading each land where they should; a slot's summary reads its class and credits.
         {
             string slots=Path.Combine(folder,"slots");Directory.CreateDirectory(slots);SaveSlots.Folder=slots;
             try {
                 File.Copy(store.path,SaveSlots.Legacy);SaveSlots.Migrate();
-                Check(File.Exists(SaveSlots.Auto(1))&&SaveSlots.Current==1&&SaveSlots.Read(SaveSlots.Auto(1)).summary.StartsWith("Class C")&&SaveSlots.Read(SaveSlots.Auto(1)).summary.Contains("CR"),"Save slots: the old save becomes slot 1's autosave");
+                Check(File.Exists(SaveSlots.Auto(1))&&SaveSlots.Current==1&&SaveSlots.Read(SaveSlots.Auto(1)).summary.StartsWith("Class B")&&SaveSlots.Read(SaveSlots.Auto(1)).summary.Contains("CR"),"Save slots: the old save becomes slot 1's autosave");
                 SaveSlots.NewGame(2);Check(SaveSlots.Current==2&&new AdventureStore(SaveSlots.LivePath).Data.credits==0&&!File.Exists(SaveSlots.Manual(2)),"Save slots: a new game starts fresh in its own slot");
                 var live=new AdventureStore(SaveSlots.LivePath);live.Collect("postcard_2");SaveSlots.SaveTo(live,2);
                 Check(new AdventureStore(SaveSlots.Manual(2)).Data.credits==50,"Save slots: Save writes the slot's saved game");

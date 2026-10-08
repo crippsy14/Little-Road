@@ -12,7 +12,8 @@ namespace LittleRoad
         public static readonly string[] Axes={"BRAKING","LINE","CONTROL","CONSISTENCY","RACECRAFT"};
         public float[] values=new float[5];
         public Color fill=new Color(.29f,.48f,1f,.45f),edge=Toy.Blue,ring=new Color(.11f,.17f,.39f,.25f);
-        public void Set(in RacerAbilities a){values=new[]{a.braking,a.line,a.control,a.consistency,a.racecraft};SetVerticesDirty();}
+        // Plotted on the skill scale (1-10), so a 10 reaches the rim.
+        public void Set(in RacerAbilities a){values=new[]{a.braking,a.line,a.control,a.consistency,a.racecraft};for(int i=0;i<values.Length;i++)values[i]=RacerAbilities.Rating(values[i])/10f;SetVerticesDirty();}
         public static int DriverRating(in RacerAbilities a)=>RacerAbilities.Rating((a.braking+a.line+a.control+a.consistency+a.racecraft)/5);
         Vector2 Point(int axis,float value)
         {
@@ -37,7 +38,7 @@ namespace LittleRoad
             vh.AddTriangle(k,k+1,k+2);vh.AddTriangle(k,k+2,k+3);
         }
     }
-    // A radar card for the race preview: name, driver rating, radar with 1-20 values, personality chips.
+    // A radar card for the race preview: name, driver rating (skill 1-10), radar with 1-10 values, personality chips.
     public sealed class RacerRadarCard
     {
         public readonly GameObject root;readonly RacerRadar radar;readonly Text title,rating,traits;readonly Text[] values=new Text[5];
@@ -60,8 +61,8 @@ namespace LittleRoad
         {
             title.text=name;rating.text="DR "+RacerRadar.DriverRating(a);radar.Set(a);
             float[] v={a.braking,a.line,a.control,a.consistency,a.racecraft};
-            for(int i=0;i<v.Length;i++)values[i].text=RacerAbilities.Rating(v[i])+"/20";
-            traits.text=$"Aggression {RacerAbilities.Rating(a.aggression)}/20  ·  Patience {RacerAbilities.Rating(a.patience)}/20";
+            for(int i=0;i<v.Length;i++)values[i].text=RacerAbilities.Rating(v[i])+"/10";
+            traits.text=$"Aggression {RacerAbilities.Trait(a.aggression)}/10  ·  Patience {RacerAbilities.Trait(a.patience)}/10";
             root.SetActive(true);root.transform.SetAsLastSibling();
         }
         public void Hide()=>root.SetActive(false);

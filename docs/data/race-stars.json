@@ -1,0 +1,348 @@
+{
+ "note": "Planned stars per event (docs/67, Richard 7 Oct: 1-10 over the whole map, the championship 10; the rest 1-8). Class C follows the same scale (docs/70: harder further from Bayview). 'event' is the game's RaceCalendar id where built; 'extra' marks events beyond the blueprint's race count (today's towns raced reversed); 'disc' is the surface the field's tyres are chosen for (road, gravel or ice; docs/70). The Tuner Championship (10 stars) is three races at three towns with class B races, chosen later (Richard, 8 Oct).",
+ "C": [
+  {
+   "place_id": "bayview",
+   "track": "Harbour Loop",
+   "name": "Bayview Coast",
+   "stars": 1,
+   "event": "bayview",
+   "disc": "road"
+  },
+  {
+   "place_id": "bayview",
+   "track": "Harbour Loop",
+   "name": "Bayview Coast, the harder round",
+   "stars": 2,
+   "disc": "road"
+  },
+  {
+   "place_id": "hillcrest",
+   "track": "Hillcrest Raceway",
+   "name": "Valley Cup",
+   "stars": 2,
+   "event": "hillcrest",
+   "disc": "road"
+  },
+  {
+   "place_id": "hillcrest",
+   "track": "Hillcrest Raceway",
+   "name": "Valley Cup, the harder round",
+   "stars": 3,
+   "disc": "road"
+  },
+  {
+   "place_id": "bramble",
+   "track": "Bramblewick course",
+   "name": "Bramblewick lanes",
+   "stars": 2,
+   "disc": "road"
+  },
+  {
+   "place_id": "quarry",
+   "track": "Quarry Sprint",
+   "name": "Quarry Hills Rallycross",
+   "stars": 3,
+   "event": "quarry",
+   "disc": "gravel"
+  },
+  {
+   "place_id": "quarry",
+   "track": "Quarry Sprint",
+   "name": "Quarry Link",
+   "stars": 4,
+   "disc": "gravel"
+  },
+  {
+   "place_id": "orchard",
+   "track": "Orchard End course",
+   "name": "Blossom Run",
+   "stars": 3,
+   "disc": "road"
+  },
+  {
+   "place_id": "vinelands",
+   "track": "Vineyard Loop",
+   "name": "Vineyard Loop",
+   "stars": 3,
+   "disc": "road"
+  },
+  {
+   "place_id": "vinelands",
+   "track": "Vineyard Loop",
+   "name": "River Road Sprint",
+   "stars": 4,
+   "disc": "road"
+  },
+  {
+   "place_id": "kettle",
+   "track": "Kettle Falls course",
+   "name": "Kettle Falls climb",
+   "stars": 4,
+   "disc": "road"
+  },
+  {
+   "place_id": "cobble",
+   "track": "Cobble Cove course",
+   "name": "Cobbled quay sprint",
+   "stars": 4,
+   "disc": "road"
+  },
+  {
+   "place_id": "saltmarsh",
+   "track": "Saltmarsh course",
+   "name": "Low-tide beach sprint",
+   "stars": 4,
+   "disc": "gravel"
+  },
+  {
+   "place_id": "mycity",
+   "track": "Waterfront Circuit",
+   "name": "Waterfront Street",
+   "stars": 5,
+   "disc": "road"
+  },
+  {
+   "place_id": "summit",
+   "track": "Summit Climb",
+   "name": "Summit Climb",
+   "stars": 5,
+   "disc": "road"
+  },
+  {
+   "place_id": "harbour",
+   "track": "Quayside Sprint",
+   "name": "Quayside Sprint",
+   "stars": 5,
+   "disc": "road"
+  },
+  {
+   "place_id": "pinewood",
+   "track": "Forest Sprint",
+   "name": "Forest Sprint",
+   "stars": 6,
+   "disc": "gravel"
+  },
+  {
+   "place_id": "redrock",
+   "track": "Canyon Sprint",
+   "name": "Canyon Sprint",
+   "stars": 7,
+   "disc": "gravel"
+  },
+  {
+   "place_id": "frostcrown",
+   "track": "Frozen Lake Oval",
+   "name": "Frozen Lake Oval",
+   "stars": 7,
+   "disc": "ice"
+  },
+  {
+   "place_id": "portcity",
+   "track": "Docks Street Race",
+   "name": "Docks Street Race",
+   "stars": 7,
+   "disc": "road"
+  },
+  {
+   "place_id": "aurora",
+   "track": "Aurora Club Circuit",
+   "name": "Aurora Club",
+   "stars": 8,
+   "disc": "road"
+  }
+ ],
+ "B": [
+  {
+   "place_id": "bayview",
+   "track": "Harbour Loop",
+   "name": "Coast Tuners",
+   "stars": 1,
+   "event": "b_coast",
+   "disc": "road"
+  },
+  {
+   "place_id": "bayview",
+   "track": "Harbour Loop",
+   "name": "Harbour Reverse",
+   "stars": 2,
+   "event": "b_harbour_rev",
+   "extra": "reversed",
+   "disc": "road"
+  },
+  {
+   "place_id": "hillcrest",
+   "track": "Hillcrest Raceway",
+   "name": "Valley Tuners",
+   "stars": 1,
+   "event": "b_valley",
+   "disc": "road"
+  },
+  {
+   "place_id": "hillcrest",
+   "track": "Hillcrest Raceway",
+   "name": "Raceway Reverse",
+   "stars": 3,
+   "event": "b_raceway_rev",
+   "extra": "reversed",
+   "disc": "road"
+  },
+  {
+   "place_id": "quarry",
+   "track": "Quarry Sprint",
+   "name": "Slate Rallycross",
+   "stars": 2,
+   "event": "b_slate",
+   "disc": "gravel"
+  },
+  {
+   "place_id": "quarry",
+   "track": "Quarry Sprint",
+   "name": "Rallycross Reverse",
+   "stars": 3,
+   "event": "b_rallycross_rev",
+   "extra": "reversed",
+   "disc": "gravel"
+  },
+  {
+   "place_id": "vinelands",
+   "track": "Vineyard Loop",
+   "name": "Vineyard Tuners",
+   "stars": 2,
+   "disc": "road"
+  },
+  {
+   "place_id": "tollgate",
+   "track": "Tollgate course",
+   "name": "Tollgate",
+   "stars": 3,
+   "disc": "road"
+  },
+  {
+   "place_id": "highmoor",
+   "track": "Highmoor course",
+   "name": "Highmoor",
+   "stars": 3,
+   "disc": "gravel"
+  },
+  {
+   "place_id": "millbrook",
+   "track": "Millbrook course",
+   "name": "Millbrook",
+   "stars": 3,
+   "disc": "road"
+  },
+  {
+   "place_id": "harbour",
+   "track": "Quayside Sprint",
+   "name": "Quayside Sprint",
+   "stars": 4,
+   "disc": "road"
+  },
+  {
+   "place_id": "harbour",
+   "track": "Quayside Sprint",
+   "name": "Quayside Sprint, the harder round",
+   "stars": 5,
+   "disc": "road"
+  },
+  {
+   "place_id": "coralkey",
+   "track": "Reef Street Circuit",
+   "name": "Reef Street",
+   "stars": 4,
+   "disc": "road"
+  },
+  {
+   "place_id": "coralkey",
+   "track": "Reef Street Circuit",
+   "name": "Reef Street, the harder round",
+   "stars": 6,
+   "disc": "road"
+  },
+  {
+   "place_id": "dunmore",
+   "track": "Dunmore Junction course",
+   "name": "Dunmore Junction",
+   "stars": 4,
+   "disc": "road"
+  },
+  {
+   "place_id": "summit",
+   "track": "Summit Climb",
+   "name": "Summit Climb",
+   "stars": 5,
+   "disc": "road"
+  },
+  {
+   "place_id": "summit",
+   "track": "Summit Climb",
+   "name": "Summit Climb, the harder round",
+   "stars": 7,
+   "disc": "road"
+  },
+  {
+   "place_id": "mycity",
+   "track": "Waterfront Circuit",
+   "name": "Waterfront Tuners",
+   "stars": 5,
+   "disc": "road"
+  },
+  {
+   "place_id": "pinewood",
+   "track": "Forest Sprint",
+   "name": "Forest Sprint",
+   "stars": 6,
+   "disc": "gravel"
+  },
+  {
+   "place_id": "ridgeway",
+   "track": "Ridgeway Circuit course",
+   "name": "Ridgeway",
+   "stars": 6,
+   "disc": "road"
+  },
+  {
+   "place_id": "ridgeway",
+   "track": "Ridgeway Circuit course",
+   "name": "Ridgeway, the harder round",
+   "stars": 8,
+   "disc": "road"
+  },
+  {
+   "place_id": "lowtown",
+   "track": "Lake-bed streets",
+   "name": "Lowtown",
+   "stars": 7,
+   "disc": "road"
+  },
+  {
+   "place_id": "redrock",
+   "track": "Canyon Sprint",
+   "name": "Canyon Sprint",
+   "stars": 7,
+   "disc": "gravel"
+  },
+  {
+   "place_id": "portcity",
+   "track": "Docks Street Race",
+   "name": "Docks Street Race",
+   "stars": 7,
+   "disc": "road"
+  },
+  {
+   "place_id": "frostcrown",
+   "track": "Frozen Lake Oval",
+   "name": "Frozen Lake Oval",
+   "stars": 8,
+   "disc": "ice"
+  },
+  {
+   "place_id": "aurora",
+   "track": "Aurora Club Circuit",
+   "name": "Aurora Club",
+   "stars": 8,
+   "disc": "road"
+  }
+ ]
+}

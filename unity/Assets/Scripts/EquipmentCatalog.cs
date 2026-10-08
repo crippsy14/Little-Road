@@ -80,6 +80,13 @@ namespace LittleRoad
             return new GearTune{transmission=fit["transmission"],final=final};
         }
 
+        // The class B ladder, Good/Better/Best per slot (parts.json; the Better and Best unlock with stars won).
+        public static readonly string[] TunerOrder={"tyres","brakes","engine","steering","turbo","chassis","transmission"};
+        public static readonly Dictionary<string,string[]> TunerSteps=new(){
+            {"engine",new[]{"engine_b_twincam","engine_b_highcomp","engine_b_v6"}},{"turbo",new[]{"turbo_b_single","turbo_b_twinscroll","turbo_b_twin"}},
+            {"tyres",new[]{"tyres_b_sport","tyres_b_performance","tyres_b_semislick"}},{"transmission",new[]{"transmission_b_six","transmission_b_shortsix","transmission_b_lsd"}},
+            {"brakes",new[]{"brakes_b_drilled","brakes_b_braided","brakes_b_carbon"}},{"steering",new[]{"steering_b_quick","steering_b_rally","steering_b_wheel"}},
+            {"chassis",new[]{"chassis_b_strut","chassis_b_halfcage","chassis_b_carbon"}}};
         public static Dictionary<string,string> TestLoadout(string name)
         {
             var fit=StockLoadout();
@@ -98,6 +105,12 @@ namespace LittleRoad
                 fit["engine"]="engine_valley";fit["turbo"]="turbo_club";fit["tyres"]="tyres_grip";
                 fit["transmission"]="transmission_long";fit["brakes"]="brakes_ceramic";
                 fit["steering"]="steering_precision";fit["chassis"]="chassis_light";
+            } else if(name.Length>=2&&name[0]=='b'&&int.TryParse(name.Substring(1),out int stars)&&stars>=1&&stars<=10) {
+                // Class B fields by stars (docs/67): Good in every slot at 1, then about two slots a step up per star
+                // in the ladder's order (tyres and brakes first, the gearbox last): all Better at 5, the podium build
+                // (Best in four) at 7, all Best from 9.
+                int ups=new[]{0,2,4,6,7,9,11,13,14,14}[stars-1];
+                for(int i=0;i<TunerOrder.Length;i++){string slot=TunerOrder[i];int step=(ups>i?1:0)+(ups>i+7?1:0);fit[slot]=TunerSteps[slot][step];}
             } else throw new ArgumentException("Unknown test loadout: "+name);
             return fit;
         }

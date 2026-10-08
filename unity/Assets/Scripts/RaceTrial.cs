@@ -24,6 +24,8 @@ namespace LittleRoad
         public MotionPredictionAudit MotionAudit {get;private set;}
         public PathApproachAudit ApproachAudit {get;private set;}
         public RacingLine ReferenceLine {get;private set;}
+        // The line a car drives (--car-lines, docs/71: its performance group's own minimum-time line; otherwise the shared one).
+        public RacingLine LineFor(CarTuning tuning)=>CarLines.On&&ReferenceLine!=null?CarLines.For(track,ReferenceLine,tuning):ReferenceLine;
         public RaceRoster Roster {get;private set;}
         RacePreviewUI racePreview;
         public bool PreviewOpen=>racePreview?.IsOpen==true;
@@ -61,6 +63,7 @@ namespace LittleRoad
         float nextSample,sampleInterval=1;
         GUIStyle title,label,small;string reportTrack="bayview";
         public string TrackId=>reportTrack;
+        public bool Reversed{get;private set;}
         [Serializable] public class DriverRosterEvidence {public int schema=1;public string mode;public DriverIdentity.Record[] drivers;}
         [Serializable] public class CarResult {public int id,laps,nextGate,place,contacts,recoveries,missedGates,physicalRecoveries;public string equipment;public bool finished;public float time,progress,offset,bestLap,maxImpact,maxPenetration,unsupportedSeconds,physicalRecoverySeconds,recoveryWaitSeconds,recoveryReverseSeconds;public int planReversals,passCommits,passCompleted,passAborted,abortTarget,abortTimeout,abortUnaccepted,lateBrakeTicks,gapCandidates,gapSelections,defendMoves;public float brakeSeconds,liftSeconds,stoppedSeconds,trafficSeconds,trafficBrakeSeconds,guardSeconds;}
         [Serializable] public class MotionSample {public int id,nextGate,laps;public float time,speed,targetSpeed,throttle,steering,offset,progress,headingError,nextGateProgress,predictedOffset,lateralSpeed,requestedYaw,actualYaw,chosenLane;public int reason=-1,intent=-1;}
@@ -84,7 +87,7 @@ namespace LittleRoad
             career=AdventureSession.Racing;
             if(!career&&!Has("--trial-auto")&&!Has("--trial-race")){freeRoam=true;gameObject.AddComponent<AdventureGame>();yield break;}
             sampleInterval=Arg("--traffic-case","").StartsWith("draft-")?1f/120:1;
-            automation=Has("--trial-auto")||AdventureSession.Smoke||(career&&(Has("--valley-race-review")||Has("--duke-race-review")||Has("--quarry-race-review")));int.TryParse(Arg("--trial-cars","24"),out field);field=Mathf.Clamp(field,1,24);
+            automation=Has("--trial-auto")||AdventureSession.Smoke||(career&&(Has("--valley-race-review")||Has("--duke-race-review")||Has("--quarry-race-review")||Has("--event-race-review")));int.TryParse(Arg("--trial-cars","24"),out field);field=Mathf.Clamp(field,1,24);
             float.TryParse(Arg("--trial-duration","240"),out duration);int.TryParse(Arg("--trial-seed","1709"),out seed);
             int.TryParse(Arg("--trial-laps","3"),out requiredLaps);requiredLaps=Mathf.Max(1,requiredLaps);
             setup=Arg("--trial-setup","stock");reportPath=Arg("--trial-report");captureFolder=Arg("--trial-captures");
@@ -117,7 +120,11 @@ namespace LittleRoad
             // Quarry Hills Rallycross (--quarry-hills): the quarry floor's circuit, built with the mainland.
             else if(trackId=="quarry"&&QuarryHills.Enabled){RaceArea.Set(QuarryFloor.Loop,450);yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(QuarryFloor.Loop);RenderSettings.fogDensity=.00026f;}
             else throw new ArgumentException("Unknown trial track: "+trackId);
-            reportTrack=trackId;bool loose=trackId=="quarry";RoadCar.LooseRace=loose&&!freeRoam;
+            // A reversed event (docs/67) drives the same circuit the other way; the world was built from the forward route.
+            bool reversed=career?AdventureSession.EnteredRoster?.Reversed==true:Has("--trial-reverse");
+            if(reversed&&technical!=null)throw new ArgumentException("Reversed layouts are for the town circuits.");
+            if(reversed)track=track.Reversed();
+            reportTrack=trackId;Reversed=reversed;bool loose=trackId=="quarry";RoadCar.LooseRace=loose&&!freeRoam;
             // The elevated Hillcrest Raceway always races grade-aware (its context drivers could not race it
             // otherwise; the model is exactly neutral on level circuits, study 124). Elsewhere it is opt-in.
             GradeModel.Enabled=Has("--grade-aware")||((trackId=="hillcrest"||trackId=="quarry")&&track.hasElevation);GradeModel.Physics=GradeModel.Enabled&&!Has("--grade-no-physics");
@@ -145,7 +152,7 @@ namespace LittleRoad
                 // Hillcrest's line is baked from the live circuit (same method as the Bayview/Cedar seeds).
                 // Cedar Hills reuses Cedar's authored line (same layout), so only the elevation differs.
                 ReferenceLine=trackId=="cedar-hills"?new RacingLine(track,RacingLine.Transfer(track,"cedar-smooth-v2","cedar-hills")):
-                    trackId=="hillcrest"||trackId=="quarry"||trackId=="test-loop"?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+"-smooth-v1",trackId)):
+                    trackId=="hillcrest"||trackId=="quarry"||trackId=="test-loop"||reversed?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+(reversed?"-reversed":"")+"-smooth-v1",trackId)):
                     new RacingLine(track,Arg("--racing-line","cedar-mincurve-v1"),technical==null?"bayview":technical.definition.id,technical==null?"bayview-v1":technical.definition.version);DriverPolicyId=policy=="traffic"?"traffic-v1":policy=="context"?"context-v1":policy=="racer"?"racer-v2":"reference-v1";
             }else if(policy!="legacy")throw new ArgumentException("Unknown driver policy: "+policy);
             if(Has("--driver-roster")&&((career&&!connectedModern)||(policy!="context"&&policy!="racer")))throw new ArgumentException("Driver roster currently requires standalone context comparisons.");
@@ -153,6 +160,8 @@ namespace LittleRoad
             if(!career||AdventureSession.Smoke)Time.timeScale=Mathf.Clamp(float.Parse(Arg("--trial-timescale","1"),System.Globalization.CultureInfo.InvariantCulture),.25f,8);
             Roster=career?AdventureSession.EnteredRoster:RaceRoster.Trial(field,requiredLaps,seed,trackId,setup,opponentSetups,Arg("--traffic-case"),Has("--driver-roster")?Arg("--driver-roster"):null,Has("--driver-form"),Has("--trial-body")?Arg("--trial-body"):Has("--path-approach-file")?PathApproachAudit.Replay().bodyAsset:null);
             if(Roster==null||Roster.Entries.Count!=field||Roster.Seed!=seed)throw new InvalidOperationException("Entered roster does not match this race.");
+            // Per-car lines (--car-lines, docs/71): every performance group's line ready before the cars need them.
+            if(CarLines.On&&ReferenceLine!=null){var tunings=new List<CarTuning>();foreach(var e in Roster.Entries)tunings.Add(loose?e.Tuning.Loose():e.Tuning);CarLines.Prepare(track,ReferenceLine,tunings);}
             foreach(var entrant in Roster.Entries) {
                 int i=entrant.Id;var go=TrialWorld.Car(entrant.Body,entrant.Paint);bool line=gridMode=="line";float grid=RaceGrid.Distance(entrant.Slot,line);
                 go.transform.SetPositionAndRotation(RaceGrid.Position(track,entrant.Slot,line),Quaternion.LookRotation(track.Forward(grid)));
@@ -407,15 +416,19 @@ namespace LittleRoad
             int place=finishOrder.IndexOf(cars[0])+1;
             if(Roster?.Event==RaceRoster.DukeEvent){SettleDuke(place);return;}
             try {
-                bool valley=Roster?.Track=="hillcrest";string venue=RaceCalendar.Known(Roster?.Track??"")?Roster.Track:"bayview";var data=AdventureSession.Store.Data;string openBefore=RaceCalendar.Open(data);bool doneBefore=RaceCalendar.Complete(data,openBefore);
+                bool valley=Roster?.Track=="hillcrest";string venue=RaceCalendar.Known(Roster?.Event??"")?Roster.Event:"bayview";var data=AdventureSession.Store.Data;string openBefore=RaceCalendar.Open(data);bool doneBefore=RaceCalendar.Complete(data,openBefore);
+                var ev=RaceCalendar.Get(venue);bool firstWin=place==1&&!RaceCalendar.Won(data,venue);
                 int reward=AdventureSession.Store.FinishRace(AdventureSession.RaceSerial,place,venue);
                 careerReward=reward;string openNow=RaceCalendar.Open(AdventureSession.Store.Data);
                 AdventureSession.Notice=openNow!=openBefore?$"Finished {place}/24 · +{reward} credits · Class {openBefore} complete! Class {openNow} is open.":
                     !doneBefore&&RaceCalendar.Complete(AdventureSession.Store.Data,openBefore)?$"Finished {place}/24 · +{reward} credits · Class {openBefore} complete! New races and parts are on the way.":
+                    ev.raceClass=="B"?$"Finished {place}/24 · +{reward} credits"+(firstWin?$" · +{ev.stars}★, {RaceCalendar.StarsWon(AdventureSession.Store.Data,"B")}★ won":"")+TunerNext():
                     $"Finished {place}/24 · +{reward} credits. "+(valley?"Gio at Hillcrest Motors has valley parts.":"Visit Mara to buy and fit parts.");
                 ShowCareerResult();
             }catch(Exception e){Debug.LogError(e);careerUI.Show("Reward not saved yet",e.Message,new(){new("Retry saving this result",SettleCareer)});}
         }
+        // What the next Tuner part needs (docs/67: every result names the next goal).
+        static string TunerNext(){var d=AdventureSession.Store.Data;int next=PartDiscovery.NextStars(d,"B");return next<0?".":$". Next Tuner part at {next}★: win any Tuner race you haven't won.";}
         // The Duke's Challenge (docs/54): the Regale and the prize on your first win.
         void SettleDuke(int place)
         {
@@ -496,7 +509,7 @@ namespace LittleRoad
             GetComponent<PathPredictionFixture>()?.Save();
             ApproachAudit?.Save(reportPath);
             var sorted=frameTimes.OrderBy(x=>x).ToArray();var r=new Report {engine=Application.unityVersion,stage=career?"Connected adventure race":"Standalone race trial",utc=DateTime.UtcNow.ToString("O"),
-                trackId=technical==null?reportTrack:technical.definition.id,trackVersion=technical==null?reportTrack+"-v1":technical.definition.version,
+                trackId=technical==null?reportTrack+(Reversed?"-reversed":""):technical.definition.id,trackVersion=technical==null?reportTrack+(Reversed?"-reversed":"")+"-v1":technical.definition.version,
                 driverPolicy=DriverPolicyId,observationMode=DriverSnapshot==null?"legacy cached order":"shared pre-controller snapshot",
                 collisionMode=cars[0].body.collisionDetectionMode.ToString(),graphics=SystemInfo.graphicsDeviceName,equipment=setup,gridMode=gridMode,seed=seed,carCount=cars.Count,finished=finishOrder.Count,requiredLaps=requiredLaps,simSeconds=elapsed,
                 wallSeconds=Time.realtimeSinceStartup-wallStart,trackLength=track.length,trackWidth=Circuit.Width,autonomous=automation,physicsStepSeconds=Time.fixedDeltaTime,

@@ -38,16 +38,18 @@ namespace LittleRoad
     public sealed class RaceRoster
     {
         [Serializable] public sealed class EntryRecord {public int id,slot,rating;public string body,equipment;public Color paint;public CarTuning tuning;public FittedPart[] parts;public DriverIdentity.Record driver;}
-        [Serializable] public sealed class Evidence {public int schema=1,seed,laps;public string track,title,ratingVersion;public bool modern;public EntryRecord[] entries;}
+        [Serializable] public sealed class Evidence {public int schema=1,seed,laps;public string track,title,ratingVersion;public bool modern,reversed;public EntryRecord[] entries;}
         public readonly int Seed,Laps;
         public readonly string Track,Title;
         // The event (RaceCalendar id, or DukeEvent); the track's id unless said otherwise.
         public readonly string Event;
         public readonly bool Modern;
+        // Driven the other way round (docs/67): the same track id, so every track-specific rule still applies.
+        public readonly bool Reversed;
         public readonly IReadOnlyList<RaceEntrant> Entries;
-        public RaceRoster(int seed,int laps,string track,string title,bool modern,RaceEntrant[] entrants,string eventId=null)
+        public RaceRoster(int seed,int laps,string track,string title,bool modern,RaceEntrant[] entrants,string eventId=null,bool reversed=false)
         {
-            Event=eventId??track;
+            Event=eventId??track;Reversed=reversed;
             if(entrants==null||entrants.Length<1||entrants.Length>24||laps<1)throw new ArgumentException("Invalid race roster");
             var copy=(RaceEntrant[])entrants.Clone();var slots=new HashSet<int>();
             for(int i=0;i<copy.Length;i++)if(copy[i]==null||copy[i].Id!=i||!slots.Add(copy[i].Slot))throw new ArgumentException("Roster needs contiguous IDs and distinct grid slots");
@@ -82,10 +84,12 @@ namespace LittleRoad
                 new RaceEntrant(1,0,CarBodies.Prototype,DukePaint,"the maximum build",EquipmentCatalog.MaxBuild(),new DriverIdentity(DukeDriver,seed,false))};
             return new RaceRoster(seed,3,"hillcrest","THE DUKE'S CHALLENGE / HILLCREST RACEWAY",true,entries,DukeEvent);
         }
-        public static RaceRoster Adventure(AdventureProgress save,bool modern=true)
+        public static RaceRoster Adventure(AdventureProgress save,bool modern=true)=>Adventure(save,modern,FieldRecipe.On);
+        public static RaceRoster Adventure(AdventureProgress save,bool modern,bool recipe)
         {
             save.Validate();int seed=1709+(save.raceSerial+1)*11;
             var trial=Trial(24,3,seed,"bayview","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
+            if(recipe)return Recipe(save,"bayview","C",RaceCalendar.StarsOf("bayview"),trial,seed,3,"bayview",false,"BAYVIEW COAST / CLASS C",modern,CarBodies.Family,CarBodies.Sporty);
             // Bodies follow equipment tier: street cars are family cars, club cars
             // are sporty, and the pole-sitter runs club kit in the liveried flagship.
             var entries=new RaceEntrant[24];
@@ -101,10 +105,12 @@ namespace LittleRoad
         // The Valley Cup at Hillcrest Raceway: Class C (a quicker field than Bayview's), two laps, context drivers (hillcrest-race r5: legacy
         // needed ~350 contacts a race); street and
         // club kit through the field and the pole-sitter on Hillcrest Motors' valley parts.
-        public static RaceRoster AdventureHillcrest(AdventureProgress save,bool modern=true)
+        public static RaceRoster AdventureHillcrest(AdventureProgress save,bool modern=true)=>AdventureHillcrest(save,modern,FieldRecipe.On);
+        public static RaceRoster AdventureHillcrest(AdventureProgress save,bool modern,bool recipe)
         {
             save.Validate();int seed=1709+(save.raceSerial+1)*11;
             var trial=Trial(24,2,seed,"hillcrest","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
+            if(recipe)return Recipe(save,"hillcrest","C",RaceCalendar.StarsOf("hillcrest"),trial,seed,2,"hillcrest",false,"HILLCREST RACEWAY / CLASS C",modern,CarBodies.Family,CarBodies.Sporty);
             var entries=new RaceEntrant[24];
             var family=CarBodies.Deal(CarBodies.Family,24,seed);var sporty=CarBodies.Deal(CarBodies.Sporty,24,seed+1);int f=0,s=0;
             for(int i=1;i<24;i++){
@@ -116,10 +122,12 @@ namespace LittleRoad
         }
         // Quarry Hills Rallycross (--quarry-hills): class C, three laps of the floor, the whole field in the town's off-roaders
         // (street and club kit; the pole-sitter on club kit).
-        public static RaceRoster AdventureQuarry(AdventureProgress save,bool modern=true)
+        public static RaceRoster AdventureQuarry(AdventureProgress save,bool modern=true)=>AdventureQuarry(save,modern,FieldRecipe.On);
+        public static RaceRoster AdventureQuarry(AdventureProgress save,bool modern,bool recipe)
         {
             save.Validate();int seed=1709+(save.raceSerial+1)*11;
             var trial=Trial(24,3,seed,"quarry","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
+            if(recipe)return Recipe(save,"quarry","C",RaceCalendar.StarsOf("quarry"),trial,seed,3,"quarry",false,"QUARRY HILLS RALLYCROSS / CLASS C",modern,CarBodies.OffRoad,CarBodies.OffRoad);
             var entries=new RaceEntrant[24];var off=CarBodies.Deal(CarBodies.OffRoad,24,seed);int o=0;
             for(int i=1;i<24;i++){
                 var e=trial.Entries[i];string kit=e.Slot==0||i%3==0?"club":"street";var parts=EquipmentCatalog.TestLoadout(kit);parts["tyres"]=kit=="club"?"tyres_rally":"tyres_trail";
@@ -128,7 +136,47 @@ namespace LittleRoad
             entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
             return new RaceRoster(seed,3,"quarry","QUARRY HILLS RALLYCROSS / CLASS C",modern,entries);
         }
-        public static RaceRoster ForEvent(string id,AdventureProgress save)=>id=="hillcrest"?AdventureHillcrest(save):id=="quarry"?AdventureQuarry(save):Adventure(save);
+        // Class B events (docs/67): the field on the event's star kit, the front of the grid a star up and the back a star
+        // down; sporty bodies on tarmac, the off-roaders (on B rally tyres) at the rallycross; laps and direction from
+        // the calendar. The field is the Tuner bodies: the road ones on tarmac, off-road and rally ones on gravel.
+        public static RaceRoster AdventureTuner(AdventureProgress save,RaceCalendar.Event ev,bool modern=true)=>AdventureTuner(save,ev,modern,FieldRecipe.On);
+        public static RaceRoster AdventureTuner(AdventureProgress save,RaceCalendar.Event ev,bool modern,bool recipe)
+        {
+            save.Validate();int seed=1709+(save.raceSerial+1)*11;bool gravel=ev.track=="quarry";
+            var trial=Trial(24,ev.laps,seed,ev.track,"stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
+            if(recipe)return Recipe(save,ev.id,"B",ev.stars,trial,seed,ev.laps,ev.track,ev.reversed,$"{ev.venue.ToUpperInvariant()} / CLASS B {ev.Stars}",modern,gravel?CarBodies.TunerGravel:CarBodies.Tuner,gravel?CarBodies.TunerGravel:CarBodies.Tuner);
+            var entries=new RaceEntrant[24];var pool=gravel?CarBodies.Deal(CarBodies.TunerGravel,24,seed):CarBodies.Deal(CarBodies.Tuner,24,seed+1);int o=0;
+            for(int i=1;i<24;i++){
+                var e=trial.Entries[i];int stars=Mathf.Clamp(ev.stars+(e.Slot<4?1:e.Slot>=18?-1:0),1,10);string kit="b"+stars;
+                var parts=EquipmentCatalog.TestLoadout(kit);if(gravel)parts["tyres"]="tyres_b_rally";
+                entries[i]=new RaceEntrant(e.Id,e.Slot,pool[o++],e.Paint,$"class B {stars}★"+(gravel?" on rally tyres":""),parts,e.Driver);
+            }
+            entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
+            return new RaceRoster(seed,ev.laps,ev.track,$"{ev.venue.ToUpperInvariant()} / CLASS B {ev.Stars}",modern,entries,ev.id,ev.reversed);
+        }
+        // A field by recipe (FieldRecipe, --field-recipe; docs/70): drivers and kits both rolled from the grid slot; low kits
+        // in the first body pool, high kits in the second; the pole-sitter in the liveried flagship at class C on tarmac.
+        static RaceRoster Recipe(AdventureProgress save,string eventId,string raceClass,int stars,RaceRoster trial,int seed,int laps,string track,bool reversed,string title,bool modern,string[] lowBodies,string[] highBodies)
+        {
+            var entries=new RaceEntrant[24];
+            var low=CarBodies.Deal(lowBodies,24,seed);var high=CarBodies.Deal(highBodies,24,seed+1);int l=0,h=0;
+            for(int i=1;i<24;i++) {
+                var e=trial.Entries[i];string disc=FieldRecipe.Discipline(track);var parts=FieldRecipe.Kit(raceClass,disc,stars,e.Slot,seed,out float level);
+                var driver=modern?FieldRecipe.Driver(i,seed,raceClass,e.Slot,true):null;
+                // Study switches (docs/70): the recipe's drivers on the old kits, or its kits with the old drivers.
+                if(RaceTrial.Has("--field-recipe-drivers-only")){parts=raceClass=="B"?EquipmentCatalog.TestLoadout("b"+Mathf.Clamp(stars+(e.Slot<4?1:e.Slot>=18?-1:0),1,10)):new Dictionary<string,string>(e.Parts);if(raceClass=="B"&&disc=="gravel")parts["tyres"]="tyres_b_rally";}
+                if(RaceTrial.Has("--field-recipe-parts-only"))driver=e.Driver;
+                bool flagship=raceClass=="C"&&disc=="road"&&e.Slot==0;string label=$"class {raceClass} {stars}★ recipe kit {Mathf.RoundToInt(level*100)}%";
+                entries[i]=new RaceEntrant(e.Id,e.Slot,flagship?CarBodies.Flagship:level>=.6f?high[h++]:low[l++],flagship?FlagshipPaint:e.Paint,label,parts,driver);
+            }
+            entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
+            return new RaceRoster(seed,laps,track,title,modern,entries,eventId,reversed);
+        }
+        public static RaceRoster ForEvent(string id,AdventureProgress save)
+        {
+            if(RaceCalendar.Known(id)){var ev=RaceCalendar.Get(id);if(ev.raceClass=="B")return AdventureTuner(save,ev);}
+            return id=="hillcrest"?AdventureHillcrest(save):id=="quarry"?AdventureQuarry(save):Adventure(save);
+        }
         public bool MatchesPlayer(AdventureProgress save)
         {
             if(Seed!=1709+(save.raceSerial+1)*11||Entries[0].Body!=save.bodyId||Entries[0].Paint!=AdventureGame.Paints[save.paintIndex])return false;
@@ -143,7 +191,7 @@ namespace LittleRoad
                 entries[i]=new EntryRecord{id=e.Id,slot=e.Slot,rating=e.Rating,body=e.Body,equipment=e.EquipmentLabel,paint=e.Paint,tuning=e.Tuning,parts=parts.ToArray(),driver=e.Driver?.Export(e.Id)};
             }
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(path)));
-            System.IO.File.WriteAllText(path,JsonUtility.ToJson(new Evidence{seed=Seed,laps=Laps,track=Track,title=Title,ratingVersion=CarPerformanceRating.Version,modern=Modern,entries=entries},true));
+            System.IO.File.WriteAllText(path,JsonUtility.ToJson(new Evidence{seed=Seed,laps=Laps,track=Track,title=Title,ratingVersion=CarPerformanceRating.Version,modern=Modern,reversed=Reversed,entries=entries},true));
         }
     }
     // The approved driver package, shared by connected adventure races and

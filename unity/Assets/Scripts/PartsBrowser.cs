@@ -74,7 +74,8 @@ namespace LittleRoad
             // Only the open class and below (Richard, 30 Sep: keep the next tier hidden until it's unlocked). The
             // fitting bay shows owned parts the same way, plus whatever is on the car now.
             int open=RaceCalendar.Rank(RaceCalendar.Open(store.Data));string onCar=store.Data.Loadout()[slot];
-            list=mode==Mode.Fit?list.Where(p=>store.Data.owned.Contains(p.id)&&(RaceCalendar.Rank(p.tier)<=open||p.id==onCar)):list.Where(p=>p.price>0&&RaceCalendar.Rank(p.tier)<=open);
+            // (Fitting: only parts this body can take, docs/67: Tuner parts need a Tuner body.)
+            list=mode==Mode.Fit?list.Where(p=>store.Data.owned.Contains(p.id)&&(RaceCalendar.Rank(p.tier)<=open&&AdventureStore.BodyTakes(store.Data,p)||p.id==onCar)):list.Where(p=>p.price>0&&RaceCalendar.Rank(p.tier)<=open);
             list=list.Where(p=>p.Discipline==discipline);
             var all=list.OrderBy(p=>RaceCalendar.Rank(p.tier)).ThenBy(p=>p.price).ToArray();
             // Class tabs: the classes this category has here. Start at the newest (the shop) or the fitted part's (the bay).

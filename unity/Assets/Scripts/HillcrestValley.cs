@@ -279,7 +279,10 @@ namespace LittleRoad
             var off=Ribbon("Raceway runoff",line,26,.012f,holder,runoff,true,true);Object.DestroyImmediate(off.GetComponent<RoadSurface>());off.AddComponent<RoadSupport>();
             Shoulders(line,13,.012f,0,true,holder,WorldLook.Kit("Raceway verge",new Color(.52f,.56f,.36f),WorldLook.Pattern.Rock,0,.08f,true),"Raceway shoulder");
             // Armco along the run-off's outer edge where the ground falls away (the climb to the hairpins): track standards.
-            Guardrails(line,26,holder,0,true,HillcrestRoute.Circuit);
+            // And on the outside of every bend tighter than 120 m, 30 m either side (docs/70): class B cars left the circuit
+            // at ~240 m and ~930 m, crossed the run-off and stuck in the terrain beyond (doc 57 2.4: guarded or drivable).
+            // (--no-corner-barriers: judge the AI on staying on the road, docs/71.)
+            Guardrails(line,26,holder,0,true,HillcrestRoute.Circuit,false,LittleRoad.RaceTrial.Has("--no-corner-barriers")?null:CatchSides(line,RacewayCatchRadius,RacewayCatchReach));
             Ribbon("Raceway asphalt",line,LittleRoad.Circuit.Width,.03f,holder,asphaltMainland,true,true).AddComponent<RoadSupport>();
             TrialWorld.RubberedLine(new LittleRoad.Circuit(line),holder,.045f);
             var white=TrialWorld.Material("Raceway paint",new Color(.97f,.97f,.92f),0,.3f);var coral=TrialWorld.Material("Raceway kerb red",new Color(.86f,.2f,.18f),0,.3f);
@@ -835,14 +838,28 @@ namespace LittleRoad
             }
             cornerWalls.Clear();return removed;
         }
-        void Guardrails(Vector3[] line,float width,Transform parent,int start,bool steep=false,Vector3[] own=null,bool riverside=false)
+        public const float RacewayCatchRadius=120;public const int RacewayCatchReach=20;
+        // Which side of each point of a closed loop is the outside of a bend tighter than `radius` (heading change over
+        // 15 m either way), widened `reach` points each way: [i,0] left, [i,1] right.
+        public static bool[,] CatchSides(Vector3[] line,float radius,int reach)
+        {
+            int n=line.Length,w=10;var tight=new int[n];var flags=new bool[n,2];
+            Vector3 Dir(int i){var d=line[(i+1)%n]-line[i%n];d.y=0;return d.normalized;}
+            for(int i=0;i<n;i++) {
+                float a=Vector3.SignedAngle(Dir(i-w+n),Dir(i+w),Vector3.up)*Mathf.Deg2Rad,len=2*w*Vector3.Distance(line[0],line[1]);
+                tight[i]=Mathf.Abs(a)>1e-4f&&len/Mathf.Abs(a)<radius?(a>0?-1:1):0;   // a right-hand bend's outside is the left
+            }
+            for(int i=0;i<n;i++)if(tight[i]!=0)for(int k=-reach;k<=reach;k++)flags[(i+k+n)%n,tight[i]<0?0:1]=true;
+            return flags;
+        }
+        void Guardrails(Vector3[] line,float width,Transform parent,int start,bool steep=false,Vector3[] own=null,bool riverside=false,bool[,] catchSides=null)
         {
             var white=TrialWorld.Material("Guardrail white",new Color(.97f,.97f,.95f),.2f,.4f);var red=TrialWorld.Material("Guardrail red",Toy.Red,.1f,.4f);
             for(int i=Mathf.Max(0,start);i<line.Length-1;i++) {
                 Vector3 a=line[i],b=line[i+1],f=b-a;float len=new Vector2(f.x,f.z).magnitude;var flat=new Vector3(f.x,0,f.z).normalized;var right=Vector3.Cross(Vector3.up,flat);
                 foreach(int side in new[]{-1,1}) {
                     Vector3 edge=(a+b)*.5f+right*side*(width*.5f+.55f),beyond=edge+right*side*3;
-                    bool drop=ValleyField.Height(beyond.x,beyond.z)<=edge.y-1.8f||steep&&SteepDrop(edge,right*side);
+                    bool drop=ValleyField.Height(beyond.x,beyond.z)<=edge.y-1.8f||steep&&SteepDrop(edge,right*side)||catchSides!=null&&catchSides[i,side<0?0:1];
                     // A riverside road: the bank down to the water can start a few metres out.
                     if(riverside&&!drop)foreach(float o in new[]{6f,9f,12f}){var q=edge+right*side*o;if(ValleyField.Height(q.x,q.z)<=edge.y-1.8f){drop=true;break;}}
                     // (`riverside`: a road running along the river bank keeps its rail; only the bridge itself, with its parapets, has none.)

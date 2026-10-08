@@ -17,7 +17,7 @@ namespace LittleRoad
         [Serializable] public sealed class Record
         {
             public int entrant,seed,risk;public string id,name,style;
-            public float baseBraking,consistency,formAmplitude,formSample,effectiveBraking;
+            public float baseBraking,consistency,formAmplitude,formSample,effectiveBraking,targetAbility=-1;
             public bool variation;
         }
         static Data catalog;
@@ -25,9 +25,13 @@ namespace LittleRoad
         public readonly float BaseBraking,Consistency,FormAmplitude,FormSample;
         public readonly int Seed;
         public readonly bool Variation;
+        // A field recipe's driver rating (FieldRecipe): the mean of the five racing abilities this driver is set to,
+        // keeping the style's shape; negative for none.
+        public readonly float TargetAbility;
         public readonly DriverPlanningSettings Planning;
-        public DriverIdentity(Definition definition,int raceSeed,bool variation)
+        public DriverIdentity(Definition definition,int raceSeed,bool variation,float targetAbility=-1)
         {
+            TargetAbility=targetAbility<0?-1:Mathf.Clamp01(targetAbility);
             Validate(definition);
             Id=definition.id;Name=definition.name;Style=definition.style;BaseBraking=definition.braking;Consistency=definition.consistency;Seed=raceSeed;Variation=variation;
             // Symmetric support stays inside existing judgement limits without
@@ -36,7 +40,7 @@ namespace LittleRoad
             FormSample=FormAmplitude==0?0:SignedSample(Id,raceSeed,"race-form-v1");
             Planning=new DriverPlanningSettings(BaseBraking+FormAmplitude*FormSample,definition.risk,true);
         }
-        public Record Export(int entrant)=>new Record{entrant=entrant,seed=Seed,risk=Planning.Risk,id=Id,name=Name,style=Style,baseBraking=BaseBraking,consistency=Consistency,formAmplitude=FormAmplitude,formSample=FormSample,effectiveBraking=Planning.BrakeFraction,variation=Variation};
+        public Record Export(int entrant)=>new Record{entrant=entrant,seed=Seed,risk=Planning.Risk,id=Id,name=Name,style=Style,baseBraking=BaseBraking,consistency=Consistency,formAmplitude=FormAmplitude,formSample=FormSample,effectiveBraking=Planning.BrakeFraction,variation=Variation,targetAbility=TargetAbility};
         public static float SignedSample(string id,int seed,string channel)
         {
             // FNV-1a over UTF-16 code units, explicit byte order, then avalanche.
@@ -69,7 +73,7 @@ namespace LittleRoad
             // Return a copy; neither preview nor tests can mutate the catalogue.
             var d=catalog.drivers[entrant];return new Definition{id=d.id,name=d.name,style=d.style,braking=d.braking,risk=d.risk,consistency=d.consistency};
         }
-        public static DriverIdentity ForRace(int entrant,int seed,string mode,bool variation)
+        public static DriverIdentity ForRace(int entrant,int seed,string mode,bool variation,float targetAbility=-1)
         {
             var d=At(entrant);
             if(mode!="mixed") {
@@ -85,7 +89,7 @@ namespace LittleRoad
                     default:throw new ArgumentException("Unknown driver roster: "+mode);
                 }
             }
-            return new DriverIdentity(d,seed,variation);
+            return new DriverIdentity(d,seed,variation,targetAbility);
         }
     }
 }

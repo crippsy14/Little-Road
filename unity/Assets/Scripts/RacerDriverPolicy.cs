@@ -66,6 +66,21 @@ namespace LittleRoad
         static readonly float AeroCornerUse=Scale("--aero-corner-use");
         // --racer-debug <id>: log that driver's speed decision four times a second.
         static readonly int DebugId=int.TryParse(RaceTrial.Arg("--racer-debug"),out int debugId)?debugId:-1;
+        // --traffic-corner-margin (docs/70; on with the field recipe, so by default): with a car close ahead or alongside, corner at no more than 92% of the
+        // steady limit (the old roster's best Line, 0.85, used 91.8%). A field of Line ~1.0 drivers cornering at 95%
+        // nose to tail on one line crashed at Bayview's first corner and piled up; in clear air Line still counts in full.
+        // Grip budget (docs/71): steering and braking share one grip budget (DriveModel.Forces: the yaw takes up to 95%
+        // of grip and the brakes get what's left). A lane change on the brakes into a hairpin used the grip the braking
+        // plan counted on, so the car arrived 5 m/s fast and understeered off at full lock, with the plan asking for
+        // throttle. With it: lane changes are paced to the grip braking and the corner leave, and at full lock above
+        // 12 m/s the car lifts (and brakes if over its plan).
+        // The default since 8 Oct (Richard: "Lets do both"; study 222 equal pace, 40% fewer contacts); --no-grip-budget
+        // races without it.
+        static readonly bool GripBudget=!RaceTrial.Has("--no-grip-budget");
+        float lastAccel;
+        public static float LaneChangeDistance(float shift,float v,float spare)=>Mathf.Sqrt(6*shift*v*v/Mathf.Max(.5f,spare));
+        static readonly bool TrafficCornerMargin=RaceTrial.Has("--traffic-corner-margin")||FieldRecipe.On&&!RaceTrial.Has("--no-traffic-corner-margin");
+        const float TrafficCornerCap=.92f;
         static readonly float CornerScale=Scale("--racer-corner-scale"),BrakeScale=Scale("--racer-brake-scale"),ReactionScale=Scale("--racer-reaction-scale"),GapScale=Scale("--racer-gap-scale"),LeaderBrakeScale=Scale("--racer-leader-brake-scale");
         public RacerDriverPolicy(RacingLine line,RacerAbilities abilities,int driverId,int raceSeed,Vector3 colliderHalf)
         {
@@ -90,6 +105,13 @@ namespace LittleRoad
 
             float edge=Edge;
             float lateralDistance=Mathf.Max(6,Mathf.Abs(PathTarget(s,0,edge)-o)/(ability.LateralRate*Mathf.Clamp(tuning.response/5,.7f,1.25f))*Mathf.Max(v,6));
+            if(GripBudget) {
+                // A smoothstep move of `shift` metres over L peaks at 6*shift*v^2/L^2 of sideways acceleration: keep it
+                // inside what last tick's braking and this point's corner leave of the grip.
+                float grip0=tuning.roadGrip*1.65f*track.Load(track.Index(s),v),brakeNeed=Mathf.Max(0,-lastAccel),corner0=v*v*Mathf.Abs(track.LineCurvature(track.Index(s)));
+                float spare=Mathf.Max(1.5f,Mathf.Sqrt(Mathf.Max(0,grip0*grip0*.81f-brakeNeed*brakeNeed))-corner0);
+                lateralDistance=Mathf.Max(lateralDistance,LaneChangeDistance(Mathf.Abs(PathTarget(s,0,edge)-o),v,spare));
+            }
 
             // Speed: one decision, one reason.
             float spell=Spell();
@@ -98,6 +120,7 @@ namespace LittleRoad
             if(State==Intent.Attack&&OverlapInside(in observation))brakeUse+=ability.LateBrake;
             brakeUse=Mathf.Min(brakeUse,.995f);
             float cornerUse=ability.CornerUse*CornerScale*spell*(tuning.downforce>0?AeroCornerUse:1);
+            if(TrafficCornerMargin&&InPack(in observation,s,o))cornerUse=Mathf.Min(cornerUse,TrafficCornerCap*CornerScale*(tuning.downforce>0?AeroCornerUse:1));
             bool offRoad=Mathf.Abs(o)>HalfRoad;
             float preview=1+v*.12f;
             float limitSpeed=LimitSpeed(tuning,s,o,v,edge,lateralDistance,budget,cornerUse,brakeUse,offRoad,preview,out float allowedHere);
@@ -150,12 +173,36 @@ namespace LittleRoad
             if(pedal>0&&Mathf.Abs(track.LineCurvature(track.Index(s)))>1/90f)pedal=Mathf.Min(pedal,ability.CornerThrottle);
             // Following: small slowdowns lift and coast (drag alone is ~4 m/s^2 at speed) rather than dab the brakes.
             if(reason==Reason.Follow&&wheel<0&&wheel>-2)pedal=0;
+            // Understeer (--grip-budget): at full lock at speed, no throttle; over the plan, brake with what's left.
+            if(GripBudget&&v>12&&Mathf.Abs(steering)>.97f)pedal=v>Mathf.Min(limitSpeed,allowedHere)+.5f?Mathf.Min(pedal,-.6f):Mathf.Min(pedal,0);
             pedal=Mathf.Clamp(pedal,-1,1);
+            lastAccel=accel;
             // Never select reverse: at a standstill a brake request would drive the car backwards.
             if(v<.5f&&pedal<0||reason==Reason.Launch)pedal=0;
             // Control: how quickly the throttle goes back in. Lifting and braking are immediate.
             pedalOut=pedal>pedalOut&&pedal>0?Mathf.Min(pedal,Mathf.Max(0,pedalOut)+ability.PedalRise*dt):pedal;
+            Record(s,o,v,limitSpeed,allowedHere,aimOffset,steering,pedalOut,reason,observation.finished);
             return new DriveCommand(pedalOut,steering,Mathf.Min(limitSpeed,allowedHere),PathOffset(s,o,look,edge,lateralDistance),PathTarget(s,PreviewDistance(v),edge));
+        }
+
+        // ---------- Off-road recorder (docs/71) ----------
+        // The last 3 s of every car, and the moment it puts its centre off the asphalt: speed against its own plan,
+        // where it aimed, its steering and pedal. One RACER_EXCURSION line per departure (re-armed once back on), so a
+        // race tells us whether cars leave the road too fast for the corner or at the right speed but steering wide.
+        struct Trace{public float t,s,o,v,limit,here,aim,steer,pedal,kLine;public Reason why;}
+        readonly Trace[] trace=new Trace[400];int traceAt;bool excursion;
+        public int Excursions{get;private set;}
+        void Record(float s,float o,float v,float limit,float here,float aim,float steer,float pedal,Reason why,bool finished)
+        {
+            trace[traceAt++%trace.Length]=new Trace{t=Elapsed,s=s,o=o,v=v,limit=limit,here=here,aim=aim,steer=steer,pedal=pedal,kLine=track.LineCurvature(track.Index(s)),why=why};
+            bool off=Mathf.Abs(o)>HalfRoad+.5f;
+            if(off&&!excursion&&!finished&&Elapsed>1) {
+                Excursions++;var lines=new System.Text.StringBuilder($"RACER_EXCURSION id={id} t={Elapsed:0.00} lap_s={Mathf.Repeat(s,track.Length):0.0} o={o:0.00} v={v:0.0} here={here:0.0} limit={limit:0.0} state={State}");
+                for(int back=360;back>=0;back-=12){int k=traceAt-1-back;if(k<0)continue;var x=trace[k%trace.Length];
+                    lines.Append($"\n  t={x.t:0.00} s={Mathf.Repeat(x.s,track.Length):0.0} o={x.o:0.00} aim={x.aim:0.00} v={x.v:0.0} plan={x.here:0.0} limit={x.limit:0.0} steer={x.steer:0.00} pedal={x.pedal:0.00} kLine={x.kLine:0.0000} why={x.why}");}
+                Debug.Log(lines.ToString());
+            }
+            excursion=off||excursion&&Mathf.Abs(o)>HalfRoad-.5f;
         }
 
         // ---------- Speed ----------
@@ -184,7 +231,7 @@ namespace LittleRoad
                 raw[k]=Mathf.Min(attainable,CornerSpeed(grip,cornerUse,kappa,aero));
                 if(k>count)continue;
                 float corner=raw[k];for(int j=1;j<=margin;j++)corner=Mathf.Min(corner,raw[k+j]);
-                float lateral=next*next*Mathf.Abs(kappa)*(aero>0?1+AeroReserve:1);grip*=1+aero*next*next;
+                float lateral=next*next*Mathf.Abs(kappa)*(aero>0||GripBudget?1+AeroReserve:1);   // (--grip-budget: every car keeps the trail-braking reserve, docs/71)grip*=1+aero*next*next;
                 float traction=Mathf.Sqrt(Mathf.Max(0,grip*grip-lateral*lateral));
                 float decel=Mathf.Max(.5f,Mathf.Min(tuning.braking,traction)*brakeUse+DriveModel.Resistance(tuning,next)+track.Gravity(i));
                 float value=Mathf.Min(corner,Mathf.Sqrt(next*next+2*decel*step));
@@ -193,6 +240,16 @@ namespace LittleRoad
             here=allowed[0];allowedCount=count;
             float at=Mathf.Clamp(preview/step,0,count);int a=Mathf.FloorToInt(at);
             return Mathf.Lerp(allowed[a],allowed[Mathf.Min(count,a+1)],at-a);
+        }
+
+        // A car within 25 m ahead or 6 m behind, within 4 m across: racing in a pack, not in clear air.
+        bool InPack(in DriverObservation observation,float s,float o)
+        {
+            foreach(var other in observation.traffic) {
+                if(other.id==observation.self.id)continue;
+                float rel=track.Relative(other.route,s);if(rel>-6&&rel<25&&Mathf.Abs(other.offset-o)<4)return true;
+            }
+            return false;
         }
 
         // Gipps safe following speed behind the nearest car in our planned lane: follow close at speed and
@@ -469,7 +526,7 @@ namespace LittleRoad
         // servo settles about 0.045 rad/s short of the request (angular damping), which costs 0.045*v of
         // lateral grip: v^2*k = use*(0.95*grip - 0.045*v). With aero grip (grip x (1+aero*v^2), docs/54) the
         // v^2 term on the grip side moves across: v^2*(k - use*0.95*grip*aero) = ... (none at all once it covers k).
-        static float CornerSpeed(float grip,float use,float kappa,float aero=0)
+        public static float CornerSpeed(float grip,float use,float kappa,float aero=0)
         {
             float k=Mathf.Abs(kappa)-use*.95f*grip*aero;if(k<=.00001f)return 999;
             float b=use*.045f,c=use*.95f*grip;
@@ -531,7 +588,8 @@ namespace LittleRoad
     // distance, plus grade and vertical load when the grade model is on (Hillcrest).
     public sealed class RacerTrack
     {
-        static RacerTrack cached;static RacingLine cachedLine;static bool cachedGrade;
+        // One per line (per-car lines, docs/71: a race can hold several), rebuilt if the grade model changes.
+        static readonly System.Collections.Generic.Dictionary<RacingLine,RacerTrack> cached=new();static bool cachedGrade;
         public readonly float Length,Step;
         readonly RacingLine line;
         readonly float[] offset,curvature,grade,vertical;
@@ -539,8 +597,9 @@ namespace LittleRoad
         public static RacerTrack For(RacingLine line)
         {
             bool grade=GradeModel.Enabled&&GradeModel.Physics;
-            if(cached==null||cachedLine!=line||cachedGrade!=grade){cached=new RacerTrack(line,grade);cachedLine=line;cachedGrade=grade;}
-            return cached;
+            if(cachedGrade!=grade||cached.Count>32){cached.Clear();cachedGrade=grade;}
+            if(!cached.TryGetValue(line,out var t)){t=new RacerTrack(line,grade);cached[line]=t;}
+            return t;
         }
         RacerTrack(RacingLine line,bool useGrade)
         {

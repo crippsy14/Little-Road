@@ -44,7 +44,7 @@ public static class RaceRosterChecks
         }
         checks.Add("Trial fields race the compact plus generated bodies, all in the standard envelope");
         foreach(var serial in new[]{0,1,2,7}) {
-            fresh.raceSerial=serial;fresh.settledSerial=serial;var field=RaceRoster.Adventure(fresh);int flagships=0;var used=new HashSet<string>();
+            fresh.raceSerial=serial;fresh.settledSerial=serial;var field=RaceRoster.Adventure(fresh,true,false); /* the old field (--no-field-recipe); the recipe has FieldRecipeChecks */int flagships=0;var used=new HashSet<string>();
             foreach(var e in field.Entries) {
                 if(e.Id==0)continue;used.Add(e.Body);
                 if(e.Slot==0){Require(e.Body==CarBodies.Flagship&&e.EquipmentLabel=="club","pole car is not the flagship on club equipment");flagships++;}

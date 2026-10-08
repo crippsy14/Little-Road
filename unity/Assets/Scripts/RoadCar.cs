@@ -84,7 +84,7 @@ namespace LittleRoad
             var random=new System.Random(seed);preferredOffset=(float)(random.NextDouble()*3-1.5);
             pace=.94f+(float)random.NextDouble()*.06f;
             driverPolicy=new LegacyDriverPolicy(random);
-            if(owner.ReferenceLine!=null){var planning=identity!=null?identity.Planning:owner.DriverPolicyId=="context-v1"?DriverPlanningSettings.Preset(RaceTrial.Arg("--driver-braking","neutral")).WithRisk(int.Parse(RaceTrial.Arg("--driver-risk","0"),System.Globalization.CultureInfo.InvariantCulture)):default;referenceProfile=new RacingSpeedProfile(owner.ReferenceLine,tuning,planning,owner.DraftingEnabled);driverPolicy=new ReferenceDriverPolicy(referenceProfile);}
+            if(owner.ReferenceLine!=null){var planning=identity!=null?identity.Planning:owner.DriverPolicyId=="context-v1"?DriverPlanningSettings.Preset(RaceTrial.Arg("--driver-braking","neutral")).WithRisk(int.Parse(RaceTrial.Arg("--driver-risk","0"),System.Globalization.CultureInfo.InvariantCulture)):default;referenceProfile=new RacingSpeedProfile(owner.LineFor(tuning),tuning,planning,owner.DraftingEnabled);driverPolicy=new ReferenceDriverPolicy(referenceProfile);}
             body=gameObject.AddComponent<Rigidbody>();body.mass=850*tuning.mass;
             body.constraints=race.track.hasElevation?RigidbodyConstraints.None:RigidbodyConstraints.FreezeRotationX|RigidbodyConstraints.FreezeRotationZ;
             body.interpolation=RigidbodyInterpolation.Interpolate;
@@ -104,7 +104,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--physical-recovery"))physicalRecovery=new PhysicalRecovery();
             if(owner.DriverPolicyId=="traffic-v1"){trafficPolicy=new TrafficDriverPolicy(referenceProfile,recoverySensor);driverPolicy=trafficPolicy;}
             if(owner.DriverPolicyId=="context-v1"){contextPolicy=new ContextDriverPolicy(referenceProfile,recoverySensor,collider.center,collider.size*.5f);driverPolicy=contextPolicy;}
-            if(owner.DriverPolicyId=="racer-v2"){racerPolicy=new RacerDriverPolicy(owner.ReferenceLine,RacerAbilities.From(identity).WithOverrides(RaceTrial.Arg("--racer-abilities")),id,owner.Roster?.Seed??seed,collider.size*.5f);driverPolicy=racerPolicy;if(physicalRecovery!=null)physicalRecovery.OffsetTrigger=13;}
+            if(owner.DriverPolicyId=="racer-v2"){racerPolicy=new RacerDriverPolicy(owner.LineFor(tuning),RacerAbilities.From(identity).WithOverrides(RaceTrial.Arg("--racer-abilities")).WithOverrides(id==0?RaceTrial.Arg("--player-abilities"):null),id,owner.Roster?.Seed??seed,collider.size*.5f);driverPolicy=racerPolicy;if(physicalRecovery!=null)physicalRecovery.OffsetTrigger=13;}
             // Tyre/rolling resistance is already calculated by DriveModel.
             // Sliding a box with the default contact friction adds an unintended
             // ground brake, disproportionately affecting stock equipment.

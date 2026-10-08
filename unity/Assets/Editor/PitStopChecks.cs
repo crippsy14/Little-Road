@@ -32,9 +32,10 @@ public static class PitStopChecks
             } finally{UnityEngine.Object.DestroyImmediate(go);}
         }
         // Body catalogue: looks only, every body sold races in the standard envelope, prices rise to the Zenith.
-        Check(CarBodies.ForSale.All(o=>CarBodies.UsesStandardEnvelope(o.id)&&o.price>0&&(o.shop=="hillcrest"||o.shop=="quarry"&&System.Array.IndexOf(CarBodies.OffRoad,o.id)>=0)),"Every body for sale uses the standard racing envelope (looks only) and is sold at Hillcrest (Quarry Hills sells its off-roaders)");
+        Check(CarBodies.ForSale.All(o=>CarBodies.UsesStandardEnvelope(o.id)&&o.price>0&&(o.shop=="hillcrest"||o.shop=="quarry"&&System.Array.IndexOf(CarBodies.OffRoad,o.id)>=0||o.shop=="tuner"&&CarBodies.Class(o.id)=="B")),"Every body for sale uses the standard racing envelope (looks only) and is sold at Hillcrest (Quarry Hills sells its off-roaders, the Tuner Garage the Tuners)");
         Check(CarBodies.ForSale.Select(o=>o.id).Distinct().Count()==CarBodies.ForSale.Length&&!CarBodies.Sellable(CarBodies.Starter),"Body offers are unique and the starter is not for sale");
-        Check(CarBodies.Price("zenith")==CarBodies.ForSale.Max(o=>o.price),"The Zenith GT is the top prize");
+        Check(CarBodies.Price("zenith")==CarBodies.ForSale.Where(o=>CarBodies.Class(o.id)=="C").Max(o=>o.price),"The Zenith GT is class C's top prize");
+        Check(CarBodies.Price("shiro")==CarBodies.ForSale.Where(o=>CarBodies.Class(o.id)=="B").Max(o=>o.price),"The Shiro GT is class B's top prize (the halo car, docs/65)");
         string folder=Path.Combine(evidenceRoot,"bodies-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(folder);
         var store=new AdventureStore(Path.Combine(folder,"bodies.json"));
         Check(store.Data.bodies.SequenceEqual(new[]{CarBodies.Starter}),"A fresh profile owns only the starter body");

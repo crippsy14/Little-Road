@@ -12,6 +12,8 @@ namespace LittleRoad
         public readonly float[] segmentLength,curvature;
         public readonly float roadLength,roadStep,pathLength;
         public int Count=>points.Length;
+        // The widest a line may sit from the road centre: the AI's usable edge (RacerDriverPolicy.Edge, docs/71).
+        public const float MaxOffset=5.6f;
         public RacingLine(Circuit road,string id,string trackId,string trackVersion):this(road,Load(road,id,trackId,trackVersion)){}
         static Data Load(Circuit road,string id,string trackId,string trackVersion)
         {
@@ -29,11 +31,11 @@ namespace LittleRoad
             data=baked;
             roadLength=road.length;roadStep=road.length/data.offsets.Length;points=new Vector3[data.offsets.Length];segmentLength=new float[Count];curvature=new float[Count];
             for(int i=0;i<Count;i++) {
-                if(float.IsNaN(data.offsets[i])||float.IsInfinity(data.offsets[i])||Mathf.Abs(data.offsets[i])>5.01f)throw new ArgumentException("Racing-line offset exceeds initial body/tracking corridor.");
+                if(float.IsNaN(data.offsets[i])||float.IsInfinity(data.offsets[i])||Mathf.Abs(data.offsets[i])>MaxOffset+.01f)throw new ArgumentException("Racing-line offset exceeds initial body/tracking corridor.");
                 points[i]=data.schema==2?data.positions[i]:road.At(i*roadStep)+road.Right(i*roadStep)*data.offsets[i];
                 if(!float.IsFinite(points[i].x)||!float.IsFinite(points[i].y)||!float.IsFinite(points[i].z))throw new ArgumentException("Non-finite racing-line point.");
                 if(data.schema==2){float mapped=road.Nearest(points[i],out float side);float hintError=Mathf.Abs(Mathf.DeltaAngle(mapped/road.length*360,i*roadStep/road.length*360))*road.length/360;
-                    if(Mathf.Abs(side)>5.01f||hintError>4||Mathf.Abs(points[i].y-road.At(mapped).y)>.01f)throw new ArgumentException("Cartesian racing-line sample left its local road corridor.");}
+                    if(Mathf.Abs(side)>MaxOffset+.01f||hintError>4||Mathf.Abs(points[i].y-road.At(mapped).y)>.01f)throw new ArgumentException("Cartesian racing-line sample left its local road corridor.");}
             }
             float length=0;
             for(int i=0;i<Count;i++) {
@@ -59,15 +61,30 @@ namespace LittleRoad
                 for(int i=0;i<count;i++){var fourth=second[(i+count-1)%count]-2*second[i]+second[(i+1)%count];offset[i]=Mathf.Clamp(offset[i]-.025f*2*Vector2.Dot(normal[i],fourth),-bound,bound);}
             }
             for(int i=0;i<count;i++)path[i]=centre[i]+normal[i]*offset[i];
-            int samples=Mathf.CeilToInt(length/2);var data=new Data{schema=2,id=id,trackId=trackId,trackVersion=trackId+"-runtime",status="runtime geometric seed, not validated ideal line",
-                method="bounded bending-energy controls at ~8m;24000 iterations;"+bound+"m offset bound; periodic cubic B-spline",roadLength=length,offsets=new float[samples],positions=new Vector3[samples]};
+            return Sample(road,path,id,trackId,"runtime geometric seed, not validated ideal line","bounded bending-energy controls at ~8m;24000 iterations;"+bound+"m offset bound; periodic cubic B-spline");
+        }
+        // A closed path of control points (x, z) on the road, as a periodic cubic B-spline sampled every ~2 m, with heights
+        // settled on the road: the bake's last step, shared by the smooth bake and the per-car lines (CarLines).
+        public static Data Sample(Circuit road,Vector2[] path,string id,string trackId,string status,string method)
+        {
+            float length=road.length;int count=path.Length;
+            int samples=Mathf.CeilToInt(length/2);var data=new Data{schema=2,id=id,trackId=trackId,trackVersion=trackId+"-runtime",status=status,
+                method=method,roadLength=length,offsets=new float[samples],positions=new Vector3[samples]};
             for(int k=0;k<samples;k++) {
                 float s=k*length/samples,coordinate=s/length*count;int i=Mathf.FloorToInt(coordinate);float t=coordinate-i;
                 Vector2 P(int j)=>path[((j%count)+count)%count];
                 var q=((1-t)*(1-t)*(1-t)*P(i-1)+(3*t*t*t-6*t*t+4)*P(i)+(-3*t*t*t+3*t*t+3*t+1)*P(i+1)+t*t*t*P(i+2))/6;
                 // Settle the height on the road (Nearest is 3-D, as in the corridor check above).
                 var at=new Vector3(q.x,road.At(s).y,q.y);for(int pass=0;pass<4;pass++)at.y=road.At(road.Nearest(at,out _)).y;
-                data.offsets[k]=Mathf.Clamp(Vector3.Dot(new Vector3(q.x-road.At(s).x,0,q.y-road.At(s).z),road.Right(s)),-5,5);data.positions[k]=at;
+                float side0=Vector3.Dot(new Vector3(q.x-road.At(s).x,0,q.y-road.At(s).z),road.Right(s));
+                // Kept inside the corridor (a per-car line can cut a tight bend past it): a point that sits too far out, or
+                // whose nearest road point is somewhere else, is put back at its clamped offset across the road here.
+                float mapped=road.Nearest(at,out float side);float along=Mathf.Abs(Mathf.Repeat(mapped-s+length*.5f,length)-length*.5f);
+                if(Mathf.Abs(side)>MaxOffset-.05f||along>3) {
+                    side0=Mathf.Clamp(side0,-(MaxOffset-.05f),MaxOffset-.05f);at=road.At(s)+road.Right(s)*side0;
+                    for(int pass=0;pass<4;pass++)at.y=road.At(road.Nearest(at,out _)).y;
+                }
+                data.offsets[k]=Mathf.Clamp(side0,-MaxOffset,MaxOffset);data.positions[k]=at;
             }
             return data;
         }

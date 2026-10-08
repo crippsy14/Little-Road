@@ -242,6 +242,7 @@ Load time is 18 s, against 9 s without the flag.
 - **Railway:** the Pine & Peak line from the quay.
 - **Town:** the Great Wheel, and more lamps and furniture to reach Hillcrest's density.
 - **Edge audit:** the last lip and two banks, at the Terrace Row and Chapel Street junction corners.
+- **Rugby conversion** (Richard, 7 October: "a fun physics game"). Push the ball from the tee at the rugby ground and send it between the posts and over the bar, three points per conversion. You need **dirt tyres** to get a grip on the grass and **enough power** to clear the bar, but nobody tells you so: the player works it out. Kicks are taken from the touchline spots, getting harder towards the wing, with a score board in the clubhouse.
 
 ## Questions for Richard
 
