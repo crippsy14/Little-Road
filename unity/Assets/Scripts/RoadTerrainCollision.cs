@@ -12,10 +12,11 @@ namespace LittleRoad
         {
             var input=source.vertices;var vertices=new List<Vector3>(input);var output=new List<int>();
             var edgeVertices=new Dictionary<ulong,int>();var signed=new float[input.Length];
-            for(int i=0;i<input.Length;i++) {
+            // In parallel (docs/72): Nearest and At only read the circuit.
+            System.Threading.Tasks.Parallel.For(0,input.Length,i=>{
                 var flat=new Vector3(input[i].x,0,input[i].z);float d=track.Nearest(flat,out _);
                 signed[i]=Vector3.Distance(flat,track.At(d))-12;
-            }
+            });
             int Intersection(int a,int b)
             {
                 int low=Mathf.Min(a,b),high=Mathf.Max(a,b);ulong key=((ulong)(uint)low<<32)|(uint)high;

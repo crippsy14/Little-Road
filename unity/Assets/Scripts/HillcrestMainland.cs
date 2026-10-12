@@ -255,12 +255,62 @@ namespace LittleRoad
         // Horizontal distance to a centreline, with the road height at the closest point.
         public static float Distance(Vector3[] road,float x,float z,out float roadHeight)
         {
+            if(road.Length>65)return SegmentGrid.Of(road).Distance(x,z,out roadHeight);
             float best=float.MaxValue;roadHeight=0;var p=new Vector2(x,z);
             for(int i=0;i<road.Length-1;i++) {
                 Vector2 a=new(road[i].x,road[i].z),b=new(road[i+1].x,road[i+1].z),ab=b-a;float t=Mathf.Clamp01(Vector2.Dot(p-a,ab)/Mathf.Max(ab.sqrMagnitude,1e-4f));
                 float d=(a+ab*t-p).sqrMagnitude;if(d<best){best=d;roadHeight=Mathf.Lerp(road[i].y,road[i+1].y,t);}
             }
             return Mathf.Sqrt(best);
+        }
+        // A long line's segments in a bounding-box tree (docs/72): the woods, towns and shoulders ask "how far is the river /
+        // the railway / this road?" tens of thousands of times at load, and each answer scanned the whole line. The tree finds
+        // the nearest segment exactly, near or far, pruning only boxes strictly farther than the best so far; ties go to the
+        // lowest segment, as the full scan's did, so every answer is identical. Built once per line, safe from parallel builders.
+        sealed class SegmentGrid
+        {
+            static readonly System.Collections.Concurrent.ConcurrentDictionary<Vector3[],SegmentGrid> trees=new(new Same());
+            sealed class Same:IEqualityComparer<Vector3[]>{public bool Equals(Vector3[] a,Vector3[] b)=>ReferenceEquals(a,b);public int GetHashCode(Vector3[] a)=>System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(a);}
+            public static SegmentGrid Of(Vector3[] line)=>trees.GetOrAdd(line,l=>new SegmentGrid(l));
+            struct Node{public Vector2 min,max;public int left,right,start,count;}
+            readonly Vector3[] line;readonly int[] order;readonly List<Node> nodes=new();
+            SegmentGrid(Vector3[] line)
+            {
+                this.line=line;order=new int[line.Length-1];for(int i=0;i<order.Length;i++)order[i]=i;Build(0,order.Length);
+            }
+            Vector2 Lo(int i)=>Vector2.Min(new Vector2(line[i].x,line[i].z),new Vector2(line[i+1].x,line[i+1].z));
+            Vector2 Hi(int i)=>Vector2.Max(new Vector2(line[i].x,line[i].z),new Vector2(line[i+1].x,line[i+1].z));
+            int Build(int start,int count)
+            {
+                var node=new Node{min=new Vector2(float.MaxValue,float.MaxValue),max=new Vector2(float.MinValue,float.MinValue),left=-1,right=-1,start=start,count=count};
+                for(int k=start;k<start+count;k++){node.min=Vector2.Min(node.min,Lo(order[k]));node.max=Vector2.Max(node.max,Hi(order[k]));}
+                int index=nodes.Count;nodes.Add(node);
+                if(count>8) {
+                    var size=node.max-node.min;bool alongX=size.x>=size.y;
+                    System.Array.Sort(order,start,count,Comparer<int>.Create((a,b)=>{float ca=alongX?line[a].x+line[a+1].x:line[a].z+line[a+1].z,cb=alongX?line[b].x+line[b+1].x:line[b].z+line[b+1].z;int c=ca.CompareTo(cb);return c!=0?c:a.CompareTo(b);}));
+                    int half=count/2;int l=Build(start,half),r=Build(start+half,count-half);node.left=l;node.right=r;node.count=0;nodes[index]=node;
+                }
+                return index;
+            }
+            static float Bound(Vector2 p,in Node n){var d=Vector2.Max(Vector2.zero,Vector2.Max(n.min-p,p-n.max));return d.sqrMagnitude;}
+            public float Distance(float x,float z,out float roadHeight)
+            {
+                float best=float.MaxValue,height=0;int bestI=int.MaxValue;var p=new Vector2(x,z);
+                Search(0,p,ref best,ref bestI,ref height);roadHeight=height;return Mathf.Sqrt(best);
+            }
+            void Search(int index,Vector2 p,ref float best,ref int bestI,ref float height)
+            {
+                var node=nodes[index];if(Bound(p,in node)>best)return;
+                if(node.left<0) {
+                    for(int k=node.start;k<node.start+node.count;k++) {
+                        int i=order[k];Vector2 a=new(line[i].x,line[i].z),b=new(line[i+1].x,line[i+1].z),ab=b-a;float t=Mathf.Clamp01(Vector2.Dot(p-a,ab)/Mathf.Max(ab.sqrMagnitude,1e-4f));
+                        float d=(a+ab*t-p).sqrMagnitude;if(d<best||d==best&&i<bestI){best=d;bestI=i;height=Mathf.Lerp(line[i].y,line[i+1].y,t);}
+                    }
+                    return;
+                }
+                int first=node.left,second=node.right;if(Bound(p,nodes[second])<Bound(p,nodes[first])){first=node.right;second=node.left;}
+                Search(first,p,ref best,ref bestI,ref height);Search(second,p,ref best,ref bestI,ref height);
+            }
         }
     }
 
@@ -348,6 +398,8 @@ namespace LittleRoad
         {
             var clock=System.Diagnostics.Stopwatch.StartNew();
             h=new float[NX*NZ];roadDistance=new float[NX*NZ];
+            // Cooked once per build and world (WorldCache, docs/72): the same field every launch, read back in ~30 ms.
+            if(WorldCache.TryRead("valley-field",h,roadDistance)){Debug.Log($"LITTLE_ROAD_VALLEY_FIELD cached cells={h.Length} ms={clock.ElapsedMilliseconds} checksum={Checksum():0.000}");return;}
             System.Threading.Tasks.Parallel.For(0,NZ,j=>{for(int i=0;i<NX;i++){float x=X0+i*Cell,z=Z0+j*Cell;h[j*NX+i]=Outside(x,z)?-40:Natural(x,z);roadDistance[j*NX+i]=1e6f;}});
             // Town hill: a cone matched to the spiral road, flat on top for the castle.
             Stamp(HillcrestRoute.HillCentre,230,(r,old)=>{float cone=r<48?HillcrestRoute.CastleY-.2f:r<108?Mathf.Lerp(HillcrestRoute.CastleY-2,HillcrestRoute.SquareY,(r-48)/60f):r<176?Mathf.Lerp(HillcrestRoute.SquareY,7,(r-108)/68f):Mathf.Lerp(7,old,Blend(176,228,r));return Mathf.Max(old,cone+(Mathf.PerlinNoise(r*.1f,3)-.5f)*1.5f);});
@@ -453,8 +505,10 @@ namespace LittleRoad
                 float m=Blend(-451,-446.5f,z)*(1-Blend(0,8,Mathf.Max(74-x,x-158,0)));
                 int k=j*NX+i;h[k]=Mathf.Min(h[k],Mathf.Lerp(h[k],-24,m));
             }
-            double check=0;for(int k=0;k<h.Length;k+=7)check+=h[k]+(roadDistance[k]<1e5f?roadDistance[k]:0);Debug.Log($"LITTLE_ROAD_VALLEY_FIELD cells={h.Length} ms={clock.ElapsedMilliseconds} checksum={check:0.000}");
+            WorldCache.Write("valley-field",h,roadDistance);
+            double check=Checksum();Debug.Log($"LITTLE_ROAD_VALLEY_FIELD cells={h.Length} ms={clock.ElapsedMilliseconds} checksum={check:0.000}");
         }
+        static double Checksum(){double check=0;for(int k=0;k<h.Length;k+=7)check+=h[k]+(roadDistance[k]<1e5f?roadDistance[k]:0);return check;}
         const float FillSlope=.25f,FillReach=80;
         // Portal shelf height above the road: just over the bore (the terrain hole ends below it).
         public const float PortalShelf=10;

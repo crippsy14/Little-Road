@@ -150,11 +150,54 @@ namespace LittleRoad
             }
             return go;
         }
+        // A hash of the whole built world (docs/72: proving a load-time change builds the same world). Every placed piece
+        // (name, position, rotation, scale, its renderers' materials, layer and static flag, its colliders, LODs), and every
+        // renderer and collider under the world's root (name, world bounds, materials, layer). Lines are sorted, so the build
+        // order doesn't matter, and bounds don't change with static batching. --world-fingerprint [file] logs it straight after
+        // the world build, with every streamed tile and district built (AdventureGame), so where the car starts doesn't count.
+        public static Transform WorldRoot{get;private set;}
+        // Static batching is a drawing optimisation, and batched renderers report their batch's bounds: world fingerprint
+        // runs turn it off (--no-static-batching) so they compare the geometry itself, however it was batched.
+        public static bool StaticBatching=>!RaceTrial.Has("--no-static-batching");
+        public static string Fingerprint()
+        {
+            int pieces=0,renderers=0,colliders=0;var all=new System.Collections.Generic.List<string>();var line=new System.Text.StringBuilder();
+            void Mix(string v)=>line.Append(v).Append(' ');
+            // Things that move (sheep, spinning, bobbing and animated props, idling residents' cars, physics bodies) count by what
+            // they are, not where they happen to be.
+            var animated=BayviewKit.AnimatedRoot;
+            bool Moves(Component c)=>c.transform.IsChildOf(animated)||c.GetComponentInParent<Rigidbody>(true)!=null||c.GetComponentInParent<Grazer>(true)!=null||c.GetComponentInParent<KitSpin>(true)!=null||
+                c.GetComponentInParent<KitBob>(true)!=null||c.GetComponentInParent<ResidentIdle>(true)!=null||c.GetComponentInParent<BalloonDrift>(true)!=null||c.GetComponentInParent<Spin>(true)!=null;
+            string Materials(Renderer r){var sb=new System.Text.StringBuilder();foreach(var m in r.sharedMaterials)sb.Append(m==null?"null":m.name+"|"+m.shader.name+"|"+(m.HasProperty("_BaseColor")?m.GetColor("_BaseColor").ToString("F3"):"-")+"|"+(m.HasProperty("_Pattern")?m.GetFloat("_Pattern").ToString("F2"):"-")).Append(' ');return sb.ToString();}
+            foreach(var go in BayviewKit.Placed) {
+                if(go==null)continue;pieces++;var t=go.transform;line.Clear();Mix(go.name);if(!Moves(t)){Mix(t.position.ToString("F3"));Mix(t.rotation.ToString("F4"));}Mix(t.lossyScale.ToString("F3"));
+                foreach(var r in go.GetComponentsInChildren<Renderer>(true)){renderers++;Mix(r.name);Mix(r.gameObject.layer.ToString());Mix(r.gameObject.isStatic?"s":"d");Mix(Materials(r));}
+                foreach(var c in go.GetComponentsInChildren<Collider>(true)){colliders++;Mix(c.GetType().Name);if(c is BoxCollider bx){Mix(bx.center.ToString("F3"));Mix(bx.size.ToString("F3"));}Mix(c.tag);}
+                var lod=go.GetComponent<LODGroup>();if(lod!=null)Mix("lod"+lod.GetLODs().Length+lod.fadeMode);all.Add("P "+line);
+            }
+            int meshes=0,solids=0;
+            if(WorldRoot!=null) {
+                foreach(var r in WorldRoot.GetComponentsInChildren<Renderer>(true)){meshes++;var b=r.bounds;all.Add(Moves(r)?$"R {r.name} moving {r.gameObject.layer} {Materials(r)}":$"R {r.name} {b.center:F2} {b.size:F2} {r.gameObject.layer} {Materials(r)}");}
+                foreach(var c in WorldRoot.GetComponentsInChildren<Collider>(true)){solids++;var b=c.bounds;all.Add(Moves(c)?$"C {c.GetType().Name} {c.name} moving {c.isTrigger} {c.gameObject.layer}":$"C {c.GetType().Name} {c.name} {b.center:F2} {b.size:F2} {c.isTrigger} {c.gameObject.layer}");}
+            }
+            all.Sort(System.StringComparer.Ordinal);ulong h=1469598103934665603;
+            foreach(var l in all){foreach(char ch in l){h^=ch;h*=1099511628211;}h^=10;h*=1099511628211;}
+            string file=RaceTrial.Arg("--world-fingerprint");if(!string.IsNullOrEmpty(file)&&!file.StartsWith("--"))System.IO.File.WriteAllText(file,string.Join("\n",all));
+            return $"pieces={pieces} renderers={renderers} colliders={colliders} worldRenderers={meshes} worldColliders={solids} hash={h:x16}";
+        }
+        // Sub-step timings inside the slow load steps (docs/72): LITTLE_ROAD_LOAD_LAP <what> ms since the last lap.
+        static System.Diagnostics.Stopwatch lapClock;
+        public static string LastLap{get;private set;}
+        public static void Lap(string what){LastLap=what;if(lapClock==null){lapClock=System.Diagnostics.Stopwatch.StartNew();return;}Debug.Log($"LITTLE_ROAD_LOAD_LAP {what} ms={lapClock.ElapsedMilliseconds}");lapClock.Restart();}
         void LandMesh()
         {
+            Lap("land start");
             const int nx=289,nz=257;const float step=1.5f;
             var vertices=new Vector3[nx*nz];var uv=new Vector2[vertices.Length];var groups=new List<int>[4];for(int i=0;i<4;i++)groups[i]=new();
-            for(int z=0;z<nz;z++)for(int x=0;x<nx;x++) {int i=z*nx+x;float wx=(x-(nx-1)*.5f)*step,wz=(z-(nz-1)*.5f)*step;vertices[i]=new Vector3(wx,Height(wx,wz),wz);uv[i]=new Vector2(wx,wz)*.2f;}
+            // Rows in parallel (docs/72): Height is pure maths once its one lazy value (the farm pad) is set.
+            Height(BayviewCountryside.Farm.x,BayviewCountryside.Farm.z);
+            System.Threading.Tasks.Parallel.For(0,nz,z=>{for(int x=0;x<nx;x++){int i=z*nx+x;float wx=(x-(nx-1)*.5f)*step,wz=(z-(nz-1)*.5f)*step;vertices[i]=new Vector3(wx,Height(wx,wz),wz);uv[i]=new Vector2(wx,wz)*.2f;}});
+            Lap("land heights");
             void Triangle(int a,int b,int c) {
                 Vector3 normal=Vector3.Cross(vertices[b]-vertices[a],vertices[c]-vertices[a]).normalized;
                 Vector3 middle=(vertices[a]+vertices[b]+vertices[c])/3;
@@ -165,8 +208,8 @@ namespace LittleRoad
             var mesh=new Mesh{name="Sculpted coastal terrain",indexFormat=IndexFormat.UInt32,vertices=vertices,uv=uv,subMeshCount=4};
             for(int i=0;i<4;i++)mesh.SetTriangles(groups[i],i);mesh.RecalculateNormals();mesh.RecalculateBounds();
             var terrain=TerrainMaterial("Slope-blended meadow and limestone",new Color(.35f,.43f,.24f),new Color(.60f,.56f,.46f));
-            var island=MeshObject("Continuous sculpted island collider",mesh,new[]{terrain,terrain,terrain,terrain});
-            island.AddComponent<MeshCollider>().sharedMesh=RoadTerrainCollision.Build(track,mesh);
+            Lap("land mesh");var island=MeshObject("Continuous sculpted island collider",mesh,new[]{terrain,terrain,terrain,terrain});
+            var clip=RoadTerrainCollision.Build(track,mesh);Lap("land collider clip");island.AddComponent<MeshCollider>().sharedMesh=clip;Lap("land collider cook");
         }
         Material TerrainMaterial(string name,Color meadow,Color stoneColour)
         {
@@ -397,7 +440,7 @@ namespace LittleRoad
         static long kitMsAt;static int kitAt;
         static void Step(string name)
         {
-            long kitMs=BayviewKit.SpawnClock.ElapsedMilliseconds;int kits=BayviewKit.Spawned;
+            LoopProbe.Mark(name);long kitMs=BayviewKit.SpawnClock.ElapsedMilliseconds;int kits=BayviewKit.Spawned;
             if(stepClock!=null)Debug.Log($"LITTLE_ROAD_LOAD_STEP {name} ms={stepClock.ElapsedMilliseconds} kit_ms={kitMs-kitMsAt} kits={kits-kitAt}");
             kitMsAt=kitMs;kitAt=kits;stepClock=System.Diagnostics.Stopwatch.StartNew();
         }
@@ -406,7 +449,7 @@ namespace LittleRoad
         public void Build()=>TrialWorld.RunNow(BuildRoutine());
         public System.Collections.IEnumerator BuildRoutine()
         {
-            WorldTiles.Begin(ValleyDetail);stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;
+            WorldTiles.Begin(ValleyDetail);Districts.Begin();WorldRoot=root;stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.FootprintOwners.Clear();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;
             // (A race far from Bayview builds none of the island: RaceArea. Its heights stay analytic for everything else.)
             bool island=Island;
             if(island)LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;
@@ -425,13 +468,15 @@ namespace LittleRoad
             // circuit: Bayview races skip them (ValleyDetail false) and keep their frame cost.
             // (A race leaves Hillcrest's town and railway out unless they're in its area: RaceArea.)
             bool hillcrest=RaceArea.Near(HillcrestRoute.Square,500);
-            if(ValleyDetail){if(hillcrest)Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");QuarryHillsScenery();Step("quarry-hills");Next(.93f,"Filling the sea");yield return null;}
-            Debug.Log("LITTLE_ROAD_RAILS_TRIMMED "+TrimRails());   // (rails and junction corner walls in front of buildings; every build)
-            RegisterRoads();
+            if(ValleyDetail){if(hillcrest)Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");
+                // Quarry Hills far from where the car starts is built after the town is ready (Districts, docs/72).
+                if(deferQuarry)Districts.Defer("quarry-hills",QuarryHillsSceneryRoutine(),SettleQuarryHills,Rect.MinMaxRect(QuarryHills.West-30,QuarryHills.South-30,QuarryHills.SeamX+30,1e6f));else QuarryHillsScenery();Step("quarry-hills");Next(.93f,"Filling the sea");yield return null;}
+            Lap("settle start");Debug.Log("LITTLE_ROAD_RAILS_TRIMMED "+(deferQuarry?TrimRails(p=>!NearQuarryHills(p)):TrimRails()));   // (rails and junction corner walls in front of buildings; every build)
+            Lap("settle trim rails");RegisterRoads();Lap("settle register roads");
             // Runtime static batching converts combined geometry to 16-bit
             // chunks. Keep the large grass mesh and displaced sea independent.
-            Physics.SyncTransforms();PlacementAudit.Settle();CarContact.SeatAll();Step("settle-planting");
-            StaticBatchingUtility.Combine(root.gameObject);Step("static-batching");
+            Physics.SyncTransforms();Lap("settle sync");PlacementAudit.Settle();Lap("settle pieces");CarContact.SeatAll();Lap("settle cars");Step("settle-planting");
+            if(StaticBatching)StaticBatchingUtility.Combine(root.gameObject);Step("static-batching");
             Sea();if(island)new CoastalGroundCover(this,track,root).Build();Step("sea-ground-cover");
             GroundCoverGeometryAudit.Record("after-batching",root);
             WorldTiles.EndBuild();

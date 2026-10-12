@@ -71,7 +71,7 @@ namespace LittleRoad
             railWhite=TrialWorld.Material("Balustrade white",Toy.Hex(0xfff8ec),0,.25f);
             // A race away from the town (RaceArea) builds only the raceway's own buildings.
             if(RaceArea.Active&&!RaceArea.Near(Square,500)){if(RaceArea.Near(HillcrestRoute.Circuit[0],600))Raceway();Debug.Log($"LITTLE_ROAD_HILLCREST race-area only buildings={buildings}");return;}
-            ReserveZipLanding();MarketSquare();Castle();LowerTown();Station();Streets();SquareRim();Vista();Lookout();Raceway();Countryside();HillSlopes();Patchwork();ZipLineBuild();TunnelFrame();Gardens();
+            CoastalLandscape.Lap("town start");ReserveZipLanding();CoastalLandscape.Lap("town ReserveZipLanding");MarketSquare();CoastalLandscape.Lap("town MarketSquare");Castle();CoastalLandscape.Lap("town Castle");LowerTown();CoastalLandscape.Lap("town LowerTown");Station();CoastalLandscape.Lap("town Station");Streets();CoastalLandscape.Lap("town Streets");SquareRim();CoastalLandscape.Lap("town SquareRim");Vista();CoastalLandscape.Lap("town Vista");Lookout();CoastalLandscape.Lap("town Lookout");Raceway();CoastalLandscape.Lap("town Raceway");Countryside();CoastalLandscape.Lap("town Countryside");HillSlopes();CoastalLandscape.Lap("town HillSlopes");Patchwork();CoastalLandscape.Lap("town Patchwork");ZipLineBuild();CoastalLandscape.Lap("town ZipLineBuild");TunnelFrame();CoastalLandscape.Lap("town TunnelFrame");Gardens();CoastalLandscape.Lap("town Gardens");
             if(footingBoxes.Count>0){QuarryFloor.Combine("Hillside footings",footingBoxes,plinth,root,false);footingBoxes.Clear();}
             Debug.Log($"LITTLE_ROAD_HILLCREST buildings={buildings} plinths={plinths} buried={buried} footings={footings} spots={Spots.Count}");
         }

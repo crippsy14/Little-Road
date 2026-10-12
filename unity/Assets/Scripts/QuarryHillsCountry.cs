@@ -34,12 +34,14 @@ namespace LittleRoad
         public static readonly List<Vector3> SheepFields=new();
         public static int Sheep,Farms,WallMetres;
 
-        public static void Build(Transform parent)
+        public static void Build(Transform parent)=>TrialWorld.RunNow(BuildRoutine(parent));
+        // (A coroutine: it yields between pieces of work when built in the background, Districts; docs/72.)
+        public static System.Collections.IEnumerator BuildRoutine(Transform parent)
         {
-            if(!QuarryHills.Enabled)return;
+            if(!QuarryHills.Enabled)yield break;
             root=new GameObject("Quarry Hills country").transform;root.SetParent(parent);rng=new System.Random(8823);
             walls.Clear();caps.Clear();posts.Clear();gates.Clear();lines.Clear();SheepFields.Clear();Sheep=Farms=WallMetres=LaneSheep=0;
-            RugbyGround();Workshops();Farms_();Campsite();WindFarm();Roadsides();TownBits();
+            CoastalLandscape.Lap("qhc start");RugbyGround();CoastalLandscape.Lap("qhc rugby");Workshops();CoastalLandscape.Lap("qhc workshops");yield return null;yield return Farms_();CoastalLandscape.Lap("qhc farms");yield return null;Campsite();CoastalLandscape.Lap("qhc campsite");WindFarm();CoastalLandscape.Lap("qhc wind");Roadsides();CoastalLandscape.Lap("qhc roadsides");TownBits();CoastalLandscape.Lap("qhc townbits");yield return null;
             var stone=WorldLook.Kit("Dry-stone wall",new Color(.43f,.44f,.45f),WorldLook.Pattern.Stone,0,.08f,true,1.6f);
             var cap=WorldLook.Kit("Wall coping",new Color(.36f,.37f,.39f),WorldLook.Pattern.Rock,0,.08f,true);
             QuarryFloor.Combine("Field walls",walls,stone,root,true);QuarryFloor.Combine("Field wall copes",caps,cap,root,false);
@@ -108,10 +110,12 @@ namespace LittleRoad
             QuarryHillsTown.Spots["workshops"]=(at+dir*10+Quaternion.Euler(0,75,0)*Vector3.right*10,255);
         }
         // ---------------------------------------------------------------- hill farms and their sheep
-        static void Farms_()
+        // (Yields after each farm when built in the background: Districts.)
+        static System.Collections.IEnumerator Farms_()
         {
             var seeds=new[]{(new Vector2(-2880,-2060),"TY GWYN"),(new Vector2(-2120,-2050),"BRYN FARM"),(new Vector2(-3330,-2320),"HAFOD"),(new Vector2(-3000,-2650),"PANT Y GOG")};
             foreach(var (seed,name) in seeds) {
+                yield return null;
                 // The flattest open spot within 220 m of the seed, 25-160 m from a road.
                 Vector2 best=default;float bs=float.MaxValue;
                 for(int i=0;i<900;i++){var c=seed+new Vector2((R()-.5f)*600,(R()-.5f)*600);if(!Open(c.x,c.y,22))continue;   // (RoadDistance is only known near roads: farther is simply open country)

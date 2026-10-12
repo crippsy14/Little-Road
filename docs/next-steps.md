@@ -1,5 +1,18 @@
 # Next steps (3 October 2026)
 
+**12 October: loading and streaming, part 3 ([doc 72](72-world-streaming.md), section 7).** Quarry Hills now builds in the
+background after you're driving (the default; `--no-background-districts` builds it at load). Ready to drive is 4.3 s, against 5.3 s when it's
+built at load. The world and the town come out the same either way: a stronger world fingerprint and a new `--town-print`
+check both match. Also:
+- the worked-slate surface is computed in parallel (279 to 62 ms);
+- per-tick race telemetry is written only with `--telemetry`;
+- the world and map caches keep only the two most recently used builds;
+- the clean-up covers race reports, scratch and Blender backups (1.6 GB went to the Recycle Bin);
+- `--review-retire` round trips work.
+
+The later items (MeshDataArray terrain, cliff arrays, instancing, the GraphicsStateCollection warm-up, race-entry engine banks,
+then floating origin and HLOD) are listed in doc 72 section 6. Committed on 12 October after a full regression (sr-districts-1): everything passed, and the area audit improved (Emyr's car fixed). The train race lost once, stuck behind valley traffic, and won on reruns. So the point-to-point drive tests (train, sprint, blast) now run with `--no-traffic` until the traffic can overtake. Still to do: a listen to the music and ambience.
+
 **4 October:** [doc 62](62-street-review-quarry-works-licence.md) covers four things:
 - The street review's fixes: parked cars, shop signs, Welsh cottages and slate fences, and more.
 - The quarry's new look: a gravel floor, a rutted rallycross, standing rocks and spoil heaps.

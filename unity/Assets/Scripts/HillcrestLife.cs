@@ -15,11 +15,15 @@ namespace LittleRoad
             player=playerCar;WheatField.Player=playerCar;ResidentIdle.Player=playerCar!=null?playerCar.transform:null;
             var root=new GameObject("Hillcrest Valley life").transform;
             if(BayviewKit.Has("train_loco"))new GameObject("Hillcrest line train").AddComponent<ValleyTrain>().Setup(root);
-            if(traffic){Traffic(root);Parked(root);Townsfolk(root);}
+            // (--no-traffic: no moving traffic, for point-to-point drive tests until the AI cars can overtake and be overtaken
+            // (Richard, 12 Oct); parked cars and townsfolk stay.)
+            if(traffic){if(!RaceTrial.Has("--no-traffic"))Traffic(root);Parked(root);Townsfolk(root);}
             if(BayviewKit.Has("balloon"))Balloons(root);
             Birds(root);
             if(player!=null){gameObject.AddComponent<AreaBanner>().Setup(player.transform);player.gameObject.AddComponent<DustTrail>().Setup(player);}
-            if(HillcrestTown.Chimneys.Count>0)new GameObject("Chimney smoke").AddComponent<ChimneySmoke>().Setup(HillcrestTown.Chimneys,player!=null?player.transform:null);
+            if(HillcrestTown.Chimneys.Count>0){var smoke=new GameObject("Chimney smoke");smoke.AddComponent<ChimneySmoke>().Setup(HillcrestTown.Chimneys,player!=null?player.transform:null);
+                // (Quarry Hills built in the background adds its chimneys when it arrives: Districts.)
+                if(Districts.Waiting("quarry-hills"))Districts.WhenBuilt("quarry-hills",()=>{Destroy(smoke);new GameObject("Chimney smoke").AddComponent<ChimneySmoke>().Setup(HillcrestTown.Chimneys,player!=null?player.transform:null);});}
         }
         void Traffic(Transform root)
         {
@@ -67,7 +71,15 @@ namespace LittleRoad
             var yard=HillcrestRoute.StationYard;for(int i=0;i<3;i++)spots.Add((yard+new Vector3(-7+i*5.5f,0,-12),0));
             var lk=HillcrestRoute.Lookout;spots.Add((lk+new Vector3(-9,0,-6),40));spots.Add((HillcrestRoute.Vista+new Vector3(-8,0,-6),150));
             spots.AddRange(QuarryFloor.Parking); // outside the rally school (--quarry-hills)
-            string[] bodies={"marlow","heron","picnic","doodle","otter","bramble","pebble","tallboy","dover","kipper","sprint","roadster"};var rng=new System.Random(41);
+            parkRng=new System.Random(41);Park(root,spots);
+            // (Quarry Hills built in the background: its cars park once it's there, carrying on the same draws: Districts.)
+            if(Districts.Waiting("quarry-hills"))Districts.WhenBuilt("quarry-hills",()=>Park(root,new List<(Vector3,float)>(QuarryFloor.Parking)));
+        }
+        System.Random parkRng;
+        static readonly string[] ParkBodies={"marlow","heron","picnic","doodle","otter","bramble","pebble","tallboy","dover","kipper","sprint","roadster"};
+        void Park(Transform root,List<(Vector3 at,float yaw)> spots)
+        {
+            var rng=parkRng;var bodies=ParkBodies;
             foreach(var (spotAt,yaw) in spots) {
                 // Slide along the row (0, +-2.5, +-5, +-7.5 m) to the nearest spot clear of any kit prop.
                 var at=spotAt;var along=Quaternion.Euler(0,yaw,0)*Vector3.right;
@@ -134,21 +146,16 @@ namespace LittleRoad
         static readonly string[] FolkBump={"Oi! That's my front yard!","Mind the geraniums!","Honk! I'm parked, you know!","Careful, I just polished that!","Ooh, a visitor!","Beep! Hello to you too!"};
         void Townsfolk(Transform root)
         {
-            People.Clear();var rng=new System.Random(512);
-            string[] bodies={"bubble","beetle","taxi","camper","ritz","postvan","gelato","minibus","pebble","tallboy","marlow","dover","heron","bramble","picnic","kipper","doodle","otter"};
+            People.Clear();var rng=folkRng=new System.Random(512);var bodies=FolkBodies;
             var homes=new List<(Vector3 yard,float yaw,string house)>(HillcrestTown.Homes);int placed=0,name=0;
             for(int i=0;i<homes.Count&&placed<72;i++) {
                 if(rng.NextDouble()>.42)continue;var (yard,yaw,_)=homes[i];
                 string body=bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
                 if(Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color,yard,yaw,FolkNames[name++%FolkNames.Length],"Hillcrest",new[]{Gossip[rng.Next(Gossip.Length)],Gossip[rng.Next(Gossip.Length)]},true))placed++;
             }
-            // Quarry Hills' residents, outside their terraces (--quarry-hills).
-            int quarryPlaced=0;
-            for(int i=0;i<QuarryHillsTown.Homes.Count&&quarryPlaced<110;i++) {
-                if(rng.NextDouble()>.7)continue;var (yard,yaw,_)=QuarryHillsTown.Homes[i]; // (only houses with a drive are homes)
-                string body=rng.NextDouble()<.55?CarBodies.OffRoad[rng.Next(CarBodies.OffRoad.Length)]:bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
-                if(Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color,yard,yaw,QuarryNames[quarryPlaced%QuarryNames.Length],"Quarry Hills",new[]{QuarryGossip[rng.Next(QuarryGossip.Length)],QuarryGossip[rng.Next(QuarryGossip.Length)]},true))quarryPlaced++;
-            }
+            // Quarry Hills' residents, outside their terraces (--quarry-hills); built in the background, once it's there.
+            if(!Districts.Waiting("quarry-hills"))TrialWorld.RunNow(QuarryFolk(root));
+            else Districts.WhenBuiltSteps("quarry-hills",()=>QuarryFolkLater(root));
             void Special(string spot,string body,Color paint,string who,string title,params string[] lines){if(HillcrestTown.Spots.TryGetValue(spot,out var s))Spawn(root,body,paint,s.at,s.yaw,who,title,lines);}
             // (Gwen at the rally school is a resident: AdventureGame.)
             Special("gelato","gelato",Toy.Hex(0xffd6e8),"Gelato Gina","Gelato van","Gelato! Twelve flavours, all of them pistachio. Well, nearly.","Best seat in town: right by the fountain, watching the market.");
@@ -158,6 +165,24 @@ namespace LittleRoad
             if(standings.Count>0)QuarryFloor.Combine("Front-garden hard-standings",standings,WorldLook.Kit("Hard-standing flags",Toy.Hex(0x8a8d90),WorldLook.Pattern.Stone,0,.12f,true),root,false);
             if(standingsWarm.Count>0)QuarryFloor.Combine("Front-garden hard-standings (Hillcrest)",standingsWarm,WorldLook.Kit("Hard-standing stone",Toy.Hex(0xc9b48f),WorldLook.Pattern.Stone,0,.12f,true),root,false);
             Debug.Log("LITTLE_ROAD_TOWNSFOLK placed="+People.Count+" homeSkipped="+homeSkipped);
+        }
+        System.Random folkRng;
+        static readonly string[] FolkBodies={"bubble","beetle","taxi","camper","ritz","postvan","gelato","minibus","pebble","tallboy","marlow","dover","heron","bramble","picnic","kipper","doodle","otter"};
+        System.Collections.IEnumerator QuarryFolkLater(Transform root)
+        {
+            yield return QuarryFolk(root);
+            if(standings.Count>0)QuarryFloor.Combine("Front-garden hard-standings",standings,WorldLook.Kit("Hard-standing flags",Toy.Hex(0x8a8d90),WorldLook.Pattern.Stone,0,.12f,true),root,false);
+            Debug.Log("LITTLE_ROAD_TOWNSFOLK quarry-hills placed="+People.Count+" homeSkipped="+homeSkipped);
+        }
+        // Quarry Hills' townsfolk, carrying on Townsfolk's draws (a coroutine: a frame or so each in the background).
+        System.Collections.IEnumerator QuarryFolk(Transform root)
+        {
+            var rng=folkRng;var bodies=FolkBodies;int quarryPlaced=0;
+            for(int i=0;i<QuarryHillsTown.Homes.Count&&quarryPlaced<110;i++) {yield return null;
+                if(rng.NextDouble()>.7)continue;var (yard,yaw,_)=QuarryHillsTown.Homes[i]; // (only houses with a drive are homes)
+                string body=rng.NextDouble()<.55?CarBodies.OffRoad[rng.Next(CarBodies.OffRoad.Length)]:bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
+                if(Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color,yard,yaw,QuarryNames[quarryPlaced%QuarryNames.Length],"Quarry Hills",new[]{QuarryGossip[rng.Next(QuarryGossip.Length)],QuarryGossip[rng.Next(QuarryGossip.Length)]},true))quarryPlaced++;
+            }
         }
         readonly List<Matrix4x4> standings=new(),standingsWarm=new();int homeSkipped;
         // Clear of garden and pavement furniture: a bush, bench or lamp within 1 m of the car's outline.
@@ -565,7 +590,7 @@ namespace LittleRoad
     // Lazy wood smoke from a handful of chimneys (only those near the player).
     public sealed class ChimneySmoke:PuffPool
     {
-        List<Vector3> tops;Transform near;float[] timers;
+        List<Vector3> tops;Transform near;float[] timers;public int Count=>tops?.Count??0;
         // (Street review, 4-5 Oct: opaque white spheres read as balls stuck on the chimneys.) Soft puffs that swell and fade.
         public void Setup(List<Vector3> chimneys,Transform player){tops=new List<Vector3>(chimneys);near=player;timers=new float[tops.Count];soft=true;material=SoftMaterial("Chimney smoke",new Color(.9f,.9f,.92f));}
         void Update()

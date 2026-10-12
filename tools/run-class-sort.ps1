@@ -21,7 +21,7 @@ foreach($track in $Tracks){foreach($seed in $Seeds){
   if($track -eq 'bayview' -or $track -eq 'hillcrest'){$arguments+='--bayview-transfer-study'}
   if($track -eq 'cedar-hills'){$arguments+='--grade-aware'}
   if(-not $MixedDrivers){$arguments+=@('--driver-roster','neutral','--preset-without','--driver-form')}
-  $arguments+=$Flags
+  $arguments+=$Flags;if($KeepTelemetry){$arguments+='--telemetry'}
   $t=Get-Date
   $run=Start-Quiet -FilePath $exe -WindowStyle Hidden -PassThru -ArgumentList $arguments
   $run.WaitForExit()

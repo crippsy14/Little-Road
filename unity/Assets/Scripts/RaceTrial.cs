@@ -21,6 +21,9 @@ namespace LittleRoad
         public bool DraftingEnabled {get;private set;}
         public RaceWorldSnapshot DriverSnapshot {get;private set;}
         public DriverFrameAudit DriverAudit {get;private set;}
+        // Per-tick telemetry (track.json, driver-frames.json; ~75 MB a race) is written only when asked for (--telemetry, which
+        // the race tools' -KeepTelemetry passes): nothing reads it but a diagnosis, and every report run used to leave it behind.
+        public static bool Telemetry=>Has("--telemetry");
         public MotionPredictionAudit MotionAudit {get;private set;}
         public PathApproachAudit ApproachAudit {get;private set;}
         public RacingLine ReferenceLine {get;private set;}
@@ -97,6 +100,8 @@ namespace LittleRoad
             }
             if(reportPath!=null)DriverAudit=new DriverFrameAudit();
             if(career){field=AdventureSession.EnteredRoster?.Entries.Count??24;requiredLaps=AdventureSession.EnteredRoster?.Laps??3;setup="owned equipment";seed=1709+AdventureSession.RaceSerial*11;careerUI=gameObject.AddComponent<AdventureUI>();}
+            // --race-laps N (tests, docs/72): any race shortened (or lengthened) to N laps, for a quicker feedback loop.
+            if(Has("--race-laps")&&int.TryParse(Arg("--race-laps"),out int testLaps))requiredLaps=Mathf.Max(1,testLaps);
             gridMode=Arg("--trial-grid","pack");opponentSetups=Arg("--trial-opponents","").Split(',',StringSplitOptions.RemoveEmptyEntries);
             if(gridMode!="pack"&&gridMode!="line")throw new ArgumentException("Unknown trial grid: "+gridMode);
             QualitySettings.vSyncCount=0;Application.targetFrameRate=120;Time.fixedDeltaTime=1f/120;Time.maximumDeltaTime=.15f;
@@ -174,6 +179,10 @@ namespace LittleRoad
                 // The Duke's car too: at 60-75 m/s speculative contacts snagged the road mesh edges violently (docs/54).
                 if(Roster.Event==RaceRoster.DukeEvent)car.body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
             }
+            if(career)Debug.Log($"LITTLE_ROAD_SCENE_SWITCH ready t={Time.realtimeSinceStartup:0.00} mode=race world={(PersistentWorld.Current!=null&&PersistentWorld.Current.Reuses>0?"reused":"built")}");
+            // --review-retire S (with --review-races): S seconds of racing, then out through the pause menu's "Retire to town",
+            // as a player would leave (docs/72: round trips without waiting for a lap).
+            if(career&&Has("--review-retire"))StartCoroutine(RetireAfter(float.TryParse(Arg("--review-retire"),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float s)?s:3));
             if(reportPath!=null)Roster.Save(Path.ChangeExtension(reportPath,"roster.json"));
             if(Has("--driver-roster")&&reportPath!=null){Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(reportPath)));File.WriteAllText(Path.ChangeExtension(reportPath,"drivers.json"),JsonUtility.ToJson(new DriverRosterEvidence{mode=Arg("--driver-roster"),drivers=cars.Select(c=>c.Driver.Export(c.driverId)).ToArray()},true));}
             if(Has("--recovery-case"))gameObject.AddComponent<RecoveryFixture>().Setup(this);
@@ -264,7 +273,7 @@ namespace LittleRoad
                     if(finishOrder.Count!=cars.Count)throw new Exception("Adventure race did not complete its field.");
                     StartCoroutine(FinishCareerSmoke());
                 }
-                else StartCoroutine(EndTrial());
+                else if(!(career&&Has("--review-races")))StartCoroutine(EndTrial());   // (round trips carry on back to town)
             }
         }
         // Let the results screen settle (stamp, confetti, podium renders) before capturing,
@@ -282,6 +291,7 @@ namespace LittleRoad
             if(Has("--adventure-retry-review")&&AdventureSession.RaceSerial==1)StartCoroutine(ReviewCareerRetry());
             else AdventureSession.ReturnToTown();
         }
+        System.Collections.IEnumerator ReturnSoon(){float until=Time.realtimeSinceStartup+60;while(!reportWritten&&Time.realtimeSinceStartup<until)yield return null;yield return new WaitForSecondsRealtime(2);AdventureSession.ReturnToTown();}
         void LateUpdate(){if(chase!=null&&cars.Count>0)UpdateCamera(false);}
         // ---- the in-race pause menu
         // --race-pause-review (the adventure smoke): pause mid-race, view the field, back, resume; the race must hold still
@@ -349,6 +359,7 @@ namespace LittleRoad
             try{AdventureSession.RestartRace();Paused=false;AudioListener.pause=false;}
             catch(Exception e){Debug.LogException(e);ResumeRace();careerUI.Toast("Couldn't restart: "+e.Message);}
         }
+        System.Collections.IEnumerator RetireAfter(float seconds){yield return new WaitForSecondsRealtime(seconds);Debug.Log("LITTLE_ROAD_REVIEW_RETIRE after="+seconds);RetireRace();}
         void RetireRace()
         {
             AudioListener.pause=false;Paused=false;
@@ -450,6 +461,8 @@ namespace LittleRoad
             if(Roster!=null)summary.venue=Roster.Event==RaceRoster.DukeEvent?"The Duke's Challenge":Roster.Title.Split('/')[0].Trim()+" Cup";
             summary.trace.Add(new Vector2(0,summary.grid));summary.trace.AddRange(playerTrace);summary.trace.Add(new Vector2(requiredLaps,summary.place));
             careerUI.ShowRaceResult(summary,AdventureSession.ReturnToTown,PreviewNextCareerRace);
+            // (Reviews with --review-races: back to town by themselves, for round trips.)
+            if(Has("--review-races"))StartCoroutine(ReturnSoon());
         }
         // Finishers in order, then cars still racing by progress. Read live by the results board.
         List<RaceStanding> LiveStandings()
@@ -503,7 +516,7 @@ namespace LittleRoad
         void WriteReport()
         {
             if(reportWritten)return;reportWritten=true;
-            if(technicalReview!=null)technicalReview.Save();
+            if(technicalReview!=null&&Telemetry)technicalReview.Save();
             GetComponent<RecoveryFixture>()?.Save();
             GetComponent<TrafficFixture>()?.Save();
             GetComponent<PathPredictionFixture>()?.Save();
@@ -521,7 +534,7 @@ namespace LittleRoad
                     progress=c.progress,offset=c.offset,bestLap=c.bestLap==float.MaxValue?0:c.bestLap,contacts=c.contacts,recoveries=c.recoveries,maxImpact=c.maxImpact,
                     missedGates=c.missedGates,maxPenetration=c.maxPenetration,physicalRecoveries=c.physicalRecovery?.completed??0,
                     unsupportedSeconds=c.UnsupportedSeconds,physicalRecoverySeconds=c.physicalRecovery?.activeSeconds??0,recoveryWaitSeconds=c.physicalRecovery?.waitSeconds??0,recoveryReverseSeconds=c.physicalRecovery?.reverseSeconds??0,planReversals=c.contextPolicy?.PlanReversals??c.racerPolicy?.Reversals??0,passCommits=c.contextPolicy?.PassCommits??c.racerPolicy?.Attacks??0,passCompleted=c.contextPolicy?.PassCompleted??c.racerPolicy?.Passes??0,passAborted=c.contextPolicy?.PassAborted??c.racerPolicy?.Aborts??0,defendMoves=c.racerPolicy?.DefendMoves??0,brakeSeconds=c.BrakeSeconds,liftSeconds=c.LiftSeconds,stoppedSeconds=c.StoppedSeconds,trafficSeconds=c.racerPolicy?.TrafficSeconds??0,trafficBrakeSeconds=c.racerPolicy?.TrafficBrakeSeconds??0,guardSeconds=c.racerPolicy?.GuardSeconds??0,abortTarget=c.contextPolicy?.AbortTarget??c.racerPolicy?.AbortLost??0,abortTimeout=c.contextPolicy?.AbortTimeout??c.racerPolicy?.AbortTimeout??0,abortUnaccepted=c.contextPolicy?.AbortUnaccepted??c.racerPolicy?.AbortSideClosed??0,lateBrakeTicks=c.contextPolicy?.LateBrakeTicks??c.racerPolicy?.AbortNoOverlap??0,gapCandidates=c.contextPolicy?.DynamicRejoin?.GapCandidatesAdded??0,gapSelections=c.contextPolicy?.DynamicRejoin?.GapSelections??0}).ToArray(),motion=motion.ToArray(),draftingSamples=draftingSamples.ToArray(),impacts=impacts.ToArray(),assistedRecoveries=assistedRecoveries.ToArray(),checkpointPassages=checkpointPassages.ToArray()};
-            if(reportPath!=null){Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(reportPath)));File.WriteAllText(reportPath,JsonUtility.ToJson(r,true));DriverAudit?.Save(reportPath);MotionAudit?.Save(reportPath);}
+            if(reportPath!=null){Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(reportPath)));File.WriteAllText(reportPath,JsonUtility.ToJson(r,true));if(Telemetry)DriverAudit?.Save(reportPath);MotionAudit?.Save(reportPath);}
             Debug.Log("LITTLE_ROAD_TRIAL_REPORT finished="+r.finished+"/"+r.carCount+" time="+r.simSeconds+" file="+reportPath);
         }
         void OnGUI()

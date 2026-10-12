@@ -22,6 +22,8 @@ namespace LittleRoad
             "The Hillcrest Line runs from Bayview Halt, over the sea and through the headland."};
         public static void Load(int scene,string title)
         {
+            // Scene switches (docs/72): race entry and return to town are timed from here to LITTLE_ROAD_SCENE_SWITCH ready.
+            Debug.Log($"LITTLE_ROAD_SCENE_SWITCH begin t={Time.realtimeSinceStartup:0.00} to={title}");
             if(instance==null) {
                 var go=new GameObject("Loading screen",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(CanvasGroup));DontDestroyOnLoad(go);
                 instance=go.AddComponent<LoadingScreen>();instance.Build();

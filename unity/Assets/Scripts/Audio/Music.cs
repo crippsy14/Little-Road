@@ -42,7 +42,7 @@ namespace LittleRoad
             // The lift stem stays in step with its base loop and comes in on the last lap.
             if(lift.isPlaying&&front.isPlaying&&lift.clip.samples==front.clip.samples&&Mathf.Abs(lift.timeSamples-front.timeSamples)>256)lift.timeSamples=front.timeSamples;
             lift.volume=Mathf.MoveTowards(lift.volume,lastLap?level:0,dt*Mathf.Max(.05f,level)/3);
-            if(Probe&&Time.unscaledTime>=nextProbe){nextProbe=Time.unscaledTime+3;Debug.Log($"LITTLE_ROAD_MUSIC_PROBE theme={playing} level={front.volume:0.000} lift={lift.volume:0.000} racing={racing} lastLap={lastLap}");}
+            if(Probe&&Time.unscaledTime>=nextProbe){nextProbe=Time.unscaledTime+3;Debug.Log($"LITTLE_ROAD_MUSIC_PROBE theme={playing} level={front.volume:0.000} lift={lift.volume:0.000} racing={racing} lastLap={lastLap} playing={front.isPlaying} load={(front.clip!=null?front.clip.loadState.ToString():"-")} at={front.timeSamples}");}
         }
 
         string Theme(out bool racing,out bool lastLap)

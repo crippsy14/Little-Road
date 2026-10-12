@@ -16,7 +16,9 @@ namespace LittleRoad
             public Tint(){}
             public Tint(Color wall,Color shutter,Color awning,Color door){this.wall=wall;this.shutter=shutter;this.awning=awning;this.door=door;}
         }
-        static readonly Dictionary<string,Material> materials=new();
+        // Keyed by name, 8-bit colour (rounded exactly as ColorUtility's hex string was), pattern and age (docs/72: building the
+        // old text key for every material of every tinted piece cost a noticeable share of the towns' load).
+        static readonly Dictionary<(string,int,int,bool),Material> materials=new();static readonly Dictionary<string,string> paletteKey=new();
         [System.Serializable] class PaletteEntry{public string name;public float r,g,b;}
         [System.Serializable] class PaletteFile{public PaletteEntry[] entries;}
         static Dictionary<string,Color> palette;
@@ -26,7 +28,8 @@ namespace LittleRoad
                 if(file!=null)foreach(var e in JsonUtility.FromJson<PaletteFile>(file.text).entries)palette[e.name]=new Color(e.r,e.g,e.b);
                 Debug.Log("BAYVIEW_PALETTE entries="+palette.Count);}
             // Longest key first: "GlassLit" must win over "Glass"; imports may add suffixes.
-            string best=null;foreach(var key in palette.Keys)if(name.StartsWith(key)&&(best==null||key.Length>best.Length))best=key;
+            // (Each name's best key is found once: the scan over every palette key ran for every material of every piece.)
+            if(!paletteKey.TryGetValue(name,out string best)){best=null;foreach(var key in palette.Keys)if(name.StartsWith(key)&&(best==null||key.Length>best.Length))best=key;paletteKey[name]=best;}
             if(best!=null)return palette[best];
             Debug.LogWarning("BAYVIEW_UNMAPPED_MATERIAL "+name);return fallback;
         }
@@ -42,10 +45,34 @@ namespace LittleRoad
         // World bounds of every fixed kit piece placed this build (flower beds, stalls and benches have no
         // collider): later placements such as parked cars check them so nothing lands on top of a prop.
         public static readonly List<Bounds> Footprints=new();
+        // The piece each footprint belongs to (PersistentWorld, docs/72: a kept world drops the footprints of pieces that
+        // went with the old scene).
+        public static readonly List<GameObject> FootprintOwners=new();
         public static readonly List<GameObject> Placed=new(); // every fixed piece (PlacementAudit)
         public static bool Occupied(Bounds area)=>Occupied(area,Footprints.Count);
         // Only the first `upTo` footprints: lets a planting pass ignore its own neighbouring rows.
-        public static bool Occupied(Bounds area,int upTo){for(int i=0;i<upTo&&i<Footprints.Count;i++)if(Footprints[i].Intersects(area))return true;return false;}
+        // A 32 m grid over the footprints (docs/72): the towns ask "is this spot taken?" for nearly every piece while the
+        // list grows into the thousands, and scanning it all each time cost seconds of load. Same answers: each footprint
+        // sits in every cell it overlaps, and a query checks its own cells' footprints (only the first `upTo`).
+        const float FootCell=32;static readonly Dictionary<(int,int),List<int>> footGrid=new();static int footIndexed;static Bounds footLast;
+        static void IndexFootprints()
+        {
+            // Rebuilt when the list was cleared or trimmed (count down, or the last indexed entry changed); new ones appended.
+            if(Footprints.Count<footIndexed||footIndexed>0&&Footprints[footIndexed-1]!=footLast){footGrid.Clear();footIndexed=0;}
+            for(;footIndexed<Footprints.Count;footIndexed++) {
+                var f=Footprints[footIndexed];
+                for(int x=Mathf.FloorToInt(f.min.x/FootCell);x<=Mathf.FloorToInt(f.max.x/FootCell);x++)for(int z=Mathf.FloorToInt(f.min.z/FootCell);z<=Mathf.FloorToInt(f.max.z/FootCell);z++){
+                    if(!footGrid.TryGetValue((x,z),out var list))footGrid[(x,z)]=list=new List<int>();list.Add(footIndexed);}
+            }
+            if(footIndexed>0)footLast=Footprints[footIndexed-1];
+        }
+        public static bool Occupied(Bounds area,int upTo)
+        {
+            IndexFootprints();
+            for(int x=Mathf.FloorToInt(area.min.x/FootCell);x<=Mathf.FloorToInt(area.max.x/FootCell);x++)for(int z=Mathf.FloorToInt(area.min.z/FootCell);z<=Mathf.FloorToInt(area.max.z/FootCell);z++)
+                if(footGrid.TryGetValue((x,z),out var list))foreach(int i in list)if(i<upTo&&i<Footprints.Count&&Footprints[i].Intersects(area))return true;
+            return false;
+        }
         static void CullLayer(GameObject go)
         {
             if(!WorldLook.DistanceCulling)return;
@@ -66,8 +93,59 @@ namespace LittleRoad
         {
             SpawnClock.Start();Spawned++;try{return SpawnNow(id,position,yaw,parent,tint,sign,solid,scale);}finally{SpawnClock.Stop();}
         }
+        // Prepared templates (docs/72): each kit, as a solid or not and as static or animated, is set up once (colliders from
+        // its Collision parts, those parts' meshes stripped, spinning parts, every material that doesn't depend on the tint
+        // converted) and kept inactive; a piece is then one Instantiate of it. Only renderers with tint-dependent materials
+        // (Tint_*, and RoofTile* when a roof colour is given) are converted per piece. Signed pieces take the full path.
+        // The same objects as before. --no-kit-templates for the old way.
+        // (`collision`: the Collision parts. Their renderers are stripped from each piece with a deferred Destroy, as the full
+        // path does, so for that frame they still count in the piece's size: its cull layer, its footprint, and the rock
+        // builders that stretch a rock to the seabed all see exactly what they saw before.)
+        sealed class Template{public GameObject go;public int[] tinted,collision;}
+        static readonly Dictionary<(string,bool,bool),Template> templates=new();static Transform templateRoot;
+        static readonly bool UseTemplates=!RaceTrial.Has("--no-kit-templates");
+        static bool TintDependent(Material m)=>m!=null&&(m.name.StartsWith("Tint_")||m.name.StartsWith("RoofTile"));
+        static Template TemplateFor(string id,GameObject source,bool solid,bool animatedParent)
+        {
+            var key=(id,solid,animatedParent);
+            if(templates.TryGetValue(key,out var t)&&t.go!=null)return t;
+            if(templateRoot==null){var holder=new GameObject("Kit templates");holder.SetActive(false);Object.DontDestroyOnLoad(holder);templateRoot=holder.transform;}
+            var go=Object.Instantiate(source,templateRoot);go.name=id;
+            bool modelled=ModelledMasonry.Contains(id),aged=AgedStone.Contains(id);var plain=new Tint();var tinted=new List<int>();
+            var collision=new List<int>();var transforms=go.GetComponentsInChildren<Transform>(true);
+            for(int ti=0;ti<transforms.Length;ti++) {var child=transforms[ti];
+                if(child.name.StartsWith("Collision")) {
+                    var filter=child.GetComponent<MeshFilter>();collision.Add(ti);
+                    if(solid&&filter!=null&&filter.sharedMesh!=null){var box=child.gameObject.AddComponent<BoxCollider>();box.center=filter.sharedMesh.bounds.center;box.size=filter.sharedMesh.bounds.size;child.gameObject.tag="Respawn";}
+                    continue;
+                }
+                var renderer=child.GetComponent<MeshRenderer>();if(renderer==null)continue;
+                var originals=renderer.sharedMaterials;bool dependent=false;foreach(var m in originals)if(TintDependent(m))dependent=true;
+                if(!dependent){var converted=new Material[originals.Length];for(int i=0;i<originals.Length;i++)converted[i]=Convert(originals[i],plain,modelled,aged);renderer.sharedMaterials=converted;}
+                if(child.name.StartsWith("Spin_")){var spin=child.gameObject.AddComponent<KitSpin>();spin.axle=child.name.StartsWith("Spin_X")?Vector3.right:Vector3.forward;spin.kit=go.transform;}
+                else child.gameObject.isStatic=!animatedParent;
+            }
+            // Tint-dependent renderers by their order among the kit's renderers (the clone's order is the same).
+            var all=go.GetComponentsInChildren<MeshRenderer>(true);for(int i=0;i<all.Length;i++){foreach(var m in all[i].sharedMaterials)if(TintDependent(m)){tinted.Add(i);break;}}
+            t=new Template{go=go,tinted=tinted.ToArray(),collision=collision.ToArray()};templates[key]=t;return t;
+        }
         static GameObject SpawnNow(string id,Vector3 position,float yaw,Transform parent,Tint tint,string sign,bool solid,float scale)
         {
+            if(UseTemplates&&Application.isPlaying&&string.IsNullOrEmpty(sign)) {   // (play mode only: editor checks spawn the old way)
+                var src=Resources.Load<GameObject>("Bayview/"+id);
+                if(src==null)throw new System.InvalidOperationException("Missing Bayview kit asset: "+id);
+                var t=TemplateFor(id,src,solid,parent==animated);   // (exactly the old test: both null counts as animated)
+                var piece=Object.Instantiate(t.go,position,Quaternion.Euler(0,yaw,0),parent);piece.name=id;tint??=new Tint();if(scale!=1)piece.transform.localScale*=scale;
+                if(id=="lamp_post")NightLights.Lamp(piece.transform);
+                if(t.tinted.Length>0) {
+                    bool modelled=ModelledMasonry.Contains(id),aged=AgedStone.Contains(id);var rs=piece.GetComponentsInChildren<MeshRenderer>(true);
+                    foreach(int k in t.tinted){var originals=rs[k].sharedMaterials;var converted=new Material[originals.Length];for(int i=0;i<originals.Length;i++)converted[i]=Convert(originals[i],tint,modelled,aged);rs[k].sharedMaterials=converted;}
+                }
+                if(t.collision.Length>0){var ts=piece.GetComponentsInChildren<Transform>(true);foreach(int k in t.collision){Object.Destroy(ts[k].GetComponent<MeshRenderer>());var f=ts[k].GetComponent<MeshFilter>();if(f!=null)Object.Destroy(f);}}
+                CullLayer(piece);
+                if(parent!=animated){var rs=piece.GetComponentsInChildren<Renderer>();if(rs.Length>0){var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);Footprints.Add(b);FootprintOwners.Add(piece);}Placed.Add(piece);}
+                return piece;
+            }
             var source=Resources.Load<GameObject>("Bayview/"+id);
             if(source==null)throw new System.InvalidOperationException("Missing Bayview kit asset: "+id);
             var go=Object.Instantiate(source,position,Quaternion.Euler(0,yaw,0),parent);go.name=id;tint??=new Tint();if(scale!=1)go.transform.localScale*=scale;
@@ -88,7 +166,7 @@ namespace LittleRoad
                 else child.gameObject.isStatic=parent!=animated;
             }
             CullLayer(go);
-            if(parent!=animated){var rs=go.GetComponentsInChildren<Renderer>();if(rs.Length>0){var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);Footprints.Add(b);}Placed.Add(go);}
+            if(parent!=animated){var rs=go.GetComponentsInChildren<Renderer>();if(rs.Length>0){var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);Footprints.Add(b);FootprintOwners.Add(go);}Placed.Add(go);}
             return go;
         }
         // Kits whose stone courses are modelled in the mesh: their stone takes the natural rock
@@ -104,7 +182,8 @@ namespace LittleRoad
             else if(tint.roof is Color roof&&name.StartsWith("RoofTile"))c=name.StartsWith("RoofTileLight")?Color.Lerp(roof,new Color(1,.86f,.7f),.18f):roof;
             c.a=1;var pattern=WorldLook.PatternFor(name);if(modelledMasonry&&pattern==WorldLook.Pattern.Stone)pattern=WorldLook.Pattern.Rock;
             bool aged=agedStone&&pattern==WorldLook.Pattern.Stone;if(aged)c=Color.Lerp(c,new Color(.60f,.60f,.57f),.4f)*.86f;
-            string key=name+ColorUtility.ToHtmlStringRGB(c)+(int)pattern+(aged?"aged":"");
+            int rgb=(Mathf.Clamp(Mathf.RoundToInt(c.r*255),0,255)<<16)|(Mathf.Clamp(Mathf.RoundToInt(c.g*255),0,255)<<8)|Mathf.Clamp(Mathf.RoundToInt(c.b*255),0,255);
+            var key=(name,rgb,(int)pattern,aged);
             if(materials.TryGetValue(key,out var cached))return cached;
             bool glass=name.StartsWith("Glass"),metal=name.StartsWith("Metal")||name.StartsWith("Gold");
             float smooth=glass?.85f:metal?.55f:name.StartsWith("Water")?.9f:.18f;

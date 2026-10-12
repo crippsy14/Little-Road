@@ -14,7 +14,7 @@ $save=Join-Path $folder 'save.json';$fixture=Get-Content (Join-Path $root 'tools
 if($Serial -ge 0){$fixture=$fixture -replace '"raceSerial":\s*\d+',"`"raceSerial`": $Serial" -replace '"settledSerial":\s*\d+',"`"settledSerial`": $Serial"}
 Set-Content -LiteralPath $save -Value $fixture -Encoding utf8
 $log=Join-Path $folder 'player.log'
-$run=Start-Quiet -FilePath $exe -WindowStyle Hidden -PassThru -ArgumentList (@('-batchmode','--event-race-review',$Event,'--adventure-save',('"'+$save+'"'),'--trial-report',('"'+(Join-Path $folder 'race.json')+'"'),'-logFile',('"'+$log+'"'))+$Flags)
+$run=Start-Quiet -FilePath $exe -WindowStyle Hidden -PassThru -ArgumentList (@('-batchmode','--event-race-review',$Event,'--adventure-save',('"'+$save+'"'),'--trial-report',('"'+(Join-Path $folder 'race.json')+'"'),'-logFile',('"'+$log+'"'))+$Flags+$(if($KeepTelemetry){@('--telemetry')}else{@()}))
 $deadline=(Get-Date).AddSeconds($TimeoutSeconds)
 while(-not $run.HasExited -and (Get-Date) -lt $deadline){
   Start-Sleep -Seconds 5

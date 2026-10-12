@@ -31,7 +31,10 @@ namespace LittleRoad
 
         // ---- Kit surfaces (LittleRoad/Kit): what each material is made of decides its pattern.
         public enum Pattern{Plain=0,Plaster=1,Stone=2,Tile=3,Wood=4,Leaf=5,Paint=6,Glass=7,Rock=8,Asphalt=9,Slate=10}
-        public static Pattern PatternFor(string material)
+        // Memoised per material name (docs/72: it runs for every material of every kit piece).
+        static readonly System.Collections.Concurrent.ConcurrentDictionary<string,Pattern> patterns=new();
+        public static Pattern PatternFor(string material)=>material==null?Classify(material):patterns.GetOrAdd(material,Classify);
+        static Pattern Classify(string material)
         {
             bool Any(params string[] keys){foreach(var k in keys)if(material.StartsWith(k))return true;return false;}
             if(Any("Tint_WallStone"))return Pattern.Stone;   // Quarry Hills' rubble-stone cottages (tinted grey per house)

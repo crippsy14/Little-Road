@@ -6,14 +6,39 @@ namespace LittleRoad
     // nothing floating (everything sits on ValleyField), far stand-ins (KitLod) so the woods can be dense.
     public sealed partial class CoastalLandscape
     {
-        void QuarryHillsScenery()
+        // As a coroutine (docs/72): at load it runs straight through (TrialWorld.RunNow); as a background district (Districts)
+        // it yields between pieces of work, a few milliseconds a frame. Either way the same work in the same order.
+        void QuarryHillsScenery()=>TrialWorld.RunNow(QuarryHillsSceneryRoutine());
+        // The district's holder (its settle pass batches it).
+        Transform quarryHolder;
+        // Build Quarry Hills in the background (Districts): a free-roam build with the car starting far from it.
+        bool deferQuarry=>Districts.Enabled&&WorldTiles.Streams&&!RaceArea.Active&&QuarryHills.Enabled&&
+            Vector2.Distance(new Vector2(WorldTiles.Focus.x,WorldTiles.Focus.z),QuarryHills.Square)>Districts.NearStart;
+        // Rails and corner walls that a Quarry Hills building could trim (within 30 m of the district).
+        public static bool NearQuarryHills(Vector3 p)=>p.x<QuarryHills.SeamX+30&&p.x>QuarryHills.West-30&&p.z>QuarryHills.South-30;
+        // The district's own settle pass, as the world's (CoastalLandscape.BuildRoutine) did for it at load: its rails
+        // trimmed, its planting settled on the ground, standing cars seated, its geometry static-batched.
+        // (In pieces, a frame each in the background: the batching a part of the district at a time.)
+        System.Collections.IEnumerator SettleQuarryHills()
         {
-            if(!QuarryHills.Enabled||!BayviewKit.Has("tree_round"))return;
-            var holder=new GameObject("Quarry Hills scenery").transform;holder.SetParent(root);
+            var clock=System.Diagnostics.Stopwatch.StartNew();
+            int trimmed=TrimRails();Physics.SyncTransforms();int settled=0;
+            if(quarryHolder!=null)foreach(var go in BayviewKit.Placed)if(go!=null&&go.transform.IsChildOf(quarryHolder)&&PlacementAudit.SettleOne(go))settled++;
+            yield return null;CarContact.SeatAll();yield return null;
+            // (One batch for the district, as the world's is one: parts batched alone leave single meshes unbatched.)
+            if(quarryHolder!=null&&StaticBatching)StaticBatchingUtility.Combine(quarryHolder.gameObject);yield return null;
+            var walls=new System.Collections.Generic.List<GameObject>();foreach(var parent in TrimmedWallParents)if(parent!=null)foreach(var r in parent.GetComponentsInChildren<MeshRenderer>())if(!r.isPartOfStaticBatch&&r.name.StartsWith("Corner walls"))walls.Add(r.gameObject);
+            if(walls.Count>0&&StaticBatching)StaticBatchingUtility.Combine(walls.ToArray(),root.gameObject);
+            Debug.Log($"LITTLE_ROAD_DISTRICT_SETTLE quarry-hills trimmed={trimmed} settled={settled} walls={walls.Count} ms={clock.ElapsedMilliseconds}");
+        }
+        System.Collections.IEnumerator QuarryHillsSceneryRoutine()
+        {
+            if(!QuarryHills.Enabled||!BayviewKit.Has("tree_round"))yield break;
+            var holder=new GameObject("Quarry Hills scenery").transform;holder.SetParent(root);quarryHolder=holder;
             // (A race builds only its area: RaceArea. The town 690 m from the quarry floor stays; the farms and walls go.)
-            if(RaceArea.Near(QuarryHills.Square,350))new QuarryHillsTown(holder).Build();else QuarryHillsTown.Last=null;
-            Physics.SyncTransforms();Step("qh-town");if(!RaceArea.Active)QuarryHillsCountry.Build(holder);Physics.SyncTransforms();Step("qh-country");
-            var rng=new System.Random(5903);float R()=>(float)rng.NextDouble();int trees=0,tufts=0;
+            if(RaceArea.Near(QuarryHills.Square,350))yield return new QuarryHillsTown(holder).BuildRoutine();else QuarryHillsTown.Last=null;
+            Physics.SyncTransforms();Step("qh-town");yield return null;if(!RaceArea.Active)yield return QuarryHillsCountry.BuildRoutine(holder);Physics.SyncTransforms();Step("qh-country");yield return null;
+            CoastalLandscape.Lap("qhs start");var rng=new System.Random(5903);float R()=>(float)rng.NextDouble();int trees=0,tufts=0;
             bool nature=BayviewKit.Has("tree_fir");
             // (Streamed in on its tile away from where you start: WorldTiles.)
             void Plant(string id,float x,float z,float scale,bool solid=true)
@@ -54,12 +79,14 @@ namespace LittleRoad
                 return roll<.3f?"tree_birch":roll<.55f?"tree_round":roll<.8f?"tree_fir":"tree_pine";
             }
             for(int i=0;i<60000&&trees<4200;i++) {
+                if(i%8000==7999)yield return null;
                 float x=QuarryHills.West+R()*(QuarryHills.SeamX-QuarryHills.West),z=QuarryHills.South+R()*2600;
                 float w=Woods(x,z);if(w<.5f||R()>w||!Open(x,z))continue;
                 int n=3+(int)(w*7+R()*3);float radius=8+w*14;string dominant=Species(x,z,R());
                 for(int k=0;k<n&&trees<4200;k++){float a=R()*Mathf.PI*2,r=Mathf.Sqrt(R())*radius,px=x+Mathf.Cos(a)*r,pz=z+Mathf.Sin(a)*r;if(!Open(px,pz))continue;
                     Plant(R()<.75f?dominant:Species(px,pz,R()),px,pz,.8f+R()*.6f);trees++;}
             }
+            CoastalLandscape.Lap("qhs woods");
             // Along the river's upper reach: alders and reeds.
             var river=HillcrestRoute.River;float head=river.Nearest(new Vector3(-1180,0,-1330),out _);
             for(float d=8;d<head;d+=7)foreach(int side in new[]{-1,1}) {
@@ -77,7 +104,9 @@ namespace LittleRoad
                     if(R()<.1f)Plant("bush",q.x,q.z,.7f+R()*.5f,false);else Plant("grass_tuft",q.x,q.z,.9f+R()*.8f,false);tufts++;
                 }
             }
-            int slate=SlateFaces(holder);Galleries(holder);Physics.SyncTransforms();GalleryClimb.Build(holder);TipLeap.Plan();TipLeap.Build(holder);GalleryDressing(holder);QuarryFloor.Build(holder);if(RaceArea.Near(QuarryHills.QuayCentre,250))QuarryQuay.Build(holder);
+            CoastalLandscape.Lap("qhs river verges");yield return null;yield return SlateFaces(holder);int slate=slateCells;CoastalLandscape.Lap("qhs slate");yield return null;
+            Galleries(holder);CoastalLandscape.Lap("qhs galleries");yield return null;Physics.SyncTransforms();GalleryClimb.Build(holder);CoastalLandscape.Lap("qhs climb");yield return null;
+            TipLeap.Plan();TipLeap.Build(holder);CoastalLandscape.Lap("qhs tipleap");GalleryDressing(holder);CoastalLandscape.Lap("qhs dressing");yield return null;QuarryFloor.Build(holder);CoastalLandscape.Lap("qhs floor");yield return null;if(RaceArea.Near(QuarryHills.QuayCentre,250))QuarryQuay.Build(holder);
             Debug.Log($"LITTLE_ROAD_QUARRY_SCENERY trees={trees} tufts={tufts} slateCells={slate}");
         }
         // Worked slate: the galleries (benches and faces alike), the pit's walls above the water and the tips are all bare
@@ -93,22 +122,32 @@ namespace LittleRoad
         }
         // The worked-slate surface (the quarry floor's sheet uses it too).
         public static Material SlateMaterial;
-        int SlateFaces(Transform parent)
+        int slateCells;
+        System.Collections.IEnumerator SlateFaces(Transform parent)
         {
             // The tips and the floor: slate spoil, matte chips of every shade (the kit's slate pattern on flat-ish ground).
             var m=WorldLook.Kit("Quarry Hills worked slate",new Color(.31f,.32f,.36f),WorldLook.Pattern.Slate,0,.05f,true);SlateMaterial=m;
             var boxes=new System.Collections.Generic.List<Rect>{Rect.MinMaxRect(QuarryHills.Pit.x-QuarryHills.PitRX-340,QuarryHills.Pit.y-QuarryHills.PitRZ-340,QuarryHills.Pit.x+QuarryHills.PitRX+340,QuarryHills.Pit.y+QuarryHills.PitRZ+340)};
             for(int i=0;i<QuarryHills.Tips.Length;i++)boxes.Add(QuarryHills.TipBox(i));
             int cells=0;const int block=96;
+            // Every block's three detail levels are worked out on all cores at once (docs/72: 279 ms on the main thread),
+            // then made here in the original order: the same objects as before.
+            var blocks=new System.Collections.Generic.List<(int bi,int bj,int ci1,int cj1)>();
             foreach(var box in boxes) {
                 int i0=Mathf.Max(1,Mathf.FloorToInt((box.xMin-ValleyField.X0)/ValleyField.Cell)),i1=Mathf.Min(ValleyField.NX-2,Mathf.CeilToInt((box.xMax-ValleyField.X0)/ValleyField.Cell));
                 int j0=Mathf.Max(1,Mathf.FloorToInt((box.yMin-ValleyField.Z0)/ValleyField.Cell)),j1=Mathf.Min(ValleyField.NZ-2,Mathf.CeilToInt((box.yMax-ValleyField.Z0)/ValleyField.Cell));
-                for(int bj=j0;bj<j1;bj+=block)for(int bi=i0;bi<i1;bi+=block) {
-                    int ci1=Mathf.Min(bi+block,i1),cj1=Mathf.Min(bj+block,j1);
+                for(int bj=j0;bj<j1;bj+=block)for(int bi=i0;bi<i1;bi+=block)blocks.Add((bi,bj,Mathf.Min(bi+block,i1),Mathf.Min(bj+block,j1)));
+            }
+            var data=new SlateData[blocks.Count*3];
+            void Shape(int k){var b=blocks[k/3];int l=k%3;data[k]=SlateGeometry(b.bi,b.bj,b.ci1,b.cj1,l==0?1:l==1?2:4,l==0?.05f:l==1?.35f:.9f);}
+            // (In the background the shapes are worked out off the main thread while the game runs.)
+            if(Districts.Pending){var task=System.Threading.Tasks.Task.Run(()=>System.Threading.Tasks.Parallel.For(0,data.Length,Shape));while(!task.IsCompleted)yield return null;task.Wait();}
+            else System.Threading.Tasks.Parallel.For(0,data.Length,Shape);
+            for(int k=0;k<blocks.Count;k++) {
+                {
                     var lods=new System.Collections.Generic.List<LOD>();var go=new GameObject("Worked slate");go.transform.SetParent(parent);int made=0;
                     for(int l=0;l<3;l++) {
-                        int step=l==0?1:l==1?2:4;float lift=l==0?.05f:l==1?.35f:.9f;
-                        var mesh=SlateMesh(bi,bj,ci1,cj1,step,lift,out int quads);if(l==0)made=quads;if(mesh==null)continue;
+                        var slab=data[k*3+l];var mesh=slab.quads==0?null:slab.ToMesh();if(l==0)made=slab.quads;if(mesh==null)continue;
                         var part=new GameObject("LOD"+l,typeof(MeshFilter),typeof(MeshRenderer));part.transform.SetParent(go.transform);
                         part.GetComponent<MeshFilter>().sharedMesh=mesh;var r=part.GetComponent<MeshRenderer>();r.sharedMaterial=m;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
                         lods.Add(new LOD(l==0?.26f:l==1?.085f:0,new Renderer[]{r}));
@@ -117,7 +156,7 @@ namespace LittleRoad
                     cells+=made;go.AddComponent<LODGroup>().SetLODs(lods.ToArray());
                 }
             }
-            return cells;
+            slateCells=cells;
         }
         // The galleries (docs/59): twelve benches as authored geometry round the pit's south-east side, each a 1 m battered
         // face of slate and a level shelf you can drive (with its own collider), plus the pit's wall all the way round
@@ -224,8 +263,19 @@ namespace LittleRoad
             Debug.Log($"LITTLE_ROAD_QUARRY_DRESSING scree={scree} birch={birch}");
         }
         static Vector2 Dir(float degrees){float r=degrees*Mathf.Deg2Rad;return new Vector2(Mathf.Cos(r),Mathf.Sin(r));}
-        static Mesh SlateMesh(int i0,int j0,int i1,int j1,int step,float lift,out int quads)
+        sealed class SlateData
         {
+            public System.Collections.Generic.List<Vector3> v,n;public System.Collections.Generic.List<Vector2> uv;public System.Collections.Generic.List<int> t;public int quads;
+            public Mesh ToMesh()
+            {
+                var mesh=new Mesh{name="Worked slate",indexFormat=v.Count>65000?UnityEngine.Rendering.IndexFormat.UInt32:UnityEngine.Rendering.IndexFormat.UInt16};
+                mesh.SetVertices(v);mesh.SetNormals(n);mesh.SetUVs(0,uv);mesh.SetTriangles(t,0);mesh.RecalculateBounds();return mesh;
+            }
+        }
+        // (Pure: the height field and QuarryHills' shape functions only, so it runs on any thread.)
+        static SlateData SlateGeometry(int i0,int j0,int i1,int j1,int step,float lift)
+        {
+            int quads;
             var v=new System.Collections.Generic.List<Vector3>();var n=new System.Collections.Generic.List<Vector3>();var uv=new System.Collections.Generic.List<Vector2>();var t=new System.Collections.Generic.List<int>();
             int cols=(i1-i0)/step+1,rows=(j1-j0)/step+1;quads=0;
             for(int r=0;r<rows;r++)for(int c=0;c<cols;c++) {
@@ -236,9 +286,7 @@ namespace LittleRoad
                 var a=v[r*cols+c];var d=v[(r+1)*cols+c+1];if(!IsSlate((a.x+d.x)*.5f,(a.z+d.z)*.5f))continue;
                 int k=r*cols+c;t.AddRange(new[]{k,k+cols,k+1,k+1,k+cols,k+cols+1});quads++;
             }
-            if(quads==0)return null;
-            var mesh=new Mesh{name="Worked slate",indexFormat=v.Count>65000?UnityEngine.Rendering.IndexFormat.UInt32:UnityEngine.Rendering.IndexFormat.UInt16};
-            mesh.SetVertices(v);mesh.SetNormals(n);mesh.SetUVs(0,uv);mesh.SetTriangles(t,0);mesh.RecalculateBounds();return mesh;
+            return new SlateData{v=v,n=n,uv=uv,t=t,quads=quads};
         }
     }
 }

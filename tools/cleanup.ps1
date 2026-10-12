@@ -9,9 +9,13 @@
 #   - per-tick race telemetry (*.track.json etc.) older than -TelemetryDays
 #   - racing AI study folders beyond the newest -KeepStudies; smoke/UI runs beyond the newest 6
 #   - editor-check scratch profiles; review/tmp files older than -ScratchDays
+#   - race report folders (a race.json) older than -StudyDays, beyond the newest -KeepRaces of their parent folder:
+#     keep/reject results are written up in docs when they're run, so the raw reports are only needed for days
+#   - Blender's .blend1 backup copies
 #   - empty folders left behind
+# The game no longer writes per-tick telemetry unless a run asks for it (--telemetry, 12 Oct), so races don't leave it.
 # build-dev.ps1 runs it with -Apply -Quiet after every successful build.
-param([switch]$Apply,[switch]$Quiet,[int]$KeepRuns=3,[int]$LogDays=7,[int]$BigLogMB=50,[int]$TelemetryDays=1,[int]$KeepStudies=2,[int]$ScratchDays=3)
+param([switch]$Apply,[switch]$Quiet,[int]$KeepRuns=2,[int]$LogDays=7,[int]$BigLogMB=50,[int]$TelemetryDays=1,[int]$KeepStudies=2,[int]$ScratchDays=1,[int]$StudyDays=3,[int]$KeepRaces=6)
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'));$review=Join-Path $root 'review'
 function Rel([string]$path){$path.Substring($root.Length+1) -replace '\\','/'}
@@ -24,7 +28,8 @@ Get-ChildItem $root -Recurse -File -Include *.md,*.txt -ErrorAction SilentlyCont
   ForEach-Object { foreach($m in [regex]::Matches([IO.File]::ReadAllText($_.FullName),'[\w\-./\\]+\.(png|jpe?g)')){$refs.Add(($m.Value -replace '\\','/').TrimStart('.','/').ToLowerInvariant())} }
 function Referenced([string]$rel){$r=$rel.ToLowerInvariant();foreach($x in $refs){if($r.EndsWith($x)){return $true}};return $false}
 $now=Get-Date;$items=New-Object System.Collections.ArrayList
-function Add($file,[string]$why){$rel=Rel $file.FullName;if($tracked.Contains($rel)){return};[void]$items.Add([pscustomobject]@{Path=$file.FullName;Rel=$rel;MB=$file.Length/1MB;Why=$why})}
+$seen=New-Object 'System.Collections.Generic.HashSet[string]'
+function Add($file,[string]$why){$rel=Rel $file.FullName;if($tracked.Contains($rel) -or -not $seen.Add($rel)){return};[void]$items.Add([pscustomobject]@{Path=$file.FullName;Rel=$rel;MB=$file.Length/1MB;Why=$why})}
 $files=@(Get-ChildItem $review -Recurse -File -Force)
 foreach($f in $files) {
   $age=($now-$f.LastWriteTime).TotalDays
@@ -43,6 +48,16 @@ foreach($f in $files){
   if((Rel $f.FullName) -match '^review/unity-04/(bodies|profiles)-[0-9a-f]{32}/'){Add $f 'editor-check scratch'}
   elseif((Rel $f.FullName) -match '^review/tmp/' -and ($now-$f.LastWriteTime).TotalDays -gt $ScratchDays){Add $f 'old scratch (review/tmp)'}
 }
+# Race report folders outside the AI studies (class B event reviews, round-trip timings...): by age, newest few kept.
+$reports=@($files | Where-Object { $_.Name -eq 'race.json' -and (Rel $_.FullName) -notmatch '^review/(unity-35|tmp)/' } | ForEach-Object { $_.Directory } | Sort-Object FullName -Unique)
+foreach($parent in ($reports | Group-Object { $_.Parent.FullName })) {
+  $runs=$parent.Group | Sort-Object { (Get-ChildItem $_.FullName -File -Force | Sort-Object LastWriteTime | Select-Object -Last 1).LastWriteTime } -Descending
+  foreach($run in ($runs | Select-Object -Skip $KeepRaces)){
+    $newest=(Get-ChildItem $run.FullName -Recurse -File -Force | Sort-Object LastWriteTime | Select-Object -Last 1).LastWriteTime
+    if(($now-$newest).TotalDays -gt $StudyDays){foreach($f in (Get-ChildItem $run.FullName -Recurse -File -Force)){if(-not (Referenced (Rel $f.FullName))){Add $f 'older race report run'}}}
+  }
+}
+foreach($f in $files){if($f.Extension -eq '.blend1'){Add $f 'Blender backup (.blend1)'}}
 # Capture runs: folders holding images. A series is the parent folder plus the run name's letter
 # prefix (map-sweep/v12-..., v13-... are one series; m21-... another); keep the newest few of each.
 $images=$files | Where-Object { $_.Extension -match '^\.(png|jpe?g)$' }

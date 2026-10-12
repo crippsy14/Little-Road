@@ -52,7 +52,7 @@ namespace LittleRoad
                 try {
                     var bytes=File.ReadAllBytes(cache);var tex=new Texture2D(pixels,pixels,TextureFormat.DXT1,false);tex.LoadRawTextureData(bytes);tex.Apply(false,false);
                     var rt=Target(pixels);Graphics.Blit(tex,rt);UnityEngine.Object.Destroy(tex);
-                    Debug.Log($"LITTLE_ROAD_MAP_CACHE hit ms={clock.ElapsedMilliseconds} file={Path.GetFileName(cache)}");return rt;
+                    WorldCache.Touch(cache);Debug.Log($"LITTLE_ROAD_MAP_CACHE hit ms={clock.ElapsedMilliseconds} file={Path.GetFileName(cache)}");return rt;
                 } catch(Exception e){Debug.LogWarning("LITTLE_ROAD_MAP_CACHE unreadable, baking: "+e.Message);}
             }
             WorldTiles.Complete();   // (the map shows every tree)
@@ -60,9 +60,8 @@ namespace LittleRoad
             if(cache!=null)try {
                 var prev=RenderTexture.active;RenderTexture.active=baked;var read=new Texture2D(pixels,pixels,TextureFormat.RGB24,false);read.ReadPixels(new Rect(0,0,pixels,pixels),0,0,false);RenderTexture.active=prev;
                 read.Compress(false);Directory.CreateDirectory(Path.GetDirectoryName(cache));File.WriteAllBytes(cache,read.GetRawTextureData());UnityEngine.Object.Destroy(read);
-                // Keep the four newest (the play copy and the dev build each have their own).
-                var old=new DirectoryInfo(Path.GetDirectoryName(cache)).GetFiles("map-*.dxt1");System.Array.Sort(old,(a,b)=>b.LastWriteTimeUtc.CompareTo(a.LastWriteTimeUtc));
-                for(int i=4;i<old.Length;i++)old[i].Delete();
+                // Only the two builds used most recently keep their maps (the play copy and the dev build share the folder).
+                WorldCache.Prune(Path.GetDirectoryName(cache));
             } catch(Exception e){Debug.LogWarning("LITTLE_ROAD_MAP_CACHE not saved: "+e.Message);}
             Debug.Log($"LITTLE_ROAD_MAP_CACHE baked ms={clock.ElapsedMilliseconds}");
             return baked;
@@ -71,10 +70,11 @@ namespace LittleRoad
         // One file per build, map size and world (the flags that change what's built); none in the editor or with --no-map-cache.
         static string CachePath(int pixels)
         {
-            if(Application.isEditor||string.IsNullOrEmpty(Application.buildGUID)||RaceTrial.Has("--no-map-cache"))return null;
-            var flags=new List<string>();foreach(var a in System.Environment.GetCommandLineArgs())if(a.StartsWith("--")&&!a.EndsWith("-test")&&!a.EndsWith("-review")&&!a.EndsWith("-audit")&&a!="--load-timing"&&a!="--start-windowed"&&a!="--silent")flags.Add(a);
-            flags.Sort();uint hash=2166136261;foreach(char ch in Application.buildGUID+"|"+pixels+"|"+QualitySettings.GetQualityLevel()+"|"+string.Join(",",flags)){hash^=ch;hash*=16777619;}
-            return Path.Combine(Application.persistentDataPath,"map-cache",$"map-{hash:x8}.dxt1");
+            if(Application.isEditor||string.IsNullOrEmpty(Application.buildGUID)||RaceTrial.Has("--no-map-cache"))return null;WorldCache.PruneOnce();
+            // Keyed on the build, size, quality and what changes the world (WorldCache.World, docs/72): test and review
+            // switches used to miss the cache and re-bake the map (+4.8 s) on every run with a new flag.
+            uint hash=2166136261;foreach(char ch in Application.buildGUID+"|"+pixels+"|"+QualitySettings.GetQualityLevel()+"|"+WorldCache.World){hash^=ch;hash*=16777619;}
+            return Path.Combine(Application.persistentDataPath,"map-cache",$"map-{Application.buildGUID}-{hash:x8}.dxt1");
         }
         static RenderTexture Render(int pixels)
         {

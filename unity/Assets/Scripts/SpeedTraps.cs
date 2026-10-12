@@ -122,7 +122,7 @@ namespace LittleRoad
             var root=new GameObject("Speed traps").transform;
             var pole=TrialWorld.Material("Trap pole",new Color(.36f,.38f,.42f),.4f,.35f);var housing=TrialWorld.Material("Trap housing",Toy.Sun,0,.3f);
             var lens=TrialWorld.Material("Trap lens",new Color(.08f,.09f,.12f),.2f,.8f);var white=TrialWorld.Material("Trap strip white",new Color(.95f,.95f,.93f),0,.2f);var dark=TrialWorld.Material("Trap strip dark",new Color(.12f,.13f,.16f),0,.2f);
-            foreach(var trap in All) {
+            void Build(Trap trap) {
                 var holder=new GameObject("Speed trap "+trap.name).transform;holder.SetParent(root);
                 var right=Vector3.Cross(Vector3.up,trap.forward);
                 // Chequered strip across the road: where the camera measures.
@@ -145,6 +145,9 @@ namespace LittleRoad
                     trap.camera=head;break;
                 }
             }
+            // (A trap in a district still building in the background goes up once it's built: its camera keeps clear of the
+            // buildings, Districts.)
+            foreach(var trap in All){if(Districts.Waiting("quarry-hills")&&QuarryHills.Contains(trap.at.x,trap.at.z)){var later=trap;Districts.WhenBuilt("quarry-hills",()=>Build(later));continue;}Build(trap);}
             Debug.Log("LITTLE_ROAD_SPEED_TRAPS "+string.Join(" ",All.Select(t=>$"{t.id}@({t.at.x:0},{t.at.z:0}) marks {t.marks[0]}/{t.marks[1]}/{t.marks[2]} mph")));
         }
         static float Surface(Vector3 p){float best=float.NaN;foreach(var h in Physics.RaycastAll(p+Vector3.up*6,Vector3.down,14))if(h.collider.GetComponentInParent<RoadSurface>()!=null&&(float.IsNaN(best)||h.point.y>best))best=h.point.y;return float.IsNaN(best)?p.y+.03f:best;}

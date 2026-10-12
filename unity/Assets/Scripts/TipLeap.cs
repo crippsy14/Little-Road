@@ -47,7 +47,7 @@ namespace LittleRoad
         RoadCar player;Func<AdventureStore> store;Action<string> notify;Action<string,string> card;
         float armedAt=-1,airborneAt=-1;Vector3 takeoff;public float Last;
         public void Setup(RoadCar car,Func<AdventureStore> s,Action<string> n,Action<string,string> c){player=car;store=s;notify=n;card=c;}
-        float Clearance(Vector3 p){foreach(var h in Physics.RaycastAll(p+Vector3.up*.5f,Vector3.down,60))if(!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null)return h.distance-.5f;return 60;}
+        float Clearance(Vector3 p){float d=60;foreach(var h in Physics.RaycastAll(p+Vector3.up*.5f,Vector3.down,60))if(!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null)d=Mathf.Min(d,h.distance-.5f);return d;}   // (the nearest: RaycastAll's order is arbitrary)
         void FixedUpdate()
         {
             if(!Ready||player==null)return;var p=player.body.position;

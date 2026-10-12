@@ -93,15 +93,17 @@ namespace LittleRoad
                 "cottage_a" or "cottage_b" or "cottage_c"=>new Vector3(-2.25f,9.4f,0),"terrace_e"=>new Vector3(-1.9f,15.2f,2.7f),"terrace_f"=>new Vector3(-1.9f,10.7f,-.6f),"terrace_g"=>new Vector3(1.6f,13.1f,-2.4f),_=>new Vector3(-1.4f,12.1f,-1.5f)}));
             return true;
         }
-        public void Build()
+        public void Build()=>TrialWorld.RunNow(BuildRoutine());
+        // (A coroutine: it yields between pieces of work when built in the background, Districts; docs/72.)
+        public System.Collections.IEnumerator BuildRoutine()
         {
-            if(!QuarryHills.Enabled||!BayviewKit.Has("terrace_a"))return;
+            if(!QuarryHills.Enabled||!BayviewKit.Has("terrace_a"))yield break;
             Spots.Clear();Homes.Clear();GardenProps.Clear();
             plinth=WorldLook.Kit("Quarry Hills slate plinth",Toy.Hex(0x7d838a),WorldLook.Pattern.Stone,0,.12f,true);
             paving=WorldLook.Kit("Quarry Hills square flags",Toy.Hex(0x8f9296),WorldLook.Pattern.Stone,0,.15f,true);
             laneGravel=WorldLook.Kit("Quarry Hills back lane",Toy.Hex(0x6f7174),WorldLook.Pattern.Rock,0,.1f,true);
             stone=WorldLook.Kit("Quarry Hills yard wall",Toy.Hex(0x80858a),WorldLook.Pattern.Stone,0,.1f,true);
-            Square();PitStopAndShops();Driveway();Streets();RetainingWalls();FlushWalls();KettleGate();
+            CoastalLandscape.Lap("qht start");Square();CoastalLandscape.Lap("qht square");yield return null;PitStopAndShops();CoastalLandscape.Lap("qht shops");Driveway();CoastalLandscape.Lap("qht driveway");yield return null;yield return Streets();CoastalLandscape.Lap("qht streets");yield return RetainingWalls();CoastalLandscape.Lap("qht retaining");yield return null;FlushWalls();CoastalLandscape.Lap("qht flush");KettleGate();CoastalLandscape.Lap("qht kettle");
             Debug.Log($"LITTLE_ROAD_QUARRY_TOWN buildings={buildings} back={backHouses} plinths={plinths} lamps={lamps} homes={Homes.Count}");
         }
         // ---------------------------------------------------------------- the square
@@ -198,7 +200,7 @@ namespace LittleRoad
         // Distances out from a street's edge (its half width): pavement, front gardens, the street row, its yard, the back
         // lane, the back row's yard and the back row, its footpath, and (in the core) the third row facing it.
         const float Pave=2.3f,Garden=2.6f,Yard=4.5f,LaneW=3.6f,Path=7.4f;
-        void Streets()
+        System.Collections.IEnumerator Streets()
         {
             var quarry=HillcrestRoute.Find(QuarryHills.QuarryRoadName);var high=HillcrestRoute.Find(QuarryHills.HighStreetName);
             var quay=HillcrestRoute.Find(QuarryHills.QuayLaneName);var haul=HillcrestRoute.Find(QuarryHills.HaulRoadName);
@@ -207,12 +209,12 @@ namespace LittleRoad
                 (high,30,high.Length-10),(quarry,quarry.Length-430,quarry.Length-30),(quay,30,Mathf.Min(quay.Length-60,420)),
                 (haul,30,Mathf.Min(haul.Length-40,260)),(chapel,14,chapel.Length-14),(terrace,14,terrace.Length-14)};
             // Street rows first on every street (they claim the frontages), then the blocks behind them.
-            foreach(var (road,from,to) in streets)foreach(int side in new[]{-1,1})StreetRow(road,side,from,to);
-            foreach(var (road,from,to) in streets)foreach(int side in new[]{-1,1})Block(road,side,from,to);
-            foreach(var (road,from,to) in streets){Pavements(road,from-6,to+6);}
-            for(float s=50;s<high.Length-40;s+=64)StreetBunting(high,s);
+            foreach(var (road,from,to) in streets)foreach(int side in new[]{-1,1}){yield return StreetRow(road,side,from,to);yield return null;}
+            foreach(var (road,from,to) in streets)foreach(int side in new[]{-1,1}){Block(road,side,from,to);yield return null;}
+            foreach(var (road,from,to) in streets){Pavements(road,from-6,to+6);yield return null;}
+            for(float s=50;s<high.Length-40;s+=64)StreetBunting(high,s);yield return null;
             // Benches on the pavements, lamps along Quarry Road's approach, map boards in the square and by the Pit Stop.
-            foreach(var (road,from,to) in streets){int k=0;for(float s=from+20;s<to-20;s+=30,k++)Bench(road,s,k%2==0?1:-1);}
+            foreach(var (road,from,to) in streets){int k=0;for(float s=from+20;s<to-20;s+=30,k++)Bench(road,s,k%2==0?1:-1);yield return null;}
             for(float s=quarry.Length-1400;s<quarry.Length-430;s+=24){int side=((int)(s/24))%2==0?1:-1;var lp=quarry.At(s)+quarry.Right(s)*side*(quarry.width*.5f+.9f);lp.y=quarry.At(s).y;if(ValleyField.RoadDistance(lp.x,lp.z)>quarry.width*.5f-.5f)Lamp(lp);}
             var sq=new Vector3(QuarryHills.Square.x,QuarryHills.SquareY,QuarryHills.Square.y);var mb=sq+new Vector3(18,0,-18);mb.y=H(mb.x,mb.z);Put("map_board",mb,Yaw(mb,sq));
             var ps=QuarryHills.PitStopSite.at;var mb2=ps+Quaternion.Euler(0,QuarryHills.PitStopSite.yaw,0)*new Vector3(16,0,14);mb2.y=H(mb2.x,mb2.z);Put("map_board",mb2,QuarryHills.PitStopSite.yaw);
@@ -232,10 +234,12 @@ namespace LittleRoad
             Put("bench",p,Quaternion.LookRotation(-road.Right(s)*side).eulerAngles.y,null,null,1,false);GardenProps.Add(p);
         }
         float RowCentre(HillcrestRoute.Road road,float depth)=>road.width*.5f+Pave+Garden+depth*.5f;
-        void StreetRow(HillcrestRoute.Road road,int side,float from,float to)
+        // (Yields after each house when built in the background: Districts.)
+        System.Collections.IEnumerator StreetRow(HillcrestRoute.Road road,int side,float from,float to)
         {
             float s=from;var core=QuarryHills.Square;string last=null;
             while(s<to) {
+                yield return null;
                 double roll=rng.NextDouble();
                 string id=roll<.8?new[]{"terrace_a","terrace_a","terrace_c","terrace_d","terrace_d","terrace_e","terrace_f","terrace_f","terrace_g","terrace_b"}[rng.Next(10)]:roll<.9?"house_c":"house_d";
                 // Quarrymen's cottages (street review, 4 Oct: the town read as Ligurian): most houses away from the square,
@@ -299,10 +303,12 @@ namespace LittleRoad
         // level a few metres then drops away more than 1.2 m into the gardens below, a slate wall along the top of the drop,
         // so a car off the pavement stops there instead of tumbling into a garden it can't climb out of. Clear of junctions.
         public static int Retaining;
-        void RetainingWalls()
+        // (Yields after each street when built in the background: Districts.)
+        System.Collections.IEnumerator RetainingWalls()
         {
             Retaining=0;var junctions=new List<Vector3>(QuarryHills.JunctionPoints());
             foreach(var name in new[]{QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName,QuarryHills.QuarryRoadName}) {
+                yield return null;
                 var road=HillcrestRoute.Find(name);if(road==null)continue;float half=road.width*.5f;
                 foreach(int side in new[]{-1,1}) {
                     // Each side's wall points in order along the street; neighbours (2 m apart along it) join into one wall.

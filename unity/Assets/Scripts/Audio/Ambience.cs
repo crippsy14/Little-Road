@@ -95,6 +95,7 @@ namespace LittleRoad
             var listener=Listener();if(listener==null)return;Vector3 at=listener.position;
             if(Time.unscaledTime>=nextSurvey) {
                 nextSurvey=Time.unscaledTime+.5f;Survey(at);
+                if(Probe&&Time.unscaledTime>=nextProbe){var beds=new System.Text.StringBuilder();foreach(var s in GetComponentsInChildren<AudioSource>())if(s.loop&&s.clip!=null)beds.Append($"{s.clip.name}:{s.clip.loadState}:{(s.isPlaying?"on":"off")}:{s.timeSamples} ");Debug.Log("LITTLE_ROAD_AMBIENCE_BEDS "+beds);}
                 if(Probe&&Time.unscaledTime>=nextProbe){nextProbe=Time.unscaledTime+3;Debug.Log($"LITTLE_ROAD_AMBIENCE_PROBE sea={SeaNear:0.00} exposure={windExposure:0.00} falls={(hasFalls?Vector3.Distance(at,falls.transform.position):-1):0}m river={(riverTarget!=Vector3.zero?Vector3.Distance(at,riverTarget):-1):0}m night={TimeOfDay.Night:0.00}");}
             }
             float effects=AudioOptions.Level(AudioOptions.Ambience); // (its own slider since 2 Oct; was the effects level)

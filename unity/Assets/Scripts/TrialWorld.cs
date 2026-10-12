@@ -90,6 +90,16 @@ namespace LittleRoad
             var asphalt=WorldLook.Kit("Warm aggregate asphalt",new Color(.17f,.19f,.20f),WorldLook.Pattern.Asphalt,0,.22f,true);
             var sand=CoastalSurfaces.Runoff();
             var white=Material("Ivory paint",new Color(.91f,.91f,.80f));var coral=Material("Coral kerb",new Color(.79f,.27f,.18f));
+            // One world, kept across races (PersistentWorld, docs/72): a world built earlier in this run is reused, and only
+            // the light above and the race's own dressing are made again. A free-roam build is kept for the next load.
+            bool reused=PersistentWorld.TryReuse();
+            if(reused) {
+                if(RaceArea.Active)PersistentWorld.Focus(RaceArea.Centre,RaceArea.Radius);
+                else if(racing){var (centre,radius)=PersistentWorld.Circle(track,450);PersistentWorld.Focus(centre,radius);}
+                else PersistentWorld.Unfocus();
+            }
+            if(!reused) {
+            var before=PersistentWorld.Roots();
             CoastalLandscape.ValleyDetail=!racing;yield return new CoastalLandscape(track).BuildRoutine();
             // Both road and shoulder have actual matching mesh surfaces across
             // the inlet. The bridge is not a road painted on an invisible island.
@@ -99,23 +109,29 @@ namespace LittleRoad
             Ribbon(track,"16 metre race surface",0,Circuit.Width,.025f,asphalt);
             RubberedLine(track);
             new GameObject("Continuous road and shoulder support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
-            foreach(int side in new[]{-1,1}) {Ribbon(track,"Edge paint",side*7.7f,.16f,.037f,white);
-                if(racing)for(float d=0;d<track.length;d+=4) {// Coral blocks stand 6 mm prouder: on curves neighbouring blocks overlap and equal tops z-fought.
-                    bool odd=(int)(d/4)%2!=0;var kerb=Box("Alternating kerb",track.At(d)+track.Right(d)*side*8.25f+Vector3.up*(odd?.058f:.055f),new Vector3(.7f,odd?.106f:.10f,3.8f),odd?coral:white);
-                    kerb.transform.rotation=Quaternion.LookRotation(track.Forward(d));}}
+            foreach(int side in new[]{-1,1})Ribbon(track,"Edge paint",side*7.7f,.16f,.037f,white);
             for(float d=0;d<track.length;d+=12) {
                 if(track.Curvature(d)>.012f)continue;var mark=Box("Grid guide",track.At(d)+Vector3.up*.04f,new Vector3(.12f,.015f,3),white);mark.transform.rotation=Quaternion.LookRotation(track.Forward(d));}
-            if(racing)for(int i=0;i<16;i++)for(int j=0;j<2;j++) {
-                var checker=Box("Start finish",track.At(j*.55f)+track.Right(0)*(-7.5f+i)+Vector3.up*.046f,new Vector3(1,.02f,.55f),(i+j)%2==0?white:asphalt);checker.transform.rotation=Quaternion.LookRotation(track.Forward(0));}
             }
-            var shutter=Material("Teal joinery",new Color(.12f,.38f,.37f));
             if(CoastalLandscape.Island)VillageKit.Create();
+            if(!racing&&!RaceArea.Active)PersistentWorld.Adopt(before);
+            }
+            // Bayview's race dressing: kerbs, the chequered line and the start gantry, made for the race on top of the
+            // world (kept or fresh) and gone with the scene afterwards.
+            if(racing&&(reused||CoastalLandscape.Island))RaceDressing(track,white,coral,asphalt);
             new GameObject("Coastal reflected light").AddComponent<CoastalReflections>();
             TimeOfDay.Apply(); // light, sky, fog and valley mist for the chosen time of day
-            if(racing){
-                for(int side=-1;side<=1;side+=2)Box("Start gantry post",track.At(0)+track.Right(0)*side*9+Vector3.up*3.5f,new Vector3(.4f,7,.4f),shutter,true);
-                var beam=Box("Start gantry",track.At(0)+Vector3.up*6.7f,new Vector3(18,.8f,.4f),shutter);beam.transform.rotation=Quaternion.LookRotation(track.Forward(0));
-            }
+        }
+        static void RaceDressing(Circuit track,Material white,Material coral,Material asphalt)
+        {
+            foreach(int side in new[]{-1,1})for(float d=0;d<track.length;d+=4) {// Coral blocks stand 6 mm prouder: on curves neighbouring blocks overlap and equal tops z-fought.
+                bool odd=(int)(d/4)%2!=0;var kerb=Box("Alternating kerb",track.At(d)+track.Right(d)*side*8.25f+Vector3.up*(odd?.058f:.055f),new Vector3(.7f,odd?.106f:.10f,3.8f),odd?coral:white);
+                kerb.transform.rotation=Quaternion.LookRotation(track.Forward(d));}
+            for(int i=0;i<16;i++)for(int j=0;j<2;j++) {
+                var checker=Box("Start finish",track.At(j*.55f)+track.Right(0)*(-7.5f+i)+Vector3.up*.046f,new Vector3(1,.02f,.55f),(i+j)%2==0?white:asphalt);checker.transform.rotation=Quaternion.LookRotation(track.Forward(0));}
+            var shutter=Material("Teal joinery",new Color(.12f,.38f,.37f));
+            for(int side=-1;side<=1;side+=2)Box("Start gantry post",track.At(0)+track.Right(0)*side*9+Vector3.up*3.5f,new Vector3(.4f,7,.4f),shutter,true);
+            var beam=Box("Start gantry",track.At(0)+Vector3.up*6.7f,new Vector3(18,.8f,.4f),shutter);beam.transform.rotation=Quaternion.LookRotation(track.Forward(0));
         }
         public static GameObject Car(string asset,Color paint)
         {

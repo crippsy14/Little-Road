@@ -19,18 +19,25 @@ namespace LittleRoad
                 (new(-138,-23),new(8,14,12)),(new(-143,35),new(11,17,12)),(new(125,58),new(12,16,13)),
                 (new(-92,109),new(14,15,12)),(new(0,107),new(15,18,13)),(new(75,89),new(12,17,12))};
             int accepted=0;
+            // Every outcrop's shape is worked out on all cores at once (docs/72: 45 outcrops x 2,624 ring points of terrain
+            // queries took ~1.2 s on the main thread), then made here in the original order: the same objects as before.
+            var specs=new List<(Vector2 p,Vector3 size,int seed)>();
             for(int i=0;i<forms.Length;i++) {
-                if(Outcrop(forms[i].p,forms[i].size,i*19))accepted++;
+                specs.Add((forms[i].p,forms[i].size,i*19));
                 Vector2 offset=new Vector2(Mathf.Cos(i*2.3f),Mathf.Sin(i*2.3f))*forms[i].size.x*.5f;
-                if(Outcrop(forms[i].p+offset,Vector3.Scale(forms[i].size,new Vector3(.65f,.70f,.8f)),i*19+7))accepted++;
-                if(Outcrop(forms[i].p-offset*.85f,Vector3.Scale(forms[i].size,new Vector3(.72f,.46f,.7f)),i*19+13))accepted++;
+                specs.Add((forms[i].p+offset,Vector3.Scale(forms[i].size,new Vector3(.65f,.70f,.8f)),i*19+7));
+                specs.Add((forms[i].p-offset*.85f,Vector3.Scale(forms[i].size,new Vector3(.72f,.46f,.7f)),i*19+13));
             }
+            CoastalLandscape.Lap("cliffs start");var shapes=new Shape[specs.Count];
+            System.Threading.Tasks.Parallel.For(0,specs.Count,k=>shapes[k]=Outcrop(specs[k].p,specs[k].size,specs[k].seed));
+            CoastalLandscape.Lap("cliffs shapes");for(int k=0;k<shapes.Length;k++)if(shapes[k]!=null){Make(shapes[k],specs[k].seed);accepted++;}CoastalLandscape.Lap("cliffs objects");
             Physics.SyncTransforms();
             var talus=new CoastalTalus(land,parent,material);
             for(int i=0;i<forms.Length;i++)talus.Scatter(forms[i].p,forms[i].size,i*19);
-            talus.Record();Debug.Log("LITTLE_ROAD_CLIFFS formations="+accepted);
+            CoastalLandscape.Lap("cliffs talus");talus.Record();Debug.Log("LITTLE_ROAD_CLIFFS formations="+accepted);
         }
-        bool Outcrop(Vector2 centre,Vector3 size,int seed)
+        sealed class Shape{public List<Vector3> vertices,faceted,smoothNormals;public List<int> tris,faceIndices;}
+        Shape Outcrop(Vector2 centre,Vector3 size,int seed)
         {
             // Uneven bedding and vertical joints shape the silhouette, with
             // smaller relief continuing down the buried-to-exposed transition.
@@ -60,7 +67,7 @@ namespace LittleRoad
                     (Noise(x*1.8f,z*1.8f,t*size.y*1.8f,seed+11)-.5f)*.16f;
                 float outward=Mathf.SmoothStep(0,1,t*6)*relief;
                 x+=Mathf.Cos(angle+rotation)*outward;z+=Mathf.Sin(angle+rotation)*outward;
-                if(!land.SolidClearance(new Vector3(x,0,z)))return false;
+                if(!land.SolidClearance(new Vector3(x,0,z)))return null;
                 float bedTilt=edge.x*.055f+edge.y*.025f;
                 float y=baseHeight+(t*.82f+bedTilt*t+(broad-.5f)*.11f)*size.y+relief*.3f;
                 // Every foot follows the local slope, including the downhill
@@ -94,12 +101,16 @@ namespace LittleRoad
                 foreach(var neighbour in adjacent[index])if(Vector3.Dot(normal,neighbour)>.86f)average+=neighbour;
                 faceIndices.Add(faceted.Count);faceted.Add(vertices[index]);smoothNormals.Add(average.normalized);
             }
+            return new Shape{vertices=vertices,faceted=faceted,smoothNormals=smoothNormals,tris=tris,faceIndices=faceIndices};
+        }
+        void Make(Shape shape,int seed)
+        {
+            var vertices=shape.vertices;var faceted=shape.faceted;var smoothNormals=shape.smoothNormals;var tris=shape.tris;var faceIndices=shape.faceIndices;
             var mesh=new Mesh{name="Weathered fractured limestone "+seed,indexFormat=IndexFormat.UInt32};mesh.SetVertices(faceted);mesh.SetTriangles(faceIndices,0);mesh.SetNormals(smoothNormals);mesh.RecalculateBounds();
             var go=new GameObject("Layered coastal outcrop "+seed,typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(parent,false);go.tag="Respawn";
             go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;// The collider cooks the shared-vertex shell (same surface, ~6x fewer vertices than the faceted render mesh).
             var shell=new Mesh{name="Outcrop collision "+seed,indexFormat=IndexFormat.UInt32};shell.SetVertices(vertices);shell.SetTriangles(tris,0);shell.RecalculateBounds();
             go.GetComponent<MeshCollider>().sharedMesh=shell;
-            return true;
         }
         static float Noise(float x,float z,float y,int seed)
         {

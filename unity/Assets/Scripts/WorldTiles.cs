@@ -16,7 +16,9 @@ namespace LittleRoad
         public const float Size=250,NearRadius=450;
         public static bool Enabled=>!RaceTrial.Has("--no-world-tiles");
         // Where the player will start (set before the world builds); deferral is on only between Begin and the build's end.
-        public static Vector3 Focus;static bool deferring,wanted;
+        public static Vector3 Focus;static bool deferring,wanted,streams;
+        // Does this build stream (free roam)? Background districts only happen in a streaming build.
+        public static bool Streams=>streams;
         static readonly Dictionary<(int,int),List<Action>> pending=new();
         static readonly Dictionary<(int,int),List<Vector4>> reserved=new();
         public static int Pending{get;private set;}public static int Deferred{get;private set;}
@@ -29,9 +31,12 @@ namespace LittleRoad
         // At the start of every world build (each scene load): whatever was queued belonged to the old world.
         public static void Begin(bool woods)
         {
-            pending.Clear();reserved.Clear();Pending=Deferred=0;currentList=null;deferring=wanted&&woods&&Enabled;wanted=false;
+            pending.Clear();reserved.Clear();Pending=Deferred=0;currentList=null;deferring=streams=wanted&&woods&&Enabled;wanted=false;
         }
         public static void EndBuild(){deferring=false;if(Pending>0)Streamer.Ensure();}
+        // A background district builds as the world did (Districts): its decoration queues on the tiles too.
+        public static void Resume()=>deferring=streams;
+        public static void Pause()=>deferring=false;
         // A piece of decoration at `at`: built now if deferral is off or it's near the start, else queued on its tile.
         // `radius` (0 for things you can drive through) reserves its spot until it's built.
         public static void Place(Vector3 at,float radius,Action build)
@@ -56,6 +61,7 @@ namespace LittleRoad
         // Build everything still queued (audits, tests, the map bake).
         public static void Complete()
         {
+            Districts.Complete();   // (a district still building first: its decoration joins the queue)
             if(Pending==0)return;var clock=System.Diagnostics.Stopwatch.StartNew();int built=Pending;Late=true;
             // (The tile the streamer is part-way through first, from where it got to.)
             if(currentList!=null){for(;currentIndex<currentList.Count;currentIndex++){Pending--;try{currentList[currentIndex]();}catch(Exception e){Debug.LogException(e);}}
@@ -78,7 +84,10 @@ namespace LittleRoad
                 if(currentList==null) {
                     if(pending.Count==0)return true;
                     // The nearest tile to the camera next.
-                    float best=float.MaxValue;foreach(var key in pending.Keys){var c=new Vector3((key.Item1+.5f)*Size,0,(key.Item2+.5f)*Size)-camera;c.y=0;float d=c.sqrMagnitude;if(d<best){best=d;current=key;}}
+                    // (Not a background district's tiles while it's still building: Districts.)
+                    float best=float.MaxValue;foreach(var key in pending.Keys){if(Districts.Holds(new Rect(key.Item1*Size,key.Item2*Size,Size,Size)))continue;
+                        var c=new Vector3((key.Item1+.5f)*Size,0,(key.Item2+.5f)*Size)-camera;c.y=0;float d=c.sqrMagnitude;if(d<best){best=d;current=key;}}
+                    if(best==float.MaxValue)return false;   // (only a district's tiles left: they wait for it)
                     currentList=pending[current];currentIndex=0;
                 }
                 if(currentIndex<currentList.Count){var build=currentList[currentIndex++];Pending--;try{build();}catch(Exception e){Debug.LogException(e);}}

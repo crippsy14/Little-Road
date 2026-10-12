@@ -22,6 +22,9 @@ namespace LittleRoad
             var square=QuarryHills.Square;
             // Rows in parallel (every input is a pure read of the built height field): ~1.2M texels.
             var clock=System.Diagnostics.Stopwatch.StartNew();
+            // Cooked once per build and world (WorldCache, docs/72): the same texels every launch.
+            var flat=new float[px.Length*4];
+            if(WorldCache.TryRead("quarry-tint",flat)){for(int k=0;k<px.Length;k++)px[k]=new Color(flat[k*4],flat[k*4+1],flat[k*4+2],flat[k*4+3]);Debug.Log($"LITTLE_ROAD_QUARRY_TINT cached ms={clock.ElapsedMilliseconds}");tex.SetPixels(px);tex.Apply(true);return tex;}
             System.Threading.Tasks.Parallel.For(0,nz,j=>{for(int i=0;i<nx;i++) {
                 float x=X+(i+.5f)/nx*W,z=Z+(j+.5f)/nz*D;
                 float h=ValleyField.Height(x,z),up=ValleyField.Normal(x,z).y,n=Mathf.PerlinNoise(x*.013f+4,z*.013f+8),fine=Mathf.PerlinNoise(x*.06f,z*.06f);
@@ -67,6 +70,7 @@ namespace LittleRoad
                 px[j*nx+i]=c;
             }});
             Debug.Log($"LITTLE_ROAD_QUARRY_TINT ms={clock.ElapsedMilliseconds}");
+            for(int k=0;k<px.Length;k++){var c=px[k];flat[k*4]=c.r;flat[k*4+1]=c.g;flat[k*4+2]=c.b;flat[k*4+3]=c.a;}WorldCache.Write("quarry-tint",flat);
             tex.SetPixels(px);tex.Apply(true);return tex;
         }
     }

@@ -36,7 +36,8 @@ namespace LittleRoad
             float[] odds={.25f,.16f,.14f,.09f,.13f,.04f,.12f,.07f};
             Color woodland=Crop(.10f,.22f,.10f),upland=Crop(.34f,.42f,.26f);
             const float RegionSize=340;
-            for(int j=0;j<nz;j++)for(int i=0;i<nx;i++) {
+            // Rows in parallel (docs/72): every pixel is pure maths over the height field.
+            System.Threading.Tasks.Parallel.For(0,nz,j=>{for(int i=0;i<nx;i++) {
                 float x=MacroX+(i+.5f)/nx*MacroW,z=MacroZ+(j+.5f)/nz*MacroD;
                 float h=ValleyField.Height(x,z),slope=1-ValleyField.Normal(x,z).y;
                 // Woods: the copse noise, spreading onto steep banks where it is already wooded-ish.
@@ -71,12 +72,12 @@ namespace LittleRoad
                 float fade=Mathf.Min(Mathf.Min(i,nx-1-i),Mathf.Min(j,nz-1-j))/(nx*.03f);c=Color.Lerp(Color.white,c,Mathf.Clamp01(fade));
                 c.a=Mathf.Lerp(1,Mathf.Clamp01(edge/8),fields*(1-forest)*Mathf.Clamp01(fade));
                 px[j*nx+i]=c;
-            }
+            }});
             tex.SetPixels(px);tex.Apply(true);return tex;
         }
         void Mainland()
         {
-            ValleyField.Build();
+            Lap("mainland start");ValleyField.Build();Lap("mainland field");
             valley=new GameObject("Hillcrest Valley").transform;
             var chunks=new GameObject("Hillcrest mainland terrain").transform;chunks.SetParent(valley);
             mainlandGround=TerrainMaterial("Mainland meadow and sandstone",new Color(.31f,.43f,.23f),new Color(.60f,.56f,.46f));
@@ -87,22 +88,30 @@ namespace LittleRoad
             // steepest ground. Pale grey rock on moderate slopes read as untextured smears across the hills.
             mainlandGround.SetColor("_ToyRockA",new Color(.56f,.52f,.45f));mainlandGround.SetColor("_ToyRockB",new Color(.40f,.37f,.33f));mainlandGround.SetFloat("_Bands",.55f);
             mainlandGround.SetColor("_RockColor",new Color(.64f,.60f,.53f));mainlandGround.SetFloat("_RockDesat",.4f);mainlandGround.SetFloat("_MeadowBias",.17f);
-            const int size=64;int built=0,triangles=0;
+            Lap("mainland tint");const int size=64;int built=0,triangles=0;
             var quarryGround=QuarryHills.Enabled?QuarryGround():null;
             // Load time (docs/60): the chunks' geometry is worked out on every core at once, then the meshes are made here, and
             // their colliders are cooked in parallel too (Physics.BakeMesh) before they're assigned. The same meshes as before.
             var clock=System.Diagnostics.Stopwatch.StartNew();
-            var specs=new List<(int ci,int cj,int i0,int j0,int i1,int j1,bool quarry)>();
+            // Which chunks stand above the sea: each chunk's highest cell, found for all chunks at once on every core
+            // (docs/72: the one-by-one scan of 3.2 million cells took ~0.25 s), then kept in the same order as before.
+            var candidates=new List<(int ci,int cj,int i0,int j0,int i1,int j1,bool quarry)>();
             for(int cj=0;cj*size<ValleyField.NZ-1;cj++)for(int ci=0;ci*size<ValleyField.NX-1;ci++) {
                 int i0=ci*size,j0=cj*size,i1=Mathf.Min(i0+size,ValleyField.NX-1),j1=Mathf.Min(j0+size,ValleyField.NZ-1);
                 float cx0=ValleyField.X0+i0*ValleyField.Cell,cz1=ValleyField.Z0+j1*ValleyField.Cell;
                 if(cx0>=QuarryHills.SeamX-.1f&&cz1<-2000)continue; // south of the valley, east of Quarry Hills: neither region
-                float high=-999;for(int j=j0;j<=j1;j++)for(int i=i0;i<=i1;i++)high=Mathf.Max(high,ValleyField.Raw(i,j));
-                if(high<-22)continue;
-                specs.Add((ci,cj,i0,j0,i1,j1,quarryGround!=null&&cx0<QuarryHills.SeamX-.1f));
+                candidates.Add((ci,cj,i0,j0,i1,j1,quarryGround!=null&&cx0<QuarryHills.SeamX-.1f));
             }
+            var highs=new float[candidates.Count];
+            System.Threading.Tasks.Parallel.For(0,candidates.Count,k=>{var c=candidates[k];float high=-999;for(int j=c.j0;j<=c.j1;j++)for(int i=c.i0;i<=c.i1;i++)high=Mathf.Max(high,ValleyField.Raw(i,j));highs[k]=high;});
+            var specs=new List<(int ci,int cj,int i0,int j0,int i1,int j1,bool quarry)>();
+            for(int k=0;k<candidates.Count;k++)if(highs[k]>=-22)specs.Add(candidates[k]);
+            Lap("mainland chunk choice");
+            // LOD 0, 1 and 2 per chunk; the collider (slot 3) is LOD 0's grid without the skirts, cut from it rather than
+            // worked out twice (docs/72: the same mesh).
             var data=new ChunkData[specs.Count*4];
-            System.Threading.Tasks.Parallel.For(0,data.Length,k=>{var s=specs[k/4];int l=k%4;data[k]=ChunkGeometry(s.i0,s.j0,s.i1,s.j1,l==3?1:l==0?1:l==1?2:4,l!=3);});
+            System.Threading.Tasks.Parallel.For(0,specs.Count*3,k=>{var s=specs[k/3];int l=k%3;data[k/3*4+l]=ChunkGeometry(s.i0,s.j0,s.i1,s.j1,l==0?1:l==1?2:4,true);});
+            System.Threading.Tasks.Parallel.For(0,specs.Count,k=>data[k*4+3]=data[k*4].WithoutSkirts());
             long geometryMs=clock.ElapsedMilliseconds;
             var colliders=new List<(MeshCollider c,Mesh m)>();
             for(int s=0;s<specs.Count;s++) {
@@ -124,7 +133,7 @@ namespace LittleRoad
             System.Threading.Tasks.Parallel.For(0,ids.Length,k=>Physics.BakeMesh(ids[k],false));
             foreach(var (c,m) in colliders)c.sharedMesh=m;
             Debug.Log($"LITTLE_ROAD_MAINLAND_TIMING geometry={geometryMs}ms meshes={meshMs-geometryMs}ms colliders={clock.ElapsedMilliseconds-meshMs}ms");
-            DistantMountains();
+            Lap("mainland chunks");DistantMountains();Lap("mainland mountains");
             Debug.Log($"LITTLE_ROAD_MAINLAND chunks={built} lod0Triangles={triangles}");
         }
         // Quarry Hills' ground (docs/59): the same terrain shader as the valley, with wetter, deeper western grass, blue-grey
@@ -144,8 +153,16 @@ namespace LittleRoad
         // A chunk's geometry, worked out off the main thread (ValleyField is built by then); ToMesh() runs on the main thread.
         struct ChunkData
         {
-            public Vector3[] v,n;public Vector2[] uv;public int[] t;
-            public Mesh ToMesh(){var mesh=new Mesh{name="Mainland patch",indexFormat=v.Length>65000?IndexFormat.UInt32:IndexFormat.UInt16};mesh.SetVertices(v);mesh.SetNormals(n);mesh.SetUVs(0,uv);mesh.SetTriangles(t,0);mesh.RecalculateBounds();return mesh;}
+            public Vector3[] v,n;public Vector2[] uv;public int[] t;public int gridVertices,gridIndices;public Bounds bounds;
+            // (Bounds worked out with the geometry, off the main thread; SetTriangles would otherwise do them, and
+            // RecalculateBounds again.)
+            public Mesh ToMesh(){var mesh=new Mesh{name="Mainland patch",indexFormat=v.Length>65000?IndexFormat.UInt32:IndexFormat.UInt16};mesh.SetVertices(v);mesh.SetNormals(n);mesh.SetUVs(0,uv);mesh.SetTriangles(t,0,false);mesh.bounds=bounds;return mesh;}
+            public ChunkData WithoutSkirts()
+            {
+                var c=new ChunkData{v=new Vector3[gridVertices],n=new Vector3[gridVertices],uv=new Vector2[gridVertices],t=new int[gridIndices],gridVertices=gridVertices,gridIndices=gridIndices};
+                System.Array.Copy(v,c.v,gridVertices);System.Array.Copy(n,c.n,gridVertices);System.Array.Copy(uv,c.uv,gridVertices);System.Array.Copy(t,c.t,gridIndices);c.bounds=BoundsOf(c.v);return c;
+            }
+            public static Bounds BoundsOf(Vector3[] v){Vector3 lo=v[0],hi=v[0];foreach(var p in v){lo=Vector3.Min(lo,p);hi=Vector3.Max(hi,p);}var b=new Bounds();b.SetMinMax(lo,hi);return b;}
         }
         static ChunkData ChunkGeometry(int i0,int j0,int i1,int j1,int step,bool skirts)
         {
@@ -155,11 +172,14 @@ namespace LittleRoad
             Vector3 P(int i,int j)=>new(ValleyField.X0+i*ValleyField.Cell,ValleyField.Raw(i,j),ValleyField.Z0+j*ValleyField.Cell);
             Vector3 N(int i,int j)=>new Vector3(ValleyField.Raw(i-1,j)-ValleyField.Raw(i+1,j),2*ValleyField.Cell,ValleyField.Raw(i,j-1)-ValleyField.Raw(i,j+1)).normalized;
             for(int r=0;r<rows;r++)for(int c=0;c<cols;c++){var p=P(I(c),J(r));v.Add(p);n.Add(N(I(c),J(r)));uv.Add(new Vector2(p.x,p.z)*.2f);}
+            // Only chunks near the tunnel's portals can have holes cut (docs/72: the test ran on all 4.6 million triangles).
+            bool nearPortal=NearPortal(v[0],v[v.Count-1]);
             for(int r=0;r<rows-1;r++)for(int c=0;c<cols-1;c++) {
                 int a=r*cols+c;
-                if(!PortalHole(v[a],v[a+cols],v[a+1])){t.Add(a);t.Add(a+cols);t.Add(a+1);}
-                if(!PortalHole(v[a+1],v[a+cols],v[a+cols+1])){t.Add(a+1);t.Add(a+cols);t.Add(a+cols+1);}
+                if(!nearPortal||!PortalHole(v[a],v[a+cols],v[a+1])){t.Add(a);t.Add(a+cols);t.Add(a+1);}
+                if(!nearPortal||!PortalHole(v[a+1],v[a+cols],v[a+cols+1])){t.Add(a+1);t.Add(a+cols);t.Add(a+cols+1);}
             }
+            int gridVertices=v.Count,gridIndices=t.Count;
             if(skirts) {
                 var ring=new List<int>();
                 for(int c=0;c<cols;c++)ring.Add(c);for(int r=1;r<rows;r++)ring.Add(r*cols+cols-1);
@@ -171,7 +191,15 @@ namespace LittleRoad
                     t.AddRange(new[]{a,b,s+1,a,s+1,s,a,s+1,b,a,s,s+1});
                 }
             }
-            return new ChunkData{v=v.ToArray(),n=n.ToArray(),uv=uv.ToArray(),t=t.ToArray()};
+            var va=v.ToArray();return new ChunkData{v=va,n=n.ToArray(),uv=uv.ToArray(),t=t.ToArray(),gridVertices=gridVertices,gridIndices=gridIndices,bounds=ChunkData.BoundsOf(va)};
+        }
+        // Can any triangle in the chunk with these corners be a portal hole? A hole's centre is within 7.5 m of the line
+        // between the portals, or 5 m beyond its ends, and a triangle's centre is inside its chunk; 20 m covers both.
+        static bool NearPortal(Vector3 corner0,Vector3 corner1)
+        {
+            Vector3 n0=HillcrestRoute.PortalNorth,s0=HillcrestRoute.PortalSouth;
+            float minX=Mathf.Min(corner0.x,corner1.x)-20,maxX=Mathf.Max(corner0.x,corner1.x)+20,minZ=Mathf.Min(corner0.z,corner1.z)-20,maxZ=Mathf.Max(corner0.z,corner1.z)+20;
+            return Mathf.Max(n0.x,s0.x)>=minX&&Mathf.Min(n0.x,s0.x)<=maxX&&Mathf.Max(n0.z,s0.z)>=minZ&&Mathf.Min(n0.z,s0.z)<=maxZ;
         }
         static bool PortalHole(Vector3 a,Vector3 b,Vector3 c)
         {
@@ -186,6 +214,7 @@ namespace LittleRoad
         Material asphaltMainland,roadPaint,girderStone,copingStone,quarryGravel;
         void ValleyRoads()
         {
+            Lap("roads start");
             asphaltMainland=WorldLook.Kit("Country road asphalt",new Color(.19f,.20f,.21f),WorldLook.Pattern.Asphalt,0,.22f,true);
             roadPaint=TrialWorld.Material("Country road paint",new Color(.97f,.96f,.88f),0,.3f);
             girderStone=WorldLook.Kit("Causeway girder",new Color(.88f,.82f,.68f),WorldLook.Pattern.Stone,0,.2f,true);
@@ -228,7 +257,7 @@ namespace LittleRoad
             var mainRoad=net.Connect(main.name,main.line,main.width,.03f,nIsland,nMain,minorStart:true,minorEnd:true);
             var crestRoad=net.Connect(crest.name,crest.line,crest.width,.018f,nCrest,null,minorStart:true,noCentre:crest.width<7.6f);
             var stationNet=net.Connect("Station road",stationRoad,stationWidth,.018f,nStation,null,minorStart:true,noCentre:true);
-            net.Solve();
+            net.Solve();Lap("roads network");
             foreach(var n in net.nodes)Debug.Log($"LITTLE_ROAD_JUNCTION at=({n.at.x:0},{n.at.z:0}) arms={n.arms.Count} radius={n.Radius:0.0} trims={string.Join("/",n.arms.ConvertAll(a=>a.trim.ToString("0.0")))} y={n.at.y:0.0} ground={ValleyField.Height(n.at.x,n.at.z):0.0} poly={(n.polygon.Count>0?System.Linq.Enumerable.Average(n.polygon.ConvertAll(p=>p.y)):float.NaN):0.0}/{n.polygon.Count} arms=[{string.Join(";",n.arms.ConvertAll(a=>(a.road==null?"external":a.road.name)+(a.atStart?"@s":"@e")+":"+(a.road==null?float.NaN:a.Height(a.trim)).ToString("0.0")))}]");
             Ribbon(main.name,mainRoad.trimmed,main.width,.03f,holder,asphaltMainland,true,false,false,false);
             Stripes(mainRoad.trimmed,main.width,0,0,holder,false);
@@ -245,10 +274,11 @@ namespace LittleRoad
                 Ribbon(r.name,QuarryHills.Owns(r.name)?Subdivide(r.trimmed,1):r.trimmed,r.width,r.lift,holder,asphaltMainland,true,false,r.start==null,r.end==null);
                 Stripes(r.trimmed,r.width,r.start==null?3:0,r.end==null?(r==crestRoad?6:3):0,holder,r.noCentre);
             }
+            Lap("roads ribbons");
             foreach(var (line,width) in new[]{(valleyRoad,valleyWidth),(stationRoad,stationWidth)})Guardrails(line,width,holder,0,true);
             if(QuarryHills.Enabled)foreach(var name in new[]{QuarryHills.QuarryRoadName,QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.HaulRoadName,QuarryHills.KettleRoadName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName}){var q=HillcrestRoute.Find(name);Guardrails(q.line,q.width,holder,0,true,null,name==QuarryHills.QuarryRoadName);}
             Guardrails(crest.line,crest.width,holder,0); // (in town Via Crest has stone parapets instead: HillcrestTown.Parapets)
-            foreach(var road in HillcrestRoute.All())RiverBridges(road,holder);
+            Lap("roads guardrails");foreach(var road in HillcrestRoute.All())RiverBridges(road,holder);Lap("roads bridges");
             // Drivable gravel shoulders where the road runs on the ground (not on the causeway, in the tunnel or over the river).
             var gravel=WorldLook.Kit("Road verge gravel",new Color(.58f,.54f,.46f),WorldLook.Pattern.Rock,0,.1f,true);
             Shoulders(main.line,main.width*.5f,.03f,HillcrestRoute.PortalSouthRun+4,false,holder,gravel);
@@ -259,7 +289,7 @@ namespace LittleRoad
             float quayEnd=0;for(int i=1;i<main.line.Length&&main.line[i].z>HillcrestRoute.QuaySouth+1;i++)quayEnd+=Vector3.Distance(main.line[i],main.line[i-1]);
             // (Its top edge meets the road as built: across the quay the ribbon follows the island down to -0.14 m.)
             Physics.SyncTransforms();
-            float RoadTop(Vector3 q){foreach(var hit in Physics.RaycastAll(new Vector3(q.x,20,q.z),Vector3.down,60))if(hit.collider.GetComponent<RoadSurface>()!=null)return hit.point.y;return float.NaN;}
+            float RoadTop(Vector3 q){float top=float.NaN;foreach(var hit in Physics.RaycastAll(new Vector3(q.x,20,q.z),Vector3.down,60))if(hit.collider.GetComponent<RoadSurface>()!=null&&!(hit.point.y<=top))top=hit.point.y;return top;}   // (the highest: RaycastAll's order is arbitrary)
             Shoulders(main.line,main.width*.5f,.03f,0,false,holder,gravel,"Road shoulder",quayEnd,q=>SurfacePoint(q,out var hit,false)?hit.point.y:-30,RoadTop);
             Shoulders(valleyRoad,valleyWidth*.5f,.024f,0,false,holder,gravel);
             if(QuarryHills.Enabled)foreach(var name in new[]{QuarryHills.QuarryRoadName,QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.HaulRoadName,QuarryHills.KettleRoadName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName}){var q=HillcrestRoute.Find(name);Shoulders(q.line,q.width*.5f,.02f,0,false,holder,gravel);}Shoulders(stationRoad,stationWidth*.5f,.018f,0,false,holder,gravel);Shoulders(crest.line,crest.width*.5f,.018f,0,false,holder,gravel);
@@ -267,7 +297,7 @@ namespace LittleRoad
             // Quarry Hills' junctions: shoulders across each mouth (the gap between a road's own shoulder and the kerb ramps
             // left a 16 cm step) and low stone walls where a corner's ground stands well above or below the road.
             if(QuarryHills.Enabled){Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&QuarryHills.Contains(n.at.x,n.at.z))MouthShoulders(n,holder,gravel);}
-            RacewayCircuit(holder);
+            Lap("roads shoulders and junctions");RacewayCircuit(holder);Lap("roads raceway");
         }
         // Hillcrest Raceway: 16 m asphalt with runoff, edge paint, corner kerbs, start line and gantry.
         void RacewayCircuit(Transform parent)
@@ -276,20 +306,21 @@ namespace LittleRoad
             var runoff=TrialWorld.Material("Raceway runoff",new Color(.86f,.80f,.62f),0,.1f);
             // Runoff is solid (no drop off the asphalt edge) but grips like dirt.
             // Both carry RoadSupport: race cars on an elevated circuit only drive on road-support geometry.
-            var off=Ribbon("Raceway runoff",line,26,.012f,holder,runoff,true,true);Object.DestroyImmediate(off.GetComponent<RoadSurface>());off.AddComponent<RoadSupport>();
-            Shoulders(line,13,.012f,0,true,holder,WorldLook.Kit("Raceway verge",new Color(.52f,.56f,.36f),WorldLook.Pattern.Rock,0,.08f,true),"Raceway shoulder");
+            var off=Ribbon("Raceway runoff",line,26,.012f,holder,runoff,true,true);Object.DestroyImmediate(off.GetComponent<RoadSurface>());off.AddComponent<RoadSupport>();Lap("raceway runoff");
+            Shoulders(line,13,.012f,0,true,holder,WorldLook.Kit("Raceway verge",new Color(.52f,.56f,.36f),WorldLook.Pattern.Rock,0,.08f,true),"Raceway shoulder");Lap("raceway shoulders");
             // Armco along the run-off's outer edge where the ground falls away (the climb to the hairpins): track standards.
             // And on the outside of every bend tighter than 120 m, 30 m either side (docs/70): class B cars left the circuit
             // at ~240 m and ~930 m, crossed the run-off and stuck in the terrain beyond (doc 57 2.4: guarded or drivable).
             // (--no-corner-barriers: judge the AI on staying on the road, docs/71.)
-            Guardrails(line,26,holder,0,true,HillcrestRoute.Circuit,false,LittleRoad.RaceTrial.Has("--no-corner-barriers")?null:CatchSides(line,RacewayCatchRadius,RacewayCatchReach));
+            Guardrails(line,26,holder,0,true,HillcrestRoute.Circuit,false,LittleRoad.RaceTrial.Has("--no-corner-barriers")?null:CatchSides(line,RacewayCatchRadius,RacewayCatchReach));Lap("raceway guardrails");
             Ribbon("Raceway asphalt",line,LittleRoad.Circuit.Width,.03f,holder,asphaltMainland,true,true).AddComponent<RoadSupport>();
-            TrialWorld.RubberedLine(new LittleRoad.Circuit(line),holder,.045f);
+            Lap("raceway asphalt");TrialWorld.RubberedLine(new LittleRoad.Circuit(line),holder,.045f);Lap("raceway rubbered line");
             var white=TrialWorld.Material("Raceway paint",new Color(.97f,.97f,.92f),0,.3f);var coral=TrialWorld.Material("Raceway kerb red",new Color(.86f,.2f,.18f),0,.3f);
             foreach(int side in new[]{-1,1}) {
                 var edge=new Vector3[n];for(int i=0;i<n;i++){Vector3 f=line[(i+1)%n]-line[(i+n-1)%n];f.y=0;edge[i]=line[i]+Vector3.Cross(Vector3.up,f.normalized)*side*7.7f;}
                 Ribbon("Raceway edge paint",edge,.18f,.042f,holder,white,false,true);
             }
+            Lap("raceway edge paint");
             // Kerbs where the circuit bends.
             float run=0;int block=0;
             for(int i=0;i<n;i++) {
@@ -298,6 +329,7 @@ namespace LittleRoad
                 var f=(b-a);var right=Vector3.Cross(Vector3.up,new Vector3(f.x,0,f.z).normalized);block++;
                 foreach(int side in new[]{-1,1}){bool odd=block%2==0;var k=Piece("Raceway kerb",a+right*side*8.25f+Vector3.up*(odd?.058f:.055f),new Vector3(.7f,odd?.106f:.10f,3.8f),odd?coral:white);k.transform.rotation=Quaternion.LookRotation(f);}
             }
+            Lap("raceway kerbs");
             // Start line, grid marks, gantry.
             Vector3 s0=line[0],fw=(line[1]-line[n-1]);fw.y=0;fw.Normalize();var r0=Vector3.Cross(Vector3.up,fw);var dark=TrialWorld.Material("Raceway check",new Color(.1f,.1f,.12f),0,.3f);
             for(int i=0;i<16;i++)for(int j=0;j<2;j++){var c=Piece("Start finish",s0+r0*(-7.5f+i)+fw*j*.55f+Vector3.up*.046f,new Vector3(1,.02f,.55f),(i+j)%2==0?white:dark);c.transform.rotation=Quaternion.LookRotation(fw);}
@@ -464,7 +496,8 @@ namespace LittleRoad
         void MouthShoulders(RoadNetwork.Node n,Transform parent,Material material)
         {
             var v=new List<Vector3>();var t=new List<int>();var walls=new List<Matrix4x4>();
-            float RoadTop(Vector3 p,float fallback){foreach(var h in Physics.RaycastAll(p+Vector3.up*3,Vector3.down,6))if(h.collider.GetComponentInParent<RoadSurface>()!=null)return h.point.y;return fallback;}
+            // (The highest road surface: RaycastAll's order is arbitrary, so "the first found" depended on physics internals.)
+            float RoadTop(Vector3 p,float fallback){float top=float.NaN;foreach(var h in Physics.RaycastAll(p+Vector3.up*3,Vector3.down,6))if(h.collider.GetComponentInParent<RoadSurface>()!=null&&!(h.point.y<=top))top=h.point.y;return float.IsNaN(top)?fallback:top;}
             foreach(var a in n.arms) {
                 var along=a.dir;along.y=0;if(along.sqrMagnitude<1e-4f)continue;along.Normalize();
                 foreach(var corner in new[]{a.MouthLeft,a.MouthRight}) {
@@ -818,25 +851,38 @@ namespace LittleRoad
         static readonly List<(List<Matrix4x4> walls,Transform parent)> cornerWalls=new();static Material cornerStoneShared;
         // (Street review, 4 Oct: on Quay road the rail guarded a drop behind the houses, and ran along the kerb in front of their
         // doors.) After the towns are built: no rail where a building stands within 9 m beyond it.
-        public static int TrimRails()
+        // (`now`: only the rails and corner walls where it says so; the rest wait for a later call, after a background
+        // district's buildings exist: Districts. Null: all of them.)
+        // (Where the last call built corner walls: a background district batches its own.)
+        public static readonly List<Transform> TrimmedWallParents=new();
+        public static int TrimRails(System.Func<Vector3,bool> now=null)
         {
             int removed=0;
+            // Buildings (4.5 x 4.5 x 4 m and up) in a 16 m grid (docs/72): each rail checks the buildings in the cells it
+            // looks into, not all ~7,400 footprints (that took ~0.5 s at load). Same tests, same result.
+            const float Cell=16;var grid=new Dictionary<(int,int),List<int>>();var feet=BayviewKit.Footprints;
+            for(int k=0;k<feet.Count;k++){var b=feet[k];if(b.size.x<4.5f||b.size.z<4.5f||b.size.y<4)continue;
+                for(int gx=Mathf.FloorToInt((b.min.x-6)/Cell);gx<=Mathf.FloorToInt((b.max.x+6)/Cell);gx++)for(int gz=Mathf.FloorToInt((b.min.z-6)/Cell);gz<=Mathf.FloorToInt((b.max.z+6)/Cell);gz++){
+                    if(!grid.TryGetValue((gx,gz),out var list))grid[(gx,gz)]=list=new List<int>();list.Add(k);}}
+            List<int> Near(Vector3 q)=>grid.TryGetValue((Mathf.FloorToInt(q.x/Cell),Mathf.FloorToInt(q.z/Cell)),out var list)?list:null;
+            var later=new List<(GameObject,Vector3,Vector3)>();
             foreach(var (piece,edge,outward) in railPieces) {
-                if(piece==null)continue;bool house=false;
-                foreach(var b in BayviewKit.Footprints){if(b.size.x<4.5f||b.size.z<4.5f||b.size.y<4)continue;
-                    for(float o=1;o<=9&&!house;o+=2){var q=edge+outward*o;if(b.Contains(new Vector3(q.x,b.center.y,q.z)))house=true;}if(house)break;}
+                if(piece==null)continue;if(now!=null&&!now(edge)){later.Add((piece,edge,outward));continue;}bool house=false;
+                for(float o=1;o<=9&&!house;o+=2){var q=edge+outward*o;var near=Near(q);if(near==null)continue;
+                    foreach(int k in near){var b=feet[k];if(b.Contains(new Vector3(q.x,b.center.y,q.z))){house=true;break;}}}
                 if(house){Object.Destroy(piece);removed++;}
             }
-            railPieces.Clear();
+            railPieces.Clear();railPieces.AddRange(later);
             // The junctions' corner walls, less any piece within 3 m of a building.
+            var laterWalls=new List<(List<Matrix4x4>,Transform)>();TrimmedWallParents.Clear();
             foreach(var (list,parent) in cornerWalls) {
-                if(parent==null)continue;var kept=new List<Matrix4x4>();
-                foreach(var m in list){var p=(Vector3)m.GetColumn(3);bool house=false;
-                    foreach(var b in BayviewKit.Footprints){if(b.size.x<4.5f||b.size.z<4.5f||b.size.y<4)continue;var e=b;e.Expand(new Vector3(6,40,6));if(e.Contains(new Vector3(p.x,b.center.y,p.z))){house=true;break;}}
+                if(parent==null)continue;if(now!=null&&list.Exists(m=>!now((Vector3)m.GetColumn(3)))){laterWalls.Add((list,parent));continue;}TrimmedWallParents.Add(parent);var kept=new List<Matrix4x4>();
+                foreach(var m in list){var p=(Vector3)m.GetColumn(3);bool house=false;var near=Near(p);
+                    if(near!=null)foreach(int k in near){var e=feet[k];e.Expand(new Vector3(6,40,6));if(e.Contains(new Vector3(p.x,feet[k].center.y,p.z))){house=true;break;}}
                     if(house)removed++;else kept.Add(m);}
                 QuarryFloor.Combine("Corner walls",kept,cornerStoneShared,parent,true);
             }
-            cornerWalls.Clear();return removed;
+            cornerWalls.Clear();cornerWalls.AddRange(laterWalls);return removed;
         }
         public const float RacewayCatchRadius=120;public const int RacewayCatchReach=20;
         // Which side of each point of a closed loop is the outside of a bend tighter than `radius` (heading change over
@@ -869,7 +915,7 @@ namespace LittleRoad
                     // sits as far from the edge as our own centreline, so only a road clearly nearer counts.
                     if(steep){bool crossing=false;float ownDist=width*.5f+.55f;
                         // (A road a metre or more below isn't a crossing: it's the street under the drop, and the drop keeps its rail.)
-                        foreach(var road in HillcrestRoute.All()){if(road.line==line||road.line==own)continue;float d=HillcrestRoute.Distance(road.line,edge.x,edge.z,out float ry);if(d<Mathf.Min(road.width*.5f+2.5f,ownDist-1)&&ry>edge.y-1){crossing=true;break;}}
+                        foreach(var road in HillcrestRoute.All()){if(road.line==line||road.line==own||!NearBox(road,edge))continue;float d=HillcrestRoute.Distance(road.line,edge.x,edge.z,out float ry);if(d<Mathf.Min(road.width*.5f+2.5f,ownDist-1)&&ry>edge.y-1){crossing=true;break;}}
                         if(crossing)continue;}
                     var rail=Piece("Guardrail",edge+Vector3.up*.62f,new Vector3(.12f,.32f,len+.08f),i%2==0?white:red,true);rail.transform.rotation=Quaternion.LookRotation(f);railPieces.Add((rail,edge,right*side));
                     // Posts stand on the ground (Richard, 3 Oct: barriers floating by the bridge out of Hillcrest, where the
@@ -879,7 +925,23 @@ namespace LittleRoad
                 }
             }
         }
-        static bool RiverBelow(Vector3 p)=>HillcrestRoute.Distance(HillcrestRoute.River.line,p.x,p.z,out _)<26;
+        // A road's bounding box padded by its half-width and 3 m (docs/72: the crossing test above only needs the exact
+        // distance to roads near the rail, and checking every road's every point for every rail cost ~0.4 s at load).
+        static readonly Dictionary<Vector3[],Vector4> roadBoxes=new();
+        static bool NearBox(HillcrestRoute.Road road,Vector3 p)
+        {
+            if(!roadBoxes.TryGetValue(road.line,out var box)){float pad=road.width*.5f+3;box=new Vector4(float.MaxValue,float.MaxValue,float.MinValue,float.MinValue);
+                foreach(var q in road.line)box=new Vector4(Mathf.Min(box.x,q.x-pad),Mathf.Min(box.y,q.z-pad),Mathf.Max(box.z,q.x+pad),Mathf.Max(box.w,q.z+pad));roadBoxes[road.line]=box;}
+            return p.x>=box.x&&p.x<=box.z&&p.z>=box.y&&p.z<=box.w;
+        }
+        // (A padded box first, docs/72: most points are nowhere near the river, and the exact distance scans its whole line.)
+        static Vector4 riverBox=new(float.NaN,0,0,0);
+        static bool RiverBelow(Vector3 p)
+        {
+            if(float.IsNaN(riverBox.x)){riverBox=new Vector4(float.MaxValue,float.MaxValue,float.MinValue,float.MinValue);foreach(var q in HillcrestRoute.River.line)riverBox=new Vector4(Mathf.Min(riverBox.x,q.x-27),Mathf.Min(riverBox.y,q.z-27),Mathf.Max(riverBox.z,q.x+27),Mathf.Max(riverBox.w,q.z+27));}
+            if(p.x<riverBox.x||p.x>riverBox.z||p.z<riverBox.y||p.z>riverBox.w)return false;
+            return HillcrestRoute.Distance(HillcrestRoute.River.line,p.x,p.z,out _)<26;
+        }
         // Stone arch bridges where a road crosses the river: deck, parapets with colliders, arch ring.
         void RiverBridges(HillcrestRoute.Road road,Transform parent)
         {

@@ -324,7 +324,7 @@ namespace LittleRoad
             // All architectural pieces share a small material palette. Static
             // batching combines render work without removing editable modules.
             foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.GetComponent<TextMesh>()==null)renderer.gameObject.isStatic=true;
-            StaticBatchingUtility.Combine(root.gameObject);
+            if(CoastalLandscape.StaticBatching)StaticBatchingUtility.Combine(root.gameObject);
         }
     }
 }

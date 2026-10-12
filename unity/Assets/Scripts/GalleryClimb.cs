@@ -113,7 +113,9 @@ namespace LittleRoad
             Checkpoints.Add((Finish,StartDir,Finish.y-6));
             Physics.SyncTransforms();
             // Flag gates: at the start, each checkpoint and the finish, stood on whatever is solid under them.
-            Vector3 Down(Vector3 p){foreach(var h in Physics.RaycastAll(p+Vector3.up*6,Vector3.down,14))if(!h.collider.isTrigger&&h.point.y>p.y-8){p.y=Mathf.Max(h.point.y,p.y-8);return p;}return p;}
+            // (The highest solid hit: RaycastAll's order is arbitrary, so taking the first one found made the flags' heights
+            // depend on how the physics engine happened to store its colliders.)
+            Vector3 Down(Vector3 p){float top=float.MinValue;foreach(var h in Physics.RaycastAll(p+Vector3.up*6,Vector3.down,14))if(!h.collider.isTrigger&&h.point.y>p.y-8)top=Mathf.Max(top,h.point.y);if(top>float.MinValue)p.y=Mathf.Max(top,p.y-8);return p;}
             var flags=new BayviewKit.Tint(Color.white,Toy.Hex(0x229954),Toy.Hex(0xc0392b),Color.white);
             void Gate(Vector3 at,Vector3 dir,float half){var across=Vector3.Cross(Vector3.up,dir);foreach(int s in new[]{-1,1})if(BayviewKit.Has("flag_pole"))BayviewKit.Spawn("flag_pole",Down(at+across*s*half),0,parent,flags,null,false,1);}
             Gate(Start,StartDir,3.6f);for(int i=0;i<Checkpoints.Count;i++)Gate(Checkpoints[i].at,Checkpoints[i].dir,i==Checkpoints.Count-1?7:3.4f);

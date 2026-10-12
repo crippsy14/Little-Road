@@ -96,7 +96,8 @@ namespace LittleRoad
         // ---------------------------------------------------------------- fingerposts
         // At every junction (three or more roads): a post in the widest gap between the roads, one finger per road with
         // the two nearest places you reach that way (shortest route over the network), distances in miles.
-        public static void Fingerposts(Transform parent,RoadNetwork net,IList<(string name,Vector3 at)> places)
+        // (`only`: the junctions it accepts; null for all. A background district's junctions get theirs once it's built.)
+        public static void Fingerposts(Transform parent,RoadNetwork net,IList<(string name,Vector3 at)> places,Func<Vector3,bool> only=null)
         {
             if(net==null)return;Materials();Physics.SyncTransforms();
             var length=new Dictionary<RoadNetwork.Road,float>();foreach(var r in net.roads)length[r]=Length(r.line);
@@ -109,7 +110,7 @@ namespace LittleRoad
             }
             var root=new GameObject("Fingerposts").transform;root.SetParent(parent);
             foreach(var n in net.nodes) {
-                if(n.arms.Count<3||n.HasExternal)continue;
+                if(n.arms.Count<3||n.HasExternal||only!=null&&!only(n.at))continue;
                 var from=Dijkstra(net,n,length);
                 var fingers=new Dictionary<RoadNetwork.Arm,List<(string name,float d)>>();
                 foreach(var (name,road,s) in meets) {

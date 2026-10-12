@@ -55,10 +55,17 @@ namespace LittleRoad
             for(int i=0;i<count;i++){var p=road.At(i*length/count);centre[i]=new Vector2(p.x,p.z);}
             for(int i=0;i<count;i++){var f=(centre[(i+1)%count]-centre[(i+count-1)%count]).normalized;normal[i]=new Vector2(f.y,-f.x);}
             var path=new Vector2[count];var second=new Vector2[count];
-            for(int iteration=0;iteration<24000;iteration++) {
-                for(int i=0;i<count;i++)path[i]=centre[i]+normal[i]*offset[i];
-                for(int i=0;i<count;i++)second[i]=path[(i+count-1)%count]-2*path[i]+path[(i+1)%count];
-                for(int i=0;i<count;i++){var fourth=second[(i+count-1)%count]-2*second[i]+second[(i+1)%count];offset[i]=Mathf.Clamp(offset[i]-.025f*2*Vector2.Dot(normal[i],fourth),-bound,bound);}
+            // Cooked once (WorldCache, docs/72): the 24000 iterations took ~0.3 s for the Hillcrest Raceway on every start-up
+            // and race entry. Keyed by the road's control points and the bound, so a changed road bakes afresh.
+            ulong key=14695981039346656037;void Mix(float f){key=(key^(uint)System.BitConverter.SingleToInt32Bits(f))*1099511628211;}
+            foreach(var c in centre){Mix(c.x);Mix(c.y);}Mix(bound);string cache="smooth-line-"+key.ToString("x16");
+            if(!WorldCache.TryRead(cache,offset)) {
+                for(int iteration=0;iteration<24000;iteration++) {
+                    for(int i=0;i<count;i++)path[i]=centre[i]+normal[i]*offset[i];
+                    for(int i=0;i<count;i++)second[i]=path[(i+count-1)%count]-2*path[i]+path[(i+1)%count];
+                    for(int i=0;i<count;i++){var fourth=second[(i+count-1)%count]-2*second[i]+second[(i+1)%count];offset[i]=Mathf.Clamp(offset[i]-.025f*2*Vector2.Dot(normal[i],fourth),-bound,bound);}
+                }
+                WorldCache.Write(cache,offset);
             }
             for(int i=0;i<count;i++)path[i]=centre[i]+normal[i]*offset[i];
             return Sample(road,path,id,trackId,"runtime geometric seed, not validated ideal line","bounded bending-energy controls at ~8m;24000 iterations;"+bound+"m offset bound; periodic cubic B-spline");

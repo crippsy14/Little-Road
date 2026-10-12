@@ -13,6 +13,7 @@ if($Track -in 'bayview','hillcrest','quarry'){$opts.BayviewTransferStudy=$true;$
 if($PaceAudit){$opts.PedalStageAudit=$true;$opts.ContextPlanAudit=$true;$opts.OpeningDecisionAudit=$true;$opts.ContinuationAudit=$true}
 # Staggered planning (3 groups) is part of the preset; -StaggerContextPlans is accepted for old commands.
 if($ContextPlanGroups -ne 3){$opts.ExtraArguments+=@('--context-plan-groups',$ContextPlanGroups.ToString())}
+if($KeepTelemetry){$opts.ExtraArguments+='--telemetry'}   # (the game writes per-tick files only when asked)
 if($Rendered){
  if(Get-Process Unity,'Little Road Unity' -ErrorAction SilentlyContinue){throw 'Close competing project editors/game processes before a rendered comparison.'}
  $opts.Visible=$true;$opts.Windowed=$true
