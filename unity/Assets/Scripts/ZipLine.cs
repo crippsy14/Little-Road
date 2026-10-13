@@ -8,7 +8,7 @@ namespace LittleRoad
     // Hillcrest Castle zipline: one cable from the Zip Tower in the castle's north wall down to the
     // lower-town station. A car rides it hanging in the trolley's cradle: hoisted to the launch deck, out
     // along the sagging cable (a fast zip down, a steady winch up) and lowered into the other bay.
-    // One trolley shuttles; called from the far end it runs over empty first.
+    // One trolley; called from the far end it is simply waiting there (no empty run over first).
     public sealed class ZipLine
     {
         public static ZipLine Active;
@@ -121,8 +121,10 @@ namespace LittleRoad
         // Empty run to the other end so the trolley is where the car is.
         public IEnumerator Fetch(bool toTop)
         {
+            // The trolley is simply waiting at the end it's called to (Richard, 14 Oct: the empty run from the far end was just
+            // a wait). It used to travel the whole line first.
             if(TrolleyAtTop==toTop)yield break;
-            yield return Travel(toTop?parkBottom:parkTop,toTop?parkTop:parkBottom,null,true);Park(toTop);
+            Park(toTop);yield return null;
         }
         // Carries the car from one end to the other. The car must be kinematic for the ride.
         public IEnumerator Ride(RoadCar car,bool down)

@@ -233,7 +233,9 @@ namespace LittleRoad
             Vector3 m=(a+b+c)/3,n0=HillcrestRoute.PortalNorth,s0=HillcrestRoute.PortalSouth;
             Vector2 axis=new(s0.x-n0.x,s0.z-n0.z);float length=axis.magnitude;axis/=length;Vector2 rel=new(m.x-n0.x,m.z-n0.z);
             float along=Vector2.Dot(rel,axis),lateral=Mathf.Abs(axis.x*rel.y-axis.y*rel.x);
-            if(lateral>7.5f||(Mathf.Abs(along)>5&&Mathf.Abs(along-length)>5))return false;
+            // (Up to 1 m past each portal face, not 5: outside the face the pavements are narrower than the bore, and the
+            // strips beside them were open holes down to the sea; bug inbox #4.)
+            if(lateral>7.5f||along< -1||along>length+1)return false;
             float road=Mathf.Lerp(n0.y,s0.y,Mathf.Clamp01(along/length)),low=Mathf.Min(a.y,Mathf.Min(b.y,c.y)),high=Mathf.Max(a.y,Mathf.Max(b.y,c.y));
             return low<road+9.5f&&high>road-1.5f&&high<road+ValleyField.PortalShelf+1;
         }
@@ -1106,7 +1108,7 @@ namespace LittleRoad
             // A taxi and a couple of visitors' cars in the forecourt.
             foreach(var (body,paint,z,yaw,who,lines) in new[]{
                 ("taxi",Toy.Hex(0xffd23f),-152.5f,0f,"Terry",new[]{"Taxi! Well, I'm the taxi. You're a car. Awkward.","Station to the square? Faster by train, if I'm honest."}),
-                ("bubble",Toy.Hex(0xff7ac8),-111f,180f,"Poppy",new[]{"I'm meeting my nan off the 4:10!","The train goes right through the cliff. Through it!"}),
+                ("bubble",Toy.Hex(0xff7ac8),-134f,180f,"Poppy",   /* (not -111: the flower bed there; bug inbox #5) */new[]{"I'm meeting my nan off the 4:10!","The train goes right through the cliff. Through it!"}),
                 ("camper",Toy.Hex(0x3ee6a4),-120.5f,180f,"Dune",new[]{"Surf's up on the mainland, apparently.","Just waiting for the ferry. Oh wait, it's a train."})}) {
                 var car=TrialWorld.Car(body,paint);car.name="Halt "+body;car.transform.SetParent(holder);car.transform.SetPositionAndRotation(new Vector3(building-2.6f,.02f,z),Quaternion.Euler(0,yaw,0));
                 var box=car.AddComponent<BoxCollider>();box.center=CarBodies.Envelope.center;box.size=CarBodies.Envelope.size;car.tag="Respawn";

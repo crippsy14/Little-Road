@@ -77,7 +77,6 @@ public static class SoundChecks
         checks.Add($"All {recorded} engines play recorded grain banks");
         // The in-game scorecard's tools (docs/55) change nothing unless asked: the scripted test drive is off, and the
         // limiter's cut keeps its level.
-        Check(!AudioDirector.Silent,"Game audio reaches the speakers unless --silent (test runs) is passed");
         Check(!SoundDrive.On&&Math.Abs(GrainSynth.CutLevel-.5f)<1e-6f,"In-game scorecard tools are off by default (--sound-drive, --audio-capture-silent)");
         // Lifting off (docs/55, the engine scorecard): every bank carries its recording's measured lift-off drop and
         // rise with revs, and a lift fades rather than steps (real engines lose 1-2 dB in the first half second; the
@@ -121,6 +120,8 @@ public static class SoundChecks
                 float rms=(float)Math.Sqrt(sum/length);Check(finite&&peak<=1&&rms>.002f,$"Ambience {name} sounds (rms {rms:0.000})");
             }
         }
+        // Test runs never reach the speakers (Richard, 14 Oct): the build itself runs in batch mode, so it is a test run here.
+        Check(AudioDirector.Silent,"Test runs are muted (batch mode, --silent, --*-test/-review/-audit; --audible opts back in)");
         return checks;
     }
 }

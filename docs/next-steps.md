@@ -12,6 +12,10 @@
   - Pinned checks are loosened to rules, unused tools are removed, and one line-ending script remains.
   - Races are unchanged: studies 224 and 225 are identical.
   - The regression now races a 24-car Bayview lap.
+- **14 October:** snap bugs #3–#10 fixed and checked; muting enforced for every test window; photos removed once checked;
+  wheel finishes and stripes now show in game (they had no colour rule); Rally saloon and Zenith GT race only 8★–10★ C events.
+  **The Car Forge spec ([doc 75](75-car-forge-spec.md))** is written for Richard's approval: a new panel-based car generator
+  with object-space liveries, for about 170 bodies across C, B, A, S and E.
 - **Next three pieces (rolling plan, docs/73 §2):**
   1. **Fix round for the inbox, in order.** First the field stripes on the valley road and the tunnel-mouth gaps (things a player drives through), then the floating bushes, terrace walls and cables, then the placements (Poppy, Rollo), then the zip-line camera and the class C field.
   2. **The 12 open area-audit banks** listed below.

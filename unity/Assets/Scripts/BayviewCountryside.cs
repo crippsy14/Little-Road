@@ -29,6 +29,21 @@ namespace LittleRoad
         public BayviewCountryside(CoastalLandscape landscape,Circuit circuit,Transform parent){land=landscape;track=circuit;root=parent;}
         Vector3 Ground(Vector3 p){p.y=land.SurfacePoint(p,out var hit,false)?hit.point.y:land.Height(p.x,p.z);return p;}
         GameObject Put(string id,Vector3 p,float yaw,BayviewKit.Tint tint=null,float scale=1,bool solid=true)=>BayviewKit.Spawn(id,Ground(p)+Vector3.down*.05f,yaw,root,tint,solid:solid,scale:scale);
+        // A long row piece (vines, lavender: about 11.5 m along its local X) follows the ground along its length: tilted from
+        // end to end, and lowered until no point of it is above the ground (one height from its middle left the ends in the
+        // air on a slope, bug inbox #6). Where the ground bends more than 0.5 m away from a straight row, or the row would
+        // lean more than 15°, it isn't planted.
+        GameObject PutRow(string id,Vector3 p,float yaw,float half=5.75f)
+        {
+            var axis=Quaternion.Euler(0,yaw,0)*Vector3.right;var g=new float[5];
+            for(int k=0;k<5;k++)g[k]=Ground(p+axis*(half*(k-2)*.5f)).y;
+            float rise=g[4]-g[0],gap=0,bend=0;
+            for(int k=0;k<5;k++){float line=g[0]+rise*k/4f;gap=Mathf.Max(gap,line-g[k]);bend=Mathf.Max(bend,Mathf.Abs(line-g[k]));}
+            float lean=Mathf.Atan2(rise,2*half)*Mathf.Rad2Deg;
+            if(bend>.5f||Mathf.Abs(lean)>15)return null;
+            var go=BayviewKit.Spawn(id,new Vector3(p.x,(g[0]+g[4])*.5f-gap-.05f,p.z),yaw,root,null,solid:false,scale:1);
+            go.transform.rotation=Quaternion.Euler(0,yaw,0)*Quaternion.Euler(0,0,lean);return go;
+        }
         static BayviewKit.Tint T(int wall,int shutter,int awning,int door)=>new(Toy.Hex(wall),Toy.Hex(shutter),Toy.Hex(awning),Toy.Hex(door));
         public void Build()
         {
@@ -91,13 +106,14 @@ namespace LittleRoad
             var mesh=new Mesh{name=name};mesh.SetVertices(v);mesh.SetTriangles(t,0);mesh.RecalculateNormals();
             var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root);go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;
         }
-        // Rows along the contour (across the slope), alternating lavender and vines, with a flowering edge.
+        // Rows along the contour (across the slope), alternating lavender and vines, with a flowering edge. (One direction per
+        // plot keeps the rows parallel; PutRow tilts each piece to the ground along it.)
         void CropPlots()
         {
             for(int k=0;k<Plots.Count;k++) {
                 var c=Plots[k];float gx=land.Height(c.x+4,c.z)-land.Height(c.x-4,c.z),gz=land.Height(c.x,c.z+4)-land.Height(c.x,c.z-4);
                 float yaw=Mathf.Atan2(gx,gz)*Mathf.Rad2Deg+90;var rot=Quaternion.Euler(0,yaw,0);string id=k%2==0?"lavender_row":"vine_row";
-                for(int r=0;r<11;r++)for(int col=-1;col<=1;col++)Put(id,c+rot*new Vector3(col*11.5f,0,-PlotHalf+2+r*2.8f),yaw,null,1,false);
+                for(int r=0;r<11;r++)for(int col=-1;col<=1;col++)PutRow(id,c+rot*new Vector3(col*11.5f,0,-PlotHalf+2+r*2.8f),yaw);
                 for(int e=-2;e<=2;e++)Put("flower_bush",c+rot*new Vector3(e*6.5f,0,-PlotHalf-.5f),e*40,null,.8f,false);
             }
             Debug.Log("LITTLE_ROAD_BAYVIEW_PLOTS count="+Plots.Count);
@@ -136,14 +152,15 @@ namespace LittleRoad
                 // The board's arrows point along its local +X (the driver's left); mirror for right-handers.
                 if(bend<0)sign.transform.localScale=new Vector3(-1,1,1);
             }
-            // Telegraph poles along the inside of the northern stretch, wires sagging between them.
+            // Telegraph poles along the inside of the northern stretch, wires sagging between them. Not up the cut banks: a pole
+            // more than 4 m above the road, or a span that climbs more than 3 m, breaks the line (bug inbox #7).
             Vector3? last=null;
             for(float d=track.length*.30f;d<track.length*.62f;d+=26) {
                 Vector3 p=track.At(d)-track.Right(d)*21f;
-                if(!land.SolidClearance(p)||Reserved(p)){last=null;continue;}
+                if(!land.SolidClearance(p)||Reserved(p)||Ground(p).y-track.At(d).y>4){last=null;continue;}
                 var pole=Put("telegraph_pole",p,Quaternion.LookRotation(track.Forward(d)).eulerAngles.y+90);
                 var top=pole.transform.position+Vector3.up*6.8f;
-                if(last is Vector3 a)foreach(float o in new[]{-.8f,.8f})Wire(a+pole.transform.right*o,top+pole.transform.right*o);
+                if(last is Vector3 a&&Mathf.Abs(a.y-top.y)<3)foreach(float o in new[]{-.8f,.8f})Wire(a+pole.transform.right*o,top+pole.transform.right*o);
                 last=top;
             }
         }

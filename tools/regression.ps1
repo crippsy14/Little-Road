@@ -44,3 +44,9 @@ $exe=Join-Path $root '../little-road-dev-build/Little Road Unity.exe';$f=Join-Pa
 $p=Start-Quiet -FilePath $exe -ArgumentList @('-monitor','1','--start-windowed','-screen-width','640','-screen-height','360','-screen-fullscreen','0','--trial-track','test-loop','--trial-cars','1','--trial-laps','10','--trial-duration','60','--trial-auto','--sound-drive','--audio-capture',('"'+(Join-Path $f 'player.wav')+'"'),'--audio-capture-seconds','60','--audio-capture-silent','-logFile',('"'+(Join-Path $f 'player.log')+'"'))
 if(-not $p.WaitForExit(200000)){$p.Kill()}
 & "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\bin\python.exe" -c "import wave,struct,math,sys;w=wave.open(sys.argv[1]);n=w.getnframes();d=w.readframes(n);s=struct.unpack('<%dh'%(len(d)//2),d);print('sound smoke rms',round(math.sqrt(sum(x*x for x in s)/max(1,len(s))),1))" (Join-Path $f 'player-engine.wav')
+# The tests report in text; their pictures are removed once the run is done (Richard, 14 Oct: photos are removed after
+# they're checked). Text, logs and the sound smoke's wav stay for the cleanup's usual pruning.
+$runs=@(Get-ChildItem (Join-Path $root 'review') -Directory -Recurse -Filter "$Name-*" -ErrorAction SilentlyContinue)
+$pictures=@($runs|ForEach-Object{Get-ChildItem $_.FullName -Recurse -Filter *.png -ErrorAction SilentlyContinue})
+$pictures|Remove-Item -Force -ErrorAction SilentlyContinue
+Write-Output "pictures removed: $($pictures.Count)"

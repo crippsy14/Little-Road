@@ -38,6 +38,9 @@ function Start-Quiet {
     param([Parameter(Mandatory)][string]$FilePath,[object[]]$ArgumentList=@(),[string]$WindowStyle='Normal',[switch]$PassThru,[string]$WorkingDirectory)
     $exe=[IO.Path]::GetFullPath($FilePath);$dir=if($WorkingDirectory){$WorkingDirectory}else{Split-Path $exe}
     $argLine=($ArgumentList|ForEach-Object{[string]$_}) -join ' '
+    # Every test window is muted (Richard, 14 Oct: "super important that everything be muted"). --silent zeroes the game's
+    # master volume (AudioDirector.Silent); audio still runs and can be captured. Added here, so no tool can forget it.
+    if([IO.Path]::GetFileName($exe) -eq 'Little Road Unity.exe' -and $argLine -notmatch '(^|\s)--(audio-capture-)?silent(\s|$)'){$argLine='--silent '+$argLine}
     $before=[LittleRoad.QuietStart]::GetForegroundWindow()
     $show=switch($WindowStyle){'Hidden'{0}'Minimized'{7}default{4}}
     $id=[LittleRoad.QuietStart]::Start($exe,$argLine,$dir,[int16]$show)

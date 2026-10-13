@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using UnityEngine;
 
 namespace LittleRoad
@@ -159,12 +160,13 @@ namespace LittleRoad
         static RaceRoster Recipe(AdventureProgress save,string eventId,string raceClass,int stars,RaceRoster trial,int seed,int laps,string track,bool reversed,string title,bool modern,string[] lowBodies,string[] highBodies)
         {
             var entries=new RaceEntrant[24];
+            bool topC=CarBodies.TopCOpen(raceClass,stars);if(!topC)highBodies=highBodies.Where(b=>Array.IndexOf(CarBodies.TopC,b)<0).ToArray();
             var low=CarBodies.Deal(lowBodies,24,seed);var high=CarBodies.Deal(highBodies,24,seed+1);int l=0,h=0;
             for(int i=1;i<24;i++) {
                 var e=trial.Entries[i];string disc=FieldRecipe.Discipline(track);var parts=FieldRecipe.Kit(raceClass,disc,stars,e.Slot,seed,out float level);
                 var driver=modern?FieldRecipe.Driver(i,seed,raceClass,e.Slot,true):null;
                 bool flagship=raceClass=="C"&&disc=="road"&&e.Slot==0;string label=$"class {raceClass} {stars}★ recipe kit {Mathf.RoundToInt(level*100)}%";
-                entries[i]=new RaceEntrant(e.Id,e.Slot,flagship?CarBodies.Flagship:level>=.6f?high[h++]:low[l++],flagship?FlagshipPaint:e.Paint,label,parts,driver);
+                entries[i]=new RaceEntrant(e.Id,e.Slot,flagship?(topC?CarBodies.Flagship:CarBodies.LowFlagship):level>=.6f?high[h++]:low[l++],flagship?FlagshipPaint:e.Paint,label,parts,driver);
             }
             entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
             return new RaceRoster(seed,laps,track,title,modern,entries,eventId,reversed);

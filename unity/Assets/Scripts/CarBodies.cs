@@ -16,6 +16,11 @@ namespace LittleRoad
         public static readonly string[] Family={"pebble","tallboy","marlow","dover","heron","bramble","picnic","kipper","doodle","otter"};
         // Club-spec field: mass-produced sporty bodies.
         public static readonly string[] Sporty={"sprint","comet","rally","roadster"};
+        // The fastest-looking C cars race only the top C events, 8★ to 10★ on the finished game's 1-10★ C ladder (Richard,
+        // 14 Oct: "keep the Rally saloon and Zenith for higher-star races ... from 8 upwards"); below that the pole-sitter's
+        // livery goes on the Comet.
+        public static readonly string[] TopC={"rally",Flagship};public const int TopCStars=8;public const string LowFlagship="comet";
+        public static bool TopCOpen(string raceClass,int stars)=>raceClass!="C"||stars>=TopCStars;
         // Hillcrest townsfolk: free-roam residents only, never dealt into race fields.
         public static readonly string[] Townsfolk={"bubble","beetle","taxi","camper","gelato","minibus","ritz","postvan"};
         // Quarry Hills' off-roaders (Richard, 3 Oct): stock class C cars with an off-road look. They race the rallycross and fill

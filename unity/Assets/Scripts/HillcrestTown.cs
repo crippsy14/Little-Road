@@ -757,9 +757,19 @@ namespace LittleRoad
                         var p=At(r,a+(use=="olives"?(float)(rng.NextDouble()-.5)*step*.4f:0));
                         if(use=="vines"||use=="lavender") {
                             if(!Clear(p,new Vector3(12.8f,3,2.4f),a))continue;
+                            // (At the lowest ground along the row, as the walls below: bug inbox #6/#10.)
+                            {var axis=Quaternion.Euler(0,a,0)*Vector3.right;float low=p.y;for(int k=-2;k<=2;k++){var q=p+axis*(k*3.2f);low=Mathf.Min(low,H(q.x,q.z));}
+                            if(p.y-low>.7f)continue;p.y=low;}
                             Put(use=="vines"?"vine_row":"lavender_row",p+Vector3.down*.04f,a,null,null,1,false);pieces++;
                             // Dry-stone terrace wall on the downhill side of every other terrace.
-                            if(terrace%3==0){var w=At(r+1.5f,a);Box("Terrace wall",w+Vector3.up*.15f,new Vector3(12.8f,1.1f,.6f),Quaternion.Euler(0,a,0),plinth,false);}
+                            // It stands on the ground along its whole length: its foot under the lowest point, its top
+                            // 0.7 m over the highest (one height from its middle left the downhill end in the air, bug inbox #10).
+                            if(terrace%3==0) {
+                                var w=At(r+1.5f,a);var along=Quaternion.Euler(0,a,0)*Vector3.right;float low=float.MaxValue,high=float.MinValue;
+                                for(int k=-2;k<=2;k++){var q=w+along*(k*3.2f);float g=H(q.x,q.z);low=Mathf.Min(low,g);high=Mathf.Max(high,g);}
+                                float foot=low-.4f,top=high+.7f;
+                                if(top-foot<2.4f)Box("Terrace wall",new Vector3(w.x,(foot+top)*.5f,w.z),new Vector3(12.8f,top-foot,.6f),Quaternion.Euler(0,a,0),plinth,false);
+                            }
                         } else if(use=="olives") {
                             if(!Clear(p,new Vector3(5,5,5),0))continue;
                             Put("olive_tree",p+Vector3.down*.05f,(float)rng.NextDouble()*360,null,null,.85f+(float)rng.NextDouble()*.35f);pieces++;
@@ -801,7 +811,7 @@ namespace LittleRoad
             // Fields share the farm's grid and axis (as real field systems do), in two sizes.
             for(float gx=-700;gx<1000;gx+=74)for(float gz=-690;gz>-1520;gz-=62) {
                 float x=gx,z=gz;bool big=rng.NextDouble()<.5;float w=big?60:42,d=big?44:34;
-                if(Vector2.Distance(new(x,z),HillcrestRoute.HillCentre)<215||!FieldClear(x,z,Mathf.Max(w,d)*.5f))continue;
+                if(Vector2.Distance(new(x,z),HillcrestRoute.HillCentre)<215||!FieldClear(x,z,Mathf.Max(w,d)*.5f)||!FootprintClear(x,z,w,d))continue;
                 if(rng.NextDouble()<.25)continue;
                 reserved.Add((new(x,z),Mathf.Max(w,d)*.55f));fields++;
                 // Hedgerows along one or two of the field's edges, with gaps and the odd tree.
@@ -842,6 +852,22 @@ namespace LittleRoad
             Flush();Debug.Log("LITTLE_ROAD_HILLCREST_FIELDS fields="+fields);
         }
         static Material fieldMaterial;
+        // A field's whole rectangle (either way round, as it isn't turned yet) stays off the roads and their verges. FieldClear
+        // alone samples the centre and four points on a circle, so a road across a corner or an edge between them got the
+        // striped field draped over it (bug inbox #3, the valley S-bend at (0,-736)).
+        public static bool FootprintClear(float x,float z,float w,float d)
+        {
+            foreach(float yaw in new[]{HillcrestRoute.FarmYaw,HillcrestRoute.FarmYaw+90}) {
+                var rot=Quaternion.Euler(0,yaw,0);
+                for(float u=-w*.5f-2;u<=w*.5f+2.01f;u+=Mathf.Max(1,(w+4)/Mathf.Ceil((w+4)/5)))
+                    for(float v=-d*.5f-2;v<=d*.5f+2.01f;v+=Mathf.Max(1,(d+4)/Mathf.Ceil((d+4)/5))) {
+                        var p=new Vector3(x,0,z)+rot*new Vector3(u,0,v);
+                        if(ValleyField.RoadDistance(p.x,p.z)<RoadMargin)return false;
+                    }
+            }
+            return true;
+        }
+        public const float RoadMargin=11;   // from a centreline: the raceway's 8 m half-width and run-off, or a lane road and its verge
         bool FieldClear(float x,float z,float r)
         {
             foreach(var d in new[]{Vector2.zero,new Vector2(r,0),new Vector2(-r,0),new Vector2(0,r),new Vector2(0,-r)}) {

@@ -13,7 +13,9 @@ namespace LittleRoad
         public static bool Enabled=>!Application.isBatchMode&&!RaceTrial.Has("--no-audio");
         // --silent: everything still plays and is captured (--audio-capture taps the synth before the listener), but nothing
         // reaches the speakers. Every automated run passes it, so test runs don't sound over the player's PC (Richard, 2 Oct).
-        public static bool Silent=>RaceTrial.Has("--silent")||RaceTrial.Has("--audio-capture-silent");
+        // Any test run is muted even without it (Richard, 14 Oct: "super important that everything be muted"); --audible
+        // opts a test run back in, for a deliberate listen.
+        public static bool Silent=>RaceTrial.Has("--silent")||RaceTrial.Has("--audio-capture-silent")||TestInputIsolation.IsTestRun&&!RaceTrial.Has("--audible");
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void MuteAtStart(){if(Silent)AudioListener.volume=0;}
         static AudioDirector instance;

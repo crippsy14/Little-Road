@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using LittleRoad;
 using UnityEngine;
@@ -27,6 +28,11 @@ public static class RaceRosterChecks
         Require(CarPerformanceRating.Calculate(EquipmentCatalog.Stats(roadTyres))>stock,"road grip upgrade not reflected");
         checks.Add($"Dry-road rating has equipment ordering ({stock}/{street}/{club}) and no unbounded reward for unreachable gearing");
 
+        // Class C fields race class C bodies only (Richard, 14 Oct): B bodies, and the <id>_tuner kits that move a C car onto
+        // the B chassis, belong to class B. Every C venue, every star.
+        {var c0=AdventureProgress.New();foreach(var field in new[]{RaceRoster.Adventure(c0),RaceRoster.AdventureHillcrest(c0),RaceRoster.AdventureQuarry(c0)})
+            foreach(var e in field.Entries)Require(Array.IndexOf(CarBodies.Tuner,e.Body)<0&&Array.IndexOf(CarBodies.TunerOffRoad,e.Body)<0&&!e.Body.EndsWith("_tuner"),"class B body "+e.Body+" in a class C field ("+field.Title+")");}
+        {var c1=AdventureProgress.New();var low=RaceRoster.Adventure(c1);var high=RaceRoster.AdventureHillcrest(c1);Require(low.Entries.All(e=>Array.IndexOf(CarBodies.TopC,e.Body)<0)&&high.Entries.All(e=>Array.IndexOf(CarBodies.TopC,e.Body)<0)&&!CarBodies.TopCOpen("C",7)&&CarBodies.TopCOpen("C",8)&&CarBodies.TopCOpen("B",1),"the Rally saloon and Zenith GT race only the 8-10 star class C events");}
         var save=AdventureProgress.New();var roster=RaceRoster.Adventure(save);var same=RaceRoster.Adventure(save);
         Require(roster.Entries.Count==24&&roster.Entries[0].Slot==23&&roster.MatchesPlayer(save)&&save.raceSerial==0,"preview changes save or wrong grid");
         for(int i=0;i<24;i++)Require(roster.Entries[i].Driver.Planning.Same(in same.Entries[i].Driver.Planning),"reopening preview rerolls form");

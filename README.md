@@ -38,6 +38,7 @@ Run `Launch Little Road Unity.cmd`, or `../little-road-dev-build/Little Road Uni
 | `capture-adventure.ps1 -Name smokeN` | Smoke test: quest, delivery, finds, buy and fit, a 24-car race and payout, reload |
 | `run-parts-review.ps1 -Name x` | Parts shop and fitting bay with a virtual gamepad |
 | `capture-map.ps1 -Name x -Rendered -Flags '--pause-review'` | Other flags: `--minimap-review`, `--climb-review`, `--contact-review`, `--car-audit`, `--edge-audit`, `--world-review` |
+| `snap-views.py` | Turns snap records (F9 snaps) into `--view-shots` for `capture-map.ps1`, to recapture a snap's exact view before and after a fix |
 | `run-pace-parallel.ps1`, `run-class-sort.ps1` | Racing comparisons (24-car pace, flag off vs on, six races at once; overtaking by class). `summarize-racer.py` tabulates results |
 | `sound-harness.ps1 [-Filter id\|recorded\|layers:<engine>]` | Offline listening and checks for the game's sound code (no Unity, seconds): every engine's rev test (idle, pull, hold at max revs, lift) to `review/sound/`, `recorded` for the real-engine grain banks, `layers:<engine>[+turbo][@fraction]` to measure each layer at any revs, `tone:<engine id>` for level, brightness, pitch, flutter and wobble from 30% to 100% of the redline (doc 47) |
 | `test-loop.ps1 [-Kit club] [-Auto] [-Minutes 3] [-Capture name]` | Drive (or watch) the 2.5-mile test loop: two 1-mile straights for gearing, top speed, limiter and engine sound up to class E; `-Capture` records the engine sound and revs |

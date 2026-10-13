@@ -9,12 +9,14 @@ namespace LittleRoad
     // and virtual pads (InputSystem.AddDevice), which stay on: only native devices are disabled.
     static class TestInputIsolation
     {
+        // A test run: batch mode, --silent, --trial-auto, --world-review, or any --*-test/-review/-audit. Test runs are also
+        // muted (AudioDirector.Silent), whichever tool launched them.
+        public static bool IsTestRun{get{var args=System.Environment.GetCommandLineArgs();
+            return Application.isBatchMode||args.Any(a=>a=="--silent"||a=="--audio-capture-silent"||a=="--trial-auto"||a=="--world-review"||a.StartsWith("--")&&(a.EndsWith("-test")||a.EndsWith("-review")||a.EndsWith("-audit")));}}
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Init()
         {
-            var args=System.Environment.GetCommandLineArgs();
-            bool test=Application.isBatchMode||args.Any(a=>a=="--silent"||a=="--audio-capture-silent"||a=="--trial-auto"||a.StartsWith("--")&&(a.EndsWith("-test")||a.EndsWith("-review")||a.EndsWith("-audit")));
-            if(!test)return;
+            if(!IsTestRun)return;
             foreach(var d in InputSystem.devices.ToArray())Off(d);
             // (5 Oct: the garage drive test failed whenever its window opened without the focus, as Start-Quiet opens it: by
             // default an unfocused game resets and disables every device, the test's virtual pad too.) Real devices are off in a

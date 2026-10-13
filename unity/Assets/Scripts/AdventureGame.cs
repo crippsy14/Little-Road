@@ -130,6 +130,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--load-timing")){yield return new WaitForSeconds(2);Application.Quit(0);yield break;}
             if(RaceTrial.Has("--minimap-review")){reviewing=true;yield return MinimapReview();yield break;}
             if(RaceTrial.Has("--pause-review")){yield return PauseReview();yield break;}
+            if(RaceTrial.Has("--zip-ride-review")){yield return ZipRideReview();yield break;}
             // --photo-review: photo mode's five looks (docs/51) to --trial-captures, framed and unframed.
             if(RaceTrial.Has("--photo-review")){reviewing=true;var main=HillcrestRoute.Mainline;float s=main.Nearest(new Vector3(95,0,-300),out _);player.body.rotation=Quaternion.LookRotation(-main.Forward(s));Place(main.At(s));
                 yield return new WaitForSeconds(1.5f);CameraPose(true);cameraView.transform.position=player.transform.position+player.transform.right*5.5f+player.transform.forward*4+Vector3.up*1.6f;yield return null;photo.Open();string folder=RaceTrial.Arg("--trial-captures");
@@ -627,6 +628,18 @@ namespace LittleRoad
             CreatePlacesAfterResidents();
         }
         // Each resident's car where they stand, moved out of any building, prop or wall they were placed in.
+        // A parked resident clears the ground under all four corners of its body, not just its middle: where the paving rises
+        // under one end, that end sank into it (Duke Rolo's long-nosed Regale in the castle court, bug inbox #8).
+        static void SeatOnCorners(GameObject car,BoxCollider box)
+        {
+            Physics.SyncTransforms();var t=car.transform;float lift=0;var c=box.center;var e=box.size*.5f;
+            foreach(var (sx,sz) in new[]{(-1,-1),(-1,1),(1,-1),(1,1),(0,1),(0,-1)}) {
+                var corner=t.TransformPoint(new Vector3(c.x+sx*e.x*.9f,c.y-e.y,c.z+sz*e.z*.9f));
+                foreach(var hit in Physics.RaycastAll(corner+Vector3.up*2,Vector3.down,4))
+                    if(!hit.collider.isTrigger&&!hit.collider.transform.IsChildOf(t))lift=Mathf.Max(lift,hit.point.y+.018f-corner.y);
+            }
+            if(lift>0&&lift<1)t.position+=Vector3.up*lift;
+        }
         void PlaceResidents(List<string> keys)
         {
             var moved=new Dictionary<string,Vector3>();
@@ -643,6 +656,7 @@ namespace LittleRoad
                 npc.transform.position+=Vector3.up*(.018f-lowest);
                 if(pair.Key=="cafe"||pair.Key=="paint")npc.transform.rotation=Quaternion.Euler(0,90,0); // parked along the kerb, clear of the race shoulder
                 if(residentYaw.TryGetValue(pair.Key,out float yaw))npc.transform.rotation=Quaternion.Euler(0,yaw,0);
+                SeatOnCorners(npc,bounds);
                 var chatter=npc.AddComponent<NpcChatter>();(chatter.speaker,chatter.colour,chatter.lines)=(who.speaker,who.bubble,who.lines);chatter.talkable=false;
                 badges[pair.Key]=TalkBadge.Add(npc,who.bubble);
                 // Out of any building, prop or wall they were placed in (Vito sat in the raceway's control tower).
@@ -1081,6 +1095,18 @@ namespace LittleRoad
             EndClimb();Application.Quit(0);
         }
         // --pause-review: the driving HUD, then every pause-hub tab (and the map hovering another region).
+        // --zip-ride-review [--zip-down]: rides the castle zip line (up, or down) from its bay, a capture every 1.5 s to
+        // --trial-captures, to check the riding camera (bug inbox #9: it sat behind the tower wall on the way up).
+        IEnumerator ZipRideReview()
+        {
+            string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);var zip=ZipLine.Active;
+            if(zip==null){Debug.LogError("LITTLE_ROAD_ZIP_RIDE_REVIEW no zip line");Application.Quit(2);yield break;}
+            bool down=RaceTrial.Has("--zip-down");var station=down?zip.top:zip.bottom;
+            player.body.rotation=Quaternion.Euler(0,station.facing,0);Place(station.bay);CameraPose(true);yield return new WaitForSeconds(1.5f);
+            StartCoroutine(RideZip(zip,down));int n=0;
+            do{yield return new WaitForSeconds(1.5f);Toy.Capture(Path.Combine(folder,$"zip-{(down?"down":"up")}-{n:00}.png"));n++;}while(riding&&n<60);
+            Debug.Log($"LITTLE_ROAD_ZIP_RIDE_REVIEW done captures={n} folder={folder}");Application.Quit(0);
+        }
         IEnumerator PauseReview()
         {
             string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);
@@ -1124,6 +1150,23 @@ namespace LittleRoad
             Vector3 target=player.transform.position+Vector3.up*.9f;
             // Riding the zipline: pull back to show the drop and the castle.
             Vector3 desired=player.transform.position-viewingForward*(riding?13f:6.5f)+Vector3.up*(riding?5.5f:3.4f);
+            // Riding: near either end the car is in a walled bay inside the tower (its walls are drawn without colliders, so the
+            // cast below can't keep the camera out of them: the view was the tower wall, bug inbox #9). Each bay opens towards the
+            // cable, so there the camera moves out along the line, raised, looking back at the car; mid-cable it chases.
+            if(riding&&ridingZip!=null) {
+                var car=player.transform.position;var look=target;
+                foreach(var (here,there) in new[]{(ridingZip.top,ridingZip.bottom),(ridingZip.bottom,ridingZip.top)}) {
+                    var flat=new Vector2(car.x-here.bay.x,car.z-here.bay.z);float near=Mathf.InverseLerp(20,8,flat.magnitude);if(near<=0)continue;
+                    // (The car is hoisted inside the tower from its foot to the deck opening, so frame the opening, where it shows.)
+                    float deck=here.cable.y-ZipLine.Hang;var outward=there.bay-here.bay;outward.y=0;outward.Normalize();
+                    desired=Vector3.Lerp(desired,new Vector3(here.bay.x,deck,here.bay.z)+outward*24+Vector3.up*4,near);
+                    look=Vector3.Lerp(look,new Vector3(target.x,Mathf.Max(target.y,deck),target.z),near);
+                }
+                cameraView.transform.position=Vector3.Lerp(cameraView.transform.position,desired,1-Mathf.Exp(-Time.deltaTime*4));
+                cameraView.transform.rotation=Quaternion.Slerp(cameraView.transform.rotation,Quaternion.LookRotation(look-cameraView.transform.position),1-Mathf.Exp(-Time.deltaTime*6));
+                float rideFov=55+GraphicsOptions.FovOffset;cameraView.fieldOfView=Mathf.Lerp(cameraView.fieldOfView,rideFov,1-Mathf.Exp(-Time.deltaTime*3));
+                return;
+            }
             Vector3 delta=desired-target;
             foreach(var hit in Physics.SphereCastAll(target,.2f,delta.normalized,delta.magnitude))
                 if(!hit.collider.transform.IsChildOf(player.transform)&&hit.distance>1)desired=target+delta.normalized*Mathf.Min(Vector3.Distance(target,desired),hit.distance-.25f);
@@ -1232,15 +1275,16 @@ namespace LittleRoad
             return list;
         }
         // Hillcrest Castle zipline: the car hangs in the trolley's cradle for the ride.
+        ZipLine ridingZip;
         IEnumerator RideZip(ZipLine zip,bool down)
         {
             if(climbStart>=0){Notify("The zipline is closed · Castle Climb in progress");yield break;}   // no lift to the top during the climb
-            riding=true;nearZip=null;nearLine=null;player.controlsBlocked=true;player.body.isKinematic=true;
+            riding=true;ridingZip=zip;nearZip=null;nearLine=null;player.controlsBlocked=true;player.body.isKinematic=true;
             Notify(down?"Hold on tight!":"Up we go!");
             try{yield return zip.Ride(player,down);}
             finally {
                 player.body.isKinematic=false;player.body.linearVelocity=Vector3.zero;player.body.angularVelocity=Vector3.zero;
-                riding=false;player.controlsBlocked=ui.IsOpen;interactionReadyTime=Time.unscaledTime+.6f;
+                riding=false;ridingZip=null;player.controlsBlocked=ui.IsOpen;interactionReadyTime=Time.unscaledTime+.6f;
             }
             Notify(down?zip.bottom.arrive:zip.top.arrive);
         }

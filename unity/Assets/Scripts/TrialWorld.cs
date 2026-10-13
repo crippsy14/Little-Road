@@ -133,6 +133,11 @@ namespace LittleRoad
             for(int side=-1;side<=1;side+=2)Box("Start gantry post",track.At(0)+track.Right(0)*side*9+Vector3.up*3.5f,new Vector3(.4f,7,.4f),shutter,true);
             var beam=Box("Start gantry",track.At(0)+Vector3.up*6.7f,new Vector3(18,.8f,.4f),shutter);beam.transform.rotation=Quaternion.LookRotation(track.Forward(0));
         }
+        // Every material name a car model may use has a rule in Car() below (the build checks each car model against this list;
+        // a name with no rule renders the default charcoal).
+        public static readonly string[] CarMaterialKeys={"RimGunmetal","RimBronze","RimWhite","RimBlack","PaintedSteel","StripeColour","BodyPaint","Glass","Rubber","Alloy",
+            "Headlamp","TailLight","ReverseLight","RearReflector","BumperInsert","Amber","Plate","PanelSeam","BrakeMetal","Cloth","Cream","Livery","Wood",
+            "CarbonFibre","GoldTrim","CaliperRed","CanopyGlass","CharcoalTrim"};
         public static GameObject Car(string asset,Color paint)
         {
             var root=new GameObject(asset);
@@ -162,7 +167,14 @@ namespace LittleRoad
                 for(int i=0;i<originals.Length;i++) {
                     string name=originals[i]!=null?originals[i].name:"Unknown";
                     if(materials.TryGetValue(name,out var existing)){converted[i]=existing;continue;}
-                    Color c=name.Contains("BodyPaint")?paint:name.Contains("Glass")?new Color(.035f,.09f,.12f):
+                    // (Rim finishes, painted steel and stripes had no rule and all came out the default charcoal, so every
+                    // gunmetal, bronze or white wheel looked the same in game; colours as build_family_cars.py makes them.
+                    // A stripe takes the colour its model was built with, which differs per car.)
+                    Color c=name.Contains("RimGunmetal")?new Color(.12f,.13f,.14f):name.Contains("RimBronze")?new Color(.40f,.26f,.09f):
+                        name.Contains("RimWhite")?new Color(.86f,.87f,.86f):name.Contains("RimBlack")?new Color(.03f,.035f,.04f):
+                        name.Contains("PaintedSteel")?new Color(.05f,.06f,.065f):
+                        name.Contains("StripeColour")?(originals[i]!=null&&originals[i].HasProperty("_BaseColor")?originals[i].GetColor("_BaseColor"):originals[i]!=null&&originals[i].HasProperty("_Color")?originals[i].color:new Color(.92f,.92f,.88f)):
+                        name.Contains("BodyPaint")?paint:name.Contains("Glass")?new Color(.035f,.09f,.12f):
                         name.Contains("Rubber")?new Color(.035f,.04f,.045f):name.Contains("Alloy")?new Color(.63f,.66f,.65f):
                         name.Contains("Headlamp")?new Color(1,.94f,.74f):name.Contains("TailLight")?new Color(.42f,.015f,.008f):
                         name.Contains("ReverseLight")?new Color(.65f,.70f,.72f):name.Contains("RearReflector")?new Color(.42f,.012f,.008f):
@@ -179,8 +191,9 @@ namespace LittleRoad
                     // paint. Preserve readable material separation at race distance.
                     bool paintSurface=name.Contains("BodyPaint"),alloySurface=name.Contains("Alloy");
                     bool chrome=name.Contains("Chrome"),livery=name.Contains("LiveryMap"),gold=name.Contains("GoldTrim");
-                    float metal=chrome?.9f:gold?.85f:alloySurface?.7f:name.Contains("BrakeMetal")?.55f:name.Contains("CarbonFibre")?.25f:paintSurface||livery?.05f:0;
-                    float smooth=chrome?.8f:gold?.66f:livery?.74f:name.Contains("CanopyGlass")?.9f:name.Contains("CarbonFibre")?.55f:alloySurface?.42f:paintSurface?.56f:name.Contains("Rubber")?.15f:
+                    bool rim=name.Contains("RimGunmetal")||name.Contains("RimBronze"),rimPainted=name.Contains("RimWhite")||name.Contains("RimBlack");
+                    float metal=rim?.85f:rimPainted?.35f:name.Contains("PaintedSteel")?.3f:chrome?.9f:gold?.85f:alloySurface?.7f:name.Contains("BrakeMetal")?.55f:name.Contains("CarbonFibre")?.25f:paintSurface||livery?.05f:0;
+                    float smooth=rim||rimPainted?.32f:name.Contains("PaintedSteel")?.45f:name.Contains("StripeColour")?.35f:chrome?.8f:gold?.66f:livery?.74f:name.Contains("CanopyGlass")?.9f:name.Contains("CarbonFibre")?.55f:alloySurface?.42f:paintSurface?.56f:name.Contains("Rubber")?.15f:
                         name.Contains("Headlamp")||name.Contains("TailLight")||name.Contains("ReverseLight")||name.Contains("Amber")?.6f:.25f;
                     converted[i]=Material(name,c,metal,smooth,!paintSurface&&!livery);
                     // The livery texture sits beside the model: Cars/<body>_livery (its colours are graded when painted).
