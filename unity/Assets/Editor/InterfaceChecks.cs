@@ -22,6 +22,15 @@ public static class InterfaceChecks
         var line=CastleClimb.Line;float length=0;for(int i=1;i<line.Count;i++)length+=Vector3.Distance(line[i-1],line[i]);
         Check(line.Count>50&&length>600&&Vector3.Distance(line[^1],HillcrestRoute.CastleCourt)<40,$"The Castle Climb route runs from the town gate to the courtyard ({length:0} m)");
         Check(CastleClimb.Edge(line[line.Count/2],out _,out _,out _)<0&&CastleClimb.Edge(line[line.Count/2]+Vector3.right*40,out _,out _,out _)>0,"The climb corridor test puts the road inside and 40 m off outside");
+        // The snap tool (docs/73 §4): a snap's record round-trips with everything triage needs to find and reproduce the spot.
+        {
+            var r=new SnapTool.Record{name="snap-check",carPosition=new Vector3(1,2,3),cameraPosition=new Vector3(4,5,6),cameraYaw=30,cameraPitch=10,cameraFov=55,hourOfDay=18.5f,area="Bayview",note="a bush floats"};
+            var back=JsonUtility.FromJson<SnapTool.Record>(JsonUtility.ToJson(r));
+            Check(back.carPosition==r.carPosition&&back.cameraPosition==r.cameraPosition&&back.cameraYaw==30&&back.hourOfDay==18.5f&&back.area=="Bayview"&&back.note==r.note,
+                "Snap records keep the car and camera pose, time of day, area and note (docs/73)");
+            Check(SnapTool.Slug("Bush floating, by the garage!")=="bush-floating-by-the-garage"&&SnapTool.Slug("!!!")=="","A snap's note becomes a short file-name slug");
+            Check(SnapTool.Folder.Replace(System.IO.Path.DirectorySeparatorChar,'/').Contains("/snaps/"),"Snaps are saved in snaps/<date>/ in the game's data folder");
+        }
         return checks;
     }
 }
