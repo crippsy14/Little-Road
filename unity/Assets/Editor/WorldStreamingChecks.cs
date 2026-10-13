@@ -69,6 +69,21 @@ public static class WorldStreamingChecks
             Districts.Begin();
             checks.Add("Background districts: builder, settle and waiting set-up run in order on completion; ground held while pending; built districts answer at once");
         }
+        // Race entry builds the field's engine sounds on worker threads (CarAudio.Prepare): one built there renders exactly
+        // what the same engine built on the main thread does.
+        {
+            var fit=EquipmentCatalog.StockLoadout();var spec=EngineSoundSpec.From(EquipmentCatalog.Get(fit["engine"]),EquipmentCatalog.Get(fit["turbo"]),EquipmentCatalog.Get(fit["transmission"]));
+            var bank=EngineBanks.Get(spec.recording);if(bank!=null){bank.SustainLoop(true);bank.SustainLoop(false);}
+            EngineSynth Make(){var e=new EngineSynth(spec,48000,7919*5+13);if(bank!=null)e.UseGrains(new GrainSynth(bank,48000,7919*5+13,spec.idle,spec.redline));return e;}
+            var here=Make();var there=System.Threading.Tasks.Task.Run(Make).Result;
+            var a=new float[2048];var b=new float[2048];here.Render(a,0,a.Length);there.Render(b,0,b.Length);
+            bool same=true;for(int i=0;i<a.Length;i++)if(a[i]!=b[i]){same=false;break;}
+            Require(same,"an engine sound built on a worker thread renders differently");
+            checks.Add("Engine sounds built on worker threads at race entry (CarAudio.Prepare) render exactly as on the main thread");
+        }
+        // Traffic courtesy (--traffic-yield: pull over when followed, let go of a jammed car) is off unless asked for.
+        Require(!RoadCruiser.Yields,"traffic yield is on without --traffic-yield");
+        checks.Add("Traffic courtesy (RoadCruiser.Yields) off by default (--traffic-yield)");
         // Cache pruning: only the two builds used most recently keep files; unnamed (older format) files go.
         {
             string a="0123456789abcdef0123456789abcdef",b="fedcba9876543210fedcba9876543210",c="00000000111111112222222233333333";

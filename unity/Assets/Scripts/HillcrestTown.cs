@@ -172,7 +172,11 @@ namespace LittleRoad
                     if(id!="house_b"&&id!="house_d"&&rng.NextDouble()<.35)Chimneys.Add(centre+Quaternion.Euler(0,Yaw(centre,at),0)*(id switch{"house_a"=>new Vector3(-2.6f,10.5f,-1.2f),"house_c"=>new Vector3(-2.8f,10.2f,-1.4f),
                         "terrace_e"=>new Vector3(-1.9f,15.2f,2.7f),"terrace_f"=>new Vector3(-1.9f,10.7f,-.6f),"terrace_g"=>new Vector3(1.6f,13.1f,-2.4f),_=>new Vector3(-1.4f,12.1f,-1.5f)}));
                     // (Street review, 5 Oct: a 35 cm slit between neighbours showed the hillside through the row.) Neighbours meet.
-                    s+=w+.05f+(rng.NextDouble()<.2?2.5f:0);
+                    // A 2.5 m gap to the next house now and then: on a hillside's downhill side it's a garden gap like the wider
+                    // ones, closed by a low wall where the ground behind falls away (the edge audit's open drops along Via
+                    // Crest, 12 Oct, were these gaps).
+                    bool spaced=rng.NextDouble()<.2;if(spaced)GardenGaps.Add((road,side,s+w+.05f,s+w+.05f+2.5f));
+                    s+=w+.05f+(spaced?2.5f:0);
                 }
                 else s+=3;
             }

@@ -113,12 +113,15 @@ namespace LittleRoad
             System.Threading.Tasks.Parallel.For(0,specs.Count*3,k=>{var s=specs[k/3];int l=k%3;data[k/3*4+l]=ChunkGeometry(s.i0,s.j0,s.i1,s.j1,l==0?1:l==1?2:4,true);});
             System.Threading.Tasks.Parallel.For(0,specs.Count,k=>data[k*4+3]=data[k*4].WithoutSkirts());
             long geometryMs=clock.ElapsedMilliseconds;
+            // Every mesh's buffers filled on all cores and applied in one call (docs/72: made one by one on the main thread,
+            // ~2,000 meshes took ~120 ms). The same vertices, normals, UVs, triangles and bounds.
+            var made=ChunkData.MakeMeshes(data);
             var colliders=new List<(MeshCollider c,Mesh m)>();
             for(int s=0;s<specs.Count;s++) {
                 var spec=specs[s];var go=new GameObject($"Mainland chunk {spec.ci},{spec.cj}");go.transform.SetParent(chunks);
                 var lods=new LOD[3];
                 for(int l=0;l<3;l++) {
-                    var mesh=data[s*4+l].ToMesh();triangles+=l==0?data[s*4+l].t.Length/3:0;
+                    var mesh=made[s*4+l];triangles+=l==0?data[s*4+l].t.Length/3:0;
                     var part=new GameObject("LOD"+l,typeof(MeshFilter),typeof(MeshRenderer));part.transform.SetParent(go.transform);
                     part.GetComponent<MeshFilter>().sharedMesh=mesh;var r=part.GetComponent<MeshRenderer>();r.sharedMaterial=spec.quarry?quarryGround:mainlandGround;
                     r.shadowCastingMode=l==2?ShadowCastingMode.Off:ShadowCastingMode.On;
@@ -126,7 +129,7 @@ namespace LittleRoad
                 }
                 go.AddComponent<LODGroup>().SetLODs(lods);
                 var collider=new GameObject("Hillcrest mainland collider",typeof(MeshCollider));collider.transform.SetParent(go.transform);
-                colliders.Add((collider.GetComponent<MeshCollider>(),data[s*4+3].ToMesh()));built++;
+                colliders.Add((collider.GetComponent<MeshCollider>(),made[s*4+3]));built++;
             }
             long meshMs=clock.ElapsedMilliseconds;
             var ids=colliders.ConvertAll(c=>c.m.GetEntityId()).ToArray();
@@ -156,7 +159,28 @@ namespace LittleRoad
             public Vector3[] v,n;public Vector2[] uv;public int[] t;public int gridVertices,gridIndices;public Bounds bounds;
             // (Bounds worked out with the geometry, off the main thread; SetTriangles would otherwise do them, and
             // RecalculateBounds again.)
-            public Mesh ToMesh(){var mesh=new Mesh{name="Mainland patch",indexFormat=v.Length>65000?IndexFormat.UInt32:IndexFormat.UInt16};mesh.SetVertices(v);mesh.SetNormals(n);mesh.SetUVs(0,uv);mesh.SetTriangles(t,0,false);mesh.bounds=bounds;return mesh;}
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+            struct Vertex{public Vector3 p,n;public Vector2 uv;}
+            // All the chunks' meshes at once: buffers filled in parallel (Mesh.MeshDataArray), applied in one call.
+            public static Mesh[] MakeMeshes(ChunkData[] data)
+            {
+                var meshes=new Mesh[data.Length];for(int k=0;k<meshes.Length;k++)meshes[k]=new Mesh{name="Mainland patch"};
+                var writable=Mesh.AllocateWritableMeshData(data.Length);
+                var layout=new[]{new VertexAttributeDescriptor(VertexAttribute.Position,VertexAttributeFormat.Float32,3),
+                    new VertexAttributeDescriptor(VertexAttribute.Normal,VertexAttributeFormat.Float32,3),new VertexAttributeDescriptor(VertexAttribute.TexCoord0,VertexAttributeFormat.Float32,2)};
+                const MeshUpdateFlags quiet=MeshUpdateFlags.DontRecalculateBounds|MeshUpdateFlags.DontValidateIndices|MeshUpdateFlags.DontNotifyMeshUsers|MeshUpdateFlags.DontResetBoneBounds;
+                System.Threading.Tasks.Parallel.For(0,data.Length,k=>{
+                    var d=data[k];var md=writable[k];
+                    md.SetVertexBufferParams(d.v.Length,layout);var vb=md.GetVertexData<Vertex>();
+                    for(int i=0;i<d.v.Length;i++)vb[i]=new Vertex{p=d.v[i],n=d.n[i],uv=d.uv[i]};
+                    bool wide=d.v.Length>65000;md.SetIndexBufferParams(d.t.Length,wide?IndexFormat.UInt32:IndexFormat.UInt16);
+                    if(wide)md.GetIndexData<int>().CopyFrom(d.t);else{var ib=md.GetIndexData<ushort>();for(int i=0;i<d.t.Length;i++)ib[i]=(ushort)d.t[i];}
+                    md.subMeshCount=1;md.SetSubMesh(0,new SubMeshDescriptor(0,d.t.Length){bounds=d.bounds,vertexCount=d.v.Length},quiet);
+                });
+                Mesh.ApplyAndDisposeWritableMeshData(writable,meshes,quiet);
+                for(int k=0;k<meshes.Length;k++)meshes[k].bounds=data[k].bounds;
+                return meshes;
+            }
             public ChunkData WithoutSkirts()
             {
                 var c=new ChunkData{v=new Vector3[gridVertices],n=new Vector3[gridVertices],uv=new Vector2[gridVertices],t=new int[gridIndices],gridVertices=gridVertices,gridIndices=gridIndices};
@@ -166,32 +190,35 @@ namespace LittleRoad
         }
         static ChunkData ChunkGeometry(int i0,int j0,int i1,int j1,int step,bool skirts)
         {
-            var v=new List<Vector3>();var n=new List<Vector3>();var uv=new List<Vector2>();var t=new List<int>();
-            int cols=(i1-i0)/step+1,rows=(j1-j0)/step+1;
+            // (Pre-sized arrays, docs/72: growing lists on every core at once spent most of the time allocating.)
+            int cols=(i1-i0)/step+1,rows=(j1-j0)/step+1,ringCount=skirts?2*cols+2*rows-3:0;
+            var v=new Vector3[cols*rows+(skirts?2*(ringCount-1):0)];var n=new Vector3[v.Length];var uv=new Vector2[v.Length];
+            var t=new int[(rows-1)*(cols-1)*6+(skirts?12*(ringCount-1):0)];int ti=0,vi=0;
             int I(int c)=>Mathf.Min(i0+c*step,i1);int J(int r)=>Mathf.Min(j0+r*step,j1);
             Vector3 P(int i,int j)=>new(ValleyField.X0+i*ValleyField.Cell,ValleyField.Raw(i,j),ValleyField.Z0+j*ValleyField.Cell);
             Vector3 N(int i,int j)=>new Vector3(ValleyField.Raw(i-1,j)-ValleyField.Raw(i+1,j),2*ValleyField.Cell,ValleyField.Raw(i,j-1)-ValleyField.Raw(i,j+1)).normalized;
-            for(int r=0;r<rows;r++)for(int c=0;c<cols;c++){var p=P(I(c),J(r));v.Add(p);n.Add(N(I(c),J(r)));uv.Add(new Vector2(p.x,p.z)*.2f);}
+            for(int r=0;r<rows;r++)for(int c=0;c<cols;c++){var p=P(I(c),J(r));v[vi]=p;n[vi]=N(I(c),J(r));uv[vi]=new Vector2(p.x,p.z)*.2f;vi++;}
             // Only chunks near the tunnel's portals can have holes cut (docs/72: the test ran on all 4.6 million triangles).
-            bool nearPortal=NearPortal(v[0],v[v.Count-1]);
+            bool nearPortal=NearPortal(v[0],v[vi-1]);
             for(int r=0;r<rows-1;r++)for(int c=0;c<cols-1;c++) {
                 int a=r*cols+c;
-                if(!nearPortal||!PortalHole(v[a],v[a+cols],v[a+1])){t.Add(a);t.Add(a+cols);t.Add(a+1);}
-                if(!nearPortal||!PortalHole(v[a+1],v[a+cols],v[a+cols+1])){t.Add(a+1);t.Add(a+cols);t.Add(a+cols+1);}
+                if(!nearPortal||!PortalHole(v[a],v[a+cols],v[a+1])){t[ti++]=a;t[ti++]=a+cols;t[ti++]=a+1;}
+                if(!nearPortal||!PortalHole(v[a+1],v[a+cols],v[a+cols+1])){t[ti++]=a+1;t[ti++]=a+cols;t[ti++]=a+cols+1;}
             }
-            int gridVertices=v.Count,gridIndices=t.Count;
+            int gridVertices=vi,gridIndices=ti;
             if(skirts) {
-                var ring=new List<int>();
-                for(int c=0;c<cols;c++)ring.Add(c);for(int r=1;r<rows;r++)ring.Add(r*cols+cols-1);
-                for(int c=cols-2;c>=0;c--)ring.Add((rows-1)*cols+c);for(int r=rows-2;r>0;r--)ring.Add(r*cols);ring.Add(0);
+                var ring=new int[ringCount];int ri=0;
+                for(int c=0;c<cols;c++)ring[ri++]=c;for(int r=1;r<rows;r++)ring[ri++]=r*cols+cols-1;
+                for(int c=cols-2;c>=0;c--)ring[ri++]=(rows-1)*cols+c;for(int r=rows-2;r>0;r--)ring[ri++]=r*cols;ring[ri++]=0;
                 float drop=2+step*1.5f;
-                for(int k=0;k<ring.Count-1;k++) {
-                    int a=ring[k],b=ring[k+1],s=v.Count;
-                    v.Add(v[a]+Vector3.down*drop);v.Add(v[b]+Vector3.down*drop);n.Add(n[a]);n.Add(n[b]);uv.Add(uv[a]);uv.Add(uv[b]);
-                    t.AddRange(new[]{a,b,s+1,a,s+1,s,a,s+1,b,a,s,s+1});
+                for(int k=0;k<ringCount-1;k++) {
+                    int a=ring[k],b=ring[k+1],s=vi;
+                    v[vi]=v[a]+Vector3.down*drop;v[vi+1]=v[b]+Vector3.down*drop;n[vi]=n[a];n[vi+1]=n[b];uv[vi]=uv[a];uv[vi+1]=uv[b];vi+=2;
+                    t[ti++]=a;t[ti++]=b;t[ti++]=s+1;t[ti++]=a;t[ti++]=s+1;t[ti++]=s;t[ti++]=a;t[ti++]=s+1;t[ti++]=b;t[ti++]=a;t[ti++]=s;t[ti++]=s+1;
                 }
             }
-            var va=v.ToArray();return new ChunkData{v=va,n=n.ToArray(),uv=uv.ToArray(),t=t.ToArray(),gridVertices=gridVertices,gridIndices=gridIndices,bounds=ChunkData.BoundsOf(va)};
+            if(ti<t.Length)System.Array.Resize(ref t,ti);   // (portal holes left some out)
+            return new ChunkData{v=v,n=n,uv=uv,t=t,gridVertices=gridVertices,gridIndices=gridIndices,bounds=ChunkData.BoundsOf(v)};
         }
         // Can any triangle in the chunk with these corners be a portal hole? A hole's centre is within 7.5 m of the line
         // between the portals, or 5 m beyond its ends, and a triangle's centre is inside its chunk; 20 m covers both.

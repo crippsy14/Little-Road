@@ -261,7 +261,14 @@ namespace LittleRoad
         // Castle Climb: pulled over (stands still where it was put) until released.
         bool holding;public void Hold(){holding=true;speed=0;}public void Release(){holding=false;blocked=0;}
         public bool OnRoad(HillcrestRoute.Road r)=>road==r;
-        HillcrestRoute.Road road;float from,to,s,speed,cruise,lane,laneNow,blocked;int dir;RoadCar player;Rigidbody body;
+        HillcrestRoute.Road road;float from,to,s,speed,cruise,lane,laneNow,blocked,followed,touched=-9,stuck,ghostUntil;int dir;RoadCar player;Rigidbody body;BoxCollider box;
+        void OnCollisionStay(Collision c){if(player!=null&&c.rigidbody==player.body)touched=Time.time;}
+        // --traffic-yield (Richard, 12 Oct: "until we have something built in for overtaking"): a car with you close behind
+        // in its lane pulls towards the verge and eases off so you can pass, as a courteous driver would on a country road.
+        public static bool Yields=>RaceTrial.Has("--traffic-yield");
+        public float Along=>s;public int Direction=>dir;public float Lane=>lane;public HillcrestRoute.Road Road=>road;
+        // (Tests: put the car at `along`, heading `direction`.)
+        public void PlaceAt(float along,int direction){s=Mathf.Clamp(along,from,to);dir=direction;laneNow=dir*lane;speed=cruise;Place(0);body.position=transform.position;body.rotation=transform.rotation;}
         public float Speed=>speed;
         public float Cruise{set=>cruise=value;}   // (the Rally Day parade goes at walking-the-dog pace)
         public void Setup(HillcrestRoute.Road r,float a,float b,float start,int direction,RoadCar playerCar)
@@ -269,7 +276,7 @@ namespace LittleRoad
             road=r;from=a;to=b;s=start;dir=direction;player=playerCar;cruise=Random.Range(7.5f,10.5f);lane=road.width*.5f-1.5f;laneNow=dir*lane;
             body=gameObject.AddComponent<Rigidbody>();body.isKinematic=true;body.interpolation=RigidbodyInterpolation.Interpolate;
             var renderers=GetComponentsInChildren<Renderer>();var bounds=renderers[0].bounds;foreach(var x in renderers)bounds.Encapsulate(x.bounds);
-            var box=gameObject.AddComponent<BoxCollider>();box.center=bounds.center-transform.position;box.size=bounds.size;gameObject.tag="Respawn";
+            box=gameObject.AddComponent<BoxCollider>();box.center=bounds.center-transform.position;box.size=bounds.size;gameObject.tag="Respawn";
             all.Add(this);Place(0);horn=Horn.Attach(gameObject,Random.Range(.88f,1.18f));
         }
         Horn horn;bool tooted;
@@ -292,11 +299,23 @@ namespace LittleRoad
             bool held=player!=null&&Blocking(player.body.position);foreach(var t in GiveWayTo)if(t!=null&&Blocking(t.position))held=true;
             if(held){target=0;blocked+=dt;if(blocked>1&&!tooted){tooted=true;TootBack();}if(blocked>3){blocked=0;dir=-dir;}}else{blocked=0;tooted=false;}
             foreach(var c in all)if(c!=this&&c.dir==dir&&Blocking(c.body.position)){target=Mathf.Min(target,c.speed*.8f);}
+            // Followed: the player within 16 m behind in this lane (or alongside, passing) for over half a second.
+            float pull=0;
+            if(Yields&&player!=null) {
+                var d=player.body.position-me;float along=Vector3.Dot(d,fwd),side=Vector3.Dot(d,Vector3.Cross(Vector3.up,fwd));
+                bool behind=along>-16&&along<4&&Mathf.Abs(side)<3.6f&&player.speed>2;
+                followed=behind?followed+dt:Mathf.Max(0,followed-dt*.5f);
+                if(followed>.6f){pull=1.2f;target=Mathf.Min(target,cruise*.55f);}
+                // Never stuck for good against an immovable traffic car: pressed against a stopped player for 4 s, it lets
+                // go (its collider off for 3 s) and drives on (the train test's car sat 70 s against one, 12 Oct).
+                if(Time.time-touched<.2f&&player.speed<1){stuck+=dt;if(stuck>4){stuck=0;ghostUntil=Time.time+3;if(box!=null)box.enabled=false;}}else stuck=Mathf.Max(0,stuck-dt);
+                if(box!=null&&!box.enabled&&Time.time>ghostUntil&&(player.body.position-me).sqrMagnitude>36)box.enabled=true;
+            }
             if((dir>0&&s>to-14)||(dir<0&&s<from+14))target=Mathf.Min(target,3.5f);
             speed=Mathf.MoveTowards(speed,target,(target<speed?6:2.2f)*dt);
             s+=dir*speed*dt;
             if(dir>0&&s>=to){s=to;dir=-1;}else if(dir<0&&s<=from){s=from;dir=1;}
-            laneNow=Mathf.MoveTowards(laneNow,dir*lane,1.4f*dt);
+            laneNow=Mathf.MoveTowards(laneNow,dir*(lane+pull),1.4f*dt);
             Place(dt);
         }
     }

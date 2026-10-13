@@ -125,6 +125,7 @@ namespace LittleRoad
             // Quarry Hills Rallycross (--quarry-hills): the quarry floor's circuit, built with the mainland.
             else if(trackId=="quarry"&&QuarryHills.Enabled){RaceArea.Set(QuarryFloor.Loop,450);yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(QuarryFloor.Loop);RenderSettings.fogDensity=.00026f;}
             else throw new ArgumentException("Unknown trial track: "+trackId);
+            if(career)Debug.Log($"LITTLE_ROAD_RACE_MARK world t={Time.realtimeSinceStartup:0.00}");   // (race entry's stages: docs/72)
             // A reversed event (docs/67) drives the same circuit the other way; the world was built from the forward route.
             bool reversed=career?AdventureSession.EnteredRoster?.Reversed==true:Has("--trial-reverse");
             if(reversed&&technical!=null)throw new ArgumentException("Reversed layouts are for the town circuits.");
@@ -167,6 +168,9 @@ namespace LittleRoad
             if(Roster==null||Roster.Entries.Count!=field||Roster.Seed!=seed)throw new InvalidOperationException("Entered roster does not match this race.");
             // Per-car lines (--car-lines, docs/71): every performance group's line ready before the cars need them.
             if(CarLines.On&&ReferenceLine!=null){var tunings=new List<CarTuning>();foreach(var e in Roster.Entries)tunings.Add(loose?e.Tuning.Loose():e.Tuning);CarLines.Prepare(track,ReferenceLine,tunings);}
+            if(career)Debug.Log($"LITTLE_ROAD_RACE_MARK lines t={Time.realtimeSinceStartup:0.00}");
+            // (Every car's engine sound built on all cores first: CarAudio.Prepare.)
+            {var field=new List<(CarTuning,int)>();foreach(var e in Roster.Entries)field.Add((loose?e.Tuning.Loose():e.Tuning,e.Id));CarAudio.Prepare(field);}
             foreach(var entrant in Roster.Entries) {
                 int i=entrant.Id;var go=TrialWorld.Car(entrant.Body,entrant.Paint);bool line=gridMode=="line";float grid=RaceGrid.Distance(entrant.Slot,line);
                 go.transform.SetPositionAndRotation(RaceGrid.Position(track,entrant.Slot,line),Quaternion.LookRotation(track.Forward(grid)));
@@ -179,7 +183,8 @@ namespace LittleRoad
                 // The Duke's car too: at 60-75 m/s speculative contacts snagged the road mesh edges violently (docs/54).
                 if(Roster.Event==RaceRoster.DukeEvent)car.body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
             }
-            if(career)Debug.Log($"LITTLE_ROAD_SCENE_SWITCH ready t={Time.realtimeSinceStartup:0.00} mode=race world={(PersistentWorld.Current!=null&&PersistentWorld.Current.Reuses>0?"reused":"built")}");
+            CarAudio.ClearPrepared();
+            if(career)Debug.Log($"LITTLE_ROAD_RACE_MARK cars t={Time.realtimeSinceStartup:0.00}");
             // --review-retire S (with --review-races): S seconds of racing, then out through the pause menu's "Retire to town",
             // as a player would leave (docs/72: round trips without waiting for a lap).
             if(career&&Has("--review-retire"))StartCoroutine(RetireAfter(float.TryParse(Arg("--review-retire"),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float s)?s:3));
@@ -202,7 +207,8 @@ namespace LittleRoad
             if(Has("--capture-path-approach"))ApproachAudit=new PathApproachAudit(int.Parse(Arg("--capture-path-approach")),cars.Count);
             // Rendered races warm up behind the loading card, like free roam (AdventureGame.WarmUp): look along
             // the lap and force LOD cross-fades both ways so shaders and their fade variants compile now.
-            if(!Application.isBatchMode&&!Has("--no-warm-up"))yield return WarmUpLap();
+            // (Once per build and track on this machine: WorldCache.Warmed.)
+            if(!Application.isBatchMode&&!Has("--no-warm-up")&&!WorldCache.Warmed("race-"+trackId)){yield return WarmUpLap();WorldCache.MarkWarmed("race-"+trackId);}
             UpdateCamera(true);CameraShake.Reset();if(cars.Count>0){CameraShake.Watch(cars[0]);if(!freeRoam)FrameProbe.Attach(cars[0].transform);}wallStart=Time.realtimeSinceStartup;running=true;
             manualStart=new ManualRaceStart(!career&&!automation&&Has("--trial-human")&&!Has("--race-preview")&&!Has("--race-preview-review"));
             if(WaitingForReady){Time.timeScale=0;Debug.Log("LITTLE_ROAD_MANUAL_WAITING countdown=-3");}
@@ -211,6 +217,8 @@ namespace LittleRoad
             if((Arg("--traffic-case")=="standing-solo"||Arg("--traffic-case")=="class-sort")&&captureFolder==null&&reportPath!=null)RaceGrid.Capture(this,Path.GetDirectoryName(Path.GetFullPath(reportPath)));
             if(Has("--vertical-audit"))gameObject.AddComponent<VerticalMotionAudit>().Setup(this);
             if(career)CarContact.SeatAll(); // the world's standing cars on their wheels (docs/57, 2.5); race cars aren't standing
+            // (The race is ready here, after its cars, camera and warm-up: docs/72 measures race entry to this line.)
+            if(career)Debug.Log($"LITTLE_ROAD_SCENE_SWITCH ready t={Time.realtimeSinceStartup:0.00} mode=race world={(PersistentWorld.Current!=null&&PersistentWorld.Current.Reuses>0?"reused":"built")}");
             Debug.Log("LITTLE_ROAD_UNITY_READY cars="+cars.Count+" width="+Circuit.Width+" length="+track.length+" "+LoadTime);LoadingScreen.Ready();
             if((career&&!Has("--no-race-hud"))||RaceHud.Requested){Hud=gameObject.AddComponent<RaceHud>();Hud.Setup(this);}
             if(!career&&(Has("--race-preview")||Has("--race-preview-review"))) {
@@ -380,12 +388,16 @@ namespace LittleRoad
         IEnumerator WarmUpLap()
         {
             float bias=QualitySettings.lodBias;
+            // Uncapped while warming, as free roam's warm-up (docs/72): with vertical sync each of its 70 frames waited for
+            // the display. The same frames.
+            int vsync=QualitySettings.vSyncCount,cap=Application.targetFrameRate;QualitySettings.vSyncCount=0;Application.targetFrameRate=-1;
+            try {
             for(int i=0;i<10;i++) {
                 float d=track.length*i/10;var f=track.Forward(d);
                 chase.transform.position=track.At(d)-f*6+Vector3.up*(i%2==0?4:25);chase.transform.LookAt(track.At(d)+f*30);WorldLook.Cut(chase);
                 yield return null;QualitySettings.lodBias=bias*.2f;for(int k=0;k<3;k++)yield return null;QualitySettings.lodBias=bias;for(int k=0;k<3;k++)yield return null;
             }
-            QualitySettings.lodBias=bias;
+            } finally {QualitySettings.lodBias=bias;QualitySettings.vSyncCount=vsync;Application.targetFrameRate=cap;}
         }
         void OnApplicationQuit(){if(running&&!freeRoam&&!career&&cars.Count>0)WriteReport();}
         void UpdateCamera(bool snap)

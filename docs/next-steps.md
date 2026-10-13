@@ -1,5 +1,28 @@
 # Next steps (3 October 2026)
 
+**12 October, afternoon.**
+- **Speed-up list ([doc 72](72-world-streaming.md) section 8):**
+  - ready to drive in 3.0 s (3.7 s on a build's first launch);
+  - race entry 0.7–0.9 s;
+  - terrain meshes built in bulk, cliff rings cooked, race engines prepared on all cores, warm-ups once per build.
+- **Area audit, steep banks (doc 57: guarded or drivable): 17 → 12.**
+  - **Via Crest (9 → 5).** Its downhill row leaves a 2.5 m gap between some neighbours, and the hillside falls away behind it. Those gaps are now garden gaps closed by a short stone wall, as the wider gaps already were.
+  - **Tried and dropped:** a continuous wall plus garden gates along the whole frontage. It cleared 8 of the 9, but walled off shop doors and looked like a fence.
+  - **What stopped the parapet at the other spots:** the parapet is skipped wherever a house's world-aligned footprint box covers the wall line. On the curving street a rotated house's box reaches metres past its walls.
+- **Still open (12, plus 1 lip):**
+  - **Via Crest (5):** at (137,−1225), (192,−1247), (214,−1020), (271,−1090) and (211,−1158). These spots need a closer look.
+  - **The Bayview circuit's two drops** at (−121,35) and (−115,−16), where a stone wall ends short of a rock outcrop.
+  - **The Raceway road's verge (3)** near (−119,−906), with a drop 8–12 m out.
+  - **Single spots (3):** the mainline at (71,−113), the Falls road at (639,−688), and a Quarry Hills junction lip.
+
+  For the Raceway road I tried railing roads within 30 m of the river and treating only real crossings as bridges. Neither changed it, so both were reverted; the cause there isn't found yet.
+- **Traffic courtesy, behind `--traffic-yield` (off; Richard to decide).**
+  - **Yield:** a valley or Quarry Hills traffic car with you close behind in its lane pulls 1.2 m towards the verge and eases to about half speed.
+  - **Jam release:** pressed against a stopped player for 4 s, a traffic car turns its collider off for 3 s and drives on. In the regression the train test's car sat 70 s against one; nothing that pushes into a scripted traffic car can move it.
+  - **New test:** `--overtake-test` drives the car up behind a Quay road car and out to the crown of the road to pass. It passes in 10.8–10.9 s with no bumps with or without the yield: the Quay road is wide enough already.
+  - **So:** the yield shows no measured gain there. The jam release is the part that matters, but it isn't reproduced on demand yet.
+- **Checked, already fixed:** the title-screen ambience (the "all sea" waves). `Ambience.Survey` treats no ground under any probe as no world.
+
 **12 October: loading and streaming, part 3 ([doc 72](72-world-streaming.md), section 7).** Quarry Hills now builds in the
 background after you're driving (the default; `--no-background-districts` builds it at load). Ready to drive is 4.3 s, against 5.3 s when it's
 built at load. The world and the town come out the same either way: a stronger world fingerprint and a new `--town-print`
@@ -11,7 +34,7 @@ check both match. Also:
 - `--review-retire` round trips work.
 
 The later items (MeshDataArray terrain, cliff arrays, instancing, the GraphicsStateCollection warm-up, race-entry engine banks,
-then floating origin and HLOD) are listed in doc 72 section 6. Committed on 12 October after a full regression (sr-districts-1): everything passed, and the area audit improved (Emyr's car fixed). The train race lost once, stuck behind valley traffic, and won on reruns. So the point-to-point drive tests (train, sprint, blast) now run with `--no-traffic` until the traffic can overtake. Still to do: a listen to the music and ambience.
+then floating origin and HLOD) are listed in doc 72 section 6. Committed on 12 October after a full regression (sr-districts-1): everything passed, and the area audit improved (Emyr's car fixed). The train race lost once, stuck behind valley traffic, and won on reruns. So the point-to-point drive tests (train, sprint, blast) now run with `--no-traffic` until the traffic can overtake. Richard listened on 12 October and the music and ambience sound right (compressed in memory, loaded in the background). **Open sound note:** a little feedback at dusk from the workshop engine near the Bayview garage. The cause isn't known yet; noted for later, not investigated.
 
 **4 October:** [doc 62](62-street-review-quarry-works-licence.md) covers four things:
 - The street review's fixes: parked cars, shop signs, Welsh cottages and slate fences, and more.

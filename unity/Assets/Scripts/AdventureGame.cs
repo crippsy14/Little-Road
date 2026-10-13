@@ -184,6 +184,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--carving-test")&&QuarryHillsTown.Spots.Count>0){StartCoroutine(CarvingTest());yield break;}
             if(RaceTrial.Has("--wayfinding-test")){reviewing=true;StartCoroutine(WayfindingTest());yield break;}
             if(RaceTrial.Has("--world-tiles-test")){StartCoroutine(WorldTilesTest());yield break;}
+            if(RaceTrial.Has("--overtake-test")){StartCoroutine(OvertakeTest());yield break;}
             if(RaceTrial.Has("--festival-test")&&QuarryHillsTown.Spots.Count>0){reviewing=true;StartCoroutine(FestivalTest());yield break;}
             if(RaceTrial.Has("--blondin-test")){StartCoroutine(BlondinTest());yield break;}
             if(RaceTrial.Has("--climb-test")){StartCoroutine(ClimbTest());yield break;}
@@ -309,6 +310,29 @@ namespace LittleRoad
         }
         // Test (--world-tiles-test): the woods away from the start stream in on their own within a minute, the car standing
         // still; compare `spawned` with a --no-world-tiles --load-timing run (the same world, piece for piece).
+        // Test (--overtake-test, with or without --traffic-yield): the car 35 m behind a Quay road cruiser, in its lane, driven
+        // down that lane at up to 16 m/s. Logs whether it got by (10 m ahead within 25 s), how long it took and the bumps.
+        IEnumerator OvertakeTest()
+        {
+            RoadCruiser cruiser=null;foreach(var c in RoadCruiser.All)if(c.OnRoad(HillcrestRoute.Quay)){cruiser=c;break;}
+            if(cruiser==null){Debug.Log("LITTLE_ROAD_OVERTAKE_TEST no cruiser");Application.Quit(1);yield break;}
+            var road=cruiser.Road;float s0=road.Length*.25f;cruiser.PlaceAt(s0,1);
+            Vector3 Lane(float s)=>road.At(s)+road.Right(s)*cruiser.Lane;Vector3 Centre(float s)=>road.At(s);
+            var start=Lane(s0-35);player.body.isKinematic=true;player.body.position=start+Vector3.up*.6f;player.transform.SetPositionAndRotation(start+Vector3.up*.6f,Quaternion.LookRotation(road.At(s0-33)-road.At(s0-35)));
+            yield return new WaitForFixedUpdate();player.body.isKinematic=false;player.body.linearVelocity=Vector3.zero;
+            int bumps=0;player.Bumped+=(other,speed)=>{if(other.GetComponentInParent<RoadCruiser>()==cruiser)bumps++;};
+            // (In its lane up to it, then out to the crown of the road to pass, as a driver would.)
+            var points=new List<Vector3>();for(float s=s0-30;s<Mathf.Min(road.Length-20,s0+260);s+=8)points.Add(s<s0-14?Lane(s):Centre(s));
+            float t0=Time.time,passedAt=-1,slowest=99;
+
+            // (Ahead along the road's own direction at the cruiser, which it keeps: dir 1.)
+            bool Passed(){var d=player.body.position-cruiser.transform.position;var f=road.At(cruiser.Along+2)-road.At(cruiser.Along-2);f.y=0;float along=Vector3.Dot(d,f.normalized);if(along>10&&passedAt<0)passedAt=Time.time-t0;
+                if(Time.time-t0>3)slowest=Mathf.Min(slowest,player.speed);return passedAt>=0||Time.time-t0>25;}
+            yield return DriveThrough(points,16,Passed);
+            bool pass=passedAt>=0;
+            Debug.Log($"LITTLE_ROAD_OVERTAKE_TEST yield={RoadCruiser.Yields} passed={pass} seconds={(pass?passedAt:25):0.0} bumps={bumps} slowest={slowest:0.0}m/s");
+            Application.Quit(pass?0:1);
+        }
         IEnumerator WorldTilesTest()
         {
             int deferred=WorldTiles.Deferred;float start=Time.realtimeSinceStartup;
@@ -1142,6 +1166,7 @@ namespace LittleRoad
         IEnumerator WarmUp()
         {
             if(RaceTrial.Has("--no-warm-up")||cameraView==null)yield break;
+            if(WorldCache.Warmed("town")){Debug.Log("LITTLE_ROAD_WARM_UP skipped (this build has warmed on this machine before)");yield break;}
             var views=new List<(Vector3 at,Vector3 look)>{(new Vector3(-10,30,-10),new Vector3(-40,0,-100)),(new Vector3(90,20,-250),new Vector3(100,0,-450))};
             if(HillcrestTown.Spots.Count>0) {
                 var c=HillcrestRoute.CastleCourt;var sq=HillcrestRoute.Square;
@@ -1173,6 +1198,7 @@ namespace LittleRoad
             }
             QualitySettings.lodBias=bias;
             if(timing)Debug.Log($"LITTLE_ROAD_WARM_UP views={views.Count} frame_ms={frames}");
+            WorldCache.MarkWarmed("town");
             } finally {QualitySettings.vSyncCount=vsync;Application.targetFrameRate=cap;}
         }
         // --town-print [file] (docs/72): once every background district has arrived, a hash of the town layer built on the world:

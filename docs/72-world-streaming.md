@@ -378,3 +378,37 @@ Full regression sr-districts-1, with background districts on by default:
 - **Train race:** it lost once, with the test car stuck behind valley traffic at (392, −929). Two reruns won (87.9 s and 92.2 s).
 
 Richard (12 Oct): drive tests run without traffic until the traffic can overtake. `--no-traffic` leaves out the moving traffic (parked cars and townsfolk stay). The regression's train, sprint and blast tests use it, and all three pass (train won in 83.2 s).
+
+## 8 · The later list, worked through (12 October, afternoon)
+
+**Ready to drive: 4.48 s → 3.70 s (a build's first launch) → 3.0 s (every launch after).** Race entry, measured honestly: 1.1–1.3 s → 0.7–0.9 s. The `SCENE_SWITCH ready mode=race` line used to be logged before the race's cars and warm-up; it now comes at `UNITY_READY`. The world is unchanged: `--world-fingerprint --no-static-batching` gives `b8809b600b793ca4`, computed fresh and read from the caches alike.
+
+| Change | Before | After | How |
+|---|---|---|---|
+| Mainland terrain: geometry | 274 ms | 98 ms | Pre-sized arrays instead of growing lists on every core |
+| Mainland terrain: meshes | 123 ms | 31 ms | `Mesh.AllocateWritableMeshData`: 2,024 meshes filled in parallel, applied in one call |
+| Mainland terrain: colliders | 103 ms | 56 ms | Fewer allocations alongside the bake |
+| Cliffs | 364 ms | 70 ms (179 ms cold) | The rings (2,624 terrain and circuit-clearance samples an outcrop) cooked in `WorldCache`, keyed by the circuit; the normals with flat arrays instead of per-vertex lists; collision shells baked in parallel |
+| Race entry: 24 cars | ~0.5 s | 0.12–0.29 s | `CarAudio.Prepare`: every engine sound built and calibrated (0.6 s of audio rendered, twice: modelled, then with its recording) on all cores before the cars are made, in the same steps |
+| Race warm-up lap | ~0.6 s | 0.36 s | Uncapped, as free roam's: its 70 frames no longer wait for the display |
+| Shader warm-ups | 1.05 s (town), 0.36 s (race) | 0 after a build's first launch | See below |
+
+**Equivalence checks:**
+- `WorldStreamingChecks` renders an engine sound built on a worker thread against one built on the main thread, recording attached, and they match sample for sample.
+- The recording banks' sustain loops are built on the main thread first, since a loop half-built on one thread must not be read on another.
+- A smoke run and the valley views (`capture-map -Flags --valley-views`) look right: terrain shading and texture, cliffs.
+
+**Warm-ups once per build and machine.** The drive benchmark compared the two cases:
+- **Without the warm-up:** no frame over 33 ms (worst 29.7 ms).
+- **With it:** one frame over 33 ms, a 167 ms stall at the start.
+
+The graphics driver keeps the shaders it compiled in its own disk cache, so the warm-up only matters a build's first time on a machine. `WorldCache.Warmed/MarkWarmed` records it per build: `warmed-town` and `warmed-race-<track>` files in the world cache, pruned with it.
+- Later launches skip it; the drive benchmark with the warm-up skipped had one frame over 33 ms, at 36.6 ms.
+- `--always-warm-up` warms every time.
+- Timing runs (`--load-timing`) after the first one therefore show the skipped warm-up.
+
+**Not done, and why:**
+- **Instancing the repeated scenery:** kit spawning costs ~0.25 s at load now, much of it in the background district. Frames are 7.2 ms on average in the drive benchmark, and the SRP batcher and static batching already merge most draws. Replacing ~26,000 GameObjects with instanced draws would touch colliders, LODs, settling, the area audit and the fingerprint, for little measured gain today. It is worth revisiting when the continent's districts arrive (with HLOD).
+- **Floating origin and HLOD:** for the full continent, as planned.
+
+**World fingerprint baseline after the Via Crest gap walls (12 Oct, evening):** `3646b251c7c81b75` (`--no-static-batching`). It is the same with background districts on and off.

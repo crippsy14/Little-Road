@@ -18,7 +18,7 @@ namespace LittleRoad
 
         public void Setup(RoadCar owner,bool player)
         {
-            car=owner;Player=player;int fs=AudioSettings.outputSampleRate;uint seed=(uint)(owner.driverId*7919+13);
+            car=owner;Player=player;int fs=AudioSettings.outputSampleRate;uint seed=Seed(owner.driverId);
             engine=BuildEngine(owner,seed);builtFor=owner.tuning.drivetrain;noise=new CarNoiseSynth(fs,player,seed);this.seed=seed;
             // Your own car is the loudest thing you hear: louder at the speaker, not inside the synthesiser (a boost
             // before its soft limiter distorted the pulls; Richard, 1 Oct). Other cars sit lower instead.
@@ -60,10 +60,32 @@ namespace LittleRoad
 
         static int cars(){int n=0;foreach(var c in FindObjectsByType<CarAudio>(FindObjectsSortMode.None))if(c.live)n++;return n;}
         uint seed;Drivetrain builtFor;
-        static EngineSynth BuildEngine(RoadCar owner,uint seed){var e=new EngineSynth(Spec(owner),AudioSettings.outputSampleRate,seed);EngineBanks.Attach(e,seed);return e;}
-        static EngineSoundSpec Spec(RoadCar owner)
+        static uint Seed(int driverId)=>(uint)(driverId*7919+13);
+        static EngineSynth BuildEngine(RoadCar owner,uint seed)
         {
-            var train=owner.tuning.drivetrain;
+            if(prepared.Remove(seed,out var ready))return ready;   // (built and its recording attached already: Prepare)
+            var e=new EngineSynth(Spec(owner.tuning),AudioSettings.outputSampleRate,seed);EngineBanks.Attach(e,seed);return e;
+        }
+        // Race entry (docs/72): each engine calibrates its level by rendering itself, twice (modelled, then with its
+        // recording): ~18 ms a car, ~0.4 s for a field of 24 on the main thread. The field's engines are built and their
+        // recordings attached on all cores at once before the cars are made, in the same steps as BuildEngine, and each car
+        // takes its own (same spec, same seed: the same synthesiser). ClearPrepared after the field is made.
+        static readonly System.Collections.Generic.Dictionary<uint,EngineSynth> prepared=new();
+        public static void Prepare(System.Collections.Generic.IList<(CarTuning tuning,int driverId)> field)
+        {
+            if(!AudioDirector.Enabled||field.Count==0)return;
+            float fs=AudioSettings.outputSampleRate;var specs=new EngineSoundSpec[field.Count];var synths=new EngineSynth[field.Count];var banks=new GrainBank[field.Count];
+            // (Recordings load on the main thread; each bank's sustain loops are built here first, as several engines may
+            // share a bank and a loop half-built on one thread must not be read on another.)
+            for(int i=0;i<field.Count;i++){specs[i]=Spec(field[i].tuning);banks[i]=EngineBanks.Get(specs[i].recording);if(banks[i]!=null){banks[i].SustainLoop(true);banks[i].SustainLoop(false);}}
+            System.Threading.Tasks.Parallel.For(0,field.Count,i=>{uint seed=Seed(field[i].driverId);var e=new EngineSynth(specs[i],fs,seed);
+                if(banks[i]!=null)e.UseGrains(new GrainSynth(banks[i],fs,seed,specs[i].idle,specs[i].redline));synths[i]=e;});
+            for(int i=0;i<field.Count;i++)prepared[Seed(field[i].driverId)]=synths[i];
+        }
+        public static void ClearPrepared()=>prepared.Clear();
+        static EngineSoundSpec Spec(CarTuning tuning)
+        {
+            var train=tuning.drivetrain;
             if(train!=null)return EngineSoundSpec.From(train.engine,train.induction,train.box);
             var fit=EquipmentCatalog.StockLoadout();
             return EngineSoundSpec.From(EquipmentCatalog.Get(fit["engine"]),EquipmentCatalog.Get(fit["turbo"]),EquipmentCatalog.Get(fit["transmission"]));

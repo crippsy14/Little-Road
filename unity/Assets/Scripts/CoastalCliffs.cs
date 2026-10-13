@@ -29,23 +29,39 @@ namespace LittleRoad
                 specs.Add((forms[i].p-offset*.85f,Vector3.Scale(forms[i].size,new Vector3(.72f,.46f,.7f)),i*19+13));
             }
             CoastalLandscape.Lap("cliffs start");var shapes=new Shape[specs.Count];
-            System.Threading.Tasks.Parallel.For(0,specs.Count,k=>shapes[k]=Outcrop(specs[k].p,specs[k].size,specs[k].seed));
-            CoastalLandscape.Lap("cliffs shapes");for(int k=0;k<shapes.Length;k++)if(shapes[k]!=null){Make(shapes[k],specs[k].seed);accepted++;}CoastalLandscape.Lap("cliffs objects");
+            // The rings (2,624 terrain and circuit-clearance samples an outcrop) are cooked once per build and circuit (WorldCache,
+            // docs/72): ~3 s of work across the cores, read back as the same floats.
+            var store=new float[specs.Count*Stride];string cache="cliff-rings-"+land.TrackKey().ToString("x16");bool cooked=WorldCache.TryRead(cache,store);
+            System.Threading.Tasks.Parallel.For(0,specs.Count,k=>shapes[k]=Outcrop(specs[k].p,specs[k].size,specs[k].seed,store,k*Stride,cooked));
+            if(!cooked)WorldCache.Write(cache,store);
+            CoastalLandscape.Lap("cliffs shapes");for(int k=0;k<shapes.Length;k++)if(shapes[k]!=null){Make(shapes[k],specs[k].seed);accepted++;}
+            // (The collision shells cooked on all cores at once, then assigned: docs/72.)
+            var ids=shells.ConvertAll(c=>c.m.GetEntityId()).ToArray();System.Threading.Tasks.Parallel.For(0,ids.Length,k=>Physics.BakeMesh(ids[k],false));
+            foreach(var (c,m) in shells)c.sharedMesh=m;shells.Clear();CoastalLandscape.Lap("cliffs objects");
             Physics.SyncTransforms();
             var talus=new CoastalTalus(land,parent,material);
             for(int i=0;i<forms.Length;i++)talus.Scatter(forms[i].p,forms[i].size,i*19);
             CoastalLandscape.Lap("cliffs talus");talus.Record();Debug.Log("LITTLE_ROAD_CLIFFS formations="+accepted);
         }
-        sealed class Shape{public List<Vector3> vertices,faceted,smoothNormals;public List<int> tris,faceIndices;}
-        Shape Outcrop(Vector2 centre,Vector3 size,int seed)
+        readonly List<(MeshCollider c,Mesh m)> shells=new();
+        sealed class Shape{public Vector3[] vertices,faceted,smoothNormals;public int[] tris,faceIndices;}
+        const int Levels=41,Sides=64,Stride=Levels*Sides*3+1;   // (per outcrop in the cache: its rings, then 1 if it stands)
+        // `store`: the cooked rings (read when `cooked`, written otherwise) at `at`.
+        Shape Outcrop(Vector2 centre,Vector3 size,int seed,float[] store,int at,bool cooked)
         {
-            // Uneven bedding and vertical joints shape the silhouette, with
-            // smaller relief continuing down the buried-to-exposed transition.
-            // Dense samples prevent a whole slope becoming one stretched face.
+            var rings=new Vector3[Levels*Sides];
+            if(cooked){if(store[at+Stride-1]==0)return null;for(int k=0;k<rings.Length;k++)rings[k]=new Vector3(store[at+k*3],store[at+k*3+1],store[at+k*3+2]);}
+            else{if(!Rings(centre,size,seed,rings)){store[at+Stride-1]=0;return null;}for(int k=0;k<rings.Length;k++){store[at+k*3]=rings[k].x;store[at+k*3+1]=rings[k].y;store[at+k*3+2]=rings[k].z;}store[at+Stride-1]=1;}
+            return Surface(rings);
+        }
+        // Uneven bedding and vertical joints shape the silhouette, with
+        // smaller relief continuing down the buried-to-exposed transition.
+        // Dense samples prevent a whole slope becoming one stretched face. (False: it would stand on the circuit's verge.)
+        bool Rings(Vector2 centre,Vector3 size,int seed,Vector3[] rings)
+        {
             float[] heights={0,.18f,.36f,.42f,.48f,.63f,.69f,.75f,.88f,.95f,1};
             float[] widths={1.03f,1.04f,.99f,.96f,.87f,.84f,.80f,.68f,.61f,.48f,.28f};
-            const int levels=41,sides=64;
-            var rings=new Vector3[levels*sides];
+            const int levels=Levels,sides=Sides;
             float baseHeight=land.Height(centre.x,centre.y)-size.y*.42f;
             float rotation=seed*1.319f;
             for(int ring=0;ring<levels;ring++)for(int side=0;side<sides;side++) {
@@ -67,7 +83,7 @@ namespace LittleRoad
                     (Noise(x*1.8f,z*1.8f,t*size.y*1.8f,seed+11)-.5f)*.16f;
                 float outward=Mathf.SmoothStep(0,1,t*6)*relief;
                 x+=Mathf.Cos(angle+rotation)*outward;z+=Mathf.Sin(angle+rotation)*outward;
-                if(!land.SolidClearance(new Vector3(x,0,z)))return null;
+                if(!land.SolidClearance(new Vector3(x,0,z)))return false;
                 float bedTilt=edge.x*.055f+edge.y*.025f;
                 float y=baseHeight+(t*.82f+bedTilt*t+(broad-.5f)*.11f)*size.y+relief*.3f;
                 // Every foot follows the local slope, including the downhill
@@ -77,29 +93,40 @@ namespace LittleRoad
                 if(footBlend<1){float buried=Mathf.Min(y,land.Height(x,z)-1.2f);y=Mathf.Lerp(buried,y,footBlend);}
                 rings[ring*sides+side]=new Vector3(x,y,z);
             }
-            var vertices=new List<Vector3>(rings);var tris=new List<int>();
-            void Face(int a,int b,int c){tris.Add(a);tris.Add(b);tris.Add(c);}
+            return true;
+        }
+        // The outcrop's surface from its rings: the shell (shared vertices, for the collider) and the render mesh's corners
+        // with normals averaged over neighbouring faces within ~30 degrees. Flat arrays (docs/72: per-vertex lists on every
+        // core at once spent ~60 ms an outcrop allocating); the same faces, in the same order, so the same sums.
+        static Shape Surface(Vector3[] rings)
+        {
+            const int levels=Levels,sides=Sides;int last=(levels-1)*sides;
+            var vertices=new Vector3[rings.Length+2];System.Array.Copy(rings,vertices,rings.Length);
+            var tris=new int[(levels-1)*sides*6+sides*6];int ti=0;
+            void Face(int a,int b,int c){tris[ti++]=a;tris[ti++]=b;tris[ti++]=c;}
             for(int ring=0;ring<levels-1;ring++)for(int side=0;side<sides;side++) {
                 int a=ring*sides+side,b=ring*sides+(side+1)%sides,c=b+sides,d=a+sides;
                 Face(a,d,b);Face(b,d,c);
             }
-            Vector3 top=Vector3.zero,bottom=Vector3.zero;int last=(levels-1)*sides;
+            Vector3 top=Vector3.zero,bottom=Vector3.zero;
             for(int i=0;i<sides;i++){bottom+=rings[i];top+=rings[last+i];}bottom/=sides;top/=sides;
-            int bottomIndex=vertices.Count;vertices.Add(bottom);int topIndex=vertices.Count;vertices.Add(top);
+            int bottomIndex=rings.Length,topIndex=rings.Length+1;vertices[bottomIndex]=bottom;vertices[topIndex]=top;
             for(int i=0;i<sides;i++){Face(bottomIndex,i,(i+1)%sides);Face(topIndex,last+(i+1)%sides,last+i);}
             // Average shallow changes but keep broken ledges and deep joints
             // crisp. Flat-shading every little triangle produced noisy stripes.
-            var adjacent=new List<Vector3>[vertices.Count];for(int i=0;i<adjacent.Length;i++)adjacent[i]=new();
-            var normals=new Vector3[tris.Count/3];
-            for(int i=0;i<tris.Count;i+=3) {
-                Vector3 n=Vector3.Cross(vertices[tris[i+1]]-vertices[tris[i]],vertices[tris[i+2]]-vertices[tris[i]]).normalized;
-                normals[i/3]=n;for(int j=0;j<3;j++)adjacent[tris[i+j]].Add(n);
+            var normals=new Vector3[tris.Length/3];var count=new int[vertices.Length+1];
+            for(int i=0;i<tris.Length;i+=3) {
+                normals[i/3]=Vector3.Cross(vertices[tris[i+1]]-vertices[tris[i]],vertices[tris[i+2]]-vertices[tris[i]]).normalized;
+                for(int j=0;j<3;j++)count[tris[i+j]+1]++;
             }
-            var faceted=new List<Vector3>();var faceIndices=new List<int>();var smoothNormals=new List<Vector3>();
-            for(int i=0;i<tris.Count;i++) {
+            for(int v=0;v<vertices.Length;v++)count[v+1]+=count[v];
+            var adjacent=new Vector3[tris.Length];var fill=new int[vertices.Length];
+            for(int i=0;i<tris.Length;i+=3)for(int j=0;j<3;j++){int v=tris[i+j];adjacent[count[v]+fill[v]++]=normals[i/3];}
+            var faceted=new Vector3[tris.Length];var faceIndices=new int[tris.Length];var smoothNormals=new Vector3[tris.Length];
+            for(int i=0;i<tris.Length;i++) {
                 int index=tris[i];Vector3 average=Vector3.zero,normal=normals[i/3];
-                foreach(var neighbour in adjacent[index])if(Vector3.Dot(normal,neighbour)>.86f)average+=neighbour;
-                faceIndices.Add(faceted.Count);faceted.Add(vertices[index]);smoothNormals.Add(average.normalized);
+                for(int k=count[index];k<count[index+1];k++){var neighbour=adjacent[k];if(Vector3.Dot(normal,neighbour)>.86f)average+=neighbour;}
+                faceIndices[i]=i;faceted[i]=vertices[index];smoothNormals[i]=average.normalized;
             }
             return new Shape{vertices=vertices,faceted=faceted,smoothNormals=smoothNormals,tris=tris,faceIndices=faceIndices};
         }
@@ -110,7 +137,7 @@ namespace LittleRoad
             var go=new GameObject("Layered coastal outcrop "+seed,typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(parent,false);go.tag="Respawn";
             go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;// The collider cooks the shared-vertex shell (same surface, ~6x fewer vertices than the faceted render mesh).
             var shell=new Mesh{name="Outcrop collision "+seed,indexFormat=IndexFormat.UInt32};shell.SetVertices(vertices);shell.SetTriangles(tris,0);shell.RecalculateBounds();
-            go.GetComponent<MeshCollider>().sharedMesh=shell;
+            shells.Add((go.GetComponent<MeshCollider>(),shell));
         }
         static float Noise(float x,float z,float y,int seed)
         {

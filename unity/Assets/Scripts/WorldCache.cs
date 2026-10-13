@@ -55,6 +55,11 @@ namespace LittleRoad
                 Prune(System.IO.Path.GetDirectoryName(path));
             } catch(Exception e){Debug.LogWarning($"LITTLE_ROAD_WORLD_CACHE {name} not saved: {e.Message}");}
         }
+        // Shader warm-ups done (docs/72): a build's first launch on this machine warms every view; the graphics driver keeps
+        // what it compiled in its own disk cache, so later launches skip it (drive benchmark, 12 Oct: no warm-up, no frame
+        // over 33 ms; warmed, one). One marker file per build and warm-up; --always-warm-up warms every time.
+        public static bool Warmed(string what)=>Enabled&&!RaceTrial.Has("--always-warm-up")&&File.Exists(PathFor("warmed-"+what,"txt"));
+        public static void MarkWarmed(string what){string path=PathFor("warmed-"+what,"txt");if(path==null)return;try{Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));File.WriteAllText(path,DateTime.UtcNow.ToString("o"));}catch(Exception){}}
         // A read marks the file as in use, so the build that reads it keeps its files.
         public static void Touch(string path){try{File.SetLastWriteTimeUtc(path,DateTime.UtcNow);}catch(Exception){}}
         // Delete every file in the folder that doesn't belong to one of the two builds used most recently (by their newest
