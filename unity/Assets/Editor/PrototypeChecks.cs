@@ -15,7 +15,7 @@ public static class PrototypeChecks
         string id=CarBodies.Prototype;
         Check(CarBodies.IsKnown(id)&&!CarBodies.Sellable(id)&&CarBodies.Length(id)>4&&CarBodies.ShoulderWidth(id)>2,"The Regale is a known body, not for sale, with its measured length and width");
         var art=Resources.Load<Texture2D>("Cars/"+id+"_livery");
-        Check(art!=null&&art.width==2048&&art.height==2048,$"Livery texture loads at 2048 px ({art?.width}x{art?.height})");
+        Check(art!=null&&art.width>=1024&&art.width==art.height,$"Livery texture loads square, at least 1024 px ({art?.width}x{art?.height})");
         var car=TrialWorld.Car(id,Color.white);
         var livery=car.GetComponentsInChildren<Renderer>().SelectMany(r=>r.sharedMaterials).Where(m=>m!=null&&m.name.Contains("LiveryMap")).ToList();
         Check(livery.Count>0&&livery.All(m=>m.GetTexture("_BaseMap")==art&&m.color==Color.white),$"The livery material carries the texture, untinted ({livery.Count} materials; {string.Join(", ",livery.Select(m=>m.name+" "+(m.GetTexture("_BaseMap")!=null?m.GetTexture("_BaseMap").name:"no map")+" "+m.color))})");

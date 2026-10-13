@@ -36,6 +36,7 @@ namespace LittleRoad
         void Snap(bool canWrite)
         {
             try {
+                toast=null;   // (the last snap's "Snapped" message would be in this one's picture)
                 Directory.CreateDirectory(Folder);
                 string stamp=DateTime.Now.ToString("HHmmss");int n=1;while(File.Exists(Path.Combine(Folder,$"snap-{stamp}-{n}.png")))n++;
                 string name=$"snap-{stamp}-{n}";
@@ -63,6 +64,8 @@ namespace LittleRoad
             public string name,time,build,version,scene,area,save,note;
             public Vector3 carPosition,cameraPosition;public float carHeading,cameraYaw,cameraPitch,cameraFov,hourOfDay,carSpeed,fps;
             public bool racing;public string track;
+            // What was running: a challenge or the zip line (free roam); the event, its seed and every entrant (races).
+            public string activity,raceEvent;public int raceSeed;public string[] field;
         }
         Record Describe(string name)
         {
@@ -76,6 +79,13 @@ namespace LittleRoad
             var at=car!=null?car.transform.position:cam!=null?cam.transform.position:Vector3.zero;
             try{r.area=AreaBanner.Area(at);}catch(Exception){r.area="";}
             var race=FindAnyObjectByType<RaceTrial>();r.racing=race!=null&&!race.freeRoam;r.track=r.racing?race.TrackId:"";
+            if(r.racing&&race.Roster!=null) {
+                var roster=race.Roster;r.raceEvent=string.IsNullOrEmpty(roster.Event)?roster.Title:roster.Event+" ("+roster.Title+")";r.raceSeed=roster.Seed;
+                r.field=new string[roster.Entries.Count];
+                for(int i=0;i<r.field.Length;i++){var e=roster.Entries[i];r.field[i]=$"slot {e.Slot}: {e.Body} · {e.EquipmentLabel}";}
+            }
+            r.activity=FindAnyObjectByType<AdventureGame>()?.ActivityTitle??"";
+            foreach(var line in ZipLine.All)if(line.Busy)r.activity=line.title;
             return r;
         }
 

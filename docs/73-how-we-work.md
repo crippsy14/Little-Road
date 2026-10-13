@@ -86,7 +86,7 @@ A piece is done when it clears these, measured rather than eyeballed:
 
 ## 4 · Bug reports: the snap tool
 
-- **Taking a snap:** in-game, F9 on the keyboard, or Select + R3 on a pad (the "view" button plus right-stick click). It saves:
+- **Taking a snap:** in-game, F9 on the keyboard, or hold the right stick in (R3) for 0.6 s on a pad. It saves:
   - a screenshot;
   - where the car is (position, heading, the area's name);
   - the time of day, the build and the save;
@@ -118,12 +118,13 @@ A piece is done when it clears these, measured rather than eyeballed:
   - per-tick telemetry only on request;
   - caches only for the two most recently used builds.
 - **Docs:** one doc per piece of work, and `next-steps.md` as the log. Superseded docs say so at the top rather than being rewritten.
-- **The audit (13 October onwards):** every check file, flag and tool is classified as keep, merge, loosen or retire, and Richard sees the list before anything is removed.
-  - First suspects: about 3,400 lines and 34 check files from the first racing AI's studies (forecasts, drafting, dynamic rejoin). The first AI itself is kept as the benchmark (`--first-ai`).
+- **The audit (13 October onwards):** every check file, flag and tool is classified as keep, merge, loosen or retire.
+  - Claude makes the cleanup calls itself (Richard, 13 Oct: "continue to do so from your own call") and reports what went, with the proof that nothing a player sees changed.
+  - First pass done: the first racing AI and its studies were retired (doc 74).
 
 ## 7 · Order of work from 13 October
 
 1. Commit the 12 October work (after full regression sr-speed-1).
 2. The snap tool and the bug inbox.
-3. The bloat audit: the list for Richard, then one tested removal batch.
+3. The bloat audit and one tested removal batch (done 13 Oct, doc 74).
 4. The first self-planned district: a brief from doc 58's build order, designed for background building.

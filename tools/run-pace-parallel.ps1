@@ -1,8 +1,8 @@
-# Parallel version of run-pace-study.ps1: races every arm/track/seed as hidden processes, up to -Jobs at once.
+# Races every arm/track/seed as hidden processes, up to -Jobs at once.
 # Race outcomes (times, contacts, resets) are unaffected; don't use it for frame-cost timing, which needs one
-# race at a time. Existing run folders are skipped, as in run-pace-study.
+# race at a time. Existing run folders are skipped.
 # Usage: .\tools\run-pace-parallel.ps1 -Study 206 -Label my-change -Flags @('--my-flag') [-Jobs 6] [-PlaybackRate 1]
-# The default driver is Racing AI v2; race the first AI with -Label first-ai -Flags @('--first-ai').
+# The driver is Racing AI v2 (the first AI was retired on 13 Oct; docs/74).
 param([int]$Study,[string]$Label,[string[]]$Flags=@(),[string[]]$Tracks=@('cedar','bayview'),[int[]]$Seeds=@(1709,1710,1711),
   [switch]$SkipBaseline,[int]$Jobs=6,[ValidateRange(.25,4)][float]$PlaybackRate=1,[switch]$KeepTelemetry)
 $ErrorActionPreference='Stop'
@@ -19,11 +19,6 @@ foreach($track in $Tracks){foreach($seed in $Seeds){foreach($arm in $arms){
 $running=@()
 while($queue.Count -gt 0 -or $running.Count -gt 0){
   while($queue.Count -gt 0 -and $running.Count -lt $Jobs){
-    # The first AI (--first-ai) uses 8 forecast worker threads and is not repeatable under heavy load (study
-    # 206: Bayview 1709 gave 23/24 in parallel, 919.0 alone as always). Race it on its own.
-    $alone=$queue.Peek().Extra -contains '--first-ai'
-    if($alone -and $running.Count -gt 0){break}
-    if($running.Count -gt 0 -and $running[0][3]){break}
     $r=$queue.Dequeue()
     $job=Start-Job -ScriptBlock{param($root,$study,$r,$rate,$keep)
       Set-Location $root
@@ -31,7 +26,7 @@ while($queue.Count -gt 0 -or $running.Count -gt 0){
       if($r.Extra.Count){$a.Extra=[string[]]$r.Extra};if($keep){$a.KeepTelemetry=$true}
       & .\tools\run-frame-cost.ps1 @a | Select-Object -Last 1
     } -ArgumentList $root,$Study,$r,$PlaybackRate,$keepTelemetry
-    $running+=,@($job,$r.Name,(Get-Date),$alone)
+    $running+=,@($job,$r.Name,(Get-Date))
   }
   Start-Sleep -Seconds 3
   foreach($entry in @($running)){

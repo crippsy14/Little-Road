@@ -8,35 +8,24 @@ namespace LittleRoad
     [DefaultExecutionOrder(-100)]
     public sealed class TrafficFixture:MonoBehaviour
     {
-        [Serializable] public sealed class IntentEvent {public int id,leader,rejected;public float time,progress,offset,clearance;public string intent,reason;}
         [Serializable] public sealed class PassEvidence {public int follower,leader;public float firstClear=-1,sustainedAt=-1;public bool onStraight;[NonSerialized] public float clearSeconds;}
         [Serializable] public sealed class Evidence
         {
             public string scenario,scope="Declared mid-lap start and velocity, then ordinary vehicle physics. Partial course completion is not a full lap benchmark.";
             public float start,straightEnd,corridorEnd,startingGap,startingSpeed,rearStartingSpeed,witnessRelease=-1,firstClearPass=-1,sustainedPassAt=-1,minimumGap=999;
-            public bool passBeforeCorridorExit,passOnStraight;public IntentEvent[] decisions;public PassEvidence[] passes;
-            public TrafficDriverPolicy.PathDecision[] pathDecisions;public int droppedPathDecisions;
+            public bool passBeforeCorridorExit,passOnStraight;public PassEvidence[] passes;
         }
         RaceTrial race;Evidence evidence;bool released,merge,rearControl,witness,witnessReleased,crossing;float passTime;
-        readonly List<IntentEvent> decisions=new();readonly string[] lastIntent=new string[24];
         public void Setup(RaceTrial owner,TechnicalCircuit course)
         {
             race=owner;string scenario=RaceTrial.Arg("--traffic-case");
             crossing=scenario=="crossing-pass";
             merge=scenario.StartsWith("merge-");witness=scenario.StartsWith("merge-witness-");
             rearControl=scenario.StartsWith("rear-control");
-            bool lane=scenario=="lane-left"||scenario=="lane-middle"||scenario=="lane-right";
             bool rejoin=scenario=="rejoin-left"||scenario=="rejoin-right";
             bool corner=Array.IndexOf(new[]{"corner-solo-left","corner-solo-middle","corner-solo-right","corner-solo-deep","corner-pair-left","corner-pair-right","corner-three"},scenario)>=0;
-            int required=scenario=="field"?24:scenario=="class-sort"?RaceGrid.ClassSortCars:scenario=="solo"||scenario=="standing-solo"||scenario=="pace-solo"||lane||rejoin||scenario.StartsWith("corner-solo-")?1:scenario=="queue"||scenario=="corner-three"?3:2;
-            if(course==null||race.cars.Count!=required||(!lane&&!corner&&Array.IndexOf(new[]{"draft-straight","draft-pullout","solo","standing-solo","pace-solo","follow","pass","no-room","queue","field","class-sort","rear-control","rear-control-left","rear-control-right","rejoin-left","rejoin-right","crossing-pass","brake-leader","brake-probe","merge-left","merge-right","merge-witness-left","merge-witness-right"},scenario)<0))throw new ArgumentException("Invalid declared traffic fixture.");
-            if(lane) {
-                if(race.cars[0].trafficPolicy==null)throw new ArgumentException("Lane fixture requires the local traffic controller.");
-                float side=scenario=="lane-left"?-4:scenario=="lane-right"?4:0;
-                released=true;race.cars[0].PlaceLaneFixture(side);race.cars[0].trafficPolicy.SetLaneFixture(side);
-                evidence=new Evidence{scenario=scenario,scope="Full standing lap, fixed road corridor, ordinary local driver/physics. Tests off-reference tracking independently of traffic choice.",passes=Array.Empty<PassEvidence>()};
-                Physics.SyncTransforms();return;
-            }
+            int required=scenario=="field"?24:scenario=="class-sort"?RaceGrid.ClassSortCars:scenario=="solo"||scenario=="standing-solo"||scenario=="pace-solo"||rejoin||scenario.StartsWith("corner-solo-")?1:scenario=="queue"||scenario=="corner-three"?3:2;
+            if(course==null||race.cars.Count!=required||(!corner&&Array.IndexOf(new[]{"draft-straight","draft-pullout","solo","standing-solo","pace-solo","follow","pass","no-room","queue","field","class-sort","rear-control","rear-control-left","rear-control-right","rejoin-left","rejoin-right","crossing-pass","brake-leader","brake-probe","merge-left","merge-right","merge-witness-left","merge-witness-right"},scenario)<0))throw new ArgumentException("Invalid declared traffic fixture.");
             if(scenario=="field"||scenario=="class-sort"||scenario=="standing-solo") {
                 // Experimental full-field preview keeps the normal stationary
                 // starting grid and lap/checkpoint accounting. No mid-lap placing.
@@ -105,16 +94,9 @@ namespace LittleRoad
             // leader returns to ordinary driving after one second of hard braking.
             if(evidence.scenario=="brake-leader"||evidence.scenario=="brake-probe")race.cars[1].commandSource=race.elapsed>=1&&race.elapsed<2?BrakeLeader:null;
             if(evidence.scenario=="brake-probe") {
-                race.cars[0].trafficPolicy?.SetCommandProbe(race.elapsed<3);
-                race.cars[0].contextPolicy?.SetCommandProbe(race.elapsed<3);
                 // Keep the leader straight too, so an initial reference-line
                 // rejoin cannot introduce an undeclared braking event before 1 s.
                 race.cars[1].commandSource=race.elapsed<3?(race.elapsed>=1&&race.elapsed<2?BrakeLeader:AccelerateLeader):null;
-            }
-            foreach(var car in race.cars)if(car.trafficPolicy!=null&&lastIntent[car.driverId]!=car.trafficPolicy.Intent) {
-                var policy=car.trafficPolicy;decisions.Add(new IntentEvent{id=car.driverId,time=race.elapsed,progress=car.progress,offset=policy.PlannedOffset,intent=policy.Intent,reason=policy.Reason,leader=policy.Leader,rejected=policy.Rejected,clearance=policy.Clearance});
-                lastIntent[car.driverId]=policy.Intent;
-                if((evidence.scenario!="field"&&evidence.scenario!="class-sort")||car.driverId==0)Debug.Log($"TRAFFIC_INTENT id={car.driverId} t={race.elapsed:0.00} {policy.Intent} offset={policy.PlannedOffset:0.00} reason={policy.Reason}");
             }
             if(evidence.scenario=="field"||evidence.scenario=="class-sort")return;
             foreach(var pass in evidence.passes) {
@@ -139,21 +121,16 @@ namespace LittleRoad
         public void Save()
         {
             var report=RaceTrial.Arg("--trial-report");if(report==null)return;
-            var traces=new List<TrafficDriverPolicy.PathDecision>();
-            foreach(var car in race.cars)if(car.trafficPolicy!=null){traces.AddRange(car.trafficPolicy.PathDecisions);evidence.droppedPathDecisions+=car.trafficPolicy.DroppedPathDecisions;}
-            evidence.pathDecisions=traces.ToArray();
-            evidence.decisions=decisions.ToArray();File.WriteAllText(Path.ChangeExtension(report,"traffic.json"),JsonUtility.ToJson(evidence,true));
+            File.WriteAllText(Path.ChangeExtension(report,"traffic.json"),JsonUtility.ToJson(evidence,true));
         }
         Vector2 DraftCommand(RoadCar car)=>new Vector2(1,evidence.scenario=="draft-pullout"&&car.driverId==0&&race.elapsed>=1&&race.elapsed<2?.35f:0);
         static Vector2 BrakeLeader(RoadCar car)=>new Vector2(-1,0);
         static Vector2 AccelerateLeader(RoadCar car)=>new Vector2(1,0);
         void OnGUI()
         {
-            if(race==null||race.cars.Count==0)return;using var hud=new DisplaySettings.HudScale(true);var p=race.cars[0].trafficPolicy;
+            if(race==null||race.cars.Count==0)return;using var hud=new DisplaySettings.HudScale(true);
             GUI.color=new Color(.07f,.16f,.19f,.92f);GUI.DrawTexture(new Rect(20,235,650,68),Texture2D.whiteTexture);GUI.color=Color.white;
-            var context=race.cars[0].contextPolicy;
-            GUI.Label(new Rect(34,241,620,28),$"TRAFFIC TEST · {evidence.scenario} · {context?.Intent??p?.Intent??"Reference control"}",new GUIStyle(GUI.skin.label){fontSize=19});
-            GUI.Label(new Rect(34,271,620,24),context!=null?$"{context.Reason} · continuous target {context.SelectedOffset:0.00}m":$"{p?.Reason} · passing offset {p?.PlannedOffset:0.0}m · rejected paths {p?.Rejected}");
+            GUI.Label(new Rect(34,241,620,28),$"TRAFFIC TEST · {evidence.scenario} · Racing AI v2",new GUIStyle(GUI.skin.label){fontSize=19});
         }
     }
 }

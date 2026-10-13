@@ -74,19 +74,15 @@ namespace LittleRoad
                 Ribbon(track,"Runoff",0,24,.011f,runoff);Ribbon(track,"16 metre asphalt",0,Circuit.Width,.025f,asphalt);
                 new GameObject("Continuous drivable support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
             } else {
-            bool tessellated=RaceTrial.Has("--tessellated-cedar-support");
             // Ground: Cedar's 1200 x 1000 m slab, or, for a larger course (the 2.5-mile test loop), one sized to it.
             Vector3 groundCentre=new(-50,0,0),groundSize=new(1200,1,1000);
             {float x0=float.MaxValue,x1=float.MinValue,z0=float.MaxValue,z1=float.MinValue;for(float d=0;d<track.length;d+=10){var q=track.At(d);x0=Mathf.Min(x0,q.x);x1=Mathf.Max(x1,q.x);z0=Mathf.Min(z0,q.z);z1=Mathf.Max(z1,q.z);}
              if(x0<-640||x1>540||z0<-490||z1>490){groundCentre=new((x0+x1)*.5f,0,(z0+z1)*.5f);groundSize=new(x1-x0+600,1,z1-z0+600);}}
-            var ground=Box("Continuous test ground",groundCentre+Vector3.down*.5f,groundSize,grass,Quaternion.identity,tessellated);ground.tag="Untagged";
+            var ground=Box("Continuous test ground",groundCentre+Vector3.down*.5f,groundSize,grass,Quaternion.identity);ground.tag="Untagged";
             Ribbon(track,"Runoff",0,24,.011f,runoff);Ribbon(track,"16 metre asphalt",0,Circuit.Width,.025f,asphalt);
             var support=new GameObject("Continuous drivable support",typeof(RoadSupport));
-            if(tessellated)support.AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
-            else {
-                support.transform.position=groundCentre+Vector3.down*.475f;
-                support.AddComponent<BoxCollider>().size=groundSize;
-            }
+            support.transform.position=groundCentre+Vector3.down*.475f;
+            support.AddComponent<BoxCollider>().size=groundSize;
             }
             foreach(int side in new[]{-1,1}) {
                 Ribbon(track,"Road boundary",side*7.7f,.16f,.039f,white);

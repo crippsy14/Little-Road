@@ -37,22 +37,7 @@ public static class GradeModelChecks
             // The geared engine envelope, docs/47, arrives faster and moves the zones: net slower, not 2:1.)
             Check(downhillSlower>1&&downhillFaster<downhillSlower*.95f,$"Downhill braking zones plan lower speeds overall ({downhillSlower:0.0} m/s lower, {downhillFaster:0.0} higher at dips)");
             Check(graded.predictedLapTime>flat.predictedLapTime,"Hills cost lap time in the plan");
-            // Forecast physics: uphill slows, downhill speeds a full-throttle car.
-            PlanarDrivePrediction Run(float slope){var p=new PlanarDrivePrediction(Vector3.zero,Vector3.forward*15,Vector3.forward,0,0);for(int k=0;k<240;k++)p.Step(CarTuning.Club,1,0,1f/120,0,-1,slope);return p;}
-            float up=Run(GradeModel.Gravity*.08f).velocity.z,level=Run(0).velocity.z,down=Run(-GradeModel.Gravity*.08f).velocity.z;
-            Check(up<level&&level<down,"Forecast: uphill slower, downhill faster than level");
             Check(GradeModel.Load(20,-.005f)<1&&GradeModel.Load(20,.005f)>1,"Crest unloads, dip loads the tyres");
-            // Steering on a slope: on Cedar Hills' steepest descent, the command depends only on the
-            // horizontal geometry, not on how far the look-ahead point sits below the car.
-            {
-                float steep=0,at=0;for(float d=0;d<hills.track.length;d+=4){float g=GradeModel.Grade(hills.track,d);if(g<steep&&hills.track.Curvature(d)<.002f){steep=g;at=d;}}
-                var profile=new RacingSpeedProfile(line,CarTuning.Club);var follower=new ContextPathFollower(profile);
-                var fwd=hills.track.Forward(at);fwd.y=0;fwd.Normalize();var path=new ContextPathState{anchor=at,blend=60};
-                float Steer(float height){var self=new ObservedCar(0,hills.track.At(at)+Vector3.right*.3f+Vector3.up*height,fwd*25,fwd,Vector3.Cross(Vector3.up,fwd),at,.3f,25,.9f,2,0,Vector3.zero);
-                    var obs=new DriverObservation(0,1f/120,self,ReadOnlySpan<ObservedCar>.Empty,hills.track,CarTuning.Club,1,0,false,0,false,0);return follower.Follow(in obs,in path).steering;}
-                float ride=Steer(.55f),raised=Steer(2.2f);
-                Check(Mathf.Abs(ride-raised)<1e-4f,$"Downhill: steering ignores the look-ahead point's height ({ride:0.0000} vs {raised:0.0000} at {steep*100:0.0}% grade)");
-            }
         } finally {GradeModel.Enabled=saved;GradeModel.Physics=savedPhysics;}
         return checks;
     }

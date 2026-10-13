@@ -47,8 +47,6 @@ namespace LittleRoad
         public string CheckpointMessage=>CheckpointMissed?"CHECKPOINT MISSED — R / D-pad Down: return before it":"";
         IDriverPolicy driverPolicy;
         public PhysicalRecovery physicalRecovery {get;private set;}
-        public TrafficDriverPolicy trafficPolicy {get;private set;}
-        public ContextDriverPolicy contextPolicy {get;private set;}
         public RacerDriverPolicy racerPolicy {get;private set;}
         // The live gearbox (docs/47): gear, revs, boost and shifts for the physics and the sound.
         int gearRecoveries;
@@ -84,7 +82,7 @@ namespace LittleRoad
             var random=new System.Random(seed);preferredOffset=(float)(random.NextDouble()*3-1.5);
             pace=.94f+(float)random.NextDouble()*.06f;
             driverPolicy=new LegacyDriverPolicy(random);
-            if(owner.ReferenceLine!=null){var planning=identity!=null?identity.Planning:owner.DriverPolicyId=="context-v1"?DriverPlanningSettings.Preset(RaceTrial.Arg("--driver-braking","neutral")).WithRisk(int.Parse(RaceTrial.Arg("--driver-risk","0"),System.Globalization.CultureInfo.InvariantCulture)):default;referenceProfile=new RacingSpeedProfile(owner.LineFor(tuning),tuning,planning,owner.DraftingEnabled);driverPolicy=new ReferenceDriverPolicy(referenceProfile);}
+            if(owner.ReferenceLine!=null){var planning=identity!=null?identity.Planning:default;referenceProfile=new RacingSpeedProfile(owner.LineFor(tuning),tuning,planning,owner.DraftingEnabled);driverPolicy=new ReferenceDriverPolicy(referenceProfile);}
             body=gameObject.AddComponent<Rigidbody>();body.mass=850*tuning.mass;
             body.constraints=race.track.hasElevation?RigidbodyConstraints.None:RigidbodyConstraints.FreezeRotationX|RigidbodyConstraints.FreezeRotationZ;
             body.interpolation=RigidbodyInterpolation.Interpolate;
@@ -100,10 +98,8 @@ namespace LittleRoad
             var collider=gameObject.AddComponent<BoxCollider>();collider.center=boxCentre;collider.size=size;
             CollisionHalf=size*.5f;CollisionCentre=boxCentre;
             if(!Application.isBatchMode)gameObject.AddComponent<LightTrails>().Setup(this,boxCentre,CollisionHalf);
-            if(RaceTrial.Has("--physical-recovery")||owner.DriverPolicyId=="traffic-v1"||owner.DriverPolicyId=="context-v1"||owner.DriverPolicyId=="racer-v2")recoverySensor=new RecoverySensor(body,collider);
+            if(RaceTrial.Has("--physical-recovery")||owner.DriverPolicyId=="racer-v2")recoverySensor=new RecoverySensor(body,collider);
             if(RaceTrial.Has("--physical-recovery"))physicalRecovery=new PhysicalRecovery();
-            if(owner.DriverPolicyId=="traffic-v1"){trafficPolicy=new TrafficDriverPolicy(referenceProfile,recoverySensor);driverPolicy=trafficPolicy;}
-            if(owner.DriverPolicyId=="context-v1"){contextPolicy=new ContextDriverPolicy(referenceProfile,recoverySensor,collider.center,collider.size*.5f);driverPolicy=contextPolicy;}
             if(owner.DriverPolicyId=="racer-v2"){racerPolicy=new RacerDriverPolicy(owner.LineFor(tuning),RacerAbilities.From(identity).WithOverrides(RaceTrial.Arg("--racer-abilities")).WithOverrides(id==0?RaceTrial.Arg("--player-abilities"):null),id,owner.Roster?.Seed??seed,collider.size*.5f);driverPolicy=racerPolicy;if(physicalRecovery!=null)physicalRecovery.OffsetTrigger=13;}
             // Tyre/rolling resistance is already calculated by DriveModel.
             // Sliding a box with the default contact friction adds an unintended
@@ -148,7 +144,7 @@ namespace LittleRoad
             // 7-18 cm under the tyres and every car rode on it, wheels in the air. Every car model stands on y = 0 with its
             // tyres touching it (WheelVisuals), so the box's bottom goes there. Study 219 kept it: 144/144 finished, no
             // resets, total time 9616.6 -> 9612.6 s (contacts 54 -> 57). --old-ride-height restores the old box.
-            if(!RaceTrial.Has("--old-ride-height")&&envelope.min.y< -.01f){var max=envelope.max;envelope.SetMinMax(new Vector3(envelope.min.x,-.003f,envelope.min.z),max);}
+            if(envelope.min.y< -.01f){var max=envelope.max;envelope.SetMinMax(new Vector3(envelope.min.x,-.003f,envelope.min.z),max);}
             envelope.Expand(.015f);Vector3 size=envelope.size;
             string body=car.name.Replace("(Clone)","").Trim();var shoulders=CarBodies.ShoulderWidth(body);var length=CarBodies.Length(body);
             if(shoulders.HasValue){size.x=shoulders.Value;envelope.center=new Vector3(0,envelope.center.y,envelope.center.z);}if(length.HasValue)size.z=length.Value;
@@ -202,9 +198,7 @@ namespace LittleRoad
                 body.linearVelocity=new Vector3(0,Mathf.Min(0,body.linearVelocity.y),0);body.angularVelocity=Vector3.zero;speed=0;return;
             }
             if(race.elapsed<0) {throttle=0;steering=0;body.linearVelocity=Vector3.zero;return;}
-            race.MotionAudit?.Observe(this,race.elapsed);
             if(autonomous&&!finished&&race.elapsed>0){float dt=Time.fixedDeltaTime;if(throttle<-.05f)BrakeSeconds+=dt;else if(throttle<.9f&&speed>3)LiftSeconds+=dt;if(speed<2)StoppedSeconds+=dt;}
-            race.ApproachAudit?.Observe(this,race.elapsed);
             steerState=Mathf.MoveTowards(steerState,steering,tuning.response*Time.fixedDeltaTime);
             float grip=Mathf.Abs(offset)<Circuit.Width*.5f||(race.freeRoam&&OnRoadSurface())?tuning.roadGrip:tuning.dirtGrip;grip*=DriveModel.AeroGrip(tuning,speed);Grip=grip;
             float yawRequest=steerState*tuning.yaw*Mathf.Clamp01(Mathf.Abs(speed)/3)*Mathf.Sign(speed==0?1:speed);
@@ -312,18 +306,8 @@ namespace LittleRoad
         void Plan()
         {
             var stamp=race.DriverAudit!=null?DriverFrameAudit.Begin():default;
-            int plansBefore=contextPolicy?.PlanCount??0;
             PlanObserved();
-            race.DriverAudit?.RecordPlans((contextPolicy?.PlanCount??0)-plansBefore);
             race.DriverAudit?.Record(stamp,false);
-        }
-        public ForecastWork PreparedRoadContinuation=>contextPolicy?.PreparedContinuation;
-        public ForecastWork PrepareRoadForecast(RaceWorldSnapshot snapshot)
-        {
-            if(contextPolicy==null||controlsBlocked||commandSource!=null||(!autonomous&&!finished)||physicalRecovery?.Active==true)return null;
-            var observed=snapshot.Entries;
-            var observation=new DriverObservation(snapshot.Timestamp,Time.fixedDeltaTime,observed[driverId],observed,race.track,tuning,pace,preferredOffset,finished,steerState,race.DraftingEnabled);
-            return contextPolicy.PrepareForecast(in observation);
         }
         void PlanObserved()
         {
@@ -346,8 +330,8 @@ namespace LittleRoad
             DriveCommand command;
             if(physicalRecovery!=null&&race.elapsed>=0&&!finished) {
                 string previous=physicalRecovery.State;
-                bool blocked=((trafficPolicy==null&&contextPolicy==null&&racerPolicy==null)||physicalRecovery.Active)&&recoverySensor.FrontBlocked(in observation,physicalRecovery.Active,referenceProfile?.line);
-                physicalRecovery.Observe(in observation,progress,nextGateProgress,blocked,trafficPolicy?.WaitingForTraffic??contextPolicy?.WaitingForTraffic??racerPolicy?.WaitingForTraffic??false);
+                bool blocked=(racerPolicy==null||physicalRecovery.Active)&&recoverySensor.FrontBlocked(in observation,physicalRecovery.Active,referenceProfile?.line);
+                physicalRecovery.Observe(in observation,progress,nextGateProgress,blocked,racerPolicy?.WaitingForTraffic??false);
                 if(physicalRecovery.NeedsPlan(timestamp)) {
                     physicalRecovery.Plan(in observation,progress,nextGateProgress,recoverySensor.Sample(in observation,steerState));
                 }
@@ -432,18 +416,6 @@ namespace LittleRoad
             float gateStep=race.track.length/12;int gate=Mathf.FloorToInt(progress/gateStep)+1;nextGate=gate%12;nextGateProgress=gate*gateStep;
             lastSafeDistance=progress;lapStart=0;laps=0;
         }
-        public void RestoreApproachFixture(PathApproachAudit.Capture capture)
-        {
-            if(!RaceTrial.Has("--path-approach-file")||!RaceTrial.Has("--path-probe"))throw new InvalidOperationException("Approach restoration is fixture-only.");
-            // Interpolated bodies may retain the old transform until physics.
-            // The first control observation must see the recorded heading too.
-            transform.SetPositionAndRotation(capture.position,capture.rotation);
-            body.position=capture.position;body.rotation=capture.rotation;body.linearVelocity=capture.velocity;body.angularVelocity=capture.angularVelocity;
-            steerState=capture.steeringState;steering=capture.steering;throttle=capture.pedal;
-            pathDistance=race.track.Nearest(body.position,out offset);previousPath=pathDistance;progress=pathDistance;speed=capture.speed;
-            float gateStep=race.track.length/12;int gate=Mathf.FloorToInt(progress/gateStep)+1;nextGate=gate%12;nextGateProgress=gate*gateStep;
-            lastSafeDistance=progress;lapStart=0;laps=0;
-        }
         public void PlaceRecoveryFixture(float route,float side,float heading,float velocity)
         {
             if(!RaceTrial.Has("--recovery-case"))throw new InvalidOperationException("Recovery fixture placement requires a declared test case.");
@@ -452,15 +424,6 @@ namespace LittleRoad
             body.linearVelocity=rotation*Vector3.forward*velocity;body.angularVelocity=Vector3.zero;
             pathDistance=Mathf.Repeat(route,race.track.length);previousPath=pathDistance;offset=side;progress=route;lastSafeDistance=Mathf.Min(route,-8);
             laps=nextGate=0;nextGateProgress=0;lapStart=0;
-        }
-        public void PlaceLaneFixture(float side)
-        {
-            if(!RaceTrial.Arg("--traffic-case","").StartsWith("lane-"))throw new InvalidOperationException("Lane placement requires a declared fixture.");
-            const float route=-8;
-            body.position=race.track.At(route)+race.track.Right(route)*side+Vector3.up*.15f;body.rotation=Quaternion.LookRotation(race.track.Forward(route));
-            body.linearVelocity=body.angularVelocity=Vector3.zero;
-            pathDistance=Mathf.Repeat(route,race.track.length);previousPath=pathDistance;offset=side;progress=lastSafeDistance=route;
-            laps=nextGate=0;nextGateProgress=lapStart=0;
         }
         // Adventure speech bubbles listen for bumps: (other collider, closing speed).
         public event Action<Collider,float> Bumped;

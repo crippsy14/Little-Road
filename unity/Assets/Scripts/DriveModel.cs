@@ -46,7 +46,7 @@ namespace LittleRoad
         // speeds need 60% of the power, the cap binds only in the low gears, and the gear chosen matters (5th pulls
         // about half what 3rd does at 30 mph).
         // --legacy-drag restores 0.006 for A/B.
-        public static readonly float DragK=RaceTrial.Has("--legacy-drag")?.006f:.0035f;
+        public const float DragK=.0035f;
         public static float Resistance(float speed, float mass) => (.25f+DragK*speed*speed)/mass;
         public static float Resistance(CarTuning t, float speed) => (.25f+DragK*t.DragFactor*speed*speed)/t.mass;
         // With real gears this is the best-gear envelope: what the AI and speed profiles plan with.
@@ -66,7 +66,6 @@ namespace LittleRoad
         public static readonly bool NoAeroGrip=RaceTrial.Has("--no-aero-grip");
         public static float Aero(CarTuning t)=>t.downforce>0&&!NoAeroGrip?AeroLoad*t.downforce/9.81f:0;
         public static float AeroGrip(CarTuning t,float speed)=>1+Aero(t)*speed*speed;
-        public static readonly bool LegacyReverse=RaceTrial.Has("--legacy-reverse");
         public static void Forces(CarTuning t, float speed, float throttle, float yawRequest, float grip, float slope,
             out float acceleration, out float yaw,float dragReduction=0,float engineAccel=-1)
         {
@@ -76,8 +75,8 @@ namespace LittleRoad
             float drag=DraftingModel.Resistance(speed,t.mass,dragReduction,t.DragFactor);
             // Rolling backwards on the forward pedal (a reversing car stopping, a recovery pulling away): it brakes
             // to a stop first. With real gears the engine gives nothing in reverse, so without this the car rolled
-            // on backwards (recoveries reversed for 15-30 s). --legacy-reverse restores that for A/B.
-            if(throttle>0&&speed< -.1f&&!LegacyReverse){acceleration=Mathf.Min(t.braking*throttle,traction)+drag-slope;return;}
+            // on backwards (recoveries reversed for 15-30 s).
+            if(throttle>0&&speed< -.1f){acceleration=Mathf.Min(t.braking*throttle,traction)+drag-slope;return;}
             if(throttle>0) {
                 // A downhill overspeed must coast back toward the usable gear
                 // range. Merely clamping net acceleration to zero supplied
@@ -86,7 +85,7 @@ namespace LittleRoad
                 float drive=speed>=t.gearCeiling?0:Mathf.Min(engineAccel>=0?engineAccel:EngineForce(t,speed)*throttle,traction);
                 acceleration=drive-drag-slope;
             }
-            else if(throttle<0) acceleration=speed>.1f?-Mathf.Min(t.braking*-throttle,traction)-drag-slope:-Mathf.Min(LegacyReverse?7:7*-throttle,traction);
+            else if(throttle<0) acceleration=speed>.1f?-Mathf.Min(t.braking*-throttle,traction)-drag-slope:-Mathf.Min(7*-throttle,traction);
             else acceleration=-Mathf.Sign(speed)*drag-slope;
         }
     }

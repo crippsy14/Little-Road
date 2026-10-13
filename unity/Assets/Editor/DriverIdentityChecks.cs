@@ -40,27 +40,6 @@ public static class DriverIdentityChecks
         for(int i=0;i<line.Count;i++)Require(oldProfile.speed[i]==neutralProfile.speed[i]&&oldProfile.acceleration[i]==neutralProfile.acceleration[i],"neutral changes physical speed envelope");
         checks.Add("Neutral profile reproduces existing speed arrays and .35m passing spare space exactly; form cap has no hidden clipping");
 
-        float d=course.regionStarts[13]+100;var f=road.Forward(d);var r=road.Right(d);
-        var self=new ObservedCar(0,road.At(d),f*20,f,r,d,0,20,1.2f,2.3f);
-        var rival=new ObservedCar(1,road.At(d+15),f*10,f,r,d+15,0,10,1.2f,2.3f);
-        var traffic=new[]{rival};var o=new DriverObservation(10,1f/120,self,traffic,road,tuning,1,0,false);
-        ContextPathState prior=default;
-        foreach(int risk in new[]{0,5,10}) {
-            var planning=new DriverPlanningSettings(.73f,risk,true);var profile=new RacingSpeedProfile(line,tuning,planning);
-            var planner=new DynamicRejoinPlanner(profile,true,true);planner.PrepareTraffic(in o,in prior,false);bool left=false,right=false;
-            float expected=2.4f+planning.PassingClearance;
-            for(int i=0;i<planner.Count;i++){var p=planner.Path(i);left|=!p.guide&&Mathf.Abs(p.endOffset+expected)<.00001f;right|=!p.guide&&Mathf.Abs(p.endOffset-expected)<.00001f;}
-            Require(left&&right,"risk does not change actual passing proposals");
-            Require(self.halfWidth==1.2f&&rival.halfWidth==1.2f,"risk changed collision footprint");
-        }
-        checks.Add("Risk0/5/10 create actual dynamic passing proposals with .8/.35/.1m spare space, leaving body geometry unchanged");
-        var path=RoadPathFeasibility.FromMotion(in o,0,false);var half=new Vector3(1.2f,.6f,2.3f);
-        var request=new ForecastRequest(in o,in path,Vector3.zero,half,planning:old);
-        var changed=new ForecastRequest(in o,in path,Vector3.zero,half,planning:neutral.Planning);
-        Require(!request.Matches(in changed),"passing style omitted from forecast identity");
-        rejected=false;try{changed.Run(new ContextPathPrediction(oldProfile));}catch(InvalidOperationException){rejected=true;}
-        Require(rejected,"forecast accepted a mismatched personality");
-        checks.Add("Owned forecast identity rejects different driver-style state even when numerical neutral margins coincide");
         return checks;
     }
 }

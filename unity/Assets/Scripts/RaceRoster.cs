@@ -163,9 +163,6 @@ namespace LittleRoad
             for(int i=1;i<24;i++) {
                 var e=trial.Entries[i];string disc=FieldRecipe.Discipline(track);var parts=FieldRecipe.Kit(raceClass,disc,stars,e.Slot,seed,out float level);
                 var driver=modern?FieldRecipe.Driver(i,seed,raceClass,e.Slot,true):null;
-                // Study switches (docs/70): the recipe's drivers on the old kits, or its kits with the old drivers.
-                if(RaceTrial.Has("--field-recipe-drivers-only")){parts=raceClass=="B"?EquipmentCatalog.TestLoadout("b"+Mathf.Clamp(stars+(e.Slot<4?1:e.Slot>=18?-1:0),1,10)):new Dictionary<string,string>(e.Parts);if(raceClass=="B"&&disc=="gravel")parts["tyres"]="tyres_b_rally";}
-                if(RaceTrial.Has("--field-recipe-parts-only"))driver=e.Driver;
                 bool flagship=raceClass=="C"&&disc=="road"&&e.Slot==0;string label=$"class {raceClass} {stars}★ recipe kit {Mathf.RoundToInt(level*100)}%";
                 entries[i]=new RaceEntrant(e.Id,e.Slot,flagship?CarBodies.Flagship:level>=.6f?high[h++]:low[l++],flagship?FlagshipPaint:e.Paint,label,parts,driver);
             }
@@ -202,18 +199,13 @@ namespace LittleRoad
         static bool Active=>AdventureSession.Racing&&AdventureSession.EnteredRoster?.Modern==true||CommandLineValue("--ai-preset")=="field";
         static string CommandLineValue(string key){var args=Environment.GetCommandLineArgs();int i=Array.IndexOf(args,key);return i>=0&&i+1<args.Length?args[i+1]:null;}
         static bool Dropped(string key){var args=Environment.GetCommandLineArgs();for(int i=0;i+1<args.Length;i++)if(args[i]=="--preset-without"&&args[i+1]==key)return true;return false;}
-        static readonly HashSet<string> switches=new(StringComparer.Ordinal){"--stagger-context-plans","--physical-recovery","--traffic-diagnostics","--road-feasibility","--prepared-path","--guide-path-fallback","--compare-continuation","--traffic-aware-progress","--following-feasibility-fallback","--shared-observed-traffic","--parallel-continuation-forecast","--rear-pressure-filter","--light-drafting","--coast-within-envelope","--no-gap-centres","--traffic-path-check","--anticipate-passing-space","--traffic-coast-continuation","--parallel-road-forecasts","--dynamic-rejoin","--dynamic-traffic","--local-origin-curvature","--dynamic-field-study","--dynamic-blocking-target","--dynamic-traffic-fallback","--parallel-dynamic-forecast","--open-space-priority","--driver-roster","--driver-form","--gate-first"};
-        // Racing AI v2 (docs/46) is the default driver since study 205 (29 September); --first-ai races the
-        // first (context) AI instead, as the benchmark. v2 keeps only the preset switches that are not part of
-        // the first AI (recovery, drafting physics, the roster and gate crediting). --racer-v2 is accepted
-        // for old commands and changes nothing.
-        public static bool RacerV2=>Array.IndexOf(Environment.GetCommandLineArgs(),"--first-ai")<0;
-        static readonly HashSet<string> racerSwitches=new(StringComparer.Ordinal){"--physical-recovery","--light-drafting","--driver-roster","--driver-form","--gate-first"};
-        public static bool Enabled(string key)=>Active&&switches.Contains(key)&&!Dropped(key)&&(!RacerV2||racerSwitches.Contains(key));
+        // Racing AI v2 (docs/46) with the switches it is raced with: recovery, drafting physics, the roster and gate crediting.
+        static readonly HashSet<string> switches=new(StringComparer.Ordinal){"--physical-recovery","--light-drafting","--driver-roster","--driver-form","--gate-first"};
+        public static bool Enabled(string key)=>Active&&switches.Contains(key)&&!Dropped(key);
         public static string Value(string key,string fallback)
         {
             if(!Active)return fallback;
-            return key switch {"--driver-policy"=>"context","--driver-risk"=>"5","--driver-braking"=>"neutral","--parallel-forecast-workers"=>"8","--driver-roster"=>"mixed","--context-plan-groups"=>"3","--following-fallback-scope"=>"all",
+            return key switch {"--driver-policy"=>"racer","--driver-roster"=>"mixed",
                 "--racing-line"=>CommandLineValue("--trial-track")=="cedar"?"cedar-smooth-v2":"bayview-smooth-v1","--traffic-case"=>"field",_=>fallback};
         }
     }

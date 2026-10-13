@@ -30,6 +30,8 @@ Run-Batch @(
   @{name='blast';script=".\tools\quarry-run.ps1 -Name $Name-blast -NoReview -Flags @('--blast-test','--no-traffic') $test"},
   @{name='leap';script=".\tools\quarry-run.ps1 -Name $Name-leap -NoReview -Flags @('--leap-test') $test"},
   @{name='festival';script=".\tools\quarry-run.ps1 -Name $Name-festival -NoReview -Flags @('--festival','--festival-test') $test"},
+  # Racing AI v2: one 24-car lap of Bayview (seed 1709; deterministic, so a change in the total is a change in the racing).
+  @{name='race';script=".\tools\run-frame-cost.ps1 -Study 0 -Track bayview -Seed 1709 -Name $Name-race -PlaybackRate 4 | Out-Null; & 'C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\bin\python.exe' tools/summarize-racer.py review/unity-35/frame-cost-0/$Name-race/race.json | Select-Object -Last 1"},
   @{name='area-audit';script=".\tools\quarry-run.ps1 -Name $Name-area-audit -Flags @('--area-audit') 2>&1 | Out-Null; Get-Content review/quarry-hills/$Name-area-audit/area-audit.txt | Select-String 'FAIL|PASS|^    ' | ForEach-Object Line"})
 Run-Batch @(
   @{name='harvest';script=".\tools\quarry-run.ps1 -Name $Name-harvest -NoReview -Flags @('--harvest-test') $test"},

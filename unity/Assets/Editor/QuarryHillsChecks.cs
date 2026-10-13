@@ -14,8 +14,8 @@ public static class QuarryHillsChecks
         var checks=new List<string>();
         void Check(bool condition,string message){if(!condition)throw new InvalidOperationException(message);checks.Add(message);}
         Check(QuarryHills.Enabled,"Quarry Hills is part of the game (--no-quarry-hills leaves it out)");
-        // Galleries: twelve 15 m benches up to the rim.
-        Check(QuarryHills.Benches==12&&Mathf.Abs(QuarryHills.BenchHeight-15)<.01f&&Mathf.Abs(QuarryHills.GalleryStep(QuarryHills.Benches*QuarryHills.BenchWidth+1)-QuarryHills.RimY)<.01f,
+        // Galleries: benches of a real slate quarry's height (Dinorwic's are about 15 m) that step up to the rim.
+        Check(QuarryHills.Benches>=4&&QuarryHills.BenchHeight>5&&QuarryHills.BenchHeight<25&&Mathf.Abs(QuarryHills.GalleryStep(QuarryHills.Benches*QuarryHills.BenchWidth+1)-QuarryHills.RimY)<.01f,
             $"The galleries are {QuarryHills.Benches} benches of {QuarryHills.BenchHeight} m up to the rim at {QuarryHills.RimY} m");
         bool rising=true;for(float e=0;e<QuarryHills.Benches*QuarryHills.BenchWidth;e+=.5f)if(QuarryHills.GalleryStep(e+.5f)<QuarryHills.GalleryStep(e)-.001f)rising=false;
         Check(rising,"The gallery steps only ever climb away from the pit");

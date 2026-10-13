@@ -75,7 +75,6 @@ namespace LittleRoad
             if(QuarryHills.Enabled&&QuarryHillsTown.Spots.Count>0&&!quarryLater)QuarryFestival.Build(transform,Store.Data,player);CameraShake.Reset();CameraShake.Watch(player);
             playerHorn=Horn.Attach(car,Horn.PitchFor(Store.Data.bodyId),player:true);
             player.Bumped+=(other,speed)=>{if(speed>1f&&!ui.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen)other.GetComponentInParent<NpcChatter>()?.TrySay(bubbles);};
-            if(RaceTrial.Has("--vertical-audit"))gameObject.AddComponent<VerticalMotionAudit>().Setup(world);
             if(RaceTrial.Has("--ambient-traffic"))AmbientTraffic();
             Mark("player");if(!RaceTrial.Has("--no-valley-life"))gameObject.AddComponent<ValleyLife>().Setup(player);Mark("valley-life");
             // Fireworks over Bayview harbour at night (docs/51).
@@ -97,7 +96,7 @@ namespace LittleRoad
             // Speculative contacts snag internal road-mesh edges while the car yaws: a one-step
             // sideways knock and ~5 m/s speed loss mid-corner. Free roam sweeps instead (races
             // keep their validated mode). --free-roam-speculative restores it for comparison.
-            if(!RaceTrial.Has("--free-roam-speculative"))player.body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
+            player.body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
             cameraView=new GameObject("Adventure camera").AddComponent<Camera>();cameraView.tag="MainCamera";cameraView.fieldOfView=55;cameraView.nearClipPlane=.15f;cameraView.farClipPlane=6000;
             if(title!=null)title.Dismiss();cameraView.gameObject.AddComponent<AudioListener>();WorldLook.Camera(cameraView);
             photo=gameObject.AddComponent<PhotoMode>();photo.Setup(cameraView,player.transform,ui,()=>AreaBanner.Area(player.transform.position),Notify,show=>ui.SetHudVisible(show));
@@ -129,7 +128,6 @@ namespace LittleRoad
             if(RaceTrial.Has("--town-print")){yield return TownPrint();yield break;}
             // --load-timing: measure the load (LITTLE_ROAD_LOAD_STEP lines) and quit (W1 world tiles).
             if(RaceTrial.Has("--load-timing")){yield return new WaitForSeconds(2);Application.Quit(0);yield break;}
-            if(RaceTrial.Has("--geometry-audit-only")){Application.Quit();yield break;}
             if(RaceTrial.Has("--minimap-review")){reviewing=true;yield return MinimapReview();yield break;}
             if(RaceTrial.Has("--pause-review")){yield return PauseReview();yield break;}
             // --photo-review: photo mode's five looks (docs/51) to --trial-captures, framed and unframed.
@@ -141,7 +139,6 @@ namespace LittleRoad
             if(RaceTrial.Has("--duke-drive-review")){yield return DukeDriveReview();yield break;}
             if(RaceTrial.Has("--world-review")){RefreshHUD();reviewing=true;player.controlsBlocked=true;gameObject.AddComponent<VillageReview>();yield break;}
             if(RaceTrial.Has("--vehicle-lights-review")){reviewing=true;gameObject.AddComponent<VehicleLightReview>();yield break;}
-            if(RaceTrial.Has("--evening-route-review")){gameObject.AddComponent<EveningRouteReview>();yield break;}
             if(RaceTrial.Has("--turn-review")){gameObject.AddComponent<TurnReview>();yield break;}
             if(RaceTrial.Has("--valley-tour")){reviewing=true;gameObject.AddComponent<ValleyTour>().Setup(player,cameraView,ui);yield break;}
             if(RaceTrial.Has("--paint-shop-review")){reviewing=true;yield return PaintShopReview();yield break;}
@@ -1177,7 +1174,7 @@ namespace LittleRoad
             }
             // Uncapped while warming (docs/72): with vertical sync each warm-up frame waited for the display.
             int vsync=QualitySettings.vSyncCount,cap=Application.targetFrameRate;
-            if(!RaceTrial.Has("--capped-warm-up")){QualitySettings.vSyncCount=0;Application.targetFrameRate=-1;}
+            {QualitySettings.vSyncCount=0;Application.targetFrameRate=-1;}
             try {
             // Frames per view: 40 frames instead of 64 saved only 0.14 s (8 Oct, docs/72: the time is first-time uploads and
             // driver shader compiles, not frames), so the full counts stay as a guard against first-sight hitches.
@@ -1473,6 +1470,8 @@ namespace LittleRoad
         // ---------------------------------------------------------------- running challenges (ActivityHud, doc 64)
         Activity activity;ActivityHud activityHud;FarmChallenges farm;
         void BeginActivity(Activity a){activity=a;activityHud.Begin(a);}
+        // The running challenge's title, or null (the snap tool records it).
+        public string ActivityTitle=>activity!=null&&(activity.running?.Invoke()??true)?activity.title:null;
         void EndActivity(){activity=null;activityHud.End();}
         // Pause > Exit challenge: the activity cleans up, then you're put back by whoever offered it.
         void ExitActivity()

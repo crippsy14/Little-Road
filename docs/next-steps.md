@@ -1,5 +1,22 @@
 # Next steps (3 October 2026)
 
+**13 October: the snap tool, how we work, and the cleanup.**
+- **Snap tool** (F9, or hold R3), with a note box and a bug inbox (docs/73, `docs/bug-inbox.md`).
+  - Richard's first ten snaps are logged as inbox #3–#11. Each one has enough to find and reproduce the spot.
+  - The tool now also records:
+    - the race event, seed and field;
+    - the running activity (for example the zip line).
+  - It no longer captures the previous snap's toast.
+- **Cleanup ([doc 74](74-bloat-audit.md)).**
+  - The first racing AI is retired, along with its study code, orphans and old harnesses: 7,601 lines removed.
+  - Pinned checks are loosened to rules, unused tools are removed, and one line-ending script remains.
+  - Races are unchanged: studies 224 and 225 are identical.
+  - The regression now races a 24-car Bayview lap.
+- **Next three pieces (rolling plan, docs/73 §2):**
+  1. **Fix round for the inbox, in order.** First the field stripes on the valley road and the tunnel-mouth gaps (things a player drives through), then the floating bushes, terrace walls and cables, then the placements (Poppy, Rollo), then the zip-line camera and the class C field.
+  2. **The 12 open area-audit banks** listed below.
+  3. **The first self-planned district brief** from doc 58's build order.
+
 **12 October, afternoon.**
 - **Speed-up list ([doc 72](72-world-streaming.md) section 8):**
   - ready to drive in 3.0 s (3.7 s on a build's first launch);

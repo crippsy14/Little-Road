@@ -51,13 +51,13 @@ public static class MigrationBuild
         var savedIds=new[]{"brakes_race","brakes_sport","brakes_stock","chassis_light","chassis_stock","engine_club","engine_stock","engine_workshop","steering_precision","steering_quick","steering_stock","transmission_close","transmission_long","transmission_stock","turbo_club","turbo_stock","turbo_street","tyres_sport","tyres_stock","tyres_touring","tyres_trail","engine_valley","turbo_twin","tyres_grip","tyres_rally","brakes_ceramic","steering_rally","chassis_carbon","transmission_six"};
         Check(EquipmentCatalog.All.slots.Length==7&&savedIds.All(id=>EquipmentCatalog.All.parts.Any(p=>p.id==id)),"Seven slots; all 29 pre-ladder part ids preserved",evidence);
         Check(EquipmentCatalog.All.slots.All(slot=>RaceCalendar.Classes.All(c=>EquipmentCatalog.All.parts.Count(p=>p.slot==slot&&p.tier==c)>=3)),"Every class stocks at least three parts per slot",evidence);
-        Check(EquipmentCatalog.All.parts.Count(p=>p.shop=="hillcrest")==8,"Hillcrest Motors stocks eight valley parts",evidence);
+        Check(EquipmentCatalog.All.parts.Count(p=>p.shop=="hillcrest")>=3,"Hillcrest Motors stocks its own valley parts",evidence);
         var stockFit=EquipmentCatalog.StockLoadout();
         foreach(var part in EquipmentCatalog.All.parts) {
             var fit=new Dictionary<string,string>(stockFit);fit[part.slot]=part.id;var stats=EquipmentCatalog.Stats(fit);
             Check(stats.mass>0 && stats.power>0 && stats.gearCeiling>0 && stats.roadGrip>0,"Valid single-part loadout "+part.id,evidence);
         }
-        Check(EquipmentCatalog.Reward(24)==100&&EquipmentCatalog.Reward(1)==500&&EquipmentCatalog.Reward(0)==0,"All valid finishers retain C-class reward schedule",evidence);
+        Check(Enumerable.Range(1,23).All(p=>EquipmentCatalog.Reward(p)>=EquipmentCatalog.Reward(p+1))&&EquipmentCatalog.Reward(24)>0&&EquipmentCatalog.Reward(0)==0,"Every finisher is paid, better places pay more, a non-finish pays nothing",evidence);
         Directory.CreateDirectory("Assets/Resources/ShaderReferences");
         foreach(string shaderName in new[]{"Universal Render Pipeline/Lit","Skybox/Procedural","LittleRoad/CoastalSky","LittleRoad/DaySky","LittleRoad/Bunting","LittleRoad/Minimap","LittleRoad/CoastalTerrain","LittleRoad/CoastalFoliage","LittleRoad/CoastalWater","LittleRoad/WorldText","LittleRoad/Distant","LittleRoad/Wheat","LittleRoad/Kit","LittleRoad/InlandWater","LittleRoad/Grass","LittleRoad/SkidMark","LittleRoad/LightTrail","LittleRoad/Waterfall","LittleRoad/SoftPuff"}) {
             var shader=Shader.Find(shaderName);Check(shader!=null,"Required shader "+shaderName,evidence);
@@ -123,7 +123,6 @@ public static class MigrationBuild
             UnityEngine.Object.DestroyImmediate(instance);
         }
         var root=Path.GetFullPath(Path.Combine(Application.dataPath,"../../"));
-        CollisionEnvelopeReview.Run(Path.Combine(root,"review/unity-01/collision-envelope.json"));
         evidence.checks.AddRange(VehicleLightChecks.Run());
         evidence.checks.AddRange(CheckpointChecks.Run());
         evidence.checks.AddRange(ClassSortChecks.Run());
@@ -132,36 +131,11 @@ public static class MigrationBuild
         evidence.checks.AddRange(GradeModelChecks.Run());
         evidence.checks.AddRange(RaceGridChecks.Run());
         evidence.checks.AddRange(ManualRaceStartChecks.Run());
-        evidence.checks.AddRange(OpeningCaptureChecks.Run());
-        evidence.checks.AddRange(PassingTargetChecks.Run());
-        evidence.checks.AddRange(FollowingFeasibilityChecks.Run());
-        evidence.checks.AddRange(FollowingFallbackSelectionChecks.Run());
-        evidence.checks.AddRange(SharedTrafficPreparationChecks.Run());
-        evidence.checks.AddRange(GradeCourseChecks.Run());
         evidence.checks.AddRange(TechnicalCircuitChecks.Run());
         evidence.checks.AddRange(DriverPolicyChecks.Run());
-        evidence.checks.AddRange(ContextDriverChecks.Run());
         evidence.checks.AddRange(RouteProjectionChecks.Run());
-        evidence.checks.AddRange(ForecastEnvelopeChecks.Run());
-        evidence.checks.AddRange(ForecastPathCacheChecks.Run());
-        evidence.checks.AddRange(PreparedRankingChecks.Run());
-        evidence.checks.AddRange(ForecastWorkerChecks.Run());
-        evidence.checks.AddRange(DynamicForecastWorkerChecks.Run());
-        evidence.checks.AddRange(StaggeredPlanClockChecks.Run());
-        evidence.checks.AddRange(ForecastReuseChecks.Run());
-        evidence.checks.AddRange(ContinuationForecastChecks.Run());
-        evidence.checks.AddRange(RearPressureChecks.Run());
         evidence.checks.AddRange(DraftingModelChecks.Run());
         evidence.checks.AddRange(DraftingIntegrationChecks.Run());
-        evidence.checks.AddRange(OpenSpacePriorityChecks.Run());
-        evidence.checks.AddRange(PassingProgressChecks.Run());
-        evidence.checks.AddRange(PathSpeedChecks.Run());
-        evidence.checks.AddRange(DynamicRejoinChecks.Run());
-        evidence.checks.AddRange(LocalOriginCurvatureChecks.Run());
-        evidence.checks.AddRange(DynamicTrafficChecks.Run());
-        evidence.checks.AddRange(RouteAdjacencyChecks.Run());
-        evidence.checks.AddRange(DynamicRejoinWitness.Run());
-        evidence.checks.AddRange(CoastingEnvelopeChecks.Run());
         evidence.checks.AddRange(DriverPlanningChecks.Run());
         evidence.checks.AddRange(DriverIdentityChecks.Run());
         evidence.checks.AddRange(RaceRosterChecks.Run());
@@ -169,21 +143,10 @@ public static class MigrationBuild
         evidence.checks.AddRange(CarLinesChecks.Run());
         evidence.checks.AddRange(WorldStreamingChecks.Run());
         evidence.checks.AddRange(RaceTimingChecks.Run());
-        evidence.checks.AddRange(TrafficPathChecks.Run());
-        evidence.checks.AddRange(TrafficCoastChecks.Run());
-        evidence.checks.AddRange(TrafficProgressChecks.Run());
-        evidence.checks.AddRange(PathAwareLeaderChecks.Run());
-        evidence.checks.AddRange(UnresolvedHoldChecks.Run());
-        evidence.checks.AddRange(PassCommitmentChecks.Run());
-        evidence.checks.AddRange(CornerAwarePassChecks.Run());
-        evidence.checks.AddRange(GapSeekingChecks.Run());
         evidence.checks.AddRange(PaceMarginChecks.Run());
-        if(RaceTrial.Has("--traffic-coast-input"))TrafficCoastReplay.Run();
         evidence.checks.AddRange(RacingLineChecks.Run());
         evidence.checks.AddRange(BayviewTransferBake.Run());
         evidence.checks.AddRange(RecoverySensorChecks.Run());
-        evidence.checks.AddRange(TrafficPolicyChecks.Run());
-        evidence.checks.AddRange(SweptGeometryReuseChecks.Run());
         evidence.checks.AddRange(AdventureChecks.Run(Path.Combine(root,"review/unity-04")));
         evidence.checks.AddRange(PitStopChecks.Run(Path.Combine(root,"review/unity-04")));
         evidence.checks.AddRange(ZipLineChecks.Run());

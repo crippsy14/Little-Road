@@ -1,4 +1,4 @@
-# Byte-preserving multi-line replace for mixed CRLF/LF files (see restore-line-endings.py).
+# Byte-preserving multi-line replace for mixed CRLF/LF files (tools/keep-eol.py puts endings back before a commit).
 # Usage from Python: from importlib... or exec; replace(path, [(old, new, count)]) tries the
 # old text with CRLF and with LF line breaks and writes the new text with the same style.
 def replace(path,pairs):

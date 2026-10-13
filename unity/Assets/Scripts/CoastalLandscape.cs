@@ -481,7 +481,6 @@ namespace LittleRoad
             Physics.SyncTransforms();Lap("settle sync");PlacementAudit.Settle();Lap("settle pieces");CarContact.SeatAll();Lap("settle cars");Step("settle-planting");
             if(StaticBatching)StaticBatchingUtility.Combine(root.gameObject);Step("static-batching");
             Sea();if(island)new CoastalGroundCover(this,track,root).Build();Step("sea-ground-cover");
-            GroundCoverGeometryAudit.Record("after-batching",root);
             WorldTiles.EndBuild();
             Debug.Log("LITTLE_ROAD_LANDSCAPE_READY bridgeDistance="+bridgeDistance+" sea="+SeaLevel+" deferred="+WorldTiles.Deferred);
         }
