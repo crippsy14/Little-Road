@@ -36,7 +36,7 @@ namespace LittleRoad
         public static readonly string[] TunerStarters={"tsubasa","sakura","kitsune"};
         // A body's class: the parts it can take (docs/65, docs/67). Class C bodies take class C parts; a Tuner body is the
         // class B platform. The Regale (the Duke's prototype) takes anything.
-        public static string Class(string id)=>id==Prototype?"E":Array.IndexOf(Tuner,id)>=0||Array.IndexOf(TunerOffRoad,id)>=0?"B":"C";
+        public static string Class(string id)=>id!=null&&id.StartsWith("forge_")&&Forged(id)?.band!=null?Forged(id).Class:id==Prototype?"E":Array.IndexOf(Tuner,id)>=0||Array.IndexOf(TunerOffRoad,id)>=0?"B":"C";
         public static readonly string[] TunerGravel={"sabaku","yama","tanuki","tora","kaminari","kiri","kumo","fubuki","taiyo","kitsune"};
         // The Pit Stop's own vehicles (Richard, 4 Oct: one model per job, the same in every town, so the player knows who's who):
         // the garage's recovery truck, the parts van, the body shop's panel truck. Hosts only: never sold or raced.
@@ -67,30 +67,40 @@ namespace LittleRoad
         // Car Forge bodies (docs/75 §4.8) carry their own data, written by the Forge beside the model: Cars/<id>_body.json.
         [System.Serializable] public sealed class ForgeData{public string id;public float shoulder,length,wheelFront,wheelRear,trackFront,trackRear,top;public float[] landmarks;public string livery;
             // (a roster car's place in fields, from its concept in car-forge: its star band, its surface, quick-looking)
-            public int[] band;public string surface;public bool quick;}
-        // --forge-roster (off by default): class C fields drawn from the Car Forge roster (car-forge docs/roster-c-design.md,
-        // "How a field of 24 is filled"): every installed Forge body whose file names a star band.
+            public int[] band;public string surface;public bool quick;
+            // (and its class: C, or B for the class B roster, docs/roster-b-design.md; files from before 17 Oct have none: C)
+            public string cls;public string Class=>string.IsNullOrEmpty(cls)?"C":cls;}
+        // --forge-roster (off by default): class C and class B fields drawn from the Car Forge rosters (car-forge
+        // docs/roster-c-design.md, "How a field of 24 is filled", and docs/roster-b-design.md): every installed Forge body
+        // whose file names a star band, by its class.
         public static bool RosterEnabled=>RaceTrial.Has("--forge-roster");
-        static string[] roster;
-        public static string[] Roster
+        static string[] rosterAll;
+        static readonly System.Collections.Generic.Dictionary<string,string[]> rosters=new();
+        static string[] RosterAll
         {
             get {
-                if(roster!=null)return roster;var list=new System.Collections.Generic.List<string>();
+                if(rosterAll!=null)return rosterAll;var list=new System.Collections.Generic.List<string>();
                 foreach(var t in UnityEngine.Resources.LoadAll<UnityEngine.TextAsset>("Cars")) {
                     if(!t.name.StartsWith("forge_")||!t.name.EndsWith("_body"))continue;string id=t.name.Substring(0,t.name.Length-5);
                     var d=Forged(id);if(d?.band!=null&&d.band.Length==2)list.Add(id);
                 }
-                list.Sort(StringComparer.Ordinal);return roster=list.ToArray();
+                list.Sort(StringComparer.Ordinal);return rosterAll=list.ToArray();
             }
+        }
+        public static string[] Roster=>RosterOf("C");
+        public static string[] RosterOf(string cls)
+        {
+            if(rosters.TryGetValue(cls,out var r))return r;
+            return rosters[cls]=RosterAll.Where(id=>Forged(id).Class==cls).ToArray();
         }
         // A class C race's pools at a star level: quick (the quick-looking cars of the band: the front of the grid), home
         // (the rest of the band: the middle), veterans (cars whose band ends below: the back). Gravel races take gravel cars.
         // A thin pool borrows: quick from the quick cars below, home from the veterans, so no pool is ever empty. A car of
         // surface "both" (the rally cars) races on either.
-        public static (string[] quick,string[] home,string[] veterans) RosterPools(int stars,bool gravel)
+        public static (string[] quick,string[] home,string[] veterans) RosterPools(int stars,bool gravel,string cls="C")
         {
             var quick=new System.Collections.Generic.List<string>();var home=new System.Collections.Generic.List<string>();var old=new System.Collections.Generic.List<string>();var oldQuick=new System.Collections.Generic.List<string>();
-            foreach(var id in Roster) {
+            foreach(var id in RosterOf(cls)) {
                 var d=Forged(id);if(!RacesOn(d,gravel))continue;
                 int lo=d.band[0],hi=d.band[1];
                 if(lo<=stars&&stars<=hi)(d.quick?quick:home).Add(id);
@@ -104,7 +114,7 @@ namespace LittleRoad
         }
         public static bool RacesOn(ForgeData d,bool gravel)=>d.surface=="both"||(d.surface=="gravel")==gravel;
         // The cars of the surface whose band starts above this star: a thin field's last resort (bodies never change pace).
-        public static string[] RosterSpare(int stars,bool gravel)=>Roster.Where(id=>{var d=Forged(id);return RacesOn(d,gravel)&&d.band[0]>stars;}).ToArray();
+        public static string[] RosterSpare(int stars,bool gravel,string cls="C")=>RosterOf(cls).Where(id=>{var d=Forged(id);return RacesOn(d,gravel)&&d.band[0]>stars;}).ToArray();
         public const string RosterFlagship="forge_zenith";
         static readonly System.Collections.Generic.Dictionary<string,ForgeData> forged=new();
         public static ForgeData Forged(string id)

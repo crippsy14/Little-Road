@@ -34,6 +34,18 @@ public static class ForgeRosterChecks
                     if(topC&&!gravel)Check(field[0]==CarBodies.RosterFlagship,"Forge roster field: the Zenith on pole ("+where+")");
                 }
             }
+        // Class B (docs/roster-b-design.md in Car Forge): its own roster, every star of the class (1-8 and the 10-star
+        // championship) on both surfaces, the same field rules, no class C car in a class B field and none the other way.
+        var rosterB=CarBodies.RosterOf("B");
+        Check(rosterB.Length>=40&&rosterB.All(id=>CarBodies.Class(id)=="B"),"Forge roster: the class B roster is installed ("+rosterB.Length+" cars, all class B)");
+        Check(roster.All(id=>CarBodies.Class(id)=="C"),"Forge roster: the class C roster holds class C cars only");
+        foreach(int stars in new[]{1,2,3,4,5,6,7,8,10})
+            foreach(bool gravel in new[]{false,true})
+                for(int seed=1;seed<=6;seed++) {
+                    var field=RaceRoster.ForgeField(stars,gravel,false,seed*7919,"B");string where=$"class B {stars} stars on {(gravel?"gravel":"tarmac")}, seed {seed}";
+                    Check(field.Length==23&&field.All(id=>id!=null&&CarBodies.Class(id)=="B"&&CarBodies.RacesOn(CarBodies.Forged(id),gravel)),"Forge roster field: 23 class B bodies for the surface ("+where+")");
+                    Check(field.GroupBy(id=>id).All(g=>g.Count()<=2)&&Enumerable.Range(1,22).All(i=>field[i]!=field[i-1]),"Forge roster field: at most two of a model, never behind itself ("+where+")");
+                }
         var (q1,h1,_)=CarBodies.RosterPools(1,false);
         Check(h1.All(id=>CarBodies.Forged(id).band[0]<=1),"Forge roster: a 1-star field's home cars all have 1 star in their band");
         Check(Array.IndexOf(roster,CarBodies.RosterFlagship)>=0,"Forge roster: the flagship (the Zenith) is installed");

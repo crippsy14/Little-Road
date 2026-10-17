@@ -162,8 +162,8 @@ namespace LittleRoad
             var entries=new RaceEntrant[24];
             bool topC=CarBodies.TopCOpen(raceClass,stars);if(!topC)highBodies=highBodies.Where(b=>Array.IndexOf(CarBodies.TopC,b)<0).ToArray();
             // --forge-roster: class C bodies from the Car Forge roster by star band (ForgeField). Kits and drivers are unchanged.
-            bool forge=raceClass=="C"&&CarBodies.RosterEnabled&&CarBodies.Roster.Length>0;
-            var forged=forge?ForgeField(stars,FieldRecipe.Discipline(track)=="gravel",topC,seed):null;
+            bool forge=(raceClass=="C"||raceClass=="B")&&CarBodies.RosterEnabled&&CarBodies.RosterOf(raceClass).Length>0;
+            var forged=forge?ForgeField(stars,FieldRecipe.Discipline(track)=="gravel",topC,seed,raceClass):null;
             var low=CarBodies.Deal(lowBodies,24,seed);var high=CarBodies.Deal(highBodies,24,seed+1);int l=0,h=0;
             for(int i=1;i<24;i++) {
                 var e=trial.Entries[i];string disc=FieldRecipe.Discipline(track);var parts=FieldRecipe.Kit(raceClass,disc,stars,e.Slot,seed,out float level);
@@ -181,13 +181,13 @@ namespace LittleRoad
         // pool is a shuffled deck; when one runs out the slot takes the next pool's cars, and last the cars of the bands above
         // (a thin gravel field); a model races at most twice in a field, and never in the slot behind itself. (17 Oct, first
         // run: a one-car quick pool dealt the Stock Banger nine times.)
-        public static string[] ForgeField(int stars,bool gravel,bool topC,int seed)
+        public static string[] ForgeField(int stars,bool gravel,bool topC,int seed,string cls="C")
         {
-            var (quick,home,vet)=CarBodies.RosterPools(stars,gravel);
+            var (quick,home,vet)=CarBodies.RosterPools(stars,gravel,cls);
             var q=CarBodies.Deal(quick.Distinct().ToArray(),quick.Distinct().Count(),seed+1);
             var m=CarBodies.Deal(home.Distinct().ToArray(),home.Distinct().Count(),seed);
             var b=CarBodies.Deal(vet.Distinct().ToArray(),vet.Distinct().Count(),seed+2);
-            var spare=CarBodies.RosterSpare(stars,gravel);var s=spare.Length>0?CarBodies.Deal(spare,spare.Length,seed+3):spare;
+            var spare=CarBodies.RosterSpare(stars,gravel,cls);var s=spare.Length>0?CarBodies.Deal(spare,spare.Length,seed+3):spare;
             var used=new Dictionary<string,int>();var field=new string[23];
             // (the pools in order, each model once, then a second time; the bands above only after that: a 1-star field
             //  had the Kestrel at the back before it repeated a 1-star car)
@@ -201,7 +201,7 @@ namespace LittleRoad
             }
             for(int slot=0;slot<23;slot++) {
                 string prev=slot>0?field[slot-1]:null;
-                if(slot==0&&topC&&!gravel){field[0]=CarBodies.RosterFlagship;used[field[0]]=1;continue;}
+                if(slot==0&&topC&&!gravel&&cls=="C"){field[0]=CarBodies.RosterFlagship;used[field[0]]=1;continue;}
                 field[slot]=slot<=6?Pick(prev,q,m,b):slot>=21?Pick(prev,b,m,q):Pick(prev,m,b,q);
             }
             return field;
