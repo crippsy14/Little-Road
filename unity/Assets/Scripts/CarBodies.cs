@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace LittleRoad
 {
@@ -64,7 +65,43 @@ namespace LittleRoad
         static readonly System.Collections.Generic.Dictionary<string,float> Lengths=new(){["hayate"]=3.927f,["kumo"]=4.007f,["fubuki"]=3.847f,["kaze"]=3.716f,["arashi"]=4.036f,["raijin"]=3.772f,["hoshi"]=4.062f,["sakura"]=3.942f,["yoru"]=3.916f,["tsuki"]=3.942f,["taiyo"]=3.996f,["hibari"]=3.84f,["tsubasa"]=3.36f,["kitsune"]=3.36f,["hachi"]=3.64f,["kogarashi"]=3.351f,["chibi"]=3.062f,["midori"]=3.796f,["shiro"]=4.15f,["nagare"]=4.197f,["kage"]=4.262f,["sabaku"]=4.047f,["yama"]=4.7f,["tanuki"]=3.607f,["tora"]=4.247f,["kaminari"]=3.678f,["kiri"]=4.167f,["regale"]=5.01f,["beetle"]=3.427f,["bramble"]=3.288f,["bubble"]=2.542f,["camper"]=4.152f,["comet"]=3.700f,["compact_v1"]=3.171f,["doodle"]=3.201f,["dover"]=3.780f,["gelato"]=3.920f,["heron"]=3.740f,["kipper"]=3.600f,["little_car"]=3.110f,["marlow"]=3.660f,["minibus"]=4.500f,["otter"]=3.640f,["pebble"]=3.167f,["picnic"]=3.590f,["postvan"]=3.600f,["puddle"]=3.193f,["rally"]=3.727f,["ritz"]=4.240f,["roadster"]=3.490f,["sprint"]=3.328f,["tallboy"]=3.240f,["taxi"]=3.740f,["zenith"]=3.790f,["cob"]=4.187f,["drover"]=4.097f,["scamp"]=3.427f,["fell"]=4.229f,["tumbler"]=3.967f,["hauler"]=3.579f,["pitgarage"]=4.33f,["pitparts"]=3.61f,["pitbody"]=3.59f};
         public static float? Length(string id)=>id!=null&&Lengths.TryGetValue(id,out float l)?l:Forged(id)?.length;
         // Car Forge bodies (docs/75 §4.8) carry their own data, written by the Forge beside the model: Cars/<id>_body.json.
-        [System.Serializable] public sealed class ForgeData{public string id;public float shoulder,length,wheelFront,wheelRear,trackFront,trackRear;public float[] landmarks;public string livery;}
+        [System.Serializable] public sealed class ForgeData{public string id;public float shoulder,length,wheelFront,wheelRear,trackFront,trackRear;public float[] landmarks;public string livery;
+            // (a roster car's place in fields, from its concept in car-forge: its star band, its surface, quick-looking)
+            public int[] band;public string surface;public bool quick;}
+        // --forge-roster (off by default): class C fields drawn from the Car Forge roster (car-forge docs/roster-c-design.md,
+        // "How a field of 24 is filled"): every installed Forge body whose file names a star band.
+        public static bool RosterEnabled=>RaceTrial.Has("--forge-roster");
+        static string[] roster;
+        public static string[] Roster
+        {
+            get {
+                if(roster!=null)return roster;var list=new System.Collections.Generic.List<string>();
+                foreach(var t in UnityEngine.Resources.LoadAll<UnityEngine.TextAsset>("Cars")) {
+                    if(!t.name.StartsWith("forge_")||!t.name.EndsWith("_body"))continue;string id=t.name.Substring(0,t.name.Length-5);
+                    var d=Forged(id);if(d?.band!=null&&d.band.Length==2)list.Add(id);
+                }
+                list.Sort(StringComparer.Ordinal);return roster=list.ToArray();
+            }
+        }
+        // A class C race's pools at a star level: quick (the quick-looking cars of the band: the front of the grid), home
+        // (the rest of the band: the middle), veterans (cars whose band ends below: the back). Gravel races take gravel cars.
+        // A thin pool borrows: quick from the quick cars below, home from the veterans, so no pool is ever empty.
+        public static (string[] quick,string[] home,string[] veterans) RosterPools(int stars,bool gravel)
+        {
+            var quick=new System.Collections.Generic.List<string>();var home=new System.Collections.Generic.List<string>();var old=new System.Collections.Generic.List<string>();var oldQuick=new System.Collections.Generic.List<string>();
+            foreach(var id in Roster) {
+                var d=Forged(id);if((d.surface=="gravel")!=gravel)continue;
+                int lo=d.band[0],hi=d.band[1];
+                if(lo<=stars&&stars<=hi)(d.quick?quick:home).Add(id);
+                else if(hi<stars){old.Add(id);if(d.quick)oldQuick.Add(id);}
+            }
+            if(quick.Count<3)quick.AddRange(oldQuick.Where(x=>!quick.Contains(x)));
+            if(home.Count<8)home.AddRange(old.Where(x=>!home.Contains(x)&&!quick.Contains(x)));
+            if(quick.Count==0)quick.AddRange(home);if(home.Count==0)home.AddRange(quick);
+            if(old.Count==0)old.AddRange(home);
+            return (quick.ToArray(),home.ToArray(),old.ToArray());
+        }
+        public const string RosterFlagship="forge_zenith";
         static readonly System.Collections.Generic.Dictionary<string,ForgeData> forged=new();
         public static ForgeData Forged(string id)
         {
@@ -74,8 +111,9 @@ namespace LittleRoad
         }
         public static readonly UnityEngine.Bounds Envelope=new(new UnityEngine.Vector3(0,.845f,0),new UnityEngine.Vector3(CollisionWidth,1.69f,3.175f));
         // (The Regale too: the Duke races it, and you can win it and drive it anywhere, as every body shop body does.)
-        public static bool UsesStandardEnvelope(string id)=>id==Starter||id==Flagship||id==Prototype||Array.IndexOf(Family,id)>=0||Array.IndexOf(Sporty,id)>=0||Array.IndexOf(Townsfolk,id)>=0||Array.IndexOf(OffRoad,id)>=0||Array.IndexOf(Tuner,id)>=0||Array.IndexOf(TunerOffRoad,id)>=0;
-        public static bool IsKnown(string id)=>Array.IndexOf(Tuner,id)>=0||Array.IndexOf(TunerOffRoad,id)>=0||Array.IndexOf(Teasers,id)>=0||Array.IndexOf(Owned,id)>=0||Array.IndexOf(Family,id)>=0||Array.IndexOf(Sporty,id)>=0||id==Flagship||Array.IndexOf(Townsfolk,id)>=0||Array.IndexOf(OffRoad,id)>=0||Array.IndexOf(PitStop,id)>=0;
+        // (and every Car Forge body: the roster races in fields, and its shape must not change its pace either, 17 Oct)
+        public static bool UsesStandardEnvelope(string id)=>(id!=null&&id.StartsWith("forge_"))||id==Starter||id==Flagship||id==Prototype||Array.IndexOf(Family,id)>=0||Array.IndexOf(Sporty,id)>=0||Array.IndexOf(Townsfolk,id)>=0||Array.IndexOf(OffRoad,id)>=0||Array.IndexOf(Tuner,id)>=0||Array.IndexOf(TunerOffRoad,id)>=0;
+        public static bool IsKnown(string id)=>(id!=null&&id.StartsWith("forge_")&&Forged(id)!=null)||Array.IndexOf(Tuner,id)>=0||Array.IndexOf(TunerOffRoad,id)>=0||Array.IndexOf(Teasers,id)>=0||Array.IndexOf(Owned,id)>=0||Array.IndexOf(Family,id)>=0||Array.IndexOf(Sporty,id)>=0||id==Flagship||Array.IndexOf(Townsfolk,id)>=0||Array.IndexOf(OffRoad,id)>=0||Array.IndexOf(PitStop,id)>=0;
         public static string Name(string id)=>id switch{
             "puddle"=>"Puddle starter","compact_v1"=>"Pocket compact",
             "pebble"=>"Pebble city car","tallboy"=>"Tallboy kei wagon","marlow"=>"Marlow saloon","dover"=>"Dover classic",

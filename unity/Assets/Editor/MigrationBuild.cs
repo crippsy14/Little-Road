@@ -126,6 +126,7 @@ public static class MigrationBuild
         evidence.checks.AddRange(VehicleLightChecks.Run());
         evidence.checks.AddRange(ForgeLiveryChecks.Run());
         evidence.checks.AddRange(StopLookChecks.Run());
+        evidence.checks.AddRange(ForgeRosterChecks.Run());
         evidence.checks.AddRange(CheckpointChecks.Run());
         evidence.checks.AddRange(ClassSortChecks.Run());
         evidence.checks.AddRange(RecoveryRejoinChecks.Run());

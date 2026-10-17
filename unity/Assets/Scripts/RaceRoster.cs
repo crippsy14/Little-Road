@@ -161,12 +161,19 @@ namespace LittleRoad
         {
             var entries=new RaceEntrant[24];
             bool topC=CarBodies.TopCOpen(raceClass,stars);if(!topC)highBodies=highBodies.Where(b=>Array.IndexOf(CarBodies.TopC,b)<0).ToArray();
+            // --forge-roster: class C bodies from the Car Forge roster by star band (CarBodies.RosterPools): the quick-looking
+            // cars on the high kits at the front, the band's own cars in the middle, veterans from lower bands in the last three
+            // slots; the Zenith on pole from 8 stars, below that the band's first quick car. Kits and drivers are unchanged.
+            bool forge=raceClass=="C"&&CarBodies.RosterEnabled&&CarBodies.Roster.Length>0;string[] vet=null;int v=0;
+            if(forge){var pools=CarBodies.RosterPools(stars,FieldRecipe.Discipline(track)=="gravel");lowBodies=pools.home;highBodies=pools.quick;vet=CarBodies.Deal(pools.veterans,24,seed+2);}
             var low=CarBodies.Deal(lowBodies,24,seed);var high=CarBodies.Deal(highBodies,24,seed+1);int l=0,h=0;
             for(int i=1;i<24;i++) {
                 var e=trial.Entries[i];string disc=FieldRecipe.Discipline(track);var parts=FieldRecipe.Kit(raceClass,disc,stars,e.Slot,seed,out float level);
                 var driver=modern?FieldRecipe.Driver(i,seed,raceClass,e.Slot,true):null;
                 bool flagship=raceClass=="C"&&disc=="road"&&e.Slot==0;string label=$"class {raceClass} {stars}★ recipe kit {Mathf.RoundToInt(level*100)}%";
-                entries[i]=new RaceEntrant(e.Id,e.Slot,flagship?(topC?CarBodies.Flagship:CarBodies.LowFlagship):level>=.6f?high[h++]:low[l++],flagship?FlagshipPaint:e.Paint,label,parts,driver);
+                string body=flagship?(forge?(topC?CarBodies.RosterFlagship:high[h++]):topC?CarBodies.Flagship:CarBodies.LowFlagship)
+                    :forge&&e.Slot>=21?vet[v++]:level>=.6f?high[h++]:low[l++];
+                entries[i]=new RaceEntrant(e.Id,e.Slot,body,flagship?FlagshipPaint:e.Paint,label,parts,driver);
             }
             entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
             return new RaceRoster(seed,laps,track,title,modern,entries,eventId,reversed);
