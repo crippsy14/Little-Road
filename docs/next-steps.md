@@ -1,5 +1,21 @@
 # Next steps (3 October 2026)
 
+**18 October: both Car Forge rosters race, behind `--forge-roster`.**
+- **Class C:** 51 cars, after two expert reviews and hand passes. Fields are dealt by grid slot: the flagship on pole,
+  quick-looking cars at the front, the band in the middle, veterans at the back; at most two of a model, never side by
+  side. The rally cars also race on gravel. Bayview, flag on and off: 24/24 finished, no recoveries.
+- **Class B** (`car-forge/docs/roster-b-design.md`): 84 cars:
+  - the three starters (Tsubasa, Sakura, Kitsune);
+  - a B kit for each class C car (street, drift, rally or sleeper);
+  - 30 originals, with one expert review round done.
+  Coast Tuners, Slate Rallycross and Raceway Reverse: 24/24, no recoveries.
+- **Collision boxes:** Forge bodies' boxes stop at the car's own top, so props such as the Gelato's cone don't count.
+  146 Forge cars are synced as build output.
+- **Waiting on Richard:**
+  1. The class B cast list (`roster-b-design.md`, "Open questions").
+  2. **The Prop Forge stage one brief ([doc 77](77-prop-forge-brief.md))**: yes, edit or veto.
+- **Known gap:** the Trike needs a three-wheeler with its single wheel out in front, an engine change.
+
 **17 October: Car Forge ready for the class C roster; two designs.**
 - **Car Forge** (`car-forge/docs/acceptance.md`): G1–G9 met, and the batch tool generates 24 gated class C designs in
   about 2 minutes. Twelve Forge cars are reinstalled, with livery styles in `ForgeLivery` (uncommitted); the dev build
