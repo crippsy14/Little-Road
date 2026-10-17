@@ -8,6 +8,12 @@ if(Get-Process Unity -ErrorAction SilentlyContinue){throw 'Close the Unity edito
 # Only a game running from the dev build blocks replacing it; the play copy (../little-road-play) can keep running.
 $devDir=[IO.Path]::GetFullPath((Join-Path $root '../little-road-dev-build'))
 if(Get-Process 'Little Road Unity' -ErrorAction SilentlyContinue|Where-Object{$_.Path -and $_.Path.StartsWith($devDir,[StringComparison]::OrdinalIgnoreCase)}){throw 'Close Little Road games running from the dev build before replacing it.'}
+# Car Forge models are build output (tools/forge-cars.txt): export and install whatever changed since the last build.
+# A fresh machine exports them all once (a few minutes); after that it takes a second.
+$forge=[IO.Path]::GetFullPath((Join-Path $root '../car-forge')); $py='C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\bin\python.exe'
+if(-not (Test-Path (Join-Path $forge 'tools/sync_game.py'))){throw "Car Forge not found at $forge (the game's Forge cars are built from it)."}
+$env:PYTHONPATH="$forge\vendor;$forge"; & $py (Join-Path $forge 'tools/sync_game.py') --game $root --jobs 6
+if($LASTEXITCODE -ne 0){throw 'Car Forge sync failed (a car failed its export checks); build not started.'}
 # Compile errors in ~2 s instead of after Unity's start-up (tools/compile-check.ps1).
 & (Join-Path $PSScriptRoot 'compile-check.ps1') -Quiet
 if($LASTEXITCODE -ne 0){throw 'Compile check failed; Unity build not started.'}

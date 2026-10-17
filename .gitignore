@@ -110,3 +110,6 @@ review/duke-race/
 review/map-sweep/*/
 # Car-builder renders and review .blend files (source-art/build_family_cars.py --render/--lineup): regenerated.
 review/cars/
+# Car Forge models: build output from ../car-forge (tools/forge-cars.txt lists them; tools/build-dev.ps1 runs
+# ../car-forge/tools/sync_game.py, which exports what changed). Never committed: 7 MB a car, 250 cars by the last class.
+unity/Assets/Resources/Cars/forge_*
