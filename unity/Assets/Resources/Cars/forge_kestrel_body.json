@@ -1,0 +1,16 @@
+{
+ "id": "forge_kestrel",
+ "shoulder": 1.834,
+ "length": 3.107,
+ "wheelFront": 0.3527,
+ "wheelRear": 0.3997,
+ "trackFront": 0.7733,
+ "trackRear": 0.7928,
+ "landmarks": [
+  -1.531,
+  -0.872,
+  0.872,
+  1.529
+ ],
+ "livery": "stripes"
+}

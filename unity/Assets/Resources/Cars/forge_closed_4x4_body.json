@@ -1,0 +1,16 @@
+{
+ "id": "forge_closed_4x4",
+ "shoulder": 1.672,
+ "length": 3.571,
+ "wheelFront": 0.3659,
+ "wheelRear": 0.3659,
+ "trackFront": 0.7029,
+ "trackRear": 0.705,
+ "landmarks": [
+  -1.769,
+  -1.087,
+  1.087,
+  1.752
+ ],
+ "livery": "stripes"
+}

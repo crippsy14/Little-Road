@@ -50,7 +50,9 @@ namespace LittleRoad
             initialized=true;
             Braking=braking;Reversing=reversing;
             foreach(var material in brake) {
-                material.SetColor("_BaseColor",braking?new Color(.95f,.018f,.008f):new Color(.42f,.015f,.008f));
+                // (a Car Forge tail lens is tinted glass: it keeps its see-through tint, brightening under braking)
+                var off=material.name.Contains("LampGlass")?TrialWorld.LampGlassColour(material.name):new Color(.42f,.015f,.008f);
+                material.SetColor("_BaseColor",braking?new Color(.95f,.018f,.008f,off.a):off);
                 material.SetColor("_EmissionColor",braking?new Color(2.5f,.006f,.002f):Color.black);
             }
             foreach(var material in reverse) {

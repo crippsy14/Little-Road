@@ -33,7 +33,18 @@ namespace LittleRoad
             }
             Studio();
             var text=new System.Text.StringBuilder();
+            // --forge-lineup: the Car Forge bodies instead (docs/75), each in a paint of its own.
+            if(RaceTrial.Has("--forge-lineup")) {
+                var forge=new Dictionary<string,Entry>();var paints=new[]{new Color(.55f,.72f,.70f),new Color(.80f,.22f,.12f),new Color(.92f,.72f,.10f),new Color(.2f,.4f,.8f)};int k=0;
+                // (--forge-only a,b: just those Forge bodies, for a close comparison)
+                var only=RaceTrial.Arg("--forge-only","").Split(',',System.StringSplitOptions.RemoveEmptyEntries);
+                foreach(var id in CarBodies.Forge)if(only.Length==0||System.Array.IndexOf(only,id)>=0)forge[id]=new Entry{body=id,paint=paints[k++%paints.Length],count=1};
+                // --forge-compare bramble,dover,...: legacy bodies beside them, the toy benchmark (docs/75 §10 stage A2).
+                foreach(var id in RaceTrial.Arg("--forge-compare","").Split(',',System.StringSplitOptions.RemoveEmptyEntries))forge[id]=new Entry{body=id,paint=paints[k++%paints.Length],count=1};
+                c=forge;b=new Dictionary<string,Entry>();
+            }
             foreach(var (name,set) in new[]{("class-c",c),("class-b",b)}) {
+                if(set.Count==0)continue;
                 var list=set.Values.OrderBy(e=>Order(e.body)).ThenBy(e=>e.body).ToList();
                 text.AppendLine($"{name}: {list.Count} bodies");foreach(var e in list)text.AppendLine($"  {e.body,-12} {CarBodies.Name(e.body),-24} entries {e.count,4}  races: {string.Join(", ",e.races)}");
                 yield return Shoot(list,Path.Combine(folder,$"lineup-{name}.png"),name=="class-c"?"CLASS C FIELDS":"CLASS B FIELDS");
@@ -66,7 +77,7 @@ namespace LittleRoad
         {
             if(stage!=null)Destroy(stage.gameObject);stage=new GameObject("Lineup stage").transform;
             // A straight grid, first row at the top, the camera square on to it from the front; each car turned three-quarters.
-            const int rows=4;int columns=Mathf.CeilToInt(list.Count/(float)rows);const float dx=6.2f,dz=7.4f,pitch=32;
+            int rows=list.Count<=6?1:4;int columns=Mathf.CeilToInt(list.Count/(float)rows);const float dx=6.2f,dz=7.4f,pitch=32;
             var canvas=new GameObject("Labels",typeof(Canvas)).GetComponent<Canvas>();canvas.renderMode=RenderMode.WorldSpace;canvas.transform.SetParent(stage);
             var camRot=Quaternion.Euler(pitch,0,0);
             for(int i=0;i<list.Count;i++) {

@@ -29,7 +29,11 @@ namespace LittleRoad
             if(Application.isBatchMode)return;
             if(fullscreen) {
                 if(!Fullscreen){windowWidth=Screen.width;windowHeight=Screen.height;}
-                var display=Screen.currentResolution;Screen.SetResolution(display.width,display.height,FullScreenMode.FullScreenWindow);
+                // (the monitor the window is on, at its own resolution: Screen.currentResolution could report a window size
+                //  a test run had left behind, and the game came up at 1600x900 on a 4K screen; Richard, 16 Oct)
+                var info=Screen.mainWindowDisplayInfo;var display=Screen.currentResolution;
+                int w=info.width>0?info.width:display.width,h=info.height>0?info.height:display.height;
+                Screen.SetResolution(w,h,FullScreenMode.FullScreenWindow);
             }else Screen.SetResolution(windowWidth,windowHeight,FullScreenMode.Windowed);
             if(remember){PlayerPrefs.SetInt("display.fullscreen",fullscreen?1:0);PlayerPrefs.Save();}
             Debug.Log("LITTLE_ROAD_DISPLAY requested="+(fullscreen?"borderless fullscreen":"windowed"));

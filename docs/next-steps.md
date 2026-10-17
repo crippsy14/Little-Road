@@ -1,5 +1,18 @@
 # Next steps (3 October 2026)
 
+**17 October: Car Forge ready for the class C roster; two designs.**
+- **Car Forge** (`car-forge/docs/acceptance.md`): G1–G9 met, and the batch tool generates 24 gated class C designs in
+  about 2 minutes. Twelve Forge cars are reinstalled, with livery styles in `ForgeLivery` (uncommitted); the dev build
+  passes its 2898 checks.
+- **The class C roster design** (`car-forge/docs/roster-c-design.md`): 50 cars. The 31 existing ones are rebuilt at the
+  Kestrel standard, keeping their names and roles, and 19 new ones are mostly rogue toys and quick-looking warm trims.
+- **Prop Forge ([doc 76](76-prop-forge-design.md))**, a design for one built world. Walls and fences drawn along roads
+  with ends, corners and openings; props fitted to slopes; buildings on platforms; Bayview rebuilt with it.
+- **Next three pieces:**
+  1. The Car Forge engine review's agreed changes (a review agent is running).
+  2. The class C roster: new concepts, kits, wear, generation and a hand pass on every car, then into the game behind a flag.
+  3. Prop Forge's first recipes, proven on one Bayview street.
+
 **13 October: the snap tool, how we work, and the cleanup.**
 - **Snap tool** (F9, or hold R3), with a note box and a bug inbox (docs/73, `docs/bug-inbox.md`).
   - Richard's first ten snaps are logged as inbox #3–#11. Each one has enough to find and reproduce the spot.

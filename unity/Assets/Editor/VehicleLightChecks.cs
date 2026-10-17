@@ -10,7 +10,7 @@ public static class VehicleLightChecks
         var checks=new List<string>();
         void Check(bool condition,string message){if(!condition)throw new InvalidOperationException(message);checks.Add(message);}
         var assets=new List<string>{"compact_v1","little_car",CarBodies.Flagship,CarBodies.Starter};
-        assets.AddRange(CarBodies.Family);assets.AddRange(CarBodies.Sporty);
+        assets.AddRange(CarBodies.Family);assets.AddRange(CarBodies.Sporty);assets.AddRange(CarBodies.Forge);
         foreach(string asset in assets) {
             var car=TrialWorld.Car(asset,Color.cyan);var other=TrialWorld.Car(asset,Color.yellow);
             try {
@@ -44,7 +44,7 @@ public static class VehicleLightChecks
         // Every material on every car model has a colour rule in TrialWorld.Car (14 Oct: rim finishes and stripes had none and
         // all rendered the default charcoal).
         {var bodies=new List<string>{"compact_v1",CarBodies.Flagship,CarBodies.Starter,CarBodies.Prototype};
-         foreach(var set in new[]{CarBodies.Family,CarBodies.Sporty,CarBodies.Townsfolk,CarBodies.OffRoad,CarBodies.Tuner,CarBodies.TunerOffRoad,CarBodies.PitStop})bodies.AddRange(set);
+         foreach(var set in new[]{CarBodies.Family,CarBodies.Sporty,CarBodies.Townsfolk,CarBodies.OffRoad,CarBodies.Tuner,CarBodies.TunerOffRoad,CarBodies.PitStop,CarBodies.Forge})bodies.AddRange(set);
          var unknown=new SortedSet<string>();
          foreach(var body in bodies)foreach(var suffix in new[]{"","_lod1","_lod2"}){var model=Resources.Load<GameObject>("Cars/"+body+suffix);if(model==null)continue;
              foreach(var r in model.GetComponentsInChildren<Renderer>(true))foreach(var m in r.sharedMaterials)if(m!=null&&Array.FindIndex(TrialWorld.CarMaterialKeys,k=>m.name.Contains(k))<0)unknown.Add(body+": "+m.name);}

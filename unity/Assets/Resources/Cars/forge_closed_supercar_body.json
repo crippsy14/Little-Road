@@ -1,0 +1,16 @@
+{
+ "id": "forge_closed_supercar",
+ "shoulder": 1.929,
+ "length": 3.746,
+ "wheelFront": 0.2763,
+ "wheelRear": 0.3166,
+ "trackFront": 0.8277,
+ "trackRear": 0.7922,
+ "landmarks": [
+  -1.826,
+  -1.072,
+  1.072,
+  1.875
+ ],
+ "livery": "stripes"
+}

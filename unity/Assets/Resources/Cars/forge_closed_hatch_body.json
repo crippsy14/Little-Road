@@ -1,0 +1,16 @@
+{
+ "id": "forge_closed_hatch",
+ "shoulder": 1.57,
+ "length": 3.426,
+ "wheelFront": 0.2985,
+ "wheelRear": 0.2985,
+ "trackFront": 0.6816,
+ "trackRear": 0.6828,
+ "landmarks": [
+  -1.612,
+  -1.071,
+  1.071,
+  1.767
+ ],
+ "livery": "stripes"
+}

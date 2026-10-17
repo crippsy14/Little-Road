@@ -1,0 +1,16 @@
+{
+ "id": "forge_closed_defaults",
+ "shoulder": 1.555,
+ "length": 3.577,
+ "wheelFront": 0.2888,
+ "wheelRear": 0.2888,
+ "trackFront": 0.6771,
+ "trackRear": 0.68,
+ "landmarks": [
+  -1.808,
+  -1.042,
+  1.042,
+  1.723
+ ],
+ "livery": "stripes"
+}

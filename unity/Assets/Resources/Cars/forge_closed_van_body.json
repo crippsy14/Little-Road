@@ -1,0 +1,16 @@
+{
+ "id": "forge_closed_van",
+ "shoulder": 1.603,
+ "length": 3.39,
+ "wheelFront": 0.2985,
+ "wheelRear": 0.2985,
+ "trackFront": 0.6977,
+ "trackRear": 0.6997,
+ "landmarks": [
+  -1.645,
+  -1.139,
+  1.139,
+  1.698
+ ],
+ "livery": "stripes"
+}

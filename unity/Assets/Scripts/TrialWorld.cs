@@ -15,6 +15,11 @@ namespace LittleRoad
         // Shared by runtime assembly and the build's retained shader reference.
         // URP alpha blending with preserved specular keeps sky reflections bright
         // while allowing the cabin to show through the tinted pane.
+        // Car Forge lamp lenses (LampGlass): clear glass over a lamp's reflector and bulb, so the lamp reads in depth.
+        // Tail and indicator lenses are tinted glass (LampGlassTailLight, LampGlassAmber); a TailLight lens is also one
+        // of VehicleLights' brake materials, so the whole lens glows under braking.
+        public static Color LampGlassColour(string name)=>name.Contains("TailLight")?new Color(.72f,.03f,.02f,.55f):name.Contains("Amber")?new Color(1,.42f,.04f,.5f):new Color(.9f,.93f,.96f,.14f);
+        public static void ConfigureLampGlass(Material material){ConfigureMasterGlass(material);material.color=LampGlassColour(material.name);material.SetFloat("_Smoothness",.95f);}
         public static void ConfigureMasterGlass(Material material)
         {
             material.color=new Color(.055f,.075f,.09f,.72f);
@@ -152,6 +157,8 @@ namespace LittleRoad
                     new LOD(.008f,lod2.GetComponentsInChildren<Renderer>())});group.RecalculateBounds();
             }
             if(CarBodies.UsesStandardEnvelope(asset))root.AddComponent<StandardEnvelope>();
+            // --livery: Car Forge bodies wear a composed livery in their livery space (ForgeLivery).
+            if(ForgeLivery.Enabled&&CarBodies.Forged(asset)!=null)ForgeLivery.Apply(root,paint,new Color(.95f,.94f,.9f),ForgeLivery.Number(asset),CarBodies.Forged(asset).livery??"stripes");
             root.AddComponent<VehicleLights>().Initialize();return root;
         }
         static GameObject CarVisual(GameObject root,string asset,Color paint,System.Collections.Generic.Dictionary<string,Material> materials)
@@ -205,8 +212,12 @@ namespace LittleRoad
                     // Prototype glazing consists of single-sided polygons. glTF
                     // rendered both sides; preserve that intent in the FBX port.
                     if(name.Contains("Glass"))converted[i].SetFloat("_Cull",0);
+                    // (a Car Forge body's own paint is two-sided: where its inside lining leaves a strip beside a window,
+                    //  the inside shows painted metal, as a diecast casting's does, not the world behind; Richard's snap, 15 Oct)
+                    if(name.Contains("_forge_")&&(name.Contains("BodyPaint")||name.Contains("StripeColour")))converted[i].SetFloat("_Cull",0);
                     if(name.Contains("Cloth")){converted[i].SetFloat("_Smoothness",.1f);converted[i].SetFloat("_Metallic",0);}
                     if(name.Contains("MasterGlass"))ConfigureMasterGlass(converted[i]);
+                    if(name.Contains("LampGlass"))ConfigureLampGlass(converted[i]);
                     materials[name]=converted[i];
                 }
                 renderer.sharedMaterials=converted;

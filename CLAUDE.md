@@ -18,7 +18,7 @@ Racing AI v2 (`RacerDriverPolicy`, the six-ability design; `docs/46-racing-ai-v2
 - Race runs delete per-tick telemetry (`race.track.json` etc., ~75 MB/race) unless `-KeepTelemetry` is passed; keep it only for audit/diagnosis runs.
 - New behaviour goes behind an off-by-default `--flag` so the same executable can A/B it; add an editor check in `unity/Assets/Editor/*Checks.cs` and register it in `MigrationBuild.cs`.
 - Keep/reject: same build, flag off vs on, Cedar + Bayview, seeds 1709/1710/1711. Keep only if all 24 finish, no new assisted resets, and total finish time for all 24 cars improves on average. Record every result, including failures.
-- Do not commit or push unless Richard asks.
+- Commit and push as you see fit to Richard's own repos (crippsy14/*: this game, Car Forge); any other repo only when Richard asks (Richard, 17 Oct).
 
 ## Look (colour and lighting)
 - Follow `docs/art-direction.md` ("toy shapes, real light"). All light, grade, cloud and colour-limit numbers live in `unity/Assets/Scripts/WorldLook.cs`; `WorldLookChecks` fails the build if they drift.

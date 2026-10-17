@@ -124,6 +124,8 @@ public static class MigrationBuild
         }
         var root=Path.GetFullPath(Path.Combine(Application.dataPath,"../../"));
         evidence.checks.AddRange(VehicleLightChecks.Run());
+        evidence.checks.AddRange(ForgeLiveryChecks.Run());
+        evidence.checks.AddRange(StopLookChecks.Run());
         evidence.checks.AddRange(CheckpointChecks.Run());
         evidence.checks.AddRange(ClassSortChecks.Run());
         evidence.checks.AddRange(RecoveryRejoinChecks.Run());

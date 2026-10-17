@@ -1,0 +1,16 @@
+{
+ "id": "forge_closed_gt",
+ "shoulder": 1.801,
+ "length": 3.787,
+ "wheelFront": 0.3273,
+ "wheelRear": 0.3273,
+ "trackFront": 0.7603,
+ "trackRear": 0.7414,
+ "landmarks": [
+  -1.78,
+  -1.075,
+  1.075,
+  1.96
+ ],
+ "livery": "stripes"
+}

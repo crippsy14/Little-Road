@@ -257,6 +257,11 @@ namespace LittleRoad
         public static void FitMaxBuild(AdventureStore store)=>store.Change(p=>{
             foreach(var kv in EquipmentCatalog.MaxBuild()){if(!p.owned.Contains(kv.Value))p.owned.Add(kv.Value);var item=p.fitted.Find(f=>f.slot==kv.Key);if(item!=null)item.id=kv.Value;}
             return true;});
+        // Car Forge test drive (--forge-drive <id>; Richard, 16 Oct: "spin up the game with it loaded as the player car"): a
+        // blank save of its own, made new each launch, driving that Forge body. It writes only its own file, so the real
+        // slots never see it; without the flag no Forge body can be owned.
+        public static string ForgeDrive=>RaceTrial.Has("--forge-drive")?RaceTrial.Arg("--forge-drive","forge_kestrel"):null;
+        public static string ForgeDrivePath=>Path.Combine(SaveSlots.Folder,"little-road-forge-drive.json");
         public static void Load()
         {
             if(Smoke&&!smokeHooked){smokeHooked=true;Application.logMessageReceived+=(message,stack,type)=>{if(type==LogType.Exception)Application.Quit(2);};}
@@ -264,6 +269,13 @@ namespace LittleRoad
             string path=RaceTrial.Arg("--adventure-save");
             if(Smoke&&string.IsNullOrEmpty(path))throw new InvalidOperationException("Smoke test requires its own --adventure-save path.");
             if(path==null)SaveSlots.Migrate();
+            if(ForgeDrive!=null&&Array.IndexOf(CarBodies.Forge,ForgeDrive)>=0) {
+                if(path==null){path=ForgeDrivePath;if(File.Exists(path))File.Delete(path);}
+                Store=new AdventureStore(path);string id=ForgeDrive;
+                Store.Change(p=>{if(!p.bodies.Contains(id))p.bodies.Add(id);p.bodyId=id;return true;});
+                Notice="Test drive: the Car Forge "+id+". A blank game; nothing you do is saved to your slots.";
+                return;
+            }
             if(MaxBuildTest) {
                 if(path==null){path=MaxBuildTestPath;if(File.Exists(SaveSlots.LivePath))File.Copy(SaveSlots.LivePath,path,true);else if(File.Exists(path))File.Delete(path);}
                 Store=new AdventureStore(path);FitMaxBuild(Store);

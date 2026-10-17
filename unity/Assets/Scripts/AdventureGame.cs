@@ -131,6 +131,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--minimap-review")){reviewing=true;yield return MinimapReview();yield break;}
             if(RaceTrial.Has("--pause-review")){yield return PauseReview();yield break;}
             if(RaceTrial.Has("--zip-ride-review")){yield return ZipRideReview();yield break;}
+            if(RaceTrial.Has("--stop-look-review")){yield return StopLookReview();yield break;}
             // --photo-review: photo mode's five looks (docs/51) to --trial-captures, framed and unframed.
             if(RaceTrial.Has("--photo-review")){reviewing=true;var main=HillcrestRoute.Mainline;float s=main.Nearest(new Vector3(95,0,-300),out _);player.body.rotation=Quaternion.LookRotation(-main.Forward(s));Place(main.At(s));
                 yield return new WaitForSeconds(1.5f);CameraPose(true);cameraView.transform.position=player.transform.position+player.transform.right*5.5f+player.transform.forward*4+Vector3.up*1.6f;yield return null;photo.Open();string folder=RaceTrial.Arg("--trial-captures");
@@ -891,7 +892,7 @@ namespace LittleRoad
                         Notify(Collectibles.IsCarving(pair.Key)?$"Slate carving {got} of {Collectibles.Carvings} found · +50 credits":Collectibles.IsStamp(pair.Key)?$"Hillcrest stamp {got} of {Collectibles.Stamps} found · +50 credits":$"Bayview postcard {got} of {Collectibles.Postcards} found · +50 credits");}});
             }
             // Countdowns hold the car still but let it rev (Richard, 1 Oct).
-            player.holdStill=climbStart>=0&&Time.time<climbStart||trainRace!=null&&trainRace.Holding||school!=null&&school.Holding||activity!=null&&Time.time<activity.go;
+            player.holdStill=climbStart>=0&&Time.time<climbStart||trainRace!=null&&trainRace.Holding||school!=null&&school.Holding||activity!=null&&Time.time<activity.go||StopLook.Injected!=null;   // (--stop-look-review: braked on the hill)
             if(activity!=null&&activity.running!=null&&!activity.running())EndActivity();
 
             if(pin is Vector3 pinned&&Vector3.Distance(player.body.position,pinned)<20){pin=null;Notify("You're there: "+pinLabel+".");}
@@ -1107,6 +1108,22 @@ namespace LittleRoad
             do{yield return new WaitForSeconds(1.5f);Toy.Capture(Path.Combine(folder,$"zip-{(down?"down":"up")}-{n:00}.png"));n++;}while(riding&&n<60);
             Debug.Log($"LITTLE_ROAD_ZIP_RIDE_REVIEW done captures={n} folder={folder}");Application.Quit(0);
         }
+        // --stop-look-review (with --stop-look): the car stopped on the Hillcrest mainline, the right stick held to swing the
+        // camera round it; captures of the chase view, the side, the front and from above to --trial-captures.
+        IEnumerator StopLookReview()
+        {
+            string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);
+            if(!StopLook.Enabled){Debug.LogError("LITTLE_ROAD_STOP_LOOK_REVIEW needs --stop-look");Application.Quit(2);yield break;}
+            var main=HillcrestRoute.Mainline;float s=main.Nearest(new Vector3(95,0,-300),out _);player.body.rotation=Quaternion.LookRotation(main.Forward(s));Place(main.At(s));
+            StopLook.Injected=Vector2.zero;CameraPose(true);yield return new WaitForSeconds(2);
+            void Shot(string name){Toy.Capture(Path.Combine(folder,$"stop-look-{name}.png"));var c=cameraView.transform.position-player.transform.position;
+                Debug.Log($"LITTLE_ROAD_STOP_LOOK_REVIEW {name} speed={player.speed:0.00} yaw={StopLook.Now.yaw:0} pitch={StopLook.Now.pitch:0} weight={StopLook.Now.weight:0.00} camera={c.magnitude:0.0}m up={c.y:0.0}m");}
+            Shot("0-chase");
+            StopLook.Injected=Vector2.right;yield return new WaitForSeconds(1);StopLook.Injected=Vector2.zero;yield return new WaitForSeconds(1.5f);Shot("1-side");
+            StopLook.Injected=Vector2.right;yield return new WaitForSeconds(1);StopLook.Injected=Vector2.zero;yield return new WaitForSeconds(1.5f);Shot("2-front");
+            StopLook.Injected=Vector2.down;yield return new WaitForSeconds(1.5f);StopLook.Injected=Vector2.zero;yield return new WaitForSeconds(1.5f);Shot("3-above");
+            StopLook.Injected=null;Debug.Log("LITTLE_ROAD_STOP_LOOK_REVIEW done folder="+folder);Application.Quit(0);
+        }
         IEnumerator PauseReview()
         {
             string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);
@@ -1167,6 +1184,9 @@ namespace LittleRoad
                 float rideFov=55+GraphicsOptions.FovOffset;cameraView.fieldOfView=Mathf.Lerp(cameraView.fieldOfView,rideFov,1-Mathf.Exp(-Time.deltaTime*3));
                 return;
             }
+            // --stop-look: stopped, the right stick swings the camera round the car (StopLook); the cast below still keeps
+            // it out of walls and the ground.
+            if(StopLook.Enabled){var off=desired-target;StopLook.Now=StopLook.Step(StopLook.Now,player.speed,StopLook.Stick(),!behind&&!ui.IsOpen&&!browser.IsOpen&&!player.controlsBlocked,Time.deltaTime,StopLook.Elevation(off));desired=target+StopLook.Orbit(off,StopLook.Now);}
             Vector3 delta=desired-target;
             foreach(var hit in Physics.SphereCastAll(target,.2f,delta.normalized,delta.magnitude))
                 if(!hit.collider.transform.IsChildOf(player.transform)&&hit.distance>1)desired=target+delta.normalized*Mathf.Min(Vector3.Distance(target,desired),hit.distance-.25f);
@@ -1176,7 +1196,7 @@ namespace LittleRoad
             else if(flip)cameraView.transform.position=desired+player.transform.TransformVector(chaseLag);
             else if(snap){cameraView.transform.position=desired;chaseLag=Vector3.zero;}
             else{cameraView.transform.position=Vector3.Lerp(cameraView.transform.position,desired,1-Mathf.Exp(-Time.deltaTime*8));chaseLag=player.transform.InverseTransformVector(cameraView.transform.position-desired);}
-            cameraView.transform.LookAt(target+viewingForward*1.7f);
+            cameraView.transform.LookAt(target+viewingForward*1.7f*(1-StopLook.Now.weight));   // (swung round, it looks at the car)
             float fov=WorldLook.SpeedFov(55+GraphicsOptions.FovOffset,player.speed);cameraView.fieldOfView=snap?fov:Mathf.Lerp(cameraView.fieldOfView,fov,1-Mathf.Exp(-Time.deltaTime*3));
             if(!snap&&!riding)CameraShake.Apply(cameraView);
         }

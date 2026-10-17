@@ -1,6 +1,17 @@
 # 75 · The Car Forge: a new car generator and livery system (spec, 14 October 2026)
 
-**Status: spec for Richard's approval. Nothing here is built yet.**
+**Status: approved 14 October (Richard's answers below); being built.**
+
+**Richard's decisions (14 Oct):**
+1. Approach approved.
+2. **Fully ground up.** Retire every existing car (the Tuners, the class C cars and the kits) in favour of the new
+   platform; keep a backup for now (git tag `cars-legacy-v1`, and the legacy builder stays in `source-art/`).
+3. Brands for the higher-tier cars.
+4. Bigger wheels and crushed roofs: agreed.
+5. The player vinyl editor: designed now, built later. Agreed.
+6. **A full sweep**, purpose-built with the new tool, so only one system has to be maintained from now on.
+   Goal: "high fidelity cars that are varied, unique as much as possible, and toy-like, whilst still holding up to
+   seeing a noticeable difference in tiers."
 
 Richard, 14 October:
 
@@ -430,3 +441,287 @@ F6 can move earlier if A, S or E work comes sooner.
    rebuilt. Agree, or keep today's proportions for C?
 5. **The player vinyl editor:** designed for now, built later. Agree?
 6. **Order:** C bangers and family cars first (F4), then B (F5)? Or B first, since that's where the sameness is?
+
+## 10 · From prototype to finished cars (agreed with Richard)
+
+**Where we are.** The three test cars are at about 25%. Richard's verdict: "very playdoughy", with windows "in weird shapes
+and not true to life". The triangle budget (§6) is deferred, because definition comes first.
+
+**Target look.** Tomica-style diecast:
+- true-to-life shapes and proportions, slightly chunky;
+- crisp edges and real panel gaps.
+
+Each car is inspired by real references, kept in `review/forge/refs/<car>/` with a `sources.txt` of licences (fetched by
+`tools/forge-refs.py`). Cars stay unbadged.
+
+**Causes.**
+- One continuous soft shell, where every edge rounds about the same amount.
+- Panel gaps that are painted on.
+- Almost no character lines.
+- Windows that are bands of the grid rather than drawn outlines.
+
+**Stages.** Each stage ends with renders for Richard and a Sonnet review.
+
+| Stage | To | What | Proof |
+|---|---|---|---|
+| A · Crisp surfacing | 40% | Every key line gets an edge radius in metres, built as holding columns beside it, so panels stay taut and only edges turn. Flatter sections with a slight crown. Character lines: swage, bonnet edges, arch flares. The roofline becomes straight runs with radiused corners (flat screens, a crisp header). | Zebra (reflection-stripe) renders: stripes run even and break cleanly at each line |
+| A2 · Toy proportions and character | 45% | Added after stage A, when Richard felt the cars had lost character and their proportions were off. The legacy class C cars are the toy benchmark, measured by `tools/forge-measure.py`. A caricature layer (`forge/toy.py`) turns each real-car recipe into a toy with one set of factors: width, height, wheels, lamps, edges, cabin, length and tyres. Panel crown and tumblehome are restored, and each car gets a signature face. | Measured ratios inside the benchmark ranges; an in-engine line-up beside legacy cars (`--forge-lineup --forge-compare bramble,dover,sprint`) |
+| B · Real panels and gaps | 55% | The panel build of §4.2: bonnet, wings, doors, quarters, boot or tailgate and sills share seam curves, with real recessed gaps. Bumpers become real parts with section, end caps and mounts. | Close-ups where the gaps catch light like a diecast |
+| C · Windows from true outlines | 65% | Daylight openings drawn in side view (A-pillar, header, B-pillar, C-pillar kink, corner radii) and cut exactly. Real pillar widths, glass set in with seals, windscreen rake and curve, quarter-lights. | Side outlines over the reference photos |
+| D · Real parts (kit 2) | 78% | Lamps (housing, reflector, lens, bezel), recessed grilles, recessed handles, filler, wipers, mirror housings, exhaust hangers, plate recess, dash and seats, tyre sidewalls and tread, callipers | Close-up sheet per part |
+| E · References and measurement | 88% | Silhouettes against the references; caricature changes written down; QC for clipping, floating parts, flicker and symmetry; golden images (the F0 harness of §7) | QC report and overlays |
+| F · Finished in the game | 100% | URP paint (clear coat, flake for higher tiers), reflection probes, the livery layer (F3), LODs rebuilt | Richard signs the three cars off in the game |
+
+The roster sweep (F4 onwards) follows with the finished tool.
+
+## 11 · Build log
+
+### 14 October: F1 and part of F2, three test cars
+Code in `source-art/forge/`:
+- `core.py`: numpy geometry, no Blender. Key lines, rational-arc sections, end rounding, wheel-arch openings snapped to a
+  circle, automatic arch pods (the wing rises over a wheel where the arch would break the shoulder), the greenhouse shell.
+- `build.py`: Blender stage. Cage to mesh with creases, Catmull-Clark subdivision, rolled arch lips, review renders
+  (`--render`, `--closeups`, `--lineup`), LOD-by-rebuild and `--export` to `Resources/Cars/forge_<id>*.fbx` plus
+  `forge_<id>_body.json`.
+- `details.py`: parts laid onto the finished body by ray casts (ring patches for round parts, quad grids for square ones),
+  strips that stop where the panel stops, outline rings, wheel wells, the rear wing.
+- `wheels.py`: a tyre and eight wheel faces of real geometry. `fittings.py`: window seals, interior, grille bars, lamp
+  projectors, mirrors, wipers, exhausts. `count.py`: triangles per part per LOD.
+- `recipes.py`: `test_banger` (class C banger), `test_hatch` (class C family hatch), `test_wedge` (class A 70s wedge).
+
+In the game: `CarBodies.Forged(id)` reads the body data (collision size); `CarBodies.Forge` lists the test bodies, which
+the material and lights checks cover; `--field-lineup --forge-lineup` renders them in-engine.
+
+Open: the triangle budget (LOD0 about 65-70k with the fittings, target 30k); sculpted recesses and scoops; the livery
+system (F3); the QC harness (F0); open topologies (F6).
+
+### 14 October, later: review round 1 (review/forge/review-r12.md)
+A Sonnet reviewer scored r12 at 4.5 (banger), 4 (hatch) and 5 (wedge) out of 10. Acted on:
+- **Arches.** Tombstone openings (a semicircle with straight sides), a lip that curls in towards the wheel, the flange in
+  dark trim, and a closed wheel well clamped under the body everywhere. This fixed the white crescents, the black fins and
+  the vanes through the wedge's wings.
+- **Look.** Bonnet relief features (bulge, ridges), lighter glass with the interior visible, richer clear-coated paint, and
+  a brighter studio. Bigger mirrors on arms.
+- **Recipes.**
+  - Banger: lower and humbler, period teal, bigger indicators, thicker chrome bumpers, an exhaust.
+  - Hatch: shorter, a raked tailgate, a lower roof, five-spoke wheels, a body-colour grille surround and a rear wiper.
+  - Wedge: a low pointed nose, one straight rise to the screen, flush lamp-lid shut lines, a smaller lower wing, engine
+    louvres, wider rear tyres and bigger rims, hot orange.
+
+Not taken: weathering (it belongs to the livery layer, F3), and a front plate on the wedge (it was removed instead).
+Exported and in the game (build checks pass). LOD0 is still about 62-66k triangles.
+
+**Triangles after trimming (14 Oct):** LOD0 53-58k, LOD1 21-23k, LOD2 5.4-7k, against the §6 targets of 30k / 9k / 2k.
+The body shell is about half of LOD0 (27-29k at subdivision level 2); the rest is the greenhouse with its seals (9k),
+the four wheels (about 9k) and the details. Next: a coarser cage with the same smoothness (fewer rows away from the
+arches and ends), and the greenhouse at level 1 where it is mostly glass.
+
+### Review rounds 2 and 3 (review/forge/review-r17.md, then r19)
+Round 2 (r17) scored 5.5 (banger), 5.5 (hatch) and 6 (wedge). Round 3 acted on its list:
+- **Arches.** The wheel-well wall stops just under the sill. Down to the floor, it showed as square black feet.
+- **Details.**
+  - Number plates and badges are one flat rounded panel facing the surface (`flat_panel`). A grid laid point by point
+    bent them into four tiles.
+  - Grille bars stand .011 clear of the grille and stop short of its rim, so they no longer z-fight.
+- **Materials and studio.**
+  - Wheel faces are bright; steel discs take a recipe colour (`disc`).
+  - The tyre has a chamfered shoulder.
+  - Paint is deeper.
+  - The review studio has a Nishita sky without its own sun disc, exposure -0.45 and the AgX Punchy look. Chrome now
+    reflects something, and paint no longer reads pastel.
+- **Two-tone roof.** The cabin option `roof_mat` (e.g. `CreamTrim`) paints the roof between the screens only.
+- **Recipes.**
+  - Banger: cream roof, cream steel discs, boot shut line and handle.
+  - Hatch: tailgate shut line and handle. A roof lip was tried; it landed on the glass, so it was dropped for now.
+  - Wedge:
+    - one straight line from the nose to the cowl;
+    - smaller front wheels (r .30, arch .33);
+    - a narrower nose in plan;
+    - pods reaching further;
+    - rounded wing plates;
+    - silver wheels;
+    - the side intake as two strakes behind the door (it crossed the shut line before).
+
+Exported and in the game: the build passes 2680 checks, and `--forge-lineup` shows all three. LOD0 is 52-58k triangles.
+
+### Review round 4 (review/forge/review-r19.md)
+The reviewer scored r19 at 6.5 (banger), 6 (hatch) and 6.5 (wedge). Acted on:
+- **Wedge.**
+  - The bonnet is flat from the front wheel to the screen. Key line values at `fa` remove the saddle that sat between
+    the wing humps.
+  - The nose is narrower in plan.
+  - The pop-up lamp lids are raised body-colour panels inside their shut lines. Flat panels now mirror on top views.
+  - The wing end plates are rounded, swept slabs. The old cube's bevel ran before its scale, so it never showed.
+  - The wing posts are thicker and reach down to the deck.
+- **Hatch.**
+  - The rubbing strip runs between the arches only, which removes the black tag ahead of the front arch.
+  - Shoulder crease .6.
+  - The grille is clear of the plate.
+  - Cross-spoke mesh wheels with a polished lip, so each tier now has its own wheel.
+- **Banger.** Bonnet ridges h .03 and w .20. They are still faint after subdivision.
+- **Studio.** A darker floor, so pale cars separate from it.
+
+Not yet taken:
+- the banger's drip rail and C-pillar vent;
+- a lower-body accent tone or stripes (livery layer, F3);
+- the hatch's roof spoiler (the first try landed on the glass);
+- the hatch's fog lamps;
+- the speckle on the wedge's splitter edge;
+- the banger's boot-lid sag.
+
+LOD0 is 50-53k triangles.
+
+### Stage A: crisp surfacing
+**References.** `tools/forge-refs.py` fetched freely licensed Commons photos into `review/forge/refs/`:
+- banger: Wartburg 353 and Lada 2101;
+- hatch: Golf Mk1 and 205 GTI;
+- wedge: Countach and Esprit S1.
+
+**Core changes.**
+- **`edges`:** a radius in metres per key line. `held_arc` adds a holding point that distance either side of the line, so the
+  edge turns over in about that distance and the panels stay taut.
+- **`end_r`:** a holding row in from each tip. The end face is now flat rings in the tip's plane. One quad strip from the
+  outline to the centre line had rippled every nose and tail into a curtain.
+- **Greenhouse.**
+  - With `roof_r`, the roofline is straight runs with radiused corners (`filleted_path`). Points may carry their own
+    radius.
+  - `edge_r` holds the roof edge.
+  - So the screens are flat and the header is crisp.
+- **`--zebra`:** renders the paint as reflection stripes, the proof for this stage.
+
+**Detail fixes.**
+- Symmetric bars (bumpers) and centred parts (grilles, their surrounds) were mirrored onto themselves. Two identical
+  copies flickered, which was the "speckle" of earlier reviews.
+- Plates now face the normal at their centre.
+
+**Recipes, retuned against the references.**
+- Banger: a slab with a crisp shoulder, a swage under the trim, square ends, an upright screen, and the rear screen
+  down to the boot.
+- Hatch: a crisp shoulder crease and swage, square ends, a flat roof.
+- Wedge:
+  - straight wing tops from the nose to the screen, with the bonnet a little lower between them;
+  - a sharp waist crease;
+  - a chamfered nose;
+  - a smaller front wheel (r .28), so the wings need no hump.
+
+LOD0 is now 90-99k triangles (definition first, §10). Exported; the build passes 2680 checks.
+
+**Review (review/forge/review-a4.md).** A Sonnet reviewer scored a4 at 7 (banger), 6 (hatch) and 6.5 (wedge). It also re-scored
+r20 on the same stricter basis: about 6, 5 and 5.5. Acted on:
+- **Hatch.** It's a three-door, so the B-pillar is at the door's rear edge (`b` -.60), with quarter glass back to `c-.12`.
+- **Banger and hatch.** The side glass starts at the A-pillar's foot (`cowl-.10`). A body-colour triangle had stood beside
+  each screen.
+- **Banger.** The front door ends at the B-pillar, and there's a rear door seam and handle.
+- **Wedge.**
+  - A lower, sharper nose: the tip is about a third of the height (deck .37, waist .26).
+  - Squarer in plan (`nose_square` 4.2).
+  - `r_sh` .06.
+  - Front wheel r .27.
+- **All three.** Squarer ends, and less roll-under (`r_rocker` .3, `r_floor` .06).
+
+Renders are in `review/forge/a5` and `a5z`. Exported; the build passes.
+
+### Stage A2: toy proportions and character
+**Why.** Richard: stage A "lost some character... focussed too heavily on making everything straight", and the proportions
+were "a little off". He pointed to the legacy class C cars as the character he wants.
+
+**Benchmark.** `tools/forge-measure.py` measures any model in `Resources/Cars` with one ruler. The legacy C saloons and
+hatches:
+
+| Measure | Legacy C cars |
+|---|---|
+| Length ÷ width | 1.75–2.06 (hatches 1.76–1.80) |
+| Height ÷ width | 0.81–0.92 |
+| Wheel diameter ÷ height | 0.46–0.54 (every car on the same 0.40 m wheel) |
+| Overhang past the tyre ÷ length | 0.19–0.23 |
+| Glasshouse ÷ height | 0.38–0.45 |
+| Lamp ÷ width | 0.13–0.20 |
+
+Stage A's cars were narrow (length ÷ width 2.14–2.27) on small wheels (r 0.29–0.33). They were closer to scale models of
+the real cars than to toys.
+
+**Caricature layer.** `forge/toy.py` applies `recipe['toy']` after the recipe is written to the real car:
+- `width`, `height` and `length`;
+- `wheels` and `tyres`;
+- `lamps`: lamps, tails, indicators and the radiator grille;
+- `edges`: every radius;
+- `cabin`: the glass above the belt.
+
+The factors per car:
+
+| Car | width | height | wheels | lamps | edges | cabin | length | tyres |
+|---|---|---|---|---|---|---|---|---|
+| Banger | 1.16 | 1.14 | 1.15 | 1.15 | 2 | 1.06 | | 1.15 |
+| Hatch | 1.10 | 1.12 | 1.08 | 1.45 | 2 | 1.14 | .92 | 1.2 |
+| Wedge | 1.06 | 1.12 | 1.0 | | 1.6 | | | 1.1 |
+
+**Form back.**
+- Panel crown and tumblehome on the banger and hatch (`r_low`, `r_up` and `r_top` .10–.18), and rounder roofs.
+- The wedge keeps its flat folded planes, which are its character.
+
+**Signature.** The hatch now has the Golf Mk1's face: round lamps in a black grille band across the nose.
+
+**Result** (`review/forge/measure-a2-2.json`):
+
+| Car | Length ÷ width | Height ÷ width | Wheel ÷ height | Glasshouse | Lamp ÷ width |
+|---|---|---|---|---|---|
+| Banger | 1.96 | 0.90 | 0.46 | 0.40 | 0.125 |
+| Hatch | 1.80 | 0.87 | 0.49 | 0.39 | 0.132 |
+
+Both are inside the benchmark. `FieldLineup` gained `--forge-compare <ids>` to put legacy bodies beside the Forge line-up.
+Exported; the build passes.
+
+**Review (review/forge/review-a2.md).** Scores were 7.5 (banger), 6.5 (hatch) and 6 (wedge). The last round, rendered in `review/forge/b2` and not
+exported, acted on it:
+- more body volume (side bulge, edges ×2.6);
+- bigger banger wheels;
+- a Golf tailgate;
+- tyres flush with the body;
+- a lower, wider, crisper wedge.
+
+### Verdict on the prototype core
+Richard on the A2 round:
+- The fronts and backs of the two road cars are "just boxes".
+- The wedge looks "more like a drag car than an esprit with the different wheel sizes".
+- The legacy cars were only a reference for "character", not something to copy.
+- Benchmark against real toys from several sources instead.
+- The engine must be able to build everything, not just three polished cars. The legacy class C roster took about 20
+  minutes and he still loves it.
+
+**Claude's assessment.** This core will not get there.
+- The key-line loft is the same kind of engine as the legacy builder: one tube swept from nose to tail. It inherits the
+  legacy builder's ceiling: ends are flat caps, every car shares one topology, and vans, pickups, open cars, prototypes and
+  open-wheelers are out of reach.
+- Tuning three cars was tuning numbers inside that box.
+- Worth keeping:
+  - export and LODs;
+  - wheels;
+  - detail placement;
+  - measurement, zebra and references;
+  - the caricature factors;
+  - the line-up comparisons.
+
+**Proposed next.**
+1. A toy reference study (Tomica, Matchbox, Hot Wheels, Majorette, Corgi) and a component checklist.
+2. A part-based engine modelled on how diecasts are built:
+   - body casting;
+   - base or chassis carrying the bumpers;
+   - window unit;
+   - interior tub;
+   - wheels;
+   - lights.
+   The body is made from a library of noses, tails, cabins, arches, bumpers and aero parts.
+3. A time-boxed breadth test of about eight very different cars at rough quality, before any polish.
+
+The fallback, if the breadth test fails: extend the legacy builder's variety.
+
+### Decision: build the spec ground up, as a standalone platform
+Richard: no more prototypes. Build this spec "ground up with all the bells and whistles", as a golden platform. Take
+every step needed, and don't build cars until the engine itself is trusted. It may be a standalone tool.
+
+So:
+- The Car Forge is now its own project, `../car-forge`, with its own git repository, tests and Studio. Its engineering
+  design is `car-forge/docs/00-engine-design.md`; its build log is `car-forge/docs/log.md`.
+- The prototype moved there, to `archive/prototype-2026-10`, for reference only.
+- The three prototype exports (`forge_test_*`) stay in the game until the new engine's exports replace them.
+- This document stays the product spec: what cars we need, and why.
