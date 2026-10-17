@@ -148,6 +148,10 @@ namespace LittleRoad
             envelope.Expand(.015f);Vector3 size=envelope.size;
             string body=car.name.Replace("(Clone)","").Trim();var shoulders=CarBodies.ShoulderWidth(body);var length=CarBodies.Length(body);
             if(shoulders.HasValue){size.x=shoulders.Value;envelope.center=new Vector3(0,envelope.center.y,envelope.center.z);}if(length.HasValue)size.z=length.Value;
+            // (a Car Forge body's box stops at the car's own top: its props, the Gelato's cone or the Hookline's crane, made
+            //  boxes up to 3.3 m tall, 17 Oct)
+            float top=CarBodies.Forged(body)?.top??0;
+            if(top>0&&envelope.max.y>top+.015f){float bottom=envelope.min.y;size.y=top+.015f-bottom;envelope.center=new Vector3(envelope.center.x,bottom+size.y/2,envelope.center.z);}
             if(float.TryParse(RaceTrial.Arg("--collider-width"),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float width))size.x=width;
             return (envelope.center,size);
         }

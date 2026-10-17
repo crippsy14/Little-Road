@@ -16,11 +16,23 @@ public static class ForgeRosterChecks
         var roster=CarBodies.Roster;
         Check(roster.Length>=40,"Forge roster: the class C roster is installed ("+roster.Length+" cars with a star band)");
         foreach(var id in roster)Check(CarBodies.IsKnown(id)&&CarBodies.UsesStandardEnvelope(id),"Forge roster: "+id+" is a known body in the standard envelope");
+        foreach(var id in roster){float top=CarBodies.Forged(id).top;Check(top>.9f&&top<2.6f,$"Forge roster: {id}'s collision box stops at its own top ({top:0.00} m), props left out");}
         for(int stars=1;stars<=10;stars++)
             foreach(bool gravel in new[]{false,true}) {
                 var (quick,home,vet)=CarBodies.RosterPools(stars,gravel);
                 Check(quick.Length>0&&home.Length>0&&vet.Length>0,$"Forge roster: {stars} stars on {(gravel?"gravel":"tarmac")} has quick, home and veteran cars ({quick.Length}/{home.Length}/{vet.Length})");
-                Check(quick.Concat(home).Concat(vet).All(id=>(CarBodies.Forged(id).surface=="gravel")==gravel),$"Forge roster: {stars} stars on {(gravel?"gravel":"tarmac")} takes only {(gravel?"gravel":"tarmac")} cars");
+                Check(quick.Concat(home).Concat(vet).All(id=>CarBodies.RacesOn(CarBodies.Forged(id),gravel)),$"Forge roster: {stars} stars on {(gravel?"gravel":"tarmac")} takes only {(gravel?"gravel":"tarmac")} cars");
+                // (the field itself, over several race seeds: the design's caps, docs/roster-c-design.md in Car Forge)
+                for(int seed=1;seed<=12;seed++) {
+                    bool topC=CarBodies.TopCOpen("C",stars);var field=RaceRoster.ForgeField(stars,gravel,topC,seed*7919);
+                    string where=$"{stars} stars on {(gravel?"gravel":"tarmac")}, seed {seed}";
+                    Check(field.Length==23&&field.All(id=>id!=null&&CarBodies.IsKnown(id)),"Forge roster field: 23 known rival bodies ("+where+")");
+                    Check(field.GroupBy(id=>id).All(g=>g.Count()<=2),"Forge roster field: no model races more than twice ("+where+")");
+                    Check(Enumerable.Range(1,22).All(i=>field[i]!=field[i-1]),"Forge roster field: no model in the slot behind itself ("+where+")");
+                    Check(field.Distinct().Count()>=Math.Min(12,quick.Concat(home).Concat(vet).Distinct().Count()),"Forge roster field: at least 12 different models when the pools hold them ("+where+")");
+                    Check(field.Take(7).Count(id=>quick.Contains(id))>=Math.Min(quick.Distinct().Count(),4)-(topC&&!gravel?1:0),"Forge roster field: the quick-looking cars start at the front ("+where+")");
+                    if(topC&&!gravel)Check(field[0]==CarBodies.RosterFlagship,"Forge roster field: the Zenith on pole ("+where+")");
+                }
             }
         var (q1,h1,_)=CarBodies.RosterPools(1,false);
         Check(h1.All(id=>CarBodies.Forged(id).band[0]<=1),"Forge roster: a 1-star field's home cars all have 1 star in their band");
