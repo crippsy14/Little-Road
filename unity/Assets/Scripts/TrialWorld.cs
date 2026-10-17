@@ -142,7 +142,7 @@ namespace LittleRoad
         // a name with no rule renders the default charcoal).
         public static readonly string[] CarMaterialKeys={"RimGunmetal","RimBronze","RimWhite","RimBlack","PaintedSteel","StripeColour","BodyPaint","Glass","Rubber","Alloy",
             "Headlamp","TailLight","ReverseLight","RearReflector","BumperInsert","Amber","Plate","PanelSeam","BrakeMetal","Cloth","Cream","Livery","Wood",
-            "CarbonFibre","GoldTrim","CaliperRed","CanopyGlass","CharcoalTrim"};
+            "CarbonFibre","GoldTrim","CaliperRed","CanopyGlass","CharcoalTrim","Primer","Rust"};
         public static GameObject Car(string asset,Color paint)
         {
             var root=new GameObject(asset);
@@ -190,6 +190,8 @@ namespace LittleRoad
                         name.Contains("PanelSeam")?new Color(.024f,.054f,.051f):name.Contains("BrakeMetal")?new Color(.08f,.095f,.10f):
                         name.Contains("Cloth")?new Color(.065f,.088f,.094f):name.Contains("Cream")?new Color(.93f,.90f,.80f):name.Contains("Livery")&&!name.Contains("LiveryMap")?new Color(.85f,.10f,.08f):
                         name.Contains("Wood")?new Color(.45f,.27f,.13f):
+                        // (Car Forge's wear, 17 Oct: a panel in grey primer or rust, forge/wear.py)
+                        name.Contains("Primer")?new Color(.50f,.51f,.50f):name.Contains("Rust")?new Color(.36f,.16f,.07f):
                         // The Regale (Duke Rolo's prototype, docs/53): a painted livery, carbon, gold, red calipers, smoked canopy.
                         name.Contains("LiveryMap")?Color.white:name.Contains("CarbonFibre")?new Color(.03f,.033f,.036f):
                         name.Contains("GoldTrim")?new Color(.83f,.62f,.24f):name.Contains("CaliperRed")?new Color(.72f,.08f,.06f):
@@ -201,7 +203,8 @@ namespace LittleRoad
                     bool rim=name.Contains("RimGunmetal")||name.Contains("RimBronze"),rimPainted=name.Contains("RimWhite")||name.Contains("RimBlack");
                     float metal=rim?.85f:rimPainted?.35f:name.Contains("PaintedSteel")?.3f:chrome?.9f:gold?.85f:alloySurface?.7f:name.Contains("BrakeMetal")?.55f:name.Contains("CarbonFibre")?.25f:paintSurface||livery?.05f:0;
                     float smooth=rim||rimPainted?.32f:name.Contains("PaintedSteel")?.45f:name.Contains("StripeColour")?.35f:chrome?.8f:gold?.66f:livery?.74f:name.Contains("CanopyGlass")?.9f:name.Contains("CarbonFibre")?.55f:alloySurface?.42f:paintSurface?.56f:name.Contains("Rubber")?.15f:
-                        name.Contains("Headlamp")||name.Contains("TailLight")||name.Contains("ReverseLight")||name.Contains("Amber")?.6f:.25f;
+                        name.Contains("Headlamp")||name.Contains("TailLight")||name.Contains("ReverseLight")||name.Contains("Amber")?.6f:
+                        name.Contains("Rust")?.1f:name.Contains("Primer")?.18f:.25f;
                     converted[i]=Material(name,c,metal,smooth,!paintSurface&&!livery);
                     // The livery texture sits beside the model: Cars/<body>_livery (its colours are graded when painted).
                     if(livery){var art=Resources.Load<Texture2D>("Cars/"+asset.Replace("_lod1","").Replace("_lod2","")+"_livery");if(art!=null)converted[i].SetTexture("_BaseMap",art);}
