@@ -946,14 +946,17 @@ namespace LittleRoad
                         // (A road a metre or more below isn't a crossing: it's the street under the drop, and the drop keeps its rail.)
                         foreach(var road in HillcrestRoute.All()){if(road.line==line||road.line==own||!NearBox(road,edge))continue;float d=HillcrestRoute.Distance(road.line,edge.x,edge.z,out float ry);if(d<Mathf.Min(road.width*.5f+2.5f,ownDist-1)&&ry>edge.y-1){crossing=true;break;}}
                         if(crossing)continue;}
-                    var rail=Piece("Guardrail",edge+Vector3.up*.62f,new Vector3(.12f,.32f,len+.08f),i%2==0?white:red,true);rail.transform.rotation=Quaternion.LookRotation(f);railPieces.Add((rail,edge,right*side));
+                    var rail=Piece("Guardrail",edge+Vector3.up*.62f,new Vector3(.12f,.32f,len+.08f),i%2==0?white:red,true);rail.transform.rotation=Quaternion.LookRotation(f);railPieces.Add((rail,edge,right*side));ForgeRail(rail,"beam");
                     // Posts stand on the ground (Richard, 3 Oct: barriers floating by the bridge out of Hillcrest, where the
                     // road runs above the bank): from the ground, or the road if that's lower, up to the rail.
                     if(i%2==0){var foot=a+right*side*(width*.5f+.55f);float g=Mathf.Min(foot.y,ValleyField.Height(foot.x,foot.z))-.15f;float top=foot.y+.7f;
-                        railPieces.Add((Piece("Guardrail post",new Vector3(foot.x,(g+top)*.5f,foot.z),new Vector3(.16f,top-g,.16f),white,true),foot,right*side));}
+                        var post=Piece("Guardrail post",new Vector3(foot.x,(g+top)*.5f,foot.z),new Vector3(.16f,top-g,.16f),white,true);ForgeRail(post,"post",right*side);railPieces.Add((post,foot,right*side));}
                 }
             }
         }
+        // (--prop-forge: the rail's box drawn as Prop Forge's W-beam or C-channel post, authored in the unit cube, so the piece's
+        //  own scale, collider and paint stay as they are; docs/78)
+        static int railLogged;static void ForgeRail(GameObject piece,string part,Vector3? face=null){if(!PropForge.Enabled)return;if(RaceTrial.Has("--gate-log")&&part=="beam"&&(++railLogged)%40==1)Debug.Log($"LITTLE_ROAD_RAIL {piece.transform.position.x:0.0},{piece.transform.position.y:0.0},{piece.transform.position.z:0.0}");piece.GetComponent<MeshFilter>().sharedMesh=PropKit.Load("armco").Mesh(part);if(face.HasValue)piece.transform.rotation=Quaternion.LookRotation(face.Value);}
         // A road's bounding box padded by its half-width and 3 m (docs/72: the crossing test above only needs the exact
         // distance to roads near the rail, and checking every road's every point for every rail cost ~0.4 s at load).
         static readonly Dictionary<Vector3[],Vector4> roadBoxes=new();
