@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace LittleRoad
@@ -39,7 +40,9 @@ namespace LittleRoad
             Roads.Clear();
             Add("straight",Line(new Vector2(-120,-100),new Vector2(120,-100)),7f);
             Add("spur",Line(new Vector2(0,-100),new Vector2(0,-55)),6f);
-            Add("drive",Line(new Vector2(70,-100),new Vector2(70,-86)),3f);
+            // (the drive on level ground: on the bank its flat surface stood proud of the sloping road it joins, a hump
+            //  no real drive has, 18 Oct)
+            Add("drive",Line(new Vector2(25,-100),new Vector2(25,-86)),3f);
             Add("crest-hollow",Line(new Vector2(-90,-60),new Vector2(-90,120)),6.5f);
             Add("bank-road",Line(new Vector2(55,-70),new Vector2(55,40)),6.5f);
             // (a turtle: east, a 40 m bend left, a 15 m bend right, an 8 m bend left, with straights between)
@@ -61,6 +64,22 @@ namespace LittleRoad
             Roads.Add(new RangeRoad{name=name,line=line,width=width});
         }
         public static RangeRoad Road(string name){foreach(var r in Roads)if(r.name==name)return r;throw new KeyNotFoundException("run range: no road "+name);}
+
+        // The range's runs (docs/77, step 2): a fence both sides of every road, 1.25 m beyond its edge, cut wherever another
+        // road crosses (the spur's junction and the drive make openings), and one run too short to lay.
+        public static List<RunSpec> Specs(string kit="post_rail")
+        {
+            var o=new List<RunSpec>();
+            bool Cut(Vector3 p,RangeRoad own){foreach(var r in Roads){if(r==own)continue;if(Nearest(r,p.x,p.z,out _)<r.width*.5f+.8f)return true;}return false;}
+            foreach(var r in Roads) {
+                if(r.name=="drive"||r.name=="spur")continue;
+                foreach(int side in new[]{-1,1}) {
+                    var own=r;o.Add(new RunSpec{name=$"{r.name} {(side<0?"left":"right")}",kit=kit,seed=$"{r.name}-{side}",along=r.line,offset=side*(r.width*.5f+1.25f),cut=p=>Cut(p,own)});
+                }
+            }
+            var st=Road("straight");o.Add(new RunSpec{name="too short",kit=kit,seed="short",along=st.line,offset=-(st.width*.5f+1.25f),from=150,to=151.2f});
+            return o;
+        }
 
         // The nearest point of a road's centre line: its height, and the horizontal distance to it.
         public static float Nearest(RangeRoad r,float x,float z,out float y)
@@ -92,9 +111,13 @@ namespace LittleRoad
             BuildRoads();Ground.Use(this);
             var root=new GameObject("Run range").transform;
             Lighting();LandMesh(root);RoadMeshes(root);
+            Runs.Laid.Clear();
+            foreach(var spec in Specs()){var L=Runs.Solve(spec);Runs.Draw(L,root);Runs.Laid.Add(L);}
+            if(RaceTrial.Has("--run-debug"))Debug(root);
             view=new GameObject("Run range camera").AddComponent<Camera>();view.tag="MainCamera";view.fieldOfView=50;view.nearClipPlane=.2f;view.farClipPlane=2000;
             view.gameObject.AddComponent<AudioListener>();WorldLook.Camera(view);Look(new Vector3(-150,70,-170),new Vector3(0,0,0));
-            Debug.Log($"LITTLE_ROAD_RUN_RANGE_READY roads={Roads.Count} t={Time.realtimeSinceStartup:0.00}");LoadingScreen.Ready();
+            UnityEngine.Debug.Log($"LITTLE_ROAD_RUN_RANGE_READY roads={Roads.Count} runs={Runs.Laid.Count} t={Time.realtimeSinceStartup:0.00}");LoadingScreen.Ready();
+            string report=RaceTrial.Arg("--run-report");if(report!=null)Runs.WriteReport(report);
             if(RaceTrial.Has("--run-range-review"))yield return Review(RaceTrial.Arg("--trial-captures",Path.Combine(Application.persistentDataPath,"RunRange")));
         }
         void Look(Vector3 from,Vector3 at)=>view.transform.SetPositionAndRotation(from,Quaternion.LookRotation(at-from));
@@ -147,7 +170,23 @@ namespace LittleRoad
             yield return Shot("03-bank",new Vector3(20,14,-60),new Vector3(60,8,0));
             yield return Shot("04-bends",new Vector3(-30,40,-20),new Vector3(20,0,60));
             yield return Shot("05-junction",new Vector3(-20,10,-120),new Vector3(20,0,-95));
-            Debug.Log("LITTLE_ROAD_RUN_RANGE_REVIEW "+folder);Application.Quit(0);
+            yield return Shot("06-fence-close",new Vector3(-6,2.2f,-89),new Vector3(6,.6f,-96));
+            yield return Shot("07-crest-fence",new Vector3(-80,4,30),new Vector3(-95,3,60));
+            yield return Shot("08-bank-fence",new Vector3(66,14,-40),new Vector3(55,9,-10));
+            static Vector3 G(float x,float h,float z)=>new(x,Surface(x,z)+h,z);   // (h above the ground: the bends climb the bank)
+            yield return Shot("09-tight-bend",G(46,5,78),G(63,.5f,91));
+            Runs.WriteReport(Path.Combine(folder,"run-report.txt"));
+            UnityEngine.Debug.Log("LITTLE_ROAD_RUN_RANGE_REVIEW "+folder);Application.Quit(0);
+        }
+        // --run-debug: each run's offset line in yellow, its post feet as small cubes (green when the run passed)
+        void Debug(Transform root)
+        {
+            var line=TrialWorld.Material("Run debug line",new Color(1,.85f,.1f),0,.2f,false);var ok=TrialWorld.Material("Run debug ok",new Color(.2f,.85f,.3f),0,.2f,false);var bad=TrialWorld.Material("Run debug fail",new Color(.9f,.15f,.1f),0,.2f,false);
+            foreach(var L in Runs.Laid) {
+                var lr=new GameObject("Run debug "+L.spec.name).AddComponent<LineRenderer>();lr.transform.SetParent(root);lr.sharedMaterial=line;lr.widthMultiplier=.15f;
+                lr.positionCount=L.line.Length;lr.SetPositions(L.line.Select(p=>new Vector3(p.x,Ground.Surface(p.x,p.z)+.25f,p.z)).ToArray());
+                foreach(var f in L.feet){var c=GameObject.CreatePrimitive(PrimitiveType.Cube);Destroy(c.GetComponent<Collider>());c.transform.SetParent(root);c.transform.position=f+Vector3.up*1.6f;c.transform.localScale=Vector3.one*.25f;c.GetComponent<Renderer>().sharedMaterial=L.failures.Count==0?ok:bad;}
+            }
         }
         void OnDestroy(){Ground.Reset();}
     }
