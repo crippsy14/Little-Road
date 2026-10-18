@@ -31,6 +31,7 @@ namespace LittleRoad
         }
         static float Slope(float x,float z,float r){float lo=float.MaxValue,hi=float.MinValue;for(int k=0;k<8;k++){float a=k*Mathf.PI/4;float h=H(x+Mathf.Cos(a)*r,z+Mathf.Sin(a)*r);lo=Mathf.Min(lo,h);hi=Mathf.Max(hi,h);}return (hi-lo)/(2*r);}
         static readonly List<Matrix4x4> walls=new(),caps=new(),posts=new(),gates=new(),lines=new();
+        static readonly List<List<Vector3>> ForgeRuns=new();   // (--prop-forge: each wall stretch as a line, laid as a dry-stone run)
         public static readonly List<Vector3> SheepFields=new();
         public static int Sheep,Farms,WallMetres;
 
@@ -40,11 +41,16 @@ namespace LittleRoad
         {
             if(!QuarryHills.Enabled)yield break;
             root=new GameObject("Quarry Hills country").transform;root.SetParent(parent);rng=new System.Random(8823);
-            walls.Clear();caps.Clear();posts.Clear();gates.Clear();lines.Clear();SheepFields.Clear();Sheep=Farms=WallMetres=LaneSheep=0;
+            walls.Clear();caps.Clear();posts.Clear();gates.Clear();lines.Clear();ForgeRuns.Clear();SheepFields.Clear();Sheep=Farms=WallMetres=LaneSheep=0;
             CoastalLandscape.Lap("qhc start");RugbyGround();CoastalLandscape.Lap("qhc rugby");Workshops();CoastalLandscape.Lap("qhc workshops");yield return null;yield return Farms_();CoastalLandscape.Lap("qhc farms");yield return null;Campsite();CoastalLandscape.Lap("qhc campsite");WindFarm();CoastalLandscape.Lap("qhc wind");Roadsides();CoastalLandscape.Lap("qhc roadsides");TownBits();CoastalLandscape.Lap("qhc townbits");yield return null;
             var stone=WorldLook.Kit("Dry-stone wall",new Color(.43f,.44f,.45f),WorldLook.Pattern.Stone,0,.08f,true,1.6f);
             var cap=WorldLook.Kit("Wall coping",new Color(.36f,.37f,.39f),WorldLook.Pattern.Rock,0,.08f,true);
             QuarryFloor.Combine("Field walls",walls,stone,root,true);QuarryFloor.Combine("Field wall copes",caps,cap,root,false);
+            // (with --prop-forge, the field and farmyard walls are Prop Forge's dry-stone runs, in slate: bent along the
+            //  roads, following the ground, with piers at their ends; docs/78)
+            if(PropForge.Enabled){var slate=new Dictionary<string,string>{{"drystone","drystone_slate"},{"drystone_pier","drystone_slate_pier"}};
+                for(int i=0;i<ForgeRuns.Count;i++){var L=Runs.Solve(new RunSpec{name=$"quarry wall {i}",kit="dry_stone",seed=$"quarry-{i}",along=ForgeRuns[i].ToArray(),restyle=slate});Runs.Draw(L,root);WallMetres+=(int)L.length;}
+                ForgeRuns.Clear();}
             QuarryFloor.Combine("Telegraph wires",lines,TrialWorld.Material("Wire",new Color(.12f,.12f,.13f),.3f,.4f),root,false);
             QuarryFloor.Combine("Field gates",gates,TrialWorld.Material("Gate paint",new Color(.92f,.92f,.88f),0,.3f),root,true);
             QuarryFloor.Combine("Gate posts",posts,WorldLook.Kit("Gate post stone",new Color(.45f,.45f,.46f),WorldLook.Pattern.Stone,0,.1f,true),root,true);
@@ -137,7 +143,8 @@ namespace LittleRoad
             Put("tractor",P(8,-14),yaw+40,T(0xc0392b,0x222222,0x222222,0x222222));
             for(int i=0;i<6;i++)Put("hay_bale",P(26+(i%3)*1.4f,6+(i/3)*1.4f),yaw);
             // A farmyard wall round the yard and a lane to the nearest road.
-            for(float a=0;a<360;a+=12){float r=28;var p=at+Quaternion.Euler(0,a,0)*Vector3.forward*r;var q=at+Quaternion.Euler(0,a+12,0)*Vector3.forward*r;if(a<24)continue;Wall(G(p.x,p.z),G(q.x,q.z));}
+            if(PropForge.Enabled){var ring=new List<Vector3>();for(float a=24;a<=360;a+=6){var p=at+Quaternion.Euler(0,a,0)*Vector3.forward*28;ring.Add(G(p.x,p.z));}ForgeRuns.Add(ring);}
+            else for(float a=0;a<360;a+=12){float r=28;var p=at+Quaternion.Euler(0,a,0)*Vector3.forward*r;var q=at+Quaternion.Euler(0,a+12,0)*Vector3.forward*r;if(a<24)continue;Wall(G(p.x,p.z),G(q.x,q.z));}
             // (Street review, 5 Oct: a farm near town ran its lane to Chapel Street, straight through the back gardens and over
             // a yard wall.) The lane meets the nearest road outside the built-up town (its rows stop 520 m from the square).
             Vector3 road=default;float rd=float.MaxValue;foreach(var r in HillcrestRoute.All()){if(!QuarryHills.Owns(r.name))continue;
@@ -158,8 +165,9 @@ namespace LittleRoad
             SheepFields.Add(centre);
             for(int i=0;i<n;i++){float a=R()*Mathf.PI*2,r=Mathf.Sqrt(R())*14;var p=new Vector3(centre.x+Mathf.Cos(a)*r,0,centre.z+Mathf.Sin(a)*r);if(!Open(p.x,p.z,5))continue;p.y=H(p.x,p.z);
                 var s=new GameObject("Sheep");s.transform.SetParent(root);s.transform.SetPositionAndRotation(p,Quaternion.Euler(0,R()*360,0));float k=.85f+R()*.3f;s.transform.localScale=Vector3.one*k;
+                if(PropForge.Enabled)ForgeSheep(s);else{
                 Part(s,"Body",sheepBody,wool,new Vector3(0,.62f,0),new Vector3(.78f,.62f,1.1f));Part(s,"Head",sheepHead,face,new Vector3(0,.78f,.62f),new Vector3(.32f,.36f,.42f));
-                foreach(var (x,z) in new[]{(-.22f,.32f),(.22f,.32f),(-.22f,-.32f),(.22f,-.32f)})Part(s,"Leg",sheepLeg,face,new Vector3(x,.18f,z),new Vector3(.1f,.18f,.1f));
+                foreach(var (x,z) in new[]{(-.22f,.32f),(.22f,.32f),(-.22f,-.32f),(.22f,-.32f)})Part(s,"Leg",sheepLeg,face,new Vector3(x,.18f,z),new Vector3(.1f,.18f,.1f));}
                 s.AddComponent<Grazer>().Setup(centre,15);Sheep++;}
         }
         static void LaneFlock(Vector3 centre,int n)
@@ -167,12 +175,25 @@ namespace LittleRoad
             Flock(centre,0);   // (makes the meshes)
             for(int i=0;i<n;i++){float a=R()*Mathf.PI*2,r=R()*4;var p=new Vector3(centre.x+Mathf.Cos(a)*r,0,centre.z+Mathf.Sin(a)*r);p.y=H(p.x,p.z);
                 var s=new GameObject("Lane sheep");s.transform.SetParent(root);s.transform.SetPositionAndRotation(p,Quaternion.Euler(0,R()*360,0));s.transform.localScale=Vector3.one*(.85f+R()*.3f);
+                if(PropForge.Enabled)ForgeSheep(s);else{
                 Part(s,"Body",sheepBody,wool,new Vector3(0,.62f,0),new Vector3(.78f,.62f,1.1f));Part(s,"Head",sheepHead,face,new Vector3(0,.78f,.62f),new Vector3(.32f,.36f,.42f));
-                foreach(var (x,z) in new[]{(-.22f,.32f),(.22f,.32f),(-.22f,-.32f),(.22f,-.32f)})Part(s,"Leg",sheepLeg,face,new Vector3(x,.18f,z),new Vector3(.1f,.18f,.1f));
+                foreach(var (x,z) in new[]{(-.22f,.32f),(.22f,.32f),(-.22f,-.32f),(.22f,-.32f)})Part(s,"Leg",sheepLeg,face,new Vector3(x,.18f,z),new Vector3(.1f,.18f,.1f));}
                 var g=s.AddComponent<Grazer>();g.Setup(centre,5);g.lane=true;Sheep++;LaneSheep++;}
         }
         public static int LaneSheep;
         static Mesh Prim(PrimitiveType t){var g=GameObject.CreatePrimitive(t);var m=g.GetComponent<MeshFilter>().sharedMesh;Object.Destroy(g);return m;}
+        // (--prop-forge: Prop Forge's sheep, docs/78. A seeded body and head from the sheep kit: the body near in full and
+        //  at a distance its LOD1, the head on its LOD1 at the neck, where the grazer nods it)
+        static void ForgeSheep(GameObject s)
+        {
+            var kit=PropKit.Load("sheep");var at=s.transform.position;int hash=(Mathf.RoundToInt(at.x*7)*73856093)^(Mathf.RoundToInt(at.z*7)*19349663);int v=(hash&0x7fffffff)%4,h=((hash>>8)&0x7fffffff)%3;   // (from where it stands: the layout's own random stream is left alone)
+            var body=new GameObject("Body");body.transform.SetParent(s.transform,false);var rs=new List<Renderer>();
+            for(int lod=0;lod<2;lod++){var g=new GameObject("LOD"+lod,typeof(MeshFilter),typeof(MeshRenderer));g.transform.SetParent(body.transform,false);
+                g.GetComponent<MeshFilter>().sharedMesh=kit.Mesh("body_"+v,lod);var r=g.GetComponent<MeshRenderer>();r.sharedMaterials=kit.MaterialsOf("body_"+v,lod);rs.Add(r);}
+            var group=body.AddComponent<LODGroup>();group.SetLODs(new[]{new LOD(.12f,new[]{rs[0]}),new LOD(.004f,new[]{rs[1]})});
+            var head=new GameObject("Head",typeof(MeshFilter),typeof(MeshRenderer));head.transform.SetParent(s.transform,false);head.transform.localPosition=new Vector3(0,.78f,.62f);
+            head.GetComponent<MeshFilter>().sharedMesh=kit.Mesh("head_"+h,1);head.GetComponent<MeshRenderer>().sharedMaterials=kit.MaterialsOf("head_"+h,1);
+        }
         static void Part(GameObject parent,string name,Mesh mesh,Material mat,Vector3 at,Vector3 size)
         {
             var g=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));g.transform.SetParent(parent.transform,false);g.transform.localPosition=at;g.transform.localScale=size;
@@ -220,7 +241,7 @@ namespace LittleRoad
                     // Each stretch is laid once it ends, and only when 8 m or longer, with a pier at each end (street review,
                     // 4 Oct: walls 2-4 m long stopped and started along Kettle Falls road).
                     var run=new List<Vector3>();
-                    void Lay(){if(run.Count>=5){for(int i=1;i<run.Count;i++)Wall(run[i-1],run[i]);Pier(run[0]);Pier(run[^1]);}run.Clear();}
+                    void Lay(){if(run.Count>=5){if(PropForge.Enabled)ForgeRuns.Add(new List<Vector3>(run));else{for(int i=1;i<run.Count;i++)Wall(run[i-1],run[i]);Pier(run[0]);Pier(run[^1]);}}run.Clear();}
                     for(float s=10;s<road.Length-10;s+=2) {
                         var c=road.At(s);var right=road.Right(s)*side;var p=c+right*(road.width*.5f+4.5f);
                         // Not in town (the terraces have their own yards), by the river, near junctions or another road, or the quarry.
@@ -258,6 +279,8 @@ namespace LittleRoad
         // A field gate across a gap: two stone posts and a white five-bar gate.
         static void Gate(Vector3 a,Vector3 b,Vector3 along)
         {
+            // (with --prop-forge: Prop Forge's five-bar gate on its own posts, centred in the gap the walls leave)
+            if(PropForge.Enabled){var dd=along;dd.y=0;var at=a+dd.normalized*3;at.y=H(at.x,at.z);Put("field_gate",at,Quaternion.LookRotation(dd).eulerAngles.y+90);if(RaceTrial.Has("--gate-log"))Debug.Log($"LITTLE_ROAD_FIELD_GATE {at.x:0.0},{at.y:0.0},{at.z:0.0} along {dd.x:0.00},{dd.z:0.00}");return;}
             var d=b-a;d.y=0;if(d.sqrMagnitude<.5f)return;var rot=Quaternion.LookRotation(d);var m=(a+b)*.5f;float w=d.magnitude;
             posts.Add(Matrix4x4.TRS(a+Vector3.up*.65f,rot,new Vector3(.45f,1.6f,.45f)));posts.Add(Matrix4x4.TRS(b+Vector3.up*.65f,rot,new Vector3(.45f,1.6f,.45f)));
             for(int k=0;k<5;k++)gates.Add(Matrix4x4.TRS(m+Vector3.up*(.25f+k*.24f),rot,new Vector3(.06f,.08f,w-.5f)));

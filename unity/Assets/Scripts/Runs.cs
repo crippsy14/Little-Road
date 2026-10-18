@@ -25,6 +25,7 @@ namespace LittleRoad
         public float from=0,to=-1;          // (arc range along the offset line; to < 0: to the end)
         public Func<Vector3,bool> cut;      // (true where something cuts the run: a crossing road, a drive)
         public bool gateEnds;               // (both ends are an opening's sides: a paddock fence from one gatepost round to the other)
+        public Dictionary<string,string> restyle;   // (a material class drawn as another: Quarry Hills' walls in slate, drystone_slate)
     }
     // One laid piece: rigid (its matrix places it) or bent (deform: along path `path` from arc s0 to s1; its matrix is
     // only where it starts).
@@ -284,7 +285,8 @@ namespace LittleRoad
         public static GameObject Draw(RunLayout L,Transform parent)
         {
             var sw=Stopwatch.StartNew();var root=new GameObject("Run "+L.spec.name);root.transform.SetParent(parent,false);
-            DrawChunks(root.transform,"Run "+L.spec.name,L.kit,L.items.GroupBy(i=>Mathf.FloorToInt(i.arc/Chunk)),(it,a,v,n,u1,u2)=>Bend(L,it,a,v,n,u1,u2));
+            DrawChunks(root.transform,"Run "+L.spec.name,L.kit,L.items.GroupBy(i=>Mathf.FloorToInt(i.arc/Chunk)),(it,a,v,n,u1,u2)=>Bend(L,it,a,v,n,u1,u2),
+                m=>L.spec.restyle!=null&&L.spec.restyle.TryGetValue(m,out var r)?r:m);
             Colliders(L,root.transform);
             L.drawMs=sw.Elapsed.TotalMilliseconds;return root;
         }
@@ -294,7 +296,7 @@ namespace LittleRoad
         // was a mesh per bent piece and two rounds of CombineMeshes: 99 ms for Bayview's coast wall, 18 Oct.)
         public delegate void Bender(RunItem it,PropKit.Arrays a,Vector3[] v,Vector3[] n,Vector2[] u1,Vector2[] u2);
         sealed class Buffer{public readonly List<Vector3> v=new(),n=new();public readonly List<Vector2> uv=new(),u1=new(),u2=new();public readonly List<int> t=new();}
-        public static void DrawChunks(Transform root,string name,PropKit kit,IEnumerable<IGrouping<int,RunItem>> chunks,Bender bend)
+        public static void DrawChunks(Transform root,string name,PropKit kit,IEnumerable<IGrouping<int,RunItem>> chunks,Bender bend,Func<string,string> restyle=null)
         {
             Vector3[] wv=new Vector3[64],wn=new Vector3[64];Vector2[] w1=new Vector2[64],w2=new Vector2[64];int[] map=new int[64];
             foreach(var group in chunks) {
@@ -326,7 +328,7 @@ namespace LittleRoad
                     for(int s=0;s<order.Count;s++)mesh.SetTriangles(byMat[order[s]].t,s,false,bases[s]);
                     mesh.RecalculateBounds();
                     var go=new GameObject(chunk.name+" lod"+lod,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(chunk.transform,false);
-                    var r=go.GetComponent<MeshRenderer>();go.GetComponent<MeshFilter>().sharedMesh=mesh;r.sharedMaterials=order.Select(PropKit.MaterialFor).ToArray();
+                    var r=go.GetComponent<MeshRenderer>();go.GetComponent<MeshFilter>().sharedMesh=mesh;r.sharedMaterials=order.Select(m=>PropKit.MaterialFor(restyle!=null?restyle(m):m)).ToArray();
                     lods.Add(new LOD(lod==0?.06f:.012f,new Renderer[]{r}));
                 }
                 chunk.AddComponent<LODGroup>().SetLODs(lods.ToArray());

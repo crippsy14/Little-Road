@@ -105,8 +105,14 @@ namespace LittleRoad
                 "red_paint"=>WorldLook.Kit("PF Red Paint",new Color(.72f,.13f,.09f),WorldLook.Pattern.Paint,.1f,.4f),
                 "drystone"=>WorldLook.Kit("PF DryStone",new Color(.6f,.58f,.53f),WorldLook.Pattern.DryStone,0,.08f),
                 // (a pier's body: the same stone, coursed to the top; wear 0 turns the pattern's cope band off)
+                // (Quarry Hills' field walls: Welsh slate, darker and bluer; RunSpec.restyle)
+                "drystone_slate"=>WorldLook.Kit("PF DryStone Slate",new Color(.43f,.44f,.46f),WorldLook.Pattern.DryStone,0,.08f),
+                "drystone_slate_pier"=>WorldLook.Kit("PF DryStone Slate Pier",new Color(.43f,.44f,.46f),WorldLook.Pattern.DryStone,0,.08f,false,0),
                 "drystone_pier"=>WorldLook.Kit("PF DryStone Pier",new Color(.6f,.58f,.53f),WorldLook.Pattern.DryStone,0,.08f,false,0),
                 "silage"=>WorldLook.Kit("PF Silage",new Color(.14f,.2f,.15f),WorldLook.Pattern.Plain,0,.55f),
+                "fleece"=>WorldLook.Kit("PF Fleece",new Color(.93f,.92f,.86f),WorldLook.Pattern.Plaster,0,.05f),
+                "hide"=>WorldLook.Kit("PF Hide",new Color(.1f,.1f,.11f),WorldLook.Pattern.Plain,0,.25f),
+                "eye"=>WorldLook.Kit("PF Eye",new Color(.75f,.6f,.2f),WorldLook.Pattern.Plain,0,.7f),
                 "metal"=>WorldLook.Kit("PF Metal",new Color(.6f,.62f,.65f),WorldLook.Pattern.Plain,.6f,.45f),
                 "rubber"=>WorldLook.Kit("PF Rubber",new Color(.12f,.12f,.13f),WorldLook.Pattern.Plain,0,.15f),
                 "straw"=>WorldLook.Kit("PF Straw",new Color(.86f,.74f,.42f),WorldLook.Pattern.Straw,0,.08f),
