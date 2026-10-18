@@ -31,6 +31,9 @@ public static class PropForgeChecks
         int outward=0;var pv=post.vertices;for(int i=0;i<pv.Length;i++){var radial=pv[i]-new Vector3(0,Mathf.Clamp(pv[i].y,.06f,1.04f),0);if(radial.sqrMagnitude<1e-6f||Vector3.Dot(radial,given[i])>0)outward++;}
         Check(outward>=pv.Length*.95f,$"Prop Forge: the kit's normals face out of the post ({outward}/{pv.Length})");
         Check(kit.MaterialsOf("post").Length==post.subMeshCount&&kit.file.materials.All(m=>PropKit.MaterialFor(m)!=null),"Prop Forge: every material class has a look, one per submesh");
+        // (every installed kit's classes: the jerry can's red paint once had none, and the range failed at load, 18 Oct)
+        var installed=Resources.LoadAll<TextAsset>("Props").Where(t=>!t.name.EndsWith("_mesh")&&t.name!="prop_manifest").Select(t=>t.name).ToList();
+        Check(installed.Count>=5&&installed.All(k=>PropKit.Load(k).file.materials.All(m=>PropKit.MaterialFor(m)!=null)),$"Prop Forge: every installed kit's material classes have a look ({string.Join(", ",installed)})");
         bool unknown=false;try{PropKit.MaterialFor("chocolate");}catch(InvalidOperationException){unknown=true;}
         Check(unknown,"Prop Forge: an unknown material class fails loudly");
         bool missing=false;try{PropKit.Load("no_such_kit");}catch(InvalidOperationException){missing=true;}
@@ -159,7 +162,7 @@ public static class PropForgeChecks
             var looks=family.Select(p=>(size:bk.Mesh(p.name).bounds.size,mats:string.Join(",",bk.MaterialsOf(p.name).Select(m=>m.name)))).ToList();bool distinct=true;
             for(int i=0;i<looks.Count;i++)for(int j=i+1;j<looks.Count;j++)if(looks[i].mats==looks[j].mats&&(looks[i].size-looks[j].size).magnitude<.03f)distinct=false;
             Check(distinct,"Bales: no two variants alike (each differs in size by 3 cm or more, or in material)");
-            var specs=RunRange.Bales();var layouts=specs.Select(b=>Objects.Place(b.name,"hay_bale",b.spots,b.name,b.row,b.only)).ToList();
+            var specs=RunRange.Bales().Where(b=>b.kit=="hay_bale").ToList();var layouts=specs.Select(b=>Objects.Place(b.name,"hay_bale",b.spots,b.name,b.row,b.only)).ToList();
             foreach(var L in layouts) {
                 Check(L.failures.Count==0,$"Bales: {L.name}: every bale within 4 deg of the ground's plane under it, sunk 2-8 cm, no contact over 2 cm in the air " +
                     $"(worst {L.placed.Max(o=>o.tilt):0.0} deg, {L.placed.Min(o=>o.sink)*100:0.0}-{L.placed.Max(o=>o.sink)*100:0.0} cm, {L.placed.Max(o=>o.air)*100:0.0} cm){(L.failures.Count>0?": "+string.Join("; ",L.failures.Take(3)):"")}");
@@ -183,6 +186,24 @@ public static class PropForgeChecks
             Check(layouts.SelectMany(l=>l.placed).Select(o=>o.variant).Distinct().Count()==family.Count,"Bales: every variant is used on the range");
             int placed=layouts.Sum(l=>l.placed.Count);double ms=layouts.Sum(l=>l.solveMs);
             checks.Add($"Bales: {placed} bales placed in {ms:0.0} ms ({ms/placed:0.00} ms each)");
+
+            // step 5: the jerry can, one library object with two users: the range's quay, and the Cob (prop:jerry_can@1)
+            PropKit.Forget();var jk=PropKit.Load("jerry_can");var can=jk.Mesh("jerry_can").bounds.size;
+            Check(jk.file.kind=="object"&&jk.file.pieces.Length==1&&Mathf.Abs(can.y-.47f)<.01f,$"Library: the jerry can reads as an object, 0.47 m tall ({can.x:0.000} x {can.y:0.000} x {can.z:0.000} m)");
+            var canSpec=RunRange.Bales().First(b=>b.kit=="jerry_can");var quay=Objects.Place(canSpec.name,canSpec.kit,canSpec.spots,canSpec.name);
+            Check(quay.placed.Count==6&&quay.failures.Count==0,$"Library: six cans stand on the range's quay, level with the ground{(quay.failures.Count>0?": "+string.Join("; ",quay.failures):"")}");
+            var cob=Resources.Load<GameObject>("Cars/forge_cob");Check(cob!=null,"Library: the Cob (forge_cob, the can's car user) is installed");
+            var mf=cob.GetComponentsInChildren<MeshFilter>(true).First(f=>f.name.StartsWith("Body"));var mesh=mf.sharedMesh;var mats=mf.GetComponent<MeshRenderer>().sharedMaterials;
+            var v=mesh.vertices;float reach=v.Max(p=>Mathf.Abs(p.z));var pts=new List<Vector3>();   // (at either end, red: the calipers sit at the axles, well inside)
+            for(int sm=0;sm<mesh.subMeshCount;sm++){if(sm>=mats.Length||mats[sm]==null||!mats[sm].name.StartsWith("CaliperRed"))continue;
+                foreach(int i in mesh.GetTriangles(sm))if(Mathf.Abs(v[i].z)>reach-.45f&&v[i].y>.2f)pts.Add(v[i]);}
+            var b2=new Bounds(pts.Count>0?pts[0]:Vector3.zero,Vector3.zero);foreach(var q in pts)b2.Encapsulate(q);var onCar=Vector3.Scale(b2.size,mf.transform.lossyScale);
+            // (the red paint against the red paint: the handles and spout are bare steel, BrakeMetal on the car)
+            var jm=jk.Mesh("jerry_can");var subs=jk.Piece("jerry_can").lods[0].submeshes;int red=Array.FindIndex(subs,x=>x.material=="red_paint");var jv=jm.vertices;
+            var b3=new Bounds(jv[jm.GetTriangles(red)[0]],Vector3.zero);foreach(int i in jm.GetTriangles(red))b3.Encapsulate(jv[i]);var painted=b3.size;
+            Check(pts.Count>0&&Mathf.Abs(onCar.x-painted.x)<.01f&&Mathf.Abs(onCar.y-painted.y)<.01f&&Mathf.Abs(onCar.z-painted.z)<.01f,
+                $"Library: the can on the Cob's tail is the can on the quay, at world size (its paint {onCar.x:0.000} x {onCar.y:0.000} x {onCar.z:0.000} m on the car, {painted.x:0.000} x {painted.y:0.000} x {painted.z:0.000} on the quay)"+
+                (pts.Count>0?"":$" [no can found: {mf.name} bounds {mesh.bounds}, materials {string.Join(",",mats.Select(m=>m==null?"-":m.name))}, scale {mf.transform.lossyScale}]"));
         } finally { Ground.Reset(); }
         return checks;
     }

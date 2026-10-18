@@ -88,6 +88,7 @@ namespace LittleRoad
                 "timber"=>WorldLook.Kit("PF Timber",new Color(.55f,.4f,.26f),WorldLook.Pattern.Wood,0,.2f,true),
                 "paint"=>WorldLook.Kit("PF Paint",new Color(.92f,.91f,.86f),WorldLook.Pattern.Paint,0,.3f),
                 "stone"=>WorldLook.Kit("PF Stone",new Color(.62f,.6f,.55f),WorldLook.Pattern.Stone,0,.15f,true),
+                "red_paint"=>WorldLook.Kit("PF Red Paint",new Color(.72f,.13f,.09f),WorldLook.Pattern.Paint,.1f,.4f),
                 "drystone"=>WorldLook.Kit("PF DryStone",new Color(.6f,.58f,.53f),WorldLook.Pattern.DryStone,0,.08f),
                 "silage"=>WorldLook.Kit("PF Silage",new Color(.14f,.2f,.15f),WorldLook.Pattern.Plain,0,.55f),
                 "metal"=>WorldLook.Kit("PF Metal",new Color(.6f,.62f,.65f),WorldLook.Pattern.Plain,.6f,.45f),
