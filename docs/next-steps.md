@@ -1,5 +1,31 @@
 # Next steps (3 October 2026)
 
+**18 October, night: Prop Forge stage one, steps 0-5 ([doc 77](77-prop-forge-brief.md)).** All of it is behind flags
+(`--run-range`, `--run-range-review`, `--prop-forge`); the normal game is unchanged. Full write-up: car-forge
+`docs/log.md`.
+- **The run range** (`--run-range`): a fixture strip of roads (a straight with a junction and a drive, a crest and a
+  hollow, a 30% bank, and 40, 15 and 8 m bends) where every run and object is checked and captured.
+- **A post-and-rail fence:**
+  - posts plumb, rails raked between them;
+  - openings framed by gate posts;
+  - 2.4 m spacing, 61 triangles a metre.
+- **A dry-stone wall that bends:**
+  - piers at its ends, openings and corners of any angle;
+  - pieces bent along the road and sheared to follow the ground, with no cracks at the joins;
+  - a new dry-stone shader pattern, its cope stones on edge;
+  - one smooth collider, so a car sliding along it keeps 100% of its speed.
+- **Hay bales:**
+  - eight variants that never repeat close by;
+  - round bales on a slope turn their axis downhill;
+  - each settled into the ground;
+  - a straw pattern.
+- **The jerry can, one object with two users:** six stand on the range's quay, and the Cob carries the same can on its
+  tailgate (`prop:jerry_can@1`) at its real size. Only the Cob changed; the other 54 cars are identical.
+- **Next:** step 6, a proving street in Bayview behind `--prop-forge` (the area audit, a street review, and the flag-off
+  world unchanged).
+- **Two defaults I took, which Richard can overrule:** props keep their real size on cars, and re-dressed cars are
+  shown as before/after sheets.
+
 **18 October, evening: the class C art pass.**
 - **The review:** an art-director review agent went through all 55 class C cars in one voice
   (car-forge `review/artistic-1`). I applied most of it (car-forge `tools/artpass_c.py`):
