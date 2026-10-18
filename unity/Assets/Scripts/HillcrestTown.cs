@@ -797,6 +797,14 @@ namespace LittleRoad
         // Reserved plots other than the whole-hill rule in Reserved().
         static bool ReservedZone(float x,float z){foreach(var r in reserved)if(Vector2.Distance(new(x,z),r.centre)<r.radius)return true;return false;}
         // Draped crop fields across the valley floor: striped rows in two tones per field.
+        // A Prop Forge hedgerow along a field edge (docs/78): a deforming run, driven through (no collider), as the bushes were.
+        int hedges;
+        void HedgeRun(List<Vector3> line)
+        {
+            var L=Runs.Solve(new RunSpec{name=$"hedge {hedges}",kit="hedge",seed=$"hedge-{hedges}",along=line.ToArray(),solid=false});hedges++;
+            if(RaceTrial.Has("--gate-log")&&hedges%15==1)Debug.Log($"LITTLE_ROAD_HEDGE {line[0].x:0.0},{line[0].y:0.0},{line[0].z:0.0} to {line[^1].x:0.0},{line[^1].z:0.0}");
+            Runs.Draw(L,root);
+        }
         void Patchwork()
         {
             var palettes=new[]{(new Color(.95f,.80f,.36f),new Color(.86f,.68f,.28f)),(new Color(.66f,.46f,.30f),new Color(.55f,.37f,.24f)),(new Color(.52f,.74f,.30f),new Color(.44f,.64f,.26f)),
@@ -821,12 +829,17 @@ namespace LittleRoad
                     var hedgeRot=Quaternion.Euler(0,HillcrestRoute.FarmYaw+(rng.NextDouble()<.5?0:90),0);
                     foreach(int edge in rng.NextDouble()<.5?new[]{0}:new[]{0,1}) {
                         float len=edge==0?w:d,off=(edge==0?d:w)*.5f+1.4f;
+                        var hedge=new List<Vector3>();   // (--prop-forge: the edge's stretches laid as Prop Forge hedgerows; the same random draws)
+                        void LayHedge(){if(hedge.Count>=3)HedgeRun(hedge);hedge.Clear();}
                         for(float e=-len*.5f;e<len*.5f;e+=2.6f) {
-                            if(rng.NextDouble()<.12)continue;var local=edge==0?new Vector3(e,0,off):new Vector3(off,0,e);var q=new Vector3(x,0,z)+hedgeRot*local;
-                            if(ValleyField.RoadDistance(q.x,q.z)<8)continue;
-                            bool tree=rng.NextDouble()<.07;var g=Ground(tree?"tree_round":"bush",q.x,q.z,(float)rng.NextDouble()*360,null,null,tree?.9f+(float)rng.NextDouble()*.3f:.9f+(float)rng.NextDouble()*.4f,tree);
+                            if(rng.NextDouble()<.12){LayHedge();continue;}var local=edge==0?new Vector3(e,0,off):new Vector3(off,0,e);var q=new Vector3(x,0,z)+hedgeRot*local;
+                            if(ValleyField.RoadDistance(q.x,q.z)<8){LayHedge();continue;}
+                            bool tree=rng.NextDouble()<.07;float yaw=(float)rng.NextDouble()*360,sc=tree?.9f+(float)rng.NextDouble()*.3f:.9f+(float)rng.NextDouble()*.4f;
+                            if(PropForge.Enabled){q.y=H(q.x,q.z);hedge.Add(q);if(!tree)continue;}
+                            var g=Ground(tree?"tree_round":"bush",q.x,q.z,yaw,null,null,sc,tree);
                             KitLod.Attach(g,tree?"tree_round":"bush");
                         }
+                        LayHedge();
                     }
                 }
                 // Crop rows as real ridges (lit, so they shade) over a ground sheet in the furrow colour.

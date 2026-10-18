@@ -25,7 +25,8 @@ namespace LittleRoad
         public float from=0,to=-1;          // (arc range along the offset line; to < 0: to the end)
         public Func<Vector3,bool> cut;      // (true where something cuts the run: a crossing road, a drive)
         public bool gateEnds;               // (both ends are an opening's sides: a paddock fence from one gatepost round to the other)
-        public Dictionary<string,string> restyle;   // (a material class drawn as another: Quarry Hills' walls in slate, drystone_slate)
+        public Dictionary<string,string> restyle;
+        public bool solid=true;              // (false: no collider; a hedge is driven through, as the bushes were)   // (a material class drawn as another: Quarry Hills' walls in slate, drystone_slate)
     }
     // One laid piece: rigid (its matrix places it) or bent (deform: along path `path` from arc s0 to s1; its matrix is
     // only where it starts).
@@ -262,14 +263,15 @@ namespace LittleRoad
             var v=a.v;var nr=a.n;var uv=a.uv;var path=L.paths[it.path];var run=L.kit.file.run;
             float k=(it.s1-it.s0)/L.kit.Piece(it.piece).length,cope=Mathf.Max(run.height-run.copeFrom,1e-3f);const float h=.25f;
             // (the frame at a slice is the same for all its vertices, which come together: worked out once a slice)
-            float lastZ=float.NaN,s=0,b=0,db=0,jit=0;Vector3 P=default,T=default,R=default,dR=default;
+            float lastZ=float.NaN,s=0,b=0,db=0,jit=0,side=0;Vector3 P=default,T=default,R=default,dR=default;
             for(int i=0;i<v.Length;i++) {
                 if(v[i].z!=lastZ) {
-                    lastZ=v[i].z;s=it.s0+lastZ*k;P=path.At(s);T=path.Tangent(s);R=Right(T);b=path.Base(s);jit=Jitter(path.u0+s);
+                    lastZ=v[i].z;s=it.s0+lastZ*k;P=path.At(s);T=path.Tangent(s);R=Right(T);b=path.Base(s);jit=Jitter(path.u0+s);side=run.sideJitter>0?Jitter(path.u0+s+57.3f):0;
                     dR=Right((path.Tangent(s+h)-path.Tangent(s-h))/(2*h));db=(path.Base(s+h)-path.Base(s-h))/(2*h);
                 }
                 float y=v[i].y;if(y>run.copeFrom)y+=run.copeJitter*jit*(y-run.copeFrom)/cope;
-                ov[i]=new Vector3(P.x+R.x*v[i].x,b+y,P.z+R.z*v[i].x);
+                float x=v[i].x*(1+run.sideJitter*side);   // (a hedge bulges in and out along its length: the run's own noise, so pieces meet)
+                ov[i]=new Vector3(P.x+R.x*x,b+y,P.z+R.z*x);
                 var c=(T+dR*v[i].x+Vector3.up*db)*k;
                 on[i]=(nr[i].x*Vector3.Cross(Vector3.up,c)+nr[i].y*Vector3.Cross(c,R)+nr[i].z*Vector3.Cross(R,Vector3.up)).normalized;
                 u1[i]=new Vector2(path.u0+s,uv[i].y);u2[i]=new Vector2(v[i].y,0);
@@ -287,7 +289,7 @@ namespace LittleRoad
             var sw=Stopwatch.StartNew();var root=new GameObject("Run "+L.spec.name);root.transform.SetParent(parent,false);
             DrawChunks(root.transform,"Run "+L.spec.name,L.kit,L.items.GroupBy(i=>Mathf.FloorToInt(i.arc/Chunk)),(it,a,v,n,u1,u2)=>Bend(L,it,a,v,n,u1,u2),
                 m=>L.spec.restyle!=null&&L.spec.restyle.TryGetValue(m,out var r)?r:m);
-            Colliders(L,root.transform);
+            if(L.spec.solid)Colliders(L,root.transform);
             L.drawMs=sw.Elapsed.TotalMilliseconds;return root;
         }
         // Chunks of a kit's laid pieces (runs or objects): per chunk, one mesh per LOD with a submesh per material class, and

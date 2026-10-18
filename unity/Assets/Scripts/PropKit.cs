@@ -23,7 +23,7 @@ namespace LittleRoad
     //  where its cope starts and its crown; copeJitter, how far the cope's top wobbles; sink, how far its base goes in)
     // (an object family adds: sameGap and sameYaw, how near and how alike in yaw the same variant may stand; rollSlope and
     //  rolls, the slope above which the pieces that roll turn their axis downhill)
-    [Serializable] public sealed class PropRun{public float spacing,minRadius,maxTurn,sagitta,deform,halfBase,copeFrom,copeJitter,height,sink,sameGap,sameYaw,rollSlope;
+    [Serializable] public sealed class PropRun{public float spacing,minRadius,maxTurn,sagitta,deform,halfBase,copeFrom,copeJitter,sideJitter,height,sink,sameGap,sameYaw,rollSlope;
         public float[] railHeights,clearance,opening;public string[] rolls;}
     // (a kit that stands in for game kit pieces with --prop-forge: each game id, and the pieces it picks from; ForgeStandIns)
     [Serializable] public sealed class PropReplace{public string id;public string[] pieces;}
@@ -110,6 +110,7 @@ namespace LittleRoad
                 "drystone_slate_pier"=>WorldLook.Kit("PF DryStone Slate Pier",new Color(.43f,.44f,.46f),WorldLook.Pattern.DryStone,0,.08f,false,0),
                 "drystone_pier"=>WorldLook.Kit("PF DryStone Pier",new Color(.6f,.58f,.53f),WorldLook.Pattern.DryStone,0,.08f,false,0),
                 "silage"=>WorldLook.Kit("PF Silage",new Color(.14f,.2f,.15f),WorldLook.Pattern.Plain,0,.55f),
+                "hedge"=>WorldLook.Kit("PF Hedge",new Color(.27f,.43f,.19f),WorldLook.Pattern.Leaf,0,.08f,false),   // (on the run's own coordinates: world space striped on its curved sides)
                 "fleece"=>WorldLook.Kit("PF Fleece",new Color(.93f,.92f,.86f),WorldLook.Pattern.Plaster,0,.05f),
                 "hide"=>WorldLook.Kit("PF Hide",new Color(.1f,.1f,.11f),WorldLook.Pattern.Plain,0,.25f),
                 "eye"=>WorldLook.Kit("PF Eye",new Color(.75f,.6f,.2f),WorldLook.Pattern.Plain,0,.7f),
