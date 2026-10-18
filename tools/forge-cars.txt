@@ -18,5 +18,4 @@ designs/tests/closed_gt.yaml
 # the class C roster (docs/roster-c-design.md in car-forge), the Kestrel among them
 designs/roster/*.yaml
 
-# the class B roster (docs/roster-b-design.md in car-forge): the starters and a B kit for each class C car
-designs/roster/b/*.yaml
+# (class B: removed 18 Oct at Richard's request, to be redone with his direction from the start)

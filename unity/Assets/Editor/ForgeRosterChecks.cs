@@ -34,12 +34,14 @@ public static class ForgeRosterChecks
                     if(topC&&!gravel)Check(field[0]==CarBodies.RosterFlagship,"Forge roster field: the Zenith on pole ("+where+")");
                 }
             }
-        // Class B (docs/roster-b-design.md in Car Forge): its own roster, every star of the class (1-8 and the 10-star
-        // championship) on both surfaces, the same field rules, no class C car in a class B field and none the other way.
+        // Class B (docs/roster-b-design.md in Car Forge): when a class B roster is installed (removed 18 Oct, to be redone
+        // with Richard's direction), every star of the class (1-8 and the 10-star championship) on both surfaces, the same
+        // field rules, no class C car in a class B field and none the other way. With none, class B fields keep the game's
+        // own Tuner bodies.
         var rosterB=CarBodies.RosterOf("B");
-        Check(rosterB.Length>=40&&rosterB.All(id=>CarBodies.Class(id)=="B"),"Forge roster: the class B roster is installed ("+rosterB.Length+" cars, all class B)");
+        Check(rosterB.All(id=>CarBodies.Class(id)=="B"),"Forge roster: the class B roster holds class B cars only ("+rosterB.Length+" installed)");
         Check(roster.All(id=>CarBodies.Class(id)=="C"),"Forge roster: the class C roster holds class C cars only");
-        foreach(int stars in new[]{1,2,3,4,5,6,7,8,10})
+        if(rosterB.Length>0)foreach(int stars in new[]{1,2,3,4,5,6,7,8,10})
             foreach(bool gravel in new[]{false,true})
                 for(int seed=1;seed<=6;seed++) {
                     var field=RaceRoster.ForgeField(stars,gravel,false,seed*7919,"B");string where=$"class B {stars} stars on {(gravel?"gravel":"tarmac")}, seed {seed}";
@@ -49,7 +51,6 @@ public static class ForgeRosterChecks
         // --wheel-camber: off by default; with a camber, each wheel's top leans in towards the car's centre, and spinning
         // it doesn't move its tilt (no wobble).
         Check(!WheelVisuals.CamberEnabled,"Wheel camber is off without --wheel-camber");
-        Check(rosterB.Any(id=>CarBodies.Forged(id).camber>0),"Forge roster: the class B drift cars carry a camber");
         {
             var car=new UnityEngine.GameObject("camber-check");
             foreach(var (n,x) in new[]{("Wheel_FR",.8f),("Wheel_FL",-.8f),("Wheel_RR",.8f),("Wheel_RL",-.8f)}){var w=new UnityEngine.GameObject(n);w.transform.SetParent(car.transform,false);w.transform.localPosition=new UnityEngine.Vector3(x,.4f,n[7]=='F'?1.3f:-1.3f);}

@@ -1,5 +1,13 @@
 # Next steps (3 October 2026)
 
+**18 October, later: class C hand pass; class B cars removed.**
+- **Class C hand pass** to the Kestrel standard (car-forge `tools/closeup.py`, `tools/handpass_c.py`):
+  - drawn lines on every car;
+  - per-car touches (the Beetle's round back, signs, a serving window, working dents).
+  All 55 pass; Bayview 24/24 twice.
+- **Class B removed** (Richard: to be redone with his direction from the start). Class B fields use the Tuner bodies
+  again, and the engine's class B features stay for that round.
+
 **18 October: both Car Forge rosters race, behind `--forge-roster`.**
 - **Class C:** 51 cars, after two expert reviews and hand passes. Fields are dealt by grid slot: the flagship on pole,
   quick-looking cars at the front, the band in the middle, veterans at the back; at most two of a model, never side by
