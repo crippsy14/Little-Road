@@ -1,12 +1,14 @@
 # 77 · Prop Forge, stage one: brief (18 October 2026)
 
-**Waiting on Richard: yes, edit or veto.** The design is doc 76. This brief covers its order-of-work step 3: the shared
+**Approved by Richard, 18 Oct**, with one addition: Prop Forge serves the cars too (see "Car props"). Before building,
+an outside architecture review (Opus); its points and what changed are at the end. The design is doc 76. This brief covers its order-of-work step 3: the shared
 core, the first recipes, and one Bayview street to prove them. Bayview's own rebuild gets a brief of its own after this.
 
 ## What it is, and why now
-The world's props are copies stamped at coordinates (doc 76, "Why"). The two Car Forge rosters (class C: 51 cars; class
-B: 84) show that one engine, with checks and contact sheets, gives a range that reads as one set. Prop Forge does the
-same for the world. It is next in doc 76's order now that both rosters are in the game behind `--forge-roster`. Every
+The world's props are copies stamped at coordinates (doc 76, "Why"). The class C Car Forge roster (55 cars) shows that one
+engine, with checks and contact sheets, gives a range that reads as one set. Prop Forge does the
+same for the world. It is next in doc 76's order now that class C is in the game behind `--forge-roster` (class B waits for Richard's
+direction). Every
 new town in doc 58's build order waits on it, starting with the Bayview rebuild.
 
 ## The player's experience
@@ -28,6 +30,14 @@ with the Forge cars parked in it.
 - **Why not build the whole street offline?** Offline, every change to a road or the terrain would mean exporting the
   world and rebuilding the models. Done the game's way, runs follow whatever the road becomes.
 
+## Car props (Richard, 18 Oct)
+The cars' props are built from a handful of primitives (`components.props`: box, ball, cylinder, cone, torus, crate,
+ladder, sign, board, bale), and many read as plain blocks: the Pronto's hot box, the Picnic's hamper, the Post van's
+parcel, the jerry cans. Prop Forge's objects are recipes with detail and variants (a crate with slats, a hamper with a
+lid and straps, a jerry can with its handle, a milk crate with bottles). Car Forge places a Prop Forge object on a car
+by name (`shape: prop:jerry_can`) at the same anchors, and the same object can stand in the world. One library, two
+users.
+
 ## Scope
 - **In:** the shared core split out of Car Forge, with every class C and class B car's structural golden unchanged.
   Then the first recipes:
@@ -35,7 +45,8 @@ with the Forge cars parked in it.
   - a post-and-rail fence run;
   - a kerb;
   - an oak family;
-  - the hay bale (round and square).
+  - the hay bale (round and square);
+  - the first car-and-world objects: a jerry can, a slatted crate, a hamper, a parcel, a spare tyre.
   Then the game's run layer and ground rules behind `--prop-forge`, with editor checks, proven on one Bayview street
   beside today's.
 - **Out:** buildings and plot kits (stage two), the Bayview rebuild itself (its own brief), planting drifts, and
@@ -53,6 +64,8 @@ with the Forge cars parked in it.
 - **Draw calls and build time:** many small pieces. Each run is merged into one mesh per district chunk, and the
   start-up and race-entry budgets (doc 72) are measured.
 - **Splitting the core could move a car.** The structural goldens and all 313 engine tests must hold after the split.
+- **Car props from a library:** an object swapped onto a car must stay inside the car's budgets and clash checks, and
+  must not shift its collision box (the game centres it on the body, 18 Oct).
 
 ## How it's judged (doc 73, section 3)
 - The ground rules, measured on every piece: nothing floats, nothing is buried, nothing leans that should stand plumb.
