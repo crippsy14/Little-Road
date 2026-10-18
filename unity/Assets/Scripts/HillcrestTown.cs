@@ -58,6 +58,8 @@ namespace LittleRoad
         GameObject Put(string id,Vector3 p,float yaw,BayviewKit.Tint tint=null,string sign=null,float scale=1,bool solid=true,Transform parent=null)=>
             BayviewKit.Spawn(id,p,yaw,parent??root,tint,sign,solid,scale);
         GameObject Ground(string id,float x,float z,float yaw,BayviewKit.Tint tint=null,string sign=null,float scale=1,bool solid=true)=>Put(id,new Vector3(x,H(x,z)-.04f,z),yaw,tint,sign,scale,solid);
+        // (--prop-forge: a parapet's cap drawn as Prop Forge's saddleback coping stone, docs/78)
+        static int copingLogged;static void Coping(GameObject cap){if(!PropForge.Enabled)return;cap.GetComponent<MeshFilter>().sharedMesh=PropKit.Load("armco").Mesh("coping");if(RaceTrial.Has("--gate-log")&&(++copingLogged)%30==1)Debug.Log($"LITTLE_ROAD_COPING {cap.name} {cap.transform.position.x:0.0},{cap.transform.position.y:0.0},{cap.transform.position.z:0.0}");}
         GameObject Box(string name,Vector3 p,Vector3 size,Quaternion rotation,Material material,bool solid)
         {
             var go=GameObject.CreatePrimitive(PrimitiveType.Cube);go.name=name;go.transform.SetParent(root);go.transform.SetPositionAndRotation(p,rotation);go.transform.localScale=size;
@@ -538,7 +540,7 @@ namespace LittleRoad
                 Vector3 p0=Rim(a),p1=Rim(a+step),mid=(p0+p1)*.5f;var f=p1-p0;f.y=0;var rot=Quaternion.LookRotation(f);float len=f.magnitude+.06f;
                 float bottom=Mathf.Min(H(p0.x,p0.z),H(p1.x,p1.z),y)-.4f,top=y+.75f;
                 Box("Square parapet",new Vector3(mid.x,(top+bottom)*.5f,mid.z),new Vector3(.34f,top-bottom,len),rot,stone,true);
-                Box("Square parapet cap",new Vector3(mid.x,top+.06f,mid.z),new Vector3(.46f,.12f,len+.02f),rot,cap,false);pieces++;
+                Coping(Box("Square parapet cap",new Vector3(mid.x,top+.06f,mid.z),new Vector3(.46f,.12f,len+.02f),rot,cap,false));pieces++;
             }
             Debug.Log("LITTLE_ROAD_SQUARE_RIM pieces="+pieces);
         }
@@ -575,7 +577,7 @@ namespace LittleRoad
                 float top=Mathf.Max(road.At(s).y,road.At(s2).y)+.75f,bottom=Mathf.Min(H(a.x,a.z),H(b.x,b.z),road.At(s).y)-.4f;
                 var mid=(a+b)*.5f;var f=b-a;f.y=0;var rot=Quaternion.LookRotation(f);float len=f.magnitude+.06f;
                 Box("Parapet",new Vector3(mid.x,(top+bottom)*.5f,mid.z),new Vector3(.34f,top-bottom,len),rot,stone,true);
-                Box("Parapet cap",new Vector3(mid.x,top+.06f,mid.z),new Vector3(.46f,.12f,len+.02f),rot,cap,false);pieces++;
+                Coping(Box("Parapet cap",new Vector3(mid.x,top+.06f,mid.z),new Vector3(.46f,.12f,len+.02f),rot,cap,false));pieces++;
             }
             Debug.Log($"LITTLE_ROAD_PARAPETS {road.name} pieces={pieces}");
         }
