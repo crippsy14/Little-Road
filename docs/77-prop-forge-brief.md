@@ -1,76 +1,161 @@
 # 77 · Prop Forge, stage one: brief (18 October 2026)
 
-**Approved by Richard, 18 Oct**, with one addition: Prop Forge serves the cars too (see "Car props"). Before building,
-an outside architecture review (Opus); its points and what changed are at the end. The design is doc 76. This brief covers its order-of-work step 3: the shared
-core, the first recipes, and one Bayview street to prove them. Bayview's own rebuild gets a brief of its own after this.
+**Approved by Richard, 18 Oct**, with one addition: Prop Forge serves the cars too (see "Car props"). An outside
+architecture review (Opus, `car-forge/review/prop-forge-architecture-review.md`) then reshaped the plan. What it changed
+is in "After the review" at the end. The design is doc 76. This brief covers its order-of-work step 3: the shared
+library, the first kits and objects, and a street to prove them. Bayview's own rebuild gets a brief of its own after
+this.
 
 ## What it is, and why now
-The world's props are copies stamped at coordinates (doc 76, "Why"). The class C Car Forge roster (55 cars) shows that one
-engine, with checks and contact sheets, gives a range that reads as one set. Prop Forge does the
-same for the world. It is next in doc 76's order now that class C is in the game behind `--forge-roster` (class B waits for Richard's
-direction). Every
-new town in doc 58's build order waits on it, starting with the Bayview rebuild.
+The world's props are copies stamped at coordinates (doc 76, "Why"). The class C Car Forge roster (55 cars) shows that
+one engine, with checks and contact sheets, gives a range that reads as one set. Prop Forge does the same for the
+world. It is next in doc 76's order now that class C is in the game behind `--forge-roster` (class B waits for Richard's
+direction). Every new town in doc 58's build order waits on it, starting with the Bayview rebuild.
 
 ## The player's experience
-Driving into a Bayview street, the walls, fences and kerbs follow the road round its bends. They end in proper piers and
-open for every drive and gate, and they rise and fall with the hill instead of floating or digging in. Nothing looks
-pasted twice: the bales in a field and the oaks along a lane are each a little different. It looks like one toy set,
-with the Forge cars parked in it.
+Driving into a Bayview street, the walls and fences follow the road round its bends. They end in proper piers and open
+for every drive and gate, and they rise and fall with the hill instead of floating or digging in. Nothing looks pasted
+twice: the bales in a field are each a little different. Cars slide along a wall without snagging. It looks like one toy
+set, with the Forge cars parked in it, and some of them carry the same jerry can that stands on the quay.
 
-## How it works (the one technical decision to approve)
-- **Prop Forge makes the pieces.** It's Car Forge's core, shared: mesh kernel, subdivision, art-direction colours,
-  quality checks, contact sheets, LODs, FBX export, and the build-output sync. It makes **objects** (a bale, an oak) as
-  families of seeded variants, and **run kits** for walls, fences and kerbs: an end, a middle that stretches, a corner,
-  a post, a rail and a gate pier. Each kit file carries what the game needs: where pieces join, how far a middle may
-  stretch, and which ground rule the kit follows (doc 76's table).
-- **The game lays them.** At build time it lays a run along a road curve or any polyline, with the district system's
-  deferred building. It fits lengths exactly and bends or facets round curves. It cuts openings where drives cross,
-  keeps posts plumb, rakes rails, and tilts and settles objects on the slope. The game already has the roads and the
-  ground height, so nothing about the world has to be exported to Prop Forge.
-- **Why not build the whole street offline?** Offline, every change to a road or the terrain would mean exporting the
-  world and rebuilding the models. Done the game's way, runs follow whatever the road becomes.
+## How it works (the decision, confirmed by the review)
+- **Prop Forge makes the pieces** (Python, in car-forge `forge/world/`, layered on the shared kernel and QC). It makes:
+  - **objects** (a bale, a jerry can): families of seeded variants;
+  - **run kits** (walls, fences): ends, middles, nodes (posts and piers that work at any angle), gate posts and caps.
+  Each comes with a versioned kit file (the contract below).
+- **The game lays them** (C#). A run is a spec written as data, laid along a road or a polyline:
+  - it references roads and landmarks by name;
+  - its seed is its own name.
+  The game solves each run once, after everything that cuts it (drives, gates, junctions, plots) is known. The
+  solver's output is a **layout as data**: a list of (piece, variant, matrix, deform values) with contact samples and
+  footprints. It is hashable, cacheable in `WorldCache`, testable without meshes, and drawn as merged chunks (30-50 m
+  of run), never one GameObject per piece.
+- **One ground.** A `Ground.Surface(x, z)` provider (roads first, then the region's height field, then raycasts) is read
+  by both the solver and the audits.
+- **Why not bake offline:** the roads, heights and plots would have to be exported to Python, and the export goes stale
+  with every road change and every A/B flag. The game already lays runs this way (parapets, guardrails); this
+  formalises it.
+
+## The kit contract (v0, a schema with a C# reader and an editor check)
+- **Every kit or object carries:** its id, version and hash; its kind (`modular`, `deform`, or a `profile` swept along
+  the curve); its origin and axes; material classes and pattern space; variants seeded by index; LOD meshes with a
+  triangle budget per metre (runs) or per object; a collision proxy; and a ground mode per piece (plumb, rake, follow,
+  step, tilt, level) with contact samples, skirt and sink.
+- **A run kit also carries:**
+  - piece roles;
+  - sockets whose cross-sections match;
+  - a stretch range, or a set of lengths;
+  - bend rules (minimum radius, turn per piece, faceting tolerance);
+  - deform density;
+  - rail clearance;
+  - opening widths with their framing pieces;
+  - wear slots.
+- **How the pieces travel.** Run pieces travel as plain mesh data (positions, normals, UVs, material class) with a JSON
+  sidecar, read straight into `NativeArray`s. They don't go through FBX and Blender. Objects that Unity imports as
+  prefabs keep FBX, with meta GUIDs derived from the asset id.
 
 ## Car props (Richard, 18 Oct)
-The cars' props are built from a handful of primitives (`components.props`: box, ball, cylinder, cone, torus, crate,
-ladder, sign, board, bale), and many read as plain blocks: the Pronto's hot box, the Picnic's hamper, the Post van's
-parcel, the jerry cans. Prop Forge's objects are recipes with detail and variants (a crate with slats, a hamper with a
-lid and straps, a jerry can with its handle, a milk crate with bottles). Car Forge places a Prop Forge object on a car
-by name (`shape: prop:jerry_can`) at the same anchors, and the same object can stand in the world. One library, two
-users.
+The cars' props are simple primitives, and many read as plain blocks (the Pronto's hot box, the Picnic's hamper, the
+jerry cans). Prop Forge's objects are detailed recipes, and a car places one by name and version (`prop:jerry_can@1`)
+at the same anchors.
+- **Versions are pinned.** A recipe change never moves a car until its design is bumped, re-gated, re-frozen and seen.
+- **Swaps are car by car.** No global swap.
+- **Each object has a car budget:** at most about 1.5k triangles at LOD0, 300 at LOD1, and none at LOD2. It brings its
+  own LODs, and Car Forge never subdivides it again.
+- **The prop keeps its world size on a car**, so the can on a pickup matches the can on the quay. This is the
+  reviewer's recommendation, and Richard can overrule it.
+- **Props never count towards a car's collision box,** and a test enforces that.
 
-## Scope
-- **In:** the shared core split out of Car Forge, with every class C and class B car's structural golden unchanged.
-  Then the first recipes:
-  - a dry-stone wall run;
-  - a post-and-rail fence run;
-  - a kerb;
-  - an oak family;
-  - the hay bale (round and square);
-  - the first car-and-world objects: a jerry can, a slatted crate, a hamper, a parcel, a spare tyre.
-  Then the game's run layer and ground rules behind `--prop-forge`, with editor checks, proven on one Bayview street
-  beside today's.
-- **Out:** buildings and plot kits (stage two), the Bayview rebuild itself (its own brief), planting drifts, and
-  interiors.
-
-## References and research (agents, sources kept here)
-- Real walls and fences: dry-stone wall construction (courses, throughs and copes, wall ends), post-and-rail spacing,
-  and kerb profiles.
-- How other games do it: spline meshes and procedural walls in Unreal, Houdini's fence tools, Planet Coaster's and
-  Cities: Skylines' path props, Townscaper's joins, and Forza Horizon's roadside dressing.
+## Stage one, in order (each step proves something before the next)
+0. **Guards.**
+   - Freeze structural goldens for all 55 roster cars and add the check to the regression.
+   - Scope the game sync's keys to what each asset depends on, so a prop edit doesn't re-export every car.
+   - Add a test that keeps the layers in order (the kernel never imports car or world code).
+   - *Proves:* any car that moves is caught, and prop iteration is cheap.
+1. **The contract and the test range.**
+   - The kit schema v0 and its C# reader.
+   - `Ground.Surface`.
+   - `--run-range`, a fixture strip with:
+     - a straight, a crest, a hollow and a 30% cross-slope;
+     - 8, 15 and 40 m bends;
+     - a T-junction, a drive opening and a T-join between runs;
+     - a run too short to fit;
+     - a run beside a shoulder.
+   - *Proves:* one contract, one ground, and a fixture for every check.
+2. **A rigid fence, end to end.**
+   - Posts plumb, rails raked with span clearance, openings from drives.
+   - Merged chunks, collision, oriented footprints.
+   - `--run-debug` (an overlay) and `--run-report` (a line per run).
+   - Timed on the range.
+   - *Proves:* the whole pipeline, with real numbers.
+3. **A dry-stone wall, deforming.**
+   - Bending on rotation-free frames, any-angle piers, a skirt.
+   - Follow by vertical shear, a world-space stone pattern, a merged collider.
+   - A wall-slide test.
+   - *Proves:* the hard geometry, with no cracks and no snags.
+4. **The hay bale family.**
+   - Seeded variants, tilted and settled.
+   - The repetition metric.
+   - *Proves:* object families.
+5. **The jerry can, two users.**
+   - On the quay, and on one car as `prop:jerry_can@1`.
+   - Every other car identical by golden.
+   - *Proves:* one library with two users, and no approved car moves.
+6. **A proving street** behind `--prop-forge`.
+   - The area audit and a street review.
+   - The flag-off world fingerprint unchanged, and the flag-on baseline recorded here.
+   - *Proves:* the doc 73 bars in a real place.
+7. **Then breadth.**
+   - The kerb profile handed to the road system.
+   - The crate, hamper, parcel and tyre, each opted in per car.
+   - The oak family, moved to the planting work.
 
 ## Risks
-- **Bending meshes along tight curves** pinches and stretches. Fences facet instead, and walls are limited to a
-  minimum radius; anything tighter becomes a corner piece.
-- **Draw calls and build time:** many small pieces. Each run is merged into one mesh per district chunk, and the
-  start-up and race-entry budgets (doc 72) are measured.
-- **Splitting the core could move a car.** The structural goldens and all 313 engine tests must hold after the split.
-- **Car props from a library:** an object swapped onto a car must stay inside the car's budgets and clash checks, and
-  must not shift its collision box (the game centres it on the body, 18 Oct).
+- **Load time.** Bayview is built at load, so its runs are on the ready-to-drive path. The solve and the mesh fill run
+  in jobs, and their output is cached. The budget: at most **+60 ms warm and +200 ms cold** at ready-to-drive.
+  Background districts time-slice each chunk inside the 50 ms busiest-frame limit.
+- **The game's registries assume one box per piece** (occupancy, culling, the placement audit, rail trimming). Runs
+  register oriented footprints per segment, carry their own `LODGroup` per chunk, and give their contact samples to the
+  audits.
+- **Snags along walls:** handled by merged collision and the wall-slide test.
+- **Triangles:**
+  - a wall at most 600 a metre at LOD0 and 150 at LOD1;
+  - a fence at most 250 a metre at LOD0;
+  - stone detail from the shader's world-space pattern, not from geometry.
 
-## How it's judged (doc 73, section 3)
-- The ground rules, measured on every piece: nothing floats, nothing is buried, nothing leans that should stand plumb.
-- Joins: every run ends, turns and opens properly, with no half pieces in a road.
-- No two identical objects side by side in a view.
-- The area audit and a street review pass on the proving street.
-- The start-up and race-entry budgets hold.
-- Richard drives the new street side by side with the old one.
+## How it's judged (doc 73, section 3), each with a measure
+- **Plumb:** within 0.5°, sunk 0.10-0.35 m.
+- **Follow:** no base sample above the ground or below the skirt; the top line within 2° of the ground's slope.
+- **Step:** each step level within 0.3°, every step capped.
+- **Rake:** rails within 1° of the line between post feet, clearance in range every 0.25 m.
+- **Tilt:** within 4° of the ground under the contact patch, sunk 2-8 cm, no sample more than 2 cm in the air.
+- **Level:** within 0.5°, on a pad or with every foot within 2 cm.
+- **Joins:** gaps at sockets under 2 mm, no coplanar overlaps.
+- **Openings:** framed on both sides, within the kit's widths.
+- **Roads:** no part of any run inside a road or junction polygon.
+- **Repetition:**
+  - no same-variant object within 8 m at a similar yaw;
+  - no short repeating variant sequence along a run;
+  - every run too short to fit reported, never dropped.
+- **Standards:** the area audit and a street review pass; the budgets above hold; Richard drives the street.
+
+## After the review (what changed, and why)
+- **Taken:**
+  - **The order.** A thin slice end to end before breadth, with the guards first, since none of the 55 roster cars had
+    a structural golden and every prop edit would have re-exported every car.
+  - **Layouts as data.** The solve happens after the cutters are known, never laid and then trimmed.
+  - **One ground provider.**
+  - **The full kit contract**, with mesh data for run pieces instead of FBX.
+  - **Run-aware registries and merged collision.**
+  - **Pinned, opt-in car props with their own budgets.**
+  - **Measures for every rule.**
+  - **The test range and the debug tools.**
+  - **Load-time budgets set up front.**
+- **Cut from stage one:**
+  - the oak (its own subsystem, moved to planting);
+  - the kerb (it stays with the road system, with a profile from Prop Forge);
+  - moving the core into a new package (layered instead, and extracted only when a second user needs it);
+  - four of the five car objects (the jerry can proves the pattern).
+- **Defaults I've taken on the review's two questions** (Richard can overrule either):
+  - re-dressed cars are shown as a before/after contact sheet per batch, not one at a time;
+  - props keep their world size on cars.
