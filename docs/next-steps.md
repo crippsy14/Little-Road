@@ -1,5 +1,16 @@
 # Next steps (3 October 2026)
 
+**18 October, late night: Prop Forge stage two ([doc 78](78-prop-forge-stage-two.md)): the world remodelled, behind `--prop-forge`.**
+- **Remodelled:**
+  - every tree and rock, in seeded families;
+  - Quarry Hills' walls in slate dry stone, its field gates and its sheep;
+  - Armco guardrails, rumble kerbs and coping stones;
+  - lamp posts, benches, fences, tents and bales;
+  - three kinds of boat.
+- **New street life:** bins, bollards, a phone box and a pillar box, A-boards, creels and crates, deckchairs, placed by rules in every town.
+- With the flag off, the world is unchanged (fingerprint `3f164ae90677e486`).
+- **To see it:** start the game with `--prop-forge`.
+
 **18 October, night: Prop Forge stage one, steps 0-6 ([doc 77](77-prop-forge-brief.md)).** All of it is behind flags
 (`--run-range`, `--run-range-review`, `--prop-forge`); the normal game is unchanged. Full write-up: car-forge
 `docs/log.md`.
