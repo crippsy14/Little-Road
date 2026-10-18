@@ -1,0 +1,69 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace LittleRoad
+{
+    // Prop Forge stand-ins (stage two, docs/78), behind --prop-forge: a Forge kit that declares `replaces` stands in for
+    // game kit pieces by id. BayviewKit.Spawn asks here first; a stand-in comes back as a source prefab built the way the
+    // Blender kit's are (a LOD0 and a LOD1 renderer under a LOD group, materials named by the game's palette, a Collision
+    // part), so the kit's own machinery does the rest unchanged: tints, roof colours, patterns, night windows, colliders,
+    // footprints, culling and static batching. Every existing placement in every town takes the new model; no layout code
+    // changes, and with the flag off nothing here runs.
+    public static class ForgeStandIns
+    {
+        sealed class Entry{public string kit;public string[] pieces;}
+        static Dictionary<string,Entry> map;
+        static readonly Dictionary<string,GameObject> sources=new();static Transform holder;
+        static readonly Dictionary<string,Material> placeholders=new();
+
+        static void Load()
+        {
+            if(map!=null)return;map=new();
+            foreach(var t in Resources.LoadAll<TextAsset>("Props")) {
+                if(t.name.EndsWith("_mesh")||t.name=="prop_manifest")continue;
+                var kit=PropKit.Load(t.name);if(kit.file.replaces==null)continue;
+                foreach(var r in kit.file.replaces)map[r.id]=new Entry{kit=t.name,pieces=r.pieces};
+            }
+        }
+        public static bool Has(string id){if(!PropForge.Enabled)return false;Load();return map.ContainsKey(id);}
+        public static IEnumerable<string> Ids{get{Load();return map.Keys;}}
+        // The variant for a placement: a hash of where it stands (the same piece every build), and its source prefab. key
+        // names the template (one per variant).
+        public static GameObject Source(string id,Vector3 at,out string key)
+        {
+            Load();var e=map[id];int h=(Mathf.RoundToInt(at.x*10)*73856093)^(Mathf.RoundToInt(at.z*10)*19349663)^id.GetHashCode();
+            string piece=e.pieces[(h&0x7fffffff)%e.pieces.Length];key=id+"@"+piece;
+            if(sources.TryGetValue(key,out var go)&&go!=null)return go;
+            return sources[key]=Build(PropKit.Load(e.kit),piece,id);
+        }
+        static GameObject Build(PropKit kit,string piece,string id)
+        {
+            if(holder==null){var h=new GameObject("Forge stand-ins");h.SetActive(false);Object.DontDestroyOnLoad(h);holder=h.transform;}
+            var root=new GameObject(id);root.transform.SetParent(holder,false);var p=kit.Piece(piece);var lods=new List<LOD>();
+            int count=Mathf.Min(2,p.lods.Length);
+            for(int lod=0;lod<count;lod++) {
+                var go=new GameObject("LOD"+lod,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root.transform,false);
+                go.GetComponent<MeshFilter>().sharedMesh=kit.Mesh(piece,lod);var subs=p.lods[lod].submeshes;var mats=new Material[subs.Length];
+                for(int s=0;s<subs.Length;s++)mats[s]=Placeholder(subs[s].material);
+                var r=go.GetComponent<MeshRenderer>();r.sharedMaterials=mats;lods.Add(new LOD(lod==0?.09f:.008f,new Renderer[]{r}));
+            }
+            root.AddComponent<LODGroup>().SetLODs(lods.ToArray());
+            if(p.collision!=null&&p.collision.size!=null&&p.collision.size.V!=Vector3.zero) {   // (the kit's Collision part: a box BayviewKit reads by its bounds)
+                var c=new GameObject("Collision",typeof(MeshFilter),typeof(MeshRenderer));c.transform.SetParent(root.transform,false);
+                c.GetComponent<MeshFilter>().sharedMesh=Box(p.collision.centre.V,p.collision.size.V);
+            }
+            return root;
+        }
+        // (a material by palette name only: BayviewKit.Convert reads the name and gives it the game's look and tint)
+        static Material Placeholder(string name)
+        {
+            if(placeholders.TryGetValue(name,out var m))return m;
+            m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name=name};return placeholders[name]=m;
+        }
+        static Mesh Box(Vector3 c,Vector3 s)
+        {
+            var h=s*.5f;var v=new List<Vector3>();foreach(int x in new[]{-1,1})foreach(int y in new[]{-1,1})foreach(int z in new[]{-1,1})v.Add(c+Vector3.Scale(h,new Vector3(x,y,z)));
+            var m=new Mesh{name="Forge collision box"};m.SetVertices(v);m.SetTriangles(new[]{0,1,2,1,3,2,4,6,5,5,6,7,0,4,1,1,4,5,2,3,6,3,7,6,0,2,4,2,6,4,1,5,3,3,5,7},0);m.RecalculateBounds();return m;
+        }
+    }
+}

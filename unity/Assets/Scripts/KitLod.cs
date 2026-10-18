@@ -22,7 +22,10 @@ namespace LittleRoad
             var parts=new List<Renderer>();
             void Part(Mesh mesh,Material mat){if(mesh==null||mat==null)return;var o=new GameObject("Stand-in",typeof(MeshFilter),typeof(MeshRenderer));o.transform.SetParent(lod.transform,false);o.GetComponent<MeshFilter>().sharedMesh=mesh;var r=o.GetComponent<MeshRenderer>();r.sharedMaterial=mat;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;o.isStatic=true;parts.Add(r);}
             Part(p.canopy,p.leaf);Part(p.trunk,p.bark);
-            var treeGroup=go.AddComponent<LODGroup>();treeGroup.fadeMode=LODFadeMode.CrossFade;treeGroup.animateCrossFading=true;treeGroup.SetLODs(new[]{new LOD(NearScreen,renderers),new LOD(FarScreen,parts.ToArray())});
+            var treeGroup=go.AddComponent<LODGroup>();treeGroup.fadeMode=LODFadeMode.CrossFade;treeGroup.animateCrossFading=true;// (a Prop Forge stand-in brings its own LOD0 and LOD1: near, middle, then the far stand-in; both at once would draw twice)
+            var l0=go.transform.Find("LOD0");var l1=go.transform.Find("LOD1");
+            if(l0!=null&&l1!=null)treeGroup.SetLODs(new[]{new LOD(.09f,new Renderer[]{l0.GetComponent<MeshRenderer>()}),new LOD(NearScreen,new Renderer[]{l1.GetComponent<MeshRenderer>()}),new LOD(FarScreen,parts.ToArray())});
+            else treeGroup.SetLODs(new[]{new LOD(NearScreen,renderers),new LOD(FarScreen,parts.ToArray())});
         }
         static bool Leafy(string n)=>n.Contains("Leaf")||n.Contains("Fir")||n.Contains("Poplar")||n.Contains("Blossom")||n.Contains("Autumn")||n.Contains("Moss");
         static (Mesh,Mesh,Material,Material) Build(GameObject go,MeshRenderer[] renderers,string id)

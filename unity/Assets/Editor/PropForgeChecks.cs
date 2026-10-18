@@ -10,6 +10,7 @@ public static class PropForgeChecks
 {
     sealed class Slope:Ground.IProvider{public float Height(float x,float z)=>.3f*x+2;}
     sealed class Range:Ground.IProvider{public float Height(float x,float z)=>RunRange.Surface(x,z);}
+    [Serializable] sealed class PaletteNames{public PaletteName[] entries;}[Serializable] sealed class PaletteName{public string name;}
 
     public static List<string> Run()
     {
@@ -33,7 +34,14 @@ public static class PropForgeChecks
         Check(kit.MaterialsOf("post").Length==post.subMeshCount&&kit.file.materials.All(m=>PropKit.MaterialFor(m)!=null),"Prop Forge: every material class has a look, one per submesh");
         // (every installed kit's classes: the jerry can's red paint once had none, and the range failed at load, 18 Oct)
         var installed=Resources.LoadAll<TextAsset>("Props").Where(t=>!t.name.EndsWith("_mesh")&&t.name!="prop_manifest").Select(t=>t.name).ToList();
-        Check(installed.Count>=5&&installed.All(k=>PropKit.Load(k).file.materials.All(m=>PropKit.MaterialFor(m)!=null)),$"Prop Forge: every installed kit's material classes have a look ({string.Join(", ",installed)})");
+        bool Stands(string k)=>PropKit.Load(k).file.replaces!=null&&PropKit.Load(k).file.replaces.Length>0;
+        Check(installed.Count>=5&&installed.Where(k=>!Stands(k)).All(k=>PropKit.Load(k).file.materials.All(m=>PropKit.MaterialFor(m)!=null)),$"Prop Forge: every installed kit's material classes have a look ({string.Join(", ",installed.Where(k=>!Stands(k)))})");
+        // (a stand-in's materials are the game palette's names, coloured by BayviewKit: every one must be in the palette)
+        var palette=new HashSet<string>(JsonUtility.FromJson<PaletteNames>(Resources.Load<TextAsset>("Bayview/palette").text).entries.Select(e=>e.name));
+        var stands=installed.Where(Stands).ToList();var offPalette=stands.SelectMany(k=>PropKit.Load(k).file.materials).Where(m=>!palette.Contains(m)).Distinct().ToList();
+        Check(offPalette.Count==0,$"Prop Forge: every stand-in kit ({string.Join(", ",stands)}) is coloured by palette names{(offPalette.Count>0?": not in the palette: "+string.Join(", ",offPalette):"")}");
+        var ids=stands.SelectMany(k=>PropKit.Load(k).file.replaces).Select(r=>r.id).ToList();
+        Check(ids.Count==ids.Distinct().Count(),$"Prop Forge: no game kit id has two stand-ins ({ids.Count} ids: {string.Join(", ",ids)})");
         bool unknown=false;try{PropKit.MaterialFor("chocolate");}catch(InvalidOperationException){unknown=true;}
         Check(unknown,"Prop Forge: an unknown material class fails loudly");
         bool missing=false;try{PropKit.Load("no_such_kit");}catch(InvalidOperationException){missing=true;}

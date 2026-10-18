@@ -25,8 +25,10 @@ namespace LittleRoad
     //  rolls, the slope above which the pieces that roll turn their axis downhill)
     [Serializable] public sealed class PropRun{public float spacing,minRadius,maxTurn,sagitta,deform,halfBase,copeFrom,copeJitter,height,sink,sameGap,sameYaw,rollSlope;
         public float[] railHeights,clearance,opening;public string[] rolls;}
+    // (a kit that stands in for game kit pieces with --prop-forge: each game id, and the pieces it picks from; ForgeStandIns)
+    [Serializable] public sealed class PropReplace{public string id;public string[] pieces;}
     [Serializable] public sealed class PropKitFile{public string schema,kit,hash,kind,doc;public int version,vertexCount,indexByteOffset,indexCount;
-        public string[] materials;public PropRun run;public PropPiece[] pieces;}
+        public string[] materials;public PropRun run;public PropPiece[] pieces;public PropReplace[] replaces;}
 
     // One kit, read once: its contract, and its pieces' meshes built on demand (per piece and LOD, shared).
     public sealed class PropKit

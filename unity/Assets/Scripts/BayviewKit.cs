@@ -34,7 +34,15 @@ namespace LittleRoad
             Debug.LogWarning("BAYVIEW_UNMAPPED_MATERIAL "+name);return fallback;
         }
         public static void Reset()=>materials.Clear();
-        public static bool Has(string id)=>Resources.Load<GameObject>("Bayview/"+id)!=null;
+        public static bool Has(string id)=>ForgeStandIns.Has(id)||Resources.Load<GameObject>("Bayview/"+id)!=null;
+        // (the piece's source: Prop Forge's stand-in with --prop-forge, else the Blender kit's prefab; key names its template)
+        static GameObject SourceFor(string id,Vector3 at,out string key)
+        {
+            key=id;if(ForgeStandIns.Has(id))return ForgeStandIns.Source(id,at,out key);
+            var src=Resources.Load<GameObject>("Bayview/"+id);
+            if(src==null)throw new System.InvalidOperationException("Missing Bayview kit asset: "+id);
+            return src;
+        }
         // Moving props live outside the statically batched scenery roots.
         static Transform animated;
         public static Transform AnimatedRoot=>animated!=null?animated:animated=new GameObject("Bayview animated props").transform;
@@ -84,6 +92,10 @@ namespace LittleRoad
             // A one-level LOD group that dissolves the piece out (dithered, over half a second) at its cull
             // distance; the layer distance just beyond it is a backstop.
             float cull=layer==DetailLayer?WorldLook.DetailCullDistance:WorldLook.MediumCullDistance;
+            // (a Prop Forge stand-in has its own LOD group, near and middle: it keeps them, its last one ending at the cull height)
+            var own=go.GetComponent<LODGroup>();float edge=size/(cull*2*Mathf.Tan(27.5f*Mathf.Deg2Rad));
+            if(own!=null){var ls=own.GetLODs();ls[^1].screenRelativeTransitionHeight=edge;for(int i=ls.Length-2;i>=0;i--)ls[i].screenRelativeTransitionHeight=Mathf.Max(ls[i].screenRelativeTransitionHeight,ls[i+1].screenRelativeTransitionHeight*1.5f);
+                own.fadeMode=LODFadeMode.CrossFade;own.animateCrossFading=true;own.SetLODs(ls);own.RecalculateBounds();return;}
             var group=go.AddComponent<LODGroup>();group.fadeMode=LODFadeMode.CrossFade;group.animateCrossFading=true;
             group.SetLODs(new[]{new LOD(size/(cull*2*Mathf.Tan(27.5f*Mathf.Deg2Rad)),renderers)});group.RecalculateBounds();
         }
@@ -132,9 +144,8 @@ namespace LittleRoad
         static GameObject SpawnNow(string id,Vector3 position,float yaw,Transform parent,Tint tint,string sign,bool solid,float scale)
         {
             if(UseTemplates&&Application.isPlaying&&string.IsNullOrEmpty(sign)) {   // (play mode only: editor checks spawn the old way)
-                var src=Resources.Load<GameObject>("Bayview/"+id);
-                if(src==null)throw new System.InvalidOperationException("Missing Bayview kit asset: "+id);
-                var t=TemplateFor(id,src,solid,parent==animated);   // (exactly the old test: both null counts as animated)
+                var src=SourceFor(id,position,out string key);
+                var t=TemplateFor(key,src,solid,parent==animated);   // (exactly the old test: both null counts as animated)
                 var piece=Object.Instantiate(t.go,position,Quaternion.Euler(0,yaw,0),parent);piece.name=id;tint??=new Tint();if(scale!=1)piece.transform.localScale*=scale;
                 if(id=="lamp_post")NightLights.Lamp(piece.transform);
                 if(t.tinted.Length>0) {
@@ -146,8 +157,7 @@ namespace LittleRoad
                 if(parent!=animated){var rs=piece.GetComponentsInChildren<Renderer>();if(rs.Length>0){var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);Footprints.Add(b);FootprintOwners.Add(piece);}Placed.Add(piece);}
                 return piece;
             }
-            var source=Resources.Load<GameObject>("Bayview/"+id);
-            if(source==null)throw new System.InvalidOperationException("Missing Bayview kit asset: "+id);
+            var source=SourceFor(id,position,out _);
             var go=Object.Instantiate(source,position,Quaternion.Euler(0,yaw,0),parent);go.name=id;tint??=new Tint();if(scale!=1)go.transform.localScale*=scale;
             if(id=="lamp_post")NightLights.Lamp(go.transform);
             foreach(var child in go.GetComponentsInChildren<Transform>(true)) {
