@@ -56,6 +56,14 @@ Everything below is enforced in code. `unity/Assets/Scripts/WorldLook.cs` holds 
 - A new building or prop kit: author in `source-art/build_bayview_kit.py` using palette names.
   Palette colours may be bright; they are graded at runtime, and the check confirms every palette
   entry grades into the limits.
+- **Every prop sits on the land at the land's angle** (Richard, 18 Oct). Kit pieces are fitted as they spawn
+  (`GroundFit`, behind `--prop-forge` for now). Give a new kit id its kind in `GroundFit.kinds`:
+  - `tilt`: loose things settle on the slope, up to a cap;
+  - `rake`: runs follow the slope along their length;
+  - `plumb`: trees and posts stay upright, sunk until no edge of the foot hangs;
+  - `leave`: buildings, which stand on plinths and pads.
+  A small id that isn't listed is plumb. Runs (walls, fences) use `Runs`, and object families use `Objects.Place`.
+  Both follow the ground themselves.
 - A new area: call `TrialWorld.Create`, which sets up light, grade and clouds, and build terrain
   with `TerrainMaterial` / `WorldLook.Terrain`.
 - To review a change, capture before and after with `tools/capture-map.ps1` and compare the

@@ -147,6 +147,7 @@ namespace LittleRoad
                 var src=SourceFor(id,position,out string key);
                 var t=TemplateFor(key,src,solid,parent==animated);   // (exactly the old test: both null counts as animated)
                 var piece=Object.Instantiate(t.go,position,Quaternion.Euler(0,yaw,0),parent);piece.name=id;tint??=new Tint();if(scale!=1)piece.transform.localScale*=scale;
+                if(GroundFit.On&&parent!=animated)GroundFit.Fit(key,id,piece);   // (fitted to the land under it: docs/78)
                 if(id=="lamp_post")NightLights.Lamp(piece.transform);
                 if(t.tinted.Length>0) {
                     bool modelled=ModelledMasonry.Contains(id),aged=AgedStone.Contains(id);var rs=piece.GetComponentsInChildren<MeshRenderer>(true);
@@ -159,6 +160,7 @@ namespace LittleRoad
             }
             var source=SourceFor(id,position,out _);
             var go=Object.Instantiate(source,position,Quaternion.Euler(0,yaw,0),parent);go.name=id;tint??=new Tint();if(scale!=1)go.transform.localScale*=scale;
+            if(GroundFit.On&&parent!=animated&&Application.isPlaying)GroundFit.Fit(id,id,go);
             if(id=="lamp_post")NightLights.Lamp(go.transform);
             foreach(var child in go.GetComponentsInChildren<Transform>(true)) {
                 if(child.name.StartsWith("Collision")) {

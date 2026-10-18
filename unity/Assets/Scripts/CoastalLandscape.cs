@@ -472,7 +472,7 @@ namespace LittleRoad
         public void Build()=>TrialWorld.RunNow(BuildRoutine());
         public System.Collections.IEnumerator BuildRoutine()
         {
-            WorldTiles.Begin(ValleyDetail);Districts.Begin();WorldRoot=root;stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.FootprintOwners.Clear();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;
+            WorldTiles.Begin(ValleyDetail);Districts.Begin();WorldRoot=root;stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.FootprintOwners.Clear();GroundFit.Reset();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;
             // (A race far from Bayview builds none of the island: RaceArea. Its heights stay analytic for everything else.)
             bool island=Island;
             if(island)LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;

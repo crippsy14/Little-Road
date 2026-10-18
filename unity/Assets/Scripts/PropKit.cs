@@ -138,7 +138,7 @@ namespace LittleRoad
         public static float Surface(float x,float z)
         {
             if(provider!=null)return provider.Height(x,z);
-            return z>-380&&CoastalLandscape.Current!=null?CoastalLandscape.Current.Height(x,z):ValleyField.Height(x,z);
+            return z>-380&&CoastalLandscape.Current!=null?CoastalLandscape.Current.Drawn(x,z):ValleyField.Height(x,z);   // (the island as drawn)
         }
         public static Vector3 Normal(float x,float z,float d=.25f)
         {
