@@ -710,7 +710,7 @@ namespace LittleRoad
                 foreach(int side in new[]{-1,1}) {
                     var at=mid+right*side*edge;
                     Piece("Balustrade plinth",at+Vector3.up*.18f,new Vector3(.5f,.36f,len+.05f),girderStone).transform.rotation=rotation;
-                    Piece("Balustrade rail",at+Vector3.up*1.0f,new Vector3(.46f,.16f,len+.05f),copingStone).transform.rotation=rotation;
+                    var balRail=Piece("Balustrade rail",at+Vector3.up*1.0f,new Vector3(.46f,.16f,len+.05f),copingStone);balRail.transform.rotation=rotation;ForgeRail(balRail,"coping");
                     var wall=new GameObject("Causeway parapet (solid)",typeof(BoxCollider));wall.tag="Respawn";wall.transform.SetParent(holder);
                     wall.transform.SetPositionAndRotation(at+Vector3.up*.6f,rotation);wall.transform.localScale=new Vector3(.5f,1.2f,len+.05f);
                 }
@@ -722,8 +722,8 @@ namespace LittleRoad
                 bool post=Mathf.Repeat(d-start,9)<.8f;
                 foreach(int side in new[]{-1,1}) {
                     var at=p+right*side*edge;
-                    if(!post){boxes.Add(copingStone,at+Vector3.up*.64f,new Vector3(.2f,.56f,.2f),rot);continue;}
-                    boxes.Add(girderStone,at+Vector3.up*.62f,new Vector3(.62f,1.24f,.62f),rot);boxes.Add(copingStone,at+Vector3.up*1.3f,new Vector3(.74f,.12f,.74f),rot);
+                    if(!post){boxes.Add(copingStone,at+Vector3.up*.64f,new Vector3(.2f,.56f,.2f),rot,Forge("baluster"));continue;}
+                    boxes.Add(girderStone,at+Vector3.up*.62f,new Vector3(.62f,1.24f,.62f),rot,Forge("pilaster"));boxes.Add(copingStone,at+Vector3.up*(PropForge.Enabled?1.33f:1.3f),new Vector3(.74f,PropForge.Enabled?.2f:.12f,.74f),rot,Forge("pilaster_cap"));
                     if(pilaster%3==1) {
                         boxes.Add(copingStone,at+Vector3.up*2.5f,new Vector3(.07f,2.4f,.07f),rot);
                         boxes.Add(pennants[pilaster/3%4],at+Vector3.up*3.25f-f*.5f+right*side*.02f,new Vector3(.03f,.62f,.95f),rot);
@@ -807,6 +807,14 @@ namespace LittleRoad
             readonly Dictionary<Material,(List<Vector3> v,List<Vector3> n,List<int> t)> parts=new();
             static readonly Vector3[] Corners={new(-1,-1,-1),new(1,-1,-1),new(1,1,-1),new(-1,1,-1),new(-1,-1,1),new(1,-1,1),new(1,1,1),new(-1,1,1)};
             static readonly int[][] Faces={new[]{0,3,2,1},new[]{4,5,6,7},new[]{0,1,5,4},new[]{3,7,6,2},new[]{0,4,7,3},new[]{1,2,6,5}};
+            public void Add(Material m,Vector3 centre,Vector3 size,Quaternion rot,Mesh unit)
+            {
+                if(unit==null){Add(m,centre,size,rot);return;}   // (--prop-forge: a Prop Forge part authored in the unit cube, scaled into the box)
+                if(!parts.TryGetValue(m,out var p)){p=(new List<Vector3>(),new List<Vector3>(),new List<int>());parts[m]=p;}
+                var uv=unit.vertices;var un=unit.normals;int s=p.v.Count;
+                for(int i=0;i<uv.Length;i++){p.v.Add(centre+rot*Vector3.Scale(uv[i],size));p.n.Add((rot*new Vector3(un[i].x/size.x,un[i].y/size.y,un[i].z/size.z)).normalized);}
+                for(int sm=0;sm<unit.subMeshCount;sm++)foreach(int k in unit.GetTriangles(sm))p.t.Add(s+k);
+            }
             public void Add(Material m,Vector3 centre,Vector3 size,Quaternion rot)
             {
                 if(!parts.TryGetValue(m,out var p)){p=(new List<Vector3>(),new List<Vector3>(),new List<int>());parts[m]=p;}
@@ -956,7 +964,8 @@ namespace LittleRoad
         }
         // (--prop-forge: the rail's box drawn as Prop Forge's W-beam or C-channel post, authored in the unit cube, so the piece's
         //  own scale, collider and paint stay as they are; docs/78)
-        static int railLogged;static void ForgeRail(GameObject piece,string part,Vector3? face=null){if(!PropForge.Enabled)return;if(RaceTrial.Has("--gate-log")&&part=="beam"&&(++railLogged)%40==1)Debug.Log($"LITTLE_ROAD_RAIL {piece.transform.position.x:0.0},{piece.transform.position.y:0.0},{piece.transform.position.z:0.0}");piece.GetComponent<MeshFilter>().sharedMesh=PropKit.Load("armco").Mesh(part);if(face.HasValue)piece.transform.rotation=Quaternion.LookRotation(face.Value);}
+        static Mesh Forge(string part)=>PropForge.Enabled?PropKit.Load("railings").Mesh(part):null;
+        static int railLogged;static void ForgeRail(GameObject piece,string part,Vector3? face=null){if(!PropForge.Enabled)return;if(part=="coping"){piece.GetComponent<MeshFilter>().sharedMesh=PropKit.Load("armco").Mesh("coping");return;}if(RaceTrial.Has("--gate-log")&&part=="beam"&&(++railLogged)%40==1)Debug.Log($"LITTLE_ROAD_RAIL {piece.transform.position.x:0.0},{piece.transform.position.y:0.0},{piece.transform.position.z:0.0}");piece.GetComponent<MeshFilter>().sharedMesh=PropKit.Load("armco").Mesh(part);if(face.HasValue)piece.transform.rotation=Quaternion.LookRotation(face.Value);}
         // A road's bounding box padded by its half-width and 3 m (docs/72: the crossing test above only needs the exact
         // distance to roads near the rail, and checking every road's every point for every rail cost ~0.4 s at load).
         static readonly Dictionary<Vector3[],Vector4> roadBoxes=new();
@@ -992,7 +1001,7 @@ namespace LittleRoad
                 Piece("Bridge deck",mid+Vector3.down*.7f,new Vector3(width+1.4f,1.3f,len+.05f),stone).transform.rotation=rot;
                 foreach(int side in new[]{-1,1}) {
                     Piece("Bridge parapet",mid+right*side*(width*.5f+.45f)+Vector3.up*.55f,new Vector3(.6f,1.1f,len+.05f),stone,true).transform.rotation=rot;
-                    Piece("Bridge coping",mid+right*side*(width*.5f+.45f)+Vector3.up*1.15f,new Vector3(.8f,.16f,len+.05f),cap).transform.rotation=rot;
+                    {var bc=Piece("Bridge coping",mid+right*side*(width*.5f+.45f)+Vector3.up*1.15f,new Vector3(.8f,.16f,len+.05f),cap);bc.transform.rotation=rot;ForgeRail(bc,"coping");}
                 }
             }
             // Arch ring: voussoirs on a segmental arc between the abutments, springing near the water.
