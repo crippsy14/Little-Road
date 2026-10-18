@@ -21,7 +21,7 @@ namespace LittleRoad
         public static bool Requested=>RaceTrial.Has("--run-range")||RaceTrial.Has("--run-range-review");
         public sealed class RangeRoad{public string name;public Vector3[] line;public float width;}
         public static readonly List<RangeRoad> Roads=new();
-        public const float Half=130,Cell=2;
+        public const float Half=130,Cell=1;   // (1 m: at 2 m the land showed through the road where the bends climb the bank)
         Camera view;
 
         // The land: flat, with a crest across z=60, a hollow across z=0 (both west of x=-40 only) and a 30% bank
@@ -30,9 +30,12 @@ namespace LittleRoad
         {
             float w=Mathf.Clamp01((-30-x)/20);
             float crest=3f*Mathf.Exp(-Sq((z-60)/14))*w,hollow=-2.5f*Mathf.Exp(-Sq(z/12))*w;
-            float bank=.3f*Mathf.Clamp(x-40,0,30);
+            // (the bank's edges rounded over 3 m either side, as real ground is: a hard kink there put a wall's top 3 deg off
+            //  the ground's slope for half a metre, a fixture artefact, 18 Oct)
+            float bank=.3f*(Ramp(x-40)-Ramp(x-70));
             return crest+hollow+bank;
         }
+        static float Ramp(float t){const float b=3;return t<=-b?0:t>=b?t:(t+b)*(t+b)/(4*b);}
         static float Sq(float v)=>v*v;
 
         public static void BuildRoads()
@@ -78,6 +81,18 @@ namespace LittleRoad
                 }
             }
             var st=Road("straight");o.Add(new RunSpec{name="too short",kit=kit,seed="short",along=st.line,offset=-(st.width*.5f+1.25f),from=150,to=151.2f});
+            // (a deforming kit also gets a field wall with corners of every kind: 76, 72, 36 and 101 deg, on open land)
+            if(PropKit.Load(kit).file.kind=="deform")o.Add(new RunSpec{name="field corners",kit=kit,seed="field",along=FieldCorners,offset=0});
+            return o;
+        }
+        public static readonly Vector3[] FieldCorners={new(-35,0,-50),new(-15,0,-50),new(-12,0,-38),new(-25,0,-30),new(-30,0,-18),new(-15,0,-15)};
+        // The runs drawn on the range: fences along the straight (its junction and drive), walls along the crest and
+        // hollow, the bank and the bends, and the field wall; the checks solve every road with both kits.
+        public static List<RunSpec> Drawn()
+        {
+            var walls=new[]{"crest-hollow","bank-road","bends"};
+            var o=Specs("post_rail").Where(s=>!walls.Any(w=>s.name.StartsWith(w))).ToList();
+            o.AddRange(Specs("dry_stone").Where(s=>walls.Any(w=>s.name.StartsWith(w))||s.name=="field corners"));
             return o;
         }
 
@@ -112,7 +127,7 @@ namespace LittleRoad
             var root=new GameObject("Run range").transform;
             Lighting();LandMesh(root);RoadMeshes(root);
             Runs.Laid.Clear();
-            foreach(var spec in Specs()){var L=Runs.Solve(spec);Runs.Draw(L,root);Runs.Laid.Add(L);}
+            foreach(var spec in Drawn()){var L=Runs.Solve(spec);Runs.Draw(L,root);Runs.Laid.Add(L);}
             if(RaceTrial.Has("--run-debug"))Debug(root);
             view=new GameObject("Run range camera").AddComponent<Camera>();view.tag="MainCamera";view.fieldOfView=50;view.nearClipPlane=.2f;view.farClipPlane=2000;
             view.gameObject.AddComponent<AudioListener>();WorldLook.Camera(view);Look(new Vector3(-150,70,-170),new Vector3(0,0,0));
@@ -132,7 +147,10 @@ namespace LittleRoad
         void LandMesh(Transform root)
         {
             int n=Mathf.RoundToInt(2*Half/Cell);var v=new Vector3[(n+1)*(n+1)];
-            for(int j=0;j<=n;j++)for(int i=0;i<=n;i++){float x=-Half+i*Cell,z=-Half+j*Cell;v[j*(n+1)+i]=new Vector3(x,Surface(x,z),z);}
+            // (a land vertex within a cell and a half of a road's edge goes no higher than the road there: a triangle across the
+            //  edge otherwise rose through the road where the bends climb the bank, 18 Oct)
+            float Vertex(float x,float z){float y=Surface(x,z);foreach(var r in Roads){float d=Nearest(r,x,z,out float ry);if(d<r.width*.5f+Cell*1.5f)y=Mathf.Min(y,ry-.02f);}return y;}
+            for(int j=0;j<=n;j++)for(int i=0;i<=n;i++){float x=-Half+i*Cell,z=-Half+j*Cell;v[j*(n+1)+i]=new Vector3(x,Vertex(x,z),z);}
             var t=new int[n*n*6];int k=0;
             for(int j=0;j<n;j++)for(int i=0;i<n;i++){int a=j*(n+1)+i;t[k++]=a;t[k++]=a+n+1;t[k++]=a+1;t[k++]=a+1;t[k++]=a+n+1;t[k++]=a+n+2;}
             var m=new Mesh{name="Run range land",indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};m.vertices=v;m.triangles=t;m.RecalculateNormals();
@@ -175,6 +193,11 @@ namespace LittleRoad
             yield return Shot("08-bank-fence",new Vector3(66,14,-40),new Vector3(55,9,-10));
             static Vector3 G(float x,float h,float z)=>new(x,Surface(x,z)+h,z);   // (h above the ground: the bends climb the bank)
             yield return Shot("09-tight-bend",G(46,5,78),G(63,.5f,91));
+            yield return Shot("10-field-corners",G(-4,9,-62),G(-22,0,-33));
+            yield return Shot("11-corner-pier",G(-8,2.2f,-44),G(-12,.6f,-38));
+            yield return Shot("12-wall-close",G(-88,1.5f,-4),G(-85.5f,.7f,2));
+            yield return Shot("13-wall-crest",G(-80,2,40),G(-94.5f,1,60));
+            yield return Shot("14-wall-bank",G(47,2.5f,-32),G(59.5f,.8f,-6));
             Runs.WriteReport(Path.Combine(folder,"run-report.txt"));
             UnityEngine.Debug.Log("LITTLE_ROAD_RUN_RANGE_REVIEW "+folder);Application.Quit(0);
         }

@@ -92,6 +92,95 @@ public static class PropForgeChecks
             Ground.Use(new Slope());var flat=RunRange.Specs().Select(sp=>{sp.cut=null;return Runs.Solve(sp);}).ToList();double flatMs=flat.Sum(l=>l.solveMs);float flatM=flat.Sum(l=>l.length);
             checks.Add($"Runs: the solver alone, on a constant-time ground: {flatMs/flatM*100:0.00} ms per 100 m");
         } finally { Ground.Reset(); }
+
+        // step 3: the dry-stone wall, a deforming kit, along every range road and the field wall's corners
+        Ground.Use(new Range());
+        try {
+            PropKit.Forget();var wk=PropKit.Load("dry_stone");var run=wk.file.run;var wallPiece=wk.Piece("wall");
+            Check(wk.file.kind=="deform"&&run.deform>0&&run.halfBase>0&&wallPiece.role=="middle","Walls: the dry-stone kit reads as a deforming kit (a bending middle, piers by role)");
+            var walls=RunRange.Specs("dry_stone").Select(Runs.Solve).ToList();double ms=walls.Sum(l=>l.solveMs);float metres=walls.Sum(l=>l.length);
+            foreach(var L in walls) {
+                string w=L.spec.name;
+                if(w=="too short"){Check(L.tooShort&&L.items.Count==0&&L.notes.Count>0,"Walls: a run too short to lay is reported, with nothing laid");continue;}
+                Check(L.failures.Count==0,$"Walls: {w} lays clean ({string.Join("; ",L.failures)})");
+                var piers=L.items.Where(i=>!i.deform).ToList();
+                Check(piers.All(i=>Vector3.Angle(i.m.rotation*Vector3.up,Vector3.up)<.5f),$"Walls: {w}: every pier plumb within 0.5 deg");
+                bool footed=true;
+                foreach(var it in piers){var pc=wk.Piece(it.piece);float fy=it.m.GetColumn(3).y;foreach(var cp in pc.contact){var q=it.m.MultiplyPoint3x4(cp.V);float g=Ground.Surface(q.x,q.z);if(fy>g+.001f||g-fy>pc.skirt)footed=false;}}
+                Check(footed,$"Walls: {w}: every pier's foot is in the ground at every corner, within its skirt");
+                float air=-1,deep=0,slope=0;Vector3 worst=default;
+                foreach(var pa in L.paths) {
+                    for(int i=0;i<pa.p.Length;i++){var r=Runs.Right(pa.Tangent(pa.arc[i]));foreach(float side in new[]{-1f,1f}){var q=pa.p[i]+r*side*run.halfBase;float g=Ground.Surface(q.x,q.z);air=Mathf.Max(air,pa.baseY[i]-g);deep=Mathf.Max(deep,g-pa.baseY[i]);}}
+                    for(float s=0;s+2<=pa.Length;s+=.5f){var a=pa.At(s);var b=pa.At(s+2);float gs=(Ground.Surface(b.x,b.z)-Ground.Surface(a.x,a.z))/2,ws=(pa.Base(s+2)-pa.Base(s))/2;float d=Mathf.Abs(Mathf.Atan(gs)-Mathf.Atan(ws))*Mathf.Rad2Deg;if(d>slope){slope=d;worst=a;}}
+                }
+                Check(air<=.005f&&deep<=wallPiece.skirt,$"Walls: {w}: the foot follows the ground across its width (at most {Mathf.Max(air,0)*1000:0} mm in the air, {deep:0.00} m buried, skirt {wallPiece.skirt:0.00} m)");
+                Check(slope<=2,$"Walls: {w}: its top within 2 deg of the ground's slope over every 2 m ({slope:0.0} deg, worst at {worst.x:0},{worst.z:0})");
+                bool clear=true;
+                foreach(var pa in L.paths)for(int i=0;i<pa.p.Length;i+=2){var r=Runs.Right(pa.Tangent(pa.arc[i]));foreach(float side in new[]{-1f,1f}){var q=pa.p[i]+r*side*run.halfBase;foreach(var road in RunRange.Roads)if(RunRange.Nearest(road,q.x,q.z,out _)<road.width*.5f-.01f)clear=false;}}
+                Check(clear,$"Walls: {w}: no wall inside any road");
+                Check(L.Hash()==Runs.Solve(L.spec).Hash(),$"Walls: {w}: the solve is deterministic");
+            }
+            Check(walls.Where(l=>l.spec.name.StartsWith("bends")||l.spec.name.StartsWith("crest")||l.spec.name.StartsWith("bank")).All(l=>l.corners==0),"Walls: road bends down to 8 m bend the wall (no corner piers)");
+            var field=walls.First(l=>l.spec.name=="field corners");
+            Check(field.corners==4&&field.items.Count(i=>i.piece==Runs.Role(wk,"node"))==4,$"Walls: the field wall turns its corners of 76, 72, 36 and 101 deg on piers ({field.corners} corners)");
+            bool inside=true;
+            foreach(var L in walls)foreach(var pa in L.paths)foreach(var e in new[]{pa.p[0],pa.p[^1]})
+                if(!L.items.Any(i=>!i.deform&&Vector2.Distance(new Vector2(i.m.m03,i.m.m23),new Vector2(e.x,e.z))<.01f))inside=false;
+            Check(inside,"Walls: every wall ends at a pier's centre (its open end inside a square pier at any angle)");
+            var straight=walls.First(l=>l.spec.name=="straight left");
+            Check(straight.openings>=2&&straight.gatePosts>=4,$"Walls: the straight's wall opens for the junction and the drive, framed by gate piers ({straight.openings} openings, {straight.gatePosts} gate piers)");
+            // joins: where one bent piece ends the next begins, on the 8 m bend; normals agree across each join
+            var bent=walls.First(l=>l.spec.name=="bends left");var src=wk.Mesh("wall",0);var sv=src.vertices;var sn=src.normals;float len=wallPiece.length;
+            float gap=0,turn=0;int joins=0;string why="";
+            for(int i=0;i+1<bent.items.Count;i++) {
+                var a=bent.items[i];var b=bent.items[i+1];if(!a.deform||!b.deform||a.path!=b.path)continue;
+                var ma=Runs.Deform(bent,a,0);var mb=Runs.Deform(bent,b,0);var va=ma.vertices;var vb=mb.vertices;var na=ma.normals;var nb=mb.normals;
+                for(int x=0;x<sv.Length;x++) {
+                    if(Mathf.Abs(sv[x].z-len)>1e-4f)continue;
+                    for(int z=0;z<sv.Length;z++){if(Mathf.Abs(sv[z].z)>1e-4f||Mathf.Abs(sv[z].x-sv[x].x)>1e-5f||Mathf.Abs(sv[z].y-sv[x].y)>1e-5f||Vector3.Dot(sn[x],sn[z])<.999f)continue;
+                        gap=Mathf.Max(gap,Vector3.Distance(va[x],vb[z]));{float ang=Vector3.Angle(na[x],nb[z]);if(ang>turn){turn=ang;why=$" [local {sv[x]} n {sn[x]}; a {na[x]} b {nb[z]}; s {a.s1:0.000}/{b.s0:0.000}]";}}}
+                }
+                joins++;UnityEngine.Object.DestroyImmediate(ma);UnityEngine.Object.DestroyImmediate(mb);
+            }
+            Check(joins>=10&&gap<.002f&&turn<1f,$"Walls: joins: {joins} joins on the bends, the widest gap {gap*1000:0.00} mm (under 2), normals within {turn:0.00} deg{(turn<1f?"":why)}");
+            int t0=0,t1=0;foreach(var L in walls)foreach(var it in L.items){t0+=wk.Piece(it.piece).lods[0].triangles;t1+=wk.Piece(it.piece).lods[1].triangles;}
+            Check(t0/metres<=600&&t1/metres<=150,$"Walls: the wall is {t0/metres:0} triangles a metre at LOD0 (at most 600) and {t1/metres:0} at LOD1 (at most 150)");
+            checks.Add($"Walls: {walls.Count} range runs, {metres:0} m, solved in {ms:0.0} ms ({ms/metres*100:0.00} ms per 100 m)");
+        } finally { Ground.Reset(); }
+        checks.Add(Slide(Check));
         return checks;
+    }
+
+    // The wall-slide test (docs/77, "snags along walls"): a car-sized box, held level and on its heading, slides at 22 m/s
+    // into a dry-stone wall at 8 deg, along a straight of many pieces and into a 40 m bend that turns across its path (it stops
+    // short of the end pier). With no friction, a smooth wall keeps its speed; a seam or a step shows as a sudden loss in one step.
+    sealed class Deep:Ground.IProvider{public float Height(float x,float z)=>-2000;}
+    static string Slide(Action<bool,string> Check)
+    {
+        var mode=Physics.simulationMode;var objects=new List<UnityEngine.Object>();
+        Ground.Use(new Deep());
+        try {
+            var line=new List<Vector3>();for(float z=0;z<=30;z+=2)line.Add(new Vector3(0,0,z));
+            for(int i=1;i<=12;i++){float a=i*2.5f*Mathf.Deg2Rad;line.Add(new Vector3(-40+40*Mathf.Cos(a),0,30+40*Mathf.Sin(a)));}
+            var L=Runs.Solve(new RunSpec{name="slide",kit="dry_stone",seed="slide",along=line.ToArray(),offset=0});
+            var root=new GameObject("Wall slide test");objects.Add(root);Runs.Colliders(L,root.transform);
+            var slick=new PhysicsMaterial("slick"){dynamicFriction=0,staticFriction=0,frictionCombine=PhysicsMaterialCombine.Minimum,bounciness=0,bounceCombine=PhysicsMaterialCombine.Minimum};objects.Add(slick);
+            var car=new GameObject("Wall slide car");objects.Add(car);var box=car.AddComponent<BoxCollider>();box.size=new Vector3(1.8f,1f,4.2f);box.sharedMaterial=slick;
+            var body=car.AddComponent<Rigidbody>();body.mass=1200;body.useGravity=false;body.constraints=RigidbodyConstraints.FreezePositionY|RigidbodyConstraints.FreezeRotation;body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
+            car.transform.SetPositionAndRotation(new Vector3(-L.kit.file.run.halfBase-1.6f,-2000+.6f,3),Quaternion.Euler(0,8,0));
+            Physics.simulationMode=SimulationMode.Script;Physics.SyncTransforms();body.linearVelocity=car.transform.forward*22;
+            float before=22,contact=-1,worstDrop=0,lastZ=0;bool touched=false;
+            for(int k=0;k<180;k++) {
+                Physics.Simulate(.01f);float v=body.linearVelocity.magnitude;
+                if(!touched&&v<before-.05f){touched=true;contact=v;before=v;continue;}
+                if(touched)worstDrop=Mathf.Max(worstDrop,(before-v)/before);before=v;lastZ=car.transform.position.z;
+            }
+            float kept=touched?before/contact:0;
+            Check(touched&&worstDrop<.02f&&kept>.85f,$"Walls: slide: a car scraping {lastZ:0} m along a wall (a straight into a 40 m bend, one merged collider) keeps {kept*100:0}% of its speed, never losing more than {worstDrop*100:0.0}% in one step (snag: 2%)");
+            return $"Walls: slide test: speed after first contact {contact:0.0} m/s, at the end {before:0.0} m/s";
+        } finally {
+            Physics.simulationMode=mode;Ground.Reset();
+            foreach(var o in objects)if(o!=null)UnityEngine.Object.DestroyImmediate(o);
+        }
     }
 }

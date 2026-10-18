@@ -12,7 +12,7 @@ Shader "LittleRoad/Kit"
         _BaseColor("Colour",Color)=(1,1,1,1)
         _Smoothness("Smoothness",Float)=.2
         _Metallic("Metallic",Float)=0
-        _Pattern("Pattern (0 plain,1 plaster,2 stone,3 tile,4 wood,5 leaf,6 paint,7 glass,8 rock,9 asphalt,10 slate)",Float)=0
+        _Pattern("Pattern (0 plain,1 plaster,2 stone,3 tile,4 wood,5 leaf,6 paint,7 glass,8 rock,9 asphalt,10 slate,11 dry stone)",Float)=0
         _WorldSpace("World-space coordinates",Float)=0
         _Wear("Weathering",Float)=1
         _BaseMap("Shadow base",2D)="white"{}
@@ -126,6 +126,27 @@ Shader "LittleRoad/Kit"
                     tint=lerp(half3(.94,1,.9),half3(1.05,1.03,.9),saturate(n.y*.5+.5));
                 } else if(pattern==6) { // painted wood and trim: slight wear
                     m=1+(mottle-.5)*.06+(fine-.5)*.03;bump=fine*.15;
+                } else if(pattern==11) { // dry stone (Prop Forge walls, on the run's own arc and up the section, so courses run on
+                    // round bends and across pieces). The face: rough, wavering courses of flat stones of every length, thin
+                    // stones leaving dark open gaps above them (no mortar), each stone its own shade, matte; the cope (above
+                    // 0.87 m): stones set on edge, narrow upright slabs. Lichen in patches, darker towards the foot. (The first
+                    // cut read as pillowy bricks in neat rows, 18 Oct: no bevel now, courses waver and stones vary more.)
+                    half joint,shade;float2 cell;
+                    if(height>.87) {
+                        float xx=s.x/.12+(N(float2(s.x*.6,.8))-.5)*1.4;cell=float2(floor(xx),71);float fx=frac(xx);
+                        joint=(1-smoothstep(.03,.16,min(fx,1-fx)))*Resolve(.03,fp);shade=lerp(.5,Hash(cell),Resolve(.12,fp));
+                    } else {
+                        float wob=(N(float2(s.x*.35,.3))-.5)*.22+(N(float2(s.x*1.3,.7))-.5)*.05;float rowH=.13;float yy=s.y+wob;float row=floor(yy/rowH);
+                        float len=.16+.42*Hash(float2(row,1.7));float xx=s.x/len+Hash(float2(row,5.1))+(N(float2(s.x*.8,row*.37))-.5)*.9;
+                        cell=float2(floor(xx),row);float fx=frac(xx),fy=frac(yy/rowH);
+                        float thick=rowH*(.62+.6*Hash(cell+2.3));float2 edge=float2(min(fx,1-fx)*len,min(fy*rowH,max(thick-fy*rowH,0)));
+                        joint=(1-smoothstep(.005,.02,min(edge.x,edge.y)))*Resolve(.03,fp);shade=lerp(.5,Hash(cell),Resolve(.2,fp));
+                    }
+                    m=.76+shade*.38+(fine-.5)*.14+(grain-.5)*.08+(mottle-.5)*.16-joint*.62*near;
+                    tint=lerp(half3(1.06,1,.92),half3(.92,.98,1.07),lerp(.5,Hash(cell+7.7),Resolve(.25,fp)));
+                    half lichen=smoothstep(.6,.78,N(s*.8+.2))*smoothstep(.2,.8,s.y);tint=lerp(tint,half3(1.1,1.08,.8),lichen*.4);m+=lichen*.06;
+                    m*=lerp(.84,1,smoothstep(0,.45,height));
+                    bump=fine*.35+grain*.2+shade*.15-joint*.6;occlusion=1-joint*.5*near;smooth=min(_Smoothness,.05);
                 } else if(pattern==8) { // natural rock: weathered, cracked, no courses
                     half crack=(1-smoothstep(.0,.09,abs(N(s*.33+.9)-.5)))*Resolve(.12,fp);m=1+(mottle-.5)*.18+(fine-.5)*.09-crack*.08*near;
                     // Low-frequency relief only: the derivative bump is evaluated per 2x2 pixel quad, so
@@ -213,7 +234,7 @@ Shader "LittleRoad/Kit"
                 // Derivative bump from the pattern height (no tangents needed).
                 float3 dpdx=ddx(p),dpdy=ddy(p);float dhx=ddx(bump),dhy=ddy(bump);
                 float3 r1=cross(dpdy,n),r2=cross(n,dpdx);float det=dot(dpdx,r1);
-                float strength=pattern==2?.04:pattern==3?.035:pattern==5?.06:pattern==8||pattern==10?.045:.02;
+                float strength=pattern==2?.04:pattern==11?.03:pattern==3?.035:pattern==5?.06:pattern==8||pattern==10?.045:.02;
                 float3 grad=sign(det)*(dhx*r1+dhy*r2)*strength*(.35+.65*near);half3 bumped=normalize(abs(det)*n-grad);
                 if(abs(det)>1e-8&&near>0)n=bumped;
                 SurfaceData surface=(SurfaceData)0;

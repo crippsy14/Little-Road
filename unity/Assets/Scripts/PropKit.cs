@@ -19,7 +19,9 @@ namespace LittleRoad
     [Serializable] public sealed class PropSocket{public string name;public PropVec at,forward;}
     [Serializable] public sealed class PropPiece{public string name,role,ground;public int variant;public float length,skirt;public float[] stretch,lengths,sink;
         public PropVec[] contact;public PropCollision collision;public PropSocket[] sockets;public PropLod[] lods;}
-    [Serializable] public sealed class PropRun{public float spacing,minRadius,maxTurn,sagitta;public float[] railHeights,clearance,opening;}
+    // (a deforming kit adds: deform, the slice spacing it bends at; halfBase, half its foot's width; copeFrom and height,
+    //  where its cope starts and its crown; copeJitter, how far the cope's top wobbles; sink, how far its base goes in)
+    [Serializable] public sealed class PropRun{public float spacing,minRadius,maxTurn,sagitta,deform,halfBase,copeFrom,copeJitter,height,sink;public float[] railHeights,clearance,opening;}
     [Serializable] public sealed class PropKitFile{public string schema,kit,hash,kind,doc;public int version,vertexCount,indexByteOffset,indexCount;
         public string[] materials;public PropRun run;public PropPiece[] pieces;}
 
@@ -62,7 +64,10 @@ namespace LittleRoad
             var p=Piece(piece);var l=p.lods[Mathf.Clamp(lod,0,p.lods.Length-1)];
             var pos=new Vector3[l.vertexCount];var nrm=new Vector3[l.vertexCount];var uv=new Vector2[l.vertexCount];
             for(int i=0;i<l.vertexCount;i++){int o=(l.vertexStart+i)*8;pos[i]=new(vertices[o],vertices[o+1],vertices[o+2]);nrm[i]=new(vertices[o+3],vertices[o+4],vertices[o+5]);uv[i]=new(vertices[o+6],vertices[o+7]);}
-            m=new Mesh{name=$"{file.kit}.{piece}.lod{lod}"};m.SetVertices(pos);m.SetNormals(nrm);m.SetUVs(0,uv);m.subMeshCount=l.submeshes.Length;
+            // (uv1 and uv2 are the kit shader's surface coordinate and height above the base, for its non-world-space
+            //  patterns: the kit's own metres and the height up the piece)
+            var height=new Vector2[l.vertexCount];for(int i=0;i<l.vertexCount;i++)height[i]=new Vector2(pos[i].y,0);
+            m=new Mesh{name=$"{file.kit}.{piece}.lod{lod}"};m.SetVertices(pos);m.SetNormals(nrm);m.SetUVs(0,uv);m.SetUVs(1,uv);m.SetUVs(2,height);m.subMeshCount=l.submeshes.Length;
             for(int s=0;s<l.submeshes.Length;s++){var sub=l.submeshes[s];var tri=new int[sub.count];for(int i=0;i<sub.count;i++)tri[i]=(int)indices[sub.start+i]-l.vertexStart;m.SetTriangles(tri,s,false);}
             m.RecalculateBounds();return meshes[(piece,lod)]=m;
         }
@@ -80,6 +85,7 @@ namespace LittleRoad
                 "timber"=>WorldLook.Kit("PF Timber",new Color(.55f,.4f,.26f),WorldLook.Pattern.Wood,0,.2f,true),
                 "paint"=>WorldLook.Kit("PF Paint",new Color(.92f,.91f,.86f),WorldLook.Pattern.Paint,0,.3f),
                 "stone"=>WorldLook.Kit("PF Stone",new Color(.62f,.6f,.55f),WorldLook.Pattern.Stone,0,.15f,true),
+                "drystone"=>WorldLook.Kit("PF DryStone",new Color(.6f,.58f,.53f),WorldLook.Pattern.DryStone,0,.08f),
                 "metal"=>WorldLook.Kit("PF Metal",new Color(.6f,.62f,.65f),WorldLook.Pattern.Plain,.6f,.45f),
                 "rubber"=>WorldLook.Kit("PF Rubber",new Color(.12f,.12f,.13f),WorldLook.Pattern.Plain,0,.15f),
                 "straw"=>WorldLook.Kit("PF Straw",new Color(.86f,.74f,.42f),WorldLook.Pattern.Plain,0,.1f),
