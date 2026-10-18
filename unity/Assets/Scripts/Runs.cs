@@ -24,6 +24,7 @@ namespace LittleRoad
         public float offset;                // (metres to the right of the line's direction; negative: the left)
         public float from=0,to=-1;          // (arc range along the offset line; to < 0: to the end)
         public Func<Vector3,bool> cut;      // (true where something cuts the run: a crossing road, a drive)
+        public bool gateEnds;               // (both ends are an opening's sides: a paddock fence from one gatepost round to the other)
     }
     // One laid piece: rigid (its matrix places it) or bent (deform: along path `path` from arc s0 to s1; its matrix is
     // only where it starts).
@@ -125,19 +126,22 @@ namespace LittleRoad
             foreach(var (sa,sb) in stretches) {
                 float len=sb-sa;
                 if(len<minSpan){L.tooShort=true;L.notes.Add($"a stretch of {len:0.0} m at {sa:0} m is shorter than one span ({minSpan:0.0} m): nothing laid");continue;}
-                // (as near the kit's own spacing as whole spans allow, never past its stretch either way)
-                int n=Mathf.Clamp(Mathf.RoundToInt(len/nominal),Mathf.Max(1,Mathf.CeilToInt(len/maxSpan)),Mathf.Max(1,Mathf.FloorToInt(len/minSpan)));var posts=new List<float>();for(int k=0;k<=n;k++)posts.Add(sa+len*k/n);
+                // (a corner sharper than the kit's maxTurn gets its own post, a heavier one, as a paddock's corners have; between
+                //  corners, as near the kit's own spacing as whole spans allow, never past its stretch either way)
+                var cuts=Corners(line,arc,sa,sb,run.maxTurn,minSpan);L.corners+=cuts.Count-2;var corner=new HashSet<float>(cuts.Skip(1).Take(cuts.Count-2));var posts=new List<float>();
+                for(int c=0;c+1<cuts.Count;c++){float a=cuts[c],b=cuts[c+1],l=b-a;int n=Mathf.Clamp(Mathf.RoundToInt(l/nominal),Mathf.Max(1,Mathf.CeilToInt(l/maxSpan)),Mathf.Max(1,Mathf.FloorToInt(l/minSpan)));
+                    for(int k=c==0?0:1;k<=n;k++)posts.Add(k==n?b:a+l*k/n);}
                 // (rails clear of a crest and not stranded over a hollow: a span that fails gets a post at its middle)
                 for(int k=0;k+1<posts.Count;k++) {
                     var (low,high)=Clearance(line,arc,posts[k],posts[k+1],heights[0]-.055f);
                     float span=posts[k+1]-posts[k];
                     if((low<run.clearance[0]||high>run.clearance[1])&&span/2>=MinSplit){posts.Insert(k+1,(posts[k]+posts[k+1])/2);L.split++;k--;}
                 }
-                bool openStart=sa>a0+1e-3f,openEnd=sb<a1-1e-3f;
+                bool openStart=sa>a0+1e-3f||spec.gateEnds,openEnd=sb<a1-1e-3f||spec.gateEnds;
                 for(int k=0;k<posts.Count;k++) {
                     var f=Foot(At(line,arc,posts[k]));L.feet.Add(f);
                     bool first=k==0,last=k==posts.Count-1;
-                    string piece=(first&&openStart)||(last&&openEnd)?gatePost:first||last?endPost:post;if(piece==gatePost)L.gatePosts++;
+                    string piece=(first&&openStart)||(last&&openEnd)?gatePost:first||last||corner.Contains(posts[k])?endPost:post;if(piece==gatePost)L.gatePosts++;
                     var dir=At(line,arc,Mathf.Min(posts[k]+.5f,a1))-At(line,arc,Mathf.Max(posts[k]-.5f,a0));dir.y=0;
                     L.items.Add(new RunItem{piece=piece,arc=posts[k],m=Matrix4x4.TRS(f,Quaternion.LookRotation(dir.normalized,Vector3.up),Vector3.one)});L.posts++;
                     if(k>0) {
@@ -171,20 +175,10 @@ namespace LittleRoad
         {
             var kit=L.kit;var run=kit.file.run;string wall=Role(kit,"middle"),node=Role(kit,"node"),end=Role(kit,"end"),gate=Role(kit,"gate_post");
             var wp=kit.Piece(wall);float nominal=run.spacing,minLen=nominal*wp.stretch[0],maxLen=nominal*wp.stretch[1];
-            // corners: where the line turns by more than the kit's maxTurn over a metre either side (the sharpest sample of
-            // each); a gentle bend (an 8 m road bend turns about 16 deg a metre on its inside) bends the wall instead
-            var turn=new float[line.Length];
-            for(int i=2;i+2<line.Length;i++){var d0=line[i]-line[i-2];var d1=line[i+2]-line[i];d0.y=d1.y=0;turn[i]=Vector3.Angle(d0,d1);}
             foreach(var (sa,sb) in stretches) {
                 if(sb-sa<minLen){L.tooShort=true;L.notes.Add($"a stretch of {sb-sa:0.0} m at {sa:0} m is shorter than one piece ({minLen:0.0} m): nothing laid");continue;}
-                var cuts=new List<float>{sa};
-                for(int i=2;i+2<line.Length;i++) {
-                    if(turn[i]<=run.maxTurn||turn[i]<=turn[i-1]||turn[i]<turn[i+1])continue;
-                    if(arc[i]-cuts[^1]<minLen||sb-arc[i]<minLen)continue;
-                    cuts.Add(arc[i]);L.corners++;
-                }
-                cuts.Add(sb);
-                bool openStart=sa>a0+1e-3f,openEnd=sb<a1-1e-3f;
+                var cuts=Corners(line,arc,sa,sb,run.maxTurn,minLen);L.corners+=cuts.Count-2;
+                bool openStart=sa>a0+1e-3f||L.spec.gateEnds,openEnd=sb<a1-1e-3f||L.spec.gateEnds;
                 for(int c=0;c<cuts.Count;c++) {
                     bool first=c==0,last=c==cuts.Count-1;
                     string piece=(first&&openStart)||(last&&openEnd)?gate:first||last?end:node;if(piece==gate)L.gatePosts++;
@@ -209,6 +203,21 @@ namespace LittleRoad
                     }
                 }
             }
+        }
+        // A stretch's corners: where the line turns by more than maxTurn over a metre either side (the sharpest sample of
+        // each), at least minGap from the last and from the stretch's end; returned with the stretch's ends, in order. (A
+        // gentle bend, an 8 m road bend turns about 16 deg a metre on its inside, bends a wall or faces a fence instead.)
+        static List<float> Corners(Vector3[] line,float[] arc,float sa,float sb,float maxTurn,float minGap)
+        {
+            var turn=new float[line.Length];
+            for(int i=2;i+2<line.Length;i++){var d0=line[i]-line[i-2];var d1=line[i+2]-line[i];d0.y=d1.y=0;turn[i]=Vector3.Angle(d0,d1);}
+            var cuts=new List<float>{sa};
+            for(int i=2;i+2<line.Length;i++) {
+                if(arc[i]<=sa||arc[i]>=sb||turn[i]<=maxTurn||turn[i]<=turn[i-1]||turn[i]<turn[i+1])continue;
+                if(arc[i]-cuts[^1]<minGap||sb-arc[i]<minGap)continue;
+                cuts.Add(arc[i]);
+            }
+            cuts.Add(sb);return cuts;
         }
         // A wall's own path between two piers: the offset line between them, smoothed (a road's polyline kinks would show
         // as creases in a bent wall), resampled every deform step, with the wall's base at each point: the lowest ground
@@ -342,7 +351,7 @@ namespace LittleRoad
             ? $"{L.spec.name,-24} {L.kit.file.kit}@{L.kit.file.version}  {L.length,6:0.0} m  piers {L.posts,3}  pieces {L.spans,3} ({(L.spans>0?L.minSpan:0):0.00}-{L.maxSpan:0.00} m)  " +
               $"corners {L.corners}  openings {L.openings} (gate piers {L.gatePosts})  solve {L.solveMs:0.0} ms  draw {L.drawMs:0.0} ms  {(L.failures.Count==0?"ok":L.failures.Count+" failure(s)")}" +
               (L.notes.Count>0?"  ("+string.Join("; ",L.notes)+")":"")
-            : $"{L.spec.name,-24} {L.kit.file.kit}@{L.kit.file.version}  {L.length,6:0.0} m  posts {L.posts,3}  spans {L.spans,3} ({(L.spans>0?L.minSpan:0):0.00}-{L.maxSpan:0.00} m)  " +
+            : $"{L.spec.name,-24} {L.kit.file.kit}@{L.kit.file.version}  {L.length,6:0.0} m  posts {L.posts,3}  spans {L.spans,3} ({(L.spans>0?L.minSpan:0):0.00}-{L.maxSpan:0.00} m)  corners {L.corners}  " +
               $"openings {L.openings} (gate posts {L.gatePosts})  split {L.split}  clearance {(L.spans>0?L.worstClearLow:0):0.00}-{L.worstClearHigh:0.00} m  " +
               $"solve {L.solveMs:0.0} ms  draw {L.drawMs:0.0} ms  {(L.failures.Count==0?"ok":L.failures.Count+" failure(s)")}" +
               (L.notes.Count>0?"  ("+string.Join("; ",L.notes)+")":"");

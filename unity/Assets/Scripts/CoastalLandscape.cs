@@ -200,7 +200,7 @@ namespace LittleRoad
             // Rows in parallel (docs/72): Height is pure maths once its one lazy value (the farm pad) is set.
             Height(BayviewCountryside.Farm.x,BayviewCountryside.Farm.z);
             System.Threading.Tasks.Parallel.For(0,nz,z=>{for(int x=0;x<nx;x++){int i=z*nx+x;float wx=(x-(nx-1)*.5f)*step,wz=(z-(nz-1)*.5f)*step;vertices[i]=new Vector3(wx,Height(wx,wz),wz);uv[i]=new Vector2(wx,wz)*.2f;}});
-            Lap("land heights");
+            Lap("land heights");landGrid=vertices;
             void Triangle(int a,int b,int c) {
                 Vector3 normal=Vector3.Cross(vertices[b]-vertices[a],vertices[c]-vertices[a]).normalized;
                 Vector3 middle=(vertices[a]+vertices[b]+vertices[c])/3;
@@ -339,17 +339,37 @@ namespace LittleRoad
         }
         void Roadside()
         {
-            // Adventure only: an opening where the Hillcrest mainline leaves the loop (races keep the wall).
-            float junction=ValleyDetail?track.Nearest(HillcrestRoute.Mainline.line[0],out _):-999;
+            // (with --prop-forge, Prop Forge's dry-stone wall runs here instead, with the same gaps: PropForgeBayview)
+            if(PropForge.Enabled)return;
             for(float d=105;d<track.length-25;d+=3.6f) {
-                if(Mathf.Abs(d-bridgeDistance)<29||Mathf.Abs(d-junction)<8)continue;
-                // Intermittent outer stone walls frame the coast, with open
-                // shoulders at signed turnouts and postcard approaches.
-                bool opening=false;
-                for(int i=0;i<5;i++)if(Mathf.Abs(d-track.length*(.12f+i*.17f))<10)opening=true;
-                if(opening||d>290&&d<345)continue;
+                if(RoadsideGap(d))continue;
                 Wall(d,1,13.4f,3.6f);
             }
+        }
+        // Where the outer coast wall stops: before 105 m and in the last 25, at the bridge, at the Hillcrest mainline's
+        // junction (adventure only: races keep the wall), and at open shoulders by the signed turnouts and postcard
+        // approaches.
+        float roadsideJunction=float.NaN;
+        public bool RoadsideGap(float d)
+        {
+            if(d<105||d>=track.length-25)return true;
+            if(float.IsNaN(roadsideJunction))roadsideJunction=ValleyDetail?track.Nearest(HillcrestRoute.Mainline.line[0],out _):-999;
+            if(Mathf.Abs(d-bridgeDistance)<29||Mathf.Abs(d-roadsideJunction)<8)return true;
+            for(int i=0;i<5;i++)if(Mathf.Abs(d-track.length*(.12f+i*.17f))<10)return true;
+            return d>290&&d<345;
+        }
+        public Circuit Track=>track;
+        // The island's drawn ground (LandMesh's grid, 1.5 m, split the way its triangles are), for Prop Forge's runs:
+        // exactly what's drawn, where the analytic Height can differ by centimetres between grid points.
+        Vector3[] landGrid;const int LandNX=289,LandNZ=257;const float LandStep=1.5f;
+        public float Drawn(float x,float z)
+        {
+            if(landGrid==null)return Height(x,z);
+            float gx=x/LandStep+(LandNX-1)*.5f,gz=z/LandStep+(LandNZ-1)*.5f;int ix=Mathf.FloorToInt(gx),iz=Mathf.FloorToInt(gz);
+            if(ix<0||iz<0||ix>=LandNX-1||iz>=LandNZ-1)return Height(x,z);
+            float fx=gx-ix,fz=gz-iz;int a=iz*LandNX+ix;
+            float h00=landGrid[a].y,h10=landGrid[a+1].y,h01=landGrid[a+LandNX].y,h11=landGrid[a+LandNX+1].y;
+            return fx+fz<=1?h00+fx*(h10-h00)+fz*(h01-h00):h11+(1-fx)*(h01-h11)+(1-fz)*(h10-h11);
         }
         void Cypress(Vector3 p,float h,int variant)
         {
@@ -474,6 +494,8 @@ namespace LittleRoad
             if(ValleyDetail){if(hillcrest)Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");
                 // Quarry Hills far from where the car starts is built after the town is ready (Districts, docs/72).
                 if(deferQuarry)Districts.Defer("quarry-hills",QuarryHillsSceneryRoutine(),SettleQuarryHills,Rect.MinMaxRect(QuarryHills.West-30,QuarryHills.South-30,QuarryHills.SeamX+30,1e6f));else QuarryHillsScenery();Step("quarry-hills");Next(.93f,"Filling the sea");yield return null;}
+            // (Prop Forge last of the building, so its runs and objects see everything placed: the quay's dressing comes with Hillcrest)
+            if(island&&PropForge.Enabled){Physics.SyncTransforms();PropForgeBayview.Build(this,root);Step("prop-forge");}
             Lap("settle start");Debug.Log("LITTLE_ROAD_RAILS_TRIMMED "+(deferQuarry?TrimRails(p=>!NearQuarryHills(p)):TrimRails()));   // (rails and junction corner walls in front of buildings; every build)
             Lap("settle trim rails");RegisterRoads();Lap("settle register roads");
             // Runtime static batching converts combined geometry to 16-bit

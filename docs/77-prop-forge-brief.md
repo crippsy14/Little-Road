@@ -159,3 +159,44 @@ at the same anchors.
 - **Defaults I've taken on the review's two questions** (Richard can overrule either):
   - re-dressed cars are shown as a before/after contact sheet per batch, not one at a time;
   - props keep their world size on cars.
+
+## Stage one, as built (18 Oct)
+Steps 0-5 are written up in car-forge `docs/log.md`. In short:
+- the guards hold (54 of 55 roster cars identical through every step; only the Cob moved, on purpose);
+- the fence and the dry-stone wall lay clean on the run range (`--run-range`), and a car sliding along the wall keeps
+  100% of its speed;
+- 113 bales place without repeats;
+- the jerry can is one object with two users: the range's quay and the Cob's tailgate, at the same world size.
+
+**Step 6, the proving ground: Bayview, behind `--prop-forge` (`PropForgeBayview`).**
+- **What it lays:**
+  - **The coast road's stone wall** is one dry-stone run (767 m) instead of 3.6 m stamped sections. It keeps the same
+    gaps (`CoastalLandscape.RoadsideGap`), and a pier stands either side of each of its 7 openings.
+  - **The farm's paddock fence** is one post-and-rail run from gatepost to gatepost, round four corner posts, instead
+    of 6 m kit pieces.
+  - **The bale stack** by the barn and three round bales beside it.
+  - **Three jerry cans** on the Halt quay, at a spot clear of every footprint, collider and drawn thing.
+- **How it's built:**
+  - The ground is the island's drawn grid (`CoastalLandscape.Drawn`); the cans stand on the quay's own surface.
+  - It's built last of the world, so it sees everything placed.
+  - The flag is in `WorldCache.WorldFlags`.
+- **Load:** 97-142 ms at build (most of it drawing the bent wall, about 100 ms). That's inside the cold budget of
+  200 ms, but over the warm budget of 60 ms until runs are cached. Caching is the next piece of work here.
+- **World fingerprint** (`--no-static-batching`):
+  - Flag off: `3f164ae90677e486`, the same as a build of the code before step 6 (set aside and rebuilt to compare).
+  - **Flag on, the baseline: `4361850cf9a9ac29`.**
+- **Area audit:** flag on and off identical in every defect. Bayview's three steep banks with no barrier were there
+  before. 23 fewer kit pieces: the stamped fence and bales are now Prop Forge's. The audit does not count Prop Forge
+  runs and objects yet; registering their footprints with the audits is still to do (see Risks).
+- **Street review** (`--street-review --street-review-town bayview`, report in
+  `review/street-review/prop-forge-coast-wall.md`): "the new dry-stone wall works". It sits on the ground the whole
+  length, with no cracks between pieces, nothing over the road, and clean piers at the junction. No high findings. Its
+  notes:
+  - the piers' caps read "a bit like bins" (to improve);
+  - the old ashlar parapet starts about 5 m past the wall's last pier at the bridge (the gap is the old wall's too);
+  - a few signs stand close behind the wall, where they stood by the old one.
+- **Still to do before Bayview is rebuilt with it:**
+  - the audits' registries (footprints and contact samples);
+  - caching the solved runs (the warm budget);
+  - better pier caps;
+  - then breadth (step 7).

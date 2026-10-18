@@ -61,15 +61,18 @@ namespace LittleRoad
             Plinth(f+new Vector3(-11,0,16),new Vector2(8.5f,7.5f));Put("house_a",f+new Vector3(-11,0,16),180,T(0xfff3dc,0x2e9e5b,0xff4d5e,0x2e9e5b));
             Plinth(f+new Vector3(10,0,17),new Vector2(10.5f,9.5f));Put("barn",f+new Vector3(10,0,17),180,T(0xd94040,0xffffff,0xffffff,0xd94040),1.15f);
             Put("tractor",f+new Vector3(-2,0,7),70);
-            foreach(var (x,y) in new[]{(19f,0f),(20.3f,0f),(21.6f,0f),(19.65f,1.25f),(20.95f,1.25f),(20.3f,2.45f)}){var b=Put("hay_bale",f+new Vector3(x,0,8),0);b.transform.position+=Vector3.up*y;}
+            // (with --prop-forge the bales and the paddock fence are Prop Forge's: PropForgeBayview)
+            if(!PropForge.Enabled)foreach(var (x,y) in new[]{(19f,0f),(20.3f,0f),(21.6f,0f),(19.65f,1.25f),(20.95f,1.25f),(20.3f,2.45f)}){var b=Put("hay_bale",f+new Vector3(x,0,8),0);b.transform.position+=Vector3.up*y;}
             // Wheat: 30 x 18 m of car-high crop to plough through.
             var wheat=f+new Vector3(-7,0,-11);WheatField.Create("Bayview farm wheat",root,wheat,new Vector2(30,18),0,(x,z)=>Ground(new Vector3(x,0,z)).y,77);
-            for(float x=-21;x<=9;x+=6)if(x<-10||x>-4)Put("fence",f+new Vector3(x,0,-1.2f),0);
-            for(float x=-21;x<=9;x+=6)Put("fence",f+new Vector3(x,0,-20.8f),0);
-            foreach(float z in new[]{-17f,-11f,-5f})Put("fence",f+new Vector3(-23.2f,0,z),90);
+            if(!PropForge.Enabled){
+                for(float x=-21;x<=9;x+=6)if(x<-10||x>-4)Put("fence",f+new Vector3(x,0,-1.2f),0);
+                for(float x=-21;x<=9;x+=6)Put("fence",f+new Vector3(x,0,-20.8f),0);
+                foreach(float z in new[]{-17f,-11f,-5f})Put("fence",f+new Vector3(-23.2f,0,z),90);
+            }
             // Lavender beside it.
             if(BayviewKit.Has("lavender_row"))for(int r=0;r<7;r++)Put("lavender_row",f+new Vector3(24f,0,-18+r*2.3f),0,null,1,false);
-            foreach(float z in new[]{-17f,-11f,-5f})Put("fence",f+new Vector3(9.2f,0,z),90);
+            if(!PropForge.Enabled)foreach(float z in new[]{-17f,-11f,-5f})Put("fence",f+new Vector3(9.2f,0,z),90);
         }
         void Plinth(Vector3 at,Vector2 size)
         {

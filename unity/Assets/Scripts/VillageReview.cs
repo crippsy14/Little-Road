@@ -28,12 +28,13 @@ namespace LittleRoad
             foreach(var road in HillcrestRoute.All())streets.Add((road.name,road.line,road.width*.5f,false));
             player.body.isKinematic=true;player.body.position+=Vector3.down*30;
             var manifest=new List<string>();int shots=0;
+            string only=RaceTrial.Arg("--street-review-town");   // (one town only: bayview, hillcrest or quarry-hills)
             foreach(var (name,line,half,closed) in streets) {
                 int n=line.Length;var run=new List<float>{0};for(int i=1;i<n;i++)run.Add(run[^1]+Vector3.Distance(line[i],line[i-1]));float length=run[^1];
                 Vector3 At(float s){s=Mathf.Clamp(s,0,length);int i=1;while(i<n-1&&run[i]<s)i++;return Vector3.Lerp(line[i-1],line[i],Mathf.InverseLerp(run[i-1],run[i],s));}
                 int index=0;
                 for(float s=10;s<length-10;s+=40) {
-                    var p=At(s);string town=Town(p);if(town==null)continue;
+                    var p=At(s);string town=Town(p);if(town==null||only!=null&&town!=only)continue;
                     var ahead=At(s+3)-At(s-3);ahead.y=0;if(ahead.sqrMagnitude<1e-4f)continue;ahead.Normalize();var right=Vector3.Cross(Vector3.up,ahead);
                     var views=new List<(string kind,Vector3 cam,Vector3 look)>{("along",p+Vector3.up*1.7f-right*1.2f,At(s+28)+Vector3.up*1.2f)};
                     foreach(int side in new[]{-1,1})views.Add((side<0?"left":"right",p-right*side*(half+2)+Vector3.up*6.5f-ahead*4,p+right*side*(half+9)+Vector3.up*3+ahead*4));
@@ -229,7 +230,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--view-shots")) {
                 // A height written "g+2" is 2 m above the ground there (driver's-eye views without looking heights up).
                 Vector3 V(string text){var s=text.Split(',');float F(string x)=>float.Parse(x,System.Globalization.CultureInfo.InvariantCulture);float x0=F(s[0]),z0=F(s[2]);
-                    float y=s[1].StartsWith("g")?ValleyField.Height(x0,z0)+(s[1].Length>1?F(s[1].Substring(1)):0):F(s[1]); /* ("g" alone: on the ground) */return new Vector3(x0,y,z0);}
+                    float y=s[1].StartsWith("g")?Ground.Surface(x0,z0)+(s[1].Length>1?F(s[1].Substring(1)):0):F(s[1]); /* ("g" alone: on the ground) */return new Vector3(x0,y,z0);}
                 player.body.isKinematic=true;player.body.position+=Vector3.down*30;
                 foreach(var shot in RaceTrial.Arg("--view-shots").Split(';')) {
                     var name=shot.Split(':');var ends=name[1].Split('>');
