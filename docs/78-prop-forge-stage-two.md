@@ -71,3 +71,45 @@ The gains are, in order:
   - far trees keep KitLod's stand-ins.
 - With the flag off, the world's fingerprint is unchanged.
 - The full regression runs at each landmark.
+
+## Done so far (18 Oct, night)
+Everything below is behind `--prop-forge`. With the flag off, the world's fingerprint is unchanged
+(`3f164ae90677e486`).
+
+| What | Before | Now |
+|---|---|---|
+| Trees, 11 species | one model per species | 49 seeded trees, each by its own habit (car-forge `kits/trees.py`) |
+| Rocks | a squashed sphere, three boxes | faceted boulders with moss on the stone, slab stacks, clusters (`kits/rocks.py`) |
+| Quarry Hills field walls, 1.9 km | stretched boxes | slate dry-stone runs bent along the roads, with piers |
+| Quarry Hills field gates | five white bars | a five-bar gate with its brace, hinges and latch on timber posts (`kits/farm.py`) |
+| Sheep, 548 | a sphere, a sphere, four cylinders | Welsh mountain sheep: a fleece of puffs, knee'd legs, a black face with sideways ears; the head still nods (`kits/sheep.py`) |
+| Valley guardrails | painted boxes | W-beam Armco on C-channel posts (`kits/armco.py`) |
+| Raceway kerbs | flat boxes | crowned, ribbed rumble kerbs |
+| Hillcrest parapet caps | flat slabs | saddleback coping stones with drips |
+| Lamp posts, benches, picnic tables, fences, bales, flag poles, the telescope, campfires, tents | a few boxes and cylinders each | `kits/furniture.py`: a cast-iron lamp with a lit lantern, scroll-ended benches, pointed pickets, round bales with twine, a waving flag, the coin-op viewer, ridge and dome tents |
+| Boats | one model | a fishing boat, a crabber and a yacht on one lofted hull (`kits/boats.py`) |
+| Street life | none | 15 new pieces (`kits/street.py`), placed by `PropForgeDressing` (81 in all) |
+
+**Street life, piece by piece:**
+- bins, cannon bollards, planters;
+- a pillar box and a K6 phone box;
+- A-boards and a bike rack;
+- creels, fish crates, barrels, buoys and rope coils;
+- a rowing boat;
+- deckchairs and windbreaks.
+
+**Where the dressing puts them:**
+- a bin by each bench;
+- A-boards, planters and a bike rack at shop and cafe fronts;
+- a pillar box by each post office;
+- a phone box and bollards by each fountain;
+- harbour clutter along the quay tops;
+- deckchairs and windbreaks before the beach huts.
+
+**Also new:**
+- **`ForgeStandIns`:** a Forge kit stands in for game kit ids.
+- **`tools/prop_sheet.py`:** contact sheets.
+- **`--street-review-town`:** a street review of one town only.
+- **`--gate-log`:** logs where gates and rails went, for aiming review shots.
+
+**Next:** hedgerows as a deforming run; the bridge, causeway and viaduct balustrades; buildings (a plot-fitted generator).
