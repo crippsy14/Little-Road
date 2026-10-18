@@ -356,7 +356,7 @@ namespace LittleRoad
                 Vector3 a=line[i],b=line[(i+1)%n];run+=Vector3.Distance(a,b);if(run<4)continue;run=0;
                 Vector3 f0=line[(i+n-6)%n]-line[i],f1=line[(i+6)%n]-line[i];f0.y=f1.y=0;if(Vector3.Angle(-f0,f1)<6)continue;
                 var f=(b-a);var right=Vector3.Cross(Vector3.up,new Vector3(f.x,0,f.z).normalized);block++;
-                foreach(int side in new[]{-1,1}){bool odd=block%2==0;var k=Piece("Raceway kerb",a+right*side*8.25f+Vector3.up*(odd?.058f:.055f),new Vector3(.7f,odd?.106f:.10f,3.8f),odd?coral:white);k.transform.rotation=Quaternion.LookRotation(f);}
+                foreach(int side in new[]{-1,1}){bool odd=block%2==0;var k=Piece("Raceway kerb",a+right*side*8.25f+Vector3.up*(odd?.058f:.055f),new Vector3(.7f,odd?.106f:.10f,3.8f),odd?coral:white);k.transform.rotation=Quaternion.LookRotation(f);ForgeRail(k,"kerb");}
             }
             Lap("raceway kerbs");
             // Start line, grid marks, gantry.
