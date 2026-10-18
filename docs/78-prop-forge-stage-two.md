@@ -113,3 +113,31 @@ Everything below is behind `--prop-forge`. With the flag off, the world's finger
 - **`--gate-log`:** logs where gates and rails went, for aiming review shots.
 
 **Next:** hedgerows as a deforming run; the bridge, causeway and viaduct balustrades; buildings (a plot-fitted generator).
+
+## Ground fit, hedgerows, railings, houses (18-19 Oct)
+- **Every prop sits at the angle of its land** (Richard: "for this and moving forward"). `GroundFit` fits every kit piece
+  as it spawns, by kind:
+  - **tilt:** loose things settle on the slope (rocks, bales, tents, benches, crates);
+  - **rake:** fences follow the slope along their length;
+  - **plumb:** trees, posts and lamps stay upright, sunk until no edge of the foot hangs;
+  - **leave:** buildings and anything on a quay or plinth.
+
+  A new id is plumb if small. The rule is written into `docs/art-direction.md` for every new kit. Pieces with a corner
+  more than 10 cm in the air: 1,098 before, 165 after; the rest are held by the tilt caps and the 0.4 m sink limit.
+- **Hedgerows:** Hillcrest's field-edge bush rows are continuous deforming hedges (`kits/hedge.py`). They undulate along
+  the top and the sides, keep the same gaps, have hedgerow trees standing in them, and can be driven through as before.
+- **Railings:**
+  - Bayview's promenade has Victorian railings with gold finials (`kits/railings.py`).
+  - The causeway's balustrade has turned balusters, panelled pilasters and moulded caps.
+  - Its rails and the valley bridges' copings are saddleback coping stones.
+- **Houses:** a house generator (`kits/houses.py`) gives four variants each of house_a-d and cottage_a-c (28 houses). Each
+  keeps its id's footprint, so every placement takes it, varying:
+  - the roof form, the chimneys and the window rhythm;
+  - shutters and flower boxes;
+  - the door's dress (canopy, fanlight, pillared porch);
+  - dormers, quoins and string courses;
+  - a loggia on villas and tower tops, a balcony on townhouses.
+  - Terraces, shops and landmarks are still the Blender kit's.
+- **Checks:**
+  - With the flag off, the world's fingerprint is unchanged (`3f164ae90677e486`).
+  - With the flag on: the adventure smoke, the sprint and blast tests pass.
