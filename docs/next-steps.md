@@ -1,5 +1,15 @@
 # Next steps (3 October 2026)
 
+**18 October, evening: the class C art pass.**
+- **The review:** an art-director review agent went through all 55 class C cars in one voice
+  (car-forge `review/artistic-1`). I applied most of it (car-forge `tools/artpass_c.py`):
+  - silhouettes split apart: true saloons, a tall-hatch family with clear sizes, long and short cars;
+  - one signature each;
+  - borrowed kit removed.
+  No pair reaches the 0.90 look-alike mark any more.
+- **Collision boxes:** Forge cars' boxes are now centred on the body. Props hanging off one end (the Ladders' ladder,
+  the Pronto's hot box) had shifted the box and left cars stuck. Bayview 24/24 four times after the fix.
+
 **18 October, later: class C hand pass; class B cars removed.**
 - **Class C hand pass** to the Kestrel standard (car-forge `tools/closeup.py`, `tools/handpass_c.py`):
   - drawn lines on every car;

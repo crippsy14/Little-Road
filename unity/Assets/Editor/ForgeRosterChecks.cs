@@ -61,6 +61,22 @@ public static class ForgeRosterChecks
             Check(UnityEngine.Vector3.Angle(spun,still)<.01f,"Wheel camber: a cambered wheel spins about its own tilted axle (no wobble)");
             UnityEngine.Object.DestroyImmediate(car);
         }
+        // Collision boxes: each roster car's box spans its own body along the car, nose to tail within 6 cm, whatever its
+        // props hang off (18 Oct: the Ladders' ladder and the Pronto's hot box shifted the box off the car).
+        foreach(var id in roster) {
+            var source=UnityEngine.Resources.Load<UnityEngine.GameObject>("Cars/"+id);if(source==null)continue;
+            var car=UnityEngine.Object.Instantiate(source);car.name=id;
+            try {
+                var (centre,size)=RoadCar.CollisionBox(car);var d=CarBodies.Forged(id);
+                float zf=0,zr=0;int nf=0,nr=0;
+                foreach(var t in car.GetComponentsInChildren<UnityEngine.Transform>(true)){if(!WheelVisuals.IsPivot(t.name))continue;float z=car.transform.InverseTransformPoint(t.position).z;if(t.name.StartsWith("Wheel_F")){zf+=z;nf++;}else{zr+=z;nr++;}}
+                zf/=nf;zr/=nr;float k=(zf-zr)/(d.landmarks[2]-d.landmarks[1]);
+                float nose=zr+(d.landmarks[3]-d.landmarks[1])*k,tail=zr+(d.landmarks[0]-d.landmarks[1])*k;
+                float lo=Math.Min(nose,tail),hi=Math.Max(nose,tail);
+                Check(Math.Abs(centre.z-size.z/2-lo)<.06f+Math.Abs(size.z-(hi-lo))/2&&Math.Abs(centre.z+size.z/2-hi)<.06f+Math.Abs(size.z-(hi-lo))/2&&Math.Abs(centre.z-(lo+hi)/2)<.06f,
+                    $"Forge roster: {id}'s collision box is centred on its body along the car ({centre.z:0.00} m, body {(lo+hi)/2:0.00} m)");
+            } finally { UnityEngine.Object.DestroyImmediate(car); }
+        }
         var (q1,h1,_)=CarBodies.RosterPools(1,false);
         Check(h1.All(id=>CarBodies.Forged(id).band[0]<=1),"Forge roster: a 1-star field's home cars all have 1 star in their band");
         Check(Array.IndexOf(roster,CarBodies.RosterFlagship)>=0,"Forge roster: the flagship (the Zenith) is installed");

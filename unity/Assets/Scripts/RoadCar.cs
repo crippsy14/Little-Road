@@ -152,6 +152,22 @@ namespace LittleRoad
             //  boxes up to 3.3 m tall, 17 Oct)
             float top=CarBodies.Forged(body)?.top??0;
             if(top>0&&envelope.max.y>top+.015f){float bottom=envelope.min.y;size.y=top+.015f-bottom;envelope.center=new Vector3(envelope.center.x,bottom+size.y/2,envelope.center.z);}
+            // (and its box centred on the body along the car, not on the whole model: a ladder or a hot box hanging off one
+            //  end shifted the box off the car, and the Ladders and the Pronto stuck, 18 Oct. The body file's landmarks
+            //  [tail, rear axle, front axle, nose] map onto the wheel pivots, so the car's own axis direction doesn't matter)
+            var forged=CarBodies.Forged(body);
+            if(forged?.landmarks!=null&&forged.landmarks.Length==4&&length.HasValue) {
+                float zf=0,zr=0;int nf=0,nr=0;
+                foreach(var t in car.GetComponentsInChildren<Transform>(true)) {
+                    if(!WheelVisuals.IsPivot(t.name))continue;float z=car.transform.InverseTransformPoint(t.position).z;
+                    if(t.name.StartsWith("Wheel_F")){zf+=z;nf++;}else{zr+=z;nr++;}
+                }
+                float ra=forged.landmarks[1],fa=forged.landmarks[2];
+                if(nf>0&&nr>0&&Mathf.Abs(fa-ra)>.1f) {
+                    zf/=nf;zr/=nr;float mid=(forged.landmarks[0]+forged.landmarks[3])/2;
+                    envelope.center=new Vector3(envelope.center.x,envelope.center.y,zr+(mid-ra)*(zf-zr)/(fa-ra));
+                }
+            }
             if(float.TryParse(RaceTrial.Arg("--collider-width"),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float width))size.x=width;
             return (envelope.center,size);
         }
