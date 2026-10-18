@@ -27,6 +27,7 @@ namespace LittleRoad
             {"fish_crates",(Mode.Tilt,10)},{"barrel",(Mode.Tilt,8)},{"lobster_pot",(Mode.Tilt,15)},{"rope_coil",(Mode.Tilt,20)},{"buoy",(Mode.Tilt,20)},
             {"sandwich_board",(Mode.Tilt,6)},{"planter",(Mode.Tilt,8)},{"slate_stack",(Mode.Tilt,8)},{"tyre_wall",(Mode.Tilt,10)},{"water_trough",(Mode.Tilt,6)},
             {"milk_churn",(Mode.Tilt,8)},{"tractor",(Mode.Tilt,10)},{"rowing_boat",(Mode.Tilt,10)},
+            {"wheelbarrow",(Mode.Tilt,12)},{"beehive",(Mode.Tilt,5)},{"kennel",(Mode.Tilt,6)},{"garden_shed",(Mode.Tilt,4)},{"washing_line",(Mode.Rake,10)},{"bus_shelter",(Mode.Tilt,3)},
             {"fence",(Mode.Rake,25)},
             {"lamp_post",(Mode.Plumb,0)},{"flag_pole",(Mode.Plumb,0)},{"flag_wales",(Mode.Plumb,0)},{"telegraph_pole",(Mode.Plumb,0)},{"chevron_sign",(Mode.Plumb,0)},
             {"map_board",(Mode.Plumb,0)},{"telescope",(Mode.Plumb,0)},{"litter_bin",(Mode.Plumb,0)},{"bollard",(Mode.Plumb,0)},{"pillar_box",(Mode.Plumb,0)},

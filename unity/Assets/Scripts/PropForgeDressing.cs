@@ -10,7 +10,9 @@ namespace LittleRoad
     //   a bin beside each bench;                     an A-board in front of each shop and cafe;
     //   a pillar box by each post office;            a phone box near each fountain (the squares);
     //   creels, crates, barrels, buoys and rope along the quay tops behind the sea walls;
-    //   deckchairs and windbreaks in front of the beach huts;   planters and bollards along the shop fronts.
+    //   deckchairs and windbreaks in front of the beach huts;   planters and bollards along the shop fronts;
+    //   a barrow, churns and a trough at each barn;   washing lines, sheds, kennels and barrows behind houses;
+    //   a bus shelter at each station;               beehives among the orchard's blossom trees.
     // Every spot must be clear (no footprint, no collider, no road) and is stood on the highest solid surface there (the
     // quay's paving, a pavement). Seeded from the spot: the same street every build. Runs once the world is built (before
     // the settle step), so it sees everything placed; a district built later in the background isn't dressed.
@@ -26,7 +28,7 @@ namespace LittleRoad
             if(!BayviewKit.Has("litter_bin"))return;
             var placed=BayviewKit.Placed.Where(g=>g!=null).ToList();
             foreach(var g in placed)Dress(g);
-            Debug.Log($"LITTLE_ROAD_PROP_FORGE_DRESSING placed={Placed} {Summary} refused: {string.Join(" ",refused.Select(k=>k.Key+"="+k.Value))} seen: {string.Join(" ",placed.GroupBy(x=>x.name).Where(x=>new[]{"bench","shop","cafe","motors","post_office","fountain","harbour_steps","pier","beach_hut"}.Contains(x.Key)).Select(x=>x.Key+"="+x.Count()))}");
+            Debug.Log($"LITTLE_ROAD_PROP_FORGE_DRESSING placed={Placed} {Summary} refused: {string.Join(" ",refused.Select(k=>k.Key+"="+k.Value))} seen: {string.Join(" ",placed.GroupBy(x=>x.name).Where(x=>new[]{"bench","shop","cafe","motors","post_office","fountain","beach_hut","barn","station","house_a","house_c","cottage_a","tree_blossom"}.Contains(x.Key)).Select(x=>x.Key+"="+x.Count()))}");
         }
         static void Dress(GameObject g)
         {
@@ -48,6 +50,24 @@ namespace LittleRoad
                 case "sea_wall": {   // (the quay top behind the sea wall: clutter in twos and threes, 2-5 m inland)
                     var sea=Downhill(p);if(sea==Vector3.zero||rng.NextDouble()>.55)break;var along=Side(sea);
                     var at=p-sea*Rand(2.5f,5f)+along*Rand(-3,3);at.y=p.y+3;Harbour(at,2.2f,2+rng.Next(3));break;}
+                case "barn": {   // (the farmyard: a barrow, churns at the door, a trough out in the field)
+                    var front=Front(g,out var dir);var d=front!=null?dir:-fwd;var at=front??p;
+                    Try("wheelbarrow",at+d*1.6f+Side(d)*Rand(1.5f,3f),Face(d)+Rand(-40,40),.6f);
+                    for(int k=0;k<2;k++)Try("milk_churn",at+d*1.2f-Side(d)*(2.5f+k*.9f),Rand(0,360),.4f);
+                    Try("water_trough",p-d*Rand(8,12)+Side(d)*Rand(-6,6),Face(Side(d)),1.2f);break;}
+                case "house_a": case "house_b": case "house_c": case "house_d": case "cottage_a": case "cottage_b": case "cottage_c": {
+                    var front=Front(g,out var dir);if(front==null)break;var back=-dir;var c=g.GetComponentsInChildren<Renderer>()[0].bounds.center;c.y=p.y;
+                    var rs=g.GetComponentsInChildren<Renderer>();var bb=rs[0].bounds;foreach(var r in rs)bb.Encapsulate(r.bounds);float depth=Vector3.Dot(bb.extents,new Vector3(Mathf.Abs(back.x),0,Mathf.Abs(back.z)));
+                    var garden=c+back*(depth+3.5f);
+                    if(rng.NextDouble()<.45)Try("washing_line",garden+Side(back)*Rand(-1.5f,1.5f),Face(Side(back)),.6f,House());
+                    if(rng.NextDouble()<.3)Try("garden_shed",garden+back*2.5f+Side(back)*Rand(2.5f,4f),Face(-back),1.3f,House());
+                    if(rng.NextDouble()<.18)Try("kennel",c+back*(depth+1.6f)-Side(back)*Rand(1.5f,3f),Face(-back)+Rand(-30,30),.7f,House());
+                    if(rng.NextDouble()<.25)Try("wheelbarrow",garden-Side(back)*Rand(2,3.5f),Rand(0,360),.6f);
+                    break;}
+                case "station": {
+                    var front=Front(g,out var dir);if(front!=null)Try("bus_shelter",front.Value+dir*3.5f+Side(dir)*Rand(-6,6),Face(dir)+180,1.9f,House());break;}
+                case "tree_blossom":   // (an orchard's hives, by a few of its trees)
+                    if(rng.NextDouble()<.12)Try("beehive",p+new Vector3(Rand(-2.5f,2.5f),0,Rand(-2.5f,2.5f)),Rand(-20,20),.45f);break;
                 case "beach_hut": {
                     var sea=Downhill(p);if(sea==Vector3.zero){No("beach:flat");break;}
                     for(int k=0;k<3;k++)Try("deck_chair",p+sea*Rand(3.5f,6f)+Side(sea)*Rand(-2.5f,2.5f),Face(sea)+Rand(-20,20),.45f,Tint());
@@ -61,6 +81,13 @@ namespace LittleRoad
             string[] kinds={"lobster_pot","lobster_pot","fish_crates","barrel","buoy","rope_coil","lobster_pot","fish_crates"};
             for(int k=0;k<n*8&&n>0;k++){float a=Rand(0,360)*Mathf.Deg2Rad;var q=at+new Vector3(Mathf.Cos(a),0,Mathf.Sin(a))*Rand(0,radius);
                 if(Try(kinds[rng.Next(kinds.Length)],q,Rand(0,360),.4f))n--;}
+        }
+        // (a house's colours for its garden things: a painted shed, a door, washing)
+        static BayviewKit.Tint House()
+        {
+            Color[] paint={new(.18f,.42f,.36f),new(.62f,.2f,.18f),new(.2f,.32f,.58f),new(.86f,.7f,.3f),new(.5f,.62f,.42f)};
+            var t=new BayviewKit.Tint();t.shutter=paint[rng.Next(paint.Length)];t.door=paint[rng.Next(paint.Length)];t.awning=new[]{new Color(.92f,.22f,.24f),new Color(.16f,.4f,.86f),new Color(1,.74f,.1f)}[rng.Next(3)];
+            t.wall=new Color(.86f,.8f,.66f);return t;
         }
         static BayviewKit.Tint Tint()
         {
@@ -104,7 +131,9 @@ namespace LittleRoad
             float s1=Ground.Surface(at.x+.6f,at.z),s2=Ground.Surface(at.x,at.z+.6f),s0=Ground.Surface(at.x,at.z);
             if(Mathf.Abs(top-s0)<.3f&&(Mathf.Abs(s1-s0)>.12f||Mathf.Abs(s2-s0)>.12f)){No(id+":slope");return false;}
             var g=BayviewKit.Spawn(id,spot,yaw,root,tint);Physics.SyncTransforms();
-            Placed++;counts[id]=counts.TryGetValue(id,out int n)?n+1:1;return g!=null;
+            Placed++;counts[id]=counts.TryGetValue(id,out int n)?n+1:1;
+            if(n==0&&RaceTrial.Has("--gate-log"))Debug.Log($"LITTLE_ROAD_DRESSED {id} {spot.x:0.0},{spot.y:0.0},{spot.z:0.0}");
+            return g!=null;
         }
     }
 }

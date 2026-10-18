@@ -141,3 +141,10 @@ Everything below is behind `--prop-forge`. With the flag off, the world's finger
 - **Checks:**
   - With the flag off, the world's fingerprint is unchanged (`3f164ae90677e486`).
   - With the flag on: the adventure smoke, the sprint and blast tests pass.
+- **Home and farm life** (`kits/life.py`): wheelbarrows, beehives, washing lines (the washing in the house's colours),
+  bus shelters, kennels and garden sheds.
+  - The dressing places them behind houses (washing lines, sheds, kennels, barrows), at barns (a barrow, churns, a
+    trough) and at stations (a bus shelter).
+  - With them the dressing places 119 pieces in all.
+  - Roofs on small buildings are drawn crisp (a cage subdivided melts an uncreased roof), and fascia boards are in scale
+    with the overhang.
