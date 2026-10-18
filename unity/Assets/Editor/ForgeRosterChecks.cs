@@ -46,6 +46,20 @@ public static class ForgeRosterChecks
                     Check(field.Length==23&&field.All(id=>id!=null&&CarBodies.Class(id)=="B"&&CarBodies.RacesOn(CarBodies.Forged(id),gravel)),"Forge roster field: 23 class B bodies for the surface ("+where+")");
                     Check(field.GroupBy(id=>id).All(g=>g.Count()<=2)&&Enumerable.Range(1,22).All(i=>field[i]!=field[i-1]),"Forge roster field: at most two of a model, never behind itself ("+where+")");
                 }
+        // --wheel-camber: off by default; with a camber, each wheel's top leans in towards the car's centre, and spinning
+        // it doesn't move its tilt (no wobble).
+        Check(!WheelVisuals.CamberEnabled,"Wheel camber is off without --wheel-camber");
+        Check(rosterB.Any(id=>CarBodies.Forged(id).camber>0),"Forge roster: the class B drift cars carry a camber");
+        {
+            var car=new UnityEngine.GameObject("camber-check");
+            foreach(var (n,x) in new[]{("Wheel_FR",.8f),("Wheel_FL",-.8f),("Wheel_RR",.8f),("Wheel_RL",-.8f)}){var w=new UnityEngine.GameObject(n);w.transform.SetParent(car.transform,false);w.transform.localPosition=new UnityEngine.Vector3(x,.4f,n[7]=='F'?1.3f:-1.3f);}
+            var flat=new WheelVisuals(car);var a=car.transform.Find("Wheel_FR").up;
+            var tilted=new WheelVisuals(car,7);var r=car.transform.Find("Wheel_FR").up;var l=car.transform.Find("Wheel_FL").up;
+            tilted.Pose(90,0);var spun=car.transform.Find("Wheel_FR").right;tilted.Pose(0,0);var still=car.transform.Find("Wheel_FR").right;
+            Check(UnityEngine.Mathf.Abs(a.x)<1e-4f&&r.x< -.1f&&l.x>.1f,"Wheel camber: without it a wheel stands upright; with 7 degrees each wheel's top leans in");
+            Check(UnityEngine.Vector3.Angle(spun,still)<.01f,"Wheel camber: a cambered wheel spins about its own tilted axle (no wobble)");
+            UnityEngine.Object.DestroyImmediate(car);
+        }
         var (q1,h1,_)=CarBodies.RosterPools(1,false);
         Check(h1.All(id=>CarBodies.Forged(id).band[0]<=1),"Forge roster: a 1-star field's home cars all have 1 star in their band");
         Check(Array.IndexOf(roster,CarBodies.RosterFlagship)>=0,"Forge roster: the flagship (the Zenith) is installed");
