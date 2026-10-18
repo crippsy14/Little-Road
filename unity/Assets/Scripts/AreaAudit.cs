@@ -80,6 +80,12 @@ namespace LittleRoad
                     if(m.name.Contains("Tint_Wall"))walls[col].Add(hex);else if(m.name.Contains("RoofTile")&&!m.name.Contains("Light"))roofs[col].Add(hex);
                 }
             }
+            // Prop Forge's runs and objects (--prop-forge, docs/77): every laid piece is a piece, a bale is planting as a stamped
+            // hay bale is, and anything that failed its own ground checks (in the air, off its slope) counts as floating.
+            if(PropForge.Enabled) {
+                foreach(var L in Runs.Laid){foreach(var it in L.items)Of(it.m.GetColumn(3)).pieces++;if(L.failures.Count>0&&L.items.Count>0)Of(L.items[0].m.GetColumn(3)).floating+=L.failures.Count;}
+                foreach(var L in Objects.Laid)foreach(var o in L.placed){var col=Of(o.at);col.pieces++;if(L.kit.file.kit=="hay_bale")col.nature++;if(o.air>.02f||o.tilt>4)col.floating++;}
+            }
             // Same design next door: the nearest other building within 15 m has the same design.
             var same=new Dictionary<Column,(int same,int pairs)>();foreach(var c in cols)same[c]=(0,0);
             foreach(var (go,col) in buildings) {

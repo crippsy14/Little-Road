@@ -180,23 +180,34 @@ Steps 0-5 are written up in car-forge `docs/log.md`. In short:
   - The ground is the island's drawn grid (`CoastalLandscape.Drawn`); the cans stand on the quay's own surface.
   - It's built last of the world, so it sees everything placed.
   - The flag is in `WorldCache.WorldFlags`.
-- **Load:** 97-142 ms at build (most of it drawing the bent wall, about 100 ms). That's inside the cold budget of
-  200 ms, but over the warm budget of 60 ms until runs are cached. Caching is the next piece of work here.
+- **Load:** first 97-142 ms at build, most of it drawing the bent wall (99 ms). Two changes brought it to 66 ms:
+  - the drawer writes each piece straight from the kit's arrays into its chunk's buffers, where it used to make a mesh
+    per piece and merge twice;
+  - a bent piece works out its frame once per slice.
+  The wall now draws in 35 ms. That's inside the cold budget of 200 ms, and just over the warm budget of 60 ms;
+  caching the solved runs closes it.
 - **World fingerprint** (`--no-static-batching`):
   - Flag off: `3f164ae90677e486`, the same as a build of the code before step 6 (set aside and rebuilt to compare).
-  - **Flag on, the baseline: `4361850cf9a9ac29`.**
+  - **Flag on, the baseline: `ed4ad91e9d65d382`**, with the new piers (`dry_stone@2`). It was `4361850cf9a9ac29` with
+    the first piers.
 - **Area audit:** flag on and off identical in every defect. Bayview's three steep banks with no barrier were there
-  before. 23 fewer kit pieces: the stamped fence and bales are now Prop Forge's. The audit does not count Prop Forge
-  runs and objects yet; registering their footprints with the audits is still to do (see Risks).
+  before. With the flag on, the audit now counts Prop Forge's pieces too:
+  - every laid run piece and placed object is a piece;
+  - a bale is planting;
+  - anything that failed its own ground checks counts as floating.
+  Oriented footprints for the placement audit are still to do (see Risks).
 - **Street review** (`--street-review --street-review-town bayview`, report in
   `review/street-review/prop-forge-coast-wall.md`): "the new dry-stone wall works". It sits on the ground the whole
   length, with no cracks between pieces, nothing over the road, and clean piers at the junction. No high findings. Its
   notes:
-  - the piers' caps read "a bit like bins" (to improve);
+  - the piers' caps read "a bit like bins". Fixed in `dry_stone@2`: an end or corner pier carries the wall's own cope
+    across its top, a gate pier has a pitched capstone and a ball, and a pier's body is coursed to the top (its own
+    material class, with the cope band off);
   - the old ashlar parapet starts about 5 m past the wall's last pier at the bridge (the gap is the old wall's too);
   - a few signs stand close behind the wall, where they stood by the old one.
+- **The full regression passed** with step 6 in (the `pf-stage1` run): every game test, 24/24 in the race, and both
+  adventure smokes.
 - **Still to do before Bayview is rebuilt with it:**
-  - the audits' registries (footprints and contact samples);
+  - oriented footprints for the placement audit;
   - caching the solved runs (the warm budget);
-  - better pier caps;
   - then breadth (step 7).

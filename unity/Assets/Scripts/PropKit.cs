@@ -74,6 +74,18 @@ namespace LittleRoad
             for(int s=0;s<l.submeshes.Length;s++){var sub=l.submeshes[s];var tri=new int[sub.count];for(int i=0;i<sub.count;i++)tri[i]=(int)indices[sub.start+i]-l.vertexStart;m.SetTriangles(tri,s,false);}
             m.RecalculateBounds();return meshes[(piece,lod)]=m;
         }
+        // A piece's LOD as plain arrays (positions, normals, uvs, triangles and material class per submesh), read once and
+        // shared: the run and object drawers write straight from them into each chunk's buffers.
+        public sealed class Arrays{public Vector3[] v,n;public Vector2[] uv;public int[][] tris;public string[] mats;}
+        readonly Dictionary<(string,int),Arrays> arrays=new();
+        public Arrays ArraysOf(string piece,int lod)
+        {
+            if(arrays.TryGetValue((piece,lod),out var a))return a;
+            var l=Piece(piece).lods[Mathf.Clamp(lod,0,Piece(piece).lods.Length-1)];a=new Arrays{v=new Vector3[l.vertexCount],n=new Vector3[l.vertexCount],uv=new Vector2[l.vertexCount],tris=new int[l.submeshes.Length][],mats=new string[l.submeshes.Length]};
+            for(int i=0;i<l.vertexCount;i++){int o=(l.vertexStart+i)*8;a.v[i]=new(vertices[o],vertices[o+1],vertices[o+2]);a.n[i]=new(vertices[o+3],vertices[o+4],vertices[o+5]);a.uv[i]=new(vertices[o+6],vertices[o+7]);}
+            for(int s=0;s<l.submeshes.Length;s++){var sub=l.submeshes[s];var t=new int[sub.count];for(int i=0;i<sub.count;i++)t[i]=(int)indices[sub.start+i]-l.vertexStart;a.tris[s]=t;a.mats[s]=sub.material;}
+            return arrays[(piece,lod)]=a;
+        }
         public Material[] MaterialsOf(string piece,int lod=0)
         {
             var subs=Piece(piece).lods[Mathf.Clamp(lod,0,Piece(piece).lods.Length-1)].submeshes;var mats=new Material[subs.Length];
@@ -90,6 +102,8 @@ namespace LittleRoad
                 "stone"=>WorldLook.Kit("PF Stone",new Color(.62f,.6f,.55f),WorldLook.Pattern.Stone,0,.15f,true),
                 "red_paint"=>WorldLook.Kit("PF Red Paint",new Color(.72f,.13f,.09f),WorldLook.Pattern.Paint,.1f,.4f),
                 "drystone"=>WorldLook.Kit("PF DryStone",new Color(.6f,.58f,.53f),WorldLook.Pattern.DryStone,0,.08f),
+                // (a pier's body: the same stone, coursed to the top; wear 0 turns the pattern's cope band off)
+                "drystone_pier"=>WorldLook.Kit("PF DryStone Pier",new Color(.6f,.58f,.53f),WorldLook.Pattern.DryStone,0,.08f,false,0),
                 "silage"=>WorldLook.Kit("PF Silage",new Color(.14f,.2f,.15f),WorldLook.Pattern.Plain,0,.55f),
                 "metal"=>WorldLook.Kit("PF Metal",new Color(.6f,.62f,.65f),WorldLook.Pattern.Plain,.6f,.45f),
                 "rubber"=>WorldLook.Kit("PF Rubber",new Color(.12f,.12f,.13f),WorldLook.Pattern.Plain,0,.15f),

@@ -1,6 +1,6 @@
 # Next steps (3 October 2026)
 
-**18 October, night: Prop Forge stage one, steps 0-5 ([doc 77](77-prop-forge-brief.md)).** All of it is behind flags
+**18 October, night: Prop Forge stage one, steps 0-6 ([doc 77](77-prop-forge-brief.md)).** All of it is behind flags
 (`--run-range`, `--run-range-review`, `--prop-forge`); the normal game is unchanged. Full write-up: car-forge
 `docs/log.md`.
 - **The run range** (`--run-range`): a fixture strip of roads (a straight with a junction and a drive, a crest and a
@@ -21,8 +21,25 @@
   - a straw pattern.
 - **The jerry can, one object with two users:** six stand on the range's quay, and the Cob carries the same can on its
   tailgate (`prop:jerry_can@1`) at its real size. Only the Cob changed; the other 54 cars are identical.
-- **Next:** step 6, a proving street in Bayview behind `--prop-forge` (the area audit, a street review, and the flag-off
-  world unchanged).
+- **Step 6, Bayview behind `--prop-forge`** (doc 77, "Stage one, as built"):
+  - **The coast road's stone wall** is one dry-stone run along the bends, with a pier either side of every opening.
+  - **The farm's paddock** is a post-and-rail fence, gatepost to gatepost round its corners.
+  - **The farm's bales** are Prop Forge's, and three jerry cans stand on the Halt quay.
+  - **Proof:**
+    - Flag off, the world's fingerprint is identical to the code before this step.
+    - The area audit is unchanged.
+    - A street review's verdict: "the new dry-stone wall works".
+- **To try it:** start the game with `--prop-forge` and drive the coast road past the farm.
+- **Since then:**
+  - the piers are no longer "a bit like bins": end piers carry the wall's cope, and gate piers have a pitched capstone
+    and a ball;
+  - the area audit counts Prop Forge's pieces;
+  - the Bayview build is down from 97-142 ms to 66 ms;
+  - the full regression passes.
+- **Next:**
+  - placement-audit footprints;
+  - caching solved runs (60 ms warm budget);
+  - breadth (step 7).
 - **Two defaults I took, which Richard can overrule:** props keep their real size on cars, and re-dressed cars are
   shown as before/after sheets.
 

@@ -132,7 +132,7 @@ Shader "LittleRoad/Kit"
                     // 0.87 m): stones set on edge, narrow upright slabs. Lichen in patches, darker towards the foot. (The first
                     // cut read as pillowy bricks in neat rows, 18 Oct: no bevel now, courses waver and stones vary more.)
                     half joint,shade;float2 cell;
-                    if(height>.87) {
+                    if(height>.87&&_Wear>0) {   // (the cope: not on a pier's body, whose material has _Wear 0)
                         float xx=s.x/.12+(N(float2(s.x*.6,.8))-.5)*1.4;cell=float2(floor(xx),71);float fx=frac(xx);
                         joint=(1-smoothstep(.03,.16,min(fx,1-fx)))*Resolve(.03,fp);shade=lerp(.5,Hash(cell),Resolve(.12,fp));
                     } else {

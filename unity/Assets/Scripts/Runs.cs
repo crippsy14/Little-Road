@@ -250,21 +250,29 @@ namespace LittleRoad
         // section), and uv2.x the height above the base.
         public static Mesh Deform(RunLayout L,RunItem it,int lod)
         {
-            var src=L.kit.Mesh(it.piece,lod);var v=src.vertices;var nr=src.normals;var uv=src.uv;var path=L.paths[it.path];var run=L.kit.file.run;
+            var a=L.kit.ArraysOf(it.piece,lod);int n=a.v.Length;var ov=new Vector3[n];var on=new Vector3[n];var u1=new Vector2[n];var u2=new Vector2[n];
+            Bend(L,it,a,ov,on,u1,u2);
+            var m=new Mesh{name=$"{L.kit.file.kit}.{it.piece}.lod{lod} bent"};m.vertices=ov;m.normals=on;m.uv=a.uv;m.SetUVs(1,u1);m.SetUVs(2,u2);m.subMeshCount=a.tris.Length;
+            for(int sm=0;sm<a.tris.Length;sm++)m.SetTriangles(a.tris[sm],sm,false);
+            m.RecalculateBounds();return m;
+        }
+        static void Bend(RunLayout L,RunItem it,PropKit.Arrays a,Vector3[] ov,Vector3[] on,Vector2[] u1,Vector2[] u2)
+        {
+            var v=a.v;var nr=a.n;var uv=a.uv;var path=L.paths[it.path];var run=L.kit.file.run;
             float k=(it.s1-it.s0)/L.kit.Piece(it.piece).length,cope=Mathf.Max(run.height-run.copeFrom,1e-3f);const float h=.25f;
-            var ov=new Vector3[v.Length];var on=new Vector3[v.Length];var u1=new Vector2[v.Length];var u2=new Vector2[v.Length];
+            // (the frame at a slice is the same for all its vertices, which come together: worked out once a slice)
+            float lastZ=float.NaN,s=0,b=0,db=0,jit=0;Vector3 P=default,T=default,R=default,dR=default;
             for(int i=0;i<v.Length;i++) {
-                float s=it.s0+v[i].z*k;var P=path.At(s);var T=path.Tangent(s);var R=Right(T);float b=path.Base(s);
-                float y=v[i].y;if(y>run.copeFrom)y+=run.copeJitter*Jitter(path.u0+s)*(y-run.copeFrom)/cope;
+                if(v[i].z!=lastZ) {
+                    lastZ=v[i].z;s=it.s0+lastZ*k;P=path.At(s);T=path.Tangent(s);R=Right(T);b=path.Base(s);jit=Jitter(path.u0+s);
+                    dR=Right((path.Tangent(s+h)-path.Tangent(s-h))/(2*h));db=(path.Base(s+h)-path.Base(s-h))/(2*h);
+                }
+                float y=v[i].y;if(y>run.copeFrom)y+=run.copeJitter*jit*(y-run.copeFrom)/cope;
                 ov[i]=new Vector3(P.x+R.x*v[i].x,b+y,P.z+R.z*v[i].x);
-                var dR=Right((path.Tangent(s+h)-path.Tangent(s-h))/(2*h));float db=(path.Base(s+h)-path.Base(s-h))/(2*h);
                 var c=(T+dR*v[i].x+Vector3.up*db)*k;
                 on[i]=(nr[i].x*Vector3.Cross(Vector3.up,c)+nr[i].y*Vector3.Cross(c,R)+nr[i].z*Vector3.Cross(R,Vector3.up)).normalized;
                 u1[i]=new Vector2(path.u0+s,uv[i].y);u2[i]=new Vector2(v[i].y,0);
             }
-            var m=new Mesh{name=src.name+" bent"};m.vertices=ov;m.normals=on;m.uv=uv;m.SetUVs(1,u1);m.SetUVs(2,u2);m.subMeshCount=src.subMeshCount;
-            for(int sm=0;sm<src.subMeshCount;sm++)m.SetTriangles(src.GetTriangles(sm),sm,false);
-            m.RecalculateBounds();return m;
         }
         // (smooth value noise in -1..1 along a run, about three stones a metre)
         static float Jitter(float u){float x=u/.31f;int i=Mathf.FloorToInt(x);float t=x-i;t=t*t*(3-2*t);return Mathf.Lerp(Hash01(i),Hash01(i+1),t)*2-1;}
@@ -276,35 +284,53 @@ namespace LittleRoad
         public static GameObject Draw(RunLayout L,Transform parent)
         {
             var sw=Stopwatch.StartNew();var root=new GameObject("Run "+L.spec.name);root.transform.SetParent(parent,false);
-            DrawChunks(root.transform,"Run "+L.spec.name,L.kit,L.items.GroupBy(i=>Mathf.FloorToInt(i.arc/Chunk)),(it,lod)=>Deform(L,it,lod));
+            DrawChunks(root.transform,"Run "+L.spec.name,L.kit,L.items.GroupBy(i=>Mathf.FloorToInt(i.arc/Chunk)),(it,a,v,n,u1,u2)=>Bend(L,it,a,v,n,u1,u2));
             Colliders(L,root.transform);
             L.drawMs=sw.Elapsed.TotalMilliseconds;return root;
         }
-        // Chunks of a kit's laid pieces (runs or objects): per chunk, one merged mesh per LOD with a submesh per material
-        // class, and a LOD group; bent pieces are built by `bend` in world space, rigid ones placed by their matrix.
-        public static void DrawChunks(Transform root,string name,PropKit kit,IEnumerable<IGrouping<int,RunItem>> chunks,Func<RunItem,int,Mesh> bend)
+        // Chunks of a kit's laid pieces (runs or objects): per chunk, one mesh per LOD with a submesh per material class, and
+        // a LOD group. Each piece is written straight from the kit's arrays into its chunk's buffers (only the vertices its
+        // triangles use, per material): a bent piece through `bend` in world space, a rigid one through its matrix. (It
+        // was a mesh per bent piece and two rounds of CombineMeshes: 99 ms for Bayview's coast wall, 18 Oct.)
+        public delegate void Bender(RunItem it,PropKit.Arrays a,Vector3[] v,Vector3[] n,Vector2[] u1,Vector2[] u2);
+        sealed class Buffer{public readonly List<Vector3> v=new(),n=new();public readonly List<Vector2> uv=new(),u1=new(),u2=new();public readonly List<int> t=new();}
+        public static void DrawChunks(Transform root,string name,PropKit kit,IEnumerable<IGrouping<int,RunItem>> chunks,Bender bend)
         {
-            var temp=new List<Mesh>();
+            Vector3[] wv=new Vector3[64],wn=new Vector3[64];Vector2[] w1=new Vector2[64],w2=new Vector2[64];int[] map=new int[64];
             foreach(var group in chunks) {
                 var chunk=new GameObject($"{name} chunk {group.Key}");chunk.transform.SetParent(root,false);
                 var lods=new List<LOD>();
                 for(int lod=0;lod<2;lod++) {
-                    var byMat=new Dictionary<string,List<CombineInstance>>();
+                    var byMat=new Dictionary<string,Buffer>();var order=new List<string>();
                     foreach(var it in group) {
-                        Mesh mesh;if(it.deform){mesh=bend(it,lod);temp.Add(mesh);}else mesh=kit.Mesh(it.piece,lod);
-                        var subs=kit.Piece(it.piece).lods[lod].submeshes;
-                        for(int s=0;s<subs.Length;s++){if(!byMat.TryGetValue(subs[s].material,out var list))byMat[subs[s].material]=list=new();list.Add(new CombineInstance{mesh=mesh,subMeshIndex=s,transform=it.deform?Matrix4x4.identity:it.m});}
+                        var a=kit.ArraysOf(it.piece,lod);int count=a.v.Length;
+                        if(wv.Length<count){wv=new Vector3[count];wn=new Vector3[count];w1=new Vector2[count];w2=new Vector2[count];map=new int[count];}
+                        if(it.deform)bend(it,a,wv,wn,w1,w2);
+                        else {
+                            var nm=it.m.inverse.transpose;
+                            for(int i=0;i<count;i++){wv[i]=it.m.MultiplyPoint3x4(a.v[i]);wn[i]=nm.MultiplyVector(a.n[i]).normalized;w1[i]=a.uv[i];w2[i]=new Vector2(a.v[i].y,0);}
+                        }
+                        for(int s=0;s<a.tris.Length;s++) {
+                            if(!byMat.TryGetValue(a.mats[s],out var b)){byMat[a.mats[s]]=b=new Buffer();order.Add(a.mats[s]);}
+                            for(int i=0;i<count;i++)map[i]=-1;
+                            foreach(int i in a.tris[s]) {
+                                if(map[i]<0){map[i]=b.v.Count;b.v.Add(wv[i]);b.n.Add(wn[i]);b.uv.Add(a.uv[i]);b.u1.Add(w1[i]);b.u2.Add(w2[i]);}
+                                b.t.Add(map[i]);
+                            }
+                        }
                     }
-                    var parts=new List<CombineInstance>();var mats=new List<Material>();
-                    foreach(var kv in byMat){var m=new Mesh{indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};m.CombineMeshes(kv.Value.ToArray(),true,true);parts.Add(new CombineInstance{mesh=m});temp.Add(m);mats.Add(PropKit.MaterialFor(kv.Key));}
-                    var merged=new Mesh{name=chunk.name+" lod"+lod,indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};merged.CombineMeshes(parts.ToArray(),false,false);
+                    var mesh=new Mesh{name=chunk.name+" lod"+lod,indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};
+                    var V=new List<Vector3>();var N=new List<Vector3>();var U0=new List<Vector2>();var U1=new List<Vector2>();var U2=new List<Vector2>();var bases=new List<int>();
+                    foreach(var m in order){var b=byMat[m];bases.Add(V.Count);V.AddRange(b.v);N.AddRange(b.n);U0.AddRange(b.uv);U1.AddRange(b.u1);U2.AddRange(b.u2);}
+                    mesh.SetVertices(V);mesh.SetNormals(N);mesh.SetUVs(0,U0);mesh.SetUVs(1,U1);mesh.SetUVs(2,U2);mesh.subMeshCount=order.Count;
+                    for(int s=0;s<order.Count;s++)mesh.SetTriangles(byMat[order[s]].t,s,false,bases[s]);
+                    mesh.RecalculateBounds();
                     var go=new GameObject(chunk.name+" lod"+lod,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(chunk.transform,false);
-                    go.GetComponent<MeshFilter>().sharedMesh=merged;var r=go.GetComponent<MeshRenderer>();r.sharedMaterials=mats.ToArray();
+                    var r=go.GetComponent<MeshRenderer>();go.GetComponent<MeshFilter>().sharedMesh=mesh;r.sharedMaterials=order.Select(PropKit.MaterialFor).ToArray();
                     lods.Add(new LOD(lod==0?.06f:.012f,new Renderer[]{r}));
                 }
                 chunk.AddComponent<LODGroup>().SetLODs(lods.ToArray());
             }
-            foreach(var m in temp)UnityEngine.Object.Destroy(m);
         }
         public static GameObject Colliders(RunLayout L,Transform root)
         {
