@@ -14,7 +14,9 @@
 - **Waiting on Richard:**
   1. The class B cast list (`roster-b-design.md`, "Open questions").
   2. **The Prop Forge stage one brief ([doc 77](77-prop-forge-brief.md))**: yes, edit or veto.
-- **Known gap:** the Trike needs a three-wheeler with its single wheel out in front, an engine change.
+- **Class C top fields filled:** the class's best (Sprint, Comet, Roadster, Kestrel, Merlin, Osprey) now race up to
+  10★, and four trims (Otter GT, Heron Rally, Cob Rally, Fell Rally) join at 7-10★. 9★: 10 tarmac and 7 gravel cars
+  in band; it was 2 and 1.
 
 **17 October: Car Forge ready for the class C roster; two designs.**
 - **Car Forge** (`car-forge/docs/acceptance.md`): G1–G9 met, and the batch tool generates 24 gated class C designs in
