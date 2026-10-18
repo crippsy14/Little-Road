@@ -148,6 +148,42 @@ public static class PropForgeChecks
             checks.Add($"Walls: {walls.Count} range runs, {metres:0} m, solved in {ms:0.0} ms ({ms/metres*100:0.00} ms per 100 m)");
         } finally { Ground.Reset(); }
         checks.Add(Slide(Check));
+
+        // step 4: the hay bale family on the range, tilted and settled, under the family's repetition rules
+        Ground.Use(new Range());
+        try {
+            PropKit.Forget();var bk=PropKit.Load("hay_bale");var family=bk.file.pieces.Where(p=>p.role=="object").ToList();var br=bk.file.run;
+            Check(bk.file.kind=="object"&&family.Count>=8&&family.Select(p=>p.variant).Distinct().Count()==family.Count,$"Bales: the hay bale family reads ({family.Count} variants, each its own)");
+            Check(family.All(p=>p.lods[0].triangles<=1500&&p.lods[1].triangles<=300),
+                $"Bales: every variant within an object's budget (at most {family.Max(p=>p.lods[0].triangles)} triangles at LOD0 and {family.Max(p=>p.lods[1].triangles)} at LOD1; 1500 and 300)");
+            var looks=family.Select(p=>(size:bk.Mesh(p.name).bounds.size,mats:string.Join(",",bk.MaterialsOf(p.name).Select(m=>m.name)))).ToList();bool distinct=true;
+            for(int i=0;i<looks.Count;i++)for(int j=i+1;j<looks.Count;j++)if(looks[i].mats==looks[j].mats&&(looks[i].size-looks[j].size).magnitude<.03f)distinct=false;
+            Check(distinct,"Bales: no two variants alike (each differs in size by 3 cm or more, or in material)");
+            var specs=RunRange.Bales();var layouts=specs.Select(b=>Objects.Place(b.name,"hay_bale",b.spots,b.name,b.row,b.only)).ToList();
+            foreach(var L in layouts) {
+                Check(L.failures.Count==0,$"Bales: {L.name}: every bale within 4 deg of the ground's plane under it, sunk 2-8 cm, no contact over 2 cm in the air " +
+                    $"(worst {L.placed.Max(o=>o.tilt):0.0} deg, {L.placed.Min(o=>o.sink)*100:0.0}-{L.placed.Max(o=>o.sink)*100:0.0} cm, {L.placed.Max(o=>o.air)*100:0.0} cm){(L.failures.Count>0?": "+string.Join("; ",L.failures.Take(3)):"")}");
+                int clashes=0;
+                for(int i=0;i<L.placed.Count;i++)for(int j=i+1;j<L.placed.Count;j++){var a=L.placed[i];var b=L.placed[j];
+                    if(a.variant==b.variant&&new Vector2(a.at.x-b.at.x,a.at.z-b.at.z).magnitude<br.sameGap&&Objects.YawGap(a.yaw,b.yaw)<br.sameYaw)clashes++;}
+                Check(clashes==0&&L.forced==0,$"Bales: {L.name}: no variant twice within {br.sameGap:0} m at a like yaw ({clashes} pairs, {L.forced} forced)");
+                bool clear=L.placed.All(o=>RunRange.Roads.All(r=>RunRange.Nearest(r,o.at.x,o.at.z,out _)>r.width*.5f+1));
+                Check(clear,$"Bales: {L.name}: none on or beside a road");
+                var spec=specs.First(s=>s.name==L.name);Check(L.Hash()==Objects.Place(spec.name,"hay_bale",spec.spots,spec.name,spec.row,spec.only).Hash(),$"Bales: {L.name}: the placing is deterministic");
+            }
+            var row=layouts.First(l=>l.row);var seq=row.placed.Select(o=>o.variant).ToList();int repeats=0;for(int i=0;i<seq.Count;i++)repeats+=Objects.Repeats(seq.Take(i).ToList(),seq[i]);
+            Check(repeats==0,$"Bales: the yard row has no variant twice running and no repeat of a two- or three-long run ({string.Concat(seq)})");
+            var bank=layouts.First(l=>l.name=="bank bales");int downhill=0,rollers=0;
+            foreach(var o in bank.placed) {
+                if(!br.rolls.Contains(o.piece))continue;rollers++;
+                var n=Ground.Normal(o.at.x,o.at.z,.5f);var axis=Quaternion.Euler(0,o.yaw,0)*Vector3.right;var down=new Vector3(n.x,0,n.z).normalized;
+                if(Vector3.Angle(axis,down)<=12||Vector3.Angle(axis,-down)<=12)downhill++;
+            }
+            Check(rollers>0&&downhill==rollers,$"Bales: on the 30% bank every round bale's axis points downhill, so it can't roll ({downhill} of {rollers})");
+            Check(layouts.SelectMany(l=>l.placed).Select(o=>o.variant).Distinct().Count()==family.Count,"Bales: every variant is used on the range");
+            int placed=layouts.Sum(l=>l.placed.Count);double ms=layouts.Sum(l=>l.solveMs);
+            checks.Add($"Bales: {placed} bales placed in {ms:0.0} ms ({ms/placed:0.00} ms each)");
+        } finally { Ground.Reset(); }
         return checks;
     }
 

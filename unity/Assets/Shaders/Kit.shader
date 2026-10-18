@@ -12,7 +12,7 @@ Shader "LittleRoad/Kit"
         _BaseColor("Colour",Color)=(1,1,1,1)
         _Smoothness("Smoothness",Float)=.2
         _Metallic("Metallic",Float)=0
-        _Pattern("Pattern (0 plain,1 plaster,2 stone,3 tile,4 wood,5 leaf,6 paint,7 glass,8 rock,9 asphalt,10 slate,11 dry stone)",Float)=0
+        _Pattern("Pattern (0 plain,1 plaster,2 stone,3 tile,4 wood,5 leaf,6 paint,7 glass,8 rock,9 asphalt,10 slate,11 dry stone,12 straw)",Float)=0
         _WorldSpace("World-space coordinates",Float)=0
         _Wear("Weathering",Float)=1
         _BaseMap("Shadow base",2D)="white"{}
@@ -147,6 +147,14 @@ Shader "LittleRoad/Kit"
                     half lichen=smoothstep(.6,.78,N(s*.8+.2))*smoothstep(.2,.8,s.y);tint=lerp(tint,half3(1.1,1.08,.8),lichen*.4);m+=lichen*.06;
                     m*=lerp(.84,1,smoothstep(0,.45,height));
                     bump=fine*.35+grain*.2+shade*.15-joint*.6;occlusion=1-joint*.5*near;smooth=min(_Smoothness,.05);
+                } else if(pattern==12) { // straw (Prop Forge bales): fibres along u (round a round bale, in rings on its ends),
+                    // packed in layers of slightly different tone, with dark gaps between bundles; matte
+                    half fibre=N(float2(s.x*.9,s.y*24))*.6+N(float2(s.x*.35+.3,s.y*8))*.4;
+                    half gap=smoothstep(.62,.86,N(float2(s.x*1.8,s.y*52)))*Resolve(.015,fp);
+                    half layer=N(float2(s.x*.05,s.y*1.6+.2));
+                    m=.8+fibre*.32+(layer-.5)*.16-gap*.22+(mottle-.5)*.12;
+                    tint=lerp(half3(1.05,1,.84),half3(.97,.95,.96),layer);
+                    bump=fibre*.55-gap*.45;smooth=min(_Smoothness,.06);
                 } else if(pattern==8) { // natural rock: weathered, cracked, no courses
                     half crack=(1-smoothstep(.0,.09,abs(N(s*.33+.9)-.5)))*Resolve(.12,fp);m=1+(mottle-.5)*.18+(fine-.5)*.09-crack*.08*near;
                     // Low-frequency relief only: the derivative bump is evaluated per 2x2 pixel quad, so
@@ -234,7 +242,7 @@ Shader "LittleRoad/Kit"
                 // Derivative bump from the pattern height (no tangents needed).
                 float3 dpdx=ddx(p),dpdy=ddy(p);float dhx=ddx(bump),dhy=ddy(bump);
                 float3 r1=cross(dpdy,n),r2=cross(n,dpdx);float det=dot(dpdx,r1);
-                float strength=pattern==2?.04:pattern==11?.03:pattern==3?.035:pattern==5?.06:pattern==8||pattern==10?.045:.02;
+                float strength=pattern==2?.04:pattern==11?.03:pattern==12?.03:pattern==3?.035:pattern==5?.06:pattern==8||pattern==10?.045:.02;
                 float3 grad=sign(det)*(dhx*r1+dhy*r2)*strength*(.35+.65*near);half3 bumped=normalize(abs(det)*n-grad);
                 if(abs(det)>1e-8&&near>0)n=bumped;
                 SurfaceData surface=(SurfaceData)0;

@@ -21,7 +21,10 @@ namespace LittleRoad
         public PropVec[] contact;public PropCollision collision;public PropSocket[] sockets;public PropLod[] lods;}
     // (a deforming kit adds: deform, the slice spacing it bends at; halfBase, half its foot's width; copeFrom and height,
     //  where its cope starts and its crown; copeJitter, how far the cope's top wobbles; sink, how far its base goes in)
-    [Serializable] public sealed class PropRun{public float spacing,minRadius,maxTurn,sagitta,deform,halfBase,copeFrom,copeJitter,height,sink;public float[] railHeights,clearance,opening;}
+    // (an object family adds: sameGap and sameYaw, how near and how alike in yaw the same variant may stand; rollSlope and
+    //  rolls, the slope above which the pieces that roll turn their axis downhill)
+    [Serializable] public sealed class PropRun{public float spacing,minRadius,maxTurn,sagitta,deform,halfBase,copeFrom,copeJitter,height,sink,sameGap,sameYaw,rollSlope;
+        public float[] railHeights,clearance,opening;public string[] rolls;}
     [Serializable] public sealed class PropKitFile{public string schema,kit,hash,kind,doc;public int version,vertexCount,indexByteOffset,indexCount;
         public string[] materials;public PropRun run;public PropPiece[] pieces;}
 
@@ -86,9 +89,10 @@ namespace LittleRoad
                 "paint"=>WorldLook.Kit("PF Paint",new Color(.92f,.91f,.86f),WorldLook.Pattern.Paint,0,.3f),
                 "stone"=>WorldLook.Kit("PF Stone",new Color(.62f,.6f,.55f),WorldLook.Pattern.Stone,0,.15f,true),
                 "drystone"=>WorldLook.Kit("PF DryStone",new Color(.6f,.58f,.53f),WorldLook.Pattern.DryStone,0,.08f),
+                "silage"=>WorldLook.Kit("PF Silage",new Color(.14f,.2f,.15f),WorldLook.Pattern.Plain,0,.55f),
                 "metal"=>WorldLook.Kit("PF Metal",new Color(.6f,.62f,.65f),WorldLook.Pattern.Plain,.6f,.45f),
                 "rubber"=>WorldLook.Kit("PF Rubber",new Color(.12f,.12f,.13f),WorldLook.Pattern.Plain,0,.15f),
-                "straw"=>WorldLook.Kit("PF Straw",new Color(.86f,.74f,.42f),WorldLook.Pattern.Plain,0,.1f),
+                "straw"=>WorldLook.Kit("PF Straw",new Color(.86f,.74f,.42f),WorldLook.Pattern.Straw,0,.08f),
                 "plastic"=>WorldLook.Kit("PF Plastic",new Color(.78f,.16f,.12f),WorldLook.Pattern.Plain,0,.4f),
                 "tint_wall"=>WorldLook.Kit("PF Tint_Wall",new Color(.9f,.88f,.82f),WorldLook.Pattern.Plaster,0,.2f),
                 "glass"=>WorldLook.Kit("PF Glass",new Color(.5f,.6f,.66f),WorldLook.Pattern.Glass,0,.8f),

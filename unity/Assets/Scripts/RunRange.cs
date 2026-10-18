@@ -85,6 +85,21 @@ namespace LittleRoad
             if(PropKit.Load(kit).file.kind=="deform")o.Add(new RunSpec{name="field corners",kit=kit,seed="field",along=FieldCorners,offset=0});
             return o;
         }
+        // The range's bales (docs/77, step 4): a field over the crest's gentle slopes, a field on the 30% bank (where the
+        // round bales turn downhill), and a row of round bales along the yard north of the straight. Spots are jittered
+        // and turned by their own hash, so the layout is the same every time.
+        public sealed class BaleSpec{public string name;public List<(float x,float z,float yaw)> spots=new();public bool row;public string[] only;}
+        public static List<BaleSpec> Bales()
+        {
+            float H(string s){var h=Hash128.Compute(s);return (h.GetHashCode()&0x7fffffff)/(float)int.MaxValue;}
+            var crest=new BaleSpec{name="crest bales"};
+            for(int i=0;i<5;i++)for(int j=0;j<10;j++){string k=$"crest/{i}/{j}";crest.spots.Add((-78+i*7+(H(k+"x")-.5f)*3,28+j*7+(H(k+"z")-.5f)*3,H(k+"y")*360));}
+            var bank=new BaleSpec{name="bank bales"};
+            for(int i=0;i<2;i++)for(int j=0;j<17;j++){string k=$"bank/{i}/{j}";bank.spots.Add((63+i*4+(H(k+"x")-.5f)*1.5f,-64+j*6+(H(k+"z")-.5f)*2,H(k+"y")*360));}
+            var yard=new BaleSpec{name="yard row",row=true,only=new[]{"round","wrap"}};
+            for(int i=0;i<29;i++)yard.spots.Add((-100+i*3,-88+(H($"yard/{i}z")-.5f)*.4f,(H($"yard/{i}y")-.5f)*8));
+            return new List<BaleSpec>{crest,bank,yard};
+        }
         public static readonly Vector3[] FieldCorners={new(-35,0,-50),new(-15,0,-50),new(-12,0,-38),new(-25,0,-30),new(-30,0,-18),new(-15,0,-15)};
         // The runs drawn on the range: fences along the straight (its junction and drive), walls along the crest and
         // hollow, the bank and the bends, and the field wall; the checks solve every road with both kits.
@@ -128,6 +143,8 @@ namespace LittleRoad
             Lighting();LandMesh(root);RoadMeshes(root);
             Runs.Laid.Clear();
             foreach(var spec in Drawn()){var L=Runs.Solve(spec);Runs.Draw(L,root);Runs.Laid.Add(L);}
+            Objects.Laid.Clear();
+            foreach(var b in Bales()){var L=Objects.Place(b.name,"hay_bale",b.spots,b.name,b.row,b.only);Objects.Draw(L,root);Objects.Laid.Add(L);}
             if(RaceTrial.Has("--run-debug"))Debug(root);
             view=new GameObject("Run range camera").AddComponent<Camera>();view.tag="MainCamera";view.fieldOfView=50;view.nearClipPlane=.2f;view.farClipPlane=2000;
             view.gameObject.AddComponent<AudioListener>();WorldLook.Camera(view);Look(new Vector3(-150,70,-170),new Vector3(0,0,0));
@@ -198,6 +215,11 @@ namespace LittleRoad
             yield return Shot("12-wall-close",G(-88,1.5f,-4),G(-85.5f,.7f,2));
             yield return Shot("13-wall-crest",G(-80,2,40),G(-94.5f,1,60));
             yield return Shot("14-wall-bank",G(47,2.5f,-32),G(59.5f,.8f,-6));
+            yield return Shot("15-bale-field",G(-40,7,30),G(-64,0,60));
+            yield return Shot("16-bale-bank",G(55,3.5f,-50),G(65,0,-28));
+            yield return Shot("17-bale-row",G(-58,2.5f,-80),G(-80,.5f,-88));
+            var near=Objects.Laid[0].placed[12].at;yield return Shot("18-bale-close",G(near.x+3.2f,1.5f,near.z-2.4f),near+Vector3.up*.6f);
+            var steep=Objects.Laid[1].placed[7].at;yield return Shot("19-bale-steep",G(steep.x-3.5f,1.2f,steep.z-1.5f),steep+Vector3.up*.6f);
             Runs.WriteReport(Path.Combine(folder,"run-report.txt"));
             UnityEngine.Debug.Log("LITTLE_ROAD_RUN_RANGE_REVIEW "+folder);Application.Quit(0);
         }

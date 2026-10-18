@@ -267,15 +267,23 @@ namespace LittleRoad
         public static GameObject Draw(RunLayout L,Transform parent)
         {
             var sw=Stopwatch.StartNew();var root=new GameObject("Run "+L.spec.name);root.transform.SetParent(parent,false);
+            DrawChunks(root.transform,"Run "+L.spec.name,L.kit,L.items.GroupBy(i=>Mathf.FloorToInt(i.arc/Chunk)),(it,lod)=>Deform(L,it,lod));
+            Colliders(L,root.transform);
+            L.drawMs=sw.Elapsed.TotalMilliseconds;return root;
+        }
+        // Chunks of a kit's laid pieces (runs or objects): per chunk, one merged mesh per LOD with a submesh per material
+        // class, and a LOD group; bent pieces are built by `bend` in world space, rigid ones placed by their matrix.
+        public static void DrawChunks(Transform root,string name,PropKit kit,IEnumerable<IGrouping<int,RunItem>> chunks,Func<RunItem,int,Mesh> bend)
+        {
             var temp=new List<Mesh>();
-            foreach(var group in L.items.GroupBy(i=>Mathf.FloorToInt(i.arc/Chunk))) {
-                var chunk=new GameObject($"Run {L.spec.name} chunk {group.Key}");chunk.transform.SetParent(root.transform,false);
+            foreach(var group in chunks) {
+                var chunk=new GameObject($"{name} chunk {group.Key}");chunk.transform.SetParent(root,false);
                 var lods=new List<LOD>();
                 for(int lod=0;lod<2;lod++) {
                     var byMat=new Dictionary<string,List<CombineInstance>>();
                     foreach(var it in group) {
-                        Mesh mesh;if(it.deform){mesh=Deform(L,it,lod);temp.Add(mesh);}else mesh=L.kit.Mesh(it.piece,lod);
-                        var subs=L.kit.Piece(it.piece).lods[lod].submeshes;
+                        Mesh mesh;if(it.deform){mesh=bend(it,lod);temp.Add(mesh);}else mesh=kit.Mesh(it.piece,lod);
+                        var subs=kit.Piece(it.piece).lods[lod].submeshes;
                         for(int s=0;s<subs.Length;s++){if(!byMat.TryGetValue(subs[s].material,out var list))byMat[subs[s].material]=list=new();list.Add(new CombineInstance{mesh=mesh,subMeshIndex=s,transform=it.deform?Matrix4x4.identity:it.m});}
                     }
                     var parts=new List<CombineInstance>();var mats=new List<Material>();
@@ -288,8 +296,6 @@ namespace LittleRoad
                 chunk.AddComponent<LODGroup>().SetLODs(lods.ToArray());
             }
             foreach(var m in temp)UnityEngine.Object.Destroy(m);
-            Colliders(L,root.transform);
-            L.drawMs=sw.Elapsed.TotalMilliseconds;return root;
         }
         public static GameObject Colliders(RunLayout L,Transform root)
         {
@@ -343,6 +349,7 @@ namespace LittleRoad
         public static void WriteReport(string path)
         {
             var lines=Laid.Select(Report).ToList();foreach(var L in Laid)foreach(var f in L.failures)lines.Add($"  {L.spec.name}: {f}");
+            lines.AddRange(Objects.Laid.Select(Objects.Report));foreach(var L in Objects.Laid)foreach(var f in L.failures.Concat(L.notes))lines.Add($"  {L.name}: {f}");
             File.WriteAllLines(path,lines);foreach(var l in lines)UnityEngine.Debug.Log("LITTLE_ROAD_RUN "+l);
         }
     }
