@@ -113,3 +113,6 @@ review/cars/
 # Car Forge models: build output from ../car-forge (tools/forge-cars.txt lists them; tools/build-dev.ps1 runs
 # ../car-forge/tools/sync_game.py, which exports what changed). Never committed: 7 MB a car, 250 cars by the last class.
 unity/Assets/Resources/Cars/forge_*
+# Prop Forge's kits are build output too (docs/77; car-forge tools/sync_props.py)
+unity/Assets/Resources/Props/
+unity/Assets/Resources/Props.meta

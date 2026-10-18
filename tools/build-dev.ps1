@@ -14,6 +14,9 @@ $forge=[IO.Path]::GetFullPath((Join-Path $root '../car-forge')); $py='C:\Program
 if(-not (Test-Path (Join-Path $forge 'tools/sync_game.py'))){throw "Car Forge not found at $forge (the game's Forge cars are built from it)."}
 $env:PYTHONPATH="$forge\vendor;$forge"; & $py (Join-Path $forge 'tools/sync_game.py') --game $root --jobs 6
 if($LASTEXITCODE -ne 0){throw 'Car Forge sync failed (a car failed its export checks); build not started.'}
+# Prop Forge's kits (docs/77), the same way: build output in Resources/Props, written only when a kit changed.
+& $py (Join-Path $forge 'tools/sync_props.py') --game $root
+if($LASTEXITCODE -ne 0){throw 'Prop Forge sync failed; build not started.'}
 # Compile errors in ~2 s instead of after Unity's start-up (tools/compile-check.ps1).
 & (Join-Path $PSScriptRoot 'compile-check.ps1') -Quiet
 if($LASTEXITCODE -ne 0){throw 'Compile check failed; Unity build not started.'}

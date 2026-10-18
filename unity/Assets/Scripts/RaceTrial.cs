@@ -85,6 +85,8 @@ namespace LittleRoad
             if(Has("--field-lineup")){gameObject.AddComponent<FieldLineup>();yield break;}
             // The continent scale test (docs/58 §11): the generated world to drive at every class's pace.
             if(Has("--scale-test")){freeRoam=true;gameObject.AddComponent<ScaleTest>();yield break;}
+            // The Prop Forge run test range (docs/77): a fixture strip for laying runs, its own ground and roads.
+            if(RunRange.Requested){freeRoam=true;gameObject.AddComponent<RunRange>();yield break;}
             career=AdventureSession.Racing;
             if(!career&&!Has("--trial-auto")&&!Has("--trial-race")){freeRoam=true;gameObject.AddComponent<AdventureGame>();yield break;}
             sampleInterval=Arg("--traffic-case","").StartsWith("draft-")?1f/120:1;
