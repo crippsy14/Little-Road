@@ -49,6 +49,8 @@ namespace LittleRoad
             // World tiles (W1): the woods near where the car will start are built now, the rest stream in around you.
             WorldTiles.Plan(AdventureSession.ReturnSpot??(!Testing&&Store.Data.spot!=null&&Store.Data.spot.Length==4?new Vector3(Store.Data.spot[0],Store.Data.spot[1],Store.Data.spot[2]):new Vector3(-63,0,-94)));
             RaceArea.Clear();world=GetComponent<RaceTrial>();world.freeRoam=true;world.track=new Circuit();world.elapsed=1;yield return TrialWorld.CreateRoutine(world.track,false);Mark("world");
+            // (--prop-forge: the streets dressed once everything is built, the village and the towns included; docs/78)
+            if(PropForge.Enabled&&CoastalLandscape.WorldRoot!=null){Physics.SyncTransforms();PropForgeDressing.Build(CoastalLandscape.WorldRoot);Mark("dressing");}
             // (--world-fingerprint: the built world, every streamed tile included, before the town's life and cars are added.)
             if(RaceTrial.Has("--world-fingerprint")){WorldTiles.Complete();yield return null;Debug.Log("LITTLE_ROAD_WORLD_FINGERPRINT "+CoastalLandscape.Fingerprint());}   // (a frame: deferred destroys land)
             // (Tests and audits see the whole world at once; --world-tiles-test watches it stream.)
