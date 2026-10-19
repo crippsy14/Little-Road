@@ -1,5 +1,11 @@
 # Next steps (3 October 2026)
 
+**19 October: Bayview rebuilt, the brief ([doc 79](79-bayview-rebuilt-brief.md)) waits on Richard.**
+- **The plan:** a bigger harbour island, about 430 × 300 m, with a 1,027 m Harbour Loop that teaches one thing per road, a gravel lane, and five landmarks.
+- **How it's built:** behind `--new-bayview` as a parallel layout, so the old island and every test keep working.
+- **Questions:** three, each with a default.
+- **Also done:** a far version for each Prop Forge house (houses@2).
+
 **18 October, late night: Prop Forge stage two ([doc 78](78-prop-forge-stage-two.md)): the world remodelled, behind `--prop-forge`.**
 - **Remodelled:**
   - every tree and rock, in seeded families;
