@@ -141,3 +141,42 @@ a plan for the whole map, with an ordered list of towns, and start working throu
     - the area audit without the flags: no cars off the ground.
   - **Street reviews of Hillcrest and Quarry Hills** (two Sonnet agents, photos with `--prop-forge`) are under way;
     their findings go into round 4.
+
+## Paused 19 Oct, evening: where to pick up
+**Round 4, in progress (uncommitted):**
+- **The crawiau** (Quarry Hills' slate front-garden fences) as split-slate slabs.
+  - car-forge `forge/world/kits/slate.py` has eight variants, modelled in the unit cube so the existing per-slab
+    matrices place them unchanged.
+  - `QuarryHillsTown.Combine` uses them with `--prop-forge`.
+  - **First fix:** the kit names `'SlateRock'`, but a kit with no stand-ins must use material classes. Change it to
+    `'stone'` (`['stone'] * len(F)` in `crawiau()`); the combiner gives them its own slate material anyway.
+- **Then:**
+  - build, and photograph a Quarry Hills street with `--prop-forge`;
+  - check the fingerprint and the regression;
+  - commit car-forge (`slate.py`) and little-road (`QuarryHillsTown.cs`).
+
+**Round 4, the rest:**
+1. **The street reviews:** fold in `review/street-review/r2-hillcrest.md` and `r2-quarry-hills.md` (two Sonnet
+   reviewers, still running at the pause). Triage them as R1's was, in a table in the same file, and fix the high
+   and medium findings.
+2. **Quarry Hills back-yard walls:** dry-stone slate runs (`Runs.Solve` with `restyle=slate`, as the country walls
+   do), not boxes (`QuarryHillsTown.WallBox`).
+3. **Phone and post boxes** (`QuarryHillsCountry.TownBits`): the street kit's `phone_box` and `pillar_box`.
+
+**Round 5, Hillcrest structure:**
+- the castle set (gatehouse, towers, curtain walls, keep, donjon, palace) as a `castle` Forge kit with the Blender
+  sizes (measured in the round 3 notes: tower 11 m across and 36 m tall, wall 20 x 4 x 11 m, and so on);
+- the square's balustrade, parapets and lookout rails through `ForgeRail` / the armco kit's baluster and coping;
+- the terrace walls on the vine hill as dry-stone runs.
+
+**Rounds 6-7:** each town judged (area audit, street review), then the whole-map plan (round 8).
+
+**Smaller things noted:**
+- the long dark retaining wall behind the new Bayview's town row needs steps or gardens;
+- the east beach is a steep sand bank;
+- the sand run-off width is Richard's call (R1 recommendation 3).
+
+**Ways of working that helped:**
+- `quarry-run.ps1 -Hidden` runs a test with no window.
+- Never delete a run's photos while a reviewer agent is reading them: the regression's clean-up emptied R1's folder
+  mid-review.
