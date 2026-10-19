@@ -129,3 +129,38 @@ Behind `--new-bayview`. The old island stays the default until you've driven the
   - **Still to do** in stage 2:
     - the old village and countryside, the bridge and the cliffs aren't built on the new island;
     - the residents and the Pit Stop still stand at their old places, so the adventure smoke test fails until then.
+- **Stage 2, harbour and town: done (19 Oct).** All still behind `--new-bayview`.
+  - **The harbour:** granite walls round the bay's shore and both faces of each arm, with round heads; the land drops
+    inside the walls' cores, so none shows through the battered faces.
+    - The quay is paved in granite setts from the road's kerb to the harbour wall, with a blue promenade railing,
+      lamps and benches. The arms have paved decks.
+    - The harbour front (quay, road and town) is level at quay height. In stage 1 the road climbed away from the
+      harbour and the town stood 10 m up a grass slope.
+  - **The town row:** 16 buildings along the harbour front (terraces, the cafe, the post office and shops), each its
+    own bold paint, with slate roofs and a flagstone pavement.
+  - **The Pit Stop:** garage and parts bays on a paved forecourt by the start straight. Its levelled square now meets
+    the hill in a long grassy bank, not a cut ledge.
+    - Trees, scrub, boulders and meadow grass keep off the quay, the town, the arms and the forecourt
+      (`NewBayview.BuiltDistance`).
+  - **Residents:** the garage and parts hosts stand at the Pit Stop's bays, and the cafe and paint residents on the
+    town's pavement.
+  - **The loop, reshaped:** the north-east hairpin had a 10 m radius. The 16 m road's inside edge folded over itself
+    and cars jammed there in the adventure race.
+    - It's now a 30 m arc and a 30 m S-bend out of it, and the south-west bend is a 28 m arc. The tightest radius is
+      19 m and the lap is 1,079 m.
+    - The loop is a centripetal Catmull-Rom (here and in the plan tool), so unevenly spaced points don't kink it.
+  - **Fixes the new island needed:**
+    - **Free roam:** a car on a track with hills only drives on road-support meshes. With the flag, free roam keeps
+      the old "tilt with any ground" handling, so the island and the mainland stay drivable.
+    - **The run-off:** a 24 m sheet under the road stood through the asphalt where the loop climbs as it turns. With
+      the flag it's two shoulders.
+    - **The smoke test** places the car in front of each resident by the way they face, not 5 m north.
+  - **Checks:**
+    - **The adventure smoke test passes with the flag:** both races finished 24/24 with no assisted recoveries.
+    - **Races on seeds 1709, 1710 and 1711:** 24/24 finished with no resets; winners took 48.9-52.7 s.
+      (`review/unity-35/frame-cost-0/bayview-s17xx-nb-stage2`)
+    - The fingerprint without the flag is unchanged (`3f164ae90677e486`).
+  - **Left for later stages:**
+    - the steep bank behind the town row (a retaining wall or terraced gardens);
+    - the corner where the west arm meets the harbour wall;
+    - the post box resident, which still stands where the old formula puts it.

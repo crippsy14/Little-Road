@@ -110,7 +110,10 @@ namespace LittleRoad
             // the inlet. The bridge is not a road painted on an invisible island.
             // (The island's loop, its dressing and the village: not in a race far from Bayview, CoastalLandscape.Island.)
             if(CoastalLandscape.Island){
-            Ribbon(track,"Generous limestone runoff",0,24,.011f,sand);
+            // (--new-bayview: two shoulders, not one sheet under the road: on a loop that climbs as it turns, a 24 m sheet's
+            //  triangles stood through the 16 m asphalt in the hairpin)
+            if(NewBayview.On)foreach(int side in new[]{-1,1})Ribbon(track,"Generous limestone runoff",side*9.75f,4.5f,.011f,sand);
+            else Ribbon(track,"Generous limestone runoff",0,24,.011f,sand);
             Ribbon(track,"16 metre race surface",0,Circuit.Width,.025f,asphalt);
             RubberedLine(track);
             new GameObject("Continuous road and shoulder support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
@@ -118,7 +121,8 @@ namespace LittleRoad
             for(float d=0;d<track.length;d+=12) {
                 if(track.Curvature(d)>.012f)continue;var mark=Box("Grid guide",track.At(d)+Vector3.up*.04f,new Vector3(.12f,.015f,3),white);mark.transform.rotation=Quaternion.LookRotation(track.Forward(d));}
             }
-            if(CoastalLandscape.Island&&!NewBayview.On)VillageKit.Create();   // (the new Bayview's town is stage 2: docs/79)
+            if(CoastalLandscape.Island&&!NewBayview.On)VillageKit.Create();
+            if(CoastalLandscape.Island&&NewBayview.On){if(BayviewKit.Has("pit_stop_2"))PitStop.Build("bayview",false,NewBayview.PitStopSite,NewBayview.PitStopYaw,null);NewBayview.BuildTown(track);}   // (docs/79, stage 2)
             if(!racing&&!RaceArea.Active)PersistentWorld.Adopt(before);
             }
             // Bayview's race dressing: kerbs, the chequered line and the start gantry, made for the race on top of the

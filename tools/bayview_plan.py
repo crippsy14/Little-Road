@@ -13,15 +13,20 @@ sys.path.insert(0, str(ROOT.parent / 'car-forge' / 'vendor'))   # (PIL)
 
 # The coast, clockwise from the causeway's foot (the mainland contract: the junction (68.3,-83.4), the Halt quay x 56-109,
 # z -163..-86 and the rail loop at (124,-142) stay where the mainland expects them).
-COAST = [(56, -86), (40, -74), (12, -66), (-14, -62), (-24, -46), (-46, -34), (-80, -30), (-112, -36), (-132, -52), (-142, -70),
+COAST = [(56, -86), (40, -74), (12, -66), (-12, -72), (-24, -62), (-46, -50), (-80, -46), (-112, -48), (-132, -60), (-142, -74),
          (-160, -58), (-178, -32), (-188, 0), (-190, 30), (-178, 62), (-150, 90), (-108, 114), (-55, 124), (0, 122), (50, 112),
          (95, 94), (135, 64), (158, 26), (162, -15), (150, -50), (125, -75), (109, -86)]
-HARBOUR = [(-14, -62), (-24, -46), (-46, -34), (-80, -30), (-112, -36), (-132, -52), (-142, -70)]   # (the bay's shore, curving north)
-ARMS = {'west arm': [(-142, -70), (-146, -100), (-128, -126), (-100, -136)], 'quay arm': [(-14, -62), (-22, -96), (-44, -122), (-70, -132)]}
-LOOP = [(-10, -52), (40, -54), (82, -52), (112, -36), (128, -8), (132, 22), (122, 44), (102, 46), (84, 30), (58, 26), (34, 38),
-        (10, 54), (-18, 72), (-50, 94), (-92, 96), (-130, 78), (-158, 50), (-170, 18), (-164, -14), (-146, -36), (-122, -26),
-        (-90, -16), (-58, -16), (-34, -32)]
-GRAVEL = [(10, 54), (20, 84), (60, 96), (98, 84), (124, 60), (122, 44)]
+HARBOUR = [(-12, -72), (-24, -62), (-46, -50), (-80, -46), (-112, -48), (-132, -60), (-142, -74)]   # (the bay's shore, curving north)
+ARMS = {'west arm': [(-142, -74), (-148, -104), (-130, -130), (-102, -140)], 'quay arm': [(-12, -72), (-22, -104), (-44, -128), (-70, -138)]}
+LOOP = [(-10, -52), (40, -54), (82, -52), (112, -36), (128, -8),
+        # (19 Oct: the north-east hairpin as a 30 m arc and a 30 m S-bend out of it; it was 10 m, and the 16 m road's inside
+        #  edge folded over itself; cars jammed there in the adventure race. Points evenly spaced on the arcs.)
+        (130.4, 34.1), (128.3, 40.9), (122.5, 46.6), (113.8, 50.4), (103.6, 51.8), (93.3, 50.4), (84.6, 46.6), (78.8, 40.9),
+        (76.8, 34.1), (73.2, 25.3), (63.4, 18.8), (50.0, 16.5), (36.6, 18.8), (26.8, 25.3),
+        (10, 54), (-18, 72), (-50, 94), (-92, 96), (-130, 78), (-158, 50), (-170, 18), (-164, -14),
+        (-162.0, -25.4), (-156.7, -34.8), (-149.0, -40.6), (-140.1, -41.8), (-131.5, -38.2),   # (the south-west bend: a 28 m arc)
+        (-112, -24), (-90, -16), (-58, -16), (-34, -32)]
+GRAVEL = [(10, 54), (20, 84), (60, 96), (98, 84), (124, 60), (103.6, 51.8)]   # (ends at the hairpin's apex)
 LANDMARKS = {'lighthouse': (-190, 30), 'windmill': (-26, 52), 'clock tower': (-62, -30), 'helter-skelter pier': (162, -20),
              'lifeboat slip': (-140, -96), 'Pit Stop': (30, -70), 'farm': (75, 76), 'beach huts': (140, -40), 'chapel': (-90, 60),
              'causeway to Hillcrest': (70, -150)}
@@ -45,20 +50,31 @@ def length(pts, closed=True):
     return sum(math.dist(a, b) for a, b in zip(P, P[1:]))
 
 
-def catmull(pts, n=12):
-    """A closed Catmull-Rom through the points (the game's Circuit does the same)."""
+def catmull(pts, step=1.2):
+    """A closed centripetal Catmull-Rom through the points, sampled about every `step` metres (the game's island loop does
+    the same: NewBayview.LoopPoints). Centripetal, not uniform: uneven spacing makes no cusps or kinks."""
     out = []; N = len(pts)
     for i in range(N):
         p0, p1, p2, p3 = pts[i - 1], pts[i], pts[(i + 1) % N], pts[(i + 2) % N]
+        t0 = 0; t1 = t0 + max(math.dist(p0, p1), 1e-3) ** .5; t2 = t1 + max(math.dist(p1, p2), 1e-3) ** .5; t3 = t2 + max(math.dist(p2, p3), 1e-3) ** .5
+        n = max(4, math.ceil(math.dist(p1, p2) / step))
         for k in range(n):
-            t = k / n; t2, t3 = t * t, t * t * t
-            out.append(tuple(.5 * ((2 * p1[j]) + (-p0[j] + p2[j]) * t + (2 * p0[j] - 5 * p1[j] + 4 * p2[j] - p3[j]) * t2 + (-p0[j] + 3 * p1[j] - 3 * p2[j] + p3[j]) * t3) for j in (0, 1)))
+            t = t1 + (t2 - t1) * k / n
+            def L(a, b, ta, tb): return tuple(((tb - t) * a[j] + (t - ta) * b[j]) / (tb - ta) for j in (0, 1))
+            A1, A2, A3 = L(p0, p1, t0, t1), L(p1, p2, t1, t2), L(p2, p3, t2, t3)
+            out.append(L(L(A1, A2, t0, t2), L(A2, A3, t1, t3), t1, t2))
     return out
 
 
-def min_radius(path):
-    best = 1e9
-    for a, b, c in zip(path, path[1:] + path[:1], path[2:] + path[:2]):
+def lane(pts):
+    """An open lane through the points: the closed curve without its closing span."""
+    return catmull(pts)[:-max(4, math.ceil(math.dist(pts[-1], pts[0]) / 1.2))]
+
+
+def min_radius(path, k=3):
+    best = 1e9; N = len(path)
+    for i in range(N):
+        a, b, c = path[i - k], path[i], path[(i + k) % N]
         ab, bc, ca = math.dist(a, b), math.dist(b, c), math.dist(c, a)
         area = abs((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])) / 2
         if area > 1e-6: best = min(best, ab * bc * ca / (4 * area))
@@ -76,13 +92,13 @@ def draw(out):
     for name, arm in ARMS.items(): d.line([P(p) for p in arm], fill=(200, 196, 184), width=int(5 * S))
     sm = catmull(LOOP)
     d.line([P(p) for p in sm + sm[:1]], fill=(60, 62, 66), width=int(8 * S))
-    d.line([P(p) for p in catmull(GRAVEL)[:-12] if True], fill=(176, 140, 96), width=int(5 * S))
+    d.line([P(p) for p in lane(GRAVEL)], fill=(176, 140, 96), width=int(5 * S))
     d.line([P((68.3, -83.4)), P((70, -94)), P((73.4, -160)), P((73.4, -170))], fill=(60, 62, 66), width=int(7 * S))
     d.line([P(sm[0]), P((sm[0][0], sm[0][1] + 1))], fill=(255, 255, 255), width=int(3 * S))
     s0 = sm[0]; d.rectangle([P((s0[0] - 1, s0[1] + 5)), P((s0[0] + 1, s0[1] - 5))], fill=(255, 255, 255))
     for name, p in LANDMARKS.items():
         x, y = P(p); d.ellipse([x - 7, y - 7, x + 7, y + 7], fill=(196, 40, 30), outline=(255, 255, 255)); d.text((x + 9, y - 6), name, fill=(255, 255, 255))
-    d.text((12, 10), f'Bayview (new), plan v1. Harbour Loop {length(sm):.0f} m, tightest bend {min_radius(sm):.0f} m radius; gravel lane {length(catmull(GRAVEL), False):.0f} m. North up, 100 m = {int(100 * S)} px', fill=(255, 255, 255))
+    d.text((12, 10), f'Bayview (new), plan v1. Harbour Loop {length(sm):.0f} m, tightest bend {min_radius(sm):.0f} m radius; gravel lane {length(lane(GRAVEL), False):.0f} m. North up, 100 m = {int(100 * S)} px', fill=(255, 255, 255))
     out.parent.mkdir(parents=True, exist_ok=True); im.save(out); return out
 
 

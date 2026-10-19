@@ -12,7 +12,11 @@ namespace LittleRoad
     public static class NewBayview
     {
         public static bool On=>RaceTrial.Has("--new-bayview");
-        public static readonly Vector3 Spawn=new(28,1.2f,-46);   // (beside the start straight, facing it; the Pit Stop comes in stage 2)
+        public static readonly Vector3 Spawn=new(62,1.2f,-40);   // (on the Pit Stop's forecourt, by the start straight)
+        public static readonly Vector3 PitStopSite=new(62,FrontY,-24);public const float PitStopYaw=180;   // (facing the start straight)
+        // The harbour front's town row: the loop's arc where the road runs round the harbour (its inland, left-hand side).
+        public const float TownFrom=894,TownTo=1035,TownBack=26;   // (metres along the loop: re-measure if the plan changes)
+        public static Vector3 Cafe,Paint;public static float CafeYaw,PaintYaw;   // (where the town's shop residents stand: set when the town is built)
         public const float FrontY=1f;                              // (the harbour front and the start straight: just above the quays)
 
         // ---- the land
@@ -44,8 +48,9 @@ namespace LittleRoad
             bool beach=x>95&&z<40&&z>-60;
             float shore=Blend(0,beach?42:9+n*6,d);                     // (cliffs: 9-15 m to full height; the beach: 42 m)
             float h=Mathf.Lerp(-16,top,shore);
-            // The harbour front: a flat apron 1 m up, inland of the bay's shore (its quay edge drops straight to the water)
-            float front=1-Blend(14,24,PolylineDistance(NewBayviewPlan.Harbour,new Vector2(x,z)));
+            // The harbour front: a flat apron at quay level from the bay's shore (its quay edge drops straight to the water)
+            // back past the road and the town row, the hill rising behind
+            float front=1-Blend(36,52,PolylineDistance(NewBayviewPlan.Harbour,new Vector2(x,z)));
             if(d>0)h=Mathf.Lerp(h,FrontY,front);
             return h;
         }
@@ -56,11 +61,25 @@ namespace LittleRoad
         public static Vector3[] LoopPoints()
         {
             if(loop!=null)return loop;
-            var c=NewBayviewPlan.Loop;int n=c.Length*36;var pts=new Vector3[n];
-            for(int i=0;i<n;i++){int s=i/36;float t=(i%36)/36f;Vector2 a=c[(s+c.Length-1)%c.Length],b=c[s],cc=c[(s+1)%c.Length],d=c[(s+2)%c.Length];
-                var q=.5f*((2*b)+(-a+cc)*t+(2*a-5*b+4*cc-d)*t*t+(-a+3*b-3*cc+d)*t*t*t);pts[i]=new Vector3(q.x,0,q.y);}
+            // (centripetal, sampled about every 1.2 m: the plan's arcs space their points closer than its straights, and a uniform
+            //  Catmull-Rom kinks where the spacing changes; tools/bayview_plan.py draws the same curve)
+            var c=NewBayviewPlan.Loop;int N=c.Length;var list=new List<Vector3>();
+            for(int s=0;s<N;s++) {
+                Vector2 p0=c[(s+N-1)%N],p1=c[s],p2=c[(s+1)%N],p3=c[(s+2)%N];
+                float t0=0,t1=t0+Mathf.Sqrt(Mathf.Max(Vector2.Distance(p0,p1),1e-3f)),t2=t1+Mathf.Sqrt(Mathf.Max(Vector2.Distance(p1,p2),1e-3f)),t3=t2+Mathf.Sqrt(Mathf.Max(Vector2.Distance(p2,p3),1e-3f));
+                int m=Mathf.Max(4,Mathf.CeilToInt(Vector2.Distance(p1,p2)/1.2f));
+                for(int k=0;k<m;k++) {
+                    float t=t1+(t2-t1)*k/m;
+                    Vector2 L(Vector2 a,Vector2 b,float ta,float tb)=>((tb-t)*a+(t-ta)*b)/(tb-ta);
+                    Vector2 a1=L(p0,p1,t0,t1),a2=L(p1,p2,t1,t2),a3=L(p2,p3,t2,t3);var q=L(L(a1,a2,t0,t2),L(a2,a3,t1,t3),t1,t2);
+                    list.Add(new Vector3(q.x,0,q.y));
+                }
+            }
+            var pts=list.ToArray();int n=pts.Length;
             var y=new float[n];for(int i=0;i<n;i++)y[i]=Mathf.Max(Base(pts[i].x,pts[i].z),.6f);
-            y=Smooth(y,30);for(int i=0;i<n;i++)y[i]=Mathf.Lerp(FrontY,y[i],Blend(-46,-22,pts[i].z));y=Smooth(y,12);
+            // (held at the front's level along the start straight and all round the harbour, so the town stands on the quay)
+            y=Smooth(y,30);for(int i=0;i<n;i++){float hold=Mathf.Max(1-Blend(-46,-22,pts[i].z),1-Blend(36,56,PolylineDistance(NewBayviewPlan.Harbour,new Vector2(pts[i].x,pts[i].z))));y[i]=Mathf.Lerp(y[i],FrontY,hold);}
+            y=Smooth(y,12);
             for(int i=0;i<n;i++)pts[i].y=y[i];
             return loop=pts;
         }
@@ -100,11 +119,175 @@ namespace LittleRoad
         public static float Height(float x,float z,Circuit track)
         {
             float h=Base(x,z);var p=new Vector3(x,0,z);
-            float d=track.Nearest(p,out _);var at=track.At(d);float rd=new Vector2(at.x-x,at.z-z).magnitude;
+            float d=track.Nearest(p,out float off);var at=track.At(d);float rd=new Vector2(at.x-x,at.z-z).magnitude;
             h=Mathf.Lerp(h,at.y,1-Blend(13,26,rd));
-            float gd=Nearest(GravelPoints(track),x,z,out float gy);h=Mathf.Lerp(h,gy,1-Blend(4,11,gd));
+            // the harbour front's town row stands on a level shelf inland of the road, the hill rising behind it
+            float town=Blend(TownFrom-12,TownFrom,d)*(1-Blend(TownTo,TownTo+12,d))*(off<0?1:0)*(1-Blend(TownBack,TownBack+10,rd));
+            h=Mathf.Lerp(h,at.y,town);   // (level with the road: any higher and the land covers the road's inland half)
+            // the Pit Stop's square, level with the start straight, a long grassy bank up to the hill (not a cut ledge)
+            float sq=Blend(4,30,x)*(1-Blend(100,126,x))*Blend(-48,-44,z)*(1-Blend(-4,30,z))*Blend(10,14,rd);h=Mathf.Lerp(h,FrontY,sq);   // (never under the loop: the S-bend passes above it)
+            // the harbour arms: stone piers at quay level, 9 m wide; the land drops inside their walls' cores (4-5.2 m out)
+            // so none shows through the battered faces
+            var q=new Vector2(x,z);float arm=Mathf.Min(PolylineDistance(NewBayviewPlan.WestArm,q),PolylineDistance(NewBayviewPlan.QuayArm,q));
+            h=Mathf.Max(h,Mathf.Lerp(-16,FrontY,1-Blend(4,5,arm)));
+            // (the lane gives way to the loop's road and runoff where it joins: its land pushed up through the hairpin's apex)
+            float gd=Nearest(GravelPoints(track),x,z,out float gy);h=Mathf.Lerp(h,gy,(1-Blend(4,11,gd))*Blend(10,14,rd));
             float ld=Mathf.Abs(x-LinkTop.x);if(z<LinkTop.z+4&&z>-90){float ly=Mathf.Lerp(LinkTop.y,0,Mathf.InverseLerp(LinkTop.z,-83.4f,z));h=Mathf.Lerp(h,ly,1-Blend(6,14,ld));}
             return h;
+        }
+
+        // ---- stage 2: the harbour and the town
+        public static void BuildTown(Circuit track)
+        {
+            var root=new GameObject("New Bayview harbour and town").transform;
+            var granite=WorldLook.Kit("Harbour granite",new Color(.56f,.55f,.52f),WorldLook.Pattern.Stone,0,.1f,true,1.6f);
+            // the harbour: a wall along the bay's shore, both faces of each arm, a rounded head on each
+            Wall(root,NewBayviewPlan.Harbour,0,granite);
+            foreach(var arm in new[]{NewBayviewPlan.WestArm,NewBayviewPlan.QuayArm}){Wall(root,arm,4.6f,granite);Wall(root,arm,-4.6f,granite);Head(root,arm,granite);}
+            // railings along the quay's edge (the shore), lamps on the quay side of the road, benches looking out to sea
+            var blue=new BayviewKit.Tint(Color.white,Toy.Hex(0x1d4f8a),Color.white,Color.white);
+            Along(NewBayviewPlan.Harbour,6,1.2f,(at,yaw)=>BayviewKit.Spawn("promenade_rail",at,yaw,root,blue));
+            for(float s=TownFrom+6;s<TownTo;s+=24) {
+                var at=track.At(s);var r=track.Right(s);var f=track.Forward(s);float face=Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg;
+                var lamp=at+r*10.5f;lamp.y=FrontY;BayviewKit.Spawn("lamp_post",lamp,face,root,blue);
+                var bench=at+r*11.5f+f*5;bench.y=FrontY;BayviewKit.Spawn("bench",bench,face+180,root);
+            }
+            // the town row: shops and terraces round the harbour front, each its own bold colour (Cornish and Scottish
+            // harbour paint: docs/79), fronts to the road and the water
+            var row=new (string id,float w,float d,int wall,int shutter,int awning,int door,string sign)[]{
+                ("terrace_a",5.4f,8,0xe8735a,0xffffff,0xff4d5e,0x1d4f8a,null),("terrace_d",5.4f,8,0xf0c24a,0x1d4f8a,0x1d4f8a,0xd94040,null),
+                ("cafe",9,8,0x5fb3c2,0xffffff,0xff4d5e,0x1d4f8a,"THE DAILY MILE"),("terrace_b",5.4f,8,0xd96a8c,0xffffff,0xffd23f,0x2e9e5b,null),
+                ("terrace_c",5.4f,8,0xf5ead0,0x2e6fb5,0x2e6fb5,0x2e6fb5,null),("post_office",9,8,0xe2493a,0xffffff,0x3a7bd5,0xffffff,"POST OFFICE"),
+                ("terrace_a",5.4f,8,0x7fc28e,0xffffff,0xff4d5e,0xffffff,null),("terrace_d",5.4f,8,0x4a7fc0,0xffffff,0xffd23f,0xffd23f,null),
+                ("shop",9,8,0xf29a3a,0x1d4f8a,0x1fa37a,0x1d4f8a,"TIDES & TYRES"),("terrace_b",5.4f,8,0xb8e0d2,0xd94040,0xd94040,0xd94040,"FISH & CHIPS"),
+                ("terrace_c",5.4f,8,0xe8b8c8,0x1d4f8a,0xff4d5e,0x1d4f8a,null),("shop",9,8,0x8a6ac0,0xffd23f,0xffd23f,0xffffff,"BAYVIEW PAINTS"),
+                ("terrace_a",5.4f,8,0xf0d060,0x2e9e5b,0x2e9e5b,0x2e9e5b,"SURF SHACK"),("terrace_d",5.4f,8,0xe06048,0xffffff,0x3a7bd5,0x1d4f8a,null),
+                ("terrace_b",5.4f,8,0x6fb0a0,0xffffff,0xffd23f,0xffffff,null),("terrace_c",5.4f,8,0xf7f0e2,0xe2493a,0xe2493a,0xe2493a,null)};
+            int[] roofs={0x5f6b7a,0,0x4c5562,0xc4684c,0x5f6b7a,0,0x4c5562,0x5f6b7a};
+            float s0=TownFrom+4;int k=0;
+            foreach(var b in row) {
+                float s=s0+b.w*.5f;if(s+b.w*.5f>TownTo)break;
+                var at=track.At(s);var r=track.Right(s);var pos=at-r*(11.5f+b.d*.5f);pos.y=at.y+.12f;float yaw=Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg;
+                var tint=new BayviewKit.Tint(Toy.Hex(b.wall),Toy.Hex(b.shutter),Toy.Hex(b.awning),Toy.Hex(b.door));int roof=roofs[k++%roofs.Length];if(roof!=0)tint.roof=Toy.Hex(roof);
+                BayviewKit.Spawn(b.id,pos,yaw,root,tint,b.sign);
+                if(b.id=="cafe"){Cafe=at-r*9.5f;CafeYaw=yaw;}if(b.sign=="BAYVIEW PAINTS"){Paint=at-r*9.5f;PaintYaw=yaw;}
+                s0+=b.w+.15f;
+            }
+            Cafe.y=Paint.y=FrontY;
+            Paving(root,track);
+            Debug.Log($"LITTLE_ROAD_NEW_BAYVIEW_TOWN buildings={k} arc={TownFrom:0}-{s0:0}");
+        }
+        // How far a point is from the built harbour front (the quay, the road and the town row), the arms and the Pit Stop's
+        // forecourt: the landscape keeps its trees, scrub, boulders and meadow grass off them (VillageDistance).
+        public static float BuiltDistance(Vector3 p)
+        {
+            var q=new Vector2(p.x,p.z);
+            float court=new Vector2(Mathf.Max(Court.xMin-p.x,0,p.x-Court.xMax),Mathf.Max(Court.yMin-p.z,0,p.z-Court.yMax)).magnitude;
+            float front=Mathf.Max(PolylineDistance(NewBayviewPlan.Harbour,q)-50,0);
+            float arm=Mathf.Max(Mathf.Min(PolylineDistance(NewBayviewPlan.WestArm,q),PolylineDistance(NewBayviewPlan.QuayArm,q))-5.5f,0);
+            return Mathf.Min(court,Mathf.Min(front,arm));
+        }
+        static readonly Rect Court=Rect.MinMaxRect(34,-44.6f,90,-6);   // (the Pit Stop's forecourt, from the start straight's kerb)
+        // The hard ground: granite setts on the quay (the road's kerb to the harbour wall), the town row's pavement, the
+        // arms' decks and the Pit Stop's forecourt.
+        static void Paving(Transform root,Circuit track)
+        {
+            var setts=WorldLook.Kit("Quay granite setts",new Color(.64f,.62f,.58f),WorldLook.Pattern.Stone,0,.12f,true,1.2f);
+            var flags=WorldLook.Kit("Harbour front flagstones",new Color(.72f,.69f,.63f),WorldLook.Pattern.Stone,0,.12f,true,.8f);
+            float Y(Vector3 v)=>Height(v.x,v.z,track)+.05f;
+            // the quay: every 2 m round the loop where the harbour's shore lies off the road's right (seaward) side
+            var rows=new List<Vector3[]>();int quay=0;
+            for(float s=0;s<=track.length;s+=2) {
+                var at=track.At(s);var r=track.Right(s);r.y=0;r.Normalize();float shore=-1;
+                for(float t=8.4f;t<48;t+=.5f){var w=at+r*t;if(CoastDistance(w.x,w.z)<0){shore=t;break;}}
+                bool ok=shore>0&&PolylineDistance(NewBayviewPlan.Harbour,new Vector2(at.x+r.x*shore,at.z+r.z*shore))<3;
+                if(ok) {
+                    var row=new Vector3[3];for(int c=0;c<3;c++){var w=at+r*Mathf.Lerp(8.3f,shore,c*.5f);w.y=c==2?FrontY+.05f:Y(w);row[c]=w;}
+                    rows.Add(row);
+                }
+                else{if(rows.Count>1){Grid(root,"Quay setts",rows,setts);quay++;}rows.Clear();}
+            }
+            if(rows.Count>1){Grid(root,"Quay setts",rows,setts);quay++;}rows.Clear();
+            // the town row's pavement, kerb to shop fronts
+            for(float s=TownFrom-2;s<=TownTo+2;s+=2) {
+                var at=track.At(s);var r=track.Right(s);r.y=0;r.Normalize();var row=new Vector3[2];
+                for(int c=0;c<2;c++){var w=at-r*(c==0?8.3f:11.8f);w.y=Y(w);row[c]=w;}rows.Add(row);
+            }
+            Grid(root,"Town pavement",rows,flags);rows.Clear();
+            // the arms' decks, wall to wall
+            foreach(var arm in new[]{NewBayviewPlan.WestArm,NewBayviewPlan.QuayArm}) {
+                for(int i=0;i<arm.Length;i++){var d=(arm[Mathf.Min(i+1,arm.Length-1)]-arm[Mathf.Max(i-1,0)]).normalized;var n=new Vector2(d.y,-d.x)*4.2f;
+                    rows.Add(new[]{new Vector3(arm[i].x-n.x,FrontY+.05f,arm[i].y-n.y),new Vector3(arm[i].x+n.x,FrontY+.05f,arm[i].y+n.y)});}
+                Grid(root,"Harbour arm deck",rows,setts);rows.Clear();
+            }
+            // the Pit Stop's forecourt
+            rows.Add(new[]{new Vector3(Court.xMin,FrontY+.05f,Court.yMin),new Vector3(Court.xMax,FrontY+.05f,Court.yMin)});
+            rows.Add(new[]{new Vector3(Court.xMin,FrontY+.05f,Court.yMax),new Vector3(Court.xMax,FrontY+.05f,Court.yMax)});
+            Grid(root,"Pit Stop forecourt",rows,flags);
+            Debug.Log($"LITTLE_ROAD_NEW_BAYVIEW_PAVING quay_runs={quay}");
+        }
+        // A surface through rows of points (each row across the strip), world-mapped, both faces' winding set upwards.
+        static void Grid(Transform root,string name,List<Vector3[]> rows,Material mat)
+        {
+            var v=new List<Vector3>();var uv=new List<Vector2>();var t=new List<int>();int w=rows[0].Length;
+            foreach(var row in rows)foreach(var p in row){v.Add(p);uv.Add(new Vector2(p.x,p.z)*.25f);}
+            for(int i=1;i<rows.Count;i++)for(int c=1;c<w;c++) {
+                int a=(i-1)*w+c-1,b=a+1,cc=i*w+c-1,d=cc+1;
+                foreach(var tri in new[]{new[]{a,cc,b},new[]{b,cc,d}}) {
+                    var n=Vector3.Cross(v[tri[1]]-v[tri[0]],v[tri[2]]-v[tri[0]]);if(n.y<0){(tri[1],tri[2])=(tri[2],tri[1]);}t.AddRange(tri);
+                }
+            }
+            var m=new Mesh{name=name};m.SetVertices(v);m.SetUVs(0,uv);m.SetTriangles(t,0);m.RecalculateNormals();m.RecalculateBounds();
+            var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root,false);
+            go.GetComponent<MeshFilter>().sharedMesh=m;go.GetComponent<MeshRenderer>().sharedMaterial=mat;
+        }
+        // Points every `step` metres along a polyline, `inset` metres inland (to the right of its direction: the plan's coast
+        // runs clockwise, the land on its right), each with the yaw that lays a piece's local x along the line.
+        static void Along(Vector2[] line,float step,float inset,System.Action<Vector3,float> put)
+        {
+            float carry=step*.5f;
+            for(int i=1;i<line.Length;i++) {
+                var a=line[i-1];var b=line[i];var dir=(b-a).normalized;float L=(b-a).magnitude;var inland=new Vector2(dir.y,-dir.x);   // (the coast runs clockwise: the land on its right)
+                float t=carry;for(;t<L;t+=step){var q=a+dir*t+inland*inset;put(new Vector3(q.x,FrontY,q.y),Mathf.Atan2(-dir.y,dir.x)*Mathf.Rad2Deg);}
+                carry=t-L;
+            }
+        }
+        // A harbour wall along a line, `offset` metres to its right (negative: its left), from the sea floor to a cope just
+        // above the quay: a battered granite face with a solid collider.
+        static void Wall(Transform root,Vector2[] line,float offset,Material mat)
+        {
+            var v=new List<Vector3>();var t=new List<int>();float top=FrontY+.3f,bottom=-15.5f;
+            var pts=new List<Vector2>();
+            for(int i=0;i<line.Length;i++){var d=(line[Mathf.Min(i+1,line.Length-1)]-line[Mathf.Max(i-1,0)]).normalized;pts.Add(line[i]+new Vector2(d.y,-d.x)*offset);}
+            float side=offset>=0?1:-1;
+            for(int i=0;i<pts.Count;i++) {
+                var d=(pts[Mathf.Min(i+1,pts.Count-1)]-pts[Mathf.Max(i-1,0)]).normalized;var outward=new Vector2(d.y,-d.x)*(offset==0?-1:side);
+                var inner=pts[i]-outward*.6f;var outer=pts[i]+outward*.6f;var foot=pts[i]+outward*2.2f;
+                v.Add(new(inner.x,top,inner.y));v.Add(new(outer.x,top,outer.y));v.Add(new(foot.x,bottom,foot.y));v.Add(new(inner.x,bottom,inner.y));
+                if(i>0){int a=v.Count-8;for(int f=0;f<4;f++){int p0=a+f,p1=a+(f+1)%4,q0=p0+4,q1=p1+4;t.AddRange(new[]{p0,q0,q1,p0,q1,p1});}}
+            }
+            var m=new Mesh{name="Harbour wall"};m.SetVertices(v);m.SetTriangles(t,0);
+            var vs=m.vertices;var ts=m.triangles;
+            m.triangles=Fix(vs,ts,pts.Count);m.RecalculateNormals();m.RecalculateBounds();
+            var go=new GameObject("Harbour wall",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(root,false);go.tag="Respawn";
+            go.GetComponent<MeshFilter>().sharedMesh=m;go.GetComponent<MeshRenderer>().sharedMaterial=mat;go.GetComponent<MeshCollider>().sharedMesh=m;
+        }
+        // (every triangle turned to face away from the wall's centre line at its own place)
+        static int[] Fix(Vector3[] v,int[] t,int rings)
+        {
+            var o=(int[])t.Clone();
+            for(int i=0;i<o.Length;i+=3) {
+                var a=v[o[i]];var b=v[o[i+1]];var c=v[o[i+2]];var n=Vector3.Cross(b-a,c-a);int ring=Mathf.Min(o[i],Mathf.Min(o[i+1],o[i+2]))/4;
+                int r2=Mathf.Min(ring+1,rings-1);var centre=(v[ring*4]+v[ring*4+1]+v[ring*4+2]+v[ring*4+3]+v[r2*4]+v[r2*4+1]+v[r2*4+2]+v[r2*4+3])*.125f;
+                if(Vector3.Dot(n,(a+b+c)/3-centre)<0){var x=o[i+1];o[i+1]=o[i+2];o[i+2]=x;}
+            }
+            return o;
+        }
+        // An arm's rounded head: a granite drum at its end, the harbour light's plinth.
+        static void Head(Transform root,Vector2[] arm,Material mat)
+        {
+            var e=arm[^1];var g=GameObject.CreatePrimitive(PrimitiveType.Cylinder);g.name="Harbour arm head";g.transform.SetParent(root,false);g.tag="Respawn";
+            g.transform.position=new Vector3(e.x,(FrontY+.3f-15.5f)*.5f,e.y);g.transform.localScale=new Vector3(10.5f,(FrontY+.3f+15.5f)*.5f,10.5f);g.GetComponent<Renderer>().sharedMaterial=mat;
         }
 
         // ---- drawing (stage 1, grey): the gravel lane as a strip of packed gravel over the land

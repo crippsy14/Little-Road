@@ -107,7 +107,8 @@ namespace LittleRoad
             collider.material=new PhysicsMaterial("Arcade tyre contact") {dynamicFriction=0,staticFriction=0,
                 frictionCombine=PhysicsMaterialCombine.Minimum,bounciness=.05f,bounceCombine=PhysicsMaterialCombine.Minimum};
             ContactBottom=collider.center.y-size.y*.5f;
-            if(race.track.hasElevation){ground=new RoadGrounding(this);ground.Sample();}
+            // (--new-bayview: the island loop has hills, but free roam drives every ground, so it keeps the free-roam path)
+            if(race.track.hasElevation&&!(race.freeRoam&&NewBayview.On)){ground=new RoadGrounding(this);ground.Sample();}
             // Free roam on the level Bayview road still crosses real hills: let the car pitch and
             // roll with the ground it sits on (races keep their locked axes). --free-roam-level restores.
             else if(race.freeRoam&&!RaceTrial.Has("--free-roam-level")){body.constraints=RigidbodyConstraints.None;tiltToGround=true;}

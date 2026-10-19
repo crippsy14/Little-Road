@@ -41,7 +41,7 @@ namespace LittleRoad
         }
         static float Blend(float a,float b,float x)=>Mathf.SmoothStep(0,1,Mathf.InverseLerp(a,b,x));
         static float FlatDistance(Vector3 a,Vector3 b)=>new Vector2(a.x-b.x,a.z-b.z).magnitude;
-        static float VillageDistance(Vector3 p)=>new Vector2(Mathf.Max(-96-p.x,0,p.x-37),Mathf.Max(-130-p.z,0,p.z+90)).magnitude;
+        static float VillageDistance(Vector3 p)=>NewBayview.On?NewBayview.BuiltDistance(p):new Vector2(Mathf.Max(-96-p.x,0,p.x-37),Mathf.Max(-130-p.z,0,p.z+90)).magnitude;
         // A checksum of the circuit the island is built round (the cliffs' cooked rings depend on it: CoastalCliffs).
         public ulong TrackKey(){ulong h=1469598103934665603;void Mix(float f){h=(h^(uint)System.BitConverter.SingleToInt32Bits(f))*1099511628211;}
             Mix(track.length);for(int k=0;k<64;k++){var p=track.At(track.length*k/64);Mix(p.x);Mix(p.y);Mix(p.z);}Mix(post.x);Mix(post.z);return h;}

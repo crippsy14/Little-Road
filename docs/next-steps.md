@@ -1,9 +1,18 @@
 # Next steps (3 October 2026)
 
-**19 October: Bayview rebuilt, the brief ([doc 79](79-bayview-rebuilt-brief.md)) waits on Richard.**
-- **The plan:** a bigger harbour island, about 430 × 300 m, with a 1,027 m Harbour Loop that teaches one thing per road, a gravel lane, and five landmarks.
-- **How it's built:** behind `--new-bayview` as a parallel layout, so the old island and every test keep working.
-- **Questions:** three, each with a default.
+**19 October: Bayview rebuilt ([doc 79](79-bayview-rebuilt-brief.md)): stages 1 and 2 done, behind `--new-bayview`.**
+- **Approved with the defaults:** the island grows to about 430 × 300 m, the lap runs clockwise, and the character is a Cornish and Scottish harbour.
+- **Built:**
+  - the island and its 1,079 m Harbour Loop;
+  - the granite harbour with its arms;
+  - the paved quay, with railings, lamps and benches;
+  - a 16-building town row in bold paint;
+  - the Pit Stop on its own forecourt.
+- **Checks:**
+  - the adventure smoke test passes with the flag;
+  - races on seeds 1709-1711 finish 24/24 with no resets;
+  - the world without the flag is unchanged.
+- **Next:** stage 3, the landmarks (lighthouse, windmill, clock tower, helter-skelter pier, lifeboat slip).
 - **Also done:** a far version for each Prop Forge house (houses@2).
 
 **18 October, late night: Prop Forge stage two ([doc 78](78-prop-forge-stage-two.md)): the world remodelled, behind `--prop-forge`.**

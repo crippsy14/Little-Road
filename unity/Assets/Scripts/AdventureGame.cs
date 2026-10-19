@@ -59,7 +59,8 @@ namespace LittleRoad
             residents["garage"]=new Vector3(-62,0,-100);
             // Pit Stop bay hosts (Bayview: garage + parts). Hillcrest's arrive through HillcrestTown.Spots.
             foreach(var (id,key) in new[]{("garage","bayview/garage"),("parts","bayview/parts")})if(PitStop.Hosts.TryGetValue(key,out var host)){residents[id]=host.at;residentYaw[id]=host.yaw;}
-            residents["cafe"]=new Vector3(-40.5f,0,-101.8f);residents["paint"]=new Vector3(3.5f,0,-102.2f);
+            residents["cafe"]=NewBayview.On?NewBayview.Cafe:new Vector3(-40.5f,0,-101.8f);residents["paint"]=NewBayview.On?NewBayview.Paint:new Vector3(3.5f,0,-102.2f);
+            if(NewBayview.On){residentYaw["cafe"]=NewBayview.CafeYaw;residentYaw["paint"]=NewBayview.PaintYaw;}
             if(HillcrestTown.Spots.Count>0){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}
             foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout","farm"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
             // Quarry Hills built in the background (Districts): what needs it is set up when it arrives.
@@ -829,7 +830,7 @@ namespace LittleRoad
             target.GetComponent<UnityEngine.UI.Button>().onClick.Invoke();yield return new WaitForSeconds(.4f);
             ui.Capture(Path.Combine(folder,"p3-bought.png"));
             bool bought=Store.Data.paintIndex==5;paintShop.Leave();Close();yield return new WaitForSeconds(.3f);
-            var rowan=GameObject.Find("Resident cafe");Place(residents["cafe"]+Vector3.forward*6);cameraView.transform.position=residents["cafe"]+new Vector3(-3,4,9);cameraView.transform.LookAt(residents["cafe"]+Vector3.up);
+            var rowan=GameObject.Find("Resident cafe");Place(Front("cafe",6));cameraView.transform.position=residents["cafe"]+new Vector3(-3,4,9);cameraView.transform.LookAt(residents["cafe"]+Vector3.up);
             rowan.GetComponent<NpcChatter>().TrySay(bubbles);yield return new WaitForSeconds(.6f);
             ui.Capture(Path.Combine(folder,"p4-bubble.png"));
             Debug.Log("PAINT_SHOP_REVIEW bought="+bought+" credits="+Store.Data.credits);Application.Quit(bought?0:2);
@@ -1771,6 +1772,8 @@ namespace LittleRoad
             player.tuning=EquipmentCatalog.Stats(Store.Data.Loadout(),Store.Data.Tune());player.body.mass=850*player.tuning.mass;
             foreach(var renderer in player.GetComponentsInChildren<Renderer>())foreach(var material in renderer.sharedMaterials)if(material.name.Contains("BodyPaint"))material.color=Paints[Store.Data.paintIndex];
         }
+        // (In front of a resident: on the new Bayview, out from where they face; elsewhere 5 m north, as the old island was laid out.)
+        Vector3 Front(string id,float m)=>residents[id]+(NewBayview.On&&residentYaw.TryGetValue(id,out var y)?Quaternion.Euler(0,y,0)*Vector3.forward:Vector3.forward)*m;
         void Place(Vector3 p){player.body.position=p+Vector3.up*.15f;player.body.linearVelocity=Vector3.zero;player.body.angularVelocity=Vector3.zero;player.speed=0;CameraPose(true);}
         IEnumerator Smoke()
         {
@@ -1778,7 +1781,7 @@ namespace LittleRoad
             if(AdventureSession.SmokePhase==0&&!RaceTrial.Has("--adventure-verify-save")) {
                 if(Store.Data.questStage!=0||Store.Data.credits!=0)throw new Exception("Smoke requires a fresh isolated profile.");
                 if(Interact("post"))throw new Exception("Remote interaction was incorrectly accepted.");
-                Place(residents["garage"]+Vector3.forward*5);Interact("garage");yield return new WaitForSeconds(.3f);Capture("01-mara");
+                Place(Front("garage",5));Interact("garage");yield return new WaitForSeconds(.3f);Capture("01-mara");
                 var virtualPad=InputSystem.AddDevice<Gamepad>("AdventureMenuTest");
                 var stopped=player.body.position;InputSystem.QueueStateEvent(virtualPad,new GamepadState{rightTrigger=1});yield return new WaitForSeconds(.12f);
                 if(Vector3.Distance(stopped,player.body.position)>.1f)throw new Exception("Throttle moved the car while the menu was open.");
@@ -1795,23 +1798,23 @@ namespace LittleRoad
                 InputSystem.QueueStateEvent(virtualPad,new GamepadState());yield return null;InputSystem.RemoveDevice(virtualPad);
                 Debug.Log("ADVENTURE_INPUT_CHECK synthetic gamepad navigation/submit and menu throttle block passed; physical DualSense remains untested");
                 Debug.Log("ADVENTURE_DRIVING_CHECK synthetic gamepad throttle and steering moved the physical free-roam car");
-                Place(residents["post"]+Vector3.forward*5);Interact("post");if(!ui.InvokeChoice("Deliver"))throw new Exception("Delivery action missing.");
-                Place(residents["garage"]+Vector3.forward*5);Interact("garage");if(!ui.InvokeChoice("Collect 350"))throw new Exception("Reward action missing.");Close();
+                Place(Front("post",5));Interact("post");if(!ui.InvokeChoice("Deliver"))throw new Exception("Delivery action missing.");
+                Place(Front("garage",5));Interact("garage");if(!ui.InvokeChoice("Collect 350"))throw new Exception("Reward action missing.");Close();
                 // This integration test relocates between places; it does not
                 // claim a manually driven or controller-tested adventure route.
                 foreach(string id in new[]{"postcard_0","postcard_1"}) {Place(finds[id].transform.position);yield return new WaitForSeconds(.15f);}
                 // Buy at Sid's parts bay (the shop can't fit), then fit at Mara's garage bay.
-                Place(residents["parts"]+Vector3.forward*5);Interact("parts");ui.InvokeChoice("Buy parts");
+                Place(Front("parts",5));Interact("parts");ui.InvokeChoice("Buy parts");
                 browser.SelectPart("engine_workshop");
                 if(!browser.InvokeAction("buy"))throw new Exception("Workshop engine purchase action missing.");
                 if(browser.InvokeAction("fit")||Store.Data.Loadout()["engine"]!="engine_stock")throw new Exception("The parts shop fitted a part.");
                 browser.InvokeAction("back");Close();
-                Place(residents["garage"]+Vector3.forward*5);Interact("garage");ui.InvokeChoice("Fit parts");
+                Place(Front("garage",5));Interact("garage");ui.InvokeChoice("Fit parts");
                 browser.SelectPart("engine_workshop");
                 if(!browser.InvokeAction("fit"))throw new Exception("Workshop engine fit action missing.");
                 yield return new WaitForSeconds(.3f);Capture("02-garage");
                 if(Store.Data.Loadout()["engine"]!="engine_workshop"||Store.Data.credits!=0||player.tuning.power<=CarTuning.Stock.power)throw new Exception("Equipped upgrade did not apply.");
-                Close();Place(residents["cafe"]+Vector3.forward*5);Interact("cafe");AdventureSession.SmokePhase=1;ui.InvokeChoice("Race Bayview");yield return null;if(folder!=null)racePreview.Capture(Path.Combine(folder,"02b-race-preview.png"));racePreview.Confirm();
+                Close();Place(Front("cafe",5));Interact("cafe");AdventureSession.SmokePhase=1;ui.InvokeChoice("Race Bayview");yield return null;if(folder!=null)racePreview.Capture(Path.Combine(folder,"02b-race-preview.png"));racePreview.Confirm();
             } else {
                 var reloaded=new AdventureStore(Store.path);var p=reloaded.Data;
                 if(p.questStage!=3||p.collected.Count!=2||p.Loadout()["engine"]!="engine_workshop"||p.credits<100||p.settledSerial!=p.raceSerial)throw new Exception("Adventure round-trip persistence failed.");
