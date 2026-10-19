@@ -13,7 +13,7 @@ namespace LittleRoad
     // off the ground (boats, balloons, bunting, the zip trolley) are skipped. Writes placement-audit.txt.
     public static class PlacementAudit
     {
-        static readonly HashSet<string> Airborne=new(){"boat","balloon","zip_trolley","wind_turbine","lighthouse","pier","harbour_steps","sea_wall","promenade_rail","headland_gate","rail_gate","tunnel_portal"};
+        static readonly HashSet<string> Airborne=new(){"boat","Fireworks barge","balloon","zip_trolley","wind_turbine","lighthouse","pier","harbour_steps","sea_wall","promenade_rail","headland_gate","rail_gate","tunnel_portal"};
         // The last Run(): floating pieces above the sea floor (sunken sea rocks are out of sight) and loose bunting ends.
         public static readonly List<Vector3> FloatingAt=new(),LooseBunting=new();
         // Before static batching (CoastalLandscape): planting (bushes, trees, rocks, flowers) left hanging more than

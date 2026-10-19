@@ -16,7 +16,10 @@ namespace LittleRoad
         float CausewayCut(float x,float z,float height)
         {
             float d=HillcrestRoute.Distance(HillcrestRoute.Causeway,x,z,out float deck);
-            return Mathf.Lerp(height,Mathf.Min(height,Mathf.Min(deck,0)-.08f),1-Blend(6,14,d));
+            // (--new-bayview: the mainline starts up on the island's start straight; north of the Halt quay the ground
+            //  follows its deck, not sea level: docs/80 round 1)
+            float top=NewBayview.On&&z>HillcrestRoute.QuayNorth?deck:Mathf.Min(deck,0);
+            return Mathf.Lerp(height,Mathf.Min(height,top-.08f),1-Blend(6,14,d));
         }
         // Valley-scale ground colour, baked once (768x548, ~3.3 m a texel) so the valley reads as
         // countryside instead of one even green: hedged field parcels on the flatter low ground, dark

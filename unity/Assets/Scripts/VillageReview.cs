@@ -490,7 +490,9 @@ namespace LittleRoad
         static float GarageBayX=>BayviewKit.Has("pit_stop_2")?VillageKit.PitStopSite.x+4.5f:-65;
         void Place(Vector3 position,float heading)
         {
-            position.y=.015f-player.ContactBottom;
+            // (the old island was flat at 0; the new Bayview's ground is wherever it is: the highest non-car surface)
+            float ground=0;if(NewBayview.On){ground=float.MinValue;foreach(var h in Physics.RaycastAll(position+Vector3.up*60,Vector3.down,120))if(!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null)ground=Mathf.Max(ground,h.point.y);if(ground==float.MinValue)ground=0;}
+            position.y=ground+.015f-player.ContactBottom;
             player.body.position=position;player.body.rotation=Quaternion.Euler(0,heading,0);player.body.linearVelocity=Vector3.zero;player.body.angularVelocity=Vector3.zero;
             // Review teleports must synchronise the render transform as well
             // as the physics pose before a camera capture requests culling.

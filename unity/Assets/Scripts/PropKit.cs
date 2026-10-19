@@ -10,7 +10,7 @@ namespace LittleRoad
     // indices), already in Unity's axes. Off by default: --prop-forge (and the --run-range fixture).
     public static class PropForge
     {
-        public static bool Enabled=>RaceTrial.Has("--prop-forge")||RunRange.Requested;
+        public static bool Enabled=>RaceTrial.Has("--prop-forge")||RunRange.Requested||NewBayview.On;   // (the new Bayview is built with Prop Forge: docs/80)
     }
     [Serializable] public sealed class PropVec{public float x,y,z;public Vector3 V=>new(x,y,z);}
     [Serializable] public sealed class PropSub{public string material;public int start,count;}

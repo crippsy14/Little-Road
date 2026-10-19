@@ -43,7 +43,7 @@ namespace LittleRoad
             S("road seams (steps you drive over)","any",false,0,c=>c.seams),
             S("banks too steep (no barrier)","any",false,0,c=>c.banks),
             S("cars not on the ground","any",false,0,c=>c.carsOffGround)};
-        public static string CarContactReport="",SeamReport="";
+        public static string CarContactReport="",SeamReport="";static readonly List<string> ForgeReport=new();   // (which Forge run or object failed its ground checks)
         static Standard S(string m,string k,bool atLeast,float bar,System.Func<Column,float> v)=>new(){measure=m,kind=k,atLeast=atLeast,bar=bar,value=v};
         public static List<string> Failures(Column c)=>Standards.Where(x=>x.kind=="any"||x.kind==c.kind).Where(x=>x.atLeast?x.value(c)<x.bar-1e-4f:x.value(c)>x.bar+1e-4f)
             .Select(x=>$"{x.measure}: {x.value(c):0.##} (needs {(x.atLeast?"at least":"at most")} {x.bar:0.##})").ToList();
@@ -83,8 +83,9 @@ namespace LittleRoad
             // Prop Forge's runs and objects (--prop-forge, docs/77): every laid piece is a piece, a bale is planting as a stamped
             // hay bale is, and anything that failed its own ground checks (in the air, off its slope) counts as floating.
             if(PropForge.Enabled) {
-                foreach(var L in Runs.Laid){foreach(var it in L.items)Of(it.m.GetColumn(3)).pieces++;if(L.failures.Count>0&&L.items.Count>0)Of(L.items[0].m.GetColumn(3)).floating+=L.failures.Count;}
-                foreach(var L in Objects.Laid)foreach(var o in L.placed){var col=Of(o.at);col.pieces++;if(L.kit.file.kit=="hay_bale")col.nature++;if(o.air>.02f||o.tilt>4)col.floating++;}
+                ForgeReport.Clear();
+                foreach(var L in Runs.Laid){foreach(var it in L.items)Of(it.m.GetColumn(3)).pieces++;if(L.failures.Count>0&&L.items.Count>0){Of(L.items[0].m.GetColumn(3)).floating+=L.failures.Count;ForgeReport.Add($"  run {L.spec.name}: {string.Join("; ",L.failures)}");}}
+                foreach(var L in Objects.Laid)foreach(var o in L.placed){var col=Of(o.at);col.pieces++;if(L.kit.file.kit=="hay_bale")col.nature++;if(o.air>.02f||o.tilt>4){col.floating++;ForgeReport.Add($"  {L.name} at {o.at} air {o.air:0.00} m tilt {o.tilt:0}");}}
             }
             // Same design next door: the nearest other building within 15 m has the same design.
             var same=new Dictionary<Column,(int same,int pairs)>();foreach(var c in cols)same[c]=(0,0);
@@ -143,6 +144,7 @@ namespace LittleRoad
             sb.AppendLine("-- against the standard (docs/57)");
             foreach(var c in cols){sb.AppendLine($"{c.name} ({c.kind}): {(c.failures.Count==0?"PASS":"FAIL, "+c.failures.Count+" short")}");foreach(var f in c.failures)sb.AppendLine("    "+f);}
             sb.AppendLine("-- cars: "+CarContactReport.TrimEnd());
+            if(ForgeReport.Count>0){sb.AppendLine("-- Prop Forge pieces off the ground:");foreach(var l in ForgeReport)sb.AppendLine(l);}
             sb.AppendLine("-- road seams: "+SeamReport.TrimEnd());
             return sb.ToString();
         }

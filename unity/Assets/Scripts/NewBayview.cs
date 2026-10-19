@@ -112,7 +112,9 @@ namespace LittleRoad
             return best;
         }
         // The causeway link: from the loop's start straight down to the mainline's first point at the quay.
-        public static readonly Vector3 LinkTop=new(68.3f,FrontY,-55f);
+        public static readonly Vector3 LinkTop=new(68.3f,FrontY-.075f,-55f);   // (the mainline draws 0.1 m over its line: level with the loop's 0.025 m asphalt)
+        // (held at quay level until it clears the start straight's 12 m shoulder: it dropped 0.4 m inside it, docs/80 round 1)
+        public static readonly Vector3 LinkHold=new(68.3f,FrontY-.075f,-69f);
 
         // The island's height with its roads: the land, then each road's shoulder flattened to the road (the loop 13 m
         // either side of its centre, blending out by 26 m; the gravel lane 4 m, by 11 m; the causeway link 6 m, by 14 m).
@@ -136,7 +138,7 @@ namespace LittleRoad
             // the lighthouse's headland, levelled from the road out to the tower
             var lt=LighthouseAt(track);var lr=new Vector2(lightRoad.x,lightRoad.z);float lh=PolylineDistance(new[]{lr,new Vector2(lt.x,lt.z)},q);
             h=Mathf.Lerp(h,lightRoad.y,(1-Blend(7,13,lh))*Blend(10,14,rd));   // (not over the road: it climbs past the point)
-            float ld=Mathf.Abs(x-LinkTop.x);if(z<LinkTop.z+4&&z>-90){float ly=Mathf.Lerp(LinkTop.y,0,Mathf.InverseLerp(LinkTop.z,-83.4f,z));h=Mathf.Lerp(h,ly,1-Blend(6,14,ld));}
+            float ld=Mathf.Abs(x-LinkTop.x);if(z<LinkTop.z+4&&z>-90){float ly=Mathf.Lerp(LinkTop.y,0,Mathf.InverseLerp(LinkHold.z,-83.4f,z));h=Mathf.Lerp(h,ly,1-Blend(10,24,ld));}   // (a broad landform: on a 14 m one the link ran along a ridge, docs/80)
             return h;
         }
 
@@ -179,7 +181,7 @@ namespace LittleRoad
                 s0+=b.w+.15f;
             }
             // (then terraces to the arc's end, cycling the terrace types through the harbour paints)
-            int[] walls={0xe8735a,0x4a7fc0,0xf0c24a,0x7fc28e,0xd96a8c,0x5fb3c2,0xf29a3a,0xe8b8c8,0x6fb0a0,0xf7f0e2};string[] kinds={"terrace_b","terrace_a","terrace_c","terrace_d"};
+            int[] walls={0xe8735a,0x4a7fc0,0xf0c24a,0x7fc28e,0xd96a8c,0x5fb3c2,0xf29a3a,0xe8b8c8,0x6fb0a0,0xf7f0e2};string[] kinds={"terrace_e","terrace_b","terrace_f","terrace_a","terrace_g","terrace_c","terrace_d"};
             for(int e=0;;e++) {
                 float s=s0+2.7f;if(s+2.7f>TownTo)break;
                 var at=track.At(s);var r=track.Right(s);var pos=at-r*15.5f;pos.y=at.y+.12f;float yaw=Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg;
@@ -206,7 +208,7 @@ namespace LittleRoad
             var arm=NewBayviewPlan.WestArm;var dir=(arm[1]-arm[0]).normalized;var at=arm[0]+(arm[1]-arm[0])*.7f;var o=new Vector2(dir.y,-dir.x);
             if(BayviewKit.Has("lifeboat_station"))BayviewKit.Spawn("lifeboat_station",new Vector3(at.x,FrontY,at.y),Mathf.Atan2(o.x,o.y)*Mathf.Rad2Deg,root);
             Pier(root,track);
-            HarbourLife(root,track);TownWall(root,track);
+            HarbourLife(root,track);TownWall(root,track);Furnish(root,track);RoadsideWalls(root,track);
             Debug.Log($"LITTLE_ROAD_NEW_BAYVIEW_LANDMARKS tower={TowerSpot} lifeboat=({at.x:0},{at.y:0}) lighthouse={LighthouseAt(track)}");
         }
         // The pleasure pier: timber boards on piles from the east beach out over the sea, rails both sides, a wide head
@@ -269,7 +271,7 @@ namespace LittleRoad
                 int[] paints={0xff7ac8,0x5ec8ff,0xffd23f,0x3ee6a4,0xff4d5e,0xffffff};var c=NewBayviewPlan.BeachHuts;int k=0;Vector3 last=Vector3.positiveInfinity;
                 for(float s=0;s<track.length;s+=.5f) {
                     var at=track.At(s);float off=Mathf.Abs(at.z-NewBayviewPlan.HelterSkelterPier.y);if(at.x<100||off>17||off<5)continue;   // (either side of the pier's root)
-                    var r=track.Right(s);r.y=0;r.Normalize();var spot=at+r*14f;if((spot-last).magnitude<3.4f)continue;if(k>=8)break;
+                    var r=track.Right(s);r.y=0;r.Normalize();var spot=at+r*14f;if((spot-last).magnitude<3.4f)continue;if(k>=5)break;
                     spot.y=Height(spot.x,spot.z,track);last=spot;
                     BayviewKit.Spawn("beach_hut",spot,Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg,root,new BayviewKit.Tint(Toy.Hex(paints[k++%paints.Length]),Color.white,Color.white,Toy.Hex(0x1d6fa8)));
                 }
@@ -311,6 +313,137 @@ namespace LittleRoad
             go.GetComponent<MeshFilter>().sharedMesh=m;go.GetComponent<MeshCollider>().sharedMesh=m;
             go.GetComponent<MeshRenderer>().sharedMaterial=WorldLook.Kit("Harbour granite",new Color(.56f,.55f,.52f),WorldLook.Pattern.Stone,0,.1f,true,1.6f);
             return n*run;
+        }
+        // Street furniture and life to docs/57's town standard (docs/80 round 1: the island had 13 lamps, 22 pieces of
+        // furniture and 7 lives a road km against 15, 50 and 10).
+        static void Furnish(Transform root,Circuit track)
+        {
+            var blue=new BayviewKit.Tint(Color.white,Toy.Hex(0x1d4f8a),Color.white,Color.white);int placed=0;
+            void Put(string id,Vector3 at,float yaw,BayviewKit.Tint tint=null){if(BayviewKit.Has(id)){BayviewKit.Spawn(id,at,yaw,root,tint);placed++;}}
+            // lamps down both sides of the start straight, staggered
+            int n=0;
+            for(float s=0;s<track.length;s+=13) {
+                var at=track.At(s);if(at.z>-40||at.x<-8||at.x>112)continue;var r=track.Right(s);r.y=0;r.Normalize();int side=n++%2==0?-1:1;
+                var p=at+r*side*10.5f;p.y=Height(p.x,p.z,track);if(Vector3.Distance(p,LinkTop)<10)continue;Put("lamp_post",p,Mathf.Atan2(-r.x*side,-r.z*side)*Mathf.Rad2Deg,blue);
+            }
+            // the quay: flower beds between the benches, telescopes at the railing, a fish market by the steps
+            for(float s=TownFrom+18;s<TownTo;s+=24) {
+                var at=track.At(s);var r=track.Right(s);r.y=0;r.Normalize();var p=at+r*13.5f;p.y=FrontY;
+                if(Vector3.Distance(p,TowerSpot)<7||PolylineDistance(NewBayviewPlan.Harbour,new Vector2(p.x,p.z))<3)continue;Put("flower_bed",p,Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg);
+            }
+            var h=NewBayviewPlan.Harbour;
+            foreach(var (i,f) in new[]{(1,.55f),(3,.4f),(4,.6f)}) {
+                Vector2 a=h[i],b=h[i+1];var t=(b-a).normalized;var inland=new Vector2(t.y,-t.x);var q=a+(b-a)*f+inland*2.6f;
+                Put("telescope",new Vector3(q.x,FrontY,q.y),Mathf.Atan2(-inland.x,-inland.y)*Mathf.Rad2Deg);
+            }
+            {
+                Vector2 a=h[2],b=h[3];var t=(b-a).normalized;var sea=new Vector2(-t.y,t.x);var p=a+(b-a)*.3f;float yaw=Mathf.Atan2(-sea.x,-sea.y)*Mathf.Rad2Deg;
+                var stall=new BayviewKit.Tint(Color.white,Toy.Hex(0x1d4f8a),Toy.Hex(0x1d4f8a),Color.white);
+                foreach(float k in new[]{-7.5f,7.5f}){var q=p-sea*7+t*k;Put("market_stall",new Vector3(q.x,FrontY,q.y),yaw,stall);}
+            }
+            // more benches on the quay, between the flower beds, facing the water
+            for(float s=TownFrom+30;s<TownTo;s+=24) {
+                var at=track.At(s);var r=track.Right(s);r.y=0;r.Normalize();var p=at+r*13.5f;p.y=FrontY;
+                if(Vector3.Distance(p,TowerSpot)<7||PolylineDistance(NewBayviewPlan.Harbour,new Vector2(p.x,p.z))<3)continue;Put("bench",p,Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg);
+            }
+            // the Pit Stop: flag poles at the forecourt's road corners, the island's map board by the spawn
+            foreach(var x in new[]{Court.xMin+1.5f,Court.xMax-1.5f,62f})Put("flag_pole",new Vector3(x,FrontY,Court.yMin+1.5f),180);
+            Put("map_board",new Vector3(Spawn.x-7,FrontY,Spawn.z+3),180);
+            // the pier's root: an ice-cream kiosk and parasols; the lighthouse headland: picnic tables looking out
+            {
+                var c=NewBayviewPlan.HelterSkelterPier;float best=float.MaxValue;Vector3 at=default,r=default;
+                for(float s=0;s<track.length;s+=1){var p=track.At(s);float d=Mathf.Abs(p.z-c.y)+(p.x<100?999:0);if(d<best){best=d;at=p;r=track.Right(s);}}
+                r.y=0;r.Normalize();var fwd=new Vector3(-r.z,0,r.x);var k=at+r*14.5f;k.y=Height(k.x,k.z,track);
+                Put("kiosk",k,Mathf.Atan2(-r.x,-r.z)*Mathf.Rad2Deg,new BayviewKit.Tint(Toy.Hex(0xffc8d2),Color.white,Toy.Hex(0xff7ac8),Color.white));
+                foreach(float o in new[]{-3.2f,3.2f}){var q=k+fwd*o-r*1.5f;q.y=Height(q.x,q.z,track);Put("parasol",q,o*20,new BayviewKit.Tint(Toy.Hex(0xffd23f),Toy.Hex(0xff4d5e),Toy.Hex(0xff4d5e),Color.white));}
+            }
+            {
+                var lt=LighthouseAt(track);var d=lt-lightRoad;d.y=0;d.Normalize();var side=new Vector3(d.z,0,-d.x);
+                foreach(float o in new[]{-5f,5f}){var q=lt-d*4+side*o;q.y=Height(q.x,q.z,track);Put("picnic_table",q,Mathf.Atan2(d.x,d.z)*Mathf.Rad2Deg);}
+                var b=lt-d*6.5f+side*-4;b.y=Height(b.x,b.z,track);Put("bench",b,Mathf.Atan2(d.x,d.z)*Mathf.Rad2Deg);
+            }
+            // the pier: benches down the deck facing the sea, a telescope and a flag on its head
+            {
+                var c=NewBayviewPlan.HelterSkelterPier;float x0=c.x-40;while(x0<c.x+40&&Height(x0,c.y,track)>PierY-.3f)x0+=1;float x1=x0+50;
+                foreach(float x in new[]{x0+14,x0+34})foreach(int s in new[]{-1,1})Put("bench",new Vector3(x,PierY,c.y+s*1.7f),s>0?0:180);
+                Put("telescope",new Vector3(x1+11,PierY,c.y+4),90);Put("flag_pole",new Vector3(x1+11,PierY,c.y-5.5f),90);
+            }
+            // the windmill's summit: picnic tables; the town's two ends: flower beds
+            {
+                var w=NewBayviewPlan.Windmill;foreach(var o in new[]{new Vector2(9,-6),new Vector2(-8,-8),new Vector2(10,7)}){var q=new Vector3(w.x+o.x,0,w.y+o.y);q.y=Height(q.x,q.z,track);Put("picnic_table",q,o.x*13);}
+                foreach(float s in new[]{TownFrom+2,TownTo-2}){var at=track.At(s);var r=track.Right(s);r.y=0;r.Normalize();var q=at-r*10.2f;q.y=Height(q.x,q.z,track);Put("flower_bed",q,Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg);}
+            }
+            // parked cars on the forecourt, west of the Pit Stop, noses to the road
+            string[] bodies={"pebble","marlow","bramble","heron","pebble"};Color[] paints={Toy.Hex(0xff7ac8),Toy.Hex(0x5ec8ff),Toy.Hex(0x3ee6a4),Toy.Hex(0xffb400),Toy.Hex(0xe2493a)};int parked=0;
+            for(int i=0;i<bodies.Length;i++) {
+                var car=TrialWorld.Car(bodies[i],paints[i]);if(car==null)continue;car.name="Parked "+bodies[i];car.transform.SetParent(root,true);
+                car.transform.SetPositionAndRotation(new Vector3(36+i*3.3f,FrontY+.05f,-14),Quaternion.Euler(0,180,0));CarContact.Seat(car);parked++;
+            }
+            Debug.Log($"LITTLE_ROAD_NEW_BAYVIEW_FURNISH placed={placed} parked={parked}");
+        }
+        // Roadside walls (docs/80 round 1): Cornish dry-stone, 12.2 m out (the runoff's edge), along every stretch where the
+        // land falls away steeply within 12 m of the kerb: the area audit's "bank" (a drop steeper than 0.55 over a metre,
+        // 0.4 m or more in all), which a car that ran wide couldn't climb back from. Short gaps close up; the quay (its
+        // railings guard it), the lanes off the loop and the causeway link stay open.
+        static void RoadsideWalls(Transform root,Circuit track)
+        {
+            // (just past the shoulder: a drop that starts at its edge must have the wall within 1 m of it)
+            const float Out=12.2f;var gravel=GravelPoints(track);var lt=LighthouseAt(track);int walls=0;float metres=0;
+            // (measured as the audit measures it, PlacementAudit.Edges: the built surfaces, by raycast)
+            // (from 4 m over the road's height, as the audit casts: from higher up, tree trunks over a ditch read as ground)
+            float Top(Vector3 p){float best=float.MinValue;foreach(var h in Physics.RaycastAll(p+Vector3.up*4,Vector3.down,10))if(!h.collider.isTrigger&&!h.collider.CompareTag("Respawn"))best=Mathf.Max(best,h.point.y);return best==float.MinValue?Height(p.x,p.z,track):best;}
+            static bool Ground(Collider c)=>c.GetComponent<RoadSurface>()!=null||c.name.Contains("island collider")||c.name.Contains("mainland collider")||c.name.Contains("shoulder")||c.name.Contains("ramp")||c.name.Contains("support");
+            bool Barrier(Vector3 p)
+            {
+                float ground=float.MinValue,top=float.MinValue;
+                foreach(var h in Physics.RaycastAll(p+Vector3.up*40,Vector3.down,80)){if(h.collider.isTrigger)continue;if(Ground(h.collider))ground=Mathf.Max(ground,h.point.y);else top=Mathf.Max(top,h.point.y);}
+                return ground>float.MinValue&&top-ground>.35f;
+            }
+            bool Steep(Vector3 at,Vector3 dir)
+            {
+                var hs=new float[49];for(int k=0;k<49;k++)hs[k]=Top(at+dir*(Circuit.Width*.5f+k*.25f));
+                float steep=0,rise=0;for(int k=0;k+4<49;k++)steep=Mathf.Max(steep,hs[k]-hs[k+4]);for(int k=1;k<49;k++)if(hs[k-1]-hs[k]>.05f)rise+=hs[k-1]-hs[k];
+                if(steep<=.45f||rise<=.3f)return false;   // (a margin under the audit's 0.55 and 0.4)
+                int kSteep=0;for(int k=0;k+4<49;k++)if(hs[k]-hs[k+4]>=steep-1e-4f){kSteep=k;break;}
+                // (already guarded between the kerb and the drop, as the audit asks: a quay railing, a parapet; a tree
+                //  beyond the drop doesn't count)
+                var along=Vector3.Cross(dir,Vector3.up);for(float o=Circuit.Width*.5f+.1f;o<=Circuit.Width*.5f+kSteep*.25f+1;o+=.25f)if(Barrier(at+dir*o)&&Barrier(at+dir*o+along*1.5f)&&Barrier(at+dir*o-along*1.5f))return false;   // (a run of barrier, not a lamp post)
+                return true;
+            }
+            bool Open(Vector3 p)
+            {
+                var q=new Vector2(p.x,p.z);
+                if(Vector3.Distance(p,gravel[0])<11||Vector3.Distance(p,gravel[^1])<11)return true;                // (the gravel lane's ends)
+                if(PolylineDistance(new[]{new Vector2(lightRoad.x,lightRoad.z),new Vector2(lt.x,lt.z)},q)<6)return true;   // (the lighthouse lane)
+                if(Mathf.Abs(p.x-LinkTop.x)<10&&p.z<-46)return true;                                                // (the causeway link)
+                return false;
+            }
+            Physics.SyncTransforms();
+            foreach(int side in new[]{-1,1}) {
+                List<Vector3> run=null;int gap=0;
+                void Flush()
+                {
+                    if(run!=null&&run.Count>=3) {
+                        var L=Runs.Solve(new RunSpec{name=$"Bayview roadside wall {walls}",kit="dry_stone",seed=$"bayview-roadside-{walls}",along=run.ToArray()});
+                        Runs.Draw(L,root);walls++;metres+=L.length;
+                    }
+                    run=null;gap=0;
+                }
+                for(float s=0;s<track.length;s+=2) {
+                    var at=track.At(s);var r=track.Right(s);r.y=0;r.Normalize();var dir=r*side;var p=at+dir*Out;p.y=Height(p.x,p.z,track);
+                    if(Open(p)){Flush();continue;}
+                    if(Steep(at,dir)){run??=new List<Vector3>();run.Add(p);gap=0;}
+                    else if(run!=null){if(++gap>3)Flush();else run.Add(p);}
+                }
+                Flush();
+            }
+            // the causeway link's parapets, from the start straight's shoulder down to the Halt quay (it runs out over the
+            // old shore, the ground falling away both sides)
+            foreach(int side in new[]{-1,1}) {
+                var line=new List<Vector3>();for(float z=-67;z>=-91f;z-=1.5f){var q=new Vector3(LinkTop.x+side*6.6f,0,z);q.y=Height(q.x,q.z,track);line.Add(q);}
+                var L=Runs.Solve(new RunSpec{name=$"Bayview link parapet {side}",kit="dry_stone",seed=$"bayview-link-{side}",along=line.ToArray()});Runs.Draw(L,root);walls++;metres+=L.length;
+            }
+            Debug.Log($"LITTLE_ROAD_NEW_BAYVIEW_ROADSIDE walls={walls} metres={metres:0}");
         }
         static void Slab(Transform root,string name,Vector3 centre,Vector3 size,Material mat)
         {

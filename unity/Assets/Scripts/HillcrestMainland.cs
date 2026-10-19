@@ -63,7 +63,7 @@ namespace LittleRoad
         // the descent into the valley, the river bridge.
         public static readonly Vector3 PortalNorth=new(103,20,-450),PortalSouth=new(106,27,-602);
         // (--new-bayview: the mainline begins on the new loop's start straight, 28 m north of the old junction: docs/79)
-        static Vector3[] MainlineControl=>NewBayview.On?System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Prepend(MainlineBase,NewBayview.LinkTop)):MainlineBase;
+        static Vector3[] MainlineControl=>NewBayview.On?System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Prepend(System.Linq.Enumerable.Prepend(MainlineBase,NewBayview.LinkHold),NewBayview.LinkTop)):MainlineBase;
         static readonly Vector3[] MainlineBase={
             new(68.3f,0,-83.4f),new(70,0,-94),new(71.2f,0,-114),new(72.4f,0,-138),new(73.4f,0,-160),new(76.5f,2.4f,-198),new(84,7,-250),new(93,11.5f,-315),new(99,15.5f,-375),new(102,18.5f,-422),
             PortalNorth,new(104.5f,23.5f,-526),PortalSouth,
