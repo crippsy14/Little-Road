@@ -122,7 +122,8 @@ namespace LittleRoad
             float d=track.Nearest(p,out float off);var at=track.At(d);float rd=new Vector2(at.x-x,at.z-z).magnitude;
             h=Mathf.Lerp(h,at.y,1-Blend(13,26,rd));
             // the harbour front's town row stands on a level shelf inland of the road, the hill rising behind it
-            float town=Blend(TownFrom-12,TownFrom,d)*(1-Blend(TownTo,TownTo+12,d))*(off<0?1:0)*(1-Blend(TownBack,TownBack+10,rd));
+            // (its back edge sharp: a granite retaining wall stands there, TownWall; it was a 10 m bank of bare earth)
+            float town=Blend(TownFrom-12,TownFrom,d)*(1-Blend(TownTo,TownTo+12,d))*(off<0?1:0)*(1-Blend(TownBack,TownBack+1.2f,rd));
             h=Mathf.Lerp(h,at.y,town);   // (level with the road: any higher and the land covers the road's inland half)
             // the Pit Stop's square, level with the start straight, a long grassy bank up to the hill (not a cut ledge)
             float sq=Blend(4,30,x)*(1-Blend(100,126,x))*Blend(-48,-44,z)*(1-Blend(-4,30,z))*Blend(10,14,rd);h=Mathf.Lerp(h,FrontY,sq);   // (never under the loop: the S-bend passes above it)
@@ -132,6 +133,9 @@ namespace LittleRoad
             h=Mathf.Max(h,Mathf.Lerp(-16,FrontY,1-Blend(4,5,arm)));
             // (the lane gives way to the loop's road and runoff where it joins: its land pushed up through the hairpin's apex)
             float gd=Nearest(GravelPoints(track),x,z,out float gy);h=Mathf.Lerp(h,gy,(1-Blend(4,11,gd))*Blend(10,14,rd));
+            // the lighthouse's headland, levelled from the road out to the tower
+            var lt=LighthouseAt(track);var lr=new Vector2(lightRoad.x,lightRoad.z);float lh=PolylineDistance(new[]{lr,new Vector2(lt.x,lt.z)},q);
+            h=Mathf.Lerp(h,lightRoad.y,(1-Blend(7,13,lh))*Blend(10,14,rd));   // (not over the road: it climbs past the point)
             float ld=Mathf.Abs(x-LinkTop.x);if(z<LinkTop.z+4&&z>-90){float ly=Mathf.Lerp(LinkTop.y,0,Mathf.InverseLerp(LinkTop.z,-83.4f,z));h=Mathf.Lerp(h,ly,1-Blend(6,14,ld));}
             return h;
         }
@@ -149,7 +153,8 @@ namespace LittleRoad
             Along(NewBayviewPlan.Harbour,6,1.2f,(at,yaw)=>BayviewKit.Spawn("promenade_rail",at,yaw,root,blue));
             for(float s=TownFrom+6;s<TownTo;s+=24) {
                 var at=track.At(s);var r=track.Right(s);var f=track.Forward(s);float face=Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg;
-                var lamp=at+r*10.5f;lamp.y=FrontY;BayviewKit.Spawn("lamp_post",lamp,face,root,blue);
+                var lamp=at+r*10.5f;lamp.y=FrontY;if(Vector3.Distance(lamp,TowerSpot)<8)continue;   // (the clock tower's place)
+                BayviewKit.Spawn("lamp_post",lamp,face,root,blue);
                 var bench=at+r*11.5f+f*5;bench.y=FrontY;BayviewKit.Spawn("bench",bench,face+180,root);
             }
             // the town row: shops and terraces round the harbour front, each its own bold colour (Cornish and Scottish
@@ -173,10 +178,155 @@ namespace LittleRoad
                 if(b.id=="cafe"){Cafe=at-r*9.5f;CafeYaw=yaw;}if(b.sign=="BAYVIEW PAINTS"){Paint=at-r*9.5f;PaintYaw=yaw;}
                 s0+=b.w+.15f;
             }
+            // (then terraces to the arc's end, cycling the terrace types through the harbour paints)
+            int[] walls={0xe8735a,0x4a7fc0,0xf0c24a,0x7fc28e,0xd96a8c,0x5fb3c2,0xf29a3a,0xe8b8c8,0x6fb0a0,0xf7f0e2};string[] kinds={"terrace_b","terrace_a","terrace_c","terrace_d"};
+            for(int e=0;;e++) {
+                float s=s0+2.7f;if(s+2.7f>TownTo)break;
+                var at=track.At(s);var r=track.Right(s);var pos=at-r*15.5f;pos.y=at.y+.12f;float yaw=Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg;
+                var tint=new BayviewKit.Tint(Toy.Hex(walls[e%walls.Length]),e%3==0?Toy.Hex(0x1d4f8a):Color.white,Toy.Hex(e%2==0?0xff4d5e:0xffd23f),Toy.Hex(e%2==0?0x1d4f8a:0xd94040));
+                int roof=roofs[k++%roofs.Length];if(roof!=0)tint.roof=Toy.Hex(roof);
+                BayviewKit.Spawn(kinds[e%kinds.Length],pos,yaw,root,tint);s0+=5.55f;
+            }
             Cafe.y=Paint.y=FrontY;
             Paving(root,track);
+            Landmarks(root,track);
             Debug.Log($"LITTLE_ROAD_NEW_BAYVIEW_TOWN buildings={k} arc={TownFrom:0}-{s0:0}");
         }
+
+        // ---- stage 3: the landmarks, one in each direction (docs/79): the clock tower on the harbour front, the lifeboat
+        // station on the west arm, the helter-skelter on its pier off the east beach, the lighthouse on the west point (it
+        // stands behind Pip, AdventureGame) and the windmill on the summit (CoastalLandscape).
+        static Vector3 TowerSpot=>new(NewBayviewPlan.ClockTower.x,FrontY,NewBayviewPlan.ClockTower.y);
+        static void Landmarks(Transform root,Circuit track)
+        {
+            if(BayviewKit.Has("clock_tower")) {
+                var t=TowerSpot;var a=track.At(track.Nearest(t,out _));var d=a-t;BayviewKit.Spawn("clock_tower",t,Mathf.Atan2(d.x,d.z)*Mathf.Rad2Deg,root);
+            }
+            // (across the west arm, 70% down its first leg, its doors and slipway to the open sea)
+            var arm=NewBayviewPlan.WestArm;var dir=(arm[1]-arm[0]).normalized;var at=arm[0]+(arm[1]-arm[0])*.7f;var o=new Vector2(dir.y,-dir.x);
+            if(BayviewKit.Has("lifeboat_station"))BayviewKit.Spawn("lifeboat_station",new Vector3(at.x,FrontY,at.y),Mathf.Atan2(o.x,o.y)*Mathf.Rad2Deg,root);
+            Pier(root,track);
+            HarbourLife(root,track);TownWall(root,track);
+            Debug.Log($"LITTLE_ROAD_NEW_BAYVIEW_LANDMARKS tower={TowerSpot} lifeboat=({at.x:0},{at.y:0}) lighthouse={LighthouseAt(track)}");
+        }
+        // The pleasure pier: timber boards on piles from the east beach out over the sea, rails both sides, a wide head
+        // with the helter-skelter on it, its door to the shore.
+        public const float PierY=-8f;   // (3.8 m above the sea)
+        static void Pier(Transform root,Circuit track)
+        {
+            var c=NewBayviewPlan.HelterSkelterPier;float z=c.y,x0=c.x-40;
+            while(x0<c.x+40&&Height(x0,z,track)>PierY-.3f)x0+=1;                  // (where the beach drops under the deck)
+            float x1=x0+50,w=5;var head=new Vector3(x1+6,PierY,z);
+            var boards=WorldLook.Kit("Pier boards",new Color(.56f,.43f,.31f),WorldLook.Pattern.Wood,0,.15f,true,1.4f);
+            var iron=WorldLook.Kit("Pier ironwork",Toy.Hex(0x1d4f8a),WorldLook.Pattern.Plain,.3f,.3f);
+            Slab(root,"Pier deck",new Vector3((x0-8+x1)*.5f,PierY-.2f,z),new Vector3(x1-x0+8,.4f,w),boards);
+            Slab(root,"Pier head",head+Vector3.down*.2f,new Vector3(14,.4f,14),boards);
+            for(float x=x0+1;x<=x1+12;x+=5)foreach(int s in new[]{-1,1}) {
+                float half=x>x1-1?6.6f:w*.5f-.3f;var leg=GameObject.CreatePrimitive(PrimitiveType.Cylinder);leg.name="Pier pile";leg.transform.SetParent(root,false);
+                float top=PierY-.4f,bottom=-16.5f;leg.transform.position=new Vector3(x,(top+bottom)*.5f,z+s*half);leg.transform.localScale=new Vector3(.45f,(top-bottom)*.5f,.45f);
+                leg.GetComponent<Renderer>().sharedMaterial=iron;Object.Destroy(leg.GetComponent<Collider>());
+            }
+            var blue=new BayviewKit.Tint(Color.white,Toy.Hex(0x1d4f8a),Color.white,Color.white);
+            for(float x=x0+3;x<x1-1;x+=6)foreach(int s in new[]{-1,1})BayviewKit.Spawn("promenade_rail",new Vector3(x,PierY,z+s*(w*.5f-.15f)),s>0?0:180,root,blue);
+            for(float k=-4.5f;k<=4.5f;k+=6)foreach(int s in new[]{-1,1}) {   // (round the head: its seaward end and both sides)
+                BayviewKit.Spawn("promenade_rail",head+new Vector3(6.85f,0,k),90,root,blue);
+                BayviewKit.Spawn("promenade_rail",head+new Vector3(k,0,s*6.85f),s>0?0:180,root,blue);
+            }
+            if(BayviewKit.Has("helter_skelter"))BayviewKit.Spawn("helter_skelter",head,-90,root);
+        }
+        // ---- stage 4: the harbour at work. Steps down the quay wall to a floating pontoon, fishing boats and buoys bobbing
+        // in the basin, creels stacked on the quay and by the lifeboat station, beach huts above the pier.
+        static void HarbourLife(Transform root,Circuit track)
+        {
+            float water=CoastalLandscape.SeaLevel;
+            // the steps: on the quay wall below the clock tower, 30% along the shore's long middle stretch
+            var h=NewBayviewPlan.Harbour;Vector2 a=h[2],b=h[3];var t=(b-a).normalized;var sea=new Vector2(-t.y,t.x);   // (the shore runs clockwise: the sea on its left)
+            var p=a+(b-a)*.3f;float yaw=Mathf.Atan2(sea.x,sea.y)*Mathf.Rad2Deg;
+            var rail=new BayviewKit.Tint(Color.white,Toy.Hex(0x1d4f8a),Color.white,Color.white);
+            float flight=Stair(root,p,t,sea,water+1.2f);
+            var pontoon=p+t*(flight+.8f)+sea*2.0f;BayviewKit.Spawn("pier",new Vector3(pontoon.x,water+1,pontoon.y),yaw,root,rail);
+            // boats along the pontoon and out on their moorings, in harbour paint
+            var boats=new (Vector2 at,float yaw,int hull,int stripe)[]{
+                (pontoon+t*-2+sea*5,0,0xffffff,0xff4d5e),(pontoon+t*9+sea*5,180,0x3a7bd5,0xffd23f),(pontoon+t*20+sea*4.5f,4,0xffd23f,0x1d6fa8),
+                (new(-118,-84),150,0xe2493a,0xffffff),(new(-96,-102),60,0x2e9e5b,0xffd23f),(new(-140,-104),110,0xffffff,0x1d6fa8),(new(-74,-80),200,0x1d4f8a,0xff4d5e)};
+            foreach(var (at,y,hull,stripe) in boats) {
+                float face=yaw+90+y;   // (moored along the pontoon: bow along the wall)
+                var boat=BayviewKit.Spawn("boat",new Vector3(at.x,water,at.y),face,BayviewKit.AnimatedRoot,new BayviewKit.Tint(Toy.Hex(hull),Toy.Hex(0x2bb5a8),Toy.Hex(stripe),Color.white),solid:false);
+                if(boat!=null)boat.AddComponent<KitBob>().phase=at.x;
+            }
+            if(BayviewKit.Has("mooring_buoy"))foreach(var at in new Vector2[]{new(-108,-112),new(-86,-96),new(-130,-120),new(-152,-92)}) {
+                var buoy=BayviewKit.Spawn("mooring_buoy",new Vector3(at.x,water-.1f,at.y),at.x*7,BayviewKit.AnimatedRoot,solid:false);
+                if(buoy!=null)buoy.AddComponent<KitBob>().phase=at.y;
+            }
+            // creels: by the steps (on the quay, back from its edge) and on the west arm by the lifeboat station
+            if(BayviewKit.Has("creel_stack")) {
+                foreach(var (at,y) in new[]{(p-sea*3.2f-t*3,yaw),(p-sea*3.4f+t*4.5f,yaw+12)})BayviewKit.Spawn("creel_stack",new Vector3(at.x,FrontY,at.y),y,root);
+                var arm=NewBayviewPlan.WestArm;var dir=(arm[1]-arm[0]).normalized;var on=arm[0]+(arm[1]-arm[0])*.42f;var inward=new Vector2(-dir.y,dir.x);
+                BayviewKit.Spawn("creel_stack",new Vector3(on.x+inward.x*2.4f,FrontY,on.y+inward.y*2.4f),Mathf.Atan2(dir.x,dir.y)*Mathf.Rad2Deg,root);
+            }
+            // beach huts in a row on the level ground beside the east road, above the pier, doors to the sea
+            if(BayviewKit.Has("beach_hut")) {
+                int[] paints={0xff7ac8,0x5ec8ff,0xffd23f,0x3ee6a4,0xff4d5e,0xffffff};var c=NewBayviewPlan.BeachHuts;int k=0;Vector3 last=Vector3.positiveInfinity;
+                for(float s=0;s<track.length;s+=.5f) {
+                    var at=track.At(s);float off=Mathf.Abs(at.z-NewBayviewPlan.HelterSkelterPier.y);if(at.x<100||off>17||off<5)continue;   // (either side of the pier's root)
+                    var r=track.Right(s);r.y=0;r.Normalize();var spot=at+r*14f;if((spot-last).magnitude<3.4f)continue;if(k>=8)break;
+                    spot.y=Height(spot.x,spot.z,track);last=spot;
+                    BayviewKit.Spawn("beach_hut",spot,Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg,root,new BayviewKit.Tint(Toy.Hex(paints[k++%paints.Length]),Color.white,Color.white,Toy.Hex(0x1d6fa8)));
+                }
+            }
+        }
+        // The granite retaining wall behind the town row, where its level shelf meets the hill (Height cuts the shelf
+        // sharp there): from a footing below the shelf to a cope above the land behind it, facing the road.
+        static void TownWall(Transform root,Circuit track)
+        {
+            var mat=WorldLook.Kit("Harbour granite",new Color(.56f,.55f,.52f),WorldLook.Pattern.Stone,0,.1f,true,1.6f);
+            var v=new List<Vector3>();var tr=new List<int>();int rows=0;
+            for(float s=TownFrom-12;s<=TownTo+12;s+=1.5f) {
+                var at=track.At(s);var r=track.Right(s);r.y=0;r.Normalize();
+                var front=at-r*(TownBack-.2f);var back=at-r*(TownBack+2.6f);var behind=at-r*(TownBack+3.5f);
+                float top=Mathf.Max(Height(behind.x,behind.z,track),at.y)+.35f,foot=at.y-.6f;
+                v.Add(new(front.x,foot,front.z));v.Add(new(front.x,top,front.z));v.Add(new(back.x,top,back.z));v.Add(new(back.x,foot,back.z));
+                if(rows>0){int b0=(rows-1)*4,b1=rows*4;for(int f=0;f<3;f++)tr.AddRange(new[]{b0+f,b1+f,b1+f+1,b0+f,b1+f+1,b0+f+1});}
+                rows++;
+            }
+            var m=new Mesh{name="Town retaining wall"};m.SetVertices(v);m.SetTriangles(tr,0);m.triangles=Fix(m.vertices,m.triangles,rows);m.RecalculateNormals();m.RecalculateBounds();
+            var go=new GameObject("Town retaining wall",typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root,false);
+            go.GetComponent<MeshFilter>().sharedMesh=m;go.GetComponent<MeshRenderer>().sharedMaterial=mat;
+        }
+        // A granite flight down the quay wall's face from the quay to `bottom`, along the wall (`along`) and standing off it
+        // (`sea`) as the wall's batter steps out: 0.3 m rises on 0.36 m treads, 1.5 m wide. Returns its length.
+        static float Stair(Transform root,Vector2 top,Vector2 along,Vector2 sea,float bottom)
+        {
+            var temp=GameObject.CreatePrimitive(PrimitiveType.Cube);var cube=temp.GetComponent<MeshFilter>().sharedMesh;Object.Destroy(temp);
+            var parts=new List<CombineInstance>();var t3=new Vector3(along.x,0,along.y);var s3=new Vector3(sea.x,0,sea.y);var turn=Quaternion.LookRotation(s3,Vector3.up);
+            const float rise=.3f,run=.36f,width=1.5f,deep=1.1f;int n=Mathf.CeilToInt((FrontY-bottom)/rise);
+            float Face(float y)=>.6f+(FrontY+.3f-y)/16.8f*1.6f;   // (the wall's battered face: Wall)
+            for(int i=0;i<n;i++) {
+                float y=FrontY-(i+1)*rise,inner=Face(y-deep)+.05f;
+                var c=new Vector3(top.x,0,top.y)+t3*(i*run+run*.5f)+s3*(inner+width*.5f)+Vector3.up*(y-deep*.5f);
+                parts.Add(new CombineInstance{mesh=cube,transform=Matrix4x4.TRS(c,turn,new Vector3(run+.02f,deep,width))});
+            }
+            var m=new Mesh{name="Harbour steps"};m.CombineMeshes(parts.ToArray(),true,true);
+            var go=new GameObject("Harbour steps",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(root,false);
+            go.GetComponent<MeshFilter>().sharedMesh=m;go.GetComponent<MeshCollider>().sharedMesh=m;
+            go.GetComponent<MeshRenderer>().sharedMaterial=WorldLook.Kit("Harbour granite",new Color(.56f,.55f,.52f),WorldLook.Pattern.Stone,0,.1f,true,1.6f);
+            return n*run;
+        }
+        static void Slab(Transform root,string name,Vector3 centre,Vector3 size,Material mat)
+        {
+            var g=GameObject.CreatePrimitive(PrimitiveType.Cube);g.name=name;g.transform.SetParent(root,false);g.transform.position=centre;g.transform.localScale=size;
+            g.GetComponent<Renderer>().sharedMaterial=mat;
+        }
+        // The lighthouse on the west point, 5 m in from the plan's point, and the road beside it: the headland between is
+        // levelled to the road (Height), Pip stands on it 9 m short of the tower (AdventureGame places the tower behind).
+        static Vector3? lightAt;static Vector3 lightRoad;
+        public static Vector3 LighthouseAt(Circuit track)
+        {
+            if(lightAt is Vector3 v)return v;
+            var L=NewBayviewPlan.Lighthouse;var t=L+(new Vector2(-30,40)-L).normalized*5;var a=track.At(track.Nearest(new Vector3(t.x,0,t.y),out _));
+            lightRoad=a;lightAt=new Vector3(t.x,a.y,t.y);return lightAt.Value;
+        }
+        public static Vector3 PostSpot(Circuit track){var t=LighthouseAt(track);var d=t-lightRoad;d.y=0;return t-d.normalized*9;}
         // How far a point is from the built harbour front (the quay, the road and the town row), the arms and the Pit Stop's
         // forecourt: the landscape keeps its trees, scrub, boulders and meadow grass off them (VillageDistance).
         public static float BuiltDistance(Vector3 p)

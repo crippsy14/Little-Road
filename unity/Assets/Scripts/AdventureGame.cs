@@ -66,7 +66,7 @@ namespace LittleRoad
             // Quarry Hills built in the background (Districts): what needs it is set up when it arrives.
             quarryLater=Districts.Waiting("quarry-hills");if(quarryLater)Districts.WhenBuiltSteps("quarry-hills",QuarryHillsArrived);
             if(!quarryLater)QuarryHillsResidents();
-            residents["post"]=world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
+            residents["post"]=NewBayview.On?NewBayview.PostSpot(world.track):world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
             CreatePlaces();Mark("places");BuildWayfinding();Mark("wayfinding");
             if(AdventureSession.MaxBuildTest&&!AdventureSession.TestPlaced){AdventureSession.TestPlaced=true;FaceDuke();}
             var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(NewBayview.On?NewBayview.Spawn:new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));

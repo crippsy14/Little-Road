@@ -25,7 +25,9 @@ namespace LittleRoad
                 foreach(var r in kit.file.replaces)map[r.id]=new Entry{kit=t.name,pieces=r.pieces};
             }
         }
-        public static bool Has(string id){if(!PropForge.Enabled)return false;Load();return map.ContainsKey(id);}
+        // (--new-bayview: its landmarks (the landmarks kit) are Forge models with no Blender original, so they stand in
+        //  with or without --prop-forge)
+        public static bool Has(string id){if(!PropForge.Enabled&&!NewBayview.On)return false;Load();return map.TryGetValue(id,out var e)&&(PropForge.Enabled||e.kit=="landmarks");}
         public static IEnumerable<string> Ids{get{Load();return map.Keys;}}
         // The variant for a placement: a hash of where it stands (the same piece every build), and its source prefab. key
         // names the template (one per variant).

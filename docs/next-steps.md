@@ -1,18 +1,23 @@
 # Next steps (3 October 2026)
 
-**19 October: Bayview rebuilt ([doc 79](79-bayview-rebuilt-brief.md)): stages 1 and 2 done, behind `--new-bayview`.**
+**19 October: Bayview rebuilt ([doc 79](79-bayview-rebuilt-brief.md)): stages 1-3 done and stage 4 under way, behind `--new-bayview`.**
 - **Approved with the defaults:** the island grows to about 430 × 300 m, the lap runs clockwise, and the character is a Cornish and Scottish harbour.
 - **Built:**
   - the island and its 1,079 m Harbour Loop;
   - the granite harbour with its arms;
   - the paved quay, with railings, lamps and benches;
-  - a 16-building town row in bold paint;
-  - the Pit Stop on its own forecourt.
+  - the town row along the harbour front, in bold paint;
+  - the Pit Stop on its own forecourt;
+  - the landmarks: a granite clock tower on the quay, the lifeboat station and its slipway on the west arm, a
+    pleasure pier with a helter-skelter off the east beach, the lighthouse on the west point, the windmill on the
+    summit;
+  - harbour life: steps down the quay wall to a pontoon, boats and buoys bobbing in the basin, creels on the quay,
+    beach huts by the pier, and a granite retaining wall behind the town.
 - **Checks:**
   - the adventure smoke test passes with the flag;
   - races on seeds 1709-1711 finish 24/24 with no resets;
   - the world without the flag is unchanged.
-- **Next:** stage 3, the landmarks (lighthouse, windmill, clock tower, helter-skelter pier, lifeboat slip).
+- **Next:** the rest of stage 4 (people on the quay, a real beach, the bare cut slopes), then stage 5, the judging.
 - **Also done:** a far version for each Prop Forge house (houses@2).
 
 **18 October, late night: Prop Forge stage two ([doc 78](78-prop-forge-stage-two.md)): the world remodelled, behind `--prop-forge`.**

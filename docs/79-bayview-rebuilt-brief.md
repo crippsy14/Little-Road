@@ -163,4 +163,39 @@ Behind `--new-bayview`. The old island stays the default until you've driven the
   - **Left for later stages:**
     - the steep bank behind the town row (a retaining wall or terraced gardens);
     - the corner where the west arm meets the harbour wall;
-    - the post box resident, which still stands where the old formula puts it.
+    - ~~the post box resident~~ (stage 3: Pip and the lighthouse are on the west point).
+- **Stage 3, the landmarks: done (19 Oct).** They're new Prop Forge models in car-forge's `landmarks` kit. With
+  `--new-bayview` they appear with or without `--prop-forge`; that kit has no Blender originals.
+  - **The clock tower:** on the quay at the harbour front, facing the road. A granite shaft with quoins, a clock face
+    on each side, an open belfry with its bell, a slate spire and a weathervane; about 21 m.
+  - **The lifeboat station:** across the west arm, its blue doors to the open sea, the lifeboat (navy hull, orange
+    wheelhouse) inside. A 47 m slipway on granite piers runs down to the water 12.8 m below the quay (as at The
+    Lizard).
+  - **The pleasure pier:** timber boards on blue iron piles, 3.8 m above the sea, from the east beach out 50 m. It
+    has rails and a wide head carrying a striped helter-skelter (three turns of yellow chute, a striped canopy, a
+    pennant).
+  - **The lighthouse:** moved to the west point, on a headland levelled from the road out to the tower. Pip, the
+    parcel's recipient, stands in front of it (`NewBayview.PostSpot`).
+  - **The windmill:** on the summit, as in stage 1.
+  - **Checks:**
+    - The adventure smoke test passes with the flag; the parcel is delivered to Pip at the new lighthouse.
+    - The regression without the flag is unchanged.
+- **Stage 4, life and dressing: first pass done (19 Oct).**
+  - **The harbour at work:**
+    - a granite stair (`Stair`) climbs the quay wall's battered face below the clock tower to a floating pontoon;
+    - seven fishing boats bob at the pontoon and on moorings, in harbour paint, with four mooring buoys;
+    - creel stacks stand on the quay by the steps and on the west arm by the lifeboat station.
+  - **The town:**
+    - the row now fills its whole arc (terraces cycle the harbour paints after the named shops);
+    - a granite retaining wall (`TownWall`) holds the hill behind it, where a 10 m bank of bare earth was.
+  - **Beach huts:** eight huts either side of the pier's root, on the level ground by the east road.
+  - **New Forge pieces** (the `landmarks` kit, version 2): `creel_stack` and `mooring_buoy`.
+  - **Checks:**
+    - The adventure smoke test passes with the flag.
+    - Seeds 1709-1711 finish 24/24 with no resets, the same results as stage 2.
+    - The fingerprint without the flag is unchanged.
+  - **Still to do in stage 4:**
+    - people on the quay;
+    - the east "beach" is a steep sand bank, not a beach you could walk on;
+    - the long town wall could use steps or gardens to break it up;
+    - the bare cut slopes round the Pit Stop and at the town's ends.
