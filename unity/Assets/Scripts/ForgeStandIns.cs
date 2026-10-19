@@ -40,16 +40,20 @@ namespace LittleRoad
         {
             if(holder==null){var h=new GameObject("Forge stand-ins");h.SetActive(false);Object.DontDestroyOnLoad(h);holder=h.transform;}
             var root=new GameObject(id);root.transform.SetParent(holder,false);var p=kit.Piece(piece);var lods=new List<LOD>();
+            // (turned half round: the Blender kit's fronts face -y as the Forge's do, and Unity's FBX import turns them to +z;
+            //  the Forge's mesh data comes in unturned. Until 19 Oct every stand-in faced backwards: houses showed their
+            //  backs to the road.)
+            var turned=new GameObject("Turned").transform;turned.SetParent(root.transform,false);turned.localRotation=Quaternion.Euler(0,180,0);
             int count=Mathf.Min(2,p.lods.Length);
             for(int lod=0;lod<count;lod++) {
-                var go=new GameObject("LOD"+lod,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root.transform,false);
+                var go=new GameObject("LOD"+lod,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(turned,false);
                 go.GetComponent<MeshFilter>().sharedMesh=kit.Mesh(piece,lod);var subs=p.lods[lod].submeshes;var mats=new Material[subs.Length];
                 for(int s=0;s<subs.Length;s++)mats[s]=Placeholder(subs[s].material);
                 var r=go.GetComponent<MeshRenderer>();r.sharedMaterials=mats;lods.Add(new LOD(lod==0?.09f:.008f,new Renderer[]{r}));
             }
             root.AddComponent<LODGroup>().SetLODs(lods.ToArray());
             if(p.collision!=null&&p.collision.size!=null&&p.collision.size.V!=Vector3.zero) {   // (the kit's Collision part: a box BayviewKit reads by its bounds)
-                var c=new GameObject("Collision",typeof(MeshFilter),typeof(MeshRenderer));c.transform.SetParent(root.transform,false);
+                var c=new GameObject("Collision",typeof(MeshFilter),typeof(MeshRenderer));c.transform.SetParent(turned,false);
                 c.GetComponent<MeshFilter>().sharedMesh=Box(p.collision.centre.V,p.collision.size.V);
             }
             return root;

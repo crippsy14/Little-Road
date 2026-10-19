@@ -115,7 +115,7 @@ namespace LittleRoad
             return d;
         }
         static Vector3 Side(Vector3 d)=>new(d.z,0,-d.x);
-        static float Face(Vector3 d)=>Mathf.Atan2(-d.x,-d.z)*Mathf.Rad2Deg;   // (the street kit's fronts face -z: towards d)
+        static float Face(Vector3 d)=>Mathf.Atan2(d.x,d.z)*Mathf.Rad2Deg;   // (a kit piece's front faces +z at yaw 0, Forge stand-ins too: towards d)
         static float Rand(float a,float b)=>a+(float)rng.NextDouble()*(b-a);
         // Place a piece if the spot is clear: off every road (by 1.5 m), no footprint or collider within `room`, standing on
         // the highest solid surface there and not on a slope steeper than 1 in 5.
