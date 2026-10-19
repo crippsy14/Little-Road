@@ -133,7 +133,7 @@ namespace LittleRoad
             reportTrack=trackId;Reversed=reversed;bool loose=trackId=="quarry";RoadCar.LooseRace=loose&&!freeRoam;
             // The elevated Hillcrest Raceway always races grade-aware (its context drivers could not race it
             // otherwise; the model is exactly neutral on level circuits, study 124). Elsewhere it is opt-in.
-            GradeModel.Enabled=Has("--grade-aware")||((trackId=="hillcrest"||trackId=="quarry")&&track.hasElevation);GradeModel.Physics=GradeModel.Enabled&&!Has("--grade-no-physics");
+            GradeModel.Enabled=Has("--grade-aware")||((trackId=="hillcrest"||trackId=="quarry"||trackId=="bayview"&&NewBayview.On)&&track.hasElevation);GradeModel.Physics=GradeModel.Enabled&&!Has("--grade-no-physics");
             RoadCar.GateFirst=Has("--gate-first");PhysicalRecovery.RejoinAtSpeed=Has("--rejoin-at-speed");
             bool connectedModern=career&&AdventureSession.EnteredRoster?.Modern==true;
             string policy=career?(connectedModern?"racer":"legacy"):Arg("--driver-policy","legacy");
@@ -152,6 +152,7 @@ namespace LittleRoad
                 // Cedar Hills reuses Cedar's authored line (same layout), so only the elevation differs.
                 ReferenceLine=trackId=="cedar-hills"?new RacingLine(track,RacingLine.Transfer(track,"cedar-smooth-v2","cedar-hills")):
                     trackId=="hillcrest"||trackId=="quarry"||trackId=="test-loop"||reversed?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+(reversed?"-reversed":"")+"-smooth-v1",trackId)):
+                    trackId=="bayview"&&NewBayview.On?new RacingLine(track,RacingLine.BakeSmooth(track,"harbour-loop-smooth-v1","harbour_loop")):
                     new RacingLine(track,Arg("--racing-line","cedar-mincurve-v1"),technical==null?"bayview":technical.definition.id,technical==null?"bayview-v1":technical.definition.version);DriverPolicyId=policy=="racer"?"racer-v2":"reference-v1";
             }else if(policy!="legacy")throw new ArgumentException("Unknown driver policy: "+policy);
             if(Has("--driver-roster")&&((career&&!connectedModern)||policy!="racer"))throw new ArgumentException("Driver roster requires Racing AI v2.");

@@ -37,8 +37,16 @@ namespace LittleRoad
             hasConstantHeight=high==low;
             projection=new RouteProjectionIndex(points,distance);
         }
-        public Circuit()
+        // The island loop: Bayview's, or the new Bayview's Harbour Loop with --new-bayview (docs/79).
+        public Circuit():this(NewBayview.On?NewBayview.LoopPoints():null,true){}
+        Circuit(Vector3[] island,bool _)
         {
+            if(island!=null) {
+                points=(Vector3[])island.Clone();distance=new float[points.Length+1];float low=points[0].y,high=low;
+                for(int i=0;i<points.Length;i++){low=Mathf.Min(low,points[i].y);high=Mathf.Max(high,points[i].y);distance[i+1]=distance[i]+Vector3.Distance(points[i],points[(i+1)%points.Length]);}
+                length=distance[points.Length];segmentLookup=BuildSegmentLookup();hasElevation=high-low>.02f;hasConstantHeight=high==low;
+                projection=new RouteProjectionIndex(points,distance);return;
+            }
             Vector3[] anchors={new(-70,0,-82),new(15,0,-82),new(87,0,-68),new(118,0,-25),
                 new(108,0,27),new(63,0,57),new(8,0,42),new(-27,0,70),new(-83,0,83),
                 new(-118,0,47),new(-117,0,-10)};

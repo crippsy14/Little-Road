@@ -47,7 +47,7 @@ namespace LittleRoad
             WorldLook.PlayPacing();Time.fixedDeltaTime=1f/120;
             LoadingScreen.Begin("Little Road");Mark("begin");
             // World tiles (W1): the woods near where the car will start are built now, the rest stream in around you.
-            WorldTiles.Plan(AdventureSession.ReturnSpot??(!Testing&&Store.Data.spot!=null&&Store.Data.spot.Length==4?new Vector3(Store.Data.spot[0],Store.Data.spot[1],Store.Data.spot[2]):new Vector3(-63,0,-94)));
+            WorldTiles.Plan(AdventureSession.ReturnSpot??(!Testing&&Store.Data.spot!=null&&Store.Data.spot.Length==4?new Vector3(Store.Data.spot[0],Store.Data.spot[1],Store.Data.spot[2]):NewBayview.On?NewBayview.Spawn:new Vector3(-63,0,-94)));
             RaceArea.Clear();world=GetComponent<RaceTrial>();world.freeRoam=true;world.track=new Circuit();world.elapsed=1;yield return TrialWorld.CreateRoutine(world.track,false);Mark("world");
             // (--prop-forge: the streets dressed once everything is built, the village and the towns included; docs/78)
             if(PropForge.Enabled&&CoastalLandscape.WorldRoot!=null){Physics.SyncTransforms();PropForgeDressing.Build(CoastalLandscape.WorldRoot);Mark("dressing");Debug.Log("LITTLE_ROAD_GROUND_FIT "+GroundFit.Summary);}
@@ -68,7 +68,7 @@ namespace LittleRoad
             residents["post"]=world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
             CreatePlaces();Mark("places");BuildWayfinding();Mark("wayfinding");
             if(AdventureSession.MaxBuildTest&&!AdventureSession.TestPlaced){AdventureSession.TestPlaced=true;FaceDuke();}
-            var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));
+            var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(NewBayview.On?NewBayview.Spawn:new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));
             if(AdventureSession.ReturnSpot is Vector3 back)car.transform.SetPositionAndRotation(back+Vector3.up*.15f,Quaternion.Euler(0,AdventureSession.ReturnYaw,0));
             // Otherwise carry on from where you were (Richard, 3 Oct): the saved spot, if it's still clear ground in this world.
             else if(!Testing&&Store.Data.spot!=null&&Store.Data.spot.Length==4){var s=Store.Data.spot;var at=new Vector3(s[0],s[1],s[2]);

@@ -118,7 +118,7 @@ namespace LittleRoad
             for(float d=0;d<track.length;d+=12) {
                 if(track.Curvature(d)>.012f)continue;var mark=Box("Grid guide",track.At(d)+Vector3.up*.04f,new Vector3(.12f,.015f,3),white);mark.transform.rotation=Quaternion.LookRotation(track.Forward(d));}
             }
-            if(CoastalLandscape.Island)VillageKit.Create();
+            if(CoastalLandscape.Island&&!NewBayview.On)VillageKit.Create();   // (the new Bayview's town is stage 2: docs/79)
             if(!racing&&!RaceArea.Active)PersistentWorld.Adopt(before);
             }
             // Bayview's race dressing: kerbs, the chequered line and the start gantry, made for the race on top of the

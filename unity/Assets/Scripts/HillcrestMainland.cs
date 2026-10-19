@@ -62,7 +62,9 @@ namespace LittleRoad
         // ---- Mainline: junction on the Bayview road, the Halt quay, causeway, Headland Tunnel,
         // the descent into the valley, the river bridge.
         public static readonly Vector3 PortalNorth=new(103,20,-450),PortalSouth=new(106,27,-602);
-        static readonly Vector3[] MainlineControl={
+        // (--new-bayview: the mainline begins on the new loop's start straight, 28 m north of the old junction: docs/79)
+        static Vector3[] MainlineControl=>NewBayview.On?System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Prepend(MainlineBase,NewBayview.LinkTop)):MainlineBase;
+        static readonly Vector3[] MainlineBase={
             new(68.3f,0,-83.4f),new(70,0,-94),new(71.2f,0,-114),new(72.4f,0,-138),new(73.4f,0,-160),new(76.5f,2.4f,-198),new(84,7,-250),new(93,11.5f,-315),new(99,15.5f,-375),new(102,18.5f,-422),
             PortalNorth,new(104.5f,23.5f,-526),PortalSouth,
             new(105.5f,27,-624),new(96,26.4f,-644),new(66,24.6f,-660),new(26,21.6f,-672),new(-6,19,-686),new(-22,17.4f,-706),new(-12,15.8f,-728),new(18,13.8f,-742),

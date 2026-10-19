@@ -80,6 +80,7 @@ namespace LittleRoad
         float farmPadY=float.NaN;
         public float Height(float x,float z)
         {
+            if(NewBayview.On)return Quay(x,z,NewBayview.Height(x,z,track));   // (the new Bayview's land, with the same quay and causeway: docs/79)
             var p=new Vector3(x,0,z);float road=track.Nearest(p,out _);float routeDistance=FlatDistance(p,track.At(road));
             float noise=Mathf.PerlinNoise((x+510)*.019f,(z+370)*.019f);
             float radius=Mathf.Sqrt(x*x/(154*154)+z*z/(120*120));
@@ -114,6 +115,11 @@ namespace LittleRoad
             // Keep the promenade flat right up to the wall (the coast's natural fall leaked in).
             height=Mathf.Lerp(height,0,harbourX*Blend(118,126,-z)*(1-Blend(133.8f,135.2f,-z)));
             height=Mathf.Lerp(height,Mathf.Min(height,-14.5f),harbourX*Blend(133.8f,135.2f,-z));
+            return Quay(x,z,height);
+        }
+        // The Halt quay and the causeway's cut, on whichever island: the mainland's contract.
+        float Quay(float x,float z,float height)
+        {
             // Bayview Halt quay: flat out to its sea walls (the drop hides in the wall cores), deep
             // water beyond them; its north side runs into the island.
             float quay=Blend(HillcrestRoute.QuayWest-.8f,HillcrestRoute.QuayWest+.6f,x)*(1-Blend(HillcrestRoute.QuayEast-.6f,HillcrestRoute.QuayEast+.8f,x))
@@ -195,7 +201,7 @@ namespace LittleRoad
         void LandMesh()
         {
             Lap("land start");
-            const int nx=289,nz=257;const float step=1.5f;
+            int nx=LandNX,nz=LandNZ;const float step=LandStep;
             var vertices=new Vector3[nx*nz];var uv=new Vector2[vertices.Length];var groups=new List<int>[4];for(int i=0;i<4;i++)groups[i]=new();
             // Rows in parallel (docs/72): Height is pure maths once its one lazy value (the farm pad) is set.
             Height(BayviewCountryside.Farm.x,BayviewCountryside.Farm.z);
@@ -361,7 +367,8 @@ namespace LittleRoad
         public Circuit Track=>track;
         // The island's drawn ground (LandMesh's grid, 1.5 m, split the way its triangles are), for Prop Forge's runs:
         // exactly what's drawn, where the analytic Height can differ by centimetres between grid points.
-        Vector3[] landGrid;const int LandNX=289,LandNZ=257;const float LandStep=1.5f;
+        Vector3[] landGrid;const float LandStep=1.5f;
+        static int LandNX=>NewBayview.On?361:289;static int LandNZ=>NewBayview.On?337:257;   // (the new island is bigger: ±270 x ±252 m)
         public float Drawn(float x,float z)
         {
             if(landGrid==null)return Height(x,z);
@@ -477,15 +484,15 @@ namespace LittleRoad
             bool island=Island;
             if(island)LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;
             Mainland();Step("mainland");Next(.33f,"Building the bridge");yield return null;
-            Bridge();Roadside();masonry.Finish();Step("bridge-roadside-masonry");Next(.35f,"Carving the cliffs");yield return null;
+            if(!NewBayview.On){Bridge();Roadside();}else NewBayview.DrawGravel(root,track);masonry.Finish();Step("bridge-roadside-masonry");Next(.35f,"Carving the cliffs");yield return null;
             var cliffMaterial=TerrainMaterial("Weathered cliff limestone",new Color(.35f,.43f,.24f),new Color(.60f,.56f,.46f));cliffMaterial.SetFloat("_RockOnly",1);
-            if(island)new CoastalCliffs(this,root,cliffMaterial).Build();Step("cliffs");Next(.53f,"Planting Bayview");yield return null;
+            if(island&&!NewBayview.On)new CoastalCliffs(this,root,cliffMaterial).Build();   // (the new island's cliffs come with its harbour, stage 2)Step("cliffs");Next(.53f,"Planting Bayview");yield return null;
             if(island){Physics.SyncTransforms();BayviewCountryside.ChoosePlots(this);Planting();}Step("planting");
             if(island&&BayviewKit.Has("windmill")) {
-                var hill=new Vector3(-24,0,12);hill.y=Height(hill.x,hill.z)-.4f;
+                var hill=NewBayview.On?new Vector3(NewBayviewPlan.Windmill.x,0,NewBayviewPlan.Windmill.y):new Vector3(-24,0,12);hill.y=Height(hill.x,hill.z)-.4f;
                 BayviewKit.Spawn("windmill",hill,200,BayviewKit.AnimatedRoot,new BayviewKit.Tint(Color.white,Toy.Hex(0x3a7bd5),Toy.Hex(0xff4d5e),Toy.Hex(0x3a7bd5)));
             }
-            if(island)new BayviewCountryside(this,track,root).Build();Step("countryside");
+            if(island&&!NewBayview.On)new BayviewCountryside(this,track,root).Build();Step("countryside");
             Physics.SyncTransforms();ValleyRoads();ValleyWater();Step("valley-roads-water");Next(.6f,"Laying the railway and Hillcrest");yield return null;
             // The town, railway and woods sit behind the headland ridge, out of sight of the Bayview
             // circuit: Bayview races skip them (ValleyDetail false) and keep their frame cost.
@@ -495,7 +502,7 @@ namespace LittleRoad
                 // Quarry Hills far from where the car starts is built after the town is ready (Districts, docs/72).
                 if(deferQuarry)Districts.Defer("quarry-hills",QuarryHillsSceneryRoutine(),SettleQuarryHills,Rect.MinMaxRect(QuarryHills.West-30,QuarryHills.South-30,QuarryHills.SeamX+30,1e6f));else QuarryHillsScenery();Step("quarry-hills");Next(.93f,"Filling the sea");yield return null;}
             // (Prop Forge last of the building, so its runs and objects see everything placed: the quay's dressing comes with Hillcrest)
-            if(island&&PropForge.Enabled){Physics.SyncTransforms();PropForgeBayview.Build(this,root);Step("prop-forge");}
+            if(island&&PropForge.Enabled&&!NewBayview.On){Physics.SyncTransforms();PropForgeBayview.Build(this,root);Step("prop-forge");}
             Lap("settle start");Debug.Log("LITTLE_ROAD_RAILS_TRIMMED "+(deferQuarry?TrimRails(p=>!NearQuarryHills(p)):TrimRails()));   // (rails and junction corner walls in front of buildings; every build)
             Lap("settle trim rails");RegisterRoads();Lap("settle register roads");
             // Runtime static batching converts combined geometry to 16-bit
