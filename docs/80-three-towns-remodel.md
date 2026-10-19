@@ -97,5 +97,47 @@ a plan for the whole map, with an ordered list of towns, and start working throu
     - the fingerprint is unchanged;
     - the regression is unchanged.
   - **The street review** of the island (a Sonnet agent, photos taken before these fixes) folds into round 2.
-- **Round 2:** the terrace generator (car-forge `terraces` kit) is drafted: seven families, four variants each, rows
-  that join up, a sign socket per house.
+- **Round 2: done (19 Oct).** The terrace generator, and the round 1 review's agreed findings
+  (`review/street-review/r1-new-bayview.md`).
+  - **Terraces** (car-forge `terraces` kit): terrace_a-g stand-ins, seven families, four variants each.
+    - The families: balconied, shop with an arched front, front-gabled cottage, Georgian with pediments, shop with a
+      mansard, fisherman's with a bay window, and a balustraded first floor.
+    - Party walls are plain and roofs stop flush, so rows join up.
+    - Each house has a sign socket and a chimney socket. The chimney smoke in Hillcrest and Quarry Hills now rises from
+      the Forge model's own stack (`ForgeStandIns.ChimneyOr`); without the flag it's the old table's point.
+  - **The sea (R1-1, high):**
+    - The pale rectangle on the open sea came from the harbour-arm term in the island's height. It held the whole
+      sea floor up at -16 m to the land grid's edge.
+    - Now the floor shelves to -44 m offshore and to the grid's edge, the basin inside the arms stays one shallow
+      turquoise and blends out across the mouth, and a deep floor lies under all the sea.
+    - The mainland's sea floor matches it with the flag.
+    - The harbour walls run down to the deeper floor, with a light cope and a dark weed line at the tide.
+  - **Run-off and lane (R1-2, R1-10):** the run-off shoulders start at the asphalt's edge, and the gravel lane's strip
+    stops at the loop's run-off; both had lain on the road.
+  - **The windmill (R1-4):** a Forge tower mill on the summit, facing the harbour: stage, cap, fantail, and four
+    sails as their own piece, turning.
+  - **The hills (recommendation 2):** a hill farm with a farmhouse, barn, tractor, washing line, beehives and bales,
+    and a dry-stone walled field with a gate and six grazing sheep.
+  - **The bends (recommendation 4):** 14 chevron boards on the outsides of the tight bends, and tyre walls where no
+    stone wall already guards.
+  - **The cliffs (R1-5):** 143 Forge rocks along the waterline and up the faces.
+  - **Trees (recommendation 8):** a fifth smaller on the island, so the buildings read bigger.
+  - **Not taken:** narrowing the sand run-off (recommendation 3). Sand run-off is the game's racing convention;
+    that's for Richard to decide.
+  - **Also fixed:**
+    - a stage 1 slip of mine had commented out the "cliffs" load step;
+    - `quarry-run.ps1 -Hidden` runs a test with no window at all (for when Richard is using the PC).
+- **Round 3: civic buildings (19 Oct).** car-forge `civic` kit:
+  - shop (3), cafe with a terrace of tables and parasols (2), post office with a clock pediment and pillar box (2);
+  - hotel with chequered balconies and a rooftop name (2), gambrel barn (2);
+  - ice-cream kiosk (2), fountain (2), market stall (3).
+  - Each keeps its id's footprint and height; signs sit on the fascia.
+  - Two signed houses in the new Bayview's row became shop terraces: their signs had been hidden behind a balcony.
+  - **Standing cars:** CarContact sits a car a little deeper where the ground twists under it. Residents and home cars
+    are seated where they end up, which fixed a Quarry Hills resident with a wheel 0.25 m up.
+  - **Checks:**
+    - the fingerprint without the flags is unchanged;
+    - the smoke test passes;
+    - the area audit without the flags: no cars off the ground.
+  - **Street reviews of Hillcrest and Quarry Hills** (two Sonnet agents, photos with `--prop-forge`) are under way;
+    their findings go into round 4.

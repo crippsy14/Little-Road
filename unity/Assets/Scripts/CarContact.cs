@@ -61,7 +61,13 @@ namespace LittleRoad
             Physics.SyncTransforms();float lift=float.MaxValue;
             foreach(var w in wheels){var c=w.position-t.up*radius;float g=Ground(c,car);if(g>float.MinValue)lift=Mathf.Min(lift,c.y-g);}
             if(lift==float.MaxValue)return false;
-            t.position-=Vector3.up*(lift-.01f);Physics.SyncTransforms();return true;
+            t.position-=Vector3.up*(lift-.01f);Physics.SyncTransforms();
+            // On ground twisted under it (a plane through four wheels can't touch all four), one wheel can stay well up: sit
+            // the car a little deeper, as on soft grass, sharing the gap out between the high wheel and the others, within
+            // the sink the audit allows. (Docs/80: a resident at a Quarry Hills home kept a wheel 0.25 m up.)
+            var gaps=Gaps(car);
+            if(gaps.Count>0){float hi=gaps.Max(g=>g.gap),lo=gaps.Min(g=>g.gap);if(hi>WheelOffGap){float down=Mathf.Min(hi-(WheelOffGap-.02f),lo+SunkGap-.02f);if(down>0){t.position-=Vector3.up*down;Physics.SyncTransforms();}}}
+            return true;
         }
         static Vector3 Avg(List<Vector3> v)=>v.Aggregate(Vector3.zero,(a,b)=>a+b)/v.Count;
         // Every standing car in the scene (residents, parked cars, taxis): seat them all. Returns how many moved.

@@ -29,6 +29,18 @@ namespace LittleRoad
         //  with or without --prop-forge)
         public static bool Has(string id){if(!PropForge.Enabled&&!NewBayview.On)return false;Load();return map.TryGetValue(id,out var e)&&(PropForge.Enabled||e.kit=="landmarks");}
         public static IEnumerable<string> Ids{get{Load();return map.Keys;}}
+        // Where a stand-in's chimney smokes (its Chimney socket, docs/80): the variant standing at `at`, turned by `yaw`.
+        // Otherwise `kit` (the Blender kit's chimney, from the caller's table), turned the same way.
+        public static Vector3 ChimneyOr(string id,Vector3 at,float yaw,Vector3 kit)
+        {
+            var rot=Quaternion.Euler(0,yaw,0);
+            if(Has(id)) {
+                var e=map[id];int h=(Mathf.RoundToInt(at.x*10)*73856093)^(Mathf.RoundToInt(at.z*10)*19349663)^id.GetHashCode();string piece=e.pieces[(h&0x7fffffff)%e.pieces.Length];
+                var p=PropKit.Load(e.kit).Piece(piece);
+                if(p.sockets!=null)foreach(var s in p.sockets)if(s.name=="Chimney"){var v=s.at.V;return at+rot*new Vector3(-v.x,v.y,-v.z);}   // (turned half round, as the model is)
+            }
+            return at+rot*kit;
+        }
         // The variant for a placement: a hash of where it stands (the same piece every build), and its source prefab. key
         // names the template (one per variant).
         public static GameObject Source(string id,Vector3 at,out string key)
@@ -54,6 +66,10 @@ namespace LittleRoad
                 var r=go.GetComponent<MeshRenderer>();r.sharedMaterials=mats;lods.Add(new LOD(lod==0?.09f:.008f,new Renderer[]{r}));
             }
             root.AddComponent<LODGroup>().SetLODs(lods.ToArray());
+            // (sign sockets as the Blender kit's SignAnchor empties: BayviewKit letters a shop's name onto them; docs/80)
+            if(p.sockets!=null)foreach(var s in p.sockets)if(s.name!=null&&s.name.StartsWith("SignAnchor")) {
+                var a=new GameObject(s.name).transform;a.SetParent(turned,false);a.localPosition=s.at.V;
+            }
             if(p.collision!=null&&p.collision.size!=null&&p.collision.size.V!=Vector3.zero) {   // (the kit's Collision part: a box BayviewKit reads by its bounds)
                 var c=new GameObject("Collision",typeof(MeshFilter),typeof(MeshRenderer));c.transform.SetParent(turned,false);
                 c.GetComponent<MeshFilter>().sharedMesh=Box(p.collision.centre.V,p.collision.size.V);

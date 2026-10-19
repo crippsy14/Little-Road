@@ -184,7 +184,7 @@ namespace LittleRoad
         static Mesh Prim(PrimitiveType t){var g=GameObject.CreatePrimitive(t);var m=g.GetComponent<MeshFilter>().sharedMesh;Object.Destroy(g);return m;}
         // (--prop-forge: Prop Forge's sheep, docs/78. A seeded body and head from the sheep kit: the body near in full and
         //  at a distance its LOD1, the head on its LOD1 at the neck, where the grazer nods it)
-        static void ForgeSheep(GameObject s)
+        public static void ForgeSheep(GameObject s)
         {
             var kit=PropKit.Load("sheep");var at=s.transform.position;int hash=(Mathf.RoundToInt(at.x*7)*73856093)^(Mathf.RoundToInt(at.z*7)*19349663);int v=(hash&0x7fffffff)%4,h=((hash>>8)&0x7fffffff)%3;   // (from where it stands: the layout's own random stream is left alone)
             var body=new GameObject("Body");body.transform.SetParent(s.transform,false);var rs=new List<Renderer>();
@@ -311,6 +311,7 @@ namespace LittleRoad
     public sealed class Grazer:MonoBehaviour
     {
         Vector3 home,target;float radius,wait,headPhase,trot;Transform head;
+        public System.Func<float,float,float> ground;   // (the land it walks on: the mainland's unless set, as on Bayview's farm)
         public bool lane;public static Transform Car;static Vector3 carLast;static float carSpeed;static int carFrame=-1;
         public void Startle(Vector3 from)
         {
@@ -333,7 +334,7 @@ namespace LittleRoad
             if(head!=null)head.localPosition=new Vector3(0,trot>0?.86f:.78f-Mathf.Max(0,Mathf.Sin(Time.time*.6f+headPhase))*.35f,.62f);
             var d=target-transform.position;d.y=0;
             if(d.magnitude<.2f){trot=0;wait-=Time.deltaTime;if(wait<=0){var a=Random.value*Mathf.PI*2;target=home+new Vector3(Mathf.Cos(a),0,Mathf.Sin(a))*Random.Range(0f,radius);wait=Random.Range(4f,14f);}return;}
-            var step=d.normalized*Mathf.Min(d.magnitude,gait*Time.deltaTime);var p=transform.position+step;p.y=ValleyField.Height(p.x,p.z);transform.position=p;
+            var step=d.normalized*Mathf.Min(d.magnitude,gait*Time.deltaTime);var p=transform.position+step;p.y=ground!=null?ground(p.x,p.z):ValleyField.Height(p.x,p.z);transform.position=p;
             transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(d),(trot>0?360:90)*Time.deltaTime);
         }
     }

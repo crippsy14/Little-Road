@@ -171,7 +171,7 @@ namespace LittleRoad
                     float garden0=road.width*.5f+2.3f,garden1=setback-4-.15f;
                     if(garden1-garden0>=2.5f&&id!="terrace_f"&&id!="terrace_b"&&id!="terrace_c"){var yard=at+right*side*((garden0+garden1)*.5f);yard.y=at.y;Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));}
                     // Chimney tops (kit x mirrors on import): some of them smoke.
-                    if(id!="house_b"&&id!="house_d"&&rng.NextDouble()<.35)Chimneys.Add(centre+Quaternion.Euler(0,Yaw(centre,at),0)*(id switch{"house_a"=>new Vector3(-2.6f,10.5f,-1.2f),"house_c"=>new Vector3(-2.8f,10.2f,-1.4f),
+                    if(id!="house_b"&&id!="house_d"&&rng.NextDouble()<.35)Chimneys.Add(ForgeStandIns.ChimneyOr(id,centre,Yaw(centre,at),id switch{"house_a"=>new Vector3(-2.6f,10.5f,-1.2f),"house_c"=>new Vector3(-2.8f,10.2f,-1.4f),
                         "terrace_e"=>new Vector3(-1.9f,15.2f,2.7f),"terrace_f"=>new Vector3(-1.9f,10.7f,-.6f),"terrace_g"=>new Vector3(1.6f,13.1f,-2.4f),_=>new Vector3(-1.4f,12.1f,-1.5f)}));
                     // (Street review, 5 Oct: a 35 cm slit between neighbours showed the hillside through the row.) Neighbours meet.
                     // A 2.5 m gap to the next house now and then: on a hillside's downhill side it's a garden gap like the wider

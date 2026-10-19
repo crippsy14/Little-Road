@@ -665,6 +665,7 @@ namespace LittleRoad
                 badges[pair.Key]=TalkBadge.Add(npc,who.bubble);
                 // Out of any building, prop or wall they were placed in (Vito sat in the raceway's control tower).
                 if(StationarySpot.Settle(npc)>0)moved[pair.Key]=npc.transform.position;
+                CarContact.Seat(npc);   // (on its four wheels where it ends up: docs/80, the Quarry Hills garage host kept a wheel 0.25 m up)
             }
             foreach(var m in moved)residents[m.Key]=m.Value;
         }

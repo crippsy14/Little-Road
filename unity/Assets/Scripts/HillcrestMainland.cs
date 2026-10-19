@@ -394,7 +394,7 @@ namespace LittleRoad
             float height=Mathf.Max(land,ridge);
             // Sea beyond the cliff foot.
             float foot=edge+Mathf.Lerp(8,3,bluff);
-            return Mathf.Lerp(-26,height,1-Blend(foot,foot+12,d));
+            return Mathf.Lerp(NewBayview.On?NewBayview.SeaFloor:-26,height,1-Blend(foot,foot+12,d));   // (--new-bayview: one deep sea floor all round, docs/80 R1-1)
         }
         public static void Build()
         {

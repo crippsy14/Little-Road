@@ -216,6 +216,7 @@ namespace LittleRoad
                 foreach(var (cx,cz) in new[]{(-1f,-1f),(1f,-1f),(-1f,1f),(1f,1f),(0f,0f)}){var c=pad+rot*new Vector3(cx*1.2f,0,cz*(length+.7f)*.5f);float g=ValleyField.Height(c.x,c.z);lo=Mathf.Min(lo,g);hi=Mathf.Max(hi,g);}
                 if(hi-lo<.3f){float depth=hi-lo+.1f;pad.y=hi+.02f-depth*.5f;
                     (QuarryHills.Enabled&&QuarryHills.Contains(pad.x,pad.z)?standings:standingsWarm).Add(Matrix4x4.TRS(pad,rot,new Vector3(2.4f,depth,length+.7f)));}
+                else CarContact.Seat(go);   // (no standing: on its wheels on the garden as it lies; docs/80, a resident left a wheel 0.25 m up)
             }
             else if(StationarySpot.Settle(go)<0){Destroy(go);return false;} // no clear spot: leave them out
             var chatter=go.AddComponent<NpcChatter>();chatter.speaker=who;chatter.colour=Toy.Party[People.Count%Toy.Party.Length];chatter.lines=FolkBump;chatter.talkable=false;

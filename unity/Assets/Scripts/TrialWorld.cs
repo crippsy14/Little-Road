@@ -112,7 +112,7 @@ namespace LittleRoad
             if(CoastalLandscape.Island){
             // (--new-bayview: two shoulders, not one sheet under the road: on a loop that climbs as it turns, a 24 m sheet's
             //  triangles stood through the 16 m asphalt in the hairpin)
-            if(NewBayview.On)foreach(int side in new[]{-1,1})Ribbon(track,"Generous limestone runoff",side*9.75f,4.5f,.011f,sand);
+            if(NewBayview.On)foreach(int side in new[]{-1,1})Ribbon(track,"Generous limestone runoff",side*10f,4f,.011f,sand);   // (from the asphalt's edge, not under it: R1-2)
             else Ribbon(track,"Generous limestone runoff",0,24,.011f,sand);
             Ribbon(track,"16 metre race surface",0,Circuit.Width,.025f,asphalt);
             RubberedLine(track);

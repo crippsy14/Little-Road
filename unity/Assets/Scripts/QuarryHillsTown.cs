@@ -89,7 +89,7 @@ namespace LittleRoad
                         Box("Door steps",new Vector3(p.x,(top+g-.1f)*.5f,p.z),new Vector3(Mathf.Min(2.6f,size.x-.6f),top-g+.1f,.3f),rot,plinth);}}}
             Put(id,new Vector3(centre.x,floor-.03f,centre.z),yaw,tint,sign);buildings++;Take(c2,half,yaw);
             // Chimney tops (kit x mirrors on import): some of them smoke, as coal fires do.
-            if((id.StartsWith("terrace")||id.StartsWith("cottage")||id=="house_a"||id=="house_c")&&rng.NextDouble()<.3)HillcrestTown.Chimneys.Add(centre+rot*(id switch{"house_a"=>new Vector3(-2.6f,10.5f,-1.2f),"house_c"=>new Vector3(-2.8f,10.2f,-1.4f),
+            if((id.StartsWith("terrace")||id.StartsWith("cottage")||id=="house_a"||id=="house_c")&&rng.NextDouble()<.3)HillcrestTown.Chimneys.Add(ForgeStandIns.ChimneyOr(id,centre,yaw,id switch{"house_a"=>new Vector3(-2.6f,10.5f,-1.2f),"house_c"=>new Vector3(-2.8f,10.2f,-1.4f),
                 "cottage_a" or "cottage_b" or "cottage_c"=>new Vector3(-2.25f,9.4f,0),"terrace_e"=>new Vector3(-1.9f,15.2f,2.7f),"terrace_f"=>new Vector3(-1.9f,10.7f,-.6f),"terrace_g"=>new Vector3(1.6f,13.1f,-2.4f),_=>new Vector3(-1.4f,12.1f,-1.5f)}));
             return true;
         }

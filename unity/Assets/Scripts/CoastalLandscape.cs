@@ -424,7 +424,7 @@ namespace LittleRoad
                     if(FlatDistance(p,new Vector3(-24,0,12))<10)continue;
                     bool grove=Mathf.PerlinNoise(x*.018f+5,z*.018f+9)>.58f;int pick=i%10;
                     string id=grove?(pick<7?"olive_tree":"tree_cypress"):pick<2?"tree_cypress":pick<5?"tree_pine":pick<6?"tree_blossom":pick<8?"tree_round":pick<9?"tree_poplar":"olive_tree";
-                    BayviewKit.Spawn(id,p+Vector3.down*.1f,i*47,vegetationRoot,scale:(id=="olive_tree"?.6f:.75f)+size/14);
+                    BayviewKit.Spawn(id,p+Vector3.down*.1f,i*47,vegetationRoot,scale:((id=="olive_tree"?.6f:.75f)+size/14)*(NewBayview.On?.8f:1));   // (--new-bayview: a fifth smaller, so the buildings read bigger: street review R1)
                 }
                 else vegetation.Plant(vegetationRoot,p,scale,species,i%3);
             }
@@ -486,9 +486,11 @@ namespace LittleRoad
             Mainland();Step("mainland");Next(.33f,"Building the bridge");yield return null;
             if(!NewBayview.On){Bridge();Roadside();}else NewBayview.DrawGravel(root,track);masonry.Finish();Step("bridge-roadside-masonry");Next(.35f,"Carving the cliffs");yield return null;
             var cliffMaterial=TerrainMaterial("Weathered cliff limestone",new Color(.35f,.43f,.24f),new Color(.60f,.56f,.46f));cliffMaterial.SetFloat("_RockOnly",1);
-            if(island&&!NewBayview.On)new CoastalCliffs(this,root,cliffMaterial).Build();   // (the new island's cliffs come with its harbour, stage 2)Step("cliffs");Next(.53f,"Planting Bayview");yield return null;
+            if(island&&!NewBayview.On)new CoastalCliffs(this,root,cliffMaterial).Build();Step("cliffs");   // (the new island has no CoastalCliffs: docs/79)
+            Next(.53f,"Planting Bayview");yield return null;
             if(island){Physics.SyncTransforms();BayviewCountryside.ChoosePlots(this);Planting();}Step("planting");
-            if(island&&BayviewKit.Has("windmill")) {
+            if(island&&NewBayview.On&&NewBayview.Windmill(Height))Step("tower-mill");   // (the new Bayview's own tower mill: docs/80)
+            else if(island&&BayviewKit.Has("windmill")) {
                 var hill=NewBayview.On?new Vector3(NewBayviewPlan.Windmill.x,0,NewBayviewPlan.Windmill.y):new Vector3(-24,0,12);hill.y=Height(hill.x,hill.z)-.4f;
                 BayviewKit.Spawn("windmill",hill,200,BayviewKit.AnimatedRoot,new BayviewKit.Tint(Color.white,Toy.Hex(0x3a7bd5),Toy.Hex(0xff4d5e),Toy.Hex(0x3a7bd5)));
             }

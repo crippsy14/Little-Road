@@ -13,6 +13,16 @@ namespace LittleRoad
             var go=new GameObject("Animated coastal sea",typeof(MeshFilter),typeof(MeshRenderer),typeof(CoastalWater));
             go.transform.SetParent(parent,false);
             go.GetComponent<CoastalWater>().Build();
+            // (--new-bayview: a deep sea floor under all the sea. The water reads differently over a floor and over nothing,
+            //  so the island's land grid, the only floor offshore, showed as a pale rectangle with straight edges: street
+            //  review R1-1, docs/80. Below every other floor, so it shows only where there's none.)
+            if(NewBayview.On) {
+                float reach=QuarryHills.Enabled?4800:1750;
+                var floor=GameObject.CreatePrimitive(PrimitiveType.Quad);floor.name="Deep sea floor";Object.Destroy(floor.GetComponent<Collider>());
+                floor.transform.SetParent(parent,false);floor.transform.SetPositionAndRotation(new Vector3(0,NewBayview.SeaFloor-.5f,0),Quaternion.Euler(90,0,0));floor.transform.localScale=new Vector3(reach*2,reach*2,1);
+                floor.GetComponent<MeshRenderer>().sharedMaterial=TrialWorld.Material("Deep sea floor",new Color(.30f,.33f,.30f),0,.05f);
+                floor.GetComponent<MeshRenderer>().shadowCastingMode=ShadowCastingMode.Off;
+            }
         }
         void Build()
         {
