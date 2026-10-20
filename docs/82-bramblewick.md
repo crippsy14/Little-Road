@@ -127,7 +127,7 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
 1. **The rest of step 5:**
    - the race (24/24 on seeds 1709-1711): **waiting on Richard's lane-width call** below ("The race needs a call");
    - the milk-float duel (Peg);
-   - Jed's four parts on the doc 44 ladder;
+   - Jed's four parts: **waiting on Richard** ("Jed's parts need a call too");
    - the railway halt.
 2. **Still to make:** the milk float (Car Forge).
 3. **Leftovers:** two lips at the T (480, -1110), 0.13-0.16 m; the floating vine row (160.5, 36.3, -1040.2); two
@@ -160,7 +160,27 @@ Two smaller things come with any option:
 - **Progress:** a new class C event moves the class C completion gate (every C event needs a podium). That's right for
   the finished game, but it changes current saves' progress.
 
-Until Richard answers, I'm building the parts that don't depend on this: Jed's parts, the railway halt, the milk float.
+## Jed's parts need a call too (20 Oct)
+The brief's four parts (lane springs, an off-road tyre, a cold-air intake, a lightweight battery) don't match the game's
+part slots: engine, turbo, tyres, transmission, brakes, steering, chassis. There's no suspension, intake or battery slot.
+Also, a class C part with a home shop and no unlock condition is open to the AI fields from the first star
+(`FieldRecipe.Open`). Any new part would change every existing C race's fields, so it needs keep/reject runs.
+
+My proposal, on the existing slots, each at home in Bramblewick and opened to AI fields at 2 stars (as Hillcrest's
+parts are):
+| Part | Slot | Price | Stats | Between |
+|---|---|---|---|---|
+| **Lane tyres** | tyres | 900 | road 8.8, dirt 8 | touring and the Hillcrest rally tyre: an all-rounder for mud on tarmac |
+| **Farm-track steering** (the "springs") | steering | 800 | slower, steadier response; less yaw | a calm rack for bumpy lanes |
+| **Cold-air engine** (the intake) | engine | 1250 | the club 1.4 with +4 hp up top | club and sport16 |
+| **Battery-delete shell** (the light battery) | chassis | 850 | mass 0.92 | light and seam-welded |
+
+Or add the missing slots (suspension, intake, electrics) properly. That's a bigger change across the parts shop, the
+parts ladder (`tools/parts-ladder.py`, docs/47) and the AI fields.
+
+The railway halt waits on the Coast Branch, which isn't built yet (docs/68). The milk float is a Car Forge model, which
+goes through Richard's photo rounds (model iteration loop).
+
 
 ## Questions for Richard (each with my default)
 1. **Style:** English West Country (thatch and cob, sunken lanes, a village green)? Default: yes.
