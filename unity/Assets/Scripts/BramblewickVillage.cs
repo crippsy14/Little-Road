@@ -14,6 +14,8 @@ namespace LittleRoad
         Material plinth;
         public static int Buildings,Plinths,Refused;
         public static readonly Dictionary<string,(Vector3 at,float yaw)> Spots=new();
+        // Where the village's cars stand (ValleyLife parks them): by the green, outside The Plough, lay-bys in the vale, the dairy yard.
+        public static readonly List<(Vector3 at,float yaw)> Parking=new();
         public BramblewickVillage(Transform parent){root=new GameObject("Bramblewick").transform;root.SetParent(parent,false);}
         static float H(float x,float z)=>ValleyField.Height(x,z);
         static float Yaw(Vector3 from,Vector3 to){var d=to-from;d.y=0;return d.sqrMagnitude<1e-6f?0:Quaternion.LookRotation(d).eulerAngles.y;}
@@ -49,7 +51,7 @@ namespace LittleRoad
 
         public void Build()
         {
-            Buildings=Plinths=Refused=0;Spots.Clear();
+            Buildings=Plinths=Refused=0;Spots.Clear();Parking.Clear();
             plinth=WorldLook.Kit("Bramblewick plinth",new Color(.62f,.58f,.50f),WorldLook.Pattern.Stone,0,.1f,true);
             var road=HillcrestRoute.Find(Bramblewick.RoadName);float sC=road.Nearest(new Vector3(Bramblewick.Centre.x,0,Bramblewick.Centre.y),out _);
             Vector3 N(float s){var r=road.Right(s);r.y=0;r.Normalize();return r.z>0?r:-r;}   // (the north side: the green's)
@@ -101,9 +103,108 @@ namespace LittleRoad
              var parlour=road.At(s)+n*(half+12f+5.2f);parlour.y=H(parlour.x,parlour.z);if(Building("milking_parlour",parlour,Yaw(parlour,road.At(s))))Spots["dairy"]=(road.At(s)+n*(half+6),Yaw(parlour,road.At(s))+180);
              var dutch=road.At(s+26)+n*(half+12f+4.8f);dutch.y=H(dutch.x,dutch.z);Building("dutch_barn",dutch,Yaw(dutch,road.At(s+26)));
              var churn=road.At(s-14)+n*(half+1.6f);churn.y=H(churn.x,churn.z);Put("churn_stand",churn,Yaw(churn,road.At(s-14)));
-             var field=road.At(s-30)+n*(half+60);field.y=H(field.x,field.z);for(int i=0;i<9;i++)Cow(field+new Vector3((float)rng.NextDouble()*40-20,0,(float)rng.NextDouble()*40-20),field);}
-            Debug.Log($"LITTLE_ROAD_BRAMBLEWICK buildings={Buildings} plinths={Plinths} refused={Refused} spots={Spots.Count} hedges={hedges} hedge_refused={hedgeRefused} {hedgeWhy}");
+             var field=road.At(s-30)+n*(half+60);field.y=H(field.x,field.z);herd=field;for(int i=0;i<9;i++)Cow(field+new Vector3((float)rng.NextDouble()*40-20,0,(float)rng.NextDouble()*40-20),field);}
+            // ---- parked cars: two by the green, two outside The Plough, six lay-bys out in the vale, two in the dairy yard
+            void Park(float s,Vector3 side,float off){if(s<20||s>road.Length-20)return;var p=road.At(s)+side*(half+off);p.y=H(p.x,p.z);Parking.Add((p,Yaw(road.At(s-1),road.At(s+1))));}
+            Park(sC-30,N(sC-30),3f);Park(sC+26,N(sC+26),3f);Park(sC-5,-N(sC-5),2.6f);Park(sC+5,-N(sC+5),2.6f);
+            foreach(float ds in new[]{-470f,-640f,-820f,-1000f,-1180f,-1350f})Park(sC+ds,N(sC+ds),3.2f);   // (out along the pass, where the vale's fields are)
+            Park(sC+440,-N(sC+440),4f);Park(sC+447,-N(sC+447),4f);
+            Vale(road,sC,herd);
+            Debug.Log($"LITTLE_ROAD_BRAMBLEWICK fields={Fields} copses={Copses} buildings={Buildings} plinths={Plinths} refused={Refused} spots={Spots.Count} hedges={hedges} hedge_refused={hedgeRefused} {hedgeWhy}");
         }
+        // ---- the vale (step 4): a patchwork of hedged fields round the village, squared to the road through it as the farm
+        // grids are; pasture (some with the dairy's heifers), hay meadow, wheat and rapeseed, the crops standing as canopies
+        // the car can plough through (CropField, CropTrample). Every field hedged all round, one hedge on each shared boundary,
+        // each side with a gateway; copses in the corners the fields leave, and the orchard on the north slope.
+        public static int Fields,Copses;
+        void Vale(HillcrestRoute.Road road,float sC,Vector3 cowField)
+        {
+            var yaw=Yaw(road.At(sC-1),road.At(sC+1));var rot=Quaternion.Euler(0,yaw,0);var c0=new Vector3(Bramblewick.Centre.x,0,Bramblewick.Centre.y);
+            var green=new Vector3(Bramblewick.Green.x,0,Bramblewick.Green.z);var herd=new Vector3(cowField.x,0,cowField.z);var orchard=c0+rot*new Vector3(-150,0,250);
+            float Ground(Vector3 p)=>Mathf.Max(H(p.x,p.z),H(p.x+1.2f,p.z),H(p.x-1.2f,p.z),H(p.x,p.z+1.2f),H(p.x,p.z-1.2f))+.08f;
+            // The lattice: hedge lines across the vale at uneven spacings, each crossing nudged its own way, so the fields come
+            // out four-sided and all different, and neighbours still share their boundaries.
+            var xs=new List<float>();for(float x=-760;x<760;x+=55+(float)rng.NextDouble()*55)xs.Add(x);
+            var zs=new List<float>();for(float z=-760;z<760;z+=42+(float)rng.NextDouble()*45)zs.Add(z);
+            var L=new Vector3[xs.Count,zs.Count];
+            for(int i=0;i<xs.Count;i++)for(int j=0;j<zs.Count;j++)L[i,j]=c0+rot*new Vector3(xs[i]+((float)rng.NextDouble()-.5f)*20,0,zs[j]+((float)rng.NextDouble()-.5f)*16);
+            Vector3 At(int i,int j,float u,float w)=>Vector3.Lerp(Vector3.Lerp(L[i,j],L[i+1,j],u),Vector3.Lerp(L[i,j+1],L[i+1,j+1],u),w);
+            int CellKind(int i,int j)   // (0 no field: road, village, hill; 1 a field; 2 rough ground the fields leave, for copses)
+            {
+                var c=At(i,j,.5f,.5f);float d=Vector2.Distance(new(c.x,c.z),Bramblewick.Centre);if(d>700)return 0;
+                if(Vector3.Distance(c,green)<130||Vector3.Distance(c,herd)<55||Vector3.Distance(c,orchard)<70)return 0;
+                float lo=float.MaxValue,hi=float.MinValue;
+                for(int a=0;a<=4;a++)for(int b=0;b<=4;b++){var q=At(i,j,a/4f,b/4f);if(ValleyField.RoadDistance(q.x,q.z)<12)return 0;float g=H(q.x,q.z);lo=Mathf.Min(lo,g);hi=Mathf.Max(hi,g);}
+                foreach(var o in footprints)if(Vector2.Distance(o.c,new(c.x,c.z))<Vector3.Distance(L[i,j],L[i+1,j+1])*.5f+o.half.magnitude+4)return 0;
+                return hi-lo>7?2:1;   // (the steeper banks stay rough grazing and wood)
+            }
+            int nx=xs.Count-1,nz=zs.Count-1;var kind=new int[nx,nz];
+            for(int i=0;i<nx;i++)for(int j=0;j<nz;j++){kind[i,j]=CellKind(i,j);if(kind[i,j]==1&&rng.NextDouble()<.1)kind[i,j]=2;}
+            var crops=CropTrample.Material("Bramblewick",new Rect(Bramblewick.Centre.x-800,Bramblewick.Centre.y-800,1600,1600));
+            var v=new List<Vector3>();var col=new List<Color>();var t=new List<int>();var lift=new List<Vector2>();var rowAt=new List<Vector2>();
+            void Flush()
+            {
+                if(v.Count==0)return;var mesh=new Mesh{name="Bramblewick fields"};mesh.SetVertices(v);mesh.SetColors(col);mesh.SetTriangles(t,0);mesh.SetUVs(0,lift);mesh.SetUVs(1,rowAt);
+                mesh.RecalculateNormals();mesh.RecalculateBounds();
+                var go=new GameObject("Bramblewick fields",typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root);go.GetComponent<MeshFilter>().sharedMesh=mesh;
+                var r=go.GetComponent<MeshRenderer>();r.sharedMaterial=crops;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;v.Clear();col.Clear();t.Clear();lift.Clear();rowAt.Clear();
+            }
+            // (hay, wheat and rapeseed in Hillcrest's colours: its palettes 5, 0 and 4)
+            var hay=(new Color(.80f,.86f,.42f),new Color(.66f,.76f,.34f));var wheat=(new Color(.95f,.80f,.36f),new Color(.86f,.68f,.28f));var rape=(new Color(.99f,.86f,.22f),new Color(.42f,.62f,.26f));
+            Fields=0;
+            for(int i=0;i<nx;i++)for(int j=0;j<nz;j++) {
+                if(kind[i,j]!=1)continue;Fields++;double roll=rng.NextDouble();var c=At(i,j,.5f,.5f);
+                if(roll<.42) {   // pasture: the vale's own grass, a few heifers in one field in three
+                    if(rng.NextDouble()<.35){int n=3+rng.Next(4);for(int k=0;k<n;k++)Cow(At(i,j,.2f+.6f*(float)rng.NextDouble(),.2f+.6f*(float)rng.NextDouble()),c);}
+                    continue;
+                }
+                var (a,b,h)=roll<.64?(hay.Item1,hay.Item2,.5f):roll<.87?(wheat.Item1,wheat.Item2,.85f):(rape.Item1,rape.Item2,1.05f);
+                // (the crop stops 3.5 m short of the hedges: the headland, where the tractor turns)
+                var q=new Vector3[4];var corners=new[]{L[i,j],L[i+1,j],L[i+1,j+1],L[i,j+1]};
+                for(int k=0;k<4;k++){var inward=(c-corners[k]);inward.y=0;q[k]=corners[k]+inward.normalized*4.9f;}
+                if(rng.NextDouble()<.5)q=new[]{q[1],q[2],q[3],q[0]};   // (drilled the other way)
+                CropField.Canopy(v,col,t,lift,rowAt,q,a,b,h,Ground,CropField.Tone);if(v.Count>50000)Flush();
+            }
+            Flush();
+            // Hedges along every lattice line with a field on either side: one hedge to a boundary, continuous but for a
+            // gateway in about half of them (with its gate in most), and where a road crosses.
+            void Hedge(Vector3 a,Vector3 b,bool gateway)
+            {
+                var dir=b-a;dir.y=0;float len=dir.magnitude;dir/=len;float gap=gateway&&len>14?len*(.2f+.6f*(float)rng.NextDouble()):-99;
+                var run=new List<Vector3>();
+                void Lay(){if(run.Count>=3){var R=Runs.Solve(new RunSpec{name=$"Bramblewick hedge {hedges}",kit="hedge",seed=$"bramble-field-{hedges}",along=run.ToArray(),solid=false});if(R.items.Count>0){Runs.Draw(R,root);Runs.Laid.Add(R);hedges++;}else hedgeRefused++;}run.Clear();}
+                for(float s=0;s<=len+.01f;s+=Mathf.Min(2.6f,len)) {
+                    var q=a+dir*s;if(Mathf.Abs(s-gap)<2.4f||ValleyField.RoadDistance(q.x,q.z)<8){Lay();continue;}
+                    q.y=H(q.x,q.z);run.Add(q);
+                    if(rng.NextDouble()<.03){var tr=q;tr.y-=.05f;Put("tree_round",tr,(float)rng.NextDouble()*360,null,null,true,.9f+(float)rng.NextDouble()*.35f);}   // (a hedgerow oak)
+                }
+                Lay();
+                if(gap>0&&rng.NextDouble()<.8){var g=a+dir*gap;if(ValleyField.RoadDistance(g.x,g.z)>8){g.y=H(g.x,g.z);Put("field_gate",g,Mathf.Atan2(dir.x,dir.z)*Mathf.Rad2Deg-90);}}
+            }
+            bool Field(int i,int j)=>i>=0&&j>=0&&i<nx&&j<nz&&kind[i,j]==1;
+            for(int i=0;i<=nx;i++)for(int j=0;j<=nz;j++) {
+                if(i<nx&&(Field(i,j)||Field(i,j-1)))Hedge(L[i,j],L[i+1,j],rng.NextDouble()<.5);   // (along x: between cells (i,j-1) and (i,j))
+                if(j<nz&&(Field(i,j)||Field(i-1,j)))Hedge(L[i,j],L[i,j+1],rng.NextDouble()<.5);   // (along z: between cells (i-1,j) and (i,j))
+            }
+            // Copses on the rough ground the fields leave, off the roads.
+            Copses=0;
+            for(int i=0;i<nx;i++)for(int j=0;j<nz;j++) {
+                if(kind[i,j]!=2||rng.NextDouble()<.4)continue;
+                int n=6+rng.Next(9);
+                for(int k=0;k<n;k++){var q=At(i,j,.15f+.7f*(float)rng.NextDouble(),.15f+.7f*(float)rng.NextDouble());if(ValleyField.RoadDistance(q.x,q.z)<10)continue;q.y=H(q.x,q.z)-.05f;
+                    Put(rng.NextDouble()<.75?"tree_round":"tree_pine",q,(float)rng.NextDouble()*360,null,null,true,.9f+(float)rng.NextDouble()*.5f);}
+                Copses++;
+            }
+            // The orchard: apple trees in rows on the north slope, 6 m apart.
+            {var o=orchard;
+             for(int a=-4;a<=4;a++)for(int b=-3;b<=3;b++) {
+                var q=o+rot*new Vector3(a*6+((float)rng.NextDouble()-.5f),0,b*6+((float)rng.NextDouble()-.5f));if(ValleyField.RoadDistance(q.x,q.z)<9)continue;
+                bool hit=false;foreach(var f in footprints)if(QuarryHillsTown.Overlap(new(q.x,q.z),new(2,2),0,f.c,f.half,f.yaw))hit=true;if(hit)continue;
+                q.y=H(q.x,q.z)-.05f;Put("tree_blossom",q,(float)rng.NextDouble()*360,null,null,true,.62f+(float)rng.NextDouble()*.15f);
+             }
+             o.y=H(o.x,o.z);Spots["orchard"]=(o,yaw);}
+        }
+        Vector3 herd;
         // A cottage garden: a hedge along the front, from party line to party line, with a 2.4 m gap at the gate before the
         // front door (the kit's Door socket); apple trees in the back garden.
         void Garden(HillcrestRoute.Road road,string id,Vector3 c,float yaw,Vector3 n,float mid,Vector2 size,float setback)

@@ -897,7 +897,7 @@ namespace LittleRoad
                 float Top(Vector3 p)=>Mathf.Max(H(p.x,p.z),H(p.x+1.2f,p.z),H(p.x-1.2f,p.z),H(p.x,p.z+1.2f),H(p.x,p.z-1.2f))+.08f;
                 Color Tone(Color c,Vector3 p)=>WorldLook.Surface(c*(.9f+.2f*Mathf.PerlinNoise(p.x*.13f,p.z*.13f)));
                 // (--prop-forge's world: wheat, barley, rapeseed and young crop stand as a canopy the car ploughs through, CropField)
-                if(PropForge.Enabled&&CropField.Height(kind)>0){CropField.Canopy(v,col,t,lift,rowAt,new Vector3(x,0,z),rot,w,d,a,b,CropField.Height(kind),Top,Tone);if(v.Count>50000)Flush();continue;}
+                if(PropForge.Enabled&&CropField.Height(kind)>0){CropField.Canopy(v,col,t,lift,rowAt,new Vector3(x,0,z),rot,w,d,a,b,CropField.Height(kind),Top,CropField.Tone);if(v.Count>50000)Flush();continue;}
                 var furrow=b*(kind==1?.9f:.78f);int sheet=v.Count;
                 for(int iz=0;iz<=rows;iz++)for(int cell=0;cell<=cells;cell++) {
                     var p=new Vector3(x,0,z)+rot*new Vector3(-w/2+cell*w/cells,0,-d/2+iz*spacing);p.y=Top(p);v.Add(p);col.Add(Tone(furrow,p));lift.Add(Vector2.up);

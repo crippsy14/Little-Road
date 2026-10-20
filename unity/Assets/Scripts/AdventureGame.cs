@@ -66,6 +66,8 @@ namespace LittleRoad
             if(NewBayview.On){residentYaw["cafe"]=NewBayview.CafeYaw;residentYaw["paint"]=NewBayview.PaintYaw;}
             if(HillcrestTown.Spots.Count>0){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}
             foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout","farm"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
+            // Bramblewick (--bramblewick, docs/82): Jed the tuner, Maggie at The Plough, the vicar on the green, Peg at the dairy.
+            foreach(var (id,at) in new[]{("bwtuner","tuner"),("bwpub","pub"),("bwvicar","church"),("bwdairy","dairy")})if(BramblewickVillage.Spots.TryGetValue(at,out var bw)){residents[id]=bw.at;residentYaw[id]=bw.yaw;}
             // Quarry Hills built in the background (Districts): what needs it is set up when it arrives.
             quarryLater=Districts.Waiting("quarry-hills");if(quarryLater)Districts.WhenBuiltSteps("quarry-hills",QuarryHillsArrived);
             if(!quarryLater)QuarryHillsResidents();
@@ -625,6 +627,10 @@ namespace LittleRoad
             ["farm"]=("beetle",Toy.Hex(0x2e9e5b),"GILES / GOLDEN ACRE FARM","Farmer Giles",Toy.Sun,new[]{"Mind the sunflowers, they bruise easy.","Steady! That's a working farm, that is.","Save it for the wheat, go on."}),
             ["blast"]=("hauler",Toy.Hex(0xf1c40f),"DAI / QUARRY FLOOR","Dai",Toy.Sun,new[]{"Oi! Twelve tonnes of dumper says you lose that one, butt.","Bump me again and I'll tip slate on your bonnet!","Save it for the haul road, go on."}),
             ["slatequay"]=("heron",Toy.Hex(0x1f3a93),"MARI / SLATE QUAY","Mari",Toy.Mint,new[]{"Mind the wagons! They're loaded!","Engine's warming up, keep clear of the shed!","Whoa! The quay's for slate, not stunts!"}),
+            ["bwtuner"]=("rally",Toy.Hex(0xc0392b),"JED / BACKYARD TUNER","Jed",Toy.Red,new[]{"Steady on! That's a fresh coil-over you just rattled.","Proper job, that knock. Bring 'er round the barn.","Mud tyres would've shrugged that off, my 'ansum."}),
+            ["bwpub"]=("otter",Toy.Hex(0x2f5d46),"MAGGIE / THE PLOUGH","Maggie",Toy.Mint,new[]{"Mind the hanging baskets, my lover!","Cider's for after the drive, not before!","The Plough's stood four hundred year. Don't you dent it!"}),
+            ["bwvicar"]=("tallboy",Toy.Hex(0x2c3e50),"REVEREND CLEM / ST MICHAEL'S","Reverend Clem",Toy.Sky,new[]{"Bless you! ...and bless my bumper.","Gently now, the lychgate's older than both of us.","Evensong at six. Do park considerately."}),
+            ["bwdairy"]=("pebble",Toy.Hex(0xf6f1e6),"PEG / BRAMBLEWICK DAIRY","Peg",Toy.Sun,new[]{"Oi! Forty years on the round and never a dent!","Think you're quick? Try me down Dairy Lane.","Mind the crates! Them's full!"}),
         };
         // Quarry Hills (--quarry-hills): Gwen at the rally school, the Pit Stop, the caban, the quay and Dai.
         void QuarryHillsResidents()
@@ -1349,7 +1355,7 @@ namespace LittleRoad
         {
             if(!residents.ContainsKey(id)||Vector3.Distance(player.body.position,residents[id])>7||Mathf.Abs(player.speed)>1.2f)return false;
             switch(id){case "garage":Mara();break;case "parts":Sid();break;case "hcparts":Rosa();break;case "hcbody":Lina();break;case "post":Pip();break;case "paint":Dot();break;case "motors":Gio();break;case "hillcafe":Fern();break;
-                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;case "blast":Dai();break;case "farm":Giles();break;default:Rowan();break;}
+                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;case "blast":Dai();break;case "farm":Giles();break;case "bwtuner":Jed();break;case "bwpub":Maggie();break;case "bwvicar":Clem();break;case "bwdairy":Peg();break;default:Rowan();break;}
             return true;
         }
         void Mara()
@@ -1573,6 +1579,15 @@ namespace LittleRoad
         void RestartActivity(){var a=activity;if(a==null)return;a.exit?.Invoke();EndActivity();a.restart?.Invoke();}
 
         // ---------------------------------------------------------------- Farmer Giles (FarmChallenges, doc 64)
+        // Bramblewick's four (docs/82). Jed's parts, Peg's duel and the race come in step 5.
+        void Jed()=>Show("Jed / Backyard Tuner","Parts Bayview's never heard of, my 'ansum: lane springs, mud tyres, a cold-air box off a tractor. Still unpacking the crates, mind. Come back when the post's been.",
+            new(){new("Back to the road",Close)});
+        void Maggie()=>Show("Maggie / The Plough","Welcome to The Plough, my lover! Four hundred years of thatch, cider from the orchard up the hill, and Peg's milk float parked outside every Friday. Mind the hanging baskets on your way out.",
+            new(){new("Back to the road",Close)});
+        void Clem()=>Show("Reverend Clem / St Michael's","Bless you for stopping. That tower's been watching over the vale since before there were roads in it. Do have a look round the churchyard, and go gently past the lychgate.",
+            new(){new("Back to the road",Close)});
+        void Peg()=>Show("Peg / Bramblewick Dairy","Forty years on the milk round and never spilt a pint. Reckon you're quick? Dairy Lane's mine, my lover. The float's on charge today, but I'll race you down it soon enough.",
+            new(){new("Back to the road",Close)});
         void Giles()
         {
             string Line(FarmChallenges.Kind k){var r=SpeedTraps.Record(Store.Data,FarmChallenges.Ids[(int)k]);return r!=null?$" · best {r.best:0}% · {r.stars}/3 stars":$" · {FarmChallenges.Limit(k):0} s";}

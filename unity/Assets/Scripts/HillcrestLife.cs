@@ -44,6 +44,16 @@ namespace LittleRoad
                 var chatter=go.AddComponent<NpcChatter>();chatter.speaker=names[i%names.Length];chatter.colour=paint;chatter.title="Out for a drive";
                 chatter.lines=new[]{"Oi! Hillcrest drivers indicate, you know!","Beep beep! Off to market?","Mind my bumper, I'm late for the bakery!","Lovely day for the valley road!","Have you seen the falls yet?","Race you to the castle!","The train's due any minute!"};
             }
+            // Bramblewick's traffic (--bramblewick, docs/82): the village's own cars up and down Valley Road South.
+            if(Bramblewick.Enabled) {
+                var vr=HillcrestRoute.Find(Bramblewick.RoadName);var br=new System.Random(91);string[] vbodies={"beetle","camper","postvan","pebble"},folk={"Arthur","Edie","Walt","Hetty"};
+                string[] says={"Arr, mind the cows, my lover!","Off to The Plough? Save us a seat.","Lanes are for sharing, my 'ansum!","Peg's float's quicker than it looks, mind.","Lovely drop of rain for the barley."};
+                for(int i=0;i<4;i++) {
+                    Color paint=PaintCatalog.All[br.Next(PaintCatalog.Standard)].color;var go=TrialWorld.Car(vbodies[i],paint);go.name="Bramblewick traffic "+i;go.transform.SetParent(root);
+                    go.AddComponent<RoadCruiser>().Setup(vr,30,vr.Length-30,Mathf.Lerp(30,vr.Length-30,(i+.3f)/4),i%2*2-1,player);
+                    var chatter=go.AddComponent<NpcChatter>();chatter.speaker=folk[i];chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=says;
+                }
+            }
             // Quarry Hills' traffic (--quarry-hills): the town's streets, and Dai's dumper grinding up and down the haul road.
             if(QuarryHills.Enabled) {
                 string[] welsh={"Bore da! Mind the slate dust!","Iawn? Off to the Caban?","Wrong side of the road, butt!","Chapel's at six. Don't be late!","Seen the Blondin running? Lush.","Rain later. Always is.","Hwyl fawr! See you at the quay!"};
@@ -71,6 +81,7 @@ namespace LittleRoad
             var yard=HillcrestRoute.StationYard;for(int i=0;i<3;i++)spots.Add((yard+new Vector3(-7+i*5.5f,0,-12),0));
             var lk=HillcrestRoute.Lookout;spots.Add((lk+new Vector3(-9,0,-6),40));spots.Add((HillcrestRoute.Vista+new Vector3(-8,0,-6),150));
             spots.AddRange(QuarryFloor.Parking); // outside the rally school (--quarry-hills)
+            spots.AddRange(BramblewickVillage.Parking);   // (--bramblewick: by the green, outside The Plough, the vale's lay-bys, the dairy yard)
             parkRng=new System.Random(41);Park(root,spots);
             // (Quarry Hills built in the background: its cars park once it's there, carrying on the same draws: Districts.)
             if(Districts.Waiting("quarry-hills"))Districts.WhenBuilt("quarry-hills",()=>Park(root,new List<(Vector3,float)>(QuarryFloor.Parking)));

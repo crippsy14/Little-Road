@@ -89,6 +89,12 @@ namespace LittleRoad
             // hay bale is, and anything that failed its own ground checks (in the air, off its slope) counts as floating.
             if(PropForge.Enabled) {
                 ForgeReport.Clear();
+                // (a hedge is planting: it counts as the bushes it replaced, one per 2.6 m, the spacing the valley's hedgerows were
+                //  planted at before Prop Forge, which the planting bars were set against)
+                foreach(var L in Runs.Laid)if((L.spec.kit=="hedge"||L.spec.kit=="hedge_bank")&&L.items.Count>0) {
+                    float len=0;for(int i=1;i<L.spec.along.Length;i++)len+=Vector3.Distance(L.spec.along[i-1],L.spec.along[i]);float per=len/2.6f/L.items.Count;
+                    for(int k=0;k<L.items.Count;k++)Of(L.items[k].m.GetColumn(3)).nature+=Mathf.FloorToInt((k+1)*per)-Mathf.FloorToInt(k*per);
+                }
                 foreach(var L in Runs.Laid){foreach(var it in L.items)Of(it.m.GetColumn(3)).pieces++;if(L.failures.Count>0&&L.items.Count>0){Of(L.items[0].m.GetColumn(3)).floating+=L.failures.Count;ForgeReport.Add($"  run {L.spec.name}: {string.Join("; ",L.failures)}");}}
                 foreach(var L in Objects.Laid)foreach(var o in L.placed){var col=Of(o.at);col.pieces++;if(L.kit.file.kit=="hay_bale")col.nature++;if(o.air>.02f||o.tilt>4){col.floating++;ForgeReport.Add($"  {L.name} at {o.at} air {o.air:0.00} m tilt {o.tilt:0}");}}
             }

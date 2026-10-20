@@ -13,24 +13,31 @@ namespace LittleRoad
     {
         // The canopy's height for the valley's crop palettes (0: rows instead): wheat, plough, young crop, lavender, rapeseed,
         // barley.
+        // A crop's colour at a point: broad, gentle changes across a field (soil and sowing), not blotches.
+        public static Color Tone(Color c,Vector3 p)=>WorldLook.Surface(c*(.94f+.12f*Mathf.PerlinNoise(p.x*.045f+7,p.z*.045f+3)));
         public static float Height(int kind)=>kind switch{0=>.85f,2=>.35f,4=>1.05f,5=>.6f,_=>0};
         // Adds one field's canopy: the field `w` by `d` about `centre`, turned by `rot` (its drill rows run along its x),
         // `top` the crop's colour and `stalk` its sides'. `ground` gives the field's ground at a point, `tone` shades a colour
         // at a point. `lift` carries each vertex's height for the shader to press down (x) and how far up the crop it is (y);
         // `local` its place across the rows, for the drill lines.
         public static void Canopy(List<Vector3> v,List<Color> col,List<int> t,List<Vector2> lift,List<Vector2> local,Vector3 centre,Quaternion rot,float w,float d,Color top,Color stalk,float height,Func<Vector3,float> ground,Func<Color,Vector3,Color> tone)
+            =>Canopy(v,col,t,lift,local,new[]{centre+rot*new Vector3(-w/2,0,-d/2),centre+rot*new Vector3(w/2,0,-d/2),centre+rot*new Vector3(w/2,0,d/2),centre+rot*new Vector3(-w/2,0,d/2)},top,stalk,height,ground,tone);
+        // The same over any four-sided field, its corners `q` in turn (as a rectangle's: the drill rows run from q[0] to q[1]).
+        public static void Canopy(List<Vector3> v,List<Color> col,List<int> t,List<Vector2> lift,List<Vector2> local,Vector3[] q,Color top,Color stalk,float height,Func<Vector3,float> ground,Func<Color,Vector3,Color> tone)
         {
             while(local.Count<v.Count)local.Add(Vector2.zero);   // (the rows' vertices before it carry none)
-            int nx=Mathf.CeilToInt(w/1.1f),nz=Mathf.CeilToInt(d/1.1f),start=v.Count;centre.y=0;
+            for(int k=0;k<4;k++)q[k].y=0;var centre=(q[0]+q[1]+q[2]+q[3])*.25f;
+            float w=(Vector3.Distance(q[0],q[1])+Vector3.Distance(q[3],q[2]))*.5f,d=(Vector3.Distance(q[0],q[3])+Vector3.Distance(q[1],q[2]))*.5f;
+            int nx=Mathf.CeilToInt(w/1.1f),nz=Mathf.CeilToInt(d/1.1f),start=v.Count;
             var foot=new float[(nx+1)*(nz+1)];
             for(int j=0;j<=nz;j++)for(int i=0;i<=nx;i++) {
-                float lx=-w/2+i*w/nx,lz=-d/2+j*d/nz;var p=centre+rot*new Vector3(lx,0,lz);
+                float u=(float)i/nx,vv=(float)j/nz,lx=-w/2+u*w,lz=-d/2+vv*d;var p=Vector3.Lerp(Vector3.Lerp(q[0],q[1],u),Vector3.Lerp(q[3],q[2],u),vv);
                 bool edge=i==0||j==0||i==nx||j==nz;
                 // (a little lower at the headland, uneven within: patches stand taller or thinner, as real crop does)
-                float h=height*(edge?.84f:.86f+.28f*Mathf.PerlinNoise(p.x*.31f+centre.x*.01f,p.z*.31f));
+                float h=height*(edge?.84f:.9f+.16f*Mathf.PerlinNoise(p.x*.11f+centre.x*.01f,p.z*.11f));
                 float y=ground(p);foot[j*(nx+1)+i]=y;
-                v.Add(new Vector3(p.x,y+h,p.z));col.Add(tone(top,p)*(.95f+.1f*h/height));lift.Add(new Vector2(h,1));local.Add(new Vector2(lz,lx));
-                if(i<nx&&j<nz){int q=start+j*(nx+1)+i;t.AddRange(new[]{q,q+nx+1,q+1,q+1,q+nx+1,q+nx+2});}
+                v.Add(new Vector3(p.x,y+h,p.z));col.Add(tone(top,p)*(.97f+.05f*h/height));lift.Add(new Vector2(h,1));local.Add(new Vector2(lz,lx));
+                if(i<nx&&j<nz){int g=start+j*(nx+1)+i;t.AddRange(new[]{g,g+nx+1,g+1,g+1,g+nx+1,g+nx+2});}
             }
             // The stalks round its edge: a skirt from the ground to the canopy's edge, both sides drawn (it's seen from the
             // lane outside and from the swath inside once the car has broken in).
@@ -43,8 +50,8 @@ namespace LittleRoad
                 var c=tone(stalk,p);v.Add(p);v.Add(up);col.Add(c*.8f);col.Add(c);lift.Add(new Vector2(0,0));lift.Add(new Vector2(h,1));local.Add(local[start+k]);local.Add(local[start+k]);
             }
             for(int s=0;s<ring.Count;s++) {
-                int q=skirt+s*2,n=skirt+(s+1)%ring.Count*2;
-                t.AddRange(new[]{q,q+1,n,n,q+1,n+1});t.AddRange(new[]{q,n,q+1,n,n+1,q+1});
+                int a=skirt+s*2,n=skirt+(s+1)%ring.Count*2;
+                t.AddRange(new[]{a,a+1,n,n,a+1,n+1});t.AddRange(new[]{a,n,a+1,n,n+1,a+1});
             }
         }
     }

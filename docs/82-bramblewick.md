@@ -95,28 +95,38 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
     - photos of the vale, the pass, the T and the gate look right.
     - Building the mainland takes 2.4 s with the flag on, against 1.4 s without: the larger grid.
 
-## Where to pick up (handover, 20 Oct)
-1. **Finish step 2:**
-   - The T at (560, −1156) still has 4 road seams and Hillcrest Valley 2 road-edge lips: tiny height steps where Valley
-     Road South's ribbon meets the junction and the station road. See `--area-audit`'s seam list (`Valley Road South`
-     around chunk 30,17).
-   - Try the `MouthShoulders`/`KerbShoulders` treatment the Quarry Hills junctions got (`HillcrestValley.ValleyRoads`),
-     or start the road's `lift` at the junction's height.
-   - Hillcrest Valley's life per road km (4.5, needs 5) and things to do per km (2.7, needs 3) dip under the bar with
-     the new road's kilometres. Dress the pass with hedge banks, a fingerpost, a farm gate, a photo spot and a speed
-     trap, which brings both back over the bar.
-   - The map: `WorldMap` X0/Size (`WorldMap.cs:18`), `ExploredMap.Cells` and `HillcrestValley`'s `MacroRect` don't
-     reach x 2400 yet.
-2. **Step 3, the village:** the green and pond, the parish church and lychgate, The Plough and the thatched cottages
-   from the `village` kit, the tuner's barn, and the dairy from the `farm` kit (milking parlour, Dutch barn, churn stand,
-   cattle grid). Lanes as `hedge_bank` runs. The new ids need BayviewKit footprints in the village's own code, as
-   `QuarryHillsTown.Footprint` does.
-3. **Then:**
-   - fields and life (cows from the `cows` kit; the fields redo, bug #20);
-   - things to do (the race, the milk-float duel, the parts, the railway halt);
-   - judged: area audit, a targeted review on one contact sheet, then the flag comes off.
-4. **Still to make:** the milk float (Car Forge) and the tuner's parts on the doc 44 ladder.
-5. **Richard's four questions** above still have only my defaults.
+- **20 Oct, the village (step 3):** the green with its pond, reeds, benches and trees; St Michael's with its lychgate
+  and churchyard wall; The Plough, the pillar box and phone box; 35 thatched cottages with hedged gardens and apple trees;
+  street lamps; the tuner's barn; the dairy (milking parlour, Dutch barn, churn stand) with Friesians in the field.
+- **20 Oct, fields and life (step 4):**
+  - **The fields redo (bug #20), everywhere:** wheat, barley, rapeseed and young crop are a standing canopy at crop
+    height (`CropField`), with drill rows and a wind swell close up. The car ploughs a swath through it that lies flat
+    and stays down (`CropTrample`, the `Crops` shader). `--crop-test` drives across a field and photographs it.
+  - **The vale's patchwork:** 232 fields on a jittered lattice, so every field is a different four-sided shape and
+    neighbours share their hedges. 42% pasture (a third with heifers), then hay, wheat and rapeseed. 893 hedge runs,
+    each boundary hedged once with a gateway (and gate) in about half; hedgerow oaks; 20 copses on the rough ground; the
+    orchard on the north slope.
+  - **Life:** four named residents with their own lines (Jed the tuner, Maggie at The Plough, Reverend Clem on the
+    green, Peg at the dairy); four village cars up and down Valley Road South; parked cars by the green, outside the pub,
+    in six lay-bys along the pass and in the dairy yard.
+  - **The audit:** a Prop Forge hedge now counts as planting, one per 2.6 m (the bushes it replaced). Bramblewick and
+    the vale pass planting and life; only things to do are short, which is step 5. Frame cost over the vale is about
+    1.3 ms.
+
+## Where to pick up (handover, 20 Oct, after step 4)
+1. **Step 5, things to do:**
+   - the six lucky horseshoes (a keepsake set: `Collectibles`, `MapRegions` places, the `Keepsake` visual, the pause
+     menu's fourth album and its set paint), one in the church porch;
+   - a speed trap on Valley Road South outside the village (`SpeedTraps.Roads`, `ActiveIds`, the `AdventureChecks`
+     count);
+   - photo sights (`PhotoRequests`): St Michael's tower, The Plough, the duck pond, the dairy;
+   - the race (24/24 on seeds 1709-1711) on lanes about 6.5 m wide with hedge banks; the milk-float duel; Jed's four
+     parts on the doc 44 ladder; the railway halt.
+   - The audit's bars: the village needs 3 things to do, and the vale 3 per road km (5 on its 1.52 km).
+2. **Still to make:** the milk float (Car Forge).
+3. **Leftovers:** two lips at the T (480, -1110), 0.13-0.16 m; the floating vine row (160.5, 36.3, -1040.2); two
+   Bayview waterline rocks.
+4. **Richard's four questions** below still have only my defaults.
 
 How each place is built and judged is in [doc 81](81-whole-map-order.md), "How each place is built".
 
