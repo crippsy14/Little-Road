@@ -1,0 +1,35 @@
+at -2873,-1984
+  Hillcrest Valley/Hillcrest mainland terrain/Mainland chunk 8,12/LOD2 [Quarry Hills slate country / LittleRoad/CoastalTerrain] y -1.2..14.0 size 160x160
+  Bayview coast / authored landforms/Hillcrest roads/Road shoulder [Road verge gravel / LittleRoad/Kit] y -8.9..47.4 size 450x625
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills town/Footpaths [Quarry Hills square flags / LittleRoad/Kit] y 10.3..78.7 size 734x647
+  Bayview coast / authored landforms/Hillcrest roads/Road shoulder [Road verge gravel / LittleRoad/Kit] y -8.9..47.4 size 449x623
+  Hillcrest Valley/Hillcrest mainland terrain/Mainland chunk 8,12/LOD0 [Quarry Hills slate country / LittleRoad/CoastalTerrain] y 3.3..14.1 size 160x160
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills town/Yard walls [Quarry Hills yard wall / LittleRoad/Kit] y 9.8..80.5 size 881x646
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Field gates [Gate paint / Universal Render Pipeline/Lit] y 6.0..73.8 size 2148x1260
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Field wall copes [Wall coping / LittleRoad/Kit] y 6.8..87.7 size 2348x1352
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -8.5..34.9 size 386x478
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Telegraph wires [Wire / Universal Render Pipeline/Lit] y 14.5..88.3 size 2305x1326
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -8.2..34.9 size 384x474
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Farm lane [Farm lane gravel / LittleRoad/Kit] y 7.3..13.5 size 197x86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -8.5..34.9 size 386x477
+  Bayview coast / authored landforms/Hillcrest roads/Quay Lane [Country road asphalt / LittleRoad/Kit] y -8.8..34.9 size 394x484
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Field walls [Dry-stone wall / LittleRoad/Kit] y 5.4..87.6 size 2348x1352
+  Hillcrest Valley/Hillcrest mainland terrain/Mainland chunk 8,12/LOD1 [Quarry Hills slate country / LittleRoad/CoastalTerrain] y 1.8..14.1 size 160x160
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Gate posts [Gate post stone / LittleRoad/Kit] y 5.6..74.0 size 2149x1260
+at -2866,-1977
+  Hillcrest Valley/Hillcrest mainland terrain/Mainland chunk 8,12/LOD2 [Quarry Hills slate country / LittleRoad/CoastalTerrain] y -1.2..14.0 size 160x160
+  Bayview coast / authored landforms/Hillcrest roads/Road shoulder [Road verge gravel / LittleRoad/Kit] y -8.9..47.4 size 450x625
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills town/Footpaths [Quarry Hills square flags / LittleRoad/Kit] y 10.3..78.7 size 734x647
+  Bayview coast / authored landforms/Hillcrest roads/Road shoulder [Road verge gravel / LittleRoad/Kit] y -8.9..47.4 size 449x623
+  Hillcrest Valley/Hillcrest mainland terrain/Mainland chunk 8,12/LOD0 [Quarry Hills slate country / LittleRoad/CoastalTerrain] y 3.3..14.1 size 160x160
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Field gates [Gate paint / Universal Render Pipeline/Lit] y 6.0..73.8 size 2148x1260
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Field wall copes [Wall coping / LittleRoad/Kit] y 6.8..87.7 size 2348x1352
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -8.5..34.9 size 386x478
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Telegraph wires [Wire / Universal Render Pipeline/Lit] y 14.5..88.3 size 2305x1326
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -8.2..34.9 size 384x474
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Farm lane [Farm lane gravel / LittleRoad/Kit] y 7.3..13.5 size 197x86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -8.5..34.9 size 386x477
+  Bayview coast / authored landforms/Hillcrest roads/Quay Lane [Country road asphalt / LittleRoad/Kit] y -8.8..34.9 size 394x484
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Field walls [Dry-stone wall / LittleRoad/Kit] y 5.4..87.6 size 2348x1352
+  Hillcrest Valley/Hillcrest mainland terrain/Mainland chunk 8,12/LOD1 [Quarry Hills slate country / LittleRoad/CoastalTerrain] y 1.8..14.1 size 160x160
+  Bayview coast / authored landforms/Quarry Hills scenery/Quarry Hills country/Gate posts [Gate post stone / LittleRoad/Kit] y 5.6..74.0 size 2149x1260

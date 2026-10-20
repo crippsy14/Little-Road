@@ -1,0 +1,48 @@
+measure                                   quarry       bayview     hillcrest        valley
+-- size
+road km                                     4.99          1.05          1.79          4.08
+kit pieces                                  8057           925          2338         14797
+-- what's built along the roads
+pieces per road km                          1616           879          1309          3625
+buildings per road km                      315.5          16.2         170.1           1.0
+street furniture per road km                85.0          67.5         105.2          92.6
+planting per road km                        1186           698          1019          3480
+lamps per road km                           35.9          18.1          62.7           0.0
+-- variety
+buildings                                   1573            17           304             4
+building designs                              19            11            18             4
+most common design share                     16%           18%           14%           25%
+same design next door                        10%           21%            0%            0%
+wall colours                                  16            17            19             4
+roof colours                                   4             5             6             1
+-- life
+named residents                                6             6             5             4
+chatting folk                                 63             0             2             2
+parked cars                                    5             8             4            13
+cruising cars                                  7             0             7             3
+life per road km                            16.2          13.3          10.1           5.4
+-- things to do
+keepsakes                                     12             5             1             7
+speed traps                                    1             2             1             4
+photo sights                                   3             2             1             3
+Pit Stops                                      1             1             1             0
+event / story spots                           16             0             8             5
+-- defects (must be 0 in a new area)
+floating pieces                                0             0             0             0
+loose bunting ends                             0             0             0             0
+road-edge lips                                 1             0             0             0
+road seams                                     0             0             0             0
+banks too steep                                0             3            10             4
+cars checked                                  81            15            18            23
+cars not on the ground                         0             0             0             0
+-- against the standard (docs/57)
+Quarry Hills (town): FAIL, 1 short
+    road-edge lips: 1 (needs at most 0)
+Bayview (town): FAIL, 1 short
+    banks too steep (no barrier): 3 (needs at most 0)
+Hillcrest (town): FAIL, 1 short
+    banks too steep (no barrier): 10 (needs at most 0)
+Hillcrest Valley (country): FAIL, 1 short
+    banks too steep (no barrier): 4 (needs at most 0)
+-- cars: cars checked=137 not on the ground=0
+-- road seams: seam lines=110 steps=0

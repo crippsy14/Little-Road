@@ -1,0 +1,34 @@
+﻿smoke: LITTLE_ROAD_ADVENTURE_SMOKE_PASSED quest/delivery/finds/purchase/fitting/24-car-payout/reload/duplicate-rejection
+smoke-noqh: LITTLE_ROAD_ADVENTURE_SMOKE_PASSED quest/delivery/finds/purchase/fitting/24-car-payout/reload/duplicate-rejection
+lesson: LITTLE_ROAD_LESSON_TEST 0:Gold 9.1 1:Gold 10.7 2:Gold 13 3:Gold 9.8 4:Gold 9.2 5:Gold 70.4 allGold=True partsUnlocked=True credits=320->2180 screen=True started=True resultCards=6 back=True exitToGwen=True
+climb: LITTLE_ROAD_CLIMB_TEST started=True finished=True best=170.7 rise=180 points=767
+sprint: LITTLE_ROAD_SPRINT_TEST talked=True started=True gates=3 finished=True claimed=True credits=320->570
+carving: LITTLE_ROAD_CARVING_TEST collected=12/12 blocked=0 credits=320->920
+blondin: LITTLE_ROAD_BLONDIN_TEST up=39.2s end=0.0m down=30.5s end=0.0m
+wayfinding: LITTLE_ROAD_WAYFINDING_TEST boards=3/3 pinned=3 fingerposts=9 pass=True
+wayfinding-noqh: LITTLE_ROAD_WAYFINDING_TEST boards=2/2 pinned=2 fingerposts=3 pass=True
+world-tiles: LITTLE_ROAD_WORLD_TILES_TEST deferred=13070 pending=0 seconds=16.7 spawned=26008 pass=True
+blast: LITTLE_ROAD_BLAST_TEST talked=True started=True cleared=True time=24.4 beatDai=True shot=True claimed=True credits=320->620 course=375m dai=31s shotAt=38s
+leap: LITTLE_ROAD_LEAP_TEST distance=88.6 stars=2 best=88.6 upright=1.00 credits=545
+festival: LITTLE_ROAD_FESTIVAL_TEST flags=12 parade=6 moved=17.0m choir=7 pass=True
+race: nb3-race	racer-v2	24/24	913.9	30.8	42.9	0	1	0	2.3	2.0	22.1	0.8	26.9	0.0	77	2	61	6	244
+area-audit: Quarry Hills (town): FAIL, 2 short
+area-audit:     road-edge lips: 1 (needs at most 0)
+area-audit:     cars not on the ground: 1 (needs at most 0)
+area-audit: Bayview (town): FAIL, 1 short
+area-audit:     banks too steep (no barrier): 3 (needs at most 0)
+area-audit: Hillcrest (town): FAIL, 2 short
+area-audit:     floating pieces: 1 (needs at most 0)
+area-audit:     banks too steep (no barrier): 5 (needs at most 0)
+area-audit: Hillcrest Valley (country): FAIL, 2 short
+area-audit:     road-edge lips: 2 (needs at most 0)
+area-audit:     banks too steep (no barrier): 4 (needs at most 0)
+harvest: LITTLE_ROAD_FARM_TEST route first=(682,-1224) tree0=(696,-1214) car=(706,-1219)
+harvest: LITTLE_ROAD_FARM_TEST kind=Harvest talked=True started=True hud=True result=11.0% stars=0 best=11 credits=320->320 trees=52
+apples: LITTLE_ROAD_FARM_TEST route first=(696,-1214) tree0=(696,-1214) car=(686,-1199)
+apples: LITTLE_ROAD_FARM_TEST kind=Apples talked=True started=True hud=True result=23.1% stars=0 best=23.1 credits=320->320 trees=52
+train: countdown: ok held still (most 0.00 m at 0.28 s, held True), revved to 6400 rpm
+train: LITTLE_ROAD_TRAIN_RACE win t=82.6 paid=300
+train: ended at (72,-139) after 84.1 s
+sound smoke rms 6870.0
+pictures removed: 87

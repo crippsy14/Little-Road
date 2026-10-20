@@ -1,0 +1,228 @@
+line 123,-1225,151,-1225
+  0.00 (123.00,-1225.00) 28.915 Collision_Body n.y=1.00 | 22.345 Stone plinth n.y=1.00 | 21.702 Hillcrest mainland collider n.y=0.95
+  0.25 (123.25,-1225.00) 28.915 Collision_Body n.y=1.00 | 22.345 Stone plinth n.y=1.00 | 21.744 Hillcrest mainland collider n.y=0.95
+  0.50 (123.50,-1225.00) 28.915 Collision_Body n.y=1.00 | 22.345 Stone plinth n.y=1.00 | 21.787 Hillcrest mainland collider n.y=0.95
+  0.75 (123.75,-1225.00) 28.915 Collision_Body n.y=1.00 | 22.345 Stone plinth n.y=1.00 | 21.829 Hillcrest mainland collider n.y=0.95
+  1.00 (124.00,-1225.00) 28.915 Collision_Body n.y=1.00 | 22.345 Stone plinth n.y=1.00 | 21.872 Hillcrest mainland collider n.y=0.95
+  1.25 (124.25,-1225.00) 28.915 Collision_Body n.y=1.00 | 22.345 Stone plinth n.y=1.00 | 21.914 Hillcrest mainland collider n.y=0.95
+  1.50 (124.50,-1225.00) 22.345 Stone plinth n.y=1.00 | 21.957 Hillcrest mainland collider n.y=0.95
+  1.75 (124.75,-1225.00) 22.000 Hillcrest mainland collider n.y=0.95
+  2.00 (125.00,-1225.00) 22.042 Hillcrest mainland collider n.y=0.95
+  2.25 (125.25,-1225.00) 22.051 Hillcrest mainland collider n.y=0.99
+  2.50 (125.50,-1225.00) 22.060 Hillcrest mainland collider n.y=0.99
+  2.75 (125.75,-1225.00) 22.070 Hillcrest mainland collider n.y=0.99
+  3.00 (126.00,-1225.00) 22.079 Hillcrest mainland collider n.y=0.99
+  3.25 (126.25,-1225.00) 22.088 Hillcrest mainland collider n.y=0.99
+  3.50 (126.50,-1225.00) 22.097 Hillcrest mainland collider n.y=0.99
+  3.75 (126.75,-1225.00) 22.106 Hillcrest mainland collider n.y=0.99
+  4.00 (127.00,-1225.00) 22.115 Hillcrest mainland collider n.y=0.99
+  4.25 (127.25,-1225.00) 22.125 Hillcrest mainland collider n.y=1.00
+  4.50 (127.50,-1225.00) 22.134 Hillcrest mainland collider n.y=0.99
+  4.75 (127.75,-1225.00) 22.126 Hillcrest mainland collider n.y=1.00
+  5.00 (128.00,-1225.00) 22.119 Hillcrest mainland collider n.y=1.00
+  5.25 (128.25,-1225.00) 22.111 Hillcrest mainland collider n.y=1.00
+  5.50 (128.50,-1225.00) 22.104 Hillcrest mainland collider n.y=1.00 | 22.085 Road shoulder n.y=0.99
+  5.75 (128.75,-1225.00) 22.097 Hillcrest mainland collider n.y=1.00 | 22.092 Road shoulder n.y=0.99
+  6.00 (129.00,-1225.00) 22.100 Road shoulder n.y=0.99 | 22.089 Hillcrest mainland collider n.y=1.00
+  6.25 (129.25,-1225.00) 22.107 Road shoulder n.y=0.99 | 22.082 Hillcrest mainland collider n.y=1.00
+  6.50 (129.50,-1225.00) 22.114 Road shoulder n.y=0.99 | 22.074 Hillcrest mainland collider n.y=1.00
+  6.75 (129.75,-1225.00) 22.121 Road shoulder n.y=0.99 | 22.067 Hillcrest mainland collider n.y=1.00
+  7.00 (130.00,-1225.00) 22.128 Road shoulder n.y=0.99 | 22.059 Hillcrest mainland collider n.y=1.00
+  7.25 (130.25,-1225.00) 22.135 Road shoulder n.y=0.99 | 22.052 Hillcrest mainland collider n.y=1.00
+  7.50 (130.50,-1225.00) 22.142 Road shoulder n.y=0.99 | 22.044 Hillcrest mainland collider n.y=1.00
+  7.75 (130.75,-1225.00) 22.149 Road shoulder n.y=0.99 | 22.036 Hillcrest mainland collider n.y=1.00
+  8.00 (131.00,-1225.00) 22.157 Road shoulder n.y=0.99 | 22.028 Hillcrest mainland collider n.y=1.00
+  8.25 (131.25,-1225.00) 22.164 Road shoulder n.y=0.99 | 22.020 Hillcrest mainland collider n.y=1.00
+  8.50 (131.50,-1225.00) 22.170 Via Crest [road] n.y=1.00 | 22.013 Hillcrest mainland collider n.y=1.00
+  8.75 (131.75,-1225.00) 22.163 Via Crest [road] n.y=1.00 | 22.005 Hillcrest mainland collider n.y=1.00
+  9.00 (132.00,-1225.00) 22.154 Via Crest [road] n.y=1.00 | 21.997 Hillcrest mainland collider n.y=1.00
+  9.25 (132.25,-1225.00) 22.147 Via Crest [road] n.y=1.00 | 21.989 Hillcrest mainland collider n.y=1.00
+  9.50 (132.50,-1225.00) 22.139 Via Crest [road] n.y=1.00 | 21.981 Hillcrest mainland collider n.y=1.00
+  9.75 (132.75,-1225.00) 22.131 Via Crest [road] n.y=1.00 | 21.973 Hillcrest mainland collider n.y=1.00
+ 10.00 (133.00,-1225.00) 22.123 Via Crest [road] n.y=1.00 | 21.965 Hillcrest mainland collider n.y=1.00
+ 10.25 (133.25,-1225.00) 22.115 Via Crest [road] n.y=1.00 | 21.957 Hillcrest mainland collider n.y=1.00
+ 10.50 (133.50,-1225.00) 22.107 Via Crest [road] n.y=1.00 | 21.949 Hillcrest mainland collider n.y=1.00
+ 10.75 (133.75,-1225.00) 22.099 Via Crest [road] n.y=1.00 | 21.941 Hillcrest mainland collider n.y=1.00
+ 11.00 (134.00,-1225.00) 22.091 Via Crest [road] n.y=1.00 | 21.933 Hillcrest mainland collider n.y=1.00
+ 11.25 (134.25,-1225.00) 22.083 Via Crest [road] n.y=1.00 | 21.925 Hillcrest mainland collider n.y=1.00
+ 11.50 (134.50,-1225.00) 22.075 Via Crest [road] n.y=1.00 | 21.917 Hillcrest mainland collider n.y=1.00
+ 11.75 (134.75,-1225.00) 22.066 Via Crest [road] n.y=1.00 | 21.909 Hillcrest mainland collider n.y=1.00
+ 12.00 (135.00,-1225.00) 22.058 Via Crest [road] n.y=1.00 | 21.901 Hillcrest mainland collider n.y=1.00
+ 12.25 (135.25,-1225.00) 22.050 Via Crest [road] n.y=1.00 | 21.893 Hillcrest mainland collider n.y=1.00
+ 12.50 (135.50,-1225.00) 22.042 Via Crest [road] n.y=1.00 | 21.884 Hillcrest mainland collider n.y=1.00
+ 12.75 (135.75,-1225.00) 22.033 Via Crest [road] n.y=1.00 | 21.876 Hillcrest mainland collider n.y=1.00
+ 13.00 (136.00,-1225.00) 22.025 Via Crest [road] n.y=1.00 | 21.868 Hillcrest mainland collider n.y=1.00
+ 13.25 (136.25,-1225.00) 22.017 Via Crest [road] n.y=1.00 | 21.860 Hillcrest mainland collider n.y=1.00
+ 13.50 (136.50,-1225.00) 22.009 Via Crest [road] n.y=1.00 | 21.851 Hillcrest mainland collider n.y=1.00
+ 13.75 (136.75,-1225.00) 22.001 Via Crest [road] n.y=1.00 | 21.843 Hillcrest mainland collider n.y=1.00
+ 14.00 (137.00,-1225.00) 21.993 Via Crest [road] n.y=1.00 | 21.835 Hillcrest mainland collider n.y=1.00
+ 14.25 (137.25,-1225.00) 21.984 Via Crest [road] n.y=1.00 | 21.827 Hillcrest mainland collider n.y=1.00
+ 14.50 (137.50,-1225.00) 21.976 Via Crest [road] n.y=1.00 | 21.818 Hillcrest mainland collider n.y=1.00
+ 14.75 (137.75,-1225.00) 21.967 Via Crest [road] n.y=1.00 | 21.810 Hillcrest mainland collider n.y=1.00
+ 15.00 (138.00,-1225.00) 21.959 Via Crest [road] n.y=1.00 | 21.801 Hillcrest mainland collider n.y=1.00
+ 15.25 (138.25,-1225.00) 21.950 Via Crest [road] n.y=1.00 | 21.793 Hillcrest mainland collider n.y=1.00
+ 15.50 (138.50,-1225.00) 21.942 Via Crest [road] n.y=1.00 | 21.785 Hillcrest mainland collider n.y=1.00
+ 15.75 (138.75,-1225.00) 21.934 Via Crest [road] n.y=1.00 | 21.776 Hillcrest mainland collider n.y=1.00
+ 16.00 (139.00,-1225.00) 21.926 Via Crest [road] n.y=1.00 | 21.768 Hillcrest mainland collider n.y=1.00
+ 16.25 (139.25,-1225.00) 21.917 Via Crest [road] n.y=1.00 | 21.759 Hillcrest mainland collider n.y=1.00
+ 16.50 (139.50,-1225.00) 21.909 Via Crest [road] n.y=1.00 | 21.751 Hillcrest mainland collider n.y=1.00
+ 16.75 (139.75,-1225.00) 21.900 Via Crest [road] n.y=1.00 | 21.742 Hillcrest mainland collider n.y=1.00
+ 17.00 (140.00,-1225.00) 21.891 Via Crest [road] n.y=1.00 | 21.734 Hillcrest mainland collider n.y=1.00
+ 17.25 (140.25,-1225.00) 21.883 Via Crest [road] n.y=1.00 | 21.725 Hillcrest mainland collider n.y=1.00
+ 17.50 (140.50,-1225.00) 21.874 Via Crest [road] n.y=1.00 | 21.716 Hillcrest mainland collider n.y=1.00
+ 17.75 (140.75,-1225.00) 21.865 Via Crest [road] n.y=1.00 | 21.708 Hillcrest mainland collider n.y=1.00
+ 18.00 (141.00,-1225.00) 21.857 Via Crest [road] n.y=1.00 | 21.699 Hillcrest mainland collider n.y=1.00
+ 18.25 (141.25,-1225.00) 21.848 Via Crest [road] n.y=1.00 | 21.691 Hillcrest mainland collider n.y=1.00
+ 18.50 (141.50,-1225.00) 21.840 Via Crest [road] n.y=1.00 | 21.682 Hillcrest mainland collider n.y=1.00
+ 18.75 (141.75,-1225.00) 21.832 Via Crest [road] n.y=1.00 | 21.673 Hillcrest mainland collider n.y=1.00
+ 19.00 (142.00,-1225.00) 21.823 Via Crest [road] n.y=1.00 | 21.665 Hillcrest mainland collider n.y=1.00
+ 19.25 (142.25,-1225.00) 21.814 Via Crest [road] n.y=1.00 | 21.656 Hillcrest mainland collider n.y=1.00
+ 19.50 (142.50,-1225.00) 21.805 Via Crest [road] n.y=1.00 | 21.647 Hillcrest mainland collider n.y=1.00
+ 19.75 (142.75,-1225.00) 21.796 Via Crest [road] n.y=1.00 | 21.638 Hillcrest mainland collider n.y=1.00
+ 20.00 (143.00,-1225.00) 21.788 Via Crest [road] n.y=1.00 | 21.630 Hillcrest mainland collider n.y=1.00
+ 20.25 (143.25,-1225.00) 21.779 Via Crest [road] n.y=1.00 | 21.621 Hillcrest mainland collider n.y=1.00
+ 20.50 (143.50,-1225.00) 21.770 Via Crest [road] n.y=1.00 | 21.612 Hillcrest mainland collider n.y=1.00
+ 20.75 (143.75,-1225.00) 21.761 Via Crest [road] n.y=1.00 | 21.603 Hillcrest mainland collider n.y=1.00
+ 21.00 (144.00,-1225.00) 21.753 Via Crest [road] n.y=1.00 | 21.594 Hillcrest mainland collider n.y=1.00
+ 21.25 (144.25,-1225.00) 21.744 Via Crest [road] n.y=1.00 | 21.585 Hillcrest mainland collider n.y=1.00
+ 21.50 (144.50,-1225.00) 21.735 Via Crest [road] n.y=1.00 | 21.576 Hillcrest mainland collider n.y=1.00
+ 21.75 (144.75,-1225.00) 21.719 Road shoulder n.y=0.99 | 21.568 Hillcrest mainland collider n.y=1.00
+ 22.00 (145.00,-1225.00) 21.697 Road shoulder n.y=0.99 | 21.559 Hillcrest mainland collider n.y=1.00
+ 22.25 (145.25,-1225.00) 21.675 Road shoulder n.y=0.99 | 21.550 Hillcrest mainland collider n.y=1.00
+ 22.50 (145.50,-1225.00) 21.654 Road shoulder n.y=0.99 | 21.541 Hillcrest mainland collider n.y=1.00
+ 22.75 (145.75,-1225.00) 21.632 Road shoulder n.y=0.99 | 21.532 Hillcrest mainland collider n.y=1.00
+ 23.00 (146.00,-1225.00) 21.610 Road shoulder n.y=0.99 | 21.523 Hillcrest mainland collider n.y=1.00
+ 23.25 (146.25,-1225.00) 21.588 Road shoulder n.y=0.99 | 21.514 Hillcrest mainland collider n.y=1.00
+ 23.50 (146.50,-1225.00) 21.567 Road shoulder n.y=0.99 | 21.505 Hillcrest mainland collider n.y=1.00
+ 23.75 (146.75,-1225.00) 21.545 Road shoulder n.y=0.99 | 21.496 Hillcrest mainland collider n.y=1.00
+ 24.00 (147.00,-1225.00) 21.523 Road shoulder n.y=0.99 | 21.487 Hillcrest mainland collider n.y=1.00
+ 24.25 (147.25,-1225.00) 21.502 Road shoulder n.y=0.99 | 21.478 Hillcrest mainland collider n.y=1.00
+ 24.50 (147.50,-1225.00) 21.480 Road shoulder n.y=0.99 | 21.468 Hillcrest mainland collider n.y=1.00
+ 24.75 (147.75,-1225.00) 21.459 Hillcrest mainland collider n.y=1.00 | 21.458 Road shoulder n.y=0.99
+ 25.00 (148.00,-1225.00) 21.450 Hillcrest mainland collider n.y=1.00 | 21.437 Road shoulder n.y=0.99
+ 25.25 (148.25,-1225.00) 21.440 Hillcrest mainland collider n.y=1.00
+ 25.50 (148.50,-1225.00) 21.431 Hillcrest mainland collider n.y=1.00
+ 25.75 (148.75,-1225.00) 21.421 Hillcrest mainland collider n.y=1.00
+ 26.00 (149.00,-1225.00) 21.412 Hillcrest mainland collider n.y=1.00
+ 26.25 (149.25,-1225.00) 21.402 Hillcrest mainland collider n.y=1.00
+ 26.50 (149.50,-1225.00) 21.393 Hillcrest mainland collider n.y=1.00
+ 26.75 (149.75,-1225.00) 21.383 Hillcrest mainland collider n.y=1.00
+ 27.00 (150.00,-1225.00) 21.374 Hillcrest mainland collider n.y=1.00
+ 27.25 (150.25,-1225.00) 21.364 Hillcrest mainland collider n.y=1.00
+ 27.50 (150.50,-1225.00) 21.354 Hillcrest mainland collider n.y=1.00
+ 27.75 (150.75,-1225.00) 21.344 Hillcrest mainland collider n.y=1.00
+ 28.00 (151.00,-1225.00) 21.335 Hillcrest mainland collider n.y=1.00
+line 137,-1239,137,-1211
+  0.00 (137.00,-1239.00) 31.190 Collision_Body n.y=1.00 | 21.620 Stone plinth n.y=1.00 | 19.032 Hillcrest mainland collider n.y=0.81
+  0.25 (137.00,-1238.75) 31.190 Collision_Body n.y=1.00 | 21.620 Stone plinth n.y=1.00 | 19.193 Hillcrest mainland collider n.y=0.81
+  0.50 (137.00,-1238.50) 31.190 Collision_Body n.y=1.00 | 21.620 Stone plinth n.y=1.00 | 19.354 Hillcrest mainland collider n.y=0.81
+  0.75 (137.00,-1238.25) 31.190 Collision_Body n.y=1.00 | 21.620 Stone plinth n.y=1.00 | 19.515 Hillcrest mainland collider n.y=0.81
+  1.00 (137.00,-1238.00) 31.190 Collision_Body n.y=1.00 | 21.620 Stone plinth n.y=1.00 | 19.676 Hillcrest mainland collider n.y=0.81
+  1.25 (137.00,-1237.75) 31.190 Collision_Body n.y=1.00 | 21.620 Stone plinth n.y=1.00 | 19.838 Hillcrest mainland collider n.y=0.81
+  1.50 (137.00,-1237.50) 31.190 Collision_Body n.y=1.00 | 21.620 Stone plinth n.y=1.00 | 19.999 Hillcrest mainland collider n.y=0.84
+  1.75 (137.00,-1237.25) 21.620 Stone plinth n.y=1.00 | 20.140 Hillcrest mainland collider n.y=0.84
+  2.00 (137.00,-1237.00) 20.281 Hillcrest mainland collider n.y=0.84
+  2.25 (137.00,-1236.75) 20.385 Hillcrest mainland collider n.y=0.91
+  2.50 (137.00,-1236.50) 20.489 Hillcrest mainland collider n.y=0.91
+  2.75 (137.00,-1236.25) 20.593 Hillcrest mainland collider n.y=0.91
+  3.00 (137.00,-1236.00) 20.697 Hillcrest mainland collider n.y=0.91
+  3.25 (137.00,-1235.75) 20.801 Hillcrest mainland collider n.y=0.91
+  3.50 (137.00,-1235.50) 20.905 Hillcrest mainland collider n.y=0.91
+  3.75 (137.00,-1235.25) 21.009 Hillcrest mainland collider n.y=0.91
+  4.00 (137.00,-1235.00) 21.113 Hillcrest mainland collider n.y=0.91
+  4.25 (137.00,-1234.75) 21.194 Hillcrest mainland collider n.y=0.94
+  4.50 (137.00,-1234.50) 21.275 Hillcrest mainland collider n.y=0.94
+  4.75 (137.00,-1234.25) 21.318 Hillcrest mainland collider n.y=0.98
+  5.00 (137.00,-1234.00) 21.362 Hillcrest mainland collider n.y=0.98
+  5.25 (137.00,-1233.75) 21.405 Hillcrest mainland collider n.y=0.98
+  5.50 (137.00,-1233.50) 21.449 Hillcrest mainland collider n.y=0.98
+  5.75 (137.00,-1233.25) 21.492 Hillcrest mainland collider n.y=0.98
+  6.00 (137.00,-1233.00) 21.536 Hillcrest mainland collider n.y=0.98
+  6.25 (137.00,-1232.75) 21.579 Hillcrest mainland collider n.y=0.98
+  6.50 (137.00,-1232.50) 21.623 Hillcrest mainland collider n.y=0.99
+  6.75 (137.00,-1232.25) 21.648 Hillcrest mainland collider n.y=0.99
+  7.00 (137.00,-1232.00) 22.647 Parapet n.y=1.00 | 21.672 Hillcrest mainland collider n.y=0.99
+  7.25 (137.00,-1231.75) 22.647 Parapet n.y=1.00 | 21.678 Hillcrest mainland collider n.y=1.00
+  7.50 (137.00,-1231.50) 21.685 Hillcrest mainland collider n.y=1.00
+  7.75 (137.00,-1231.25) 21.691 Hillcrest mainland collider n.y=1.00
+  8.00 (137.00,-1231.00) 21.697 Hillcrest mainland collider n.y=1.00 | 21.686 Road shoulder n.y=0.99
+  8.25 (137.00,-1230.75) 21.712 Road shoulder n.y=0.99 | 21.704 Hillcrest mainland collider n.y=1.00
+  8.50 (137.00,-1230.50) 21.739 Road shoulder n.y=0.99 | 21.710 Hillcrest mainland collider n.y=1.00
+  8.75 (137.00,-1230.25) 21.765 Road shoulder n.y=0.99 | 21.716 Hillcrest mainland collider n.y=1.00
+  9.00 (137.00,-1230.00) 21.791 Road shoulder n.y=0.99 | 21.722 Hillcrest mainland collider n.y=1.00
+  9.25 (137.00,-1229.75) 21.817 Road shoulder n.y=0.99 | 21.728 Hillcrest mainland collider n.y=1.00
+  9.50 (137.00,-1229.50) 21.843 Road shoulder n.y=0.99 | 21.733 Hillcrest mainland collider n.y=1.00
+  9.75 (137.00,-1229.25) 21.869 Road shoulder n.y=0.99 | 21.739 Hillcrest mainland collider n.y=1.00
+ 10.00 (137.00,-1229.00) 21.895 Road shoulder n.y=0.99 | 21.744 Hillcrest mainland collider n.y=1.00
+ 10.25 (137.00,-1228.75) 21.908 Via Crest [road] n.y=1.00 | 21.750 Hillcrest mainland collider n.y=1.00
+ 10.50 (137.00,-1228.50) 21.914 Via Crest [road] n.y=1.00 | 21.755 Hillcrest mainland collider n.y=1.00
+ 10.75 (137.00,-1228.25) 21.919 Via Crest [road] n.y=1.00 | 21.761 Hillcrest mainland collider n.y=1.00
+ 11.00 (137.00,-1228.00) 21.925 Via Crest [road] n.y=1.00 | 21.766 Hillcrest mainland collider n.y=1.00
+ 11.25 (137.00,-1227.75) 21.930 Via Crest [road] n.y=1.00 | 21.772 Hillcrest mainland collider n.y=1.00
+ 11.50 (137.00,-1227.50) 21.936 Via Crest [road] n.y=1.00 | 21.777 Hillcrest mainland collider n.y=1.00
+ 11.75 (137.00,-1227.25) 21.942 Via Crest [road] n.y=1.00 | 21.783 Hillcrest mainland collider n.y=1.00
+ 12.00 (137.00,-1227.00) 21.947 Via Crest [road] n.y=1.00 | 21.789 Hillcrest mainland collider n.y=1.00
+ 12.25 (137.00,-1226.75) 21.953 Via Crest [road] n.y=1.00 | 21.795 Hillcrest mainland collider n.y=1.00
+ 12.50 (137.00,-1226.50) 21.958 Via Crest [road] n.y=1.00 | 21.801 Hillcrest mainland collider n.y=1.00
+ 12.75 (137.00,-1226.25) 21.964 Via Crest [road] n.y=1.00 | 21.806 Hillcrest mainland collider n.y=1.00
+ 13.00 (137.00,-1226.00) 21.969 Via Crest [road] n.y=1.00 | 21.812 Hillcrest mainland collider n.y=1.00
+ 13.25 (137.00,-1225.75) 21.975 Via Crest [road] n.y=1.00 | 21.818 Hillcrest mainland collider n.y=1.00
+ 13.50 (137.00,-1225.50) 21.981 Via Crest [road] n.y=1.00 | 21.823 Hillcrest mainland collider n.y=1.00
+ 13.75 (137.00,-1225.25) 21.987 Via Crest [road] n.y=1.00 | 21.829 Hillcrest mainland collider n.y=1.00
+ 14.00 (137.00,-1225.00) 21.993 Via Crest [road] n.y=1.00 | 21.835 Hillcrest mainland collider n.y=1.00
+ 14.25 (137.00,-1224.75) 21.999 Via Crest [road] n.y=1.00 | 21.841 Hillcrest mainland collider n.y=1.00
+ 14.50 (137.00,-1224.50) 22.004 Via Crest [road] n.y=1.00 | 21.847 Hillcrest mainland collider n.y=1.00
+ 14.75 (137.00,-1224.25) 22.010 Via Crest [road] n.y=1.00 | 21.852 Hillcrest mainland collider n.y=1.00
+ 15.00 (137.00,-1224.00) 22.016 Via Crest [road] n.y=1.00 | 21.858 Hillcrest mainland collider n.y=1.00
+ 15.25 (137.00,-1223.75) 22.021 Via Crest [road] n.y=1.00 | 21.864 Hillcrest mainland collider n.y=1.00
+ 15.50 (137.00,-1223.50) 22.027 Via Crest [road] n.y=1.00 | 21.870 Hillcrest mainland collider n.y=1.00
+ 15.75 (137.00,-1223.25) 22.033 Via Crest [road] n.y=1.00 | 21.876 Hillcrest mainland collider n.y=1.00
+ 16.00 (137.00,-1223.00) 22.039 Via Crest [road] n.y=1.00 | 21.882 Hillcrest mainland collider n.y=1.00
+ 16.25 (137.00,-1222.75) 22.045 Via Crest [road] n.y=1.00 | 21.887 Hillcrest mainland collider n.y=1.00
+ 16.50 (137.00,-1222.50) 22.051 Via Crest [road] n.y=1.00 | 21.893 Hillcrest mainland collider n.y=1.00
+ 16.75 (137.00,-1222.25) 22.057 Via Crest [road] n.y=1.00 | 21.899 Hillcrest mainland collider n.y=1.00
+ 17.00 (137.00,-1222.00) 22.063 Via Crest [road] n.y=1.00 | 21.906 Hillcrest mainland collider n.y=1.00
+ 17.25 (137.00,-1221.75) 22.069 Via Crest [road] n.y=1.00 | 21.912 Hillcrest mainland collider n.y=1.00
+ 17.50 (137.00,-1221.50) 22.075 Via Crest [road] n.y=1.00 | 21.918 Hillcrest mainland collider n.y=1.00
+ 17.75 (137.00,-1221.25) 22.081 Via Crest [road] n.y=1.00 | 21.924 Hillcrest mainland collider n.y=1.00
+ 18.00 (137.00,-1221.00) 22.087 Via Crest [road] n.y=1.00 | 21.930 Hillcrest mainland collider n.y=1.00
+ 18.25 (137.00,-1220.75) 22.093 Via Crest [road] n.y=1.00 | 21.936 Hillcrest mainland collider n.y=1.00
+ 18.50 (137.00,-1220.50) 22.099 Via Crest [road] n.y=1.00 | 21.942 Hillcrest mainland collider n.y=1.00
+ 18.75 (137.00,-1220.25) 22.105 Via Crest [road] n.y=1.00 | 21.948 Hillcrest mainland collider n.y=1.00
+ 19.00 (137.00,-1220.00) 22.112 Via Crest [road] n.y=1.00 | 21.954 Hillcrest mainland collider n.y=1.00
+ 19.25 (137.00,-1219.75) 22.110 Road shoulder n.y=0.99 | 21.960 Hillcrest mainland collider n.y=1.00
+ 19.50 (137.00,-1219.50) 22.096 Road shoulder n.y=0.99 | 21.967 Hillcrest mainland collider n.y=1.00
+ 19.75 (137.00,-1219.25) 22.083 Road shoulder n.y=0.99 | 21.973 Hillcrest mainland collider n.y=1.00
+ 20.00 (137.00,-1219.00) 22.069 Road shoulder n.y=0.99 | 21.979 Hillcrest mainland collider n.y=1.00
+ 20.25 (137.00,-1218.75) 22.056 Road shoulder n.y=0.99 | 21.985 Hillcrest mainland collider n.y=1.00
+ 20.50 (137.00,-1218.50) 22.042 Road shoulder n.y=0.99 | 21.991 Hillcrest mainland collider n.y=1.00
+ 20.75 (137.00,-1218.25) 22.029 Road shoulder n.y=0.99 | 21.996 Hillcrest mainland collider n.y=1.00
+ 21.00 (137.00,-1218.00) 22.015 Road shoulder n.y=0.99 | 22.002 Hillcrest mainland collider n.y=1.00
+ 21.25 (137.00,-1217.75) 22.008 Hillcrest mainland collider n.y=1.00 | 22.002 Road shoulder n.y=0.99
+ 21.50 (137.00,-1217.50) 22.014 Hillcrest mainland collider n.y=1.00
+ 21.75 (137.00,-1217.25) 22.020 Hillcrest mainland collider n.y=1.00
+ 22.00 (137.00,-1217.00) 22.026 Hillcrest mainland collider n.y=1.00
+ 22.25 (137.00,-1216.75) 22.032 Hillcrest mainland collider n.y=1.00
+ 22.50 (137.00,-1216.50) 22.038 Hillcrest mainland collider n.y=1.00
+ 22.75 (137.00,-1216.25) 22.044 Hillcrest mainland collider n.y=1.00
+ 23.00 (137.00,-1216.00) 22.049 Hillcrest mainland collider n.y=1.00
+ 23.25 (137.00,-1215.75) 22.055 Hillcrest mainland collider n.y=1.00
+ 23.50 (137.00,-1215.50) 22.061 Hillcrest mainland collider n.y=1.00
+ 23.75 (137.00,-1215.25) 22.067 Hillcrest mainland collider n.y=1.00
+ 24.00 (137.00,-1215.00) 22.072 Hillcrest mainland collider n.y=1.00
+ 24.25 (137.00,-1214.75) 22.079 Hillcrest mainland collider n.y=1.00
+ 24.50 (137.00,-1214.50) 22.307 Stone plinth n.y=1.00 | 22.086 Hillcrest mainland collider n.y=1.00
+ 24.75 (137.00,-1214.25) 31.877 Collision_Body n.y=1.00 | 22.307 Stone plinth n.y=1.00 | 22.101 Hillcrest mainland collider n.y=1.00
+ 25.00 (137.00,-1214.00) 31.877 Collision_Body n.y=1.00 | 22.307 Stone plinth n.y=1.00 | 22.117 Hillcrest mainland collider n.y=1.00
+ 25.25 (137.00,-1213.75) 31.877 Collision_Body n.y=1.00 | 22.307 Stone plinth n.y=1.00 | 22.133 Hillcrest mainland collider n.y=1.00
+ 25.50 (137.00,-1213.50) 31.877 Collision_Body n.y=1.00 | 22.307 Stone plinth n.y=1.00 | 22.149 Hillcrest mainland collider n.y=1.00
+ 25.75 (137.00,-1213.25) 31.877 Collision_Body n.y=1.00 | 22.307 Stone plinth n.y=1.00 | 22.165 Hillcrest mainland collider n.y=1.00
+ 26.00 (137.00,-1213.00) 31.877 Collision_Body n.y=1.00 | 22.307 Stone plinth n.y=1.00 | 22.181 Hillcrest mainland collider n.y=1.00
+ 26.25 (137.00,-1212.75) 31.877 Collision_Body n.y=1.00 | 22.307 Stone plinth n.y=1.00 | 22.196 Hillcrest mainland collider n.y=1.00
+ 26.50 (137.00,-1212.50) 31.877 Collision_Body n.y=1.00 | 22.307 Stone plinth n.y=1.00 | 22.212 Hillcrest mainland collider n.y=1.00
+ 26.75 (137.00,-1212.25) 31.877 Collision_Body n.y=1.00 | 22.307 Stone plinth n.y=1.00 | 22.231 Hillcrest mainland collider n.y=1.00
+ 27.00 (137.00,-1212.00) 31.877 Collision_Body n.y=1.00 | 22.307 Stone plinth n.y=1.00 | 22.249 Hillcrest mainland collider n.y=1.00
+ 27.25 (137.00,-1211.75) 31.877 Collision_Body n.y=1.00 | 22.307 Stone plinth n.y=1.00 | 22.286 Hillcrest mainland collider n.y=0.99
+ 27.50 (137.00,-1211.50) 31.877 Collision_Body n.y=1.00 | 22.323 Hillcrest mainland collider n.y=0.99 | 22.307 Stone plinth n.y=1.00
+ 27.75 (137.00,-1211.25) 31.877 Collision_Body n.y=1.00 | 22.361 Hillcrest mainland collider n.y=0.99 | 22.307 Stone plinth n.y=1.00
+ 28.00 (137.00,-1211.00) 31.877 Collision_Body n.y=1.00 | 22.398 Hillcrest mainland collider n.y=0.99 | 22.307 Stone plinth n.y=1.00

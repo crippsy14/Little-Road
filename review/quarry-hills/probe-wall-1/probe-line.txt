@@ -1,0 +1,139 @@
+line 60,-92,72,-104
+  0.00 (60.00,-92.00) -0.045 Continuous sculpted island collider n.y=1.00
+  0.25 (60.18,-92.18) -0.047 Continuous sculpted island collider n.y=1.00
+  0.50 (60.35,-92.35) -0.049 Continuous sculpted island collider n.y=1.00
+  0.75 (60.53,-92.53) -0.051 Continuous sculpted island collider n.y=1.00
+  1.00 (60.71,-92.71) -0.053 Continuous sculpted island collider n.y=1.00
+  1.25 (60.88,-92.88) -0.055 Continuous sculpted island collider n.y=1.00
+  1.50 (61.06,-93.06) -0.057 Continuous sculpted island collider n.y=1.00
+  1.75 (61.24,-93.24) -0.060 Continuous sculpted island collider n.y=1.00
+  2.00 (61.41,-93.41) -0.062 Continuous sculpted island collider n.y=1.00
+  2.25 (61.59,-93.59) -0.064 Continuous sculpted island collider n.y=1.00
+  2.50 (61.77,-93.77) -0.065 Continuous sculpted island collider n.y=1.00
+  2.75 (61.94,-93.94) -0.067 Continuous sculpted island collider n.y=1.00
+  3.00 (62.12,-94.12) -0.068 Continuous sculpted island collider n.y=1.00
+  3.25 (62.30,-94.30) -0.070 Continuous sculpted island collider n.y=1.00
+  3.50 (62.47,-94.47) -0.071 Continuous sculpted island collider n.y=1.00
+  3.75 (62.65,-94.65) -0.073 Continuous sculpted island collider n.y=1.00
+  4.00 (62.83,-94.83) -0.075 Continuous sculpted island collider n.y=1.00
+  4.25 (63.01,-95.01) -0.076 Continuous sculpted island collider n.y=1.00
+  4.50 (63.18,-95.18) -0.077 Continuous sculpted island collider n.y=1.00
+  4.75 (63.36,-95.36) -0.077 Continuous sculpted island collider n.y=1.00
+  5.00 (63.54,-95.54) -0.077 Continuous sculpted island collider n.y=1.00
+  5.25 (63.71,-95.71) -0.078 Continuous sculpted island collider n.y=1.00
+  5.50 (63.89,-95.89) -0.078 Continuous sculpted island collider n.y=1.00
+  5.75 (64.07,-96.07) -0.079 Continuous sculpted island collider n.y=1.00
+  6.00 (64.24,-96.24) -0.079 Continuous sculpted island collider n.y=1.00 | -0.090 Road shoulder n.y=1.00
+  6.25 (64.42,-96.42) -0.079 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  6.50 (64.60,-96.60) -0.068 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  6.75 (64.77,-96.77) -0.057 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  7.00 (64.95,-96.95) -0.045 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  7.25 (65.13,-97.13) -0.034 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  7.50 (65.30,-97.30) -0.023 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  7.75 (65.48,-97.48) -0.011 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  8.00 (65.66,-97.66) 0.000 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  8.25 (65.83,-97.83) 0.011 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  8.50 (66.01,-98.01) 0.023 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  8.75 (66.19,-98.19) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  9.00 (66.36,-98.36) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  9.25 (66.54,-98.54) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  9.50 (66.72,-98.72) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  9.75 (66.89,-98.89) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 10.00 (67.07,-99.07) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 10.25 (67.25,-99.25) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 10.50 (67.42,-99.42) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 10.75 (67.60,-99.60) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 11.00 (67.78,-99.78) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 11.25 (67.95,-99.95) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 11.50 (68.13,-100.13) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 11.75 (68.31,-100.31) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 12.00 (68.49,-100.49) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 12.25 (68.66,-100.66) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 12.50 (68.84,-100.84) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 12.75 (69.02,-101.02) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 13.00 (69.19,-101.19) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 13.25 (69.37,-101.37) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 13.50 (69.55,-101.55) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 13.75 (69.72,-101.72) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 14.00 (69.90,-101.90) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 14.25 (70.08,-102.08) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 14.50 (70.25,-102.25) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 14.75 (70.43,-102.43) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 15.00 (70.61,-102.61) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 15.25 (70.78,-102.78) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 15.50 (70.96,-102.96) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 15.75 (71.14,-103.14) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 16.00 (71.31,-103.31) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 16.25 (71.49,-103.49) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 16.50 (71.67,-103.67) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 16.75 (71.84,-103.84) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+line 62,-104,72,-90
+  0.00 (62.00,-104.00) -0.059 Continuous sculpted island collider n.y=1.00
+  0.25 (62.15,-103.80) -0.061 Continuous sculpted island collider n.y=1.00
+  0.50 (62.29,-103.59) -0.062 Continuous sculpted island collider n.y=1.00
+  0.75 (62.44,-103.39) -0.064 Continuous sculpted island collider n.y=1.00
+  1.00 (62.58,-103.19) -0.066 Continuous sculpted island collider n.y=1.00
+  1.25 (62.73,-102.98) -0.068 Continuous sculpted island collider n.y=1.00
+  1.50 (62.87,-102.78) -0.070 Continuous sculpted island collider n.y=1.00
+  1.75 (63.02,-102.58) -0.072 Continuous sculpted island collider n.y=1.00
+  2.00 (63.16,-102.37) -0.073 Continuous sculpted island collider n.y=1.00
+  2.25 (63.31,-102.17) -0.074 Continuous sculpted island collider n.y=1.00
+  2.50 (63.45,-101.97) -0.075 Continuous sculpted island collider n.y=1.00
+  2.75 (63.60,-101.76) -0.075 Continuous sculpted island collider n.y=1.00
+  3.00 (63.74,-101.56) -0.076 Continuous sculpted island collider n.y=1.00
+  3.25 (63.89,-101.36) -0.077 Continuous sculpted island collider n.y=1.00
+  3.50 (64.03,-101.15) -0.078 Continuous sculpted island collider n.y=1.00
+  3.75 (64.18,-100.95) -0.078 Continuous sculpted island collider n.y=1.00
+  4.00 (64.32,-100.75) -0.079 Continuous sculpted island collider n.y=1.00
+  4.25 (64.47,-100.54) -0.080 Continuous sculpted island collider n.y=1.00 | -0.096 Road shoulder n.y=1.00
+  4.50 (64.62,-100.34) -0.080 Continuous sculpted island collider n.y=1.00 | -0.085 Road shoulder n.y=1.00
+  4.75 (64.76,-100.13) -0.074 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  5.00 (64.91,-99.93) -0.063 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  5.25 (65.05,-99.73) -0.052 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  5.50 (65.20,-99.52) -0.041 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  5.75 (65.34,-99.32) -0.030 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  6.00 (65.49,-99.12) -0.019 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  6.25 (65.63,-98.91) -0.008 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  6.50 (65.78,-98.71) 0.003 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  6.75 (65.92,-98.51) 0.014 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  7.00 (66.07,-98.30) 0.025 Road shoulder n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  7.25 (66.21,-98.10) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  7.50 (66.36,-97.90) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  7.75 (66.50,-97.69) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  8.00 (66.65,-97.49) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  8.25 (66.80,-97.29) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  8.50 (66.94,-97.08) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  8.75 (67.09,-96.88) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  9.00 (67.23,-96.68) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  9.25 (67.38,-96.47) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  9.50 (67.52,-96.27) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+  9.75 (67.67,-96.07) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 10.00 (67.81,-95.86) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 10.25 (67.96,-95.66) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 10.50 (68.10,-95.46) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 10.75 (68.25,-95.25) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 11.00 (68.39,-95.05) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 11.25 (68.54,-94.85) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 11.50 (68.68,-94.64) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 11.75 (68.83,-94.44) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 12.00 (68.97,-94.24) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 12.25 (69.12,-94.03) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 12.50 (69.27,-93.83) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 12.75 (69.41,-93.62) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 13.00 (69.56,-93.42) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 13.25 (69.70,-93.22) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 13.50 (69.85,-93.01) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 13.75 (69.99,-92.81) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 14.00 (70.14,-92.61) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 14.25 (70.28,-92.40) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 14.50 (70.43,-92.20) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 14.75 (70.57,-92.00) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 15.00 (70.72,-91.79) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 15.25 (70.86,-91.59) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 15.50 (71.01,-91.39) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 15.75 (71.15,-91.18) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 16.00 (71.30,-90.98) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 16.25 (71.45,-90.78) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 16.50 (71.59,-90.57) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 16.75 (71.74,-90.37) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00
+ 17.00 (71.88,-90.17) 0.030 Hillcrest mainline [road] n.y=1.00 | -0.080 Continuous sculpted island collider n.y=1.00

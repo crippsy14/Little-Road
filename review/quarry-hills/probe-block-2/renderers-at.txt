@@ -1,0 +1,1504 @@
+at 46,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 47,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 48,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 49,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 50,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 51,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 52,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 53,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 54,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 55,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 56,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 57,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 58,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 59,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 60,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 61,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 62,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 63,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 64,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Road shoulder [Road verge gravel / LittleRoad/Kit] y -0.3..0.1 size 6x72
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 65,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Road shoulder [Road verge gravel / LittleRoad/Kit] y -0.3..0.1 size 6x72
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 66,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Road shoulder [Road verge gravel / LittleRoad/Kit] y -0.3..0.1 size 6x72
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 67,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Road shoulder [Road verge gravel / LittleRoad/Kit] y -0.3..0.1 size 6x72
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 68,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Road shoulder [Road verge gravel / LittleRoad/Kit] y -0.3..0.1 size 6x72
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 69,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Road shoulder [Road verge gravel / LittleRoad/Kit] y -0.3..0.1 size 6x72
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 70,-90
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+at 46,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 47,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 48,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 49,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 50,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 51,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 52,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 53,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 54,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 55,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 56,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 57,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 58,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 59,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 60,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 61,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 62,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 63,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 64,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 65,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 66,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 67,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 68,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 69,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 70,-86
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Edge line [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 130x811
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Hillcrest roads/Hillcrest mainline [Country road asphalt / LittleRoad/Kit] y -0.1..27.3 size 138x813
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Bayview coast / authored landforms/Hillcrest roads/Centre dashes [Country road paint / Universal Render Pipeline/Lit] y -0.1..27.3 size 129x807
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 46,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 47,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 48,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 49,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 50,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 51,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 52,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 53,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 54,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 55,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 56,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 57,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 58,-82
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 59,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 60,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 61,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 62,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 63,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 64,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 65,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 66,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 67,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 68,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 69,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 70,-82
+  Bayview coast / authored landforms/Hillcrest roads/Junction paint [Country road paint / Universal Render Pipeline/Lit] y 0.1..0.1 size 18x9
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  Bayview coast / authored landforms/Hillcrest roads/Junction [Country road asphalt / LittleRoad/Kit] y 0.0..0.0 size 18x8
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 46,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 47,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 48,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 49,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 50,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 51,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 52,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 53,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 54,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 55,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 56,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 57,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 58,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 59,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 60,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 61,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 62,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 63,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 64,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 65,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 66,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 67,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 68,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 69,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 70,-78
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 46,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 47,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 48,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 49,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 50,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 51,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 52,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 53,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 54,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 55,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 56,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 57,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 58,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 59,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 60,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 61,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 62,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 63,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 64,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 65,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 66,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 67,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 68,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 69,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 70,-74
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 46,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 47,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 48,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 49,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 50,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 51,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 52,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 53,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 54,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 55,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 56,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 57,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 58,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 59,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 60,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 61,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 62,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 63,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 64,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 65,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 66,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 67,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 68,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 69,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172
+at 70,-70
+  Generous limestone runoff [Fine weathered limestone shoulder / LittleRoad/CoastalTerrain] y 0.0..0.0 size 266x196
+  16 metre race surface [Warm aggregate asphalt / LittleRoad/Kit] y 0.0..0.0 size 258x188
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 257x187
+  Coastal masonry / bounded mesh batches/Chamfered coastal masonry batch 1 [Weathered ashlar tone 0 / Universal Render Pipeline/Lit] y 0.0..1.2 size 268x106
+  Bayview coast / authored landforms/Low coastal ground cover [Living grass blades / Universal Render Pipeline/Lit] y -0.2..33.1 size 289x223
+  Edge paint [Ivory paint / Universal Render Pipeline/Lit] y 0.0..0.0 size 227x156
+  Bayview coast / authored landforms/Continuous sculpted island collider [Slope-blended meadow and limestone / LittleRoad/CoastalTerrain] y -24.9..33.0 size 432x384
+  Rubbered racing line [Rubbered line / LittleRoad/SkidMark] y 0.0..0.0 size 239x172

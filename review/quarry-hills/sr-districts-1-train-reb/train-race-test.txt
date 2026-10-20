@@ -1,0 +1,15 @@
+  t 0 elapsed 0.0 at (428,-1010) speed 0.0 throttle 1.00 aim 1 blocked False kinematic False
+  t 10 elapsed 8.5 at (414,-990) speed 6.3 throttle 1.00 aim 17 blocked False kinematic False
+  t 20 elapsed 18.5 at (395,-948) speed 2.2 throttle 0.49 aim 42 blocked False kinematic False
+  t 30 elapsed 28.5 at (329,-929) speed 18.2 throttle 0.75 aim 82 blocked False kinematic False
+  t 40 elapsed 38.5 at (121,-905) speed 7.4 throttle 0.00 aim 184 blocked False kinematic False
+  t 50 elapsed 48.5 at (101,-837) speed 17.7 throttle 0.78 aim 229 blocked False kinematic False
+  t 60 elapsed 58.5 at (-20,-720) speed 11.2 throttle -1.00 aim 316 blocked False kinematic False
+  t 70 elapsed 68.5 at (92,-647) speed 13.2 throttle 0.15 aim 389 blocked False kinematic False
+  t 80 elapsed 78.5 at (104,-474) speed 24.9 throttle 0.92 aim 481 blocked False kinematic False
+  t 90 elapsed 88.5 at (78,-211) speed 26.8 throttle 0.75 aim 613 blocked False kinematic False
+rating 107  stock ideal 77.9 s
+countdown: ok held still (most 0.00 m at 0.28 s, held True), revved to 6400 rpm
+LITTLE_ROAD_TRAIN_RACE start to=bayview stock=77.9s train=98.0s top=54 mph route=1304m head=0.6s
+LITTLE_ROAD_TRAIN_RACE win t=92.2 paid=300
+ended at (72,-139) after 93.7 s
