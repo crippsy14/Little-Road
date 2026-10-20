@@ -67,7 +67,7 @@ namespace LittleRoad
             if(HillcrestTown.Spots.Count>0){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}
             foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout","farm"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
             // Bramblewick (--bramblewick, docs/82): Jed the tuner, Maggie at The Plough, the vicar on the green, Peg at the dairy.
-            foreach(var (id,at) in new[]{("bwtuner","tuner"),("bwpub","pub"),("bwvicar","church"),("bwdairy","dairy")})if(BramblewickVillage.Spots.TryGetValue(at,out var bw)){residents[id]=bw.at;residentYaw[id]=bw.yaw;}
+            foreach(var (id,at) in new[]{("bwtuner","tuner"),("bwpub","pub"),("bwvicar","church"),("bwdairy","dairy"),("bwmarshal","marshal")})if(BramblewickVillage.Spots.TryGetValue(at,out var bw)){residents[id]=bw.at;residentYaw[id]=bw.yaw;}
             // Quarry Hills built in the background (Districts): what needs it is set up when it arrives.
             quarryLater=Districts.Waiting("quarry-hills");if(quarryLater)Districts.WhenBuiltSteps("quarry-hills",QuarryHillsArrived);
             if(!quarryLater)QuarryHillsResidents();
@@ -633,6 +633,7 @@ namespace LittleRoad
             ["bwtuner"]=("rally",Toy.Hex(0xc0392b),"JED / BACKYARD TUNER","Jed",Toy.Red,new[]{"Steady on! That's a fresh coil-over you just rattled.","Proper job, that knock. Bring 'er round the barn.","Mud tyres would've shrugged that off, my 'ansum."}),
             ["bwpub"]=("otter",Toy.Hex(0x2f5d46),"MAGGIE / THE PLOUGH","Maggie",Toy.Mint,new[]{"Mind the hanging baskets, my lover!","Cider's for after the drive, not before!","The Plough's stood four hundred year. Don't you dent it!"}),
             ["bwvicar"]=("tallboy",Toy.Hex(0x2c3e50),"REVEREND CLEM / ST MICHAEL'S","Reverend Clem",Toy.Sky,new[]{"Bless you! ...and bless my bumper.","Gently now, the lychgate's older than both of us.","Evensong at six. Do park considerately."}),
+            ["bwmarshal"]=("beetle",Toy.Hex(0xff8c1a),"TED / LANES MARSHAL","Ted",Toy.Sun,new[]{"Yellow flag! Yellow flag! Oh, it's you.","Lift over the crest, then commit.","Thirty years marshalling these lanes, never lost a sheep."}),
             ["bwdairy"]=("pebble",Toy.Hex(0xf6f1e6),"PEG / BRAMBLEWICK DAIRY","Peg",Toy.Sun,new[]{"Oi! Forty years on the round and never a dent!","Think you're quick? Try me down Dairy Lane.","Mind the crates! Them's full!"}),
         };
         // Quarry Hills (--quarry-hills): Gwen at the rally school, the Pit Stop, the caban, the quay and Dai.
@@ -1371,7 +1372,7 @@ namespace LittleRoad
         {
             if(!residents.ContainsKey(id)||Vector3.Distance(player.body.position,residents[id])>7||Mathf.Abs(player.speed)>1.2f)return false;
             switch(id){case "garage":Mara();break;case "parts":Sid();break;case "hcparts":Rosa();break;case "hcbody":Lina();break;case "post":Pip();break;case "paint":Dot();break;case "motors":Gio();break;case "hillcafe":Fern();break;
-                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;case "blast":Dai();break;case "farm":Giles();break;case "bwtuner":Jed();break;case "bwpub":Maggie();break;case "bwvicar":Clem();break;case "bwdairy":Peg();break;default:Rowan();break;}
+                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;case "blast":Dai();break;case "farm":Giles();break;case "bwtuner":Jed();break;case "bwpub":Maggie();break;case "bwvicar":Clem();break;case "bwdairy":Peg();break;case "bwmarshal":Ted();break;default:Rowan();break;}
             return true;
         }
         void Mara()
@@ -1603,6 +1604,8 @@ namespace LittleRoad
         void Clem()=>Show("Reverend Clem / St Michael's","Bless you for stopping. That tower's been watching over the vale since before there were roads in it. Do have a look round the churchyard, and go gently past the lychgate.",
             new(){new("Back to the road",Close)});
         void Peg()=>Show("Peg / Bramblewick Dairy","Forty years on the milk round and never spilt a pint. Reckon you're quick? Dairy Lane's mine, my lover. The float's on charge today, but I'll race you down it soon enough.",
+            new(){new("Back to the road",Close)});
+        void Ted()=>Show("Ted / Lanes Marshal","Welcome to the Beacon, the best seat on the lanes! Flat over the crest if you've the nerve, light as a feather at the top. Then Gallows, then all the way down Church Hill to the Green Hairpin: that's where they all try it on. Jed runs the race from the village.",
             new(){new("Back to the road",Close)});
         void Giles()
         {

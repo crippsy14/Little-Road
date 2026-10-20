@@ -21,9 +21,9 @@ namespace LittleRoad
             public List<Vector3> approach=new();
             public float Along(Vector3 p)=>Vector3.Dot(p-at,forward);
         }
-        public static readonly string[] Ids={"coast","causeway","valley","quay","farm","falls","raceway","quarryroad","bramble"};
+        public static readonly string[] Ids={"coast","causeway","valley","quay","farm","falls","raceway","quarryroad","bramble","lanes","lanes_hill"};
         // The cameras this run places (Quarry Road's only with --quarry-hills).
-        public static string[] ActiveIds=>Array.FindAll(Ids,id=>(id!="quarryroad"||QuarryHills.Enabled)&&(id!="bramble"||Bramblewick.Enabled));
+        public static string[] ActiveIds=>Array.FindAll(Ids,id=>(id!="quarryroad"||QuarryHills.Enabled)&&(id!="bramble"&&id!="lanes"&&id!="lanes_hill"||Bramblewick.Enabled));
         public static bool Known(string id)=>Array.IndexOf(Ids,id)>=0;
         public static readonly int[] Prizes={50,100,150};
         public static readonly List<Trap> All=new();
@@ -45,7 +45,10 @@ namespace LittleRoad
             // Quarry Hills (--quarry-hills): the run down from the crest towards the town.
             if(QuarryHills.Enabled){var q=HillcrestRoute.Find(QuarryHills.QuarryRoadName);yield return ("quarryroad","Quarry Road",q.line,false,q.width*.5f,p=>p.x<-1500&&p.x>-2300);}
             // Bramblewick (--bramblewick, docs/82): Valley Road South's straightest run across the vale, outside the village.
-            if(Bramblewick.Enabled){var b=HillcrestRoute.Find(Bramblewick.RoadName);yield return ("bramble","Vale Straight",b.line,false,b.width*.5f,p=>p.x>900&&Vector2.Distance(new(p.x,p.z),Bramblewick.Centre)>420);}
+            if(Bramblewick.Enabled){var b=HillcrestRoute.Find(Bramblewick.RoadName);yield return ("bramble","Vale Straight",b.line,false,b.width*.5f,p=>p.x>900&&Vector2.Distance(new(p.x,p.z),Bramblewick.Centre)>420);
+                var l=HillcrestRoute.Find(Bramblewick.LaneName);bool Near(Vector3 p,string mark,float r)=>Bramblewick.Marks.TryGetValue(mark,out var m)&&Vector2.Distance(new(p.x,p.z),m)<r;
+                yield return ("lanes","Top Lane",l.line,false,l.width*.5f,p=>Near(p,"Top Lane",190));   // (along the rim)
+                yield return ("lanes_hill","Church Hill",l.line,false,l.width*.5f,p=>Near(p,"Church Hill",240));}   // (down to the hairpin)
         }
 
         // Where the cameras go and their marks. Pure geometry and the drive model: the editor checks call it too.

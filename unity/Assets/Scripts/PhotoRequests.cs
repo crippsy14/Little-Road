@@ -10,7 +10,7 @@ namespace LittleRoad
     public static class PhotoRequests
     {
         public sealed class Request{public string id,name;public Func<Vector3?> where;public float reach;}
-        public static readonly string[] Ids={"photo_lighthouse","photo_halt","photo_castle","photo_falls","photo_train","photo_balloons","photo_galleries","photo_slatequay","photo_blondin","photo_bw_church","photo_bw_plough","photo_bw_pond","photo_bw_dairy"};
+        public static readonly string[] Ids={"photo_lighthouse","photo_halt","photo_castle","photo_falls","photo_train","photo_balloons","photo_galleries","photo_slatequay","photo_blondin","photo_bw_church","photo_bw_plough","photo_bw_pond","photo_bw_dairy","photo_bw_hairpin","photo_bw_beacon","photo_bw_rookery","photo_bw_cider","photo_bw_meadow","photo_bw_hedgegap"};
         public static bool Known(string id)=>Array.IndexOf(Ids,id)>=0;
         public const int Prize=100;
         public static readonly List<Request> All=new();
@@ -37,6 +37,13 @@ namespace LittleRoad
                 All.Add(new Request{id=Ids[10],name="The Plough",where=()=>BramblewickVillage.PubFront,reach=120});
                 All.Add(new Request{id=Ids[11],name="The duck pond",where=()=>BramblewickVillage.PondAt,reach=110});
                 All.Add(new Request{id=Ids[12],name="Bramblewick Dairy",where=()=>BramblewickVillage.DairyAt,reach=160});
+                // (the lanes circuit: the Green Hairpin from its banks, the Beacon crest from the rim)
+                if(Bramblewick.Marks.TryGetValue("Green Apex",out var hp))All.Add(new Request{id=Ids[13],name="The Green Hairpin",where=()=>new Vector3(hp.x,ValleyField.Height(hp.x,hp.y)+1.5f,hp.y),reach=120});
+                if(Bramblewick.Marks.TryGetValue("Beacon Apex",out var bc))All.Add(new Request{id=Ids[14],name="Beacon crest",where=()=>new Vector3(bc.x,ValleyField.Height(bc.x,bc.y)+1.5f,bc.y),reach=160});
+                if(Bramblewick.Marks.TryGetValue("Rookery",out var rk))All.Add(new Request{id=Ids[15],name="The Rookery",where=()=>new Vector3(rk.x,ValleyField.Height(rk.x,rk.y)+1.5f,rk.y),reach=140});
+                if(Bramblewick.Marks.TryGetValue("Cider Press",out var cp))All.Add(new Request{id=Ids[16],name="Cider Press corner",where=()=>new Vector3(cp.x,ValleyField.Height(cp.x,cp.y)+1.5f,cp.y),reach=140});
+                if(Bramblewick.Marks.TryGetValue("Hedge Brow",out var hg))All.Add(new Request{id=Ids[18],name="Hedge Gap",where=()=>new Vector3(hg.x,ValleyField.Height(hg.x,hg.y)+1.5f,hg.y),reach=140});
+                if(Bramblewick.Marks.TryGetValue("Long Meadow Roll",out var lm))All.Add(new Request{id=Ids[17],name="Long Meadow",where=()=>new Vector3(lm.x,ValleyField.Height(lm.x,lm.y)+1.5f,lm.y),reach=160});
             }
         }
         // Nothing solid between: railings, posts and fences (under 0.6 m in their thinnest direction) don't hide a sight.

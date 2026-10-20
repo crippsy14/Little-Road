@@ -120,6 +120,7 @@ namespace LittleRoad
             foreach(var s in PitStop.Sites.Values)Of(s).pitStops++;
             foreach(var s in HillcrestTown.Spots.Values)Of(s.at).spots++;
             foreach(var s in QuarryHillsTown.Spots.Values)Of(s.at).spots++;   // (Quarry Hills, --quarry-hills)
+            foreach(var s in BramblewickVillage.Spots.Values)Of(s.at).spots++;   // (Bramblewick, --bramblewick)
             // Defects.
             foreach(var p in PlacementAudit.FloatingAt)Of(p).floating++;
             CarContactReport=CarContact.Audit(out _);foreach(var car in CarContact.Cars())Of(car.transform.position).carsChecked++;foreach(var p in CarContact.Floating)Of(p).carsOffGround++;

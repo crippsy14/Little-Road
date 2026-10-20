@@ -53,6 +53,11 @@ namespace LittleRoad
                     go.AddComponent<RoadCruiser>().Setup(vr,30,vr.Length-30,Mathf.Lerp(30,vr.Length-30,(i+.3f)/4),i%2*2-1,player);
                     var chatter=go.AddComponent<NpcChatter>();chatter.speaker=folk[i];chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=says;
                 }
+                // (and two on Church Lane, the lanes circuit, out of race days)
+                var cl=HillcrestRoute.Find(Bramblewick.LaneName);string[] laneSays={"Practising for the Lanes? Mind the Green Hairpin!","The Beacon's flat if you're brave.","Tractor ahead! Only joking.","Hedges don't move, my lover."};
+                for(int i=0;i<2;i++){Color paint=PaintCatalog.All[br.Next(PaintCatalog.Standard)].color;var go=TrialWorld.Car(i==0?"roadster":"tallboy",paint);go.name="Church Lane traffic "+i;go.transform.SetParent(root);
+                    go.AddComponent<RoadCruiser>().Setup(cl,40,cl.Length-40,Mathf.Lerp(40,cl.Length-40,.3f+.4f*i),i*2-1,player);
+                    var chatter=go.AddComponent<NpcChatter>();chatter.speaker=i==0?"Bert":"Ivy";chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=laneSays;}
             }
             // Quarry Hills' traffic (--quarry-hills): the town's streets, and Dai's dumper grinding up and down the haul road.
             if(QuarryHills.Enabled) {

@@ -347,7 +347,7 @@ namespace LittleRoad
             // left a 16 cm step) and low stone walls where a corner's ground stands well above or below the road.
             if(QuarryHills.Enabled){Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&QuarryHills.Contains(n.at.x,n.at.z))MouthShoulders(n,holder,gravel);}
             // (--bramblewick: the same across Valley Road South's T off the farm lane: the audit's two lips there)
-            if(Bramblewick.Enabled){Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&Vector3.Distance(n.at,Bramblewick.Tee)<30)MouthShoulders(n,holder,gravel);}
+            if(Bramblewick.Enabled){Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&(Vector3.Distance(n.at,Bramblewick.Tee)<30||Bramblewick.Contains(n.at.x,n.at.z)))MouthShoulders(n,holder,gravel);}   // (and Church Lane's two Ts: the audit's lips there)
             Lap("roads shoulders and junctions");RacewayCircuit(holder);Lap("roads raceway");
         }
         // Hillcrest Raceway: 16 m asphalt with runoff, edge paint, corner kerbs, start line and gantry.

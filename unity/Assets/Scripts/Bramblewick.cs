@@ -49,7 +49,7 @@ namespace LittleRoad
         }
         // The brook's carve: a channel `depth` deep at its line, its banks easing out over `half` metres: 3.5 m and broad in the
         // east, where the lane fords it, narrowing to a 2.5 m stream by the bridge.
-        static float BrookCut(float x,float z)
+        public static float BrookCut(float x,float z)
         {
             if(Brook==null)return 0;var p=new Vector2(x,z);float best=float.MaxValue,u=0,run=0,total=0;
             for(int i=1;i<Brook.Length;i++)total+=Vector2.Distance(Brook[i-1],Brook[i]);

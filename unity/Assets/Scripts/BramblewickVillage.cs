@@ -7,7 +7,7 @@ namespace LittleRoad
     // South, the parish church and its lychgate beyond the green, The Plough across the road, thatched cob cottages along
     // the street either side, the backyard tuner's barn behind the east end, and the dairy out along the road towards the
     // Vinelands gate with its cows in the field. Pieces from Car Forge's village, farm and cows kits.
-    public sealed class BramblewickVillage
+    public sealed partial class BramblewickVillage
     {
         readonly Transform root;readonly System.Random rng=new(8240);
         readonly List<(Vector2 c,Vector2 half,float yaw)> footprints=new();
@@ -151,7 +151,7 @@ namespace LittleRoad
             foreach(float ds in new[]{-470f,-640f,-820f,-1000f,-1180f,-1350f})Park(sC+ds,N(sC+ds),3.8f);   // (out along the pass, where the vale's fields are)
             Park(sC+440,-N(sC+440),4f);Park(sC+447,-N(sC+447),4f);
             Vale(road,sC,herd);
-            HumpbackBridge();Ford();
+            HumpbackBridge();Ford();RaceDay();
             // (the top of the pass: the road's highest point between the T and the village, 7 m off its north side)
             {float top=-1,best=float.MinValue;for(float s=60;s<sC-500;s+=10)if(road.At(s).y>best){best=road.At(s).y;top=s;}
              if(top>0){var s0=road.At(top)+N(top)*(half+7);s0.y=H(s0.x,s0.z);shoe[5]=s0;}}
@@ -221,7 +221,7 @@ namespace LittleRoad
                 var run=new List<Vector3>();
                 void Lay(){if(run.Count>=3){var R=Runs.Solve(new RunSpec{name=$"Bramblewick hedge {hedges}",kit="hedge",seed=$"bramble-field-{hedges}",along=run.ToArray(),solid=false});if(R.items.Count>0){Runs.Draw(R,root);Runs.Laid.Add(R);hedges++;}else hedgeRefused++;}run.Clear();}
                 for(float s=0;s<=len+.01f;s+=Mathf.Min(2.6f,len)) {
-                    var q=a+dir*s;if(Mathf.Abs(s-gap)<2.4f||ValleyField.RoadDistance(q.x,q.z)<8){Lay();continue;}
+                    var q=a+dir*s;if(Mathf.Abs(s-gap)<2.4f||ValleyField.RoadDistance(q.x,q.z)<8||Bramblewick.BrookCut(q.x,q.z)>.3f||Mathf.Abs(H(q.x+1.2f,q.z)-H(q.x-1.2f,q.z))+Mathf.Abs(H(q.x,q.z+1.2f)-H(q.x,q.z-1.2f))>.55f){Lay();continue;}   // (a hedge stops at the brook: on its banks the hedge's ends stood out of level, the area audit)
                     q.y=H(q.x,q.z);run.Add(q);
                     if(rng.NextDouble()<.03){var tr=q;tr.y-=.05f;Put("tree_round",tr,(float)rng.NextDouble()*360,null,null,true,.9f+(float)rng.NextDouble()*.35f);}   // (a hedgerow oak)
                 }
@@ -260,11 +260,18 @@ namespace LittleRoad
         void Ford()
         {
             if(!Bramblewick.Marks.TryGetValue("Ford",out var at2))return;var lane=HillcrestRoute.Find(Bramblewick.LaneName);float s0=lane.Nearest(new Vector3(at2.x,0,at2.y),out _);
-            var water=TrialWorld.Material("Ford water",new Color(.36f,.54f,.58f),.1f,.95f);
-            for(float s=s0-8;s<s0+8;s+=2) {
-                var a=lane.At(s);var b=lane.At(s+2);var w=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(w.GetComponent<Collider>());w.name="Ford water";w.transform.SetParent(root);
-                w.transform.SetPositionAndRotation((a+b)*.5f+Vector3.up*.06f,Quaternion.LookRotation(b-a));w.transform.localScale=new Vector3(lane.width+3,.02f,Vector3.Distance(a,b)+.05f);
-                var r=w.GetComponent<Renderer>();r.sharedMaterial=water;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+            // (darker water in strips across the lane, each its own length, so the edge is ragged as a real ford's is)
+            var water=TrialWorld.Material("Ford water",new Color(.22f,.37f,.38f),0,.78f);var foam=TrialWorld.Material("Ford foam",new Color(.9f,.93f,.92f),0,.4f);var rightF=lane.Right(s0);rightF.y=0;rightF.Normalize();   // (a mid blue-green with some sheen: at .95 it mirrored the sky as pale tiles, dark it read as tarmac patches)
+            for(int strip=0;strip<7;strip++) {
+                float off=(strip-3)*(lane.width+3)/7f,len=11+(float)dressRng.NextDouble()*6,shift=((float)dressRng.NextDouble()-.5f)*2;
+                for(float s=s0-len*.5f+shift;s<s0+len*.5f+shift;s+=2) {
+                    var a=lane.At(s)+rightF*off;var b=lane.At(s+2)+rightF*off;var w=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(w.GetComponent<Collider>());w.name="Ford water";w.transform.SetParent(root);
+                    w.transform.SetPositionAndRotation((a+b)*.5f+Vector3.up*(.05f+strip%2*.004f),Quaternion.LookRotation(b-a));w.transform.localScale=new Vector3((lane.width+3)/7f+.05f,.02f,Vector3.Distance(a,b)+.05f);
+                    var r=w.GetComponent<Renderer>();r.sharedMaterial=water;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+                // (a line of foam where the brook comes over the road's upstream edge)
+                var fa=lane.At(s0-len*.5f+shift)+rightF*off;var fb=lane.At(s0-len*.5f+shift+1.2f)+rightF*off;var fm=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(fm.GetComponent<Collider>());fm.name="Ford foam";fm.transform.SetParent(root);
+                fm.transform.SetPositionAndRotation((fa+fb)*.5f+Vector3.up*.065f,Quaternion.LookRotation(fb-fa));fm.transform.localScale=new Vector3((lane.width+3)/7f+.05f,.02f,.5f);fm.GetComponent<Renderer>().sharedMaterial=foam;
             }
             var right=lane.Right(s0);right.y=0;right.Normalize();var post=lane.At(s0)+right*(lane.width*.5f+1.6f);post.y=H(post.x,post.z);
             var p=GameObject.CreatePrimitive(PrimitiveType.Cube);p.name="Ford depth post";p.transform.SetParent(root);p.transform.position=post+Vector3.up*.75f;p.transform.localScale=new Vector3(.18f,1.5f,.18f);
