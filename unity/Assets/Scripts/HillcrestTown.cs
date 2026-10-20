@@ -645,14 +645,14 @@ namespace LittleRoad
             if(BayviewKit.Has("tyre_wall")) {
                 // (--prop-forge: each corner's outside as one tyre barrier run, its points gathered in order: TyreBarriers)
                 var corner=new List<Vector3>();var cornerYaw=new List<float>();int cornerSide=0;
-                void FlushCorner(){if(corner.Count>0&&!TyreBarriers.Lay(corner,root,"Raceway tyres"))for(int k=0;k<corner.Count;k++)Put("tyre_wall",corner[k],cornerYaw[k],null,null,1);corner.Clear();cornerYaw.Clear();}
+                int rejectedNear=0;void FlushCorner(){rejectedNear=0;if(corner.Count>0&&!TyreBarriers.Lay(corner,root,"Raceway tyres"))for(int k=0;k<corner.Count;k++)Put("tyre_wall",corner[k],cornerYaw[k],null,null,1);corner.Clear();cornerYaw.Clear();}
                 int n=circuit.Length;float since=99;string[] brands={"HILLCREST MOTORS","BELLA VISTA","GRAND HOTEL","GELATO","VALLEY V6","CAFFE LUNA","SILVER FALLS","HILLCREST DELI","TWIN TURBO","BAKERY"};int brand=0,board=0;
                 for(int i=0;i<n;i+=3) {
                     Vector3 p=circuit[i],back=circuit[(i+n-12)%n],ahead=circuit[(i+12)%n];Vector3 tan=ahead-back;tan.y=0;tan.Normalize();var r=Vector3.Cross(Vector3.up,tan);
                     float turn=Vector3.SignedAngle(new Vector3(p.x-back.x,0,p.z-back.z),new Vector3(ahead.x-p.x,0,ahead.z-p.z),Vector3.up);since+=4.5f;
-                    if(PropForge.Enabled&&Mathf.Abs(turn)<=11)FlushCorner();
-                    if(Mathf.Abs(turn)>11) {
-                        int outside=turn>0?-1:1;var q=p+r*outside*15.2f;if(ValleyField.RoadDistance(q.x,q.z)<14.5f)continue;
+                    if(PropForge.Enabled&&Mathf.Abs(turn)<=4)FlushCorner();
+                    if(Mathf.Abs(turn)>(PropForge.Enabled?(corner.Count>0?4:8):11)) {   // (a corner's barrier runs on while it still turns: review R7-02)
+                        int outside=turn>0?-1:1;var q=p+r*outside*(PropForge.Enabled?13.2f:15.2f);if(ValleyField.RoadDistance(q.x,q.z)<(PropForge.Enabled?12.5f:14.5f)){rejectedNear++;continue;}   // (at the run-off's outer edge: review R7-01)
                         q.y=H(q.x,q.z)-.02f;
                         if(PropForge.Enabled){if(outside!=cornerSide)FlushCorner();cornerSide=outside;corner.Add(q);cornerYaw.Add(Yaw(q,q-r*outside));}else Put("tyre_wall",q,Yaw(q,q-r*outside),null,null,1);
                     } else if(since>55) {

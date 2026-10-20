@@ -306,6 +306,7 @@ namespace LittleRoad
         }
         readonly List<Matrix4x4> slabs=new();
         // Stepping slabs from the back of the pavement to the house front, each sat on the ground under it.
+        Material pathStone;   // (lighter than the pavement, so a path reads from the road: review R7-06)
         void GardenPath(HillcrestRoute.Road road,int side,float s)
         {
             var right=road.Right(s)*side;var rot=Quaternion.LookRotation(right);
@@ -313,7 +314,7 @@ namespace LittleRoad
                 var p=road.At(s)+right*(road.width*.5f+Pave+.45f+k*(Garden-.6f)/2.5f);float lo=float.MaxValue;
                 float hi=float.MinValue;foreach(var c in new[]{new Vector3(-.45f,0,-.28f),new Vector3(.45f,0,-.28f),new Vector3(-.45f,0,.28f),new Vector3(.45f,0,.28f)}){var q=p+rot*c;float g=H(q.x,q.z);lo=Mathf.Min(lo,g);hi=Mathf.Max(hi,g);}
                 // (its top 4 cm over the high side, deep enough to reach the low side: the first sat in the grass, unseen)
-                p.y=hi-.11f;Box("Garden path",p,new Vector3(.95f,.3f+(hi-lo),.6f),rot*Quaternion.Euler(0,(k-1)*4,0),paving,false).transform.position=p-Vector3.up*(hi-lo)*.5f;
+                p.y=hi-.11f;Box("Garden path",p,new Vector3(.95f,.3f+(hi-lo),.6f),rot*Quaternion.Euler(0,(k-1)*4,0),pathStone??=TrialWorld.Material("Garden path stone",new Color(.86f,.84f,.78f),0,.2f),false).transform.position=p-Vector3.up*(hi-lo)*.5f;
             }
         }
         void Crawiau(HillcrestRoute.Road road,int side,float mid,float width,float gate=float.NaN)

@@ -7,7 +7,7 @@ namespace LittleRoad
     // Bank barriers (--prop-forge, docs/80 round 7): the area audit's "banks too steep (no barrier)" fixed where they are.
     // Once the world is built, the edge audit finds every stretch of road with a steep drop beside it and nothing to stop a
     // car going over; each run of them gets a Prop Forge dry-stone wall along the top of the drop (slate in Quarry Hills),
-    // 3 m past either end. Where the bank's top is too rough for a wall's piers it is tried nearer the road, then as
+    // 8 m past either end (3 m read as a stub: review R7-05). Where the bank's top is too rough for a wall's piers it is tried nearer the road, then as
     // post-and-rail or armco; else it is left out (logged).
     public static class BankBarriers
     {
@@ -46,7 +46,7 @@ namespace LittleRoad
                 foreach(var kit in new[]{"dry_stone","post_rail","armco"})
                 foreach(float pull in new[]{.3f,.9f,99f}) {
                     var line=new List<Vector3>();
-                    for(int k=0;k<group.Count;k++){var g=group[k];float o=pull>50?g.half+.7f:Mathf.Max(g.dropAt-pull,g.half+.7f);var p=g.at+g.outward*o;if(k==0)line.Add(p-g.along*3);line.Add(p);if(k==group.Count-1)line.Add(p+g.along*3);}
+                    for(int k=0;k<group.Count;k++){var g=group[k];float o=pull>50?g.half+.7f:Mathf.Max(g.dropAt-pull,g.half+.7f);var p=g.at+g.outward*o;if(k==0)line.Add(p-g.along*8);line.Add(p);if(k==group.Count-1)line.Add(p+g.along*8);}
                     var L=Runs.Solve(new RunSpec{name=$"Bank barrier {Walls}",kit=kit,seed=$"bank-{Walls}-{group[0].road}",along=line.ToArray(),restyle=quarry&&kit=="dry_stone"?slate:null});
                     if(L.failures.Count==0&&L.items.Count>0){Runs.Draw(L,root);Runs.Laid.Add(L);Walls++;group.Clear();return;}
                     why=L.failures.Count>0?L.failures[0]:L.notes.Count>0?L.notes[0]:"nothing laid";
@@ -74,6 +74,10 @@ namespace LittleRoad
         public static bool Lay(System.Collections.Generic.List<UnityEngine.Vector3> points,UnityEngine.Transform parent,string name)
         {
             if(points.Count<2){Refused++;return false;}
+            // (4 m on past either end, so the barrier covers the whole corner, not just its sharpest part: review R7-02/03)
+            points=new System.Collections.Generic.List<UnityEngine.Vector3>(points);
+            var d0=points[0]-points[1];d0.y=0;var d1=points[^1]-points[^2];d1.y=0;
+            if(d0.sqrMagnitude>1e-4f)points.Insert(0,points[0]+d0.normalized*4);if(d1.sqrMagnitude>1e-4f)points.Add(points[^1]+d1.normalized*4);
             var L=Runs.Solve(new RunSpec{name=$"{name} {Laid+Refused}",kit="tyres",seed=$"{name}-{Laid+Refused}",along=points.ToArray()});
             if(L.failures.Count>0||L.items.Count==0){Refused++;if(Refused<=4)Debug.Log($"LITTLE_ROAD_TYRES refused {name} ({points.Count} points, {points[0]}): {(L.failures.Count>0?L.failures[0]:L.notes.Count>0?L.notes[0]:"nothing laid")}");return false;}
             Runs.Draw(L,parent);Runs.Laid.Add(L);Laid++;return true;
