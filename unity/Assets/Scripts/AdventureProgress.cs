@@ -12,7 +12,7 @@ namespace LittleRoad
     // against it, so a new postcard, stamp or trial cannot pass one and fail the other.
     public static class Collectibles
     {
-        public const int Postcards=5,Stamps=8,Carvings=12;
+        public const int Postcards=5,Stamps=8,Carvings=12,Horseshoes=6;
         public const string VisitHillcrest="visit_hillcrest",CastleTrial="trial_castle",CastleTrialHard="trial_castle_hard",QuarrySprint="trial_quarry_sprint";
         // Beating Duke Rolo in the Duke's Challenge (docs/54): the Regale and the prize, once.
         public const string DukeBeaten="duke_beaten";
@@ -23,9 +23,12 @@ namespace LittleRoad
         // Quarry Hills' slate carvings (docs/59; --quarry-hills).
         public static string Carving(int i)=>"carving_"+i;
         public static bool IsCarving(string id)=>Indexed(id,"carving_",Carvings);
+        // Bramblewick's lucky horseshoes (docs/82; --bramblewick).
+        public static string Horseshoe(int i)=>"horseshoe_"+i;
+        public static bool IsHorseshoe(string id)=>Indexed(id,"horseshoe_",Horseshoes);
         public static bool IsPostcard(string id)=>Indexed(id,"postcard_",Postcards);
         public static bool IsStamp(string id)=>Indexed(id,"stamp_",Stamps);
-        public static bool Known(string id)=>IsPostcard(id)||IsStamp(id)||IsCarving(id)||id==VisitHillcrest||id==CastleTrial||id==CastleTrialHard||id==QuarrySprint||id==DukeBeaten||id==BlastRunWin||PhotoRequests.Known(id);
+        public static bool Known(string id)=>IsPostcard(id)||IsStamp(id)||IsCarving(id)||IsHorseshoe(id)||id==VisitHillcrest||id==CastleTrial||id==CastleTrialHard||id==QuarrySprint||id==DukeBeaten||id==BlastRunWin||PhotoRequests.Known(id);
         static bool Indexed(string id,string prefix,int count)
         {
             if(id==null||!id.StartsWith(prefix,StringComparison.Ordinal))return false;

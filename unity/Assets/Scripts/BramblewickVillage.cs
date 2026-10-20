@@ -16,6 +16,11 @@ namespace LittleRoad
         public static readonly Dictionary<string,(Vector3 at,float yaw)> Spots=new();
         // Where the village's cars stand (ValleyLife parks them): by the green, outside The Plough, lay-bys in the vale, the dairy yard.
         public static readonly List<(Vector3 at,float yaw)> Parking=new();
+        // Photo sights (PhotoRequests) and the six lucky horseshoes, on the ground (docs/82 step 5): St Michael's porch, the
+        // duck pond, the orchard, the dairy yard, a field gate out in the vale, the top of the pass.
+        public static Vector3 Tower,PubFront,PondAt,DairyAt;
+        public static readonly List<Vector3> Horseshoes=new();
+        readonly Vector3[] shoe=new Vector3[6];
         public BramblewickVillage(Transform parent){root=new GameObject("Bramblewick").transform;root.SetParent(parent,false);}
         static float H(float x,float z)=>ValleyField.Height(x,z);
         static float Yaw(Vector3 from,Vector3 to){var d=to-from;d.y=0;return d.sqrMagnitude<1e-6f?0:Quaternion.LookRotation(d).eulerAngles.y;}
@@ -51,13 +56,14 @@ namespace LittleRoad
 
         public void Build()
         {
-            Buildings=Plinths=Refused=0;Spots.Clear();Parking.Clear();
+            Buildings=Plinths=Refused=0;Spots.Clear();Parking.Clear();Horseshoes.Clear();
             plinth=WorldLook.Kit("Bramblewick plinth",new Color(.62f,.58f,.50f),WorldLook.Pattern.Stone,0,.1f,true);
             var road=HillcrestRoute.Find(Bramblewick.RoadName);float sC=road.Nearest(new Vector3(Bramblewick.Centre.x,0,Bramblewick.Centre.y),out _);
             Vector3 N(float s){var r=road.Right(s);r.y=0;r.Normalize();return r.z>0?r:-r;}   // (the north side: the green's)
             float half=road.width*.5f;var green=Bramblewick.Green;
             // ---- the green: a pond at its east end with reeds, benches round it, the village sign at the road
-            var pond=green+Quaternion.Euler(0,Yaw(road.At(sC-1),road.At(sC+1)),0)*Vector3.forward*9;pond.y=green.y-.12f;
+            var pond=green+Quaternion.Euler(0,Yaw(road.At(sC-1),road.At(sC+1)),0)*Vector3.forward*9;pond.y=green.y-.12f;PondAt=pond+Vector3.up;
+            {var dir=road.At(sC+1)-road.At(sC-1);dir.y=0;var s0=pond+dir.normalized*10.5f;s0.y=H(s0.x,s0.z);shoe[1]=s0;}   // (on the grass past the pond's east end)
             {var w=GameObject.CreatePrimitive(PrimitiveType.Cylinder);w.name="Bramblewick pond";Object.Destroy(w.GetComponent<Collider>());w.transform.SetParent(root);
              w.transform.position=pond;w.transform.localScale=new Vector3(14,.03f,10);w.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Pond water",new Color(.32f,.48f,.46f),.1f,.92f);
              for(int k=0;k<9;k++){float a=k*40+(float)rng.NextDouble()*20;var q=pond+Quaternion.Euler(0,a,0)*new Vector3(6.6f,0,0);q.z=pond.z+(q.z-pond.z)*.72f;q.y=H(q.x,q.z);Put("reeds",q,a,null,null,false);}}
@@ -68,11 +74,12 @@ namespace LittleRoad
             var nC=N(sC);var church=green+nC*44;church.y=H(church.x,church.z);
             if(Building("parish_church",church,Yaw(church,green))){Spots["church"]=(green+nC*20,Yaw(green,church));
                 var gate=green+nC*(44-Footprint("parish_church").y*.5f-6);gate.y=H(gate.x,gate.z);   // (in the churchyard wall's front)
+                Tower=church-nC*(Footprint("parish_church").y*.5f-3)+Vector3.up*11;{var s0=gate+nC*3.5f;s0.y=H(s0.x,s0.z);shoe[0]=s0;}   // (the tower stands towards the green; a horseshoe inside the lychgate, at the porch path)
                 Put("village_lychgate",gate,Yaw(gate,green)+90);
                 ChurchyardWall(church,Yaw(church,green),gate);}
             // ---- The Plough across the road, facing the green
             var nS=-nC;var pub=road.At(sC)+nS*(half+2.4f+3.6f+3.9f);pub.y=H(pub.x,pub.z);
-            if(Building("pub",pub,Yaw(pub,road.At(sC)),T(0xf6f1e6,0x2f5d46,0x2f5d46,0x2f5d46),"THE PLOUGH"))Spots["pub"]=(road.At(sC)+nS*(half+2.6f),Yaw(pub,road.At(sC))+180);
+            if(Building("pub",pub,Yaw(pub,road.At(sC)),T(0xf6f1e6,0x2f5d46,0x2f5d46,0x2f5d46),"THE PLOUGH")){PubFront=pub+Vector3.up*4;Spots["pub"]=(road.At(sC)+nS*(half+2.6f),Yaw(pub,road.At(sC))+180);}
             {var pb=road.At(sC+14)+nS*(half+1.4f);pb.y=H(pb.x,pb.z);Put("pillar_box",pb,Yaw(pb,road.At(sC+14)));
              var ph=road.At(sC-14)+nS*(half+2.2f);ph.y=H(ph.x,ph.z);Put("phone_box",ph,Yaw(ph,road.At(sC-14)));}
             // ---- the street: cottages either side, the green's and the pub's frontages left open
@@ -100,9 +107,9 @@ namespace LittleRoad
              if(Building("barn",barn,Yaw(barn,road.At(s)),T(0x7a8a8c,0xc0392b,0xc0392b,0x2f5d46),"TUNER"))Spots["tuner"]=(road.At(s)+n*(half+2.2f+3.2f+7f+3f),Yaw(barn,road.At(s))+180);}
             // ---- the dairy, out along the road towards the gate, its cows in the field behind
             {float s=Mathf.Min(road.Length-60,sC+420);var n=-N(s);
-             var parlour=road.At(s)+n*(half+12f+5.2f);parlour.y=H(parlour.x,parlour.z);if(Building("milking_parlour",parlour,Yaw(parlour,road.At(s))))Spots["dairy"]=(road.At(s)+n*(half+6),Yaw(parlour,road.At(s))+180);
+             var parlour=road.At(s)+n*(half+12f+5.2f);parlour.y=H(parlour.x,parlour.z);if(Building("milking_parlour",parlour,Yaw(parlour,road.At(s)))){Spots["dairy"]=(road.At(s)+n*(half+6),Yaw(parlour,road.At(s))+180);DairyAt=parlour+Vector3.up*4;}
              var dutch=road.At(s+26)+n*(half+12f+4.8f);dutch.y=H(dutch.x,dutch.z);Building("dutch_barn",dutch,Yaw(dutch,road.At(s+26)));
-             var churn=road.At(s-14)+n*(half+1.6f);churn.y=H(churn.x,churn.z);Put("churn_stand",churn,Yaw(churn,road.At(s-14)));
+             var churn=road.At(s-14)+n*(half+1.6f);churn.y=H(churn.x,churn.z);Put("churn_stand",churn,Yaw(churn,road.At(s-14)));{var s0=road.At(s+38)+n*(half+5);s0.y=H(s0.x,s0.z);shoe[3]=s0;}   // (the yard in front of the Dutch barn)
              var field=road.At(s-30)+n*(half+60);field.y=H(field.x,field.z);herd=field;for(int i=0;i<9;i++)Cow(field+new Vector3((float)rng.NextDouble()*40-20,0,(float)rng.NextDouble()*40-20),field);}
             // ---- parked cars: two by the green, two outside The Plough, six lay-bys out in the vale, two in the dairy yard
             void Park(float s,Vector3 side,float off){if(s<20||s>road.Length-20)return;var p=road.At(s)+side*(half+off);p.y=H(p.x,p.z);Parking.Add((p,Yaw(road.At(s-1),road.At(s+1))));}
@@ -110,6 +117,11 @@ namespace LittleRoad
             foreach(float ds in new[]{-470f,-640f,-820f,-1000f,-1180f,-1350f})Park(sC+ds,N(sC+ds),3.2f);   // (out along the pass, where the vale's fields are)
             Park(sC+440,-N(sC+440),4f);Park(sC+447,-N(sC+447),4f);
             Vale(road,sC,herd);
+            // (the top of the pass: the road's highest point between the T and the village, 7 m off its north side)
+            {float top=-1,best=float.MinValue;for(float s=60;s<sC-500;s+=10)if(road.At(s).y>best){best=road.At(s).y;top=s;}
+             if(top>0){var s0=road.At(top)+N(top)*(half+7);s0.y=H(s0.x,s0.z);shoe[5]=s0;}}
+            if(Spots.TryGetValue("orchard",out var orch)){var s0=orch.at+Quaternion.Euler(0,orch.yaw,0)*new Vector3(3,0,3);s0.y=H(s0.x,s0.z);shoe[2]=s0;}   // (between the apple rows)
+            bool all=true;foreach(var p in shoe)if(p==Vector3.zero)all=false;if(all)Horseshoes.AddRange(shoe);
             Debug.Log($"LITTLE_ROAD_BRAMBLEWICK fields={Fields} copses={Copses} buildings={Buildings} plinths={Plinths} refused={Refused} spots={Spots.Count} hedges={hedges} hedge_refused={hedgeRefused} {hedgeWhy}");
         }
         // ---- the vale (step 4): a patchwork of hedged fields round the village, squared to the road through it as the farm
@@ -179,7 +191,9 @@ namespace LittleRoad
                     if(rng.NextDouble()<.03){var tr=q;tr.y-=.05f;Put("tree_round",tr,(float)rng.NextDouble()*360,null,null,true,.9f+(float)rng.NextDouble()*.35f);}   // (a hedgerow oak)
                 }
                 Lay();
-                if(gap>0&&rng.NextDouble()<.8){var g=a+dir*gap;if(ValleyField.RoadDistance(g.x,g.z)>8){g.y=H(g.x,g.z);Put("field_gate",g,Mathf.Atan2(dir.x,dir.z)*Mathf.Rad2Deg-90);}}
+                if(gap>0&&rng.NextDouble()<.8){var g=a+dir*gap;if(ValleyField.RoadDistance(g.x,g.z)>8){g.y=H(g.x,g.z);Put("field_gate",g,Mathf.Atan2(dir.x,dir.z)*Mathf.Rad2Deg-90);
+                    // (the first gate out past 450 m keeps a horseshoe on its post's side, 2.5 m in front of it)
+                    if(shoe[4]==Vector3.zero&&Vector2.Distance(new(g.x,g.z),Bramblewick.Centre)>450){var s0=g+Vector3.Cross(Vector3.up,dir)*2.5f;s0.y=H(s0.x,s0.z);if(ValleyField.RoadDistance(s0.x,s0.z)>8)shoe[4]=s0;}}}
             }
             bool Field(int i,int j)=>i>=0&&j>=0&&i<nx&&j<nz&&kind[i,j]==1;
             for(int i=0;i<=nx;i++)for(int j=0;j<=nz;j++) {

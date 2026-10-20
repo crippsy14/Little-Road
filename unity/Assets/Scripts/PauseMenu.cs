@@ -137,7 +137,7 @@ namespace LittleRoad
             regionName.text=r.name.ToUpperInvariant();regionBlurb.text=r.blurb+(r==MapRegions.At(ctx.car.position)?"  ·  you are here":"");
             for(int i=countsHolder.childCount-1;i>=0;i--)Destroy(countsHolder.GetChild(i).gameObject);
             var save=ctx.save();float y=100;int rows=0;
-            foreach(var (label,isKind,colour) in new (string,Func<string,bool>,Color)[]{("Postcards",Collectibles.IsPostcard,Toy.Pink),("Stamps",Collectibles.IsStamp,Toy.Gold),("Carvings",Collectibles.IsCarving,Toy.Hex(0x5d6b7a))}) {
+            foreach(var (label,isKind,colour) in new (string,Func<string,bool>,Color)[]{("Postcards",Collectibles.IsPostcard,Toy.Pink),("Stamps",Collectibles.IsStamp,Toy.Gold),("Carvings",Collectibles.IsCarving,Toy.Hex(0x5d6b7a)),("Horseshoes",Collectibles.IsHorseshoe,Toy.Hex(0x8a6a3a))}) {
                 var ids=MapRegions.Keepsakes.Where(p=>isKind(p.Key)&&r.contains(p.Value.at.x,p.Value.at.z)).Select(p=>p.Key).ToList();if(ids.Count==0)continue;
                 int found=ids.Count(save.collected.Contains);rows++;
                 var icon=Toy.Card(countsHolder,label+" icon",new Vector2(60,76),new Vector2(-230,y),colour,8,4,4);icon.rectTransform.localRotation=Quaternion.Euler(0,0,-6);
@@ -151,25 +151,29 @@ namespace LittleRoad
         void BuildCollection(AdventureProgress save)
         {
             // With Quarry Hills' carvings there are three albums: the rows close up and the cards narrow to fit twelve.
-            bool three=QuarryHills.Enabled;float y=three?300:285,step=three?245:310,cardH=three?160:200;
-            void Album(string title,int count,Func<int,string> id,Func<int,string> place,Color colour)
+            // (A fourth album, Bramblewick's horseshoes, shares the postcards' row: the three rows keep their size.)
+            bool three=QuarryHills.Enabled,four=three&&BramblewickVillage.Horseshoes.Count==Collectibles.Horseshoes;
+            float y=three?300:285,step=three?245:310,cardH=three?160:200;
+            // (`left` and `width`: the album's share of its row; `next`: whether the next album starts a new row.)
+            void Album(string title,int count,Func<int,string> id,Func<int,string> place,Color colour,float left=-760,float width=1560,bool next=true)
             {
-                float pitch=Mathf.Min(195,1560f/count),cardW=pitch-25;
+                float pitch=Mathf.Min(195,width/count),cardW=pitch-25;bool half=width<1000;
                 int found=Enumerable.Range(0,count).Count(i=>save.collected.Contains(id(i)));
-                Toy.Title(body,title+" title",$"{title}  {found}/{count}",40,new Vector2(1200,56),new Vector2(-180,y),colour,TextAnchor.MiddleLeft);
+                Toy.Title(body,title+" title",$"{title}  {found}/{count}",half?34:40,new Vector2(1200,56),new Vector2(left+580,y),colour,TextAnchor.MiddleLeft);
                 // The full set's reward (a paint, docs/60).
                 int paint=PaintCatalog.RewardFor(id(0));
-                if(paint>=0)Toy.Label(body,title+" reward",found==count?$"Full set: {PaintCatalog.All[paint].name} paint earned":$"Full set reward: {PaintCatalog.All[paint].name} paint",24,new Vector2(560,40),new Vector2(500,y),found==count?Toy.Hex(0x2e9e5b):Toy.Soft,TextAnchor.MiddleRight,true);
+                if(paint>=0)Toy.Label(body,title+" reward",half?$"Set: {PaintCatalog.All[paint].name} paint":found==count?$"Full set: {PaintCatalog.All[paint].name} paint earned":$"Full set reward: {PaintCatalog.All[paint].name} paint",half?20:24,new Vector2(560,40),new Vector2(left+width-300,y),found==count?Toy.Hex(0x2e9e5b):Toy.Soft,TextAnchor.MiddleRight,true);
                 for(int i=0;i<count;i++) {
-                    bool has=save.collected.Contains(id(i));float cx=-760+i*pitch;
+                    bool has=save.collected.Contains(id(i));float cx=left+i*pitch;
                     var card=Toy.Card(body,title+" "+i,new Vector2(cardW,cardH),new Vector2(cx+cardW*.5f,y-40-cardH*.5f),has?colour:Toy.Silver,18,5,6);card.rectTransform.localRotation=Quaternion.Euler(0,0,(i%2==0?-2:2));
                     Toy.Label(card.transform,"Mark",has?(i+1).ToString():"?",has?54:70,new Vector2(cardW,90),new Vector2(0,cardH*.13f),has?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true);
                     var region=MapRegions.Keepsakes.TryGetValue(id(i),out var k)?MapRegions.At(k.at).name:"";
-                    Toy.Label(card.transform,"Place",has?place(i):"Somewhere in "+region,cardW<150?14:17,new Vector2(cardW-14,60),new Vector2(0,-cardH*.28f),has?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true);
+                    Toy.Label(card.transform,"Place",has?place(i):cardW<110?region:"Somewhere in "+region,cardW<150?14:17,new Vector2(cardW-14,60),new Vector2(0,-cardH*.28f),has?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true);
                 }
-                y-=step;
+                if(next)y-=step;
             }
-            Album("BAYVIEW POSTCARDS",Collectibles.Postcards,Collectibles.Postcard,MapRegions.PostcardPlace,Toy.Pink);
+            if(four){Album("BAYVIEW POSTCARDS",Collectibles.Postcards,Collectibles.Postcard,MapRegions.PostcardPlace,Toy.Pink,-760,740,false);Album("BRAMBLEWICK HORSESHOES",Collectibles.Horseshoes,Collectibles.Horseshoe,MapRegions.HorseshoePlace,Toy.Hex(0x8a6a3a),40,760);}
+            else Album("BAYVIEW POSTCARDS",Collectibles.Postcards,Collectibles.Postcard,MapRegions.PostcardPlace,Toy.Pink);
             Album("HILLCREST STAMPS",Collectibles.Stamps,Collectibles.Stamp,MapRegions.StampPlace,Toy.Gold);
             if(three)Album("QUARRY HILLS CARVINGS",Collectibles.Carvings,Collectibles.Carving,MapRegions.CarvingPlace,Toy.Hex(0x5d6b7a));
             // Badges: one-off achievements.

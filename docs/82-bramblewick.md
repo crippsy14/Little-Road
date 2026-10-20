@@ -113,16 +113,22 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
     the vale pass planting and life; only things to do are short, which is step 5. Frame cost over the vale is about
     1.3 ms.
 
-## Where to pick up (handover, 20 Oct, after step 4)
-1. **Step 5, things to do:**
-   - the six lucky horseshoes (a keepsake set: `Collectibles`, `MapRegions` places, the `Keepsake` visual, the pause
-     menu's fourth album and its set paint), one in the church porch;
-   - a speed trap on Valley Road South outside the village (`SpeedTraps.Roads`, `ActiveIds`, the `AdventureChecks`
-     count);
-   - photo sights (`PhotoRequests`): St Michael's tower, The Plough, the duck pond, the dairy;
-   - the race (24/24 on seeds 1709-1711) on lanes about 6.5 m wide with hedge banks; the milk-float duel; Jed's four
-     parts on the doc 44 ladder; the railway halt.
-   - The audit's bars: the village needs 3 things to do, and the vale 3 per road km (5 on its 1.52 km).
+- **20 Oct, things to do (step 5, first part):**
+  - **Six lucky horseshoes,** a keepsake set: St Michael's porch path, the duck pond, the orchard, the dairy yard, a
+    field gate out in the vale, and the top of the pass. Each pays 50 credits. They have their own album in the pause
+    menu, sharing the postcards' row so the page keeps its three rows. There's no set paint yet: paint indices are saved,
+    so one only for `--bramblewick` could break a save loaded without it; it joins when the flag comes off.
+    `--horseshoe-test` collects all six (6/6, none blocked).
+  - **A speed trap,** "Vale Straight", on Valley Road South's straightest run outside the village.
+  - **Four photo sights:** St Michael's tower, The Plough, the duck pond and the dairy.
+  - **The area audit:** Bramblewick (village) and Bramblewick Vale both pass.
+
+## Where to pick up (handover, 20 Oct, after step 5's finds)
+1. **The rest of step 5:**
+   - the race (24/24 on seeds 1709-1711) on lanes about 6.5 m wide with hedge banks;
+   - the milk-float duel (Peg);
+   - Jed's four parts on the doc 44 ladder;
+   - the railway halt.
 2. **Still to make:** the milk float (Car Forge).
 3. **Leftovers:** two lips at the T (480, -1110), 0.13-0.16 m; the floating vine row (160.5, 36.3, -1040.2); two
    Bayview waterline rocks.

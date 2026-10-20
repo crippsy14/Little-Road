@@ -21,9 +21,9 @@ namespace LittleRoad
             public List<Vector3> approach=new();
             public float Along(Vector3 p)=>Vector3.Dot(p-at,forward);
         }
-        public static readonly string[] Ids={"coast","causeway","valley","quay","farm","falls","raceway","quarryroad"};
+        public static readonly string[] Ids={"coast","causeway","valley","quay","farm","falls","raceway","quarryroad","bramble"};
         // The cameras this run places (Quarry Road's only with --quarry-hills).
-        public static string[] ActiveIds=>Array.FindAll(Ids,id=>id!="quarryroad"||QuarryHills.Enabled);
+        public static string[] ActiveIds=>Array.FindAll(Ids,id=>(id!="quarryroad"||QuarryHills.Enabled)&&(id!="bramble"||Bramblewick.Enabled));
         public static bool Known(string id)=>Array.IndexOf(Ids,id)>=0;
         public static readonly int[] Prizes={50,100,150};
         public static readonly List<Trap> All=new();
@@ -44,6 +44,8 @@ namespace LittleRoad
             yield return ("raceway","Raceway Road",HillcrestRoute.RacewayAccess.line,false,HillcrestRoute.RacewayAccess.width*.5f,p=>true);
             // Quarry Hills (--quarry-hills): the run down from the crest towards the town.
             if(QuarryHills.Enabled){var q=HillcrestRoute.Find(QuarryHills.QuarryRoadName);yield return ("quarryroad","Quarry Road",q.line,false,q.width*.5f,p=>p.x<-1500&&p.x>-2300);}
+            // Bramblewick (--bramblewick, docs/82): Valley Road South's straightest run across the vale, outside the village.
+            if(Bramblewick.Enabled){var b=HillcrestRoute.Find(Bramblewick.RoadName);yield return ("bramble","Vale Straight",b.line,false,b.width*.5f,p=>p.x>900&&Vector2.Distance(new(p.x,p.z),Bramblewick.Centre)>420);}
         }
 
         // Where the cameras go and their marks. Pure geometry and the drive model: the editor checks call it too.

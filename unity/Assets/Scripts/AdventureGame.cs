@@ -191,6 +191,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--apples-test")&&residents.ContainsKey("farm")){StartCoroutine(FarmTest(FarmChallenges.Kind.Apples));yield break;}
             if(RaceTrial.Has("--activity-hud-review")&&residents.ContainsKey("farm")){StartCoroutine(ActivityHudReview());yield break;}
             if(RaceTrial.Has("--carving-test")&&QuarryHillsTown.Spots.Count>0){StartCoroutine(CarvingTest());yield break;}
+            if(RaceTrial.Has("--horseshoe-test")&&BramblewickVillage.Horseshoes.Count>0){StartCoroutine(KeepsakeTest("HORSESHOE",Collectibles.Horseshoes,Collectibles.Horseshoe,MapRegions.HorseshoePlace,Collectibles.IsHorseshoe));yield break;}
             if(RaceTrial.Has("--wayfinding-test")){reviewing=true;StartCoroutine(WayfindingTest());yield break;}
             if(RaceTrial.Has("--world-tiles-test")){StartCoroutine(WorldTilesTest());yield break;}
             if(RaceTrial.Has("--overtake-test")){StartCoroutine(OvertakeTest());yield break;}
@@ -376,18 +377,20 @@ namespace LittleRoad
             Application.Quit(pass?0:1);
         }
         // Test (--quarry-hills --carving-test): every carving is clear of buildings and props, and collecting all twelve pays.
-        IEnumerator CarvingTest()
+        // (--bramblewick --horseshoe-test: the same for Bramblewick's six horseshoes.)
+        IEnumerator CarvingTest()=>KeepsakeTest("CARVING",Collectibles.Carvings,Collectibles.Carving,MapRegions.CarvingPlace,Collectibles.IsCarving);
+        IEnumerator KeepsakeTest(string tag,int count,Func<int,string> idOf,Func<int,string> place,Func<string,bool> kind)
         {
             yield return new WaitForSeconds(1);int blocked=0;float credits=Store.Data.credits;
-            for(int i=0;i<Collectibles.Carvings;i++) {
-                string id=Collectibles.Carving(i);if(!finds.TryGetValue(id,out var go))continue;var at=go.transform.position;
+            for(int i=0;i<count;i++) {
+                string id=idOf(i);if(!finds.TryGetValue(id,out var go))continue;var at=go.transform.position;
                 int hits=0;string what="";foreach(var c in Physics.OverlapSphere(at,2.2f))if(c.CompareTag("Respawn")&&c.GetComponentInParent<RoadCar>()==null){hits++;what+=c.name+";";}if(hits>0)blocked++;
-                Debug.Log($"LITTLE_ROAD_CARVING {i} {MapRegions.CarvingPlace(i)} at=({at.x:0},{at.y:0.0},{at.z:0}) ground={ValleyField.Height(at.x,at.z):0.0} road={ValleyField.RoadDistance(at.x,at.z):0} blocked={hits} {what}");
+                Debug.Log($"LITTLE_ROAD_{tag} {i} {place(i)} at=({at.x:0},{at.y:0.0},{at.z:0}) ground={ValleyField.Height(at.x,at.z):0.0} road={ValleyField.RoadDistance(at.x,at.z):0} blocked={hits} {what}");
                 player.body.isKinematic=true;player.body.position=at+Vector3.down*.8f;yield return new WaitForFixedUpdate();yield return null;yield return null;
             }
-            player.body.isKinematic=false;int got=0;foreach(var c in Store.Data.collected)if(Collectibles.IsCarving(c))got++;
-            Debug.Log($"LITTLE_ROAD_CARVING_TEST collected={got}/{Collectibles.Carvings} blocked={blocked} credits={credits}->{Store.Data.credits}");
-            Application.Quit(got==Collectibles.Carvings&&blocked==0?0:1);
+            player.body.isKinematic=false;int got=0;foreach(var c in Store.Data.collected)if(kind(c))got++;
+            Debug.Log($"LITTLE_ROAD_{tag}_TEST collected={got}/{count} blocked={blocked} credits={credits}->{Store.Data.credits}");
+            Application.Quit(got==count&&blocked==0?0:1);
         }
         // Test (--quarry-hills --blondin-test): ride the Blondin up from the floor and back down, with a picture mid-ride
         // (camera off to the side); the car must end each ride in the far bay.
@@ -732,6 +735,9 @@ namespace LittleRoad
                 var spots=QuarryHills.CarvingSpots();if(spots.Length!=Collectibles.Carvings)throw new InvalidOperationException("Carving spots and Collectibles.Carvings disagree.");
                 for(int i=0;i<spots.Length;i++){string id=Collectibles.Carving(i);var p=spots[i]+Vector3.up*1.3f;MapRegions.Keepsakes[id]=(p,MapRegions.CarvingPlace(i));if(Store.Data.collected.Contains(id))continue;finds[id]=Keepsake(id,p,2,i);}
             }
+            // Bramblewick's lucky horseshoes (--bramblewick, docs/82).
+            if(BramblewickVillage.Horseshoes.Count==Collectibles.Horseshoes)
+                for(int i=0;i<Collectibles.Horseshoes;i++){string id=Collectibles.Horseshoe(i);var p=BramblewickVillage.Horseshoes[i]+Vector3.up*1.2f;MapRegions.Keepsakes[id]=(p,MapRegions.HorseshoePlace(i));if(Store.Data.collected.Contains(id))continue;finds[id]=Keepsake(id,p,3,i);}
             for(int i=0;i<Collectibles.Postcards;i++) {
                 string id=Collectibles.Postcard(i);
                 float d=world.track.length*(.12f+i*.17f);Vector3 p=world.track.At(d)+world.track.Right(d)*(i%2==0?13:-13)+Vector3.up*1.1f;MapRegions.Keepsakes[id]=(p,MapRegions.PostcardPlace(i));
@@ -742,7 +748,7 @@ namespace LittleRoad
         // Postcards and stamps: paper cards with a picture on both faces (they turn) on a bobbing
         // pivot, so they read as keepsakes from the road instead of flat coloured tiles.
         readonly Dictionary<Color,Material> keepsakeMaterials=new();
-        // kind: 0 Bayview postcard, 1 Hillcrest stamp, 2 Quarry Hills slate carving.
+        // kind: 0 Bayview postcard, 1 Hillcrest stamp, 2 Quarry Hills slate carving, 3 Bramblewick horseshoe.
         GameObject Keepsake(string id,Vector3 at,int kind,int index)
         {
             var root=new GameObject(id).transform;root.position=at;
@@ -756,7 +762,17 @@ namespace LittleRoad
                 if(!keepsakeMaterials.TryGetValue(c,out var m))keepsakeMaterials[c]=m=TrialWorld.Material("Keepsake",c,0,.35f);
                 var r=g.GetComponent<Renderer>();r.sharedMaterial=m;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
             }
-            if(kind==2) {
+            if(kind==3) {
+                // Lucky horseshoe: a steel U, arms up to hold the luck, nail holes punched along it, a red ribbon at the top.
+                Color steel=Toy.Hex(0xaab4bf),hole=Toy.Hex(0x4a525c),ribbon=Toy.Hex(0xd92b3a);
+                foreach(int side in new[]{-1,1}) {
+                    Part(new Vector3(side*.26f,.08f,0),new Vector3(.14f,.56f,.1f),steel);Part(new Vector3(side*.19f,-.26f,0),new Vector3(.18f,.16f,.1f),steel);
+                    Part(new Vector3(side*.26f,.34f,0),new Vector3(.18f,.06f,.11f),steel*.85f);   // (the heels)
+                    foreach(float y in new[]{.18f,.0f,-.14f})foreach(int face in new[]{-1,1})Part(new Vector3(side*.26f,y,face*.051f),new Vector3(.05f,.05f,.01f),hole);
+                }
+                Part(new Vector3(0,-.31f,0),new Vector3(.24f,.14f,.1f),steel);
+                Part(new Vector3(0,.42f,0),new Vector3(.6f,.07f,.04f),ribbon);Part(new Vector3(-.08f,.48f,0),new Vector3(.12f,.12f,.05f),ribbon);Part(new Vector3(.08f,.48f,0),new Vector3(.12f,.12f,.05f),ribbon);
+            } else if(kind==2) {
                 // Slate carving: a dark tablet with a pale carved border, a carved panel and a red dragon mark.
                 Color slate=Toy.Hex(0x3f4650),carved=Toy.Hex(0x9aa3ad),dragon=Toy.Hex(0xc0392b);
                 Part(Vector3.zero,new Vector3(.78f,.95f,.09f),slate);
@@ -915,11 +931,11 @@ namespace LittleRoad
                 if(Vector3.Distance(player.body.position,pair.Value.transform.position)<2.7f)Attempt(()=>{
                     var at=pair.Value.transform.position;
                     if(Store.Collect(pair.Key)){Destroy(pair.Value);finds.Remove(pair.Key);Confetti.Burst(at);
-                        Func<string,bool> kind=Collectibles.IsCarving(pair.Key)?Collectibles.IsCarving:Collectibles.IsStamp(pair.Key)?Collectibles.IsStamp:Collectibles.IsPostcard;
+                        Func<string,bool> kind=Collectibles.IsHorseshoe(pair.Key)?Collectibles.IsHorseshoe:Collectibles.IsCarving(pair.Key)?Collectibles.IsCarving:Collectibles.IsStamp(pair.Key)?Collectibles.IsStamp:Collectibles.IsPostcard;
                         int got=0;foreach(string c in Store.Data.collected)if(kind(c))got++;
                         int reward=PaintCatalog.RewardFor(pair.Key);
                         if(reward>=0&&got==PaintCatalog.Reward(reward).count)Notify($"Full set! {PaintCatalog.All[reward].name} paint is yours, free at any paint counter · +50 credits");else
-                        Notify(Collectibles.IsCarving(pair.Key)?$"Slate carving {got} of {Collectibles.Carvings} found · +50 credits":Collectibles.IsStamp(pair.Key)?$"Hillcrest stamp {got} of {Collectibles.Stamps} found · +50 credits":$"Bayview postcard {got} of {Collectibles.Postcards} found · +50 credits");}});
+                        Notify(Collectibles.IsHorseshoe(pair.Key)?$"Lucky horseshoe {got} of {Collectibles.Horseshoes} found · +50 credits":Collectibles.IsCarving(pair.Key)?$"Slate carving {got} of {Collectibles.Carvings} found · +50 credits":Collectibles.IsStamp(pair.Key)?$"Hillcrest stamp {got} of {Collectibles.Stamps} found · +50 credits":$"Bayview postcard {got} of {Collectibles.Postcards} found · +50 credits");}});
             }
             // Countdowns hold the car still but let it rev (Richard, 1 Oct).
             player.holdStill=climbStart>=0&&Time.time<climbStart||trainRace!=null&&trainRace.Holding||school!=null&&school.Holding||activity!=null&&Time.time<activity.go||StopLook.Injected!=null;   // (--stop-look-review: braked on the hill)
