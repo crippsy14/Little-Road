@@ -26,6 +26,21 @@ namespace LittleRoad
         static float Yaw(Vector3 from,Vector3 to){var d=to-from;d.y=0;return d.sqrMagnitude<1e-6f?0:Quaternion.LookRotation(d).eulerAngles.y;}
         static BayviewKit.Tint T(int wall,int shutter,int awning,int door)=>new(Toy.Hex(wall),Toy.Hex(shutter),Toy.Hex(awning),Toy.Hex(door));
         GameObject Put(string id,Vector3 p,float yaw,BayviewKit.Tint tint=null,string sign=null,bool solid=true,float scale=1)=>BayviewKit.Has(id)?BayviewKit.Spawn(id,p,yaw,root,tint,sign,solid,scale):null;
+        // Stepping slabs from `a` to `b` (a garden path, a path across the green), each sat on the ground under it: its top 4 cm
+        // over the high side, deep enough to reach the low side (as Quarry Hills' garden paths).
+        Material slabStone,yard;
+        void Slabs(Vector3 a,Vector3 b,float width,float pitch=.9f)
+        {
+            var d=b-a;d.y=0;float len=d.magnitude;if(len<.5f)return;var rot=Quaternion.LookRotation(d/len);slabStone??=TrialWorld.Material("Bramblewick path stone",new Color(.86f,.83f,.74f),0,.2f);
+            for(float s=pitch*.5f;s<len;s+=pitch) {
+                var p=a+d/len*s;float lo=float.MaxValue,hi=float.MinValue;
+                foreach(var c in new[]{new Vector3(-width*.5f,0,-.3f),new Vector3(width*.5f,0,-.3f),new Vector3(-width*.5f,0,.3f),new Vector3(width*.5f,0,.3f)}){var q=p+rot*c;float g=H(q.x,q.z);lo=Mathf.Min(lo,g);hi=Mathf.Max(hi,g);}
+                var g2=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(g2.GetComponent<Collider>());g2.name="Bramblewick path";g2.transform.SetParent(root);
+                g2.transform.SetPositionAndRotation(new Vector3(p.x,hi+.04f-(.3f+hi-lo)*.5f,p.z),rot*Quaternion.Euler(0,((int)(s*7)%3-1)*3,0));g2.transform.localScale=new Vector3(width,.3f+hi-lo,pitch*.82f);
+                var r=g2.GetComponent<Renderer>();r.sharedMaterial=slabStone;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
+        }
+        readonly List<Vector3> doors=new();const float setbackClear=3f;readonly System.Random dressRng=new(8241);   // (dressing has its own draws, so the village layout stays put)   // (front doors: the street lamps keep clear of them, review BW1-08)
         // Each building's ground rectangle (width along its front, depth), as the kit models them.
         static Vector2 Footprint(string id)=>id switch{"cottage_thatch_a"=>new(9.8f,7.0f),"cottage_thatch_b"=>new(7.6f,6.6f),"cottage_thatch_c"=>new(8.4f,8.8f),"parish_church"=>new(11f,28f),
             "pub"=>new(13.2f,7.8f),"milking_parlour"=>new(16.4f,10.4f),"dutch_barn"=>new(18.6f,9.6f),"barn"=>new(12f,10f),_=>new(6,6)};
@@ -66,8 +81,11 @@ namespace LittleRoad
             {var dir=road.At(sC+1)-road.At(sC-1);dir.y=0;var s0=pond+dir.normalized*10.5f;s0.y=H(s0.x,s0.z);shoe[1]=s0;}   // (on the grass past the pond's east end)
             {var w=GameObject.CreatePrimitive(PrimitiveType.Cylinder);w.name="Bramblewick pond";Object.Destroy(w.GetComponent<Collider>());w.transform.SetParent(root);
              w.transform.position=pond;w.transform.localScale=new Vector3(14,.03f,10);w.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Pond water",new Color(.32f,.48f,.46f),.1f,.92f);
+             // (a muddy bank round it, just under the water's top: the pond had a hard edge on the grass, review BW1-04)
+             var bank=GameObject.CreatePrimitive(PrimitiveType.Cylinder);bank.name="Bramblewick pond bank";Object.Destroy(bank.GetComponent<Collider>());bank.transform.SetParent(root);
+             bank.transform.position=pond+Vector3.down*.012f;bank.transform.localScale=new Vector3(16.6f,.03f,12.4f);bank.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Pond bank",new Color(.45f,.42f,.30f),0,.15f);
              for(int k=0;k<9;k++){float a=k*40+(float)rng.NextDouble()*20;var q=pond+Quaternion.Euler(0,a,0)*new Vector3(6.6f,0,0);q.z=pond.z+(q.z-pond.z)*.72f;q.y=H(q.x,q.z);Put("reeds",q,a,null,null,false);}}
-            foreach(float a in new[]{200f,250f,300f,340f}){var b=green+Quaternion.Euler(0,a,0)*new Vector3(0,0,17);b.y=H(b.x,b.z);Put("bench",b,Yaw(b,green),null,null,false);}
+            foreach(float a in new[]{30f,90f,150f}){var b=pond+Quaternion.Euler(0,Yaw(road.At(sC-1),road.At(sC+1))+a,0)*new Vector3(0,0,10.5f);b.y=H(b.x,b.z);Put("bench",b,Yaw(b,pond),null,null,false);}   // (round the pond's far side, facing it, clear of the path: review BW1-10)
             {var at=road.At(sC-60)+N(sC-60)*(half+2.2f);at.y=H(at.x,at.z);Put("map_board",at,Yaw(at,road.At(sC-60)),null,"BRAMBLEWICK");}
             foreach(float a in new[]{60f,140f,215f}){var t=green+Quaternion.Euler(0,a,0)*new Vector3(0,0,20+(float)rng.NextDouble()*4);t.y=H(t.x,t.z)-.05f;Put("tree_round",t,(float)rng.NextDouble()*360,null,null,true,1.3f+(float)rng.NextDouble()*.3f);}
             // ---- the church north of the green, its tower and lychgate towards it
@@ -76,6 +94,7 @@ namespace LittleRoad
                 var gate=green+nC*(44-Footprint("parish_church").y*.5f-6);gate.y=H(gate.x,gate.z);   // (in the churchyard wall's front)
                 Tower=church-nC*(Footprint("parish_church").y*.5f-3)+Vector3.up*11;{var s0=gate+nC*3.5f;s0.y=H(s0.x,s0.z);shoe[0]=s0;}   // (the tower stands towards the green; a horseshoe inside the lychgate, at the porch path)
                 Put("village_lychgate",gate,Yaw(gate,green)+90);
+                Slabs(road.At(sC)+nC*(half+2.6f),gate-nC*1.6f,1.5f,.7f);   // (a flagstone path across the green from the road to the lychgate, review BW1-10)
                 ChurchyardWall(church,Yaw(church,green),gate);}
             // ---- The Plough across the road, facing the green
             var nS=-nC;var pub=road.At(sC)+nS*(half+2.4f+3.6f+3.9f);pub.y=H(pub.x,pub.z);
@@ -101,10 +120,25 @@ namespace LittleRoad
                 }
             }
             // ---- lamps along the street, old cast iron, alternate sides every 38 m
-            int k2=0;for(float s=sC-280;s<sC+290;s+=38,k2++){var n=k2%2==0?N(s):-N(s);var lp=road.At(s)+n*(half+1.3f);lp.y=H(lp.x,lp.z);Put("lamp_post",lp,0,T(0xffffff,0x1d2b3a,0xffffff,0xffffff),null,false);}
+            int k2=0;for(float s=sC-280;s<sC+290;s+=38,k2++){var n=k2%2==0?N(s):-N(s);var lp=road.At(s)+n*(half+1.3f);
+                float ls=s;for(int t=0;t<4;t++){bool near=false;foreach(var d in doors)if(Mathf.Abs(road.Nearest(d,out _)-ls)<setbackClear&&Vector3.Dot(d-road.At(ls),n)>0)near=true;if(!near)break;ls=s+(t+1)*3.5f;lp=road.At(ls)+n*(half+1.3f);}   // (not in front of a door, review BW1-08)
+               lp.y=H(lp.x,lp.z);Put("lamp_post",lp,0,T(0xffffff,0x1d2b3a,0xffffff,0xffffff),null,false);}
             // ---- the backyard tuner: a barn behind the street's east end, its doors to the lane
             {float s=sC+170;var n=N(s);var barn=road.At(s)+n*(half+2.2f+3.2f+7f+12f);barn.y=H(barn.x,barn.z);
-             if(Building("barn",barn,Yaw(barn,road.At(s)),T(0x7a8a8c,0xc0392b,0xc0392b,0x2f5d46),"TUNER"))Spots["tuner"]=(road.At(s)+n*(half+2.2f+3.2f+7f+3f),Yaw(barn,road.At(s))+180);}
+             if(Building("barn",barn,Yaw(barn,road.At(s)),T(0x7a8a8c,0xc0392b,0xc0392b,0x2f5d46),"TUNER")) {
+                 Spots["tuner"]=(road.At(s)+n*(half+2.2f+3.2f+7f+3f),Yaw(barn,road.At(s))+180);
+                 // (a concrete yard between the lane and the barn doors, where the tuner works on cars: review BW1-08)
+                 var yc=barn-n*(5f+4f);yc.y=0;var yrot=Quaternion.Euler(0,Yaw(barn,road.At(s)),0);   // (an apron 8 m deep in front of the doors)
+                 // (it falls with the ground from the barn's doors to the lane, pitched, so it has no step at its front: on a 0.75 m fall
+                 //  a level slab stood up as a platform)
+                 float Side(float z){float m=float.MinValue;foreach(float x in new[]{-4f,0f,4f}){var q=yc+yrot*new Vector3(x,0,z);m=Mathf.Max(m,H(q.x,q.z));}return m;}
+                 float back=Side(-4),front=Side(4),lat=0;foreach(float z in new[]{-4f,0f,4f}){var l=yc+yrot*new Vector3(-4,0,z);var r=yc+yrot*new Vector3(4,0,z);lat=Mathf.Max(lat,Mathf.Abs(H(l.x,l.z)-H(r.x,r.z)));}
+                 bool clash=false;for(int f=0;f<footprints.Count-1;f++)if(QuarryHillsTown.Overlap(new(yc.x,yc.z),new(3.6f,3.6f),Yaw(barn,road.At(s)),footprints[f].c,footprints[f].half,footprints[f].yaw))clash=true;
+                 if(!clash&&lat<.6f&&Mathf.Abs(back-front)<2f){var y=GameObject.CreatePrimitive(PrimitiveType.Cube);y.name="Tuner yard";y.transform.SetParent(root);
+                     float pitch=Mathf.Atan2(back-front,8)*Mathf.Rad2Deg,thick=.3f+lat;
+                     y.transform.SetPositionAndRotation(new Vector3(yc.x,(back+front)*.5f+.04f,yc.z)+yrot*Quaternion.Euler(pitch,0,0)*Vector3.down*(thick*.5f),yrot*Quaternion.Euler(pitch,0,0));y.transform.localScale=new Vector3(8,thick,8.2f);
+                     y.GetComponent<Renderer>().sharedMaterial=yard??=TrialWorld.Material("Tuner yard concrete",new Color(.66f,.65f,.62f),0,.15f);}
+             }}
             // ---- the dairy, out along the road towards the gate, its cows in the field behind
             {float s=Mathf.Min(road.Length-60,sC+420);var n=-N(s);
              var parlour=road.At(s)+n*(half+12f+5.2f);parlour.y=H(parlour.x,parlour.z);if(Building("milking_parlour",parlour,Yaw(parlour,road.At(s)))){Spots["dairy"]=(road.At(s)+n*(half+6),Yaw(parlour,road.At(s))+180);DairyAt=parlour+Vector3.up*4;}
@@ -223,7 +257,11 @@ namespace LittleRoad
         // front door (the kit's Door socket); apple trees in the back garden.
         void Garden(HillcrestRoute.Road road,string id,Vector3 c,float yaw,Vector3 n,float mid,Vector2 size,float setback)
         {
-            float gate=mid;var door=ForgeStandIns.Socket(id,c,yaw,"Door");if(door.HasValue)gate=road.Nearest(door.Value,out _);
+            float gate=mid;var door=ForgeStandIns.Socket(id,c,yaw,"Door");if(door.HasValue){gate=road.Nearest(door.Value,out _);doors.Add(door.Value);}
+            // (the garden: slabs from the gate to the front door, flowers inside the hedge either side of the gate, review BW1-07)
+            {var side=Vector3.Dot(road.Right(gate),n)>0?road.Right(gate):-road.Right(gate);var g0=road.At(gate)+side*(setback-1.2f);g0.y=H(g0.x,g0.z);
+             if(door.HasValue)Slabs(g0,door.Value-(door.Value-g0).normalized*.6f,.85f);
+             if(BayviewKit.Has("flower_bush"))foreach(int f in new[]{-1,1}){var fl=g0+road.Forward(gate)*f*2.2f+side*1.2f;fl.y=H(fl.x,fl.z);Put("flower_bush",fl,(float)dressRng.NextDouble()*360,null,null,false,.8f);}}
             float s0=mid-size.x*.5f-.5f,s1=mid+size.x*.5f+.5f,off=setback-1.2f;
             foreach(var (a,b) in new[]{(s0,gate-1.2f),(gate+1.2f,s1)}) {
                 if(b-a<1.6f)continue;var line=new List<Vector3>();for(float s=a;s<=b+.01f;s+=Mathf.Max(.5f,(b-a)/6)){var p=road.At(s)+(Vector3.Dot(road.Right(s),n)>0?road.Right(s):-road.Right(s))*off;p.y=H(p.x,p.z);line.Add(p);}
