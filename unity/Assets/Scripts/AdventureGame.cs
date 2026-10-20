@@ -185,6 +185,7 @@ namespace LittleRoad
             // velocity autopilot (rows across the wheat; down each orchard row); --activity-hud-review photographs the
             // intro card, the corner tracker and the pause menu's challenge controls, then exits the challenge.
             if(RaceTrial.Has("--harvest-test")&&residents.ContainsKey("farm")){StartCoroutine(FarmTest(FarmChallenges.Kind.Harvest));yield break;}
+            if(RaceTrial.Has("--crop-test")){StartCoroutine(CropTest());yield break;}
             if(RaceTrial.Has("--apples-test")&&residents.ContainsKey("farm")){StartCoroutine(FarmTest(FarmChallenges.Kind.Apples));yield break;}
             if(RaceTrial.Has("--activity-hud-review")&&residents.ContainsKey("farm")){StartCoroutine(ActivityHudReview());yield break;}
             if(RaceTrial.Has("--carving-test")&&QuarryHillsTown.Spots.Count>0){StartCoroutine(CarvingTest());yield break;}
@@ -485,6 +486,21 @@ namespace LittleRoad
             var r_=SpeedTraps.Record(Store.Data,FarmChallenges.Ids[(int)k]);
             Debug.Log($"LITTLE_ROAD_FARM_TEST kind={k} talked={talked} started={started} hud={hud} result={farm.LastResult*100:0.0}% stars={farm.LastStars} best={r_?.best??0} credits={credits}->{Store.Data.credits} trees={Orchard.All.Count}");
             Application.Quit(talked&&started&&hud&&farm.LastStars>=1?0:1);
+        }
+        // --crop-test (bug inbox #20): the car drives straight across a valley field; the crop should lie down in its tracks
+        // (CropTrample). Logs the cells pressed and photographs the field from above.
+        IEnumerator CropTest()
+        {
+            yield return new WaitForSeconds(1);var f=HillcrestTown.SampleField;if(f==null){Debug.Log("LITTLE_ROAD_CROP_TEST no field");Application.Quit(1);yield break;}
+            var (c,yaw,w,d)=f.Value;var along=Quaternion.Euler(0,yaw,0)*Vector3.forward;var a=c-along*(d*.5f+8);var b=c+along*(d*.5f+8);   // (across the rows)a.y=ValleyField.Height(a.x,a.z);b.y=ValleyField.Height(b.x,b.z);
+            Place(a);player.body.rotation=Quaternion.LookRotation(along);yield return new WaitForSeconds(.5f);int before=CropTrample.Pressed;
+            yield return DriveThrough(new List<Vector3>{a,b},10,()=>false);yield return new WaitForSeconds(.3f);
+            string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);
+            // (its own camera, drawn over the chase camera, which keeps following the car)
+            var cam=new GameObject("Crop test camera").AddComponent<Camera>();cam.CopyFrom(Camera.main);cam.depth=Camera.main.depth+10;cam.transform.position=c+Vector3.up*14-Quaternion.Euler(0,yaw,0)*Vector3.right*16+along*6;cam.transform.LookAt(c);Camera.main.tag="Untagged";cam.tag="MainCamera";   // (Toy.Capture renders Camera.main)
+            yield return new WaitForSecondsRealtime(.5f);Toy.Capture(Path.Combine(folder,"crop-track.png"));
+            Debug.Log($"LITTLE_ROAD_CROP_TEST field=({c.x:0},{c.z:0}) pressed={CropTrample.Pressed-before} pass={(CropTrample.Pressed-before>40)}");
+            Application.Quit(CropTrample.Pressed-before>40?0:1);
         }
         IEnumerator TraceFarm(){while(farm.Active){Debug.Log($"LITTLE_ROAD_FARM_TRACE t={Time.time-farm.GoAt:0} car=({player.body.position.x:0},{player.body.position.z:0}) speed={player.speed:0.0} progress={farm.Progress*100:0}%");yield return new WaitForSeconds(4);}}
         IEnumerator ActivityHudReview()

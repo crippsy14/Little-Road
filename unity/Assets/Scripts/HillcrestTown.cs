@@ -855,14 +855,15 @@ namespace LittleRoad
         {
             var palettes=new[]{(new Color(.95f,.80f,.36f),new Color(.86f,.68f,.28f)),(new Color(.66f,.46f,.30f),new Color(.55f,.37f,.24f)),(new Color(.52f,.74f,.30f),new Color(.44f,.64f,.26f)),
                 (new Color(.70f,.58f,.90f),new Color(.47f,.62f,.36f)),(new Color(.99f,.86f,.22f),new Color(.42f,.62f,.26f)),(new Color(.80f,.86f,.42f),new Color(.66f,.76f,.34f))};
-            var v=new List<Vector3>();var col=new List<Color>();var t=new List<int>();int fields=0;
+            var v=new List<Vector3>();var col=new List<Color>();var t=new List<int>();var lift=new List<Vector2>();var rowAt=new List<Vector2>();int fields=0;   // (lift: a ridge top's height, for the Crops shader to press down)
             void Flush()
             {
-                if(v.Count==0)return;var mesh=new Mesh{name="Valley fields"};mesh.SetVertices(v);mesh.SetColors(col);mesh.SetTriangles(t,0);
+                if(v.Count==0)return;var mesh=new Mesh{name="Valley fields"};mesh.SetVertices(v);mesh.SetColors(col);mesh.SetTriangles(t,0);if(PropForge.Enabled){mesh.SetUVs(0,lift);while(rowAt.Count<v.Count)rowAt.Add(Vector2.zero);mesh.SetUVs(1,rowAt);}
                 mesh.RecalculateNormals();mesh.RecalculateBounds();
                 var go=new GameObject("Valley fields",typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root);go.GetComponent<MeshFilter>().sharedMesh=mesh;
                 var r=go.GetComponent<MeshRenderer>();if(fieldMaterial==null){fieldMaterial=new Material(Shader.Find("LittleRoad/Distant")){name="Valley fields"};fieldMaterial.SetFloat("_Haze",.00008f);fieldMaterial.SetColor("_HazeColor",new Color(.66f,.80f,.90f));}
-                r.sharedMaterial=fieldMaterial;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;v.Clear();col.Clear();t.Clear();
+                // (--prop-forge's world: the crops lie down where the car drives through them, bug inbox #20: CropTrample)
+                r.sharedMaterial=PropForge.Enabled?CropTrample.Material("Valley",Rect.MinMaxRect(-760,-1580,1060,-640)):fieldMaterial;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;v.Clear();col.Clear();t.Clear();lift.Clear();rowAt.Clear();
             }
             // Fields share the farm's grid and axis (as real field systems do), in two sizes.
             for(float gx=-700;gx<1000;gx+=74)for(float gz=-690;gz>-1520;gz-=62) {
@@ -892,27 +893,36 @@ namespace LittleRoad
                 int kind=rng.Next(palettes.Length);var (a,b)=palettes[kind];var rot=Quaternion.Euler(0,HillcrestRoute.FarmYaw+(rng.NextDouble()<.5?0:90),0);
                 int rows=Mathf.Max(4,(int)(d/2.6f)),cells=Mathf.CeilToInt(w/2.2f);float spacing=d/rows;
                 float ridge=kind switch{0=>.55f,1=>.16f,2=>.32f,3=>.45f,4=>.7f,_=>.22f};
+                if(SampleField==null&&big&&(kind==0||kind==4)&&ValleyField.RoadDistance(x,z)>40)SampleField=(new Vector3(x,H(x,z),z),rot.eulerAngles.y,w,d);   // (--crop-test drives across its rows)
                 float Top(Vector3 p)=>Mathf.Max(H(p.x,p.z),H(p.x+1.2f,p.z),H(p.x-1.2f,p.z),H(p.x,p.z+1.2f),H(p.x,p.z-1.2f))+.08f;
                 Color Tone(Color c,Vector3 p)=>WorldLook.Surface(c*(.9f+.2f*Mathf.PerlinNoise(p.x*.13f,p.z*.13f)));
+                // (--prop-forge's world: wheat, barley, rapeseed and young crop stand as a canopy the car ploughs through, CropField)
+                if(PropForge.Enabled&&CropField.Height(kind)>0){CropField.Canopy(v,col,t,lift,rowAt,new Vector3(x,0,z),rot,w,d,a,b,CropField.Height(kind),Top,Tone);if(v.Count>50000)Flush();continue;}
                 var furrow=b*(kind==1?.9f:.78f);int sheet=v.Count;
                 for(int iz=0;iz<=rows;iz++)for(int cell=0;cell<=cells;cell++) {
-                    var p=new Vector3(x,0,z)+rot*new Vector3(-w/2+cell*w/cells,0,-d/2+iz*spacing);p.y=Top(p);v.Add(p);col.Add(Tone(furrow,p));
+                    var p=new Vector3(x,0,z)+rot*new Vector3(-w/2+cell*w/cells,0,-d/2+iz*spacing);p.y=Top(p);v.Add(p);col.Add(Tone(furrow,p));lift.Add(Vector2.up);
                     if(iz<rows&&cell<cells){int q=sheet+iz*(cells+1)+cell;t.AddRange(new[]{q,q+cells+1,q+1,q+1,q+cells+1,q+cells+2});}
                 }
+                // (--prop-forge's world, ploughed land and lavender: a ridge vertex every 1.1 m, not 2.2, so a wheel track presses a
+                // crisp notch, and the tops uneven, plant by plant)
+                int ridgeCells=PropForge.Enabled?cells*2:cells;
                 for(int row=0;row<rows;row++) {
                     float lz=-d/2+(row+.5f)*spacing,half=spacing*.31f;int start=v.Count;
-                    for(int cell=0;cell<=cells;cell++) {
-                        var p=new Vector3(x,0,z)+rot*new Vector3(-w/2+cell*w/cells,0,lz);float y=Top(p);var across=rot*Vector3.forward;
+                    for(int cell=0;cell<=ridgeCells;cell++) {
+                        var p=new Vector3(x,0,z)+rot*new Vector3(-w/2+cell*w/ridgeCells,0,lz);float y=Top(p);var across=rot*Vector3.forward;
                         var c=Tone(row%2==0||kind==1?a:Color.Lerp(a,b,.35f),p);
-                        v.Add(new Vector3(p.x,y,p.z)-across*half);v.Add(new Vector3(p.x,y+ridge,p.z));v.Add(new Vector3(p.x,y,p.z)+across*half);col.Add(c*.92f);col.Add(c);col.Add(c*.92f);
+                        float top=PropForge.Enabled&&cell>0&&cell<ridgeCells?ridge*(.78f+.44f*Mathf.PerlinNoise(p.x*.9f+row*3.1f,p.z*.9f)):ridge;
+                        v.Add(new Vector3(p.x,y,p.z)-across*half);v.Add(new Vector3(p.x,y+top,p.z));v.Add(new Vector3(p.x,y,p.z)+across*half);col.Add(c*.92f);col.Add(c*(PropForge.Enabled?.96f+.1f*top/ridge:1));col.Add(c*.92f);
+                        lift.Add(Vector2.zero);lift.Add(new Vector2(top,1));lift.Add(Vector2.zero);
                     }
-                    for(int cell=0;cell<cells;cell++){int q=start+cell*3;t.AddRange(new[]{q,q+1,q+3,q+3,q+1,q+4,q+1,q+2,q+4,q+4,q+2,q+5});}
+                    for(int cell=0;cell<ridgeCells;cell++){int q=start+cell*3;t.AddRange(new[]{q,q+1,q+3,q+3,q+1,q+4,q+1,q+2,q+4,q+4,q+2,q+5});}
                 }
                 if(v.Count>50000)Flush();
             }
             Flush();Debug.Log("LITTLE_ROAD_HILLCREST_FIELDS fields="+fields);
         }
         static Material fieldMaterial;
+        public static (Vector3 centre,float yaw,float w,float d)? SampleField;
         // A field's whole rectangle (either way round, as it isn't turned yet) stays off the roads and their verges. FieldClear
         // alone samples the centre and four points on a circle, so a road across a corner or an edge between them got the
         // striped field draped over it (bug inbox #3, the valley S-bend at (0,-736)).

@@ -59,7 +59,7 @@ public static class MigrationBuild
         }
         Check(Enumerable.Range(1,23).All(p=>EquipmentCatalog.Reward(p)>=EquipmentCatalog.Reward(p+1))&&EquipmentCatalog.Reward(24)>0&&EquipmentCatalog.Reward(0)==0,"Every finisher is paid, better places pay more, a non-finish pays nothing",evidence);
         Directory.CreateDirectory("Assets/Resources/ShaderReferences");
-        foreach(string shaderName in new[]{"Universal Render Pipeline/Lit","Skybox/Procedural","LittleRoad/CoastalSky","LittleRoad/DaySky","LittleRoad/Bunting","LittleRoad/Minimap","LittleRoad/CoastalTerrain","LittleRoad/CoastalFoliage","LittleRoad/CoastalWater","LittleRoad/WorldText","LittleRoad/Distant","LittleRoad/Wheat","LittleRoad/Kit","LittleRoad/InlandWater","LittleRoad/Grass","LittleRoad/SkidMark","LittleRoad/LightTrail","LittleRoad/Waterfall","LittleRoad/SoftPuff"}) {
+        foreach(string shaderName in new[]{"Universal Render Pipeline/Lit","Skybox/Procedural","LittleRoad/CoastalSky","LittleRoad/DaySky","LittleRoad/Bunting","LittleRoad/Minimap","LittleRoad/CoastalTerrain","LittleRoad/CoastalFoliage","LittleRoad/CoastalWater","LittleRoad/WorldText","LittleRoad/Distant","LittleRoad/Crops","LittleRoad/Wheat","LittleRoad/Kit","LittleRoad/InlandWater","LittleRoad/Grass","LittleRoad/SkidMark","LittleRoad/LightTrail","LittleRoad/Waterfall","LittleRoad/SoftPuff"}) {
             var shader=Shader.Find(shaderName);Check(shader!=null,"Required shader "+shaderName,evidence);
             // Find succeeds for a shader that failed to compile (it renders pink): fail the build instead.
             Check(!ShaderUtil.ShaderHasError(shader),"Shader compiles without errors "+shaderName,evidence);
