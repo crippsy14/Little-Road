@@ -98,6 +98,70 @@ Doc 44 (decision 3) allows a speciality locked behind a tracker ("a better engin
 podiums"). I'd keep that rule but cap it: **a speciality is a sidegrade, or at most one step past Best behind a
 tracker, never cheaper and better.** This keeps the ladder from inflating as more towns arrive.
 
+## Hybrids: a battery to manage (Richard's idea, 20 Oct)
+Richard, 20 Oct: "it would be pretty sick if, in earlier classes, certain types of engines require batteries as a hybrid
+and they get better traction off the line but the battery can run out, so if not managed you end up with a heavier car
+with no benefit. When we add pit stops, the battery could be recharged as well." He asked for it to be written up.
+
+Until now "hybrid" was only a part name: class E's Hybrid V6 and V8 and its ERS pack and e-turbo (docs 44, 47) are just
+bigger numbers. This gives them a real system, and gives classes C and B an energy-management layer before fuel arrives
+in class A, so managing a resource already feels natural by the time it matters. It's the path real racing took: KERS in
+F1, then the Le Mans hybrids.
+
+### How it works
+- **A hybrid engine needs a battery.**
+  - A hybrid engine (an engine part with an e-motor) can't be fitted without a battery part.
+  - Battery parts trade capacity against weight, as doc 18's fuel tanks do: a bigger battery deploys for longer but
+    weighs more.
+  - This is where Jed's "lightweight battery" belongs: a small, light battery for the twisty lanes.
+- **Deploying:** the e-motor adds torque from the battery. In our grip-budget model extra torque only helps while the
+  tyres have grip to spare.
+  - Class C cars are mostly power-limited, so in C it's a clear gain off the line and out of slow corners.
+  - In the grippier, more powerful classes the tyres become the limit. There it fills the mid-range and the gaps
+    during gear changes instead.
+  - To be measured on the test tracks, not assumed.
+- **Harvesting:** braking recharges the battery (regeneration). Brake hard into a corner to charge, deploy out of it.
+  That rewards good driving and stops the battery being a one-shot boost.
+- **Running flat:** an empty battery is dead weight, Richard's penalty. Driving that harvests well claws it back.
+- **Controls:** automatic by default (L2 and R2 shift, and the right stick is throttle, so the pad is busy):
+  - it deploys at full throttle out of slow corners;
+  - a mode switch (Save, Balanced, Attack) sits on the d-pad or the pause wheel;
+  - an "Attack" button for overtakes is a possible later extra.
+- **The AI** uses the same automatic rule as the player. It stays fair, and the AI work is small: its speed planning
+  reads the extra torque from the battery's charge.
+- **On screen and in the ear:** a battery bar beside the speedometer (the gadget charge HUD already exists), and an
+  e-motor whine layered under the engine (the sound system has room for it).
+
+### Recharging
+- **Classes C and B (no pits):** the battery starts each race full, and recharges at any Pit Stop in free roam.
+- **From class A:** recharging becomes a pit service, a fixed 3 seconds added to the stop beside fuel and tyres
+  (doc 18's service model).
+- **Strategy:** a hybrid burns less fuel, so it may skip a fuel stop. Hybrid against pure petrol becomes a real
+  strategy choice.
+
+### Up the classes
+| Class | Hybrid |
+|---|---|
+| C | One mild-hybrid engine as a sidegrade (a city-car hybrid) and two batteries: a small boost to learn on |
+| B | Proper hybrids with real regeneration; batteries on the ladder |
+| A | Recharging joins the pit stops; hybrids save fuel |
+| E | The full system: the existing hybrid engines, ERS pack and e-turbo get real batteries |
+
+### Balance and risk
+It mustn't win everywhere:
+- a small battery;
+- the extra weight, which tells when the battery is flat;
+- a hybrid makes less peak power than its matching petrol engine.
+
+Those should make it a choice, not an upgrade. It goes in behind a flag and through keep/reject races like everything
+else. It also needs a new slot (Battery) that only matters with a hybrid engine fitted. The shop would show it only once a
+hybrid engine is owned.
+
+### First step
+A prototype after the lanes race: one class C mild hybrid with a battery, regeneration and automatic deploy, behind
+`--hybrid`. Measure it against its petrol twin on Bayview and Hillcrest (lap times, launch and corner exits, the effect
+of running flat), then the AI's use of it.
+
 ## Decisions for Richard
 1. **Induction:** the turbo slot becomes Induction, holding both naturally aspirated and turbo parts?
 2. **Suspension:** add a suspension slot with road roughness (option B.2)? Now, as part of Bramblewick, or as its own
@@ -106,5 +170,6 @@ tracker, never cheaper and better.** This keeps the ladder from inflating as mor
    than inside Induction.
 4. **Specialities:** sidegrades, or at most one step past Best behind a tracker?
 5. **Field stars in the data**, so new parts don't change existing races?
+6. **Hybrids** (above, Richard's idea): agreed in principle ("write it up"). It's prototyped after the lanes race.
 
 Until these are decided, Jed's shop waits. The rest of Bramblewick carries on: per-circuit widths and the lanes race.

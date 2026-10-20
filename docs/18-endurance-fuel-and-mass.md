@@ -6,6 +6,12 @@
 
 See [doc 45](45-roadmap-and-feature-spec.md) F8. The mechanics below still apply.
 
+**Updated 20 October, hybrids:** batteries join fuel and tyres as a resource. Hybrid engines need a battery part that
+trades capacity against weight, as the tanks below do. The e-motor deploys automatically out of slow corners and braking
+recharges it; a flat battery is dead weight. Classes C and B meet it first, with the battery full at each start. From
+class A a recharge is a pit service, a fixed 3 seconds beside fuel and tyres, and hybrids burn less fuel. The design is
+in [doc 83](83-parts-system.md), "Hybrids".
+
 
 19 September 2026. User-requested expansion; specification only. The current prototype does not implement these endurance systems. This promotes energy/endurance from a later possibility to a required part of the 12-hour game.
 
