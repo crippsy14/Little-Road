@@ -7,10 +7,12 @@ namespace LittleRoad
     // Prop Forge (docs/76, docs/77): the world's run kits (walls, fences) and objects (bales, jerry cans) are built in
     // car-forge (forge/world) and synced as build output into Resources/Props: <kit>.json, the contract (schema
     // prop-forge-kit/0), and <kit>_mesh.bytes, the mesh data (8 floats a vertex: position, normal, uv; then uint32
-    // indices), already in Unity's axes. Off by default: --prop-forge (and the --run-range fixture).
+    // indices), already in Unity's axes. On by default since 20 Oct (--no-prop-forge, with --old-bayview, for the old world; the --run-range fixture).
     public static class PropForge
     {
-        public static bool Enabled=>enabled??=RaceTrial.Has("--prop-forge")||RunRange.Requested||NewBayview.On;static bool? enabled;   // (once: asked per spawn)   // (the new Bayview is built with Prop Forge: docs/80)
+        // (on in the game since 20 Oct: --no-prop-forge --old-bayview is the old world, fingerprint 3f164ae90677e486; the editor's
+        //  checks and bakes keep the old world unless asked, --prop-forge)
+        public static bool Enabled=>enabled??=(Application.isEditor?RaceTrial.Has("--prop-forge"):!RaceTrial.Has("--no-prop-forge"))||RunRange.Requested||NewBayview.On;static bool? enabled;   // (once: asked per spawn)   // (the new Bayview is built with Prop Forge: docs/80)
     }
     [Serializable] public sealed class PropVec{public float x,y,z;public Vector3 V=>new(x,y,z);}
     [Serializable] public sealed class PropSub{public string material;public int start,count;}

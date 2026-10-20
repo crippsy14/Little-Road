@@ -50,12 +50,15 @@ namespace LittleRoad
             WorldTiles.Plan(AdventureSession.ReturnSpot??(!Testing&&Store.Data.spot!=null&&Store.Data.spot.Length==4?new Vector3(Store.Data.spot[0],Store.Data.spot[1],Store.Data.spot[2]):NewBayview.On?NewBayview.Spawn:new Vector3(-63,0,-94)));
             RaceArea.Clear();world=GetComponent<RaceTrial>();world.freeRoam=true;world.track=new Circuit();world.elapsed=1;yield return TrialWorld.CreateRoutine(world.track,false);Mark("world");
             // (--prop-forge: the streets dressed once everything is built, the village and the towns included; docs/78)
-            if(PropForge.Enabled&&CoastalLandscape.WorldRoot!=null){Physics.SyncTransforms();PropForgeDressing.Build(CoastalLandscape.WorldRoot);Mark("dressing");Debug.Log("LITTLE_ROAD_GROUND_FIT "+GroundFit.Summary);}
+            if(PropForge.Enabled&&CoastalLandscape.WorldRoot!=null){Physics.SyncTransforms();PropForgeDressing.Build(CoastalLandscape.WorldRoot);Mark("dressing");BankBarriers.Build(CoastalLandscape.WorldRoot,world.track);Mark("bank-barriers");Debug.Log("LITTLE_ROAD_GROUND_FIT "+GroundFit.Summary);}
             // (--world-fingerprint: the built world, every streamed tile included, before the town's life and cars are added.)
             if(RaceTrial.Has("--world-fingerprint")){WorldTiles.Complete();yield return null;Debug.Log("LITTLE_ROAD_WORLD_FINGERPRINT "+CoastalLandscape.Fingerprint());}   // (a frame: deferred destroys land)
             // (Tests and audits see the whole world at once; --world-tiles-test watches it stream.)
             if(Testing&&!RaceTrial.Has("--world-tiles-test"))WorldTiles.Complete();
             Debug.Log($"LITTLE_ROAD_WORLD_TILES ready deferred={WorldTiles.Deferred} pending={WorldTiles.Pending} spawned={BayviewKit.Spawned}");
+            // (--list-near x,z,r: every kit piece within r metres, by name and place: to identify what a snap shows)
+            if(RaceTrial.Arg("--list-near") is string near&&near.Contains(",")){var a=near.Split(',');float F(int i)=>float.Parse(a[i],System.Globalization.CultureInfo.InvariantCulture);var c=new Vector2(F(0),F(1));
+                foreach(var go in BayviewKit.Placed)if(go!=null){var p=go.transform.position;if(Vector2.Distance(new(p.x,p.z),c)<F(2))Debug.Log($"LITTLE_ROAD_NEAR {go.name} {p} yaw {go.transform.eulerAngles.y:0} parent {(go.transform.parent!=null?go.transform.parent.name:"-")}");}}
             residents["garage"]=new Vector3(-62,0,-100);
             // Pit Stop bay hosts (Bayview: garage + parts). Hillcrest's arrive through HillcrestTown.Spots.
             foreach(var (id,key) in new[]{("garage","bayview/garage"),("parts","bayview/parts")})if(PitStop.Hosts.TryGetValue(key,out var host)){residents[id]=host.at;residentYaw[id]=host.yaw;}

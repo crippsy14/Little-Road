@@ -5,7 +5,7 @@ using LittleRoad;
 using UnityEngine;
 
 // Prop Forge, step 1 (docs/77): the kit contract read back (car-forge forge/world/kit.py -> Resources/Props), its axes and
-// winding, one ground provider, and the run test range's roads. Off by default (--prop-forge, --run-range).
+// winding, one ground provider, and the run test range's roads. On by default since 20 Oct (--no-prop-forge, --old-bayview for the old world; --run-range).
 public static class PropForgeChecks
 {
     sealed class Slope:Ground.IProvider{public float Height(float x,float z)=>.3f*x+2;}
@@ -16,7 +16,7 @@ public static class PropForgeChecks
     {
         var checks=new List<string>();
         void Check(bool condition,string message){if(!condition)throw new InvalidOperationException(message);checks.Add(message);}
-        Check(!PropForge.Enabled&&!RunRange.Requested,"Prop Forge is off without --prop-forge or --run-range");
+        Check(!PropForge.Enabled&&!RunRange.Requested,"Prop Forge is off in the editor's checks without --prop-forge (on by default in the game since 20 Oct)");
 
         // the contract: the probe kit (one post, one rail) as the sync wrote it
         PropKit.Forget();var kit=PropKit.Load("probe");

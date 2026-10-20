@@ -8,7 +8,8 @@ a plan for the whole map, with an ordered list of towns, and start working throu
 1. **Plan:** a short list of work, written here before the build starts.
 2. **Build:** behind the existing flags.
    - `--new-bayview` implies `--prop-forge` from round 1.
-   - The world without flags keeps its fingerprint (`3f164ae90677e486`).
+   - The old world keeps its fingerprint (`3f164ae90677e486`). Since 20 Oct that is `--old-bayview --no-prop-forge`:
+     Prop Forge and the new Bayview are the game's default.
 3. **Check:**
    - the area audit (docs/57) for the towns touched;
    - close-up photos;
@@ -262,6 +263,39 @@ a plan for the whole map, with an ordered list of towns, and start working throu
   - **Review:** one Sonnet agent on two contact sheets (14 views), covering rounds 4-6:
     `review/street-review/r6-targeted.md`.
 
+- **Round 7: done (20 Oct). The review's fixes, the leftovers, Richard's snaps, and the flags into the game.**
+  - **From the targeted review** (`review/street-review/r6-targeted.md`):
+    - **Terrace walls:** each terrace's walls are one continuous dry-stone run along its curve. Where a run can't stand,
+      each piece tries alone, then falls back to its box: 115 runs.
+    - **The silo:** self-coloured seams and a door in place of the dark grid that read as glass; 4 m clear of the barn.
+    - **The quay:** a heavier crane, and slate stacks along the wagon rake and round the crane's foot.
+    - **Garden paths:** each Quarry Hills house's fence gate stands before its front door (a new `Door` socket on the
+      houses and terraces kits), with stepping slabs from the pavement to the door.
+    - **Back rows:** no unnamed shops.
+    - **The balustrade:** the square's parapet no longer doubles up behind the balusters; under them it is only the
+      retaining face.
+    - **The drawbridge:** it was there all along; the review's camera was below the road.
+  - **Steep banks** (`BankBarriers`): the edge audit's unguarded banks get a wall along their top once the world is
+    built. Dry-stone first, then post-and-rail or armco where a pier can't stand.
+    - Hillcrest's banks went from 6 to 0, and Hillcrest Valley's from 4 to 0.
+    - The sites are cached per build and flag set: 1.8 s on a build's first launch, about 20 ms after.
+  - **Richard's snaps** (bug inbox #15-#21):
+    - Houses built over each other at a Hillcrest junction: buildings now test each other's footprints.
+    - Phone boxes in the castle, and the zipline entrance blocked: fixed.
+    - Tyres singly at random: the new Car Forge `tyres` run kit lays each corner's outside as one barrier, on the
+      raceway, the Quarry Sprint loop and the new Bayview.
+    - Opened for round 8: the UI's look and the fields.
+  - **In the game by default** (Richard, 20 Oct): Prop Forge, the new Bayview, the Car Forge class C roster and
+    stop-look.
+    - Opt-outs: `--no-prop-forge`, `--old-bayview`, `--no-forge-roster`, `--no-stop-look`.
+    - The editor's checks and bakes still build the old world unless asked.
+    - Left off for Richard: `--traffic-yield`, `--livery`, `--wheel-camber` and `--ambient-traffic`.
+  - **Checks:**
+    - The old world's fingerprint is unchanged.
+    - The smoke test passes on the default build.
+    - The audit: Quarry Hills has one road-edge lip; Hillcrest has one floating vine row; Bayview has two rocks at the
+      waterline; Hillcrest Valley has two lips. All are carried into round 8.
+
 ## Reviewing without photo sweeps (20 Oct)
 Richard, 20 Oct: the street-review agents (three photos every 40 m, read by an agent) used a lot of usage for little
 return. From now on:
@@ -278,9 +312,13 @@ return. From now on:
 Used in round 4: seven audit runs and four photo runs, about 15 small pictures, and no agents.
 
 ## Where to pick up
-- **Hillcrest's leftovers** go into round 7: the floating piece and six steep banks, and the terrace runs' load cost.
-- **Round 7:** both towns judged the new way (audit, flagged photos), with QH2-09-22.
-- **Round 8: the whole map** (Richard, 20 Oct).
+- **Leftovers for round 8:**
+  - the floating vine row (Hillcrest);
+  - two waterline rocks (Bayview);
+  - the road-edge lips (Quarry Hills, Hillcrest Valley)..
+- **Still open from the Quarry Hills review:** QH2-09-22 (pavement ends, blank gables, slope textures).
+- **Round 8: the whole map** (Richard, 20 Oct). It also takes in the UI art pass (bug #18) and the fields redo
+  (bug #20).
   - Plan every town from docs/58 and the world plan, with its parts and races, in order.
   - Then build the towns one at a time, in the same loop: build, check, a targeted agent review, then fold its agreed
     suggestions into the next round.

@@ -17,7 +17,9 @@ public static class GradeModelChecks
             GradeModel.Enabled=false;var off=new RacingSpeedProfile(flatLine,CarTuning.Club);
             GradeModel.Enabled=true;var on=new RacingSpeedProfile(flatLine,CarTuning.Club);
             bool same=off.predictedLapTime==on.predictedLapTime;for(int i=0;i<off.speed.Length&&same;i++)same=off.speed[i]==on.speed[i];
-            Check(same,"Level circuit speed profile is identical with --grade-aware");
+            // (the new Bayview, the default since 20 Oct, climbs and falls: the parity holds on a level loop only)
+            bool level=true;foreach(var q in bayview.points)if(Mathf.Abs(q.y-bayview.points[0].y)>.01f){level=false;break;}
+            Check(!level||same,"Level circuit speed profile is identical with --grade-aware");
             Check(GradeModel.Slope(bayview,100,bayview.Forward(100))==0,"No slope force on a level circuit");
             // Cedar Hills: Cedar's layout, 20-25 m of climb, grades under 10%.
             var hills=new TechnicalCircuit("cedar-hills");var cedar=new TechnicalCircuit();

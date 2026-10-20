@@ -11,7 +11,9 @@ namespace LittleRoad
     // quay and the rail loop stay where Hillcrest expects them.
     public static class NewBayview
     {
-        public static bool On=>on??=RaceTrial.Has("--new-bayview");static bool? on;   // (once: Has reads the command line, and the land asks per cell)
+        // (once: Has reads the command line, and the land asks per cell. The new Bayview is the game's since 20 Oct, --old-bayview
+        //  for the old island; the editor's checks and bakes still build the old one unless asked, --new-bayview)
+        public static bool On=>on??=Application.isEditor?RaceTrial.Has("--new-bayview"):!RaceTrial.Has("--old-bayview");static bool? on;
         public static readonly Vector3 Spawn=new(62,1.2f,-40);   // (on the Pit Stop's forecourt, by the start straight)
         public static readonly Vector3 PitStopSite=new(62,FrontY,-24);public const float PitStopYaw=180;   // (facing the start straight)
         // The harbour front's town row: the loop's arc where the road runs round the harbour (its inland, left-hand side).
@@ -501,12 +503,16 @@ namespace LittleRoad
                 if(track.At(track.Nearest(q,out _)) is var a&&new Vector2(a.x-q.x,a.z-q.z).magnitude<13.5f)return false;   // (another stretch of the loop close by: the S-bend)
                 return CoastDistance(q.x,q.z)>3;
             }
+            // (each bend's tyre walls as one tyre barrier run along its outside, docs/80 round 7: TyreBarriers)
+            var corner=new List<Vector3>();var cornerYaw=new List<float>();float cornerSide=0;
+            void FlushCorner(){if(corner.Count>0&&!TyreBarriers.Lay(corner,root,"Bayview tyres"))for(int k=0;k<corner.Count;k++)BayviewKit.Spawn("tyre_wall",corner[k],cornerYaw[k],root);tyres+=corner.Count;corner.Clear();cornerYaw.Clear();}
             for(float s=0;s<track.length;s+=3) {
                 float bend=Vector3.Cross(track.Forward(s-6),track.Forward(s+6)).y;since+=3;
+                if(Mathf.Abs(bend)<=.32f)FlushCorner();
                 if(Mathf.Abs(bend)<.2f)continue;
                 var r=track.Right(s);r.y=0;r.Normalize();float outside=-Mathf.Sign(bend);var at=track.At(s);
                 if(Mathf.Abs(bend)>.32f&&BayviewKit.Has("tyre_wall")) {
-                    var q=at+r*outside*14.6f;if(Clear(q)){q.y=Height(q.x,q.z,track)-.02f;BayviewKit.Spawn("tyre_wall",q,Mathf.Atan2(-r.x*outside,-r.z*outside)*Mathf.Rad2Deg,root);tyres++;}
+                    var q=at+r*outside*14.6f;if(Clear(q)){q.y=Height(q.x,q.z,track)-.02f;if(outside!=cornerSide)FlushCorner();cornerSide=outside;corner.Add(q);cornerYaw.Add(Mathf.Atan2(-r.x*outside,-r.z*outside)*Mathf.Rad2Deg);}
                 }
                 if(since>=12&&BayviewKit.Has("chevron_sign")) {
                     var q=at+r*outside*16.5f;if(!Clear(q))continue;q.y=Height(q.x,q.z,track);since=0;
@@ -514,7 +520,7 @@ namespace LittleRoad
                     if(bend<0)sign.transform.localScale=new Vector3(-1,1,1);   // (the arrows point along local +x: mirrored for right-handers)
                 }
             }
-            Debug.Log($"LITTLE_ROAD_NEW_BAYVIEW_BENDS chevrons={chevrons} tyres={tyres}");
+            FlushCorner();Debug.Log($"LITTLE_ROAD_NEW_BAYVIEW_BENDS chevrons={chevrons} tyres={tyres} barriers={TyreBarriers.Laid}");
         }
         // Roadside walls (docs/80 round 1): Cornish dry-stone, 12.2 m out (the runoff's edge), along every stretch where the
         // land falls away steeply within 12 m of the kerb: the area audit's "bank" (a drop steeper than 0.55 over a metre,

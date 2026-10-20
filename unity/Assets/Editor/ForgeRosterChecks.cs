@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LittleRoad;
 
-// --forge-roster (CarBodies.RosterPools, RaceRoster.Recipe): class C fields drawn from the Car Forge roster by star band.
+// The Forge roster (on by default since 20 Oct; --no-forge-roster) (CarBodies.RosterPools, RaceRoster.Recipe): class C fields drawn from the Car Forge roster by star band.
 // Every star of the ladder, on tarmac and on gravel, has cars in every pool; the pools respect band and surface; the flag
 // is off by default and the roster's bodies race in the standard envelope.
 public static class ForgeRosterChecks
@@ -12,7 +12,7 @@ public static class ForgeRosterChecks
     {
         var checks=new List<string>();
         void Check(bool condition,string message){if(!condition)throw new InvalidOperationException(message);checks.Add(message);}
-        Check(!CarBodies.RosterEnabled,"Forge roster is off without --forge-roster");
+        Check(CarBodies.RosterEnabled,"Forge roster is on by default (20 Oct; --no-forge-roster turns it off)");
         var roster=CarBodies.Roster;
         Check(roster.Length>=40,"Forge roster: the class C roster is installed ("+roster.Length+" cars with a star band)");
         foreach(var id in roster)Check(CarBodies.IsKnown(id)&&CarBodies.UsesStandardEnvelope(id),"Forge roster: "+id+" is a known body in the standard envelope");

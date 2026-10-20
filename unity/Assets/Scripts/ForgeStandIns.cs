@@ -31,15 +31,15 @@ namespace LittleRoad
         public static IEnumerable<string> Ids{get{Load();return map.Keys;}}
         // Where a stand-in's chimney smokes (its Chimney socket, docs/80): the variant standing at `at`, turned by `yaw`.
         // Otherwise `kit` (the Blender kit's chimney, from the caller's table), turned the same way.
-        public static Vector3 ChimneyOr(string id,Vector3 at,float yaw,Vector3 kit,bool shop=false)
+        public static Vector3 ChimneyOr(string id,Vector3 at,float yaw,Vector3 kit,bool shop=false)=>Socket(id,at,yaw,"Chimney",shop)??at+Quaternion.Euler(0,yaw,0)*kit;
+        // Where a stand-in's named socket is in the world (its Chimney, its front Door: docs/80), for the variant standing at
+        // `at` turned by `yaw`; null with no stand-in or no such socket.
+        public static Vector3? Socket(string id,Vector3 at,float yaw,string name,bool shop=false)
         {
-            var rot=Quaternion.Euler(0,yaw,0);
-            if(Has(id)) {
-                var e=map[id];string piece=Variant(id,e,at,shop);
-                var p=PropKit.Load(e.kit).Piece(piece);
-                if(p.sockets!=null)foreach(var s in p.sockets)if(s.name=="Chimney"){var v=s.at.V;return at+rot*new Vector3(-v.x,v.y,-v.z);}   // (turned half round, as the model is)
-            }
-            return at+rot*kit;
+            if(!Has(id))return null;
+            var e=map[id];var p=PropKit.Load(e.kit).Piece(Variant(id,e,at,shop));
+            if(p.sockets!=null)foreach(var s in p.sockets)if(s.name==name){var v=s.at.V;return at+Quaternion.Euler(0,yaw,0)*new Vector3(-v.x,v.y,-v.z);}   // (turned half round, as the model is)
+            return null;
         }
         // The variant for a placement: a hash of where it stands (the same piece every build), and its source prefab. key
         // names the template (one per variant).

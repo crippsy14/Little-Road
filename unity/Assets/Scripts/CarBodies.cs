@@ -70,10 +70,10 @@ namespace LittleRoad
             public int[] band;public string surface;public bool quick;
             // (and its class: C, or B for the class B roster, docs/roster-b-design.md; files from before 17 Oct have none: C)
             public string cls;public string Class=>string.IsNullOrEmpty(cls)?"C":cls;}
-        // --forge-roster (off by default): class C and class B fields drawn from the Car Forge rosters (car-forge
+        // The Forge roster (on by default since 20 Oct; --no-forge-roster for the old fields): class C and class B fields drawn from the Car Forge rosters (car-forge
         // docs/roster-c-design.md, "How a field of 24 is filled", and docs/roster-b-design.md): every installed Forge body
         // whose file names a star band, by its class.
-        public static bool RosterEnabled=>RaceTrial.Has("--forge-roster");
+        public static bool RosterEnabled=>!RaceTrial.Has("--no-forge-roster");   // (class B's roster is withdrawn for now: tools/forge-cars.txt)
         static string[] rosterAll;
         static readonly System.Collections.Generic.Dictionary<string,string[]> rosters=new();
         static string[] RosterAll

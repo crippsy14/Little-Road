@@ -44,13 +44,17 @@ namespace LittleRoad
             int n=Loop.Length;
             // Tyre walls on the outside of the bends, boards along the straights.
             string[] brands={"GRIT & GRAVEL","CABAN","SLATE QUAY","PINE & PEAK","BARA BRITH","DAI'S DUMPERS","GLAS WATER","YSGOL RALI"};int brand=0;float since=99;
+            // (--prop-forge: a bend's outside as one tyre barrier run, docs/80 round 7: TyreBarriers)
+            var corner=new List<Vector3>();var cornerYaw=new List<float>();int cornerSide=0;
+            void FlushCorner(){if(corner.Count>0&&!TyreBarriers.Lay(corner,root,"Quarry Sprint tyres"))for(int k=0;k<corner.Count;k++)Put("tyre_wall",corner[k],cornerYaw[k],null,null,root);corner.Clear();cornerYaw.Clear();}
             for(int i=0;i<n;i+=3) {
                 Vector3 p=Loop[i],back=Loop[(i+n-8)%n],ahead=Loop[(i+8)%n];Vector3 tan=ahead-back;tan.y=0;tan.Normalize();var r=Vector3.Cross(Vector3.up,tan);
-                float turn=Vector3.SignedAngle(new Vector3(p.x-back.x,0,p.z-back.z),new Vector3(ahead.x-p.x,0,ahead.z-p.z),Vector3.up);since+=6;
-                if(Mathf.Abs(turn)>9){int outside=turn>0?-1:1;var q=p+r*outside*(LoopWidth*.5f+3.4f);if(Clear(q,LoopWidth*.5f+2.8f)){q.y=QuarryHills.FloorY-.02f;Put("tyre_wall",q,Yaw(q,q-r*outside),null,null,root);}}
+                float turn=Vector3.SignedAngle(new Vector3(p.x-back.x,0,p.z-back.z),new Vector3(ahead.x-p.x,0,ahead.z-p.z),Vector3.up);since+=6;if(PropForge.Enabled&&Mathf.Abs(turn)<=9)FlushCorner();
+                if(Mathf.Abs(turn)>9){int outside=turn>0?-1:1;var q=p+r*outside*(LoopWidth*.5f+3.4f);if(Clear(q,LoopWidth*.5f+2.8f)){q.y=QuarryHills.FloorY-.02f;if(PropForge.Enabled){if(outside!=cornerSide)FlushCorner();cornerSide=outside;corner.Add(q);cornerYaw.Add(Yaw(q,q-r*outside));}else Put("tyre_wall",q,Yaw(q,q-r*outside),null,null,root);}}
                 else if(since>48){since=0;int side=brand%2==0?1:-1;var q=p+r*side*(LoopWidth*.5f+4.5f);if(Clear(q,LoopWidth*.5f+4)){q.y=QuarryHills.FloorY-.02f;
                     Put("ad_board",q,Yaw(q,q-r*side),T(new[]{0xf4f1ea,0xf1c40f,0xc9d3e8,0xe5bfa8}[brand%4],new[]{0xc0392b,0x229954,0x1f3a93,0x2e86c1}[brand%4],0,0),brands[brand%brands.Length],root);brand++;}}
             }
+            FlushCorner();
             // Start gate on the north straight, the grandstand facing it from the infield, flags along the start.
             int s0=HillcrestRoute.Index(Loop,new Vector3(-2335,0,-2935));var f=Loop[(s0+2)%n]-Loop[(s0+n-2)%n];f.y=0;f.Normalize();
             // (No gate over the circuit: a 16 m race track is wider than the gate, and its piers stopped the field.) Painted lines

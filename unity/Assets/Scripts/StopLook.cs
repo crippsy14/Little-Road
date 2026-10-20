@@ -3,14 +3,14 @@ using UnityEngine.InputSystem;
 
 namespace LittleRoad
 {
-    // --stop-look (off by default; Richard, 17 Oct: "when at a complete stop ... use the right stick to move around the
+    // On by default since 20 Oct (Richard: "remove the flag and include it by default"); --no-stop-look turns it off. (Richard, 17 Oct: "when at a complete stop ... use the right stick to move around the
     // car on both axes so you can admire the area"). Stopped dead in free roam, the right stick swings the chase camera
     // round the car: all the way round, and from near the ground to high above. The view stays where it's left while the
     // car stands; driving off eases it back behind the car. Directions and rates as Photo Mode's (stick up lowers the
     // camera, so the view looks up).
     public static class StopLook
     {
-        public static bool Enabled=>RaceTrial.Has("--stop-look");
+        public static bool Enabled=>!RaceTrial.Has("--no-stop-look");
         // Stopped below 0.15 m/s, moving again above 0.6 m/s (so a car settling on its springs doesn't flicker it).
         // The stick's dead zone; degrees a second at full stick; the camera's height range in degrees above the car's
         // look point; how quickly the view eases in and back.

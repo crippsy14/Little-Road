@@ -275,7 +275,12 @@ namespace LittleRoad
                     // (Street review, 5 Oct: cars in a shop's front garden stood against its window and door, and an arcade's piers
                     // stand out into the garden.) No drive in front of a shop or an arcade.
                     bool drive=id!="terrace_f"&&id!="cottage_b"&&id!="cottage_c"&&id!="terrace_b"&&id!="terrace_c"&&rng.NextDouble()<.55;
-                    if(PropForge.Enabled){if(!shopFront)Crawiau(road,side,mid,size.x);}
+                    if(PropForge.Enabled&&!shopFront) {
+                        // (the fence's gate before the front door, and a flagstone path across the garden to it: review R6-09)
+                        float gate=mid;var door=ForgeStandIns.Socket(id,centre,Yaw(centre,at),"Door");
+                        if(door.HasValue)gate=Mathf.Clamp(road.Nearest(door.Value,out _),mid-size.x*.5f+.8f,mid+size.x*.5f-.8f);
+                        Crawiau(road,side,mid,size.x,gate);GardenPath(road,side,gate);
+                    }
                     else if(drive)Homes.Add((yard,Quaternion.LookRotation(road.Forward(mid)*(rng.NextDouble()<.5?1:-1)).eulerAngles.y,id));else Crawiau(road,side,mid,size.x);
                     // (--prop-forge: at the party wall, between two fronts: in the middle of one it stood before a door or a
                     //  shop's name, street review QH2-03/04)
@@ -300,11 +305,23 @@ namespace LittleRoad
             Homes.Add((p,Quaternion.LookRotation(rng.NextDouble()<.7?right:-right).eulerAngles.y,"drive"));
         }
         readonly List<Matrix4x4> slabs=new();
-        void Crawiau(HillcrestRoute.Road road,int side,float mid,float width)
+        // Stepping slabs from the back of the pavement to the house front, each sat on the ground under it.
+        void GardenPath(HillcrestRoute.Road road,int side,float s)
         {
+            var right=road.Right(s)*side;var rot=Quaternion.LookRotation(right);
+            for(int k=0;k<3;k++) {
+                var p=road.At(s)+right*(road.width*.5f+Pave+.45f+k*(Garden-.6f)/2.5f);float lo=float.MaxValue;
+                float hi=float.MinValue;foreach(var c in new[]{new Vector3(-.45f,0,-.28f),new Vector3(.45f,0,-.28f),new Vector3(-.45f,0,.28f),new Vector3(.45f,0,.28f)}){var q=p+rot*c;float g=H(q.x,q.z);lo=Mathf.Min(lo,g);hi=Mathf.Max(hi,g);}
+                // (its top 4 cm over the high side, deep enough to reach the low side: the first sat in the grass, unseen)
+                p.y=hi-.11f;Box("Garden path",p,new Vector3(.95f,.3f+(hi-lo),.6f),rot*Quaternion.Euler(0,(k-1)*4,0),paving,false).transform.position=p-Vector3.up*(hi-lo)*.5f;
+            }
+        }
+        void Crawiau(HillcrestRoute.Road road,int side,float mid,float width,float gate=float.NaN)
+        {
+            if(float.IsNaN(gate))gate=mid;
             float off=road.width*.5f+Pave+.12f;
             for(float s=mid-width*.5f+.35f;s<=mid+width*.5f-.35f;s+=.64f) {
-                if(Mathf.Abs(s-mid)<.75f)continue; // the gate
+                if(Mathf.Abs(s-gate)<.75f)continue; // the gate
                 var p=road.At(s)+road.Right(s)*side*off;float g=H(p.x,p.z);if(ValleyField.RoadDistance(p.x,p.z)<road.width*.5f+1.5f)continue;
                 float h=.75f+(float)rng.NextDouble()*.3f,tilt=((float)rng.NextDouble()-.5f)*6;
                 GardenProps.Add(p); // (parked cars keep clear of the fence: ValleyLife.NearProp)
@@ -473,6 +490,7 @@ Combine("Yard walls",walls,stone,true);Combine("Footpaths",paths,paving,false);C
             for(float s=from;s<to;) {
                 string id=rng.NextDouble()<.85?new[]{"terrace_a","terrace_c","terrace_d","terrace_d","terrace_f","terrace_f","terrace_g"}[rng.Next(7)]:"house_d";
                 if(rng.NextDouble()<.5)id=new[]{"cottage_a","cottage_b","cottage_c"}[rng.Next(3)];
+                if(PropForge.Enabled&&id=="terrace_g")id="terrace_d";   // (the Forge's terrace_g is a shop: a back row has no street for one, review R6-10)
                 var size=Footprint(id);
                 var basePt=road.At(s);var right=road.Right(s);
                 var centre=basePt+right*side*(d+size.y*.5f);

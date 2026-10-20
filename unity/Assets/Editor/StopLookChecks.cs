@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using LittleRoad;
 using UnityEngine;
 
-// --stop-look (StopLook): stopped dead, the right stick swings the free-roam camera round the car; moving, it does
+// StopLook (on by default since 20 Oct; --no-stop-look): stopped dead, the right stick swings the free-roam camera round the car; moving, it does
 // nothing; driving off brings the view back behind the car.
 public static class StopLookChecks
 {
@@ -13,7 +13,7 @@ public static class StopLookChecks
         void Check(bool condition,string message){if(!condition)throw new InvalidOperationException(message);checks.Add(message);}
         const float dt=1/60f;var chase=new Vector3(0,2.5f,-6.5f);float elev=StopLook.Elevation(chase);
         StopLook.State Run(StopLook.State s,float speed,Vector2 stick,bool free,float seconds){for(float t=0;t<seconds;t+=dt)s=StopLook.Step(s,speed,stick,free,dt,elev);return s;}
-        Check(!StopLook.Enabled,"Stop look is off without --stop-look");
+        Check(StopLook.Enabled,"Stop look is on by default (Richard, 20 Oct; --no-stop-look turns it off)");
         var moving=Run(default,8,Vector2.right,true,1);
         Check(moving.weight==0&&moving.yaw==0&&StopLook.Orbit(chase,moving)==chase,"Stop look: moving, the right stick leaves the chase camera alone");
         var held=Run(default,0,Vector2.zero,false,.2f);held=Run(held,0,Vector2.right,false,1);

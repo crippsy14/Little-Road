@@ -49,6 +49,12 @@ namespace LittleRoad
             var rng=new System.Random(3301);
             // (--prop-forge: the quarry kit's racked slate stacks, not boxes: docs/80 round 6)
             for(float u=-78;u<60;u+=7.5f)for(float v=-38;v<-14;v+=6.5f){if(rng.NextDouble()<.22)continue;float h=.8f+(float)rng.NextDouble()*1.4f;if(forgeWorks&&BayviewKit.Has("slate_stack")){Put("slate_stack",P(u+(float)rng.NextDouble(),v,Y+.02f),alongYaw+(float)rng.NextDouble()*6-3,null,null,root);continue;}Box(slates,P(u+(float)rng.NextDouble(),v,Y+h*.5f),new Vector3(2.4f,h,1.4f),alongYaw+(float)rng.NextDouble()*6-3);}
+            // (--prop-forge: stacks where the work is: along the inland side of the wagon rake and round the crane's foot,
+            //  review R6-01, the quay read as empty)
+            if(forgeWorks&&BayviewKit.Has("slate_stack")) {
+                for(int k=0;k<8;k++)Put("slate_stack",P(-72+k*4.2f,9.2f,Y+.02f),alongYaw+(k%2)*180,null,null,root);
+                foreach(var (du,dv) in new[]{(-9f,4.5f),(-4.5f,8f),(5f,8.5f),(9.5f,4f),(-10f,9.5f)})Put("slate_stack",P(20+du,-QuarryHills.QuaySea+6+dv,Y+.02f),alongYaw+du*7,null,null,root);
+            }
             QuarryFloor.Combine("Slate stacks",slates,slate,root,true);
             // A quayside crane: a mast with a jib out over the water.
             var cr=P(20,-QuarryHills.QuaySea+6,Y);

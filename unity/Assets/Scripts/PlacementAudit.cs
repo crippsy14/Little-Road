@@ -151,9 +151,12 @@ namespace LittleRoad
         // the tarmac collider (RoadSurface) ends, so no road's width has to be known.
         // Where the last Edges() run found each lip (true) or too-steep bank (false), for the area audit.
         public static readonly List<(Vector3 at,bool lip)> EdgeFindings=new();
+        // (each unguarded bank: the road point, out across the road towards the drop, along the road, where the drop starts
+        //  measured from the centreline, the road's name, the tarmac's half-width: BankBarriers walls them, docs/80 round 7)
+        public static readonly List<(Vector3 at,Vector3 outward,Vector3 along,float dropAt,string road,float half)> BankSites=new();
         public static string Edges(Circuit bayview=null)
         {
-            Physics.SyncTransforms();var sb=new StringBuilder();int lips=0,checks=0;EdgeFindings.Clear();
+            Physics.SyncTransforms();var sb=new StringBuilder();int lips=0,checks=0;EdgeFindings.Clear();BankSites.Clear();
             float Top(Vector3 p){float best=float.MinValue;foreach(var h in Physics.RaycastAll(p+Vector3.up*4,Vector3.down,10))if(!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null&&!h.collider.CompareTag("Respawn"))best=Mathf.Max(best,h.point.y);return best==float.MinValue?float.NaN:best;}   // NaN: nothing solid (open water)
             bool Tarmac(Vector3 p){float best=float.MinValue;bool road=false;foreach(var h in Physics.RaycastAll(p+Vector3.up*4,Vector3.down,10))if(!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null&&h.point.y>best){best=h.point.y;road=h.collider.GetComponentInParent<RoadSurface>()!=null;}return road;}
             var found=new List<string>();var bankList=new List<string>();int banks=0,guardedEdges=0;
@@ -211,7 +214,7 @@ namespace LittleRoad
                             int kSteep=0;for(int k=0;k+4<hs.Length;k++)if(hs[k]-hs[k+4]>=steep-1e-4f){kSteep=k;break;}
                             // A barrier between the edge and the top of the drop (a sea-wall railing, a parapet) guards it.
                             if(steep>.55f&&rise>.4f&&Guarded(line[i],r*side,half,half+kSteep*.25f+1f,f)){guardedEdges++;continue;}
-                            if(steep>.55f&&rise>.4f){banks++;EdgeFindings.Add((line[i],false));bankList.Add($"  {name} run {run:0} side {(side>0?"R":"L")} bank {Mathf.Atan(steep)*Mathf.Rad2Deg:0}° climbing {rise:0.0} m ({line[i].x:0},{line[i].y:0.0},{line[i].z:0}) edge {half:0.0} m, out every metre: {string.Join(" ",ProfileOut(line[i],r*side,half))}");}
+                            if(steep>.55f&&rise>.4f){banks++;EdgeFindings.Add((line[i],false));BankSites.Add((line[i],r*side,f,half+kSteep*.25f,name,half));bankList.Add($"  {name} run {run:0} side {(side>0?"R":"L")} bank {Mathf.Atan(steep)*Mathf.Rad2Deg:0}° climbing {rise:0.0} m ({line[i].x:0},{line[i].y:0.0},{line[i].z:0}) edge {half:0.0} m, out every metre: {string.Join(" ",ProfileOut(line[i],r*side,half))}");}
                         }
                     }
                 }

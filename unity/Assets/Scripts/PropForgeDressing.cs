@@ -44,6 +44,8 @@ namespace LittleRoad
                     if(id=="cafe")Try("bike_rack",front.Value+dir*1.1f+Side(dir)*3.6f,Face(dir)+90,.9f);
                     break;}
                 case "fountain":
+                    // (not in the castle courtyard: a phone box there looked dropped in at random, Richard's snaps 20 Oct)
+                    if(Vector3.Distance(new Vector3(p.x,0,p.z),new Vector3(HillcrestRoute.CastleCourt.x,0,HillcrestRoute.CastleCourt.z))>60)
                     for(int k=0;k<8;k++){float a=(k*45+Rand(0,20))*Mathf.Deg2Rad;var q=p+new Vector3(Mathf.Cos(a),0,Mathf.Sin(a))*Rand(7,10);if(Try("phone_box",q,Rand(0,360),.6f))break;}
                     for(int k=0;k<4;k++){float a=(k*90+45)*Mathf.Deg2Rad;Try("bollard",p+new Vector3(Mathf.Cos(a),0,Mathf.Sin(a))*5.6f,0,.18f);}
                     break;
