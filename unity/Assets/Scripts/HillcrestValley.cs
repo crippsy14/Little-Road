@@ -102,7 +102,7 @@ namespace LittleRoad
             for(int cj=0;cj*size<ValleyField.NZ-1;cj++)for(int ci=0;ci*size<ValleyField.NX-1;ci++) {
                 int i0=ci*size,j0=cj*size,i1=Mathf.Min(i0+size,ValleyField.NX-1),j1=Mathf.Min(j0+size,ValleyField.NZ-1);
                 float cx0=ValleyField.X0+i0*ValleyField.Cell,cz1=ValleyField.Z0+j1*ValleyField.Cell;
-                if(cx0>=QuarryHills.SeamX-.1f&&cz1<-2000)continue; // south of the valley, east of Quarry Hills: neither region
+                if(cx0>=QuarryHills.SeamX-.1f&&cz1<-2000&&!(Bramblewick.Enabled&&cx0+size*ValleyField.Cell>1000))continue; // south of the valley, east of Quarry Hills: neither region (Bramblewick's vale reaches south: docs/82)
                 candidates.Add((ci,cj,i0,j0,i1,j1,quarryGround!=null&&cx0<QuarryHills.SeamX-.1f));
             }
             var highs=new float[candidates.Count];
@@ -288,7 +288,14 @@ namespace LittleRoad
             }
             var mainRoad=net.Connect(main.name,main.line,main.width,.03f,nIsland,nMain,minorStart:true,minorEnd:true);
             var crestRoad=net.Connect(crest.name,crest.line,crest.width,.018f,nCrest,null,minorStart:true,noCentre:crest.width<7.6f);
-            var stationNet=net.Connect("Station road",stationRoad,stationWidth,.018f,nStation,null,minorStart:true,noCentre:true);
+            RoadNetwork.Road stationNet;
+            if(Bramblewick.Enabled) {   // (Valley Road South leaves the farm lane at a T before Golden Acre's gate: docs/82)
+                int tee=0;float bt=float.MaxValue;for(int i=0;i<stationRoad.Length;i++){float d=(stationRoad[i]-Bramblewick.Tee).sqrMagnitude;if(d<bt){bt=d;tee=i;}}
+                var nBramble=net.Add(stationRoad[tee]);
+                stationNet=net.Connect("Station road",stationRoad[..(tee+1)],stationWidth,.018f,nStation,nBramble,minorStart:true,noCentre:true);
+                net.Connect("Station road",stationRoad[tee..],stationWidth,.018f,nBramble,null,minorStart:true,noCentre:true);
+                var vr=HillcrestRoute.Find(Bramblewick.RoadName);net.Connect(vr.name,vr.line,vr.width,.022f,nBramble,null,minorStart:true);
+            } else stationNet=net.Connect("Station road",stationRoad,stationWidth,.018f,nStation,null,minorStart:true,noCentre:true);
             net.Solve();Lap("roads network");
             foreach(var n in net.nodes)Debug.Log($"LITTLE_ROAD_JUNCTION at=({n.at.x:0},{n.at.z:0}) arms={n.arms.Count} radius={n.Radius:0.0} trims={string.Join("/",n.arms.ConvertAll(a=>a.trim.ToString("0.0")))} y={n.at.y:0.0} ground={ValleyField.Height(n.at.x,n.at.z):0.0} poly={(n.polygon.Count>0?System.Linq.Enumerable.Average(n.polygon.ConvertAll(p=>p.y)):float.NaN):0.0}/{n.polygon.Count} arms=[{string.Join(";",n.arms.ConvertAll(a=>(a.road==null?"external":a.road.name)+(a.atStart?"@s":"@e")+":"+(a.road==null?float.NaN:a.Height(a.trim)).ToString("0.0")))}]");
             Ribbon(main.name,mainRoad.trimmed,main.width,.03f,holder,asphaltMainland,true,false,false,false);
@@ -324,6 +331,7 @@ namespace LittleRoad
             float RoadTop(Vector3 q){float top=float.NaN;foreach(var hit in Physics.RaycastAll(new Vector3(q.x,20,q.z),Vector3.down,60))if(hit.collider.GetComponent<RoadSurface>()!=null&&!(hit.point.y<=top))top=hit.point.y;return top;}   // (the highest: RaycastAll's order is arbitrary)
             Shoulders(main.line,main.width*.5f,.03f,0,false,holder,gravel,"Road shoulder",quayEnd,q=>SurfacePoint(q,out var hit,false)?hit.point.y:-30,RoadTop);
             Shoulders(valleyRoad,valleyWidth*.5f,.024f,0,false,holder,gravel);
+            if(Bramblewick.Enabled){var vr=HillcrestRoute.Find(Bramblewick.RoadName);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
             if(QuarryHills.Enabled)foreach(var name in new[]{QuarryHills.QuarryRoadName,QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.HaulRoadName,QuarryHills.KettleRoadName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName}){var q=HillcrestRoute.Find(name);Shoulders(q.line,q.width*.5f,.02f,0,false,holder,gravel);}Shoulders(stationRoad,stationWidth*.5f,.018f,0,false,holder,gravel);Shoulders(crest.line,crest.width*.5f,.018f,0,false,holder,gravel);
             foreach(var n in net.nodes)if(n.arms.Count>1){JunctionSurface(n,holder);if(!n.HasExternal)KerbShoulders(n,holder,gravel);}
             // Quarry Hills' junctions: shoulders across each mouth (the gap between a road's own shoulder and the kerb ramps

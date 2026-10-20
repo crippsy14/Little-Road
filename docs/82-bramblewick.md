@@ -78,7 +78,47 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
   - `cows`: Friesians, body and head apart, for grazing.
   - A `Thatch` colour joins the palette.
   - Still to come: the milk float (Car Forge), the dairy buildings and the fields redo.
-- **Next: land and roads (step 2).**
+- **20 Oct, land and roads (step 2), in progress behind `--bramblewick` (off by default):**
+  - `Bramblewick.cs`: a farmland vale at about 34 m round (2400, −1780), framed by low hills, over the valley's east ring
+    of hills; a pass through the ring from Golden Acre Farm.
+  - Valley Road South (7.5 m) leaves the farm lane at a T (560, −1156), climbs over the pass and runs down through the
+    vale to a gate at (2780, −2040). It is level for 20 m off the T.
+  - Hooks:
+    - `ValleyField`'s grid reaches east to x 3500 and south to z −2500, and `Natural` blends the vale in;
+    - the terrain chunks reach south there;
+    - the road network splits the station road at the T;
+    - shoulders and guardrails along the new road;
+    - a `MapRegions` entry ahead of the valley;
+    - `WorldCache`'s key gains `-bw`.
+  - **Checked:**
+    - the old world's fingerprint is unchanged (`3f164ae90677e486`);
+    - photos of the vale, the pass, the T and the gate look right.
+    - Building the mainland takes 2.4 s with the flag on, against 1.4 s without: the larger grid.
+
+## Where to pick up (handover, 20 Oct)
+1. **Finish step 2:**
+   - The T at (560, −1156) still has 4 road seams and Hillcrest Valley 2 road-edge lips: tiny height steps where Valley
+     Road South's ribbon meets the junction and the station road. See `--area-audit`'s seam list (`Valley Road South`
+     around chunk 30,17).
+   - Try the `MouthShoulders`/`KerbShoulders` treatment the Quarry Hills junctions got (`HillcrestValley.ValleyRoads`),
+     or start the road's `lift` at the junction's height.
+   - Hillcrest Valley's life per road km (4.5, needs 5) and things to do per km (2.7, needs 3) dip under the bar with
+     the new road's kilometres. Dress the pass with hedge banks, a fingerpost, a farm gate, a photo spot and a speed
+     trap, which brings both back over the bar.
+   - The map: `WorldMap` X0/Size (`WorldMap.cs:18`), `ExploredMap.Cells` and `HillcrestValley`'s `MacroRect` don't
+     reach x 2400 yet.
+2. **Step 3, the village:** the green and pond, the parish church and lychgate, The Plough and the thatched cottages
+   from the `village` kit, the tuner's barn, and the dairy from the `farm` kit (milking parlour, Dutch barn, churn stand,
+   cattle grid). Lanes as `hedge_bank` runs. The new ids need BayviewKit footprints in the village's own code, as
+   `QuarryHillsTown.Footprint` does.
+3. **Then:**
+   - fields and life (cows from the `cows` kit; the fields redo, bug #20);
+   - things to do (the race, the milk-float duel, the parts, the railway halt);
+   - judged: area audit, a targeted review on one contact sheet, then the flag comes off.
+4. **Still to make:** the milk float (Car Forge) and the tuner's parts on the doc 44 ladder.
+5. **Richard's four questions** above still have only my defaults.
+
+How each place is built and judged is in [doc 81](81-whole-map-order.md), "How each place is built".
 
 ## Questions for Richard (each with my default)
 1. **Style:** English West Country (thatch and cob, sunken lanes, a village green)? Default: yes.

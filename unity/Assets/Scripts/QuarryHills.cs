@@ -279,7 +279,7 @@ namespace LittleRoad
         // right up to the tee they met it 1.1-1.3 m above or below the through road, which tilted the junctions (the area
         // audit's lips, the bank and the seams at Chapel Street's and Terrace Row's four junctions).
         public const float BackStreetLanding=20,LandingGrade=.01f;
-        static Vector3[] Profile(Vector3 start,Vector2[] via,Vector3 end,float grade,float smooth,float landing=0)
+        internal static Vector3[] Profile(Vector3 start,Vector2[] via,Vector3 end,float grade,float smooth,float landing=0)   // (Bramblewick's road too)
         {
             var c=new List<Vector3>{new(start.x,0,start.z)};foreach(var v in via)c.Add(new Vector3(v.x,0,v.y));c.Add(new Vector3(end.x,0,end.z));
             var line=HillcrestRoute.Dense(c.ToArray(),2);int n=line.Length;var y=new float[n];

@@ -33,6 +33,12 @@ namespace LittleRoad
                 foreach(var p in new[]{new Vector2(QuarryHills.West,-1620),new Vector2(-2450,-1480),new Vector2(-1500,-880),new Vector2(QuarryHills.SeamX,-500),new Vector2(QuarryHills.SeamX,QuarryHills.South),new Vector2(QuarryHills.West,QuarryHills.South)})quarry.outline.Add(p);
                 list.Add(quarry);
             }
+            // Bramblewick (docs/82): its vale east of the valley's hills, listed before the valley so its test wins.
+            if(Bramblewick.Enabled) {
+                var bramble=new Region{id="bramblewick",kind="town",name="Bramblewick",blurb="Farm village · the lanes · the dairy",colour=Toy.Hex(0xc9a95a),contains=Bramblewick.Contains};
+                for(int k=0;k<32;k++){float a=k*Mathf.PI*2/32;bramble.outline.Add(Bramblewick.Centre+new Vector2(Mathf.Sin(a),Mathf.Cos(a))*950);}
+                list.Add(bramble);
+            }
             list.Add(bay);list.Add(town);list.Add(valley);return list;
         }
         public static Region At(Vector3 p){foreach(var r in All)if(r.contains(p.x,p.z))return r;return All[^1];}
