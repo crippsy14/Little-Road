@@ -361,7 +361,10 @@ namespace LittleRoad
             var temp=GameObject.CreatePrimitive(PrimitiveType.Cube);var cube=temp.GetComponent<MeshFilter>().sharedMesh;Object.Destroy(temp);
             for(int start=0;start<boxes.Count;start+=3000) {
                 int n=Mathf.Min(3000,boxes.Count-start);var combine=new CombineInstance[n];
-                for(int i=0;i<n;i++)combine[i]=new CombineInstance{mesh=cube,transform=boxes[start+i]};
+                // (--prop-forge: the crawiau as split-slate slabs from the slate kit, eight variants in the unit cube the boxes
+                //  filled, so each slab's own matrix places it: docs/80 round 4)
+                var slabsKit=name=="Crawiau"&&PropForge.Enabled?PropKit.Load("slate"):null;
+                for(int i=0;i<n;i++)combine[i]=new CombineInstance{mesh=slabsKit!=null?slabsKit.Mesh("crawiau_"+((start+i)*7919%8),0):cube,transform=boxes[start+i]};
                 var mesh=new Mesh{name=name,indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};mesh.CombineMeshes(combine,true,true);mesh.RecalculateBounds();
                 var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root);
                 go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;

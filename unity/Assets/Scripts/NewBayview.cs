@@ -11,7 +11,7 @@ namespace LittleRoad
     // quay and the rail loop stay where Hillcrest expects them.
     public static class NewBayview
     {
-        public static bool On=>RaceTrial.Has("--new-bayview");
+        public static bool On=>on??=RaceTrial.Has("--new-bayview");static bool? on;   // (once: Has reads the command line, and the land asks per cell)
         public static readonly Vector3 Spawn=new(62,1.2f,-40);   // (on the Pit Stop's forecourt, by the start straight)
         public static readonly Vector3 PitStopSite=new(62,FrontY,-24);public const float PitStopYaw=180;   // (facing the start straight)
         // The harbour front's town row: the loop's arc where the road runs round the harbour (its inland, left-hand side).
