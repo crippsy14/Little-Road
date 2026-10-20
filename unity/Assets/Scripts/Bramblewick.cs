@@ -20,8 +20,12 @@ namespace LittleRoad
         // The pass: from the farm lane, round the north of Golden Acre's pad (150 m about (720, -1262): through it the road ran
         // under the farm lane's end, 2 m below it), east through the ring of hills, down to the green.
         static readonly Vector2[] Pass={new(500,-1100),new(580,-1092),new(690,-1074),new(820,-1084),new(945,-1135),new(1065,-1225),new(1200,-1345),new(1330,-1455),new(1560,-1560),new(1820,-1660),new(2100,-1740),new(2320,-1775)};
-        public static Vector3 Tee,Gate;
+        public static Vector3 Tee,Gate,Green;   // (Green: the village green's middle, beside the road through the vale's middle)
         // (the vale, and the pass east of Golden Acre: the village's approach, which it dresses)
+        public static Vector3 PubSite;
+        // The level ground the village stands on: the green and its church plot, the pub's (ValleyField stamps them).
+        public static IEnumerable<(Vector2 at,float inner,float outer,float y)> Pads(){yield return (new Vector2(Green.x,Green.z),48,72,Green.y);yield return (new Vector2(PubSite.x,PubSite.z),9,18,PubSite.y);}
+        public static bool Core(float x,float z)=>Vector2.Distance(new(x,z),Centre)<380;   // (the village itself; the rest is the vale)
         public static bool Contains(float x,float z)=>Vector2.Distance(new(x,z),Centre)<950||x>760&&PassDistance(x,z,out _)<200;
         static float Blend(float a,float b,float x)=>Mathf.SmoothStep(0,1,Mathf.InverseLerp(a,b,x));
         static float PassDistance(float x,float z,out float t)
@@ -52,7 +56,10 @@ namespace LittleRoad
             Tee=farmLane[tee];Gate=new Vector3(2780,float.NaN,-2040);
             var via=new List<Vector2>{new(Tee.x+10,Tee.z+17)};via.AddRange(Pass[1..]);   // (square off the lane, north-east, then round the farm)via.Add(new(2520,-1830));via.Add(new(2660,-1930));
             var line=QuarryHills.Profile(Tee,via.ToArray(),Gate,.08f,30,QuarryHills.BackStreetLanding);   // (level off the T for 20 m: a 1 m drop in its first 12 m tilted the junction)
-            return new List<HillcrestRoute.Road>{HillcrestRoute.Make(RoadName,line,7.5f,6,40)};
+            var road=HillcrestRoute.Make(RoadName,line,7.5f,6,40);
+            float sC=road.Nearest(new Vector3(Centre.x,0,Centre.y),out _);var r=road.Right(sC);r.y=0;r.Normalize();if(r.z<0)r=-r;
+            Green=road.At(sC)+r*(road.width*.5f+2.2f+26);Green.y=road.At(sC).y+.05f;PubSite=road.At(sC)-r*(road.width*.5f+2.4f+3.6f+3.9f);PubSite.y=road.At(sC).y+.05f;
+            return new List<HillcrestRoute.Road>{road};
         }
     }
 }

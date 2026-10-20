@@ -34,10 +34,12 @@ namespace LittleRoad
                 list.Add(quarry);
             }
             // Bramblewick (docs/82): its vale east of the valley's hills, listed before the valley so its test wins.
-            if(Bramblewick.Enabled) {
-                var bramble=new Region{id="bramblewick",kind="town",name="Bramblewick",blurb="Farm village · the lanes · the dairy",colour=Toy.Hex(0xc9a95a),contains=Bramblewick.Contains};
-                for(int k=0;k<32;k++){float a=k*Mathf.PI*2/32;bramble.outline.Add(Bramblewick.Centre+new Vector2(Mathf.Sin(a),Mathf.Cos(a))*950);}
-                list.Add(bramble);
+            if(Bramblewick.Enabled) {   // (the village, judged as a village; the vale and the pass round it as country)
+                var bramble=new Region{id="bramblewick",kind="village",name="Bramblewick",blurb="Farm village · the green · The Plough",colour=Toy.Hex(0xc9a95a),contains=Bramblewick.Core};
+                for(int k=0;k<32;k++){float a=k*Mathf.PI*2/32;bramble.outline.Add(Bramblewick.Centre+new Vector2(Mathf.Sin(a),Mathf.Cos(a))*380);}
+                var vale=new Region{id="bramble-vale",name="Bramblewick Vale",blurb="Hedged lanes · the dairy · the pass",colour=Toy.Hex(0x9cbf6a),contains=(x,z)=>Bramblewick.Contains(x,z)&&!Bramblewick.Core(x,z)};
+                for(int k=0;k<32;k++){float a=k*Mathf.PI*2/32;vale.outline.Add(Bramblewick.Centre+new Vector2(Mathf.Sin(a),Mathf.Cos(a))*950);}
+                list.Add(bramble);list.Add(vale);
             }
             list.Add(bay);list.Add(town);list.Add(valley);return list;
         }

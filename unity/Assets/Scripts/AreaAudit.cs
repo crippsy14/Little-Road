@@ -12,8 +12,8 @@ namespace LittleRoad
     public static class AreaAudit
     {
         // Kit pieces by what they are (ids from source-art/build_bayview_kit.py).
-        static readonly string[] BuildingIds={"house_","terrace_","cottage_","shop","cafe","post_office","hotel","town_hall","church","mill","motors","station","barn","pit_stop","pit_garages","beach_hut"};
-        static readonly string[] FurnitureIds={"lamp_post","bench","fountain","kiosk","flower_bed","flower_bush","picnic_table","market_stall","bandstand","map_board","flag_pole","parasol","telescope","chevron_sign","ad_board","flag_wales","slate_stack"};
+        static readonly string[] BuildingIds={"house_","terrace_","cottage_","shop","cafe","post_office","hotel","town_hall","church","mill","motors","station","barn","pit_stop","pit_garages","beach_hut","parish_church","pub","milking_parlour","dutch_barn"};
+        static readonly string[] FurnitureIds={"lamp_post","bench","fountain","kiosk","flower_bed","flower_bush","picnic_table","market_stall","bandstand","map_board","flag_pole","parasol","telescope","chevron_sign","ad_board","flag_wales","slate_stack","phone_box","pillar_box","village_lychgate","churn_stand"};
         static readonly string[] NatureIds={"tree_","palm","bush","olive_tree","rock_","reeds","grass_tuft","vine_row","lavender_row","sunflower_row","hay_bale"};
         static bool Is(string id,string[] set)=>set.Any(p=>p.EndsWith("_")?id.StartsWith(p):id==p);
 
@@ -37,6 +37,10 @@ namespace LittleRoad
             S("planting per road km","country",true,1500,c=>c.naturePerRoadKm),
             S("life per road km","country",true,5,c=>c.lifePerRoadKm),
             S("things to do per road km","country",true,3,c=>(c.keepsakes+c.traps+c.photos)/Mathf.Max(.1f,c.roadKm)),
+            // A village (docs/82): fewer buildings and lamps than a town, no Pit Stop of its own, still lived in and with things to do.
+            S("buildings per road km","village",true,10,c=>c.buildingsPerRoadKm),S("building designs","village",true,5,c=>c.designs),S("wall colours","village",true,5,c=>c.wallColours),
+            S("lamps per road km","village",true,8,c=>c.lampsPerRoadKm),S("street furniture per road km","village",true,25,c=>c.furniturePerRoadKm),S("planting per road km","village",true,500,c=>c.naturePerRoadKm),
+            S("named residents","village",true,3,c=>c.residents),S("life per road km","village",true,6,c=>c.lifePerRoadKm),S("things to do (keepsakes, traps, photo sights)","village",true,3,c=>c.keepsakes+c.traps+c.photos),
             S("floating pieces","any",false,0,c=>c.floating),
             S("loose bunting ends","any",false,0,c=>c.looseBunting),
             S("road-edge lips","any",false,0,c=>c.lips),

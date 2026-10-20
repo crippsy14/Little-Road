@@ -59,6 +59,7 @@ namespace LittleRoad
             if(blob.bytes.Length!=f.indexByteOffset+f.indexCount*4)throw new InvalidOperationException($"Prop Forge kit '{id}': mesh data is {blob.bytes.Length} bytes, the contract says {f.indexByteOffset+f.indexCount*4}");
             return loaded[id]=new PropKit(f,blob.bytes);
         }
+        public static bool Has(string id)=>loaded.ContainsKey(id)||Resources.Load<TextAsset>("Props/"+id)!=null;
         public static void Forget()=>loaded.Clear();
         public PropPiece Piece(string name)
         {

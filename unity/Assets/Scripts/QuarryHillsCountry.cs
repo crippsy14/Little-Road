@@ -314,7 +314,8 @@ namespace LittleRoad
     {
         Vector3 home,target;float radius,wait,headPhase,trot;Transform head;
         public System.Func<float,float,float> ground;   // (the land it walks on: the mainland's unless set, as on Bayview's farm)
-        public bool lane;public static Transform Car;static Vector3 carLast;static float carSpeed;static int carFrame=-1;
+        public bool lane;public Vector3 headAt=new(0,.78f,.62f);public float nod=.35f;   // (a cow's head is higher and further forward: Bramblewick)
+        public static Transform Car;static Vector3 carLast;static float carSpeed;static int carFrame=-1;
         public void Startle(Vector3 from)
         {
             var away=transform.position-from;away.y=0;if(away.sqrMagnitude<.01f)away=transform.right;
@@ -333,7 +334,7 @@ namespace LittleRoad
                 if(trot<=0&&carSpeed>2&&(Car.position-transform.position).sqrMagnitude<11*11)Startle(Car.position);
             }
             float gait=trot>0?trot:.6f;if(trot>0&&(target-transform.position).sqrMagnitude<.1f)trot=0;
-            if(head!=null)head.localPosition=new Vector3(0,trot>0?.86f:.78f-Mathf.Max(0,Mathf.Sin(Time.time*.6f+headPhase))*.35f,.62f);
+            if(head!=null)head.localPosition=new Vector3(headAt.x,trot>0?headAt.y+.08f:headAt.y-Mathf.Max(0,Mathf.Sin(Time.time*.6f+headPhase))*nod,headAt.z);
             var d=target-transform.position;d.y=0;
             if(d.magnitude<.2f){trot=0;wait-=Time.deltaTime;if(wait<=0){var a=Random.value*Mathf.PI*2;target=home+new Vector3(Mathf.Cos(a),0,Mathf.Sin(a))*Random.Range(0f,radius);wait=Random.Range(4f,14f);}return;}
             var step=d.normalized*Mathf.Min(d.magnitude,gait*Time.deltaTime);var p=transform.position+step;p.y=ground!=null?ground(p.x,p.z):ValleyField.Height(p.x,p.z);transform.position=p;
