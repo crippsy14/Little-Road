@@ -279,7 +279,7 @@ namespace LittleRoad
             var post=lane.At(s0)+rightF*(half+1.6f);post.y=H(post.x,post.z);
             var p=GameObject.CreatePrimitive(PrimitiveType.Cube);p.name="Ford depth post";p.transform.SetParent(root);p.transform.position=post+Vector3.up*.75f;p.transform.localScale=new Vector3(.18f,1.5f,.18f);
             p.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Depth post white",new Color(.95f,.95f,.92f),0,.3f);p.tag="Respawn";
-            foreach(int dir in new[]{-1,1})foreach(float back in new[]{45f,100f}){float sb=s0+dir*back;var fb=lane.Forward(sb)*dir;fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);var b=lane.At(sb)+rb*(half+2.3f);if(ValleyField.RoadDistance(b.x,b.z)<half+1.6f)continue;b.y=H(b.x,b.z);RoadSign(b,fb,back>60?"FORD AHEAD":"FORD");}
+            foreach(int dir in new[]{-1,1})foreach(float back in new[]{45f,100f}){float sb=s0+dir*back;var fb=lane.Forward(sb)*dir;fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);var b=lane.At(sb)+rb*(half+1.7f);if(ValleyField.RoadDistance(b.x,b.z)<half+1.2f)continue;b.y=H(b.x,b.z);RoadSign(b,fb,back>60?"FORD AHEAD":"FORD");}
             var splash=new GameObject("Ford splash").AddComponent<FordSplash>();splash.transform.SetParent(root);splash.Setup(lane.At(s0),lane.Forward(s0),6.5f,half+.4f);
             Spots["ford"]=(lane.At(s0)+rightF*(half+6),Yaw(lane.At(s0)+rightF*(half+6),lane.At(s0)));
         }
@@ -301,7 +301,7 @@ namespace LittleRoad
                     f.GetComponent<Renderer>().sharedMaterial=plinth;
                 }
             }
-            {float sb=s0-55;var fb=lane.Forward(sb);fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);var bb=lane.At(sb)+rb*(half+2.4f);if(ValleyField.RoadDistance(bb.x,bb.z)>half+1.6f){bb.y=H(bb.x,bb.z);RoadSign(bb,fb,"HUMPBACK BRIDGE");}}
+            {float sb=s0-55;var fb=lane.Forward(sb);fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);var bb=lane.At(sb)+rb*(half+1.7f);if(ValleyField.RoadDistance(bb.x,bb.z)>half+1.2f){bb.y=H(bb.x,bb.z);RoadSign(bb,fb,"HUMPBACK BRIDGE");}}
             Spots["bridge"]=(Bramblewick.BridgeAt+Bramblewick.BridgeAlong*30,Yaw(Bramblewick.BridgeAt+Bramblewick.BridgeAlong*30,Bramblewick.BridgeAt));
         }
         // A cottage garden: a hedge along the front, from party line to party line, with a 2.4 m gap at the gate before the

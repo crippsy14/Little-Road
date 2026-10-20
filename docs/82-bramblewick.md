@@ -218,6 +218,20 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
   - **Round 3's sweep found the kerbs:** 10 cm solid boxes stopped cars at 20 m/s and piled the field up (three DNFs).
     Kerbs are now painted and nearly flush, the distance boards stand beyond the run-off, and Mill Bend's bale wall is
     longer. **Study 236:** skill 3/7/10/13, all 12 races 24/24, no recoveries, 5-18 contacts.
+  - **Rounds 4-5** (launch reviews r2 and r3): hedge banks v2 (coped tops, rounded end piers, car-forge 7cc8077), banks
+    opened round each landmark, the beacon's tower lit, sign text no longer mirrored. Review r3: NOT YET, one must-fix.
+    The corner boards were cropped ("CK BRIDGE") and buried in the banks (LR3-01).
+  - **Round 6:** boards sized to their words (letters x 0.36 + 1 m), on 2.9 m posts that stand above the banks just
+    off the shoulder. The bunting is kept clear of the gantry, and the beacon has a three-tongue flame.
+    **Study 241:** skill 3/7/10/13, 12 of 12 races 24/24, no recoveries, 5-18 contacts. **Launch review r4
+    (`lanes-launch-r4-raw.md`): LAUNCH-READY,** with polish notes only.
+  - **Round 7 (my own last pass):**
+    - The boards are now dark green with cream words. The words are unlit, so cream on a cream board went grey in the
+      shade and washed out (LR4-01).
+    - White milestones every quarter mile give the miles home and fill the bare verges between corners (LR4-05).
+    - Left as they are: the coping's vertical stones are real West Country "cock and hen" coping (LR4-02), and the
+      rounded bank ends read as clipped hedge (LR3-04).
+    - Outside the track, for the game-wide HUD: the 3D countdown, and "FINAL LAP" on one-lap races (LR2-02).
 
 ## Where to pick up (handover, 20 Oct, after step 5's finds)
 1. **The rest of step 5:**

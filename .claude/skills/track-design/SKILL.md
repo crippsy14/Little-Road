@@ -224,3 +224,19 @@ Failure modes:
 - **Two equal long straights,** or a second straight longer than the main one.
 - **Wiggles counted as flow.** Ten ±20° kinks are not a rhythm section. Check macro turning.
 - **Fast corners with no run-up.** A class C car never reaches the speed that makes them fast.
+
+## 6. Lessons from building Bramblewick Lanes (20 Oct)
+
+These are what the first track built with this skill taught; docs/82 has the full rounds.
+
+- **Lay the lap in a stable frame.** Use the chord between the two junctions, not a frame from a point on a curving street, or the whole lap rotates and a straight vanishes. Solve two near-perpendicular straights linearly so the lap closes exactly.
+- **Fillet the junction corners generously.** R 24 at the T junctions; R 11 was undriveable.
+- **Width: 9 m for a two-abreast class C lane.** With 8 m the AI tangled at skill 13 (study 234). Make width per circuit (`Circuit.width`); the line and pass offsets scale from it.
+- **Fix the AI, don't narrow the design.** The Bayview skill-13 deadlock came from cars pinned together. The recovery unlock fixed it, letting a touching car take a path that opens the gap. A "narrow pass" rule was tried and rejected (DNFs).
+- **Sweep skill 3, 7, 10 and 13 concurrently** (abilities 0.485, 0.719, 0.895, 1), seeds 1709–1711, using `tools/skill-sweep-summary.py`. Launch bar: 12/12 races 24/24 with no assisted resets.
+- **Kerbs are paint, not obstacles.** 10 cm solid kerbs stopped cars dead. Make them visual and flush (0.04 m, no collider).
+- **Keep the run-off clear.** Board posts stand at half+4.2 or beyond, or are non-solid. Give bale walls enough length to catch the whole outside of a heavy braking zone.
+- **Open the banks round landmarks.** Build landmarks first, then the hedge banks, which skip each one. Otherwise the bank hides the barn or beacon the corner is named for.
+- **Boards are sized to their words.** Use width = letters × 0.36 + 1 m, a 1.05 m tall face on 2.9 m posts, standing above the bank just off the shoulder. Use near-black text on bright cream. Turn the text with `LookRotation(toward)` or it reads mirrored.
+- **Grounding:** the AI only grounds on surfaces with `RoadSupport`; a new circuit's road surfaces need it.
+- **Rounds:** build → audit (`--area-audit`) → views plus race photos (`--race-photos`) → one cheap reviewer → fix must-fix items → repeat until LAUNCH-READY. Delete each round's photos once they've been reviewed.
