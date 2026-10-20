@@ -125,7 +125,7 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
 
 ## Where to pick up (handover, 20 Oct, after step 5's finds)
 1. **The rest of step 5:**
-   - the race (24/24 on seeds 1709-1711) on lanes about 6.5 m wide with hedge banks;
+   - the race (24/24 on seeds 1709-1711): **waiting on Richard's lane-width call** below ("The race needs a call");
    - the milk-float duel (Peg);
    - Jed's four parts on the doc 44 ladder;
    - the railway halt.
@@ -135,6 +135,32 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
 4. **Richard's four questions** below still have only my defaults.
 
 How each place is built and judged is in [doc 81](81-whole-map-order.md), "How each place is built".
+
+## The race needs a call: lane width (20 Oct)
+Building *Bramblewick Lanes* turned up a clash between the brief and the race code:
+- **The race code assumes one width for every circuit.** `Circuit.Width` is 16 m. The shared racing line may sit
+  ±5.6 m off the centre (`RacingLine.MaxOffset`), each car's own line ±5.4 m (`CarLines.Bound`), and the 12 checkpoint
+  gates test against the same half-width. Hillcrest's raceway and the Quarry Hills loop are both built 16 m wide.
+- **The brief wants lanes.** Question 4's default is about 6.5 m, two abreast with passing places, between hedge banks.
+
+The options:
+1. **Per-circuit width (my recommendation).** `Circuit` gets its own width, which the line bounds and gates read from.
+   Bramblewick's race runs on 7 m lanes with 9 m passing places and the green's straight at 12 m. The other races
+   keep 16 m, so their keep/reject results don't move. This is the real lanes race the brief describes, but
+   24 cars on 7 m is a hard AI problem: expect several rounds before 24/24 with no assisted resets. It could also start
+   with a smaller field (12-16).
+2. **A 16 m circuit on the vale's roads.** It works with today's code at once, but it's a road race, not lanes. The
+   hedge banks would be 8 m back from the racing line.
+3. **Lanes for free roam and the milk-float duel only** (one on one, no grid), with the 24-car race on a wider loop
+   (option 2).
+
+Two smaller things come with any option:
+- **Saves:** a podium id the calendar doesn't know makes a save fail to load, so a Bramblewick podium earned with the
+  flag on breaks the save with it off. Save validation should keep unknown event ids instead of rejecting the save.
+- **Progress:** a new class C event moves the class C completion gate (every C event needs a podium). That's right for
+  the finished game, but it changes current saves' progress.
+
+Until Richard answers, I'm building the parts that don't depend on this: Jed's parts, the railway halt, the milk float.
 
 ## Questions for Richard (each with my default)
 1. **Style:** English West Country (thatch and cob, sunken lanes, a village green)? Default: yes.

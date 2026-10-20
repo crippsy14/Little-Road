@@ -31,7 +31,7 @@ namespace LittleRoad
         public static bool SettleOne(GameObject go)
         {
             {
-                if(go==null||!Settleable.Any(id=>id.EndsWith("_")?go.name.StartsWith(id):go.name==id))return false;
+                if(go==null||!(Settleable.Any(id=>id.EndsWith("_")?go.name.StartsWith(id):go.name==id)||PropForge.Enabled&&(go.name=="vine_row"||go.name=="lavender_row")))return false;   // (--prop-forge: crop rows too, the Hillcrest vine row hung over a cutting's lip, docs/80)
                 var renderers=go.GetComponentsInChildren<Renderer>();if(renderers.Length==0)return false;
                 var b=renderers[0].bounds;foreach(var r in renderers)b.Encapsulate(r.bounds);
                 if(b.min.y<CoastalLandscape.SeaLevel-1)return false; // sea rocks stand on the seabed by their own rule
