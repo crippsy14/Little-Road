@@ -81,6 +81,10 @@ namespace LittleRoad
             if(p.collision!=null&&p.collision.size!=null&&p.collision.size.V!=Vector3.zero) {   // (the kit's Collision part: a box BayviewKit reads by its bounds)
                 var c=new GameObject("Collision",typeof(MeshFilter),typeof(MeshRenderer));c.transform.SetParent(turned,false);
                 c.GetComponent<MeshFilter>().sharedMesh=Box(p.collision.centre.V,p.collision.size.V);
+                if(p.collision.more!=null)for(int k=0;k<p.collision.more.Length;k++) {   // (a gatehouse: each tower and the block over the arch, the road clear through it)
+                    var m=new GameObject("Collision "+(k+2),typeof(MeshFilter),typeof(MeshRenderer));m.transform.SetParent(turned,false);
+                    m.GetComponent<MeshFilter>().sharedMesh=Box(p.collision.more[k].centre.V,p.collision.more[k].size.V);
+                }
             }
             return root;
         }

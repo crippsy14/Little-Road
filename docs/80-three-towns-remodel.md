@@ -221,6 +221,26 @@ a plan for the whole map, with an ordered list of towns, and start working throu
     - QH2-09-22 (pavement ends, slope textures, blank gables and the rest) go into round 7.
     - Old Bayview's bunting crosses FISH & CHIPS; that's old Bayview only, which the new Bayview replaces.
 
+- **Round 5: done (20 Oct). Hillcrest's structure,** behind `--prop-forge`.
+  - **The castle** (car-forge `castle` kit): curtain towers, walls, the gatehouse, keep, donjon and palazzo.
+    - Ported from the Blender castle at the same sizes and facings, so they stand where the game places them.
+    - The palazzo's arcade and top-floor loggia now read as open; in the Blender model they were inside the solid wall.
+    - The gatehouse keeps the road clear through its arch. A Forge piece can now carry more than one collision box
+      (`collision.more`: both drums and the block over the arch), and it has its gate sign socket.
+  - **The square's balustrade:** the railings kit's turned balusters under the saddleback coping.
+  - **The lookout:** the coping rail on turned posts.
+  - **The vine hill's terrace walls:** dry-stone runs along the rows, or the box where a pier can't stand level.
+  - **The farm's grain silo** (farm kit): a corrugated bin on a concrete ring, a red roof and vent, a caged ladder and a
+    fill pipe.
+  - Already Forge before this round: the causeway's balustrade and the town parapets' copings.
+  - **Checks:**
+    - The fingerprint without flags is unchanged.
+    - The area audit's Hillcrest defects are the same as before: one floating piece and six steep banks, both still to
+      fix.
+    - Hillcrest's town builds in 0.72 s, against 0.48 s, because of the terrace runs.
+    - Photos: three of the castle and a sheet of four (balustrade, lookout, silo, terraces).
+  - Published to Richard's play copy before this round (main 87e5aed, with `--prop-forge --new-bayview`).
+
 ## Reviewing without photo sweeps (20 Oct)
 Richard, 20 Oct: the street-review agents (three photos every 40 m, read by an agent) used a lot of usage for little
 return. From now on:
@@ -237,13 +257,11 @@ return. From now on:
 Used in round 4: seven audit runs and four photo runs, about 15 small pictures, and no agents.
 
 ## Where to pick up
-- **Round 5: Hillcrest structure.**
-  - The castle set (gatehouse, towers, curtain walls, keep, donjon, palace) as a `castle` Forge kit with the Blender
-    sizes: tower 11 m across and 36 m tall, wall 20 x 4 x 11 m, and so on.
-  - The square's balustrade, parapets and lookout rails as Forge rails.
-  - The terrace walls on the vine hill as dry-stone runs.
-  - The silo and the causeway balustrade.
-- **Round 6:** Quarry Hills structure (rock stands, spoil heaps, quay works, Blondin towers, telegraph poles).
+- **Round 6: Quarry Hills structure.**
+  - Rock stands a-d and the spoil heaps.
+  - The quay track, wagons and crane, and the Blondin towers.
+  - Telegraph poles, tyre walls and ad boards.
+- **Hillcrest's leftovers** go into round 7: the floating piece and six steep banks, and the terrace runs' load cost.
 - **Round 7:** both towns judged the new way (audit, flagged photos), with QH2-09-22.
 - **Round 8:** the whole-map plan.
 - **Smaller things:**

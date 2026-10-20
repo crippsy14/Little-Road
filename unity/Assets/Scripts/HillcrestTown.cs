@@ -60,6 +60,9 @@ namespace LittleRoad
         GameObject Ground(string id,float x,float z,float yaw,BayviewKit.Tint tint=null,string sign=null,float scale=1,bool solid=true)=>Put(id,new Vector3(x,H(x,z)-.04f,z),yaw,tint,sign,scale,solid);
         // (--prop-forge: a parapet's cap drawn as Prop Forge's saddleback coping stone, docs/78)
         static int copingLogged;static void Coping(GameObject cap){if(!PropForge.Enabled)return;cap.GetComponent<MeshFilter>().sharedMesh=PropKit.Load("armco").Mesh("coping");if(RaceTrial.Has("--gate-log")&&(++copingLogged)%30==1)Debug.Log($"LITTLE_ROAD_COPING {cap.name} {cap.transform.position.x:0.0},{cap.transform.position.y:0.0},{cap.transform.position.z:0.0}");}
+        // (--prop-forge: a baluster or post drawn as the railings kit's turned stone, authored in the unit cube, so the box's own
+        //  scale, collider and paint stay: docs/80 round 5, as the causeway's)
+        static void Turned(GameObject piece,string part){if(PropForge.Enabled)piece.GetComponent<MeshFilter>().sharedMesh=PropKit.Load("railings").Mesh(part);}
         GameObject Box(string name,Vector3 p,Vector3 size,Quaternion rotation,Material material,bool solid)
         {
             var go=GameObject.CreatePrimitive(PrimitiveType.Cube);go.name=name;go.transform.SetParent(root);go.transform.SetPositionAndRotation(p,rotation);go.transform.localScale=size;
@@ -281,9 +284,10 @@ namespace LittleRoad
             // Balustrade on the valley side (colliders keep cars on the terrace), with flower beds.
             for(float phi=-58;phi<58;phi+=4) {
                 Vector3 a=Rim(phi,33.5f),b=Rim(phi+4,33.5f),m=(a+b)*.5f;var rot=Quaternion.LookRotation(b-a);
-                Box("Balustrade rail",m+Vector3.up*1.0f,new Vector3(.3f,.16f,Vector3.Distance(a,b)+.05f),rot,railWhite,true);
+                Coping(Box("Balustrade rail",m+Vector3.up*1.0f,new Vector3(.3f,.16f,Vector3.Distance(a,b)+.05f),rot,railWhite,true));   // (--prop-forge: the coping stone, docs/80 round 5)
                 Box("Balustrade base",m+Vector3.up*.18f,new Vector3(.45f,.36f,Vector3.Distance(a,b)+.05f),rot,plinth,true);
-                for(int i=0;i<4;i++)Box("Baluster",Vector3.Lerp(a,b,(i+.5f)/4)+Vector3.up*.6f,new Vector3(.16f,.8f,.16f),rot,railWhite,false);
+                for(int i=0;i<4;i++)Turned(Box("Baluster",Vector3.Lerp(a,b,(i+.5f)/4)+Vector3.up*.6f,new Vector3(.16f,.8f,.16f),rot,railWhite,false),"baluster");
+                if(PropForge.Enabled&&phi==-2)Debug.Log($"LITTLE_ROAD_SPOT balustrade {m} centre {c}");
                 if(((int)phi+58)%16==0)Put("flower_bed",Rim(phi,31.8f),Yaw(Rim(phi,31.8f),c),null,null,.55f,false);
             }
             foreach(float phi in new[]{120f,-120f,135f,-135f}){var p=Rim(phi,34);if(ValleyField.RoadDistance(p.x,p.z)>6)Ground("tree_round",p.x,p.z,phi,null,null,.8f);}
@@ -603,12 +607,12 @@ namespace LittleRoad
             var face=falls-l;face.y=0;face.Normalize();var side=Vector3.Cross(Vector3.up,face);
             for(float a=-44;a<44;a+=8) {
                 Vector3 p0=l+Quaternion.Euler(0,a,0)*face*9,p1=l+Quaternion.Euler(0,a+8,0)*face*9;p0.y=p1.y=l.y;var m=(p0+p1)*.5f;var rot=Quaternion.LookRotation(p1-p0);
-                Box("Lookout rail",m+Vector3.up*.95f,new Vector3(.18f,.14f,Vector3.Distance(p0,p1)+.05f),rot,railWhite,true);Box("Lookout post",p0+Vector3.up*.5f,new Vector3(.2f,1f,.2f),rot,railWhite,true);
+                Coping(Box("Lookout rail",m+Vector3.up*.95f,new Vector3(.18f,.14f,Vector3.Distance(p0,p1)+.05f),rot,railWhite,true));Turned(Box("Lookout post",p0+Vector3.up*.5f,new Vector3(.2f,1f,.2f),rot,railWhite,true),"pilaster");
             }
             Put("map_board",l-face*3-side*4,Yaw(l,l-face),null,"SILVER FALLS");Put("telescope",l+face*7.5f,Yaw(l,falls));
             Put("picnic_table",l-face*2+side*6,Yaw(l,falls));Put("picnic_table",l+face*3+side*7,Yaw(l,falls)+20);
             // Clear of both tables (it used to sit 2 m from one, so the resident's car parked through it).
-            Spots["lookout"]=(l+side*3+face*1,Yaw(l,falls)+90);
+            Spots["lookout"]=(l+side*3+face*1,Yaw(l,falls)+90);if(PropForge.Enabled)Debug.Log($"LITTLE_ROAD_SPOT lookout {l} face {face}");
         }
         void Raceway()
         {
@@ -691,10 +695,12 @@ namespace LittleRoad
             Slab("Farmyard",-76,62,48,.05f,34,earth);
             Kit("house_a",-94,80,180,T(0xfff3dc,0x2e9e5b,0xd9534f,0x2e9e5b));
             Kit("barn",-62,80,180,T(0xd94040,0xffffff,0xffffff,0xd94040),null,1.6f);
+            // (--prop-forge: the farm kit's grain silo, docs/80 round 5)
+            if(PropForge.Enabled&&BayviewKit.Has("grain_silo")){Kit("grain_silo",-44,82,0,T(0xffffff,0,0xd94040,0));Debug.Log($"LITTLE_ROAD_SPOT silo {F(-44,82)}");}else{
             var silo=GameObject.CreatePrimitive(PrimitiveType.Cylinder);silo.name="Farm silo";silo.transform.SetParent(holder);silo.transform.position=F(-44,82)+Vector3.up*7;silo.transform.localScale=new Vector3(5.2f,7,5.2f);
             silo.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Silo steel",new Color(.84f,.86f,.88f),.3f,.45f);silo.tag="Respawn";
             var dome=GameObject.CreatePrimitive(PrimitiveType.Sphere);dome.name="Silo dome";dome.transform.SetParent(holder);dome.transform.position=F(-44,82)+Vector3.up*14;dome.transform.localScale=new Vector3(5.4f,3.2f,5.4f);
-            dome.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Silo dome red",Toy.Hex(0xd94040),.1f,.4f);Object.Destroy(dome.GetComponent<Collider>());
+            dome.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Silo dome red",Toy.Hex(0xd94040),.1f,.4f);Object.Destroy(dome.GetComponent<Collider>());}
             Kit("tractor",-70,52,55);Kit("tractor",-86,48,-30,null,null,.95f);
             foreach(var (x,z,y) in new[]{(-50f,64f,.65f),(-48.7f,64f,.65f),(-51.3f,64f,.65f),(-49.35f,64f,1.9f),(-50.65f,64f,1.9f),(-50f,64f,3.1f)}) {var b=Kit("hay_bale",x,z,0);b.transform.position+=Vector3.up*(y-.65f);}
             Fence(new(-100,46),new(-52,46),new Vector2(-94,-80));Fence(new(-52,46),new(-52,78));
@@ -749,6 +755,15 @@ namespace LittleRoad
                 return !BayviewKit.Occupied(b,existing)&&ValleyField.Normal(p.x,p.z).y>.78f;
             }
             Vector3 At(float r,float a){float rad=a*Mathf.Deg2Rad;var p=new Vector3(c.x+Mathf.Sin(rad)*r,0,c.y+Mathf.Cos(rad)*r);p.y=H(p.x,p.z);return p;}
+            // (--prop-forge: a terrace wall as Prop Forge's dry-stone run along the row, following the ground, docs/80 round 5;
+            //  the box stays where a pier can't stand level on the hillside)
+            int runs=0;bool TerraceRun(Vector3 w,Vector3 along)
+            {
+                if(!PropForge.Enabled)return false;
+                var L=Runs.Solve(new RunSpec{name=$"Hillcrest terrace wall {runs}",kit="dry_stone",seed=$"hillcrest-terrace-{runs}",along=new[]{w-along*6.4f,w+along*6.4f}});
+                if(L.failures.Count>0||L.items.Count==0)return false;
+                Runs.Draw(L,root);Runs.Laid.Add(L);runs++;return true;
+            }
             for(int sector=0;sector<24;sector++) {
                 double roll=new System.Random(sector*7919+13).NextDouble();
                 string use=roll<.38?"vines":roll<.52?"lavender":roll<.78?"olives":"meadow";
@@ -770,7 +785,7 @@ namespace LittleRoad
                                 var w=At(r+1.5f,a);var along=Quaternion.Euler(0,a,0)*Vector3.right;float low=float.MaxValue,high=float.MinValue;
                                 for(int k=-2;k<=2;k++){var q=w+along*(k*3.2f);float g=H(q.x,q.z);low=Mathf.Min(low,g);high=Mathf.Max(high,g);}
                                 float foot=low-.4f,top=high+.7f;
-                                if(top-foot<2.4f)Box("Terrace wall",new Vector3(w.x,(foot+top)*.5f,w.z),new Vector3(12.8f,top-foot,.6f),Quaternion.Euler(0,a,0),plinth,false);
+                                if(top-foot<2.4f&&!TerraceRun(w,along))Box("Terrace wall",new Vector3(w.x,(foot+top)*.5f,w.z),new Vector3(12.8f,top-foot,.6f),Quaternion.Euler(0,a,0),plinth,false);
                             }
                         } else if(use=="olives") {
                             if(!Clear(p,new Vector3(5,5,5),0))continue;

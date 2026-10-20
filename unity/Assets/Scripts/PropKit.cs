@@ -15,7 +15,8 @@ namespace LittleRoad
     [Serializable] public sealed class PropVec{public float x,y,z;public Vector3 V=>new(x,y,z);}
     [Serializable] public sealed class PropSub{public string material;public int start,count;}
     [Serializable] public sealed class PropLod{public int vertexStart,vertexCount,triangles;public PropSub[] submeshes;}
-    [Serializable] public sealed class PropCollision{public string type;public PropVec centre,size;}
+    [Serializable] public sealed class PropCollision{public string type;public PropVec centre,size;public PropBox[] more;}   // (more: further boxes, e.g. a gatehouse's towers and arch)
+    [Serializable] public sealed class PropBox{public PropVec centre,size;}
     [Serializable] public sealed class PropSocket{public string name;public PropVec at,forward;}
     [Serializable] public sealed class PropPiece{public string name,role,ground;public int variant;public float length,skirt;public float[] stretch,lengths,sink;
         public PropVec[] contact;public PropCollision collision;public PropSocket[] sockets;public PropLod[] lods;}
