@@ -10,9 +10,9 @@ namespace LittleRoad
     {
         public readonly Transform[] pivots;
         readonly Quaternion[] rest;
-        // --wheel-camber (off by default): a Car Forge body's camber (its file's degrees, top in; class B's drift kit), as
+        // Wheel camber (on in the game since 20 Oct; --no-wheel-camber): a Car Forge body's camber (its file's degrees, top in; class B's drift kit), as
         // a tilt about the car's length before the spin, so a cambered wheel turns true on its own axle.
-        public static bool CamberEnabled=>RaceTrial.Has("--wheel-camber");
+        public static bool CamberEnabled=>Application.isEditor?RaceTrial.Has("--wheel-camber"):!RaceTrial.Has("--no-wheel-camber");   // (on in the game since 20 Oct, Richard: "assume they pass"; the editor's checks keep it off unless asked)
         readonly float[] camber;
         public static bool IsPivot(string name)=>name=="Wheel_FL"||name=="Wheel_FR"||name=="Wheel_RL"||name=="Wheel_RR";
         // The wheels' rolling radius: the axles' height above the car's base (the models stand on y = 0), so each body

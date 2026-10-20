@@ -266,7 +266,7 @@ namespace LittleRoad
         void OnCollisionStay(Collision c){if(player!=null&&c.rigidbody==player.body)touched=Time.time;}
         // --traffic-yield (Richard, 12 Oct: "until we have something built in for overtaking"): a car with you close behind
         // in its lane pulls towards the verge and eases off so you can pass, as a courteous driver would on a country road.
-        public static bool Yields=>RaceTrial.Has("--traffic-yield");
+        public static bool Yields=>Application.isEditor?RaceTrial.Has("--traffic-yield"):!RaceTrial.Has("--no-traffic-yield");   // (on in the game since 20 Oct, Richard: "assume they pass"; the editor's checks keep it off unless asked)
         public float Along=>s;public int Direction=>dir;public float Lane=>lane;public HillcrestRoute.Road Road=>road;
         // (Tests: put the car at `along`, heading `direction`.)
         public void PlaceAt(float along,int direction){s=Mathf.Clamp(along,from,to);dir=direction;laneNow=dir*lane;speed=cruise;Place(0);body.position=transform.position;body.rotation=transform.rotation;}

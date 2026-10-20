@@ -81,7 +81,8 @@ namespace LittleRoad
             if(QuarryHills.Enabled&&QuarryHillsTown.Spots.Count>0&&!quarryLater)QuarryFestival.Build(transform,Store.Data,player);CameraShake.Reset();CameraShake.Watch(player);
             playerHorn=Horn.Attach(car,Horn.PitchFor(Store.Data.bodyId),player:true);
             player.Bumped+=(other,speed)=>{if(speed>1f&&!ui.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen)other.GetComponentInParent<NpcChatter>()?.TrySay(bubbles);};
-            if(RaceTrial.Has("--ambient-traffic"))AmbientTraffic();
+            // (Bayview's loop traffic: on in the game since 20 Oct, Richard; not in test runs, which stay as they were; --no-ambient-traffic)
+            if(RaceTrial.Has("--ambient-traffic")||!Testing&&!RaceTrial.Has("--no-ambient-traffic"))AmbientTraffic();
             Mark("player");if(!RaceTrial.Has("--no-valley-life"))gameObject.AddComponent<ValleyLife>().Setup(player);Mark("valley-life");
             // Fireworks over Bayview harbour at night (docs/51).
             var fireworks=gameObject.AddComponent<Fireworks>();fireworks.Setup();fireworks.Announce=Notify;
@@ -762,7 +763,7 @@ namespace LittleRoad
             }
             return root.gameObject;
         }
-        // Opt-in (--ambient-traffic): a few family cars cruising the loop on stock kit, using
+        // On in the game (20 Oct; --no-ambient-traffic, not in tests): a few family cars cruising the loop on stock kit, using
         // the finished-car planner (gentle cruise, no gates). The player stays cars[0].
         void AmbientTraffic()
         {

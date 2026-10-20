@@ -17,10 +17,12 @@ namespace LittleRoad
         public static readonly Vector2 Centre=new(2400,-1780);
         public const float GreenY=34,East=3500,South=-2500,FarmFloor=12;   // (FarmFloor: Golden Acre's level, about 11.7 m; not HillcrestRoute.FarmY, which asks this)
         public const string RoadName="Valley Road South";
-        // The pass: from the farm lane, east through the ring of hills, down to the green.
-        static readonly Vector2[] Pass={new(620,-1190),new(820,-1260),new(1050,-1350),new(1300,-1450),new(1560,-1560),new(1820,-1660),new(2100,-1740),new(2320,-1775)};
+        // The pass: from the farm lane, round the north of Golden Acre's pad (150 m about (720, -1262): through it the road ran
+        // under the farm lane's end, 2 m below it), east through the ring of hills, down to the green.
+        static readonly Vector2[] Pass={new(500,-1100),new(580,-1092),new(690,-1074),new(820,-1084),new(945,-1135),new(1065,-1225),new(1200,-1345),new(1330,-1455),new(1560,-1560),new(1820,-1660),new(2100,-1740),new(2320,-1775)};
         public static Vector3 Tee,Gate;
-        public static bool Contains(float x,float z)=>Vector2.Distance(new(x,z),Centre)<950;
+        // (the vale, and the pass east of Golden Acre: the village's approach, which it dresses)
+        public static bool Contains(float x,float z)=>Vector2.Distance(new(x,z),Centre)<950||x>760&&PassDistance(x,z,out _)<200;
         static float Blend(float a,float b,float x)=>Mathf.SmoothStep(0,1,Mathf.InverseLerp(a,b,x));
         static float PassDistance(float x,float z,out float t)
         {
@@ -46,9 +48,9 @@ namespace LittleRoad
         // Valley Road South: a T on the farm lane, the pass, the green, and on to the gate.
         public static List<HillcrestRoute.Road> Roads(Vector3[] farmLane)
         {
-            int tee=0;float best=float.MaxValue;for(int i=0;i<farmLane.Length;i++){float d=Vector2.Distance(new(farmLane[i].x,farmLane[i].z),new(560,-1158));if(d<best){best=d;tee=i;}}
+            int tee=0;float best=float.MaxValue;for(int i=0;i<farmLane.Length;i++){float d=Vector2.Distance(new(farmLane[i].x,farmLane[i].z),new(480,-1122));if(d<best){best=d;tee=i;}}
             Tee=farmLane[tee];Gate=new Vector3(2780,float.NaN,-2040);
-            var via=new List<Vector2>{new(Tee.x+12,Tee.z-30)};via.AddRange(Pass[1..]);via.Add(new(2520,-1830));via.Add(new(2660,-1930));
+            var via=new List<Vector2>{new(Tee.x+10,Tee.z+17)};via.AddRange(Pass[1..]);   // (square off the lane, north-east, then round the farm)via.Add(new(2520,-1830));via.Add(new(2660,-1930));
             var line=QuarryHills.Profile(Tee,via.ToArray(),Gate,.08f,30,QuarryHills.BackStreetLanding);   // (level off the T for 20 m: a 1 m drop in its first 12 m tilted the junction)
             return new List<HillcrestRoute.Road>{HillcrestRoute.Make(RoadName,line,7.5f,6,40)};
         }

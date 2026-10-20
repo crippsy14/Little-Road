@@ -420,6 +420,8 @@ namespace LittleRoad
             var ps=HillcrestRoute.PitStopSite.at;Pad(new(ps.x,ps.z),22,34,ps.y-.12f);
             Pad(HillcrestRoute.FarmCentre,HillcrestRoute.FarmInner,HillcrestRoute.FarmOuter,HillcrestRoute.FarmY-.1f);
             if(QuarryHills.Enabled)foreach(var (padAt,padIn,padOut,padY) in QuarryHills.Pads())Pad(padAt,padIn,padOut,padY-.12f);
+            // (--bramblewick: level ground under Valley Road South's T, so its corners meet the grass: the audit's two lips)
+            if(Bramblewick.Enabled){HillcrestRoute.All();var t=Bramblewick.Tee;Pad(new(t.x,t.z),16,30,t.y-.08f);}
             var before=(float[])h.Clone();
             // Roads and the raceway flatten their corridors; the railway only cuts through high ground.
             var mainline=HillcrestRoute.Mainline;int portalN=Index(mainline,HillcrestRoute.PortalNorth),portalS=Index(mainline,HillcrestRoute.PortalSouth);

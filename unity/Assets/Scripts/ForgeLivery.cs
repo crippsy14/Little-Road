@@ -7,7 +7,7 @@ namespace LittleRoad
     // scale: a column of the right side, the left side and the top, and beside it the front over the rear. Along a side
     // or the top, u runs through the car's landmarks (tail 0, rear axle .2, front axle .8, nose 1), so a door roundel
     // between the axles sits at .5 on any car; heights and widths are metres at the atlas's scale.
-    // --livery (off by default): Forge bodies get a composed texture over their paint, in the style their body file names
+    // The livery (on in the game since 20 Oct; --no-livery): Forge bodies get a composed texture over their paint, in the style their body file names
     // (Car Forge's paint.livery.style, 17 Oct): stripes (twin racing stripes over the top), centre (one broad stripe),
     // side (a stripe along each flank), chequer (a chequered band along each flank), roundel (the number alone) or plain
     // (the paint as it is); each but plain with a number roundel on each door. No shader change: the paint is baked into
@@ -19,7 +19,7 @@ namespace LittleRoad
         public static readonly Rect Right=Rect.MinMaxRect(0,0,L*K,H*K),Left=Rect.MinMaxRect(0,H*K,L*K,2*H*K),
             Top=Rect.MinMaxRect(0,2*H*K,L*K,(2*H+W)*K),Front=Rect.MinMaxRect((L+G)*K,0,1,H*K),Rear=Rect.MinMaxRect((L+G)*K,H*K,1,2*H*K);
         public const int Size=512;
-        public static bool Enabled=>RaceTrial.Has("--livery");
+        public static bool Enabled=>Application.isEditor?RaceTrial.Has("--livery"):!RaceTrial.Has("--no-livery");   // (on in the game since 20 Oct, Richard: "assume they pass"; the editor's checks keep it off unless asked)
         // (the roundel: centred between the axles, 0.55 m above the sill, 0.3 m across; the stripes 6-21 cm either side
         //  of the centre line)
         public const float RoundelS=.5f,RoundelUp=.55f,RoundelR=.3f,StripeIn=.06f,StripeOut=.21f;

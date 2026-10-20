@@ -139,7 +139,9 @@ namespace LittleRoad
             System.Threading.Tasks.Parallel.For(0,ids.Length,k=>Physics.BakeMesh(ids[k],false));
             foreach(var (c,m) in colliders)c.sharedMesh=m;
             Debug.Log($"LITTLE_ROAD_MAINLAND_TIMING geometry={geometryMs}ms meshes={meshMs-geometryMs}ms colliders={clock.ElapsedMilliseconds-meshMs}ms");
-            Lap("mainland chunks");DistantMountains();Lap("mainland mountains");
+            // (The distant mountain ring is off for now: on the map it overlapped the land, and the map's edge is the sea.
+            //  Richard, 20 Oct: "remove the distant mountains for now". --distant-mountains brings it back.)
+            Lap("mainland chunks");if(RaceTrial.Has("--distant-mountains"))DistantMountains();Lap("mainland mountains");
             Debug.Log($"LITTLE_ROAD_MAINLAND chunks={built} lod0Triangles={triangles}");
         }
         // Quarry Hills' ground (docs/59): the same terrain shader as the valley, with wetter, deeper western grass, blue-grey
@@ -337,6 +339,8 @@ namespace LittleRoad
             // Quarry Hills' junctions: shoulders across each mouth (the gap between a road's own shoulder and the kerb ramps
             // left a 16 cm step) and low stone walls where a corner's ground stands well above or below the road.
             if(QuarryHills.Enabled){Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&QuarryHills.Contains(n.at.x,n.at.z))MouthShoulders(n,holder,gravel);}
+            // (--bramblewick: the same across Valley Road South's T off the farm lane: the audit's two lips there)
+            if(Bramblewick.Enabled){Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&Vector3.Distance(n.at,Bramblewick.Tee)<30)MouthShoulders(n,holder,gravel);}
             Lap("roads shoulders and junctions");RacewayCircuit(holder);Lap("roads raceway");
         }
         // Hillcrest Raceway: 16 m asphalt with runoff, edge paint, corner kerbs, start line and gantry.
