@@ -44,7 +44,7 @@ namespace LittleRoad
             if(Any("StoneDark","Stone"))return Pattern.Stone;
             if(Any("RoofTile","RoofSlate"))return Pattern.Tile;
             if(Any("WoodDark","Wood","Bark","BirchBark"))return Pattern.Wood;
-            if(Any("Leaf","Fir","Poplar","Blossom","Autumn","Moss","Reed"))return Pattern.Leaf;
+            if(Any("Leaf","Fir","Poplar","Blossom","Autumn","Moss","Reed","Thatch"))return Pattern.Leaf;   // (thatch: reed bundles, Bramblewick, docs/82)
             if(Any("GlassLit"))return Pattern.Plain;
             if(Any("Glass"))return Pattern.Glass;
             if(Any("WhiteTrim","Tint_","Canvas","Red","Yellow","Blue","Green","Pit"))return Pattern.Paint;
