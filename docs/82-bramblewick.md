@@ -147,6 +147,36 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
     ungrounded, and couldn't turn. Jed offers the race; the field is by recipe (family and sporty bodies).
   - **Keep bar met:** seeds 1709/1710/1711, 24/24 finished, no assisted recoveries (study 227).
 
+- **20 Oct, the circuit redesigned (Richard: "a track that is fun to drive"; examples are direction, not references):**
+  - A track-expert agent researched real circuits' geometry. It measured 24 surveyed circuits (TUMFTM racetrack-database)
+    and 7 club circuits (OpenStreetMap) and wrote the **track-design skill** (`.claude/skills/track-design/SKILL.md`):
+    principles, metrics, target bands per track type and class, the method, and the piece format.
+  - Two tools came out of it:
+    - **`tools/track-eval.py`** scores a design: it solves the closing straights, checks the land, the village, and how
+      close the track comes to itself, and gives the metrics and a class C speed profile.
+    - **`tools/skill-sweep-summary.py`** summarises AI skill sweeps.
+  - **The new layout (3.18 km, 8 m lane):**
+    - the street, then the Dairy T;
+    - the Brook Esses through the ford;
+    - Long Acre over a brow into Barn Corner;
+    - the tightening Rookery;
+    - the Hedge Gap flick over a brow;
+    - Rim Corner and Top Lane;
+    - Beacon, flat over a crest;
+    - Gallows;
+    - Church Hill, downhill;
+    - the Green Hairpin in a bowl;
+    - the Orchard esses and Cider Press;
+    - Long Meadow;
+    - Mill Bend;
+    - the kink over the humpback bridge.
+  - **Its metrics are in the country-circuit bands:** 5.6 corners per km, 386 degrees per km, 45% curved, the street
+    the longest straight, one hairpin, and folded into the land. The brook, brows, crest, bowl and roll follow the
+    skill's elevation plan. The ford has water over the road and a depth post.
+  - **AI from skill 3 to 13 (Richard: test 3, 7, 10 and 13 so speed holds on any track):** study 228, every field one
+    skill, seeds 1709/1710/1711. All 12 races finished 24/24 with no assisted recoveries. Mean finish 154, 144, 141 and
+    140 s.
+
 ## Where to pick up (handover, 20 Oct, after step 5's finds)
 1. **The rest of step 5:**
    - the race: built and racing 24/24 (above). Next for it: hedge banks along the lane, a brook water strip, kerbs at

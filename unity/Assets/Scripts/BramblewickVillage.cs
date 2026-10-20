@@ -151,7 +151,7 @@ namespace LittleRoad
             foreach(float ds in new[]{-470f,-640f,-820f,-1000f,-1180f,-1350f})Park(sC+ds,N(sC+ds),3.8f);   // (out along the pass, where the vale's fields are)
             Park(sC+440,-N(sC+440),4f);Park(sC+447,-N(sC+447),4f);
             Vale(road,sC,herd);
-            HumpbackBridge();
+            HumpbackBridge();Ford();
             // (the top of the pass: the road's highest point between the T and the village, 7 m off its north side)
             {float top=-1,best=float.MinValue;for(float s=60;s<sC-500;s+=10)if(road.At(s).y>best){best=road.At(s).y;top=s;}
              if(top>0){var s0=road.At(top)+N(top)*(half+7);s0.y=H(s0.x,s0.z);shoe[5]=s0;}}
@@ -254,6 +254,23 @@ namespace LittleRoad
              o.y=H(o.x,o.z);Spots["orchard"]=(o,yaw);}
         }
         Vector3 herd;
+        // The ford on Church Lane, where the lanes circuit crosses the brook's low point: a sheet of water across the road,
+        // 16 m along it and a little wider than it, a few centimetres deep (no collider: you splash through), and a white depth
+        // post at its edge.
+        void Ford()
+        {
+            if(!Bramblewick.Marks.TryGetValue("Ford",out var at2))return;var lane=HillcrestRoute.Find(Bramblewick.LaneName);float s0=lane.Nearest(new Vector3(at2.x,0,at2.y),out _);
+            var water=TrialWorld.Material("Ford water",new Color(.36f,.54f,.58f),.1f,.95f);
+            for(float s=s0-8;s<s0+8;s+=2) {
+                var a=lane.At(s);var b=lane.At(s+2);var w=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(w.GetComponent<Collider>());w.name="Ford water";w.transform.SetParent(root);
+                w.transform.SetPositionAndRotation((a+b)*.5f+Vector3.up*.06f,Quaternion.LookRotation(b-a));w.transform.localScale=new Vector3(lane.width+3,.02f,Vector3.Distance(a,b)+.05f);
+                var r=w.GetComponent<Renderer>();r.sharedMaterial=water;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
+            var right=lane.Right(s0);right.y=0;right.Normalize();var post=lane.At(s0)+right*(lane.width*.5f+1.6f);post.y=H(post.x,post.z);
+            var p=GameObject.CreatePrimitive(PrimitiveType.Cube);p.name="Ford depth post";p.transform.SetParent(root);p.transform.position=post+Vector3.up*.75f;p.transform.localScale=new Vector3(.18f,1.5f,.18f);
+            p.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Depth post white",new Color(.95f,.95f,.92f),0,.3f);p.tag="Respawn";
+            Spots["ford"]=(lane.At(s0)+right*(lane.width*.5f+6),Yaw(lane.At(s0)+right*(lane.width*.5f+6),lane.At(s0)));
+        }
         // The humpback bridge on Church Lane (the lanes circuit's crest over the brook): stone parapets along both edges of
         // the deck, following its hump, and a stone face down to the brook either side.
         void HumpbackBridge()
