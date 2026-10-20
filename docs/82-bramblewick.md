@@ -125,9 +125,10 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
 
 ## Where to pick up (handover, 20 Oct, after step 5's finds)
 1. **The rest of step 5:**
-   - the race (24/24 on seeds 1709-1711): **waiting on Richard's lane-width call** below ("The race needs a call");
+   - the race (24/24 on seeds 1709-1711): per-circuit widths agreed (Richard, 20 Oct). Next: `Circuit` gets its own
+     width, read by the line bounds and gates; the other races stay at 16 m;
    - the milk-float duel (Peg);
-   - Jed's four parts: **waiting on Richard** ("Jed's parts need a call too");
+   - Jed's parts: waiting on doc 83's decisions;
    - the railway halt.
 2. **Still to make:** the milk float (Car Forge).
 3. **Leftovers:** two lips at the T (480, -1110), 0.13-0.16 m; the floating vine row (160.5, 36.3, -1040.2); two
@@ -181,6 +182,13 @@ parts ladder (`tools/parts-ladder.py`, docs/47) and the AI fields.
 The railway halt waits on the Coast Branch, which isn't built yet (docs/68). The milk float is a Car Forge model, which
 goes through Richard's photo rounds (model iteration loop).
 
+
+## Richard's answers (20 Oct)
+- **Style:** West Country, as planned. (Hoxne, in Suffolk, was a fond reminder from his childhood visits, not a change
+  of style.)
+- **The race:** per-circuit widths, "for sure". Bramblewick Lanes runs on real lanes (about 7 m, with wider passing
+  places) and the other races keep their 16 m.
+- **Jed's parts:** to be discussed properly as a whole-game question. See [doc 83](83-parts-system.md).
 
 ## Questions for Richard (each with my default)
 1. **Style:** English West Country (thatch and cob, sunken lanes, a village green)? Default: yes.
