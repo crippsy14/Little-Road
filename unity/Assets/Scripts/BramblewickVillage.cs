@@ -72,7 +72,7 @@ namespace LittleRoad
             foreach(float a in new[]{60f,140f,215f}){var t=green+Quaternion.Euler(0,a,0)*new Vector3(0,0,20+(float)rng.NextDouble()*4);t.y=H(t.x,t.z)-.05f;Put("tree_round",t,(float)rng.NextDouble()*360,null,null,true,1.3f+(float)rng.NextDouble()*.3f);}
             // ---- the church north of the green, its tower and lychgate towards it
             var nC=N(sC);var church=green+nC*44;church.y=H(church.x,church.z);
-            if(Building("parish_church",church,Yaw(church,green))){Spots["church"]=(green+nC*20,Yaw(green,church));
+            if(Building("parish_church",church,Yaw(church,green))){Spots["church"]=(green+nC*13,Yaw(green,church));   // (on the green, clear of the lychgate: review BW1-05)
                 var gate=green+nC*(44-Footprint("parish_church").y*.5f-6);gate.y=H(gate.x,gate.z);   // (in the churchyard wall's front)
                 Tower=church-nC*(Footprint("parish_church").y*.5f-3)+Vector3.up*11;{var s0=gate+nC*3.5f;s0.y=H(s0.x,s0.z);shoe[0]=s0;}   // (the tower stands towards the green; a horseshoe inside the lychgate, at the porch path)
                 Put("village_lychgate",gate,Yaw(gate,green)+90);
@@ -113,8 +113,8 @@ namespace LittleRoad
              var field=road.At(s-30)+n*(half+60);field.y=H(field.x,field.z);herd=field;for(int i=0;i<9;i++)Cow(field+new Vector3((float)rng.NextDouble()*40-20,0,(float)rng.NextDouble()*40-20),field);}
             // ---- parked cars: two by the green, two outside The Plough, six lay-bys out in the vale, two in the dairy yard
             void Park(float s,Vector3 side,float off){if(s<20||s>road.Length-20)return;var p=road.At(s)+side*(half+off);p.y=H(p.x,p.z);Parking.Add((p,Yaw(road.At(s-1),road.At(s+1))));}
-            Park(sC-30,N(sC-30),3f);Park(sC+26,N(sC+26),3f);Park(sC-5,-N(sC-5),2.6f);Park(sC+5,-N(sC+5),2.6f);
-            foreach(float ds in new[]{-470f,-640f,-820f,-1000f,-1180f,-1350f})Park(sC+ds,N(sC+ds),3.2f);   // (out along the pass, where the vale's fields are)
+            Park(sC-30,N(sC-30),4f);Park(sC+26,N(sC+26),4f);Park(sC-5,-N(sC-5),4f);Park(sC+5,-N(sC+5),4f);   // (4 m off the edge: at 2.6-3 m they sat over the edge line, review BW1-01)
+            foreach(float ds in new[]{-470f,-640f,-820f,-1000f,-1180f,-1350f})Park(sC+ds,N(sC+ds),3.8f);   // (out along the pass, where the vale's fields are)
             Park(sC+440,-N(sC+440),4f);Park(sC+447,-N(sC+447),4f);
             Vale(road,sC,herd);
             // (the top of the pass: the road's highest point between the T and the village, 7 m off its north side)
