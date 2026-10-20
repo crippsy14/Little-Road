@@ -221,7 +221,7 @@ namespace LittleRoad
             if(race.elapsed<0) {throttle=0;steering=0;body.linearVelocity=Vector3.zero;return;}
             if(autonomous&&!finished&&race.elapsed>0){float dt=Time.fixedDeltaTime;if(throttle<-.05f)BrakeSeconds+=dt;else if(throttle<.9f&&speed>3)LiftSeconds+=dt;if(speed<2)StoppedSeconds+=dt;}
             steerState=Mathf.MoveTowards(steerState,steering,tuning.response*Time.fixedDeltaTime);
-            float grip=Mathf.Abs(offset)<Circuit.Width*.5f||(race.freeRoam&&OnRoadSurface())?tuning.roadGrip:tuning.dirtGrip;grip*=DriveModel.AeroGrip(tuning,speed);Grip=grip;
+            float grip=Mathf.Abs(offset)<race.track.Half||(race.freeRoam&&OnRoadSurface())?tuning.roadGrip:tuning.dirtGrip;grip*=DriveModel.AeroGrip(tuning,speed);Grip=grip;
             float yawRequest=steerState*tuning.yaw*Mathf.Clamp01(Mathf.Abs(speed)/3)*Mathf.Sign(speed==0?1:speed);
             float engineAccel=-1;
             if(tuning.drivetrain!=null) {
@@ -366,7 +366,7 @@ namespace LittleRoad
         void TrackGates(float beforeProgress,float beforeOffset)
         {
             if(finished)return;
-            if(CheckpointCrossing.Forward(beforeProgress,progress,beforeOffset,offset,nextGateProgress,Circuit.Width*.5f+2)) {
+            if(CheckpointCrossing.Forward(beforeProgress,progress,beforeOffset,offset,nextGateProgress,race.track.Half+2)) {
                 race.RecordCheckpoint(this,nextGateProgress);
                 if(nextGate==0) {
                     if(nextGateProgress>race.track.length*.8f) {laps++;float lap=race.elapsed-lapStart;LastLapTime=lap;bestLap=Mathf.Min(bestLap,lap);

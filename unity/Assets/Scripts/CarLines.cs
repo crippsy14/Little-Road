@@ -16,7 +16,8 @@ namespace LittleRoad
     {
         // The default since 8 Oct (study 223: -33 s over six races, Bayview -1.1%, no resets); --no-car-lines for the shared line.
         public static bool On=>!RaceTrial.Has("--no-car-lines");
-        public const float Bound=5.4f;public const string Version="car-line-v1";
+        public static float BoundFor(Circuit road)=>road.width>=Circuit.Width?5.4f:road.width*.5f-2.6f;   // (5.4 m on a standard 16 m circuit)
+       public const string Version="car-line-v1";
         const float Spacing=8,Smooth=.001f,Use=.9f;
         static readonly Dictionary<string,RacingLine> lines=new();
         static float Round(float v,float step)=>Mathf.Round(v/step)*step;
@@ -69,7 +70,7 @@ namespace LittleRoad
         static string Sanitise(string key){var chars=key.ToCharArray();for(int i=0;i<chars.Length;i++)if(!char.IsLetterOrDigit(chars[i])&&chars[i]!='-'&&chars[i]!='.')chars[i]='_';return new string(chars);}
 
         public static RacingLine.Data Bake(Circuit road,RacingLine shared,CarTuning tuning,string id,out float before,out float after)
-        {
+        {float Bound=BoundFor(road);
             float length=road.length;int n=Mathf.CeilToInt(length/Spacing);
             var centre=new Vector2[n];var normal=new Vector2[n];var offset=new float[n];
             for(int i=0;i<n;i++){var p=road.At(i*length/n);centre[i]=new Vector2(p.x,p.z);}

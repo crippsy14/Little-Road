@@ -17,7 +17,7 @@ namespace LittleRoad
         public enum Intent {Launch,Race,Attack,Defend}
         public enum Reason {Limit,Follow,Guard,Launch,Finished}
         const int Bins=57;const float BinLow=-7,BinStep=.25f,Wall=50;
-        const float HalfRoad=Circuit.Width*.5f;
+        readonly float HalfRoad;   // (the circuit's half-width: 8 m on a standard circuit, less on Bramblewick's lanes)
 
         readonly RacerTrack track;
         readonly RacerAbilities ability;
@@ -84,7 +84,7 @@ namespace LittleRoad
         static readonly float CornerScale=Scale("--racer-corner-scale"),BrakeScale=Scale("--racer-brake-scale"),ReactionScale=Scale("--racer-reaction-scale"),GapScale=Scale("--racer-gap-scale"),LeaderBrakeScale=Scale("--racer-leader-brake-scale");
         public RacerDriverPolicy(RacingLine line,RacerAbilities abilities,int driverId,int raceSeed,Vector3 colliderHalf)
         {
-            track=RacerTrack.For(line);ability=abilities;id=driverId;
+            track=RacerTrack.For(line);HalfRoad=line.halfRoad;MaxLine=line.MaxOffset;ability=abilities;id=driverId;
             seed=unchecked((uint)raceSeed*2654435761u^(uint)(driverId+1)*40503u);
             halfWidth=colliderHalf.x;halfLength=colliderHalf.z;
             launchDelay=ability.LaunchDelay+.04f*Sample(7,0);
@@ -536,7 +536,8 @@ namespace LittleRoad
         // ---------- Path ----------
 
         // Planned lines stay well inside the point where grass (and recovery) starts.
-        float Edge=>Mathf.Min(HalfRoad-halfWidth-.25f,5.6f);
+        readonly float MaxLine;
+        float Edge=>Mathf.Min(HalfRoad-halfWidth-.25f,MaxLine);
         float PreviewDistance(float v)=>Mathf.Clamp(v*.9f,10,35);
         // Target offset from the road centre `x` metres ahead: the chosen shift from the racing line, kept
         // on the usable road.

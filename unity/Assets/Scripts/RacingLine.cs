@@ -13,7 +13,9 @@ namespace LittleRoad
         public readonly float roadLength,roadStep,pathLength;
         public int Count=>points.Length;
         // The widest a line may sit from the road centre: the AI's usable edge (RacerDriverPolicy.Edge, docs/71).
-        public const float MaxOffset=5.6f;
+        // (5.6 m on a standard 16 m circuit, as it always was; on a narrower one, 2.4 m inside its edge.)
+        public static float MaxOffsetFor(Circuit road)=>road.width>=Circuit.Width?5.6f:road.width*.5f-2.4f;
+        public readonly float MaxOffset,halfRoad;
         public RacingLine(Circuit road,string id,string trackId,string trackVersion):this(road,Load(road,id,trackId,trackVersion)){}
         static Data Load(Circuit road,string id,string trackId,string trackVersion)
         {
@@ -28,7 +30,7 @@ namespace LittleRoad
         }
         public RacingLine(Circuit road,Data baked)
         {
-            data=baked;
+            data=baked;MaxOffset=MaxOffsetFor(road);halfRoad=road.Half;
             roadLength=road.length;roadStep=road.length/data.offsets.Length;points=new Vector3[data.offsets.Length];segmentLength=new float[Count];curvature=new float[Count];
             for(int i=0;i<Count;i++) {
                 if(float.IsNaN(data.offsets[i])||float.IsInfinity(data.offsets[i])||Mathf.Abs(data.offsets[i])>MaxOffset+.01f)throw new ArgumentException("Racing-line offset exceeds initial body/tracking corridor.");
@@ -87,11 +89,11 @@ namespace LittleRoad
                 // Kept inside the corridor (a per-car line can cut a tight bend past it): a point that sits too far out, or
                 // whose nearest road point is somewhere else, is put back at its clamped offset across the road here.
                 float mapped=road.Nearest(at,out float side);float along=Mathf.Abs(Mathf.Repeat(mapped-s+length*.5f,length)-length*.5f);
-                if(Mathf.Abs(side)>MaxOffset-.05f||along>3) {
-                    side0=Mathf.Clamp(side0,-(MaxOffset-.05f),MaxOffset-.05f);at=road.At(s)+road.Right(s)*side0;
+                if(Mathf.Abs(side)>MaxOffsetFor(road)-.05f||along>3) {
+                    side0=Mathf.Clamp(side0,-(MaxOffsetFor(road)-.05f),MaxOffsetFor(road)-.05f);at=road.At(s)+road.Right(s)*side0;
                     for(int pass=0;pass<4;pass++)at.y=road.At(road.Nearest(at,out _)).y;
                 }
-                data.offsets[k]=Mathf.Clamp(side0,-MaxOffset,MaxOffset);data.positions[k]=at;
+                data.offsets[k]=Mathf.Clamp(side0,-MaxOffsetFor(road),MaxOffsetFor(road));data.positions[k]=at;
             }
             return data;
         }

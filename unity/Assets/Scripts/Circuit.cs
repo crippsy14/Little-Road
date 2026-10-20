@@ -7,6 +7,11 @@ namespace LittleRoad
     public sealed class Circuit:IDriverRoute
     {
         public const float Width=16;
+        // This circuit's own width (Richard, 20 Oct: per-circuit widths, for Bramblewick's lanes). Every circuit built so far
+        // is the standard 16 m, and everything that reads it gives exactly the old numbers there.
+        public readonly float width=Width;
+        public float Half=>width*.5f;
+        public Circuit(Vector3[] route,float width):this(route){this.width=width;}
         public readonly Vector3[] points;
         public readonly float[] distance;
         public readonly float length;

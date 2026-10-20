@@ -209,7 +209,7 @@ namespace LittleRoad
             if(career)CarContact.SeatAll(); // the world's standing cars on their wheels (docs/57, 2.5); race cars aren't standing
             // (The race is ready here, after its cars, camera and warm-up: docs/72 measures race entry to this line.)
             if(career)Debug.Log($"LITTLE_ROAD_SCENE_SWITCH ready t={Time.realtimeSinceStartup:0.00} mode=race world={(PersistentWorld.Current!=null&&PersistentWorld.Current.Reuses>0?"reused":"built")}");
-            Debug.Log("LITTLE_ROAD_UNITY_READY cars="+cars.Count+" width="+Circuit.Width+" length="+track.length+" "+LoadTime);LoadingScreen.Ready();
+            Debug.Log("LITTLE_ROAD_UNITY_READY cars="+cars.Count+" width="+track.width+" length="+track.length+" "+LoadTime);LoadingScreen.Ready();
             if((career&&!Has("--no-race-hud"))||RaceHud.Requested){Hud=gameObject.AddComponent<RaceHud>();Hud.Setup(this);}
             if(!career&&(Has("--race-preview")||Has("--race-preview-review"))) {
                 float resume=Time.timeScale;Time.timeScale=0;racePreview=gameObject.AddComponent<RacePreviewUI>();
@@ -524,7 +524,7 @@ namespace LittleRoad
                 trackId=technical==null?reportTrack+(Reversed?"-reversed":""):technical.definition.id,trackVersion=technical==null?reportTrack+(Reversed?"-reversed":"")+"-v1":technical.definition.version,
                 driverPolicy=DriverPolicyId,observationMode=DriverSnapshot==null?"legacy cached order":"shared pre-controller snapshot",
                 collisionMode=cars[0].body.collisionDetectionMode.ToString(),graphics=SystemInfo.graphicsDeviceName,equipment=setup,gridMode=gridMode,seed=seed,carCount=cars.Count,finished=finishOrder.Count,requiredLaps=requiredLaps,simSeconds=elapsed,
-                wallSeconds=Time.realtimeSinceStartup-wallStart,trackLength=track.length,trackWidth=Circuit.Width,autonomous=automation,physicsStepSeconds=Time.fixedDeltaTime,
+                wallSeconds=Time.realtimeSinceStartup-wallStart,trackLength=track.length,trackWidth=track.width,autonomous=automation,physicsStepSeconds=Time.fixedDeltaTime,
                 meanFrameMs=sorted.Length>0?sorted.Average():0,p95FrameMs=sorted.Length>0?sorted[(int)((sorted.Length-1)*.95f)]:0,
                 overlapSampledSteps=collisionAudit==null?0:collisionAudit.sampledSteps,overlapQuerySaturations=collisionAudit==null?0:collisionAudit.querySaturations,
                 maxCarPoseOverlap=collisionAudit==null?0:collisionAudit.maxCarOverlap,maxEnvironmentPoseOverlap=collisionAudit==null?0:collisionAudit.maxEnvironmentOverlap,

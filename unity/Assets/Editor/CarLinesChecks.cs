@@ -27,7 +27,7 @@ public static class CarLinesChecks
             float sharedLap=new RacingSpeedProfile(shared,tuning).predictedLapTime,ownLap=new RacingSpeedProfile(line,tuning).predictedLapTime;
             Require(after<=before+.001f,$"{name}: the optimiser made its own point-mass lap slower ({before:0.00} -> {after:0.00} s)");
             Require(ownLap<sharedLap,$"{name}: its own line isn't faster for it by the speed profile ({sharedLap:0.00} s shared, {ownLap:0.00} s own)");
-            Require(data.offsets.All(o=>Mathf.Abs(o)<=RacingLine.MaxOffset+.01f),$"{name}: line leaves the corridor");
+            Require(data.offsets.All(o=>Mathf.Abs(o)<=5.6f+.01f),$"{name}: line leaves the corridor");
             Require(ms<2000,$"{name}: bake took {ms} ms");
             results.Add($"{name} {sharedLap:0.00}->{ownLap:0.00} s ({ms} ms)");
         }
@@ -36,7 +36,7 @@ public static class CarLinesChecks
         // Bayview reversed (8 Oct: a baked line cut a tight bend past the corridor and stopped the race): every line builds.
         var harbour=new Circuit().Reversed();var harbourShared=new RacingLine(harbour,RacingLine.BakeSmooth(harbour,"bayview-reversed-smooth-v1","bayview"));
         foreach(var (name,tuning) in new[]{("stock C",stock),("free Tuner",tuner)}){var d=CarLines.Bake(harbour,harbourShared,tuning,"check-rev-"+name,out _,out _);try{_=new RacingLine(harbour,d);}catch(Exception e){Require(false,$"{name}'s line on Bayview reversed fails its checks: {e.Message}");}}
-        checks.Add($"Per-car lines (default; --no-car-lines) build on Bayview reversed; on Hillcrest Raceway: {string.Join(", ",results)}; corridor +-{RacingLine.MaxOffset} m; lines differ by up to {differ:0.0} m");
+        checks.Add($"Per-car lines (default; --no-car-lines) build on Bayview reversed; on Hillcrest Raceway: {string.Join(", ",results)}; corridor +-{5.6f} m; lines differ by up to {differ:0.0} m");
         return checks;
     }
 }
