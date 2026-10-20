@@ -251,8 +251,10 @@ namespace LittleRoad
                 foreach(float track in new[]{-1.6f,1.6f}) {
                     foreach(float r in new[]{-.55f,.55f}){var g=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(g.GetComponent<Collider>());g.name="Incline rail";g.transform.SetParent(parent);
                         g.transform.SetPositionAndRotation((a+b)*.5f+side*(track+r)+pitch*Vector3.up*.1f,pitch);g.transform.localScale=new Vector3(.12f,.16f,len);g.GetComponent<Renderer>().sharedMaterial=rail;}
-                    var wagon=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(wagon.GetComponent<Collider>());wagon.name="Slate wagon";wagon.transform.SetParent(parent);
-                    var at=Vector3.Lerp(a,b,track<0?.3f:.62f)+side*track+pitch*Vector3.up*.75f;wagon.transform.SetPositionAndRotation(at,pitch);wagon.transform.localScale=new Vector3(1.5f,1.1f,2.6f);
+                    var at=Vector3.Lerp(a,b,track<0?.3f:.62f)+side*track+pitch*Vector3.up*.75f;
+                    // (--prop-forge: the quarry kit's wagon on the rails, pitched with the incline: docs/80 round 6)
+                    if(PropForge.Enabled&&BayviewKit.Has("slate_wagon")){var fw=BayviewKit.Spawn("slate_wagon",at-pitch*Vector3.up*.65f,pitch.eulerAngles.y,parent,new BayviewKit.Tint(Toy.Hex(0x8c3b2e),Color.white,Color.white,Color.white),null,false);fw.transform.rotation=pitch;Debug.Log($"LITTLE_ROAD_SPOT incline_wagon {at}");continue;}
+                    var wagon=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(wagon.GetComponent<Collider>());wagon.name="Slate wagon";wagon.transform.SetParent(parent);wagon.transform.SetPositionAndRotation(at,pitch);wagon.transform.localScale=new Vector3(1.5f,1.1f,2.6f);
                     wagon.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Slate wagon",Toy.Hex(0x8c3b2e),0,.3f);
                 }
                 // The drumhouse at the head: a stone house over the winding drum, slate-roofed.

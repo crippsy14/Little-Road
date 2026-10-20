@@ -41,16 +41,21 @@ namespace LittleRoad
             Put("motors",P(55,13,Y-.04f),seaYaw,Tint(0x7f868d,0x3b4047,0xc0392b,0x3b4047,0x40464d),"ENGINE SHED",root);
             if(BayviewKit.Has("train_loco"))BayviewKit.Spawn("train_loco",P(36,9,Y+.3f),alongYaw,root,null,null,true,1);
             var wagonRed=TrialWorld.Material("Slate wagon",Toy.Hex(0x8c3b2e),0,.3f);var wagons=new List<Matrix4x4>();
-            for(int k=0;k<8;k++){float u=-70+k*4.2f;Box(wagons,P(u,4,Y+.95f),new Vector3(1.5f,1.1f,3.4f),alongYaw);Box(slates,P(u,4,Y+1.7f),new Vector3(1.3f,.6f,3.0f),alongYaw);}
+            // (--prop-forge: the quarry kit's slate wagons, loaded or empty, on their wheels: docs/80 round 6)
+            bool forgeWorks=PropForge.Enabled&&BayviewKit.Has("slate_wagon")&&BayviewKit.Has("quay_crane");
+            for(int k=0;k<8;k++){float u=-70+k*4.2f;if(forgeWorks){Put("slate_wagon",P(u,4,Y+.02f),alongYaw,new BayviewKit.Tint(Toy.Hex(0x8c3b2e),Color.white,Color.white,Color.white),null,root);continue;}Box(wagons,P(u,4,Y+.95f),new Vector3(1.5f,1.1f,3.4f),alongYaw);Box(slates,P(u,4,Y+1.7f),new Vector3(1.3f,.6f,3.0f),alongYaw);}
             QuarryFloor.Combine("Slate wagons",wagons,wagonRed,root,true);
             // Slate stacked for shipping on the seaward half: rows of stacks by grade.
             var rng=new System.Random(3301);
-            for(float u=-78;u<60;u+=7.5f)for(float v=-38;v<-14;v+=6.5f){if(rng.NextDouble()<.22)continue;float h=.8f+(float)rng.NextDouble()*1.4f;Box(slates,P(u+(float)rng.NextDouble(),v,Y+h*.5f),new Vector3(2.4f,h,1.4f),alongYaw+(float)rng.NextDouble()*6-3);}
+            // (--prop-forge: the quarry kit's racked slate stacks, not boxes: docs/80 round 6)
+            for(float u=-78;u<60;u+=7.5f)for(float v=-38;v<-14;v+=6.5f){if(rng.NextDouble()<.22)continue;float h=.8f+(float)rng.NextDouble()*1.4f;if(forgeWorks&&BayviewKit.Has("slate_stack")){Put("slate_stack",P(u+(float)rng.NextDouble(),v,Y+.02f),alongYaw+(float)rng.NextDouble()*6-3,null,null,root);continue;}Box(slates,P(u+(float)rng.NextDouble(),v,Y+h*.5f),new Vector3(2.4f,h,1.4f),alongYaw+(float)rng.NextDouble()*6-3);}
             QuarryFloor.Combine("Slate stacks",slates,slate,root,true);
             // A quayside crane: a mast with a jib out over the water.
-            var cr=P(20,-QuarryHills.QuaySea+6,Y);Box(rusts,cr+Vector3.up*6,new Vector3(1.2f,12,1.2f),seaYaw);Box(rusts,cr+Vector3.up*.6f,new Vector3(4,1.2f,4),seaYaw);
+            var cr=P(20,-QuarryHills.QuaySea+6,Y);
+            if(forgeWorks)Debug.Log($"LITTLE_ROAD_SPOT crane {cr} wagons {P(-55,4,Y)} sea_yaw {seaYaw:0}");if(forgeWorks)Put("quay_crane",cr,seaYaw,new BayviewKit.Tint(Toy.Hex(0x8c3b2e),Toy.Hex(0x8c3b2e),Toy.Hex(0x8c3b2e),Toy.Hex(0x8c3b2e)),null,root);else{   // (the quarry kit's hand crane, its jib out over the water)
+            Box(rusts,cr+Vector3.up*6,new Vector3(1.2f,12,1.2f),seaYaw);Box(rusts,cr+Vector3.up*.6f,new Vector3(4,1.2f,4),seaYaw);
             var jibFoot=cr+Vector3.up*10;var jibTip=cr+Vector3.up*15-inland*13;rusts.Add(Matrix4x4.TRS((jibFoot+jibTip)*.5f,Quaternion.LookRotation(jibTip-jibFoot),new Vector3(.7f,.7f,Vector3.Distance(jibFoot,jibTip))));
-            irons.Add(Matrix4x4.TRS(jibTip+Vector3.down*4,Quaternion.identity,new Vector3(.06f,8,.06f)));
+            irons.Add(Matrix4x4.TRS(jibTip+Vector3.down*4,Quaternion.identity,new Vector3(.06f,8,.06f)));}
             QuarryFloor.Combine("Quay ironwork",irons,dark,root,true);QuarryFloor.Combine("Crane",rusts,rust,root,true);
             // Boats moored off the wall, the pier, and its light.
             for(int k=0;k<3;k++){var b=P(-60+k*38,-QuarryHills.QuaySea-6-k%2*5,CoastalLandscape.SeaLevel);Put("boat",b,alongYaw+(k%2==0?0:180),null,null,root,false);}

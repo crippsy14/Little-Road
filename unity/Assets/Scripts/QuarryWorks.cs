@@ -71,7 +71,7 @@ namespace LittleRoad
                 if(HillcrestRoute.Distance(QuarryFloor.Loop,p.x,p.y,out _)<QuarryFloor.LoopWidth*.5f+12||ValleyField.RoadDistance(p.x,p.y)<10)continue;
                 if(Vector2.Distance(p,QuarryFloor.BlondinFloor)<30||Vector2.Distance(p,new Vector2(QuarryFloor.School.x,QuarryFloor.School.z))<40||InWorks(p))continue;
                 var g=G(p);if(ValleyField.Normal(p.x,p.y).y<.75f)continue;
-                BayviewKit.Spawn(id,g+Vector3.down*.15f,yaw,root,null,null,true,scale);Rocks++;
+                BayviewKit.Spawn(id,g+Vector3.down*.15f,yaw,root,null,null,true,scale);if(Rocks==0&&PropForge.Enabled)Debug.Log($"LITTLE_ROAD_SPOT rock_stand {g}");Rocks++;
                 // Rubble at its foot now and then.
                 if(R()<.5f){var q=p+new Vector2(R()*8-4,R()*8-4);if(!InWorks(q))BayviewKit.Spawn("rock_stand_d",G(q)+Vector3.down*.1f,R()*360,root,null,null,false,.35f+R()*.3f);}
             }

@@ -241,6 +241,27 @@ a plan for the whole map, with an ordered list of towns, and start working throu
     - Photos: three of the castle and a sheet of four (balustrade, lookout, silo, terraces).
   - Published to Richard's play copy before this round (main 87e5aed, with `--prop-forge --new-bayview`).
 
+- **Round 6: done (20 Oct). Quarry Hills' structure,** behind `--prop-forge`.
+  - **The roadside kit** (new): telegraph poles, tyre walls, ad boards and chevron signs, at the Blender kit's sizes and
+    sockets. They replace those pieces in every town.
+    - Telegraph poles: a taper, a crossarm on braces, glass insulators at the wires' height, steps.
+    - Tyre walls: real hollow tyres, painted by the stack; a lighter far version (7-sided tyres).
+    - Ad boards: a framed panel on A-frame legs, with the brand on its socket.
+    - Chevron signs: cut chevrons on two posts.
+  - **The quarry kit** (new):
+    - slate wagons, loaded and empty, on flanged wheels: the quay's rake of eight, and the incline's two, pitched with
+      the slope;
+    - the quay's hand crane: a riveted mast, a lattice jib over the water, the chain, hook and winch;
+    - racked slate stacks (the Blender kit's `slate_stack`) for the quay's shipping stacks, which were boxes.
+  - **The standing stones:** `rock_stand_a`-`d` in the rocks kit. A cleaved slate monolith with a fallen slab, two
+    leaning slabs, a split boulder in its rubble, and field boulders.
+  - **Left as they are:** the spoil heaps (part of the ground), the Blondin's iron lattice towers (beams, looking
+    right) and the quay's sleepers and rails.
+  - **Checks:** the fingerprint without flags is unchanged; the area audit's defects are no different; photos of the
+    quay, wagons, incline, standing stone and quarry floor.
+  - **Review:** one Sonnet agent on two contact sheets (14 views), covering rounds 4-6:
+    `review/street-review/r6-targeted.md`.
+
 ## Reviewing without photo sweeps (20 Oct)
 Richard, 20 Oct: the street-review agents (three photos every 40 m, read by an agent) used a lot of usage for little
 return. From now on:
@@ -257,13 +278,12 @@ return. From now on:
 Used in round 4: seven audit runs and four photo runs, about 15 small pictures, and no agents.
 
 ## Where to pick up
-- **Round 6: Quarry Hills structure.**
-  - Rock stands a-d and the spoil heaps.
-  - The quay track, wagons and crane, and the Blondin towers.
-  - Telegraph poles, tyre walls and ad boards.
 - **Hillcrest's leftovers** go into round 7: the floating piece and six steep banks, and the terrace runs' load cost.
 - **Round 7:** both towns judged the new way (audit, flagged photos), with QH2-09-22.
-- **Round 8:** the whole-map plan.
+- **Round 8: the whole map** (Richard, 20 Oct).
+  - Plan every town from docs/58 and the world plan, with its parts and races, in order.
+  - Then build the towns one at a time, in the same loop: build, check, a targeted agent review, then fold its agreed
+    suggestions into the next round.
 - **Smaller things:**
   - the long dark retaining wall behind the new Bayview's town row needs steps or gardens;
   - the east beach is a steep sand bank;
