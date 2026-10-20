@@ -290,9 +290,11 @@ namespace LittleRoad
         {
             var red=TrialWorld.Material("Pillar box red",Toy.Hex(0xc0392b),0,.35f);var glass=TrialWorld.Material("Kiosk glass",new Color(.75f,.85f,.9f),0,.6f);
             var sq=new Vector3(QuarryHills.Square.x,QuarryHills.SquareY,QuarryHills.Square.y);
-            void Kiosk(Vector3 p,float yaw){p.y=H(p.x,p.z);var k=GameObject.CreatePrimitive(PrimitiveType.Cube);k.name="Phone box";k.transform.SetParent(root);k.transform.SetPositionAndRotation(p+Vector3.up*1.25f,Quaternion.Euler(0,yaw,0));k.transform.localScale=new Vector3(1.05f,2.5f,1.05f);k.GetComponent<Renderer>().sharedMaterial=red;k.tag="Respawn";
+            // (--prop-forge: the street kit's phone and pillar boxes, not primitives: docs/80 round 4)
+            bool forge=PropForge.Enabled&&BayviewKit.Has("phone_box")&&BayviewKit.Has("pillar_box");
+            void Kiosk(Vector3 p,float yaw){p.y=H(p.x,p.z);if(forge){BayviewKit.Spawn("phone_box",p,yaw,root);return;}var k=GameObject.CreatePrimitive(PrimitiveType.Cube);k.name="Phone box";k.transform.SetParent(root);k.transform.SetPositionAndRotation(p+Vector3.up*1.25f,Quaternion.Euler(0,yaw,0));k.transform.localScale=new Vector3(1.05f,2.5f,1.05f);k.GetComponent<Renderer>().sharedMaterial=red;k.tag="Respawn";
                 foreach(var o in new[]{Vector3.forward,Vector3.back,Vector3.left,Vector3.right}){var w=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(w.GetComponent<Collider>());w.transform.SetParent(k.transform,false);w.transform.localPosition=o*.505f+Vector3.up*.05f;w.transform.localScale=new Vector3(o.x!=0?.02f:.7f,.55f,o.z!=0?.02f:.7f);w.GetComponent<Renderer>().sharedMaterial=glass;}}
-            void Pillar(Vector3 p){p.y=H(p.x,p.z);var b=GameObject.CreatePrimitive(PrimitiveType.Cylinder);b.name="Post box";b.transform.SetParent(root);b.transform.position=p+Vector3.up*.75f;b.transform.localScale=new Vector3(.55f,.75f,.55f);b.GetComponent<Renderer>().sharedMaterial=red;b.tag="Respawn";}
+            void Pillar(Vector3 p){p.y=H(p.x,p.z);if(forge){BayviewKit.Spawn("pillar_box",p,0,root);return;}var b=GameObject.CreatePrimitive(PrimitiveType.Cylinder);b.name="Post box";b.transform.SetParent(root);b.transform.position=p+Vector3.up*.75f;b.transform.localScale=new Vector3(.55f,.75f,.55f);b.GetComponent<Renderer>().sharedMaterial=red;b.tag="Respawn";}
             Kiosk(sq+new Vector3(-17,0,13),45);Pillar(sq+new Vector3(15,0,-15));
             Kiosk(QuarryHills.QuayPoint(-60,20,QuarryHills.QuayY),0);Pillar(QuarryHills.QuayPoint(-48,21,QuarryHills.QuayY));
             // Capel Bethel's graveyard: slate headstones in rows behind the chapel.

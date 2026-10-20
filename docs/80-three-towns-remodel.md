@@ -180,3 +180,73 @@ a plan for the whole map, with an ordered list of towns, and start working throu
 - `quarry-run.ps1 -Hidden` runs a test with no window.
 - Never delete a run's photos while a reviewer agent is reading them: the regression's clean-up emptied R1's folder
   mid-review.
+
+- **Round 4: done (20 Oct).** Quarry Hills' review findings (`review/street-review/r2-quarry-hills.md`), the yard
+  walls and the town's boxes, and a cheaper way to review. Everything new is behind `--prop-forge`.
+  - **Load time** (committed first, f38dc00): `NewBayview.On` and `PropForge.Enabled` read the command line once.
+    - The new Bayview's island land: 8.9 s to 0.5 s. The mainland: 2.3 s to 1.5 s.
+  - **The crawiau** as split-slate slabs from the car-forge `slate` kit (f38dc00, car-forge dcacf20).
+  - **Signs (QH2-02, QH2-06):**
+    - A shop's fascia is deeper. A terrace's name is lettered at 0.8 size, so it fits the fascia under the floor above.
+    - A shop never has a balcony.
+    - `terrace_b` variants 0-1 are shops and 2-3 houses. A placement with a shop's name takes a shop, one without takes
+      a house, so no fascia stands empty.
+    - The Forge's `terrace_e` and `terrace_g` (always shops) get names in Quarry Hills.
+  - **Lamps (QH2-03, QH2-04):** at the party wall between two fronts, not in front of a door or a name.
+  - **Parked cars (QH2-05):**
+    - A 5.4 m front has no room for a car, so there are no front drives in Quarry Hills.
+    - Cars park nose-in in the gaps between houses, and down the middle of the back lanes.
+    - The town keeps its life: 112 homes, against 69 before.
+  - **House_d's loggia (QH2-07):** a shaded recess with glass, not stone that read as bricked up.
+  - **Back-yard walls:** the back walls are slate dry-stone runs.
+    - A row's back walls join into one run, even where the houses run the other way along the street.
+    - A run's ends move in off steep ground.
+    - Any run under 8 m, or with a pier that can't stand level, is stone boxes instead, as are the short walls between
+      yards.
+    - Result: 150 runs, and the town builds in 1.1 s (0.9 s before; 2.0 s when every wall was its own run).
+  - **Phone and post boxes:** the street kit's `phone_box` and `pillar_box`.
+  - **QH2-01 (the house over the cutting at Quay Lane's end):**
+    - Not seen in the new photos of Quay Lane at 380-570 m.
+    - Houses and pavements now stand on the ground as drawn (`Drawn`), not the height field. Nowhere in town do the two
+      differ, so the cause wasn't found.
+    - Watch for it in the next look at Quay Lane.
+  - **Benches (QH2-08, QH2-20):** they tilt with the land by design (GroundFit, Richard 18 Oct). The square's photo shows
+    one leaning about 8 degrees on the slope, legs on the ground: not tipped.
+  - **Checks:**
+    - The fingerprint without flags is unchanged (`3f164ae90677e486`).
+    - The area audit with `--prop-forge`: Quarry Hills' floating pieces and hidden signs are at zero. Left: one road-edge
+      lip (there since round 3), one steep bank, and one parked car slightly off its pad.
+    - The full regression wasn't run (Richard, 20 Oct: only when needed).
+  - **Not done:**
+    - QH2-09-22 (pavement ends, slope textures, blank gables and the rest) go into round 7.
+    - Old Bayview's bunting crosses FISH & CHIPS; that's old Bayview only, which the new Bayview replaces.
+
+## Reviewing without photo sweeps (20 Oct)
+Richard, 20 Oct: the street-review agents (three photos every 40 m, read by an agent) used a lot of usage for little
+return. From now on:
+1. **Measure first.** `--area-audit` now checks the review's commonest findings (`StreetAudit`):
+   - **hidden signs:** every shop name seen from the street at eye height, straight on and 30 degrees either side; a name
+     with two of its three sight lines blocked is hidden;
+   - **tipped furniture.**
+
+   It also lists where each defect is (cars off the ground, banks, lips), and a `--view-shots` camera for each.
+2. **Photograph only what's flagged, plus a few samples.** `--view-shots` also takes `name:@Road name,s,left|right|along`,
+   the street review's own views by street and distance. I read the photos myself at 800 x 450, or as one contact sheet.
+3. **Agents only for a whole-town look at a milestone,** on a contact sheet of a dozen chosen views, not a sweep.
+
+Used in round 4: seven audit runs and four photo runs, about 15 small pictures, and no agents.
+
+## Where to pick up
+- **Round 5: Hillcrest structure.**
+  - The castle set (gatehouse, towers, curtain walls, keep, donjon, palace) as a `castle` Forge kit with the Blender
+    sizes: tower 11 m across and 36 m tall, wall 20 x 4 x 11 m, and so on.
+  - The square's balustrade, parapets and lookout rails as Forge rails.
+  - The terrace walls on the vine hill as dry-stone runs.
+  - The silo and the causeway balustrade.
+- **Round 6:** Quarry Hills structure (rock stands, spoil heaps, quay works, Blondin towers, telegraph poles).
+- **Round 7:** both towns judged the new way (audit, flagged photos), with QH2-09-22.
+- **Round 8:** the whole-map plan.
+- **Smaller things:**
+  - the long dark retaining wall behind the new Bayview's town row needs steps or gardens;
+  - the east beach is a steep sand bank;
+  - the sand run-off width is Richard's call (R1 recommendation 3).

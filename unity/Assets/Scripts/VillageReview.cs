@@ -233,8 +233,17 @@ namespace LittleRoad
                     float y=s[1].StartsWith("g")?Ground.Surface(x0,z0)+(s[1].Length>1?F(s[1].Substring(1)):0):F(s[1]); /* ("g" alone: on the ground) */return new Vector3(x0,y,z0);}
                 player.body.isKinematic=true;player.body.position+=Vector3.down*30;
                 foreach(var shot in RaceTrial.Arg("--view-shots").Split(';')) {
-                    var name=shot.Split(':');var ends=name[1].Split('>');
-                    cameraView.transform.position=V(ends[0]);cameraView.transform.LookAt(V(ends[1]));cameraView.fieldOfView=50;WorldLook.Cut(cameraView);
+                    var name=shot.Split(':');
+                    // ("name:@Road name,s,left|right|along": the street review's own view at s metres along that road, so one of
+                    //  its photos can be taken again by street and place: docs/80)
+                    if(name[1].StartsWith("@")) {
+                        var a=name[1].Substring(1).Split(',');var road=HillcrestRoute.Find(a[0]);float s=float.Parse(a[1],System.Globalization.CultureInfo.InvariantCulture);
+                        var p=road.At(s);var ahead=road.At(s+3)-road.At(s-3);ahead.y=0;ahead.Normalize();var right=Vector3.Cross(Vector3.up,ahead);float half=road.width*.5f;
+                        if(a[2]=="along"){cameraView.transform.position=p+Vector3.up*1.7f-right*1.2f;cameraView.transform.LookAt(road.At(s+28)+Vector3.up*1.2f);}
+                        else{int side=a[2]=="left"?-1:1;cameraView.transform.position=p-right*side*(half+2)+Vector3.up*6.5f-ahead*4;cameraView.transform.LookAt(p+right*side*(half+9)+Vector3.up*3+ahead*4);}
+                        cameraView.fieldOfView=55;
+                    } else{var ends=name[1].Split('>');cameraView.transform.position=V(ends[0]);cameraView.transform.LookAt(V(ends[1]));cameraView.fieldOfView=50;}
+                    WorldLook.Cut(cameraView);
                     Time.timeScale=Mathf.Max(Time.timeScale,1);yield return new WaitForSecondsRealtime(.5f);ui.Capture(Path.Combine(folder,name[0]+".png"));   // (real time: a paused game hung here)
                     // Frame cost from this view (vsync off while measuring): mean and worst of 60 frames.
                     int vsync=QualitySettings.vSyncCount,target=Application.targetFrameRate;QualitySettings.vSyncCount=0;Application.targetFrameRate=-1;

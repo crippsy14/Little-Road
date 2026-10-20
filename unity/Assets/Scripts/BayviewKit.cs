@@ -36,9 +36,9 @@ namespace LittleRoad
         public static void Reset()=>materials.Clear();
         public static bool Has(string id)=>ForgeStandIns.Has(id)||Resources.Load<GameObject>("Bayview/"+id)!=null;
         // (the piece's source: Prop Forge's stand-in with --prop-forge, else the Blender kit's prefab; key names its template)
-        static GameObject SourceFor(string id,Vector3 at,out string key)
+        static GameObject SourceFor(string id,Vector3 at,out string key,bool signed=false)
         {
-            key=id;if(ForgeStandIns.Has(id))return ForgeStandIns.Source(id,at,out key);
+            key=id;if(ForgeStandIns.Has(id))return ForgeStandIns.Source(id,at,out key,signed);
             var src=Resources.Load<GameObject>("Bayview/"+id);
             if(src==null)throw new System.InvalidOperationException("Missing Bayview kit asset: "+id);
             return src;
@@ -158,7 +158,7 @@ namespace LittleRoad
                 if(parent!=animated){var rs=piece.GetComponentsInChildren<Renderer>();if(rs.Length>0){var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);Footprints.Add(b);FootprintOwners.Add(piece);}Placed.Add(piece);}
                 return piece;
             }
-            var source=SourceFor(id,position,out _);
+            var source=SourceFor(id,position,out _,!string.IsNullOrEmpty(sign));
             var go=Object.Instantiate(source,position,Quaternion.Euler(0,yaw,0),parent);go.name=id;tint??=new Tint();if(scale!=1)go.transform.localScale*=scale;
             if(GroundFit.On&&parent!=animated&&Application.isPlaying)GroundFit.Fit(id,id,go);
             if(id=="lamp_post")NightLights.Lamp(go.transform);

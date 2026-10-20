@@ -31,11 +31,11 @@ namespace LittleRoad
         public static IEnumerable<string> Ids{get{Load();return map.Keys;}}
         // Where a stand-in's chimney smokes (its Chimney socket, docs/80): the variant standing at `at`, turned by `yaw`.
         // Otherwise `kit` (the Blender kit's chimney, from the caller's table), turned the same way.
-        public static Vector3 ChimneyOr(string id,Vector3 at,float yaw,Vector3 kit)
+        public static Vector3 ChimneyOr(string id,Vector3 at,float yaw,Vector3 kit,bool shop=false)
         {
             var rot=Quaternion.Euler(0,yaw,0);
             if(Has(id)) {
-                var e=map[id];int h=(Mathf.RoundToInt(at.x*10)*73856093)^(Mathf.RoundToInt(at.z*10)*19349663)^id.GetHashCode();string piece=e.pieces[(h&0x7fffffff)%e.pieces.Length];
+                var e=map[id];string piece=Variant(id,e,at,shop);
                 var p=PropKit.Load(e.kit).Piece(piece);
                 if(p.sockets!=null)foreach(var s in p.sockets)if(s.name=="Chimney"){var v=s.at.V;return at+rot*new Vector3(-v.x,v.y,-v.z);}   // (turned half round, as the model is)
             }
@@ -43,10 +43,17 @@ namespace LittleRoad
         }
         // The variant for a placement: a hash of where it stands (the same piece every build), and its source prefab. key
         // names the template (one per variant).
-        public static GameObject Source(string id,Vector3 at,out string key)
+        // (terrace_b is two shops and two houses, docs/80 round 4: a placement with a shop's name takes a shop, one without a
+        //  house, so no name hangs under a balcony and no fascia stands empty: street review QH2-02, QH2-06)
+        static string Variant(string id,Entry e,Vector3 at,bool shop)
         {
-            Load();var e=map[id];int h=(Mathf.RoundToInt(at.x*10)*73856093)^(Mathf.RoundToInt(at.z*10)*19349663)^id.GetHashCode();
-            string piece=e.pieces[(h&0x7fffffff)%e.pieces.Length];key=id+"@"+piece;
+            int h=(Mathf.RoundToInt(at.x*10)*73856093)^(Mathf.RoundToInt(at.z*10)*19349663)^id.GetHashCode();h&=0x7fffffff;
+            if(id=="terrace_b"&&e.pieces.Length==4)return e.pieces[(shop?0:2)+h%2];
+            return e.pieces[h%e.pieces.Length];
+        }
+        public static GameObject Source(string id,Vector3 at,out string key,bool shop=false)
+        {
+            Load();var e=map[id];string piece=Variant(id,e,at,shop);key=id+"@"+piece;
             if(sources.TryGetValue(key,out var go)&&go!=null)return go;
             return sources[key]=Build(PropKit.Load(e.kit),piece,id);
         }
@@ -69,6 +76,7 @@ namespace LittleRoad
             // (sign sockets as the Blender kit's SignAnchor empties: BayviewKit letters a shop's name onto them; docs/80)
             if(p.sockets!=null)foreach(var s in p.sockets)if(s.name!=null&&s.name.StartsWith("SignAnchor")) {
                 var a=new GameObject(s.name).transform;a.SetParent(turned,false);a.localPosition=s.at.V;
+                if(piece.StartsWith("terrace_"))a.localScale=Vector3.one*.8f;   // (a terrace's name fits its fascia, under the floor above: QH2-02)
             }
             if(p.collision!=null&&p.collision.size!=null&&p.collision.size.V!=Vector3.zero) {   // (the kit's Collision part: a box BayviewKit reads by its bounds)
                 var c=new GameObject("Collision",typeof(MeshFilter),typeof(MeshRenderer));c.transform.SetParent(turned,false);
