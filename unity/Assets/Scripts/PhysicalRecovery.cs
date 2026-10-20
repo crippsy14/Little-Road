@@ -199,12 +199,18 @@ namespace LittleRoad
             return true;
         }
         bool TrafficClear(in DriverObservation o,Vector3 position,Vector3 forward,float seconds)=>TrafficClear(in o,position,forward,seconds,out _);
-        bool TrafficClear(in DriverObservation o,Vector3 position,Vector3 forward,float seconds,out bool moving)
+        bool TrafficClear(in DriverObservation o,Vector3 position,Vector3 forward,float seconds,out bool moving)=>TrafficClear(in o,position,forward,seconds,out moving,default,default);
+        // The recovery unlock (default since 20 Oct; --no-recovery-unlock for A/B): `touching`, the cars this one already overlaps where it starts (`from`), don't block a move that
+        // opens the gap to them. Without it, two cars stopped nose to tail each found every path overlapping the other from
+        // its first step and both waited for clearance until the assisted reset (study 228, Bayview, skill 13: 70 s).
+        public static bool Unlock=!RaceTrial.Has("--no-recovery-unlock");   // (settable: RecoverySensorChecks tries both. Study 229: Cedar and Bayview's keep/reject races identical with it, as no stopped cars touch there; the skill sweep's one deadlock, study 228, gone)
+        bool TrafficClear(in DriverObservation o,Vector3 position,Vector3 forward,float seconds,out bool moving,ReadOnlySpan<int> touching,Vector3 from)
         {
             moving=false;
             var right=Vector3.Cross(Vector3.up,forward);
             foreach(var other in o.traffic) {
                 if(other.id==o.self.id)continue;
+                if(touching.Length>0&&touching.IndexOf(other.id)>=0&&Vector3.Distance(position,other.position+other.velocity*seconds)>Vector3.Distance(from,other.position)+.05f)continue;
                 Vector3 delta=other.position+other.velocity*seconds-position;
                 // Conservative oriented rectangle projections, including the
                 // other car's heading and a 0.65 m uncertainty/room margin.
@@ -213,6 +219,18 @@ namespace LittleRoad
                 if(Mathf.Abs(Vector3.Dot(delta,forward))<along&&Mathf.Abs(Vector3.Dot(delta,right))<across){moving=other.velocity.sqrMagnitude>.25f*.25f;return false;}
             }
             return true;
+        }
+        // Whether this car, at `position` facing `forward`, overlaps car `id` now (the same rectangles as TrafficClear).
+        bool OverlapsAny(in DriverObservation o,Vector3 position,Vector3 forward,int id)
+        {
+            var right=Vector3.Cross(Vector3.up,forward);
+            foreach(var other in o.traffic) {
+                if(other.id!=id)continue;Vector3 delta=other.position-position;
+                float along=half.z+2.4f*Mathf.Abs(Vector3.Dot(other.forward,forward))+1.4f*Mathf.Abs(Vector3.Dot(other.right,forward))+.65f;
+                float across=half.x+2.4f*Mathf.Abs(Vector3.Dot(other.forward,right))+1.4f*Mathf.Abs(Vector3.Dot(other.right,right))+.65f;
+                return Mathf.Abs(Vector3.Dot(delta,forward))<along&&Mathf.Abs(Vector3.Dot(delta,right))<across;
+            }
+            return false;
         }
         public bool DestinationClear(in DriverObservation o,Vector3 point,Vector3 forward)
         {
@@ -245,6 +263,8 @@ namespace LittleRoad
         public ReadOnlySpan<RecoveryOption> Sample(in DriverObservation o,float initialSteering)
         {
             int index=0,corridorRejected=0,staticRejected=0,trafficRejected=0,accepted=0;string blocker=null;
+            Span<int> touching=stackalloc int[8];int touchingCount=0;
+            if(Unlock)foreach(var other in o.traffic)if(other.id!=o.self.id&&touchingCount<8&&OverlapsAny(in o,o.self.position,o.self.forward,other.id))touching[touchingCount++]=other.id;
             var roadRight=o.route.Right(o.self.route);
             float initialFootprint=half.x*Mathf.Abs(Vector3.Dot(o.self.right,roadRight))+half.z*Mathf.Abs(Vector3.Dot(o.self.forward,roadRight));
             float corridorLimit=Mathf.Max(11.5f,Mathf.Abs(o.self.offset)+initialFootprint+.1f);
@@ -266,7 +286,7 @@ namespace LittleRoad
                     // out than its starting excursion or the supported runoff.
                     if(Mathf.Abs(side)+footprint>corridorLimit){corridorRejected++;clear=false;break;}
                     if(!StaticClear(position,end,rotation)){staticRejected++;blocker=staticBlocker;clear=false;break;}
-                    if(!TrafficClear(in o,end,forward,step*dt,out movingTraffic)){trafficRejected++;clear=false;break;}
+                    if(!TrafficClear(in o,end,forward,step*dt,out movingTraffic,touching[..touchingCount],o.self.position)){trafficRejected++;clear=false;break;}
                     position=end;
                 }
                 float endRoute=o.self.route+Vector3.Dot(position-o.self.position,o.route.Forward(o.self.route));

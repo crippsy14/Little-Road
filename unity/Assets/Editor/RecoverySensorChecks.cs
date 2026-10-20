@@ -45,6 +45,16 @@ public static class RecoverySensorChecks
             o=new DriverObservation(0,1f/120,self,observed,route,CarTuning.Stock,1,0,false);
             Check(!sensor.DestinationClear(in o,route.At(0),Vector3.forward),"Assisted destination rejects an approaching car before it reaches the spawn point");
 
+            // The recovery unlock (study 228): two cars stopped nose to tail, touching. Without it the front car finds no clear
+            // path (every one overlaps the car behind from its first step); with it, driving away from that car is clear.
+            self=new ObservedCar(0,route.At(0),Vector3.zero,Vector3.forward,Vector3.right,0,0,0);
+            observed=new[]{self,new ObservedCar(1,route.At(-3.9f),Vector3.zero,Vector3.forward,Vector3.right,-3.9f,0,0)};
+            o=new DriverObservation(0,1f/120,self,observed,route,CarTuning.Stock,1,0,false);
+            bool was=RecoverySensor.Unlock;int locked=0,unlocked=0;
+            try{RecoverySensor.Unlock=false;foreach(var option in sensor.Sample(in o,0))if(option.clear&&option.speed>0)locked++;RecoverySensor.Unlock=true;foreach(var option in sensor.Sample(in o,0))if(option.clear&&option.speed>0)unlocked++;}
+            finally{RecoverySensor.Unlock=was;}
+            Check(locked==0&&unlocked>0,$"Touching cars: a move away is clear only with the recovery unlock (without {locked}, with {unlocked})");
+
             var waiting=new PhysicalRecovery();var blocked=new RecoveryOption[1];
             self=new ObservedCar(0,route.At(0),Vector3.zero,Vector3.forward,Vector3.right,0,0,0);observed=new[]{self};
             void WaitFor(int start,int ticks,bool moving){blocked[0]=new RecoveryOption(false,false,0,0,self.position,self.forward,moving);

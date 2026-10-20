@@ -177,6 +177,18 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
     skill, seeds 1709/1710/1711. All 12 races finished 24/24 with no assisted recoveries. Mean finish 154, 144, 141 and
     140 s.
 
+- **20 Oct, the AI skill sweep on every track** (study 228: skill 3, 7, 10 and 13 fields, seeds 1709-1711, run
+  concurrently; `tools/skill-sweep-summary.py 228`):
+  - Hillcrest, Bayview, Quarry Hills and Bramblewick: 47 of 48 races 24/24 with no assisted recoveries.
+  - **The one failure:** Bayview, skill 13, seed 1709. Two cars hit nose to tail and stopped. Each physical recovery
+    found every path overlapping the other car from its first step, so both waited 70 s for the assisted reset.
+  - **Fixed by the recovery unlock** (default; `--no-recovery-unlock` turns it off): a car already touching another may
+    take a path that opens the gap. With it, that race has no recoveries and 22 contacts instead of 88. The other 11
+    skill-13 races are identical.
+  - **Keep/reject (study 229, Cedar and Bayview):** identical with and without (no stopped cars touch there), so it costs
+    nothing. My call: default on.
+  - The editor check (RecoverySensorChecks) covers both cases.
+
 ## Where to pick up (handover, 20 Oct, after step 5's finds)
 1. **The rest of step 5:**
    - the race: built and racing 24/24 (above). Next for it: hedge banks along the lane, a brook water strip, kerbs at
