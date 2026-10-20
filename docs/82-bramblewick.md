@@ -69,6 +69,17 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
    railway halt.
 6. **Judged:** area audit at zero, a targeted review; the flag comes off.
 
+## Progress
+- **20 Oct, kits (step 1), Car Forge:**
+  - `village`: three thatched cob cottages (two variants each: thick thatch with rolled eaves, eyebrow dormers, a
+    block-cut ridge, a porch or a rose), the parish church (west tower with battlements, pinnacles and a clock; nave,
+    chancel, south porch), the lychgate, and *The Plough*;
+  - `hedge_bank`: a run kit, a stone-faced bank with the hedge on top;
+  - `cows`: Friesians, body and head apart, for grazing.
+  - A `Thatch` colour joins the palette.
+  - Still to come: the milk float (Car Forge), the dairy buildings and the fields redo.
+- **Next: land and roads (step 2).**
+
 ## Questions for Richard (each with my default)
 1. **Style:** English West Country (thatch and cob, sunken lanes, a village green)? Default: yes.
 2. **The milk-float duel:** a one-on-one sprint down her lane, her float quicker through the bends than on the
