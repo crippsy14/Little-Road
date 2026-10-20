@@ -23,7 +23,7 @@ namespace LittleRoad
         // then the lane. My call (Richard, 20 Oct: per-circuit widths, decide it yourself): 7.5 m, the width of Valley Road
         // South, so the street and the lane race the same: two abreast, a third only where there's room. 20 Oct, the redesign
         // (the track-design skill, .claude/skills/track-design): 8 m, two abreast with a little to spare.
-        public const string LaneName="Church Lane";public const float LaneWidth=8f;
+        public const string LaneName="Church Lane";public const float LaneWidth=9;   // (9 m, the street too: study 234, against 8 m, all 72 cars finished, 210 s quicker in total, contacts 111 -> 82, passes 28 -> 31)
         public static float LaneW,LaneE;   // (where the lane leaves Valley Road South, metres along it)
         public static Vector3[] Lap;   // (the race's closed line: point 0 is the start line on the village street)
         public static float L1,L2;public static readonly Dictionary<string,Vector2> Marks=new();public static Vector2[] Brook;
@@ -115,7 +115,7 @@ namespace LittleRoad
             Tee=farmLane[tee];Gate=new Vector3(2780,float.NaN,-2040);
             var via=new List<Vector2>{new(Tee.x+10,Tee.z+17)};via.AddRange(Pass[1..]);   // (square off the lane, north-east, then round the farm)via.Add(new(2520,-1830));via.Add(new(2660,-1930));
             var line=QuarryHills.Profile(Tee,via.ToArray(),Gate,.08f,30,QuarryHills.BackStreetLanding);   // (level off the T for 20 m: a 1 m drop in its first 12 m tilted the junction)
-            var road=HillcrestRoute.Make(RoadName,line,7.5f,6,40);
+            var road=HillcrestRoute.Make(RoadName,line,LaneWidth,6,40);
             float sC=road.Nearest(new Vector3(Centre.x,0,Centre.y),out _);var r=road.Right(sC);r.y=0;r.Normalize();if(r.z<0)r=-r;
             Green=road.At(sC)+r*(road.width*.5f+2.2f+26);Green.y=road.At(sC).y+.05f;PubSite=road.At(sC)-r*(road.width*.5f+2.4f+3.6f+3.9f);PubSite.y=road.At(sC).y+.05f;
             // Church Lane: its ends on Valley Road South's own vertices (so the junctions' nodes are exact), 260 m west and

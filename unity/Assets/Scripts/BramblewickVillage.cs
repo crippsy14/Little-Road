@@ -254,29 +254,33 @@ namespace LittleRoad
              o.y=H(o.x,o.z);Spots["orchard"]=(o,yaw);}
         }
         Vector3 herd;
-        // The ford on Church Lane, where the lanes circuit crosses the brook's low point: a sheet of water across the road,
-        // 16 m along it and a little wider than it, a few centimetres deep (no collider: you splash through), and a white depth
-        // post at its edge.
+        // The ford on Church Lane, where the lanes circuit crosses the brook's low point (rebuilt after launch review r1,
+        // LR1-01: strips of water read as a placeholder):
+        //   - one sheet of water across the lane, 12 m along it, a few centimetres deep (no collider: you splash through);
+        //   - low stone wing walls along both road edges the length of the ford, which the water's ends tuck under, and
+        //     reeds at their ends where the brook comes in and goes out;
+        //   - a white depth post, FORD boards from both directions, and spray off the wheels of anything driving through.
         void Ford()
         {
             if(!Bramblewick.Marks.TryGetValue("Ford",out var at2))return;var lane=HillcrestRoute.Find(Bramblewick.LaneName);float s0=lane.Nearest(new Vector3(at2.x,0,at2.y),out _);
-            // (darker water in strips across the lane, each its own length, so the edge is ragged as a real ford's is)
-            var water=TrialWorld.Material("Ford water",new Color(.22f,.37f,.38f),0,.78f);var foam=TrialWorld.Material("Ford foam",new Color(.9f,.93f,.92f),0,.4f);var rightF=lane.Right(s0);rightF.y=0;rightF.Normalize();   // (a mid blue-green with some sheen: at .95 it mirrored the sky as pale tiles, dark it read as tarmac patches)
-            for(int strip=0;strip<7;strip++) {
-                float off=(strip-3)*(lane.width+3)/7f,len=11+(float)dressRng.NextDouble()*6,shift=((float)dressRng.NextDouble()-.5f)*2;
-                for(float s=s0-len*.5f+shift;s<s0+len*.5f+shift;s+=2) {
-                    var a=lane.At(s)+rightF*off;var b=lane.At(s+2)+rightF*off;var w=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(w.GetComponent<Collider>());w.name="Ford water";w.transform.SetParent(root);
-                    w.transform.SetPositionAndRotation((a+b)*.5f+Vector3.up*(.05f+strip%2*.004f),Quaternion.LookRotation(b-a));w.transform.localScale=new Vector3((lane.width+3)/7f+.05f,.02f,Vector3.Distance(a,b)+.05f);
-                    var r=w.GetComponent<Renderer>();r.sharedMaterial=water;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
-                }
-                // (a line of foam where the brook comes over the road's upstream edge)
-                var fa=lane.At(s0-len*.5f+shift)+rightF*off;var fb=lane.At(s0-len*.5f+shift+1.2f)+rightF*off;var fm=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(fm.GetComponent<Collider>());fm.name="Ford foam";fm.transform.SetParent(root);
-                fm.transform.SetPositionAndRotation((fa+fb)*.5f+Vector3.up*.065f,Quaternion.LookRotation(fb-fa));fm.transform.localScale=new Vector3((lane.width+3)/7f+.05f,.02f,.5f);fm.GetComponent<Renderer>().sharedMaterial=foam;
+            var water=TrialWorld.Material("Ford water",new Color(.24f,.39f,.4f),0,.72f);var stone=WorldLook.Kit("Ford stone",new Color(.6f,.58f,.52f),WorldLook.Pattern.Stone,0,.1f,true);
+            float half=lane.width*.5f;
+            for(float s=s0-6;s<s0+6;s+=1.5f) {
+                var a=lane.At(s);var b=lane.At(s+1.5f);var f=b-a;var right=lane.Right(s+.75f);right.y=0;right.Normalize();
+                var w=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(w.GetComponent<Collider>());w.name="Ford water";w.transform.SetParent(root);
+                w.transform.SetPositionAndRotation((a+b)*.5f+Vector3.up*.06f,Quaternion.LookRotation(f));w.transform.localScale=new Vector3(lane.width+1.4f,.02f,f.magnitude+.03f);
+                var r=w.GetComponent<Renderer>();r.sharedMaterial=water;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+                foreach(int side in new[]{-1,1}){var wall=GameObject.CreatePrimitive(PrimitiveType.Cube);wall.name="Ford wing wall";wall.transform.SetParent(root);
+                    wall.transform.SetPositionAndRotation((a+b)*.5f+right*side*(half+.95f)+Vector3.up*.2f,Quaternion.LookRotation(f));wall.transform.localScale=new Vector3(.5f,.65f,f.magnitude+.04f);wall.GetComponent<Renderer>().sharedMaterial=stone;wall.tag="Respawn";}
             }
-            var right=lane.Right(s0);right.y=0;right.Normalize();var post=lane.At(s0)+right*(lane.width*.5f+1.6f);post.y=H(post.x,post.z);
+            var rightF=lane.Right(s0);rightF.y=0;rightF.Normalize();
+            foreach(int side in new[]{-1,1})foreach(float end in new[]{-7.5f,7.5f}){var q=lane.At(s0+end)+rightF*side*(half+2.2f);q.y=H(q.x,q.z);Put("reeds",q,(float)dressRng.NextDouble()*360,null,null,false);}
+            var post=lane.At(s0)+rightF*(half+1.6f);post.y=H(post.x,post.z);
             var p=GameObject.CreatePrimitive(PrimitiveType.Cube);p.name="Ford depth post";p.transform.SetParent(root);p.transform.position=post+Vector3.up*.75f;p.transform.localScale=new Vector3(.18f,1.5f,.18f);
             p.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Depth post white",new Color(.95f,.95f,.92f),0,.3f);p.tag="Respawn";
-            Spots["ford"]=(lane.At(s0)+right*(lane.width*.5f+6),Yaw(lane.At(s0)+right*(lane.width*.5f+6),lane.At(s0)));
+            foreach(int dir in new[]{-1,1}){float sb=s0+dir*45;var fb=lane.Forward(sb)*dir;fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);var b=lane.At(sb)+rb*(half+2.4f);if(ValleyField.RoadDistance(b.x,b.z)<half+1.6f)continue;b.y=H(b.x,b.z);Put("map_board",b,Yaw(b,b-fb),null,"FORD");}
+            var splash=new GameObject("Ford splash").AddComponent<FordSplash>();splash.transform.SetParent(root);splash.Setup(lane.At(s0),lane.Forward(s0),6.5f,half+.4f);
+            Spots["ford"]=(lane.At(s0)+rightF*(half+6),Yaw(lane.At(s0)+rightF*(half+6),lane.At(s0)));
         }
         // The humpback bridge on Church Lane (the lanes circuit's crest over the brook): stone parapets along both edges of
         // the deck, following its hump, and a stone face down to the brook either side.
@@ -296,6 +300,7 @@ namespace LittleRoad
                     f.GetComponent<Renderer>().sharedMaterial=plinth;
                 }
             }
+            {float sb=s0-55;var fb=lane.Forward(sb);fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);var bb=lane.At(sb)+rb*(half+2.4f);if(ValleyField.RoadDistance(bb.x,bb.z)>half+1.6f){bb.y=H(bb.x,bb.z);Put("map_board",bb,Yaw(bb,bb-fb),null,"HUMPBACK BRIDGE");}}
             Spots["bridge"]=(Bramblewick.BridgeAt+Bramblewick.BridgeAlong*30,Yaw(Bramblewick.BridgeAt+Bramblewick.BridgeAlong*30,Bramblewick.BridgeAt));
         }
         // A cottage garden: a hedge along the front, from party line to party line, with a 2.4 m gap at the gate before the

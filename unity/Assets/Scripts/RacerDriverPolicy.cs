@@ -537,7 +537,13 @@ namespace LittleRoad
 
         // Planned lines stay well inside the point where grass (and recovery) starts.
         readonly float MaxLine;
-        float Edge=>Mathf.Min(HalfRoad-halfWidth-.25f,MaxLine);
+        // --narrow-pass: on a circuit narrower than the standard 16 m, traffic and passing may use the road out to its own edge
+        // (less the car's half-width and a margin), not just the racing line's corridor. On Bramblewick's 8 m lanes the
+        // corridor left 1.5 m beside a car in the middle, under the 2.05 m a pass needs, so 94% of attacks were abandoned
+        // ("side closed"). The line itself still keeps its corridor; 16 m circuits are untouched. REJECTED (study 234): passes
+        // 28 -> 37 but finishes fell to 20/24 and 18/24, a reset, contacts doubled. Kept off; 9 m lanes won instead.
+        public static readonly bool NarrowPass=RaceTrial.Has("--narrow-pass");
+        float Edge=>NarrowPass&&MaxLine<5.6f?HalfRoad-halfWidth-.25f:Mathf.Min(HalfRoad-halfWidth-.25f,MaxLine);
         float PreviewDistance(float v)=>Mathf.Clamp(v*.9f,10,35);
         // Target offset from the road centre `x` metres ahead: the chosen shift from the racing line, kept
         // on the usable road.

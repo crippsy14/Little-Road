@@ -189,6 +189,36 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
     nothing. My call: default on.
   - The editor check (RecoverySensorChecks) covers both cases.
 
+- **20-21 Oct, the launch loop (Richard: "keep on looping through the improvements for the track until you are
+  satisfied it would be good to launch to the world").** Each round: build, the area audit, an AI sweep, and a contact
+  sheet, with an independent launch review on the sheet.
+  - **Round 1, race day:** the start (chequers, grid, a gantry reading BRAMBLEWICK LANES), kerbs, hay-bale walls,
+    hedge banks along the lane, spectators, corner boards, brook water, the ford.
+    - Audit fixes: Church Lane's junction lips (shoulders across the mouths), and field hedges that stood on the
+      brook's banks.
+    - Life and things to do in the vale: Ted the lanes marshal at the Beacon, Church Lane traffic, speed traps on Top
+      Lane and Church Hill, photo sights round the circuit.
+  - **Launch review r1** (`review/street-review/lanes-launch-r1-raw.md`): NOT YET.
+    - Top points: the ford read as a placeholder, the bridge wasn't visible, the hedge corridor was monotonous, too few
+      corner cues, a board seen from behind, stubby bank ends, and weak gantry contrast and grid marks.
+  - **Passing (study 233-234):**
+    - The track saw 1.9-3.8 passes per km, against 3-11 at Hillcrest and Bayview. 94% of the AI's attacks were
+      abandoned with the side "closed", because its room to pass ended at the racing-line corridor.
+    - `--narrow-pass` (use the road to its edge) was REJECTED: finishes fell to 20 and 18 of 24.
+    - **9 m lanes and street were KEPT** (all 72 cars finished, 210 s quicker in total, fewer contacts, more passes).
+  - **Round 2-3** (fixes from the review):
+    - the gantry cream with dark green words, painted grid slots, bunting across the street on poles;
+    - low hedges on the insides of tight corners for sightlines, no stub breaks in the banks;
+    - corner boards facing the driver, and 100/50 boards before the five heavy stops;
+    - spectator cars placed for race day;
+    - a landmark at each named corner: the barn, the rookery's trees, the Beacon's lit tower, the Gallows fingerpost,
+      the orchard, the cider barn and barrels, Long Meadow's bales, the mill and its wheel, the Hedge Gap gate;
+    - the ford rebuilt (one sheet of water between stone wing walls, reeds, FORD boards both ways, spray off the
+      wheels: `FordSplash`), and a HUMPBACK BRIDGE board.
+  - **Round 3's sweep found the kerbs:** 10 cm solid boxes stopped cars at 20 m/s and piled the field up (three DNFs).
+    Kerbs are now painted and nearly flush, the distance boards stand beyond the run-off, and Mill Bend's bale wall is
+    longer. **Study 236:** skill 3/7/10/13, all 12 races 24/24, no recoveries, 5-18 contacts.
+
 ## Where to pick up (handover, 20 Oct, after step 5's finds)
 1. **The rest of step 5:**
    - the race: built and racing 24/24 (above). Next for it: hedge banks along the lane, a brook water strip, kerbs at
