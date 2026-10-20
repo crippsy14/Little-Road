@@ -151,6 +151,7 @@ namespace LittleRoad
             foreach(float ds in new[]{-470f,-640f,-820f,-1000f,-1180f,-1350f})Park(sC+ds,N(sC+ds),3.8f);   // (out along the pass, where the vale's fields are)
             Park(sC+440,-N(sC+440),4f);Park(sC+447,-N(sC+447),4f);
             Vale(road,sC,herd);
+            HumpbackBridge();
             // (the top of the pass: the road's highest point between the T and the village, 7 m off its north side)
             {float top=-1,best=float.MinValue;for(float s=60;s<sC-500;s+=10)if(road.At(s).y>best){best=road.At(s).y;top=s;}
              if(top>0){var s0=road.At(top)+N(top)*(half+7);s0.y=H(s0.x,s0.z);shoe[5]=s0;}}
@@ -253,6 +254,26 @@ namespace LittleRoad
              o.y=H(o.x,o.z);Spots["orchard"]=(o,yaw);}
         }
         Vector3 herd;
+        // The humpback bridge on Church Lane (the lanes circuit's crest over the brook): stone parapets along both edges of
+        // the deck, following its hump, and a stone face down to the brook either side.
+        void HumpbackBridge()
+        {
+            if(Bramblewick.BridgeAt==Vector3.zero)return;var lane=HillcrestRoute.Find(Bramblewick.LaneName);float s0=lane.Nearest(Bramblewick.BridgeAt,out _);float half=lane.width*.5f;
+            for(float s=s0-13;s<s0+13;s+=1.6f) {
+                var a=lane.At(s);var b=lane.At(s+1.6f);var right=lane.Right(s+.8f);right.y=0;right.Normalize();var mid=(a+b)*.5f;var along=b-a;
+                foreach(int side in new[]{-1,1}) {
+                    var w=GameObject.CreatePrimitive(PrimitiveType.Cube);w.name="Bridge parapet";w.transform.SetParent(root);
+                    w.transform.SetPositionAndRotation(mid+right*side*(half+.3f)+Vector3.up*.35f,Quaternion.LookRotation(along));w.transform.localScale=new Vector3(.45f,.9f,along.magnitude+.06f);
+                    w.GetComponent<Renderer>().sharedMaterial=plinth;w.tag="Respawn";
+                    // (the face below: down to a metre under the deck at the crown, where the brook runs)
+                    float g=H(mid.x+right.x*side*(half+.3f),mid.z+right.z*side*(half+.3f));if(mid.y-g<.2f)continue;
+                    var f=GameObject.CreatePrimitive(PrimitiveType.Cube);f.name="Bridge face";Object.Destroy(f.GetComponent<Collider>());f.transform.SetParent(root);
+                    f.transform.SetPositionAndRotation(new Vector3(mid.x,(mid.y+g)*.5f-.4f,mid.z)+right*side*(half+.3f),Quaternion.LookRotation(along));f.transform.localScale=new Vector3(.5f,mid.y-g+.8f,along.magnitude+.06f);
+                    f.GetComponent<Renderer>().sharedMaterial=plinth;
+                }
+            }
+            Spots["bridge"]=(Bramblewick.BridgeAt+Bramblewick.BridgeAlong*30,Yaw(Bramblewick.BridgeAt+Bramblewick.BridgeAlong*30,Bramblewick.BridgeAt));
+        }
         // A cottage garden: a hedge along the front, from party line to party line, with a 2.4 m gap at the gate before the
         // front door (the kit's Door socket); apple trees in the back garden.
         void Garden(HillcrestRoute.Road road,string id,Vector3 c,float yaw,Vector3 n,float mid,Vector2 size,float setback)

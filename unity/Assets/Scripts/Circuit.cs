@@ -127,7 +127,7 @@ namespace LittleRoad
             // Join ground, shoulder and asphalt continuously. Separate raised
             // flat colliders leave 11/14 mm vertical edges that can stop a box
             // chassis entering from the garage even though the road looks flat.
-            float[] offsets={-12,-8.8f,-8,8,8.8f,12};
+            float h=Half;float[] offsets={-(h+4),-(h+.8f),-h,h,h+.8f,h+4};   // (+-8, 8.8 and 12 m on a standard 16 m circuit)
             float[] heights={0,.011f,.025f,.025f,.011f,0};
             int n=points.Length,columns=offsets.Length;var vertices=new Vector3[(n+1)*columns];
             var triangles=new int[n*(columns-1)*6];int triangle=0;

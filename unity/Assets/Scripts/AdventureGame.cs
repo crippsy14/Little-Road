@@ -1596,8 +1596,8 @@ namespace LittleRoad
 
         // ---------------------------------------------------------------- Farmer Giles (FarmChallenges, doc 64)
         // Bramblewick's four (docs/82). Jed's parts, Peg's duel and the race come in step 5.
-        void Jed()=>Show("Jed / Backyard Tuner","Parts Bayview's never heard of, my 'ansum: lane springs, mud tyres, a cold-air box off a tractor. Still unpacking the crates, mind. Come back when the post's been.",
-            new(){new("Back to the road",Close)});
+        void Jed()=>Show("Jed / Backyard Tuner","Parts Bayview's never heard of, my 'ansum: still unpacking the crates, mind. But the lanes race is on: three laps of the village and Church Lane, two abreast if you're brave. The hedges don't give way, and neither do I.",
+            new(){new("Race Bramblewick Lanes · C",()=>PreviewRace("bramblewick",Jed)),new("Back to the road",Close)});
         void Maggie()=>Show("Maggie / The Plough","Welcome to The Plough, my lover! Four hundred years of thatch, cider from the orchard up the hill, and Peg's milk float parked outside every Friday. Mind the hanging baskets on your way out.",
             new(){new("Back to the road",Close)});
         void Clem()=>Show("Reverend Clem / St Michael's","Bless you for stopping. That tower's been watching over the vale since before there were roads in it. Do have a look round the churchyard, and go gently past the lychgate.",
@@ -1746,7 +1746,7 @@ namespace LittleRoad
             choices.Add(new("Back to the road",Close));Show("Pip / Lighthouse Post","You found the lighthouse! Some drivers only see the road. Others find the little places beside it. Keep an eye out for Bayview postcards."+photos,choices);
         }
         void Rowan()=>Show("Rowan / The Daily Mile","Bayview Coast · Class C · 24 cars · 3 laps\nEvery valid finish pays 100–500 credits. Rival equipment stays fixed as you improve your car. Across the causeway, Hillcrest Raceway's Valley Cup is a quicker Class C race for bigger prizes.\n"+RaceCalendar.Progress(Store.Data),new(){new("Race Bayview Coast · C",()=>PreviewRace("bayview")),new("Back to the road",Close)});
-        void PreviewRace(string track)=>PreviewRace(track,track=="hillcrest"?Vito:track=="quarry"?Gwen:Rowan);
+        void PreviewRace(string track)=>PreviewRace(track,track=="hillcrest"?Vito:track=="quarry"?Gwen:track=="bramblewick"?Jed:Rowan);
         // Class B (docs/67): once it opens, each town's garage offers its Tuner races, easiest first, with their stars
         // and a tick for those you've won (each win's stars count once towards the Tuner parts).
         // The Tuner Garage (docs/67): at every town's garage bay once class B is open. The free Tuner first (a choice of
@@ -1796,6 +1796,7 @@ namespace LittleRoad
                 // facing out (the raceway paddock is hemmed in by the team garages).
                 if(valley&&PitStop.Hosts.TryGetValue("hillcrest/garage",out var host)){AdventureSession.ReturnSpot=GarageForecourt(host);AdventureSession.ReturnYaw=host.yaw;}
                 else if(track=="quarry"&&QuarryHillsTown.Spots.TryGetValue("rallyschool",out var gwen)){AdventureSession.ReturnSpot=gwen.at+new Vector3(0,0,-8);AdventureSession.ReturnYaw=90;}
+                else if(track=="bramblewick"&&Bramblewick.Lap!=null){var at=Bramblewick.Lap[0];var on=Bramblewick.Lap[3]-at;AdventureSession.ReturnSpot=at;AdventureSession.ReturnYaw=Mathf.Atan2(on.x,on.z)*Mathf.Rad2Deg;}   // (on the start line, facing the way the race runs)
                 else AdventureSession.ReturnSpot=null;
                 SaveExplored();AdventureSession.StartRace(roster);}),()=>{ui.SetVisible(true);back();});
         }

@@ -69,7 +69,7 @@ namespace LittleRoad
                 entries[i]=new RaceEntrant(i,RaceGrid.TrialSlot(i,count,scenario),body,paint,equipment,EquipmentCatalog.TestLoadout(equipment),
                     driverMode==null?null:DriverIdentity.ForRace(i,seed,driverMode,form));
             }
-            return new RaceRoster(seed,laps,track,track=="bayview"?"BAYVIEW COAST":track=="hillcrest"?"HILLCREST RACEWAY":track=="quarry"?"QUARRY HILLS RALLYCROSS":"CEDAR TECHNICAL",driverMode!=null,entries);
+            return new RaceRoster(seed,laps,track,track=="bayview"?"BAYVIEW COAST":track=="hillcrest"?"HILLCREST RACEWAY":track=="quarry"?"QUARRY HILLS RALLYCROSS":track=="bramblewick"?"BRAMBLEWICK LANES":"CEDAR TECHNICAL",driverMode!=null,entries);
         }
         public static readonly Color FlagshipPaint=new(.05f,.22f,.62f);
         // The Duke's Challenge (docs/54; Richard, 2 Oct: "a great full circle moment at the end of the game... beat him
@@ -136,6 +136,15 @@ namespace LittleRoad
             }
             entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
             return new RaceRoster(seed,3,"quarry","QUARRY HILLS RALLYCROSS / CLASS C",modern,entries);
+        }
+        // Bramblewick Lanes (--bramblewick, docs/82): class C, 2★, three laps of the village street and Church Lane, a field
+        // by recipe (the family and sporty road bodies).
+        public static RaceRoster AdventureBramblewick(AdventureProgress save,bool modern=true)=>AdventureBramblewick(save,modern,true);
+        public static RaceRoster AdventureBramblewick(AdventureProgress save,bool modern,bool recipe)
+        {
+            save.Validate();int seed=1709+(save.raceSerial+1)*11;
+            var trial=Trial(24,3,seed,"bramblewick","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
+            return Recipe(save,"bramblewick","C",RaceCalendar.StarsOf("bramblewick"),trial,seed,3,"bramblewick",false,"BRAMBLEWICK LANES / CLASS C",modern,CarBodies.Family,CarBodies.Sporty);
         }
         // Class B events (docs/67): the field on the event's star kit, the front of the grid a star up and the back a star
         // down; sporty bodies on tarmac, the off-roaders (on B rally tyres) at the rallycross; laps and direction from
@@ -209,7 +218,7 @@ namespace LittleRoad
         public static RaceRoster ForEvent(string id,AdventureProgress save)
         {
             if(RaceCalendar.Known(id)){var ev=RaceCalendar.Get(id);if(ev.raceClass=="B")return AdventureTuner(save,ev);}
-            return id=="hillcrest"?AdventureHillcrest(save):id=="quarry"?AdventureQuarry(save):Adventure(save);
+            return id=="hillcrest"?AdventureHillcrest(save):id=="quarry"?AdventureQuarry(save):id=="bramblewick"?AdventureBramblewick(save):Adventure(save);
         }
         public bool MatchesPlayer(AdventureProgress save)
         {

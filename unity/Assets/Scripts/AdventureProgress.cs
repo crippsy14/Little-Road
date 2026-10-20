@@ -95,8 +95,8 @@ namespace LittleRoad
                 throw new InvalidDataException("Missing or duplicate inventory entries.");
             foreach(string id in owned)EquipmentCatalog.Get(id);
             foreach(string id in collected)if(!Collectibles.Known(id))throw new InvalidDataException("Unknown collectible: "+id);
-            if(podiums==null||podiums.Distinct().Count()!=podiums.Count||podiums.Any(id=>!RaceCalendar.Known(id)))throw new InvalidDataException("Podium records are missing, duplicated or unknown.");
-            if(wins!=null&&(wins.Distinct().Count()!=wins.Count||wins.Any(id=>!RaceCalendar.Known(id))))throw new InvalidDataException("Win records are duplicated or unknown.");
+            if(podiums==null||podiums.Distinct().Count()!=podiums.Count||podiums.Any(id=>!RaceCalendar.Recorded(id)))throw new InvalidDataException("Podium records are missing, duplicated or unknown.");
+            if(wins!=null&&(wins.Distinct().Count()!=wins.Count||wins.Any(id=>!RaceCalendar.Recorded(id))))throw new InvalidDataException("Win records are duplicated or unknown.");
             if(discovered==null||discovered.Distinct().Count()!=discovered.Count||discovered.Any(string.IsNullOrEmpty))throw new InvalidDataException("Discovered places are missing or duplicated.");
             if(fitted.Count!=EquipmentCatalog.All.slots.Length||fitted.Any(p=>p==null))throw new InvalidDataException("Invalid fitted equipment.");
             var fit=Loadout();EquipmentCatalog.Stats(fit);

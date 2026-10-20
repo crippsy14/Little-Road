@@ -16,7 +16,7 @@ namespace LittleRoad
     {
         // The default since 8 Oct (study 223: -33 s over six races, Bayview -1.1%, no resets); --no-car-lines for the shared line.
         public static bool On=>!RaceTrial.Has("--no-car-lines");
-        public static float BoundFor(Circuit road)=>road.width>=Circuit.Width?5.4f:road.width*.5f-2.6f;   // (5.4 m on a standard 16 m circuit)
+        public static float BoundFor(Circuit road)=>road.width>=Circuit.Width?5.4f:road.width*.5f-1.8f;   // (5.4 m on a standard 16 m circuit)
        public const string Version="car-line-v1";
         const float Spacing=8,Smooth=.001f,Use=.9f;
         static readonly Dictionary<string,RacingLine> lines=new();

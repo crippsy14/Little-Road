@@ -24,7 +24,9 @@ namespace LittleRoad
             new("bayview","Bayview Coast","C",1f,1,3),
             new("hillcrest","Hillcrest Raceway","C",1.5f,2,2),
             // Quarry Hills Rallycross (--quarry-hills): loose slate on the quarry floor, the town's off-roaders.
-            new("quarry","Quarry Hills Rallycross","C",1.8f,3,3)};
+            new("quarry","Quarry Hills Rallycross","C",1.8f,3,3),
+            // Bramblewick Lanes (--bramblewick, docs/82): the village street and Church Lane, 2★ (docs/70), three laps.
+            new("bramblewick","Bramblewick Lanes","C",1.5f,2,3)};
         // Class B on today's tracks (docs/67): each town an easier event forwards and a harder one reversed. The planned
         // B map is 26 events and 120 stars (docs/67, "The B map"); these six are the near end of it, 12 stars, and the
         // Tuner Championship is the 10-star finale. Pay rises 15% a star.
@@ -35,12 +37,15 @@ namespace LittleRoad
             new("b_slate","Slate Rallycross","B",1.15f,2,3,"quarry"),
             new("b_raceway_rev","Raceway Reverse","B",1.3f,3,2,"hillcrest",true),
             new("b_rallycross_rev","Rallycross Reverse","B",1.3f,3,3,"quarry",true)};
-        public static readonly Event[] All=(QuarryHills.Enabled?C:C.Where(e=>e.track!="quarry")).Concat(QuarryHills.Enabled?B:B.Where(e=>e.track!="quarry")).ToArray();
+        public static readonly Event[] All=C.Where(e=>(e.track!="quarry"||QuarryHills.Enabled)&&(e.track!="bramblewick"||Bramblewick.Enabled)).Concat(QuarryHills.Enabled?B:B.Where(e=>e.track!="quarry")).ToArray();
         // Every event, Quarry Hills' included whether or not --quarry-hills is on (field recipes and their checks).
         public static Event[] Every=>C.Concat(B).ToArray();
         public static int StarsOf(string id)=>Every.First(e=>e.id==id).stars;
         public static Event Get(string id){foreach(var e in All)if(e.id==id)return e;throw new ArgumentException("Unknown race: "+id);}
         public static bool Known(string id)=>All.Any(e=>e.id==id);
+        // Any event the game has, whether or not its place is switched on: a save keeps a Bramblewick podium when it's
+        // loaded without --bramblewick (it just doesn't count until the place is back).
+        public static bool Recorded(string id)=>Every.Any(e=>e.id==id);
         // A town's events of one class, easiest first (the garage offers them).
         public static Event[] AtTrack(string track,string raceClass)=>All.Where(e=>e.track==track&&e.raceClass==raceClass).OrderBy(e=>e.stars).ToArray();
         public static int Rank(string raceClass)=>Array.IndexOf(Classes,string.IsNullOrEmpty(raceClass)?"C":raceClass);

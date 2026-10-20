@@ -13,8 +13,8 @@ namespace LittleRoad
         public readonly float roadLength,roadStep,pathLength;
         public int Count=>points.Length;
         // The widest a line may sit from the road centre: the AI's usable edge (RacerDriverPolicy.Edge, docs/71).
-        // (5.6 m on a standard 16 m circuit, as it always was; on a narrower one, 2.4 m inside its edge.)
-        public static float MaxOffsetFor(Circuit road)=>road.width>=Circuit.Width?5.6f:road.width*.5f-2.4f;
+        // (5.6 m on a standard 16 m circuit, as it always was; on a narrower one, 1.6 m inside its edge: a car's half-width and 0.7 m.)
+        public static float MaxOffsetFor(Circuit road)=>road.width>=Circuit.Width?5.6f:road.width*.5f-1.6f;
         public readonly float MaxOffset,halfRoad;
         public RacingLine(Circuit road,string id,string trackId,string trackVersion):this(road,Load(road,id,trackId,trackVersion)){}
         static Data Load(Circuit road,string id,string trackId,string trackVersion)

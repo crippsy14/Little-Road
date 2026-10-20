@@ -123,10 +123,34 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
   - **Four photo sights:** St Michael's tower, The Plough, the duck pond and the dairy.
   - **The area audit:** Bramblewick (village) and Bramblewick Vale both pass.
 
+- **20 Oct, the race (step 5): Bramblewick Lanes,** class C, 2★, three laps of 3.15 km, behind `--bramblewick`.
+  - **Per-circuit width** (Richard: "for sure"): `Circuit` carries its own width. The line bounds, the AI's road edge,
+    grip, gates, the grid and the drivable support all read it. Every 16 m circuit is bit-identical to before (study 226:
+    Hillcrest and Bayview, same seed, identical finishes).
+  - **The layout** (my design, from research into what makes a circuit good to drive: speed variety, long straights into
+    heavy braking for overtaking, rhythm sections, crests and dips from the land, a few quiet "mistake generators").
+    Richard said to take direction from famous tracks, not copy them, so it's Bramblewick's own:
+    - the village street as start and finish, then braking hard into the Dairy T;
+    - a fast S through the brook's dip and up Long Acre;
+    - Crest Corner, taken light over a rise;
+    - the Rookery Bends, rhythm through the hedgerows;
+    - Rim Corner, then Top Lane (610 m) along the rim with the vale opening out;
+    - the Zigzag: a hairpin pair down the hillside, heavy braking and the overtakes;
+    - Orchard Corner, which tightens;
+    - Long Meadow, a fast downhill sweep;
+    - Brook Bend, Mill Lane and the humpback bridge over the brook (the car goes light);
+    - Green Corner back onto the street.
+  - **Built** from exact straights and arcs (a turtle in the street's frame). Two straights are solved so the lane lands
+    on the west T. The brook is carved into the vale, there's a crest mound, and the bridge has its hump and stone
+    parapets. The lane has no centre line, at 7.5 m (my call: the width of Valley Road South).
+  - **Racing:** the cars ground on the real road surfaces. On the circuit's own support mesh they rode above it,
+    ungrounded, and couldn't turn. Jed offers the race; the field is by recipe (family and sporty bodies).
+  - **Keep bar met:** seeds 1709/1710/1711, 24/24 finished, no assisted recoveries (study 227).
+
 ## Where to pick up (handover, 20 Oct, after step 5's finds)
 1. **The rest of step 5:**
-   - the race (24/24 on seeds 1709-1711): per-circuit widths agreed (Richard, 20 Oct). Next: `Circuit` gets its own
-     width, read by the line bounds and gates; the other races stay at 16 m;
+   - the race: built and racing 24/24 (above). Next for it: hedge banks along the lane, a brook water strip, kerbs at
+     the hairpins, the race's own review sheet and a player drive;
    - the milk-float duel (Peg);
    - Jed's parts: waiting on doc 83's decisions;
    - the railway halt.

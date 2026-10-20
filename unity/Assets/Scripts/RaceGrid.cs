@@ -46,6 +46,7 @@ namespace LittleRoad
         public const float Pole=-2.6f,RowPitch=11f,RowStagger=1.8f;
         public static float Distance(int slot,bool line)=>line?Pole-slot*RowPitch:Pole-(slot/3)*RowPitch-(slot%3)*RowStagger;
         public static float Side(int slot,bool line)=>line?0:(slot%3-1)*3.5f;
-        public static Vector3 Position(Circuit track,int slot,bool line)=>track.At(Distance(slot,line))+track.Right(Distance(slot,line))*Side(slot,line)+Vector3.up*.12f;
+        // (a narrower circuit pulls the row in: 1.2 m inside its edge, so Bramblewick's 7.5 m lanes hold three abreast)
+        public static Vector3 Position(Circuit track,int slot,bool line)=>track.At(Distance(slot,line))+track.Right(Distance(slot,line))*Side(slot,line)*Mathf.Min(1,(track.Half-1.2f)/3.5f)+Vector3.up*.12f;
     }
 }
