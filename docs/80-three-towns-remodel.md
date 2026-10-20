@@ -296,6 +296,15 @@ a plan for the whole map, with an ordered list of towns, and start working throu
     - The audit: Quarry Hills has one road-edge lip; Hillcrest has one floating vine row; Bayview has two rocks at the
       waterline; Hillcrest Valley has two lips. All are carried into round 8.
 
+- **Round 7's review:** approved (`review/street-review/r7-targeted.md`). The agreed fixes are in:
+  - tyre barriers at the run-off's edge round whole corners;
+  - bank walls running 8 m past their banks;
+  - lighter garden-path slabs.
+- **Round 8: the whole-map plan is written:** [doc 81](81-whole-map-order.md), all 33 places in build order. It starts
+  with the class C ring.
+  - The first place is Bramblewick. Its brief is [doc 82](82-bramblewick.md); Richard's four questions have defaults.
+  - This programme continues in docs/81 and docs/82.
+
 ## Reviewing without photo sweeps (20 Oct)
 Richard, 20 Oct: the street-review agents (three photos every 40 m, read by an agent) used a lot of usage for little
 return. From now on:
