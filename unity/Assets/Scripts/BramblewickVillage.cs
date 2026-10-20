@@ -263,12 +263,13 @@ namespace LittleRoad
         void Ford()
         {
             if(!Bramblewick.Marks.TryGetValue("Ford",out var at2))return;var lane=HillcrestRoute.Find(Bramblewick.LaneName);float s0=lane.Nearest(new Vector3(at2.x,0,at2.y),out _);
-            var water=TrialWorld.Material("Ford water",new Color(.24f,.39f,.4f),0,.72f);var stone=WorldLook.Kit("Ford stone",new Color(.6f,.58f,.52f),WorldLook.Pattern.Stone,0,.1f,true);
+            WorldLook.EnsureNoise();var inland=Shader.Find("LittleRoad/InlandWater");Material water;   // (the river's water: clear over the road, rippling, foam where it's shallow; an opaque sheet read as a rug, LR2-01)
+            if(inland!=null){water=new Material(inland){name="Ford water"};water.SetFloat("_Flow",.3f);water.SetFloat("_DepthFade",.35f);water.SetFloat("_Ripple",.6f);}else water=TrialWorld.Material("Ford water",new Color(.24f,.39f,.4f),0,.72f);var stone=WorldLook.Kit("Ford stone",new Color(.6f,.58f,.52f),WorldLook.Pattern.Stone,0,.1f,true);
             float half=lane.width*.5f;
             for(float s=s0-6;s<s0+6;s+=1.5f) {
                 var a=lane.At(s);var b=lane.At(s+1.5f);var f=b-a;var right=lane.Right(s+.75f);right.y=0;right.Normalize();
                 var w=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.Destroy(w.GetComponent<Collider>());w.name="Ford water";w.transform.SetParent(root);
-                w.transform.SetPositionAndRotation((a+b)*.5f+Vector3.up*.06f,Quaternion.LookRotation(f));w.transform.localScale=new Vector3(lane.width+1.4f,.02f,f.magnitude+.03f);
+                w.transform.SetPositionAndRotation((a+b)*.5f+Vector3.up*.1f,Quaternion.LookRotation(f));w.transform.localScale=new Vector3(lane.width+1.4f,.02f,f.magnitude+.03f);
                 var r=w.GetComponent<Renderer>();r.sharedMaterial=water;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
                 foreach(int side in new[]{-1,1}){var wall=GameObject.CreatePrimitive(PrimitiveType.Cube);wall.name="Ford wing wall";wall.transform.SetParent(root);
                     wall.transform.SetPositionAndRotation((a+b)*.5f+right*side*(half+.95f)+Vector3.up*.2f,Quaternion.LookRotation(f));wall.transform.localScale=new Vector3(.5f,.65f,f.magnitude+.04f);wall.GetComponent<Renderer>().sharedMaterial=stone;wall.tag="Respawn";}
@@ -278,7 +279,7 @@ namespace LittleRoad
             var post=lane.At(s0)+rightF*(half+1.6f);post.y=H(post.x,post.z);
             var p=GameObject.CreatePrimitive(PrimitiveType.Cube);p.name="Ford depth post";p.transform.SetParent(root);p.transform.position=post+Vector3.up*.75f;p.transform.localScale=new Vector3(.18f,1.5f,.18f);
             p.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Depth post white",new Color(.95f,.95f,.92f),0,.3f);p.tag="Respawn";
-            foreach(int dir in new[]{-1,1}){float sb=s0+dir*45;var fb=lane.Forward(sb)*dir;fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);var b=lane.At(sb)+rb*(half+2.4f);if(ValleyField.RoadDistance(b.x,b.z)<half+1.6f)continue;b.y=H(b.x,b.z);Put("map_board",b,Yaw(b,b-fb),null,"FORD");}
+            foreach(int dir in new[]{-1,1})foreach(float back in new[]{45f,100f}){float sb=s0+dir*back;var fb=lane.Forward(sb)*dir;fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);var b=lane.At(sb)+rb*(half+2.3f);if(ValleyField.RoadDistance(b.x,b.z)<half+1.6f)continue;b.y=H(b.x,b.z);RoadSign(b,fb,back>60?"FORD AHEAD":"FORD");}
             var splash=new GameObject("Ford splash").AddComponent<FordSplash>();splash.transform.SetParent(root);splash.Setup(lane.At(s0),lane.Forward(s0),6.5f,half+.4f);
             Spots["ford"]=(lane.At(s0)+rightF*(half+6),Yaw(lane.At(s0)+rightF*(half+6),lane.At(s0)));
         }
@@ -300,7 +301,7 @@ namespace LittleRoad
                     f.GetComponent<Renderer>().sharedMaterial=plinth;
                 }
             }
-            {float sb=s0-55;var fb=lane.Forward(sb);fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);var bb=lane.At(sb)+rb*(half+2.4f);if(ValleyField.RoadDistance(bb.x,bb.z)>half+1.6f){bb.y=H(bb.x,bb.z);Put("map_board",bb,Yaw(bb,bb-fb),null,"HUMPBACK BRIDGE");}}
+            {float sb=s0-55;var fb=lane.Forward(sb);fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);var bb=lane.At(sb)+rb*(half+2.4f);if(ValleyField.RoadDistance(bb.x,bb.z)>half+1.6f){bb.y=H(bb.x,bb.z);RoadSign(bb,fb,"HUMPBACK BRIDGE");}}
             Spots["bridge"]=(Bramblewick.BridgeAt+Bramblewick.BridgeAlong*30,Yaw(Bramblewick.BridgeAt+Bramblewick.BridgeAlong*30,Bramblewick.BridgeAt));
         }
         // A cottage garden: a hedge along the front, from party line to party line, with a 2.4 m gap at the gate before the

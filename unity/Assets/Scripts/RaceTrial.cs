@@ -297,7 +297,15 @@ namespace LittleRoad
             else AdventureSession.ReturnToTown();
         }
         System.Collections.IEnumerator ReturnSoon(){float until=Time.realtimeSinceStartup+60;while(!reportWritten&&Time.realtimeSinceStartup<until)yield return null;yield return new WaitForSecondsRealtime(2);AdventureSession.ReturnToTown();}
-        void LateUpdate(){if(chase!=null&&cars.Count>0)UpdateCamera(false);}
+        void LateUpdate(){if(chase!=null&&cars.Count>0)UpdateCamera(false);RacePhotos();}
+        // --race-photos: the chase camera's view at set moments of the race (the grid, the start, the pack through
+        // the lap), into photos/ beside the race report, for reviewing a track with cars on it. Test runs only.
+        static readonly float[] PhotoTimes={-1.5f,4,12,25,45,70,100,130};int photoNext;
+        void RacePhotos()
+        {
+            if(!Has("--race-photos")||reportPath==null||photoNext>=PhotoTimes.Length||elapsed<PhotoTimes[photoNext])return;var folder=Path.Combine(Path.GetDirectoryName(Path.GetFullPath(reportPath)),"photos");
+            Directory.CreateDirectory(folder);Toy.Capture(Path.Combine(folder,$"race-{photoNext:00}-t{Mathf.RoundToInt(PhotoTimes[photoNext])}.png"),1280,720);photoNext++;
+        }
         // ---- the in-race pause menu
         // --race-pause-review (the adventure smoke): pause mid-race, view the field, back, resume; the race must hold still
         // while paused and carry on afterwards.

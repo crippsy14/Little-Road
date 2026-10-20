@@ -34,6 +34,30 @@ namespace LittleRoad
             var go=TrialWorld.Car(SpectatorBodies[dressRng.Next(SpectatorBodies.Length)],PaintCatalog.All[dressRng.Next(PaintCatalog.Standard)].color);go.name="Parked car";go.transform.SetParent(root);
             go.transform.SetPositionAndRotation(p+Vector3.up*.02f,Quaternion.Euler(0,yaw,0));
         }
+        // A big lane-side board facing the driver coming along `toward`: cream, dark green words, on two posts (no collider:
+        // a car running wide brushes through it rather than stopping dead).
+        void RoadSign(Vector3 at,Vector3 toward,string words)
+        {
+            var cream=Mat("Lanes sign cream",new Color(.97f,.95f,.88f));var post=Mat("Board post",new Color(.3f,.3f,.32f));
+            toward.y=0;toward.Normalize();var face=Quaternion.LookRotation(-toward);var across=Vector3.Cross(Vector3.up,toward);float w=Mathf.Max(1.6f,words.Length*.2f+.6f);
+            foreach(int side in new[]{-1,1})Block("Sign post",at+across*side*(w*.4f)+Vector3.up*.8f,new Vector3(.1f,1.6f,.1f),Quaternion.identity,post,false);
+            Block("Sign board",at+Vector3.up*1.65f,new Vector3(w,.8f,.06f),face,cream,false);
+            Words(words,at+Vector3.up*1.65f-toward*.04f,Quaternion.LookRotation(toward),.055f,Toy.Hex(0x1f3d2c));   // (a TextMesh reads the right way round looking along its forward: facing the board it was mirrored)
+        }
+        // A toy crowd: little figures (a body and a head, in bright clothes) standing in rows facing `look`.
+        void Crowd(Vector3 centre,Vector3 look,int count,float width,float depth)
+        {
+            look.y=0;look.Normalize();var across=Vector3.Cross(Vector3.up,look);int rows=Mathf.Max(1,Mathf.RoundToInt(depth/1.1f));int per=Mathf.CeilToInt(count/(float)rows);
+            Color[] shirts={Toy.Hex(0xd92b3a),Toy.Hex(0x2c4a7a),Toy.Hex(0xffd23f),Toy.Hex(0x2f5d46),Toy.Hex(0xff7ac8),Toy.Hex(0xf4f6f8),Toy.Hex(0xff9a1f),Toy.Hex(0x5ec8ff)};
+            var skin=Mat("Crowd face",new Color(.93f,.78f,.64f));
+            for(int i=0;i<count;i++) {
+                int row=i/per,col=i%per;var p=centre+across*((col-(per-1)*.5f)*(width/per)+((float)dressRng.NextDouble()-.5f)*.4f)-look*row*1.1f;p.y=H(p.x,p.z);
+                float tall=1.5f+(float)dressRng.NextDouble()*.35f;
+                var body=GameObject.CreatePrimitive(PrimitiveType.Capsule);body.name="Spectator";Object.Destroy(body.GetComponent<Collider>());body.transform.SetParent(root);body.transform.SetPositionAndRotation(p+Vector3.up*tall*.38f,Quaternion.LookRotation(look));body.transform.localScale=new Vector3(.5f,tall*.38f,.4f);
+                body.GetComponent<Renderer>().sharedMaterial=Mat("Crowd shirt "+i%shirts.Length,shirts[i%shirts.Length]);
+                var head=GameObject.CreatePrimitive(PrimitiveType.Sphere);head.name="Spectator head";Object.Destroy(head.GetComponent<Collider>());head.transform.SetParent(root);head.transform.position=p+Vector3.up*(tall*.86f);head.transform.localScale=Vector3.one*.32f;head.GetComponent<Renderer>().sharedMaterial=skin;
+            }
+        }
         void RaceDay()
         {
             if(Bramblewick.Lap==null)return;
@@ -62,6 +86,8 @@ namespace LittleRoad
                 Block("Lanes gantry banner",s0+Vector3.up*6.2f+fw*.26f,new Vector3(9,.8f,.06f),Quaternion.LookRotation(fw),banner,false);
                 foreach(int face in new[]{-1,1})Words("BRAMBLEWICK LANES",s0+Vector3.up*6.2f+fw*face*.31f,Quaternion.LookRotation(-fw*face),.085f,Toy.Hex(0x1f3d2c));   // (read from both ways)
                 foreach(int side in new[]{-1,1}){var fp=s0+r0*side*8.4f-fw*3;fp.y=H(fp.x,fp.z);Put("flag_pole",fp,0,T(0xffffff,0xffd23f,0x2f5d46,0),null,true);}
+                // (a crowd on both pavements either side of the line)
+                foreach(int side in new[]{-1,1}){var cc=s0+r0*side*(half+2.6f);cc.y=H(cc.x,cc.z);Crowd(cc,-r0*side,14,22,1.1f);}
                 // (bunting strung across the street, zigzag, from 90 m before the line to 60 m after: the village's race day)
                 for(float d=-90;d<=60;d+=15){var a=track.At(d);var r1=track.Right(d);r1.y=0;r1.Normalize();var b=track.At(d+15);var r2=track.Right(d+15);r2.y=0;r2.Normalize();
                     int z=Mathf.RoundToInt(d/15)%2==0?1:-1;var pa=a+r1*z*(half+1.2f);var pb=b-r2*z*(half+1.2f);
@@ -111,6 +137,7 @@ namespace LittleRoad
                 var f0=track.Forward(sc-8);var f1=track.Forward(sc+8);f0.y=f1.y=0;int outside=Vector3.SignedAngle(f0,f1,Vector3.up)>0?-1:1;
                 var bank=track.At(sc)+right*outside*(half+18);bank.y=H(bank.x,bank.z);stands.Add((bank,22));
                 if(grandstand&&BayviewKit.Has("grandstand"))Put("grandstand",bank,Yaw(bank,track.At(sc)),null,null,true);
+                {var look=track.At(sc)-bank;Crowd(bank-right*outside*(grandstand?7:5),look,grandstand?26:12,grandstand?20:12,grandstand?2.4f:1.2f);}   // (spectators on the bank, LR2-06)
                 for(int k=0;k<cars;k++){var p=bank+right*outside*(grandstand?11:0)+f*((k-(cars-1)*.5f)*3.4f);if(ValleyField.RoadDistance(p.x,p.z)<half+6)continue;p.y=H(p.x,p.z);SpectatorCar(p,Yaw(p,track.At(sc)));}
                 foreach(float x in new[]{-9f,9f}){var fp=bank+f*x;if(ValleyField.RoadDistance(fp.x,fp.z)<half+4)continue;fp.y=H(fp.x,fp.z);Put("flag_pole",fp,0,T(0xffffff,0xffd23f,0x2f5d46,0),null,true);}
             }
@@ -119,6 +146,49 @@ namespace LittleRoad
             if(Bramblewick.Marks.TryGetValue("Beacon Apex",out var be)){var bp=new Vector3(be.x,0,be.y);float sb=track.Nearest(bp,out _);var fb=track.Forward(sb);fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);
                 var f0=track.Forward(sb-8);var f1=track.Forward(sb+8);f0.y=f1.y=0;int outside=Vector3.SignedAngle(f0,f1,Vector3.up)>0?-1:1;var ted=track.At(sb)+rb*outside*(half+9)-fb*14;ted.y=H(ted.x,ted.z);Spots["marshal"]=(ted,Yaw(ted,track.At(sb)));}
 
+            // ---- a landmark for each corner it's named after, on the outside, clear of the lane (one per section, so the lap
+            //      is learnt by what you see, and the hedge corridor is broken up: LR1 "monotony")
+            var landmarks=new List<(Vector3 at,float radius)>();
+            {
+                Vector3? Outside(string mark,float ahead,float off)
+                {
+                    if(!Bramblewick.Marks.TryGetValue(mark,out var m4))return null;float sc=track.Nearest(new Vector3(m4.x,0,m4.y),out _)+ahead;
+                    var f=track.Forward(sc);f.y=0;f.Normalize();var right=Vector3.Cross(Vector3.up,f);var f0=track.Forward(sc-10);var f1=track.Forward(sc+10);f0.y=f1.y=0;
+                    int outside=Vector3.SignedAngle(f0,f1,Vector3.up)>0?-1:1;var p=track.At(sc)+right*outside*(half+off);
+                    if(ValleyField.RoadDistance(p.x,p.z)<half+off*.7f)return null;p.y=H(p.x,p.z);return p;
+                }
+                var stone=Mat("Beacon stone",new Color(.62f,.6f,.54f));var iron=Mat("Beacon iron",new Color(.16f,.15f,.15f));var flame=Mat("Beacon flame",new Color(1f,.55f,.12f));
+                if(Outside("Barn Corner",12,17) is Vector3 barnAt&&BayviewKit.Has("barn")){landmarks.Add((barnAt,22));Put("barn",barnAt,Yaw(barnAt,track.At(track.Nearest(barnAt,out _))),T(0x8a3b2e,0x6b4a2f,0x6b4a2f,0x2f5d46),null,true);}
+                if(Outside("Rookery",30,20) is Vector3 rk){landmarks.Add((rk,18));}
+                if(Outside("Rookery",30,20) is Vector3 rk2)for(int k=0;k<7;k++){var q=rk2+new Vector3(((float)dressRng.NextDouble()-.5f)*16,0,((float)dressRng.NextDouble()-.5f)*16);if(ValleyField.RoadDistance(q.x,q.z)<half+8)continue;q.y=H(q.x,q.z)-.05f;Put(k%3==0?"tree_pine":"tree_round",q,(float)dressRng.NextDouble()*360,null,null,true,1.5f+(float)dressRng.NextDouble()*.4f);}
+                if(Outside("Beacon Apex",0,13) is Vector3 bk) {   // (the beacon: a stone tower, 8 m, with an iron fire basket, alight: seen from Top Lane)
+                    landmarks.Add((bk,16));
+                    var t=GameObject.CreatePrimitive(PrimitiveType.Cylinder);t.name="Beacon tower";t.transform.SetParent(root);t.transform.position=bk+Vector3.up*4f;t.transform.localScale=new Vector3(3.2f,4f,3.2f);t.GetComponent<Renderer>().sharedMaterial=stone;t.tag="Respawn";
+                    var basket=GameObject.CreatePrimitive(PrimitiveType.Cylinder);basket.name="Beacon basket";Object.Destroy(basket.GetComponent<Collider>());basket.transform.SetParent(root);basket.transform.position=bk+Vector3.up*8.3f;basket.transform.localScale=new Vector3(2.2f,.35f,2.2f);basket.GetComponent<Renderer>().sharedMaterial=iron;
+                    var fire=GameObject.CreatePrimitive(PrimitiveType.Sphere);fire.name="Beacon fire";Object.Destroy(fire.GetComponent<Collider>());fire.transform.SetParent(root);fire.transform.position=bk+Vector3.up*9f;fire.transform.localScale=new Vector3(1.7f,1.6f,1.7f);fire.GetComponent<Renderer>().sharedMaterial=flame;
+                    var light=new GameObject("Beacon light").AddComponent<Light>();light.transform.SetParent(root);light.transform.position=bk+Vector3.up*10f;light.type=LightType.Point;light.color=new Color(1,.6f,.25f);light.range=18;light.intensity=2.5f;
+                }
+                if(Outside("Gallows",-10,6) is Vector3 gw) {landmarks.Add((gw,8));   // (a fingerpost at the crossroads of the old drove roads)
+                    Block("Fingerpost",gw+Vector3.up*1.4f,new Vector3(.16f,2.8f,.16f),Quaternion.identity,white,true);
+                    var dir=track.Forward(track.Nearest(gw,out _));dir.y=0;dir.Normalize();
+                    foreach(var (word,turn) in new[]{("BRAMBLEWICK",90f),("VINELANDS",-90f),("THE BEACON",180f)}){var arm=Quaternion.Euler(0,turn,0)*dir;Block("Fingerpost arm",gw+Vector3.up*(2.4f-.3f*(turn<0?1:0)-.6f*(turn>100?1:0))+arm*.75f,new Vector3(.12f,.22f,1.4f),Quaternion.LookRotation(arm),white,false);
+                        Words(word,gw+Vector3.up*(2.4f-.3f*(turn<0?1:0)-.6f*(turn>100?1:0))+arm*.75f+Quaternion.Euler(0,90,0)*arm*.07f,Quaternion.LookRotation(Quaternion.Euler(0,-90,0)*arm),.018f);}
+                }
+                if(Outside("Orchard",10,16) is Vector3 oc)for(int a=-2;a<=2;a++)for(int b=0;b<3;b++){var f=track.Forward(track.Nearest(oc,out _));f.y=0;f.Normalize();var q=oc+f*a*6+Vector3.Cross(Vector3.up,f)*b*6*(1);if(ValleyField.RoadDistance(q.x,q.z)<half+9)continue;q.y=H(q.x,q.z)-.05f;Put("tree_blossom",q,(float)dressRng.NextDouble()*360,null,null,true,.65f);}
+                if(Outside("Cider Press",-15,17) is Vector3 cp) {landmarks.Add((cp,20));   // (the cider press: a small barn with its barrels)
+                    if(BayviewKit.Has("barn"))Put("barn",cp,Yaw(cp,track.At(track.Nearest(cp,out _))),T(0xd9c9a3,0x8c2f2a,0x8c2f2a,0x5b4a3a),"CIDER",true,.95f);
+                    var barrel=Mat("Cider barrel",new Color(.48f,.32f,.18f));var f=track.Forward(track.Nearest(cp,out _));f.y=0;f.Normalize();
+                    for(int k=0;k<5;k++){var b=GameObject.CreatePrimitive(PrimitiveType.Cylinder);b.name="Cider barrel";b.transform.SetParent(root);var q=cp-f*7+Vector3.Cross(Vector3.up,f)*(k-2)*1.1f;q.y=H(q.x,q.z)+.5f;b.transform.position=q;b.transform.localScale=new Vector3(.9f,.5f,.9f);b.GetComponent<Renderer>().sharedMaterial=barrel;b.tag="Respawn";}
+                }
+                if(Outside("Long Meadow Roll",0,22) is Vector3 lm&&BayviewKit.Has("hay_bale"))for(int k=0;k<9;k++){var q=lm+new Vector3(((float)dressRng.NextDouble()-.5f)*40,0,((float)dressRng.NextDouble()-.5f)*40);if(ValleyField.RoadDistance(q.x,q.z)<half+10)continue;q.y=H(q.x,q.z);Put("hay_bale",q,(float)dressRng.NextDouble()*360,null,null,true,1.2f);}
+                if(Outside("Mill Bend",10,15) is Vector3 ml) {landmarks.Add((ml,20));   // (the mill on the brook: a cottage and its water wheel)
+                    var f=track.Forward(track.Nearest(ml,out _));f.y=0;f.Normalize();
+                    if(BayviewKit.Has("cottage_thatch_c"))Put("cottage_thatch_c",ml,Yaw(ml,track.At(track.Nearest(ml,out _))),T(0xf3e6c8,0x2f5d46,0x2f5d46,0x2f5d46),null,true);
+                    var wheel=GameObject.CreatePrimitive(PrimitiveType.Cylinder);wheel.name="Mill wheel";wheel.transform.SetParent(root);var wq=ml-f*6;wq.y=H(wq.x,wq.z)+2.2f;wheel.transform.SetPositionAndRotation(wq,Quaternion.LookRotation(Vector3.Cross(Vector3.up,f))*Quaternion.Euler(90,0,0));
+                    wheel.transform.localScale=new Vector3(4.4f,.4f,4.4f);wheel.GetComponent<Renderer>().sharedMaterial=Mat("Mill wheel wood",new Color(.36f,.24f,.14f));wheel.tag="Respawn";
+                }
+                if(Bramblewick.Marks.TryGetValue("Hedge Brow",out var hb)){var q=new Vector3(hb.x,0,hb.y);float sc=track.Nearest(q,out _);var right=track.Right(sc);right.y=0;right.Normalize();var g=track.At(sc)+right*(half+3.4f);g.y=H(g.x,g.z);Put("field_gate",g,Yaw(g,g+track.Forward(sc)));}
+            }
             // ---- hedge banks along the lane, both sides, 3.4 m beyond its edge
             {
                 float L=lane.Length;var gates=new List<float>();for(float g=110;g<L-60;g+=150+(float)dressRng.NextDouble()*60)gates.Add(g);
@@ -130,6 +200,7 @@ namespace LittleRoad
                     if(Bramblewick.BrookCut(p.x,p.z)>.3f)return true;
                     foreach(var (at,r) in bales)if(Vector2.Distance(new(p.x,p.z),new(at.x,at.z))<r)return true;
                     foreach(var (at,r) in stands)if(Vector2.Distance(new(p.x,p.z),new(at.x,at.z))<r)return true;
+                    foreach(var (at,r) in landmarks)if(Vector2.Distance(new(p.x,p.z),new(at.x,at.z))<r)return true;   // (the bank opens round each landmark so it's seen: LR2-05)
                     // (another lane alongside: where two parts of the circuit run close, no bank between them)
                     return ValleyField.RoadDistance(p.x,p.z)<half+2.2f;
                 }
@@ -165,8 +236,8 @@ namespace LittleRoad
             foreach(var name in new[]{"Brook Esses","Barn Corner","Rookery","Hedge Gap","Rim Corner","Beacon","Gallows","Church Hill","Green Hairpin","Orchard","Cider Press","Long Meadow","Mill Bend","Humpback Bridge"}) {
                 if(!Bramblewick.Marks.TryGetValue(name,out var m2))continue;float sc=track.Nearest(new Vector3(m2.x,0,m2.y),out _)-40;
                 var f=track.Forward(sc);f.y=0;f.Normalize();var right=Vector3.Cross(Vector3.up,f);var f1=track.Forward(sc+35);f1.y=0;int outside=Vector3.SignedAngle(f,f1,Vector3.up)>0?-1:1;
-                var p=track.At(sc)+right*outside*(half+2.4f);if(ValleyField.RoadDistance(p.x,p.z)<half+1.6f)continue;p.y=H(p.x,p.z);
-                if(Put("map_board",p,Yaw(p,track.At(sc-40)),null,name.ToUpperInvariant())!=null)Boards++;   // (facing the driver coming up to it: the review saw one from behind, LR1-03)
+                var p=track.At(sc)+right*outside*(half+2.3f);if(ValleyField.RoadDistance(p.x,p.z)<half+1.6f)continue;p.y=H(p.x,p.z);
+                RoadSign(p,track.Forward(sc),name.ToUpperInvariant());Boards++;   // (facing the driver coming up to it, big and cream: the review saw one from behind, LR1-03, and couldn't read the small ones, LR2)
             }
             // ---- 100 and 50 boards before the heavy stops (LR1-07): white boards on posts, black numbers, on the outside
             var postMat=Mat("Board post",new Color(.3f,.3f,.32f));
@@ -178,50 +249,10 @@ namespace LittleRoad
                     if(ValleyField.RoadDistance(p.x,p.z)<half+3.4f)continue;p.y=H(p.x,p.z);var face=Quaternion.LookRotation(-f);
                     Block("Distance board post",p+Vector3.up*.6f,new Vector3(.12f,1.2f,.12f),Quaternion.identity,postMat,true);
                     Block("Distance board",p+Vector3.up*1.45f,new Vector3(.9f,.6f,.06f),face,white,false);
-                    Words(dist.ToString(),p+Vector3.up*1.45f-f*.04f,face,.05f,new Color(.08f,.08f,.1f));Boards++;
+                    Words(dist.ToString(),p+Vector3.up*1.45f-f*.04f,Quaternion.LookRotation(f),.05f,new Color(.08f,.08f,.1f));Boards++;
                 }
             }
 
-            // ---- a landmark for each corner it's named after, on the outside, clear of the lane (one per section, so the lap
-            //      is learnt by what you see, and the hedge corridor is broken up: LR1 "monotony")
-            {
-                Vector3? Outside(string mark,float ahead,float off)
-                {
-                    if(!Bramblewick.Marks.TryGetValue(mark,out var m4))return null;float sc=track.Nearest(new Vector3(m4.x,0,m4.y),out _)+ahead;
-                    var f=track.Forward(sc);f.y=0;f.Normalize();var right=Vector3.Cross(Vector3.up,f);var f0=track.Forward(sc-10);var f1=track.Forward(sc+10);f0.y=f1.y=0;
-                    int outside=Vector3.SignedAngle(f0,f1,Vector3.up)>0?-1:1;var p=track.At(sc)+right*outside*(half+off);
-                    if(ValleyField.RoadDistance(p.x,p.z)<half+off*.7f)return null;p.y=H(p.x,p.z);return p;
-                }
-                var stone=Mat("Beacon stone",new Color(.62f,.6f,.54f));var iron=Mat("Beacon iron",new Color(.16f,.15f,.15f));var flame=Mat("Beacon flame",new Color(1f,.55f,.12f));
-                if(Outside("Barn Corner",20,24) is Vector3 barnAt&&BayviewKit.Has("barn"))Put("barn",barnAt,Yaw(barnAt,track.At(track.Nearest(barnAt,out _))),T(0x8a3b2e,0x6b4a2f,0x6b4a2f,0x2f5d46),null,true);
-                if(Outside("Rookery",30,22) is Vector3 rk)for(int k=0;k<7;k++){var q=rk+new Vector3(((float)dressRng.NextDouble()-.5f)*16,0,((float)dressRng.NextDouble()-.5f)*16);if(ValleyField.RoadDistance(q.x,q.z)<half+8)continue;q.y=H(q.x,q.z)-.05f;Put(k%3==0?"tree_pine":"tree_round",q,(float)dressRng.NextDouble()*360,null,null,true,1.5f+(float)dressRng.NextDouble()*.4f);}
-                if(Outside("Beacon Apex",0,14) is Vector3 bk) {   // (the beacon: a stone tower with an iron fire basket, alight)
-                    var t=GameObject.CreatePrimitive(PrimitiveType.Cylinder);t.name="Beacon tower";t.transform.SetParent(root);t.transform.position=bk+Vector3.up*2.4f;t.transform.localScale=new Vector3(2.2f,2.4f,2.2f);t.GetComponent<Renderer>().sharedMaterial=stone;t.tag="Respawn";
-                    var basket=GameObject.CreatePrimitive(PrimitiveType.Cylinder);basket.name="Beacon basket";Object.Destroy(basket.GetComponent<Collider>());basket.transform.SetParent(root);basket.transform.position=bk+Vector3.up*5.1f;basket.transform.localScale=new Vector3(1.6f,.3f,1.6f);basket.GetComponent<Renderer>().sharedMaterial=iron;
-                    var fire=GameObject.CreatePrimitive(PrimitiveType.Sphere);fire.name="Beacon fire";Object.Destroy(fire.GetComponent<Collider>());fire.transform.SetParent(root);fire.transform.position=bk+Vector3.up*5.7f;fire.transform.localScale=new Vector3(1.2f,1.1f,1.2f);fire.GetComponent<Renderer>().sharedMaterial=flame;
-                    var light=new GameObject("Beacon light").AddComponent<Light>();light.transform.SetParent(root);light.transform.position=bk+Vector3.up*6.5f;light.type=LightType.Point;light.color=new Color(1,.6f,.25f);light.range=14;light.intensity=2;
-                }
-                if(Outside("Gallows",-10,6) is Vector3 gw) {   // (a fingerpost at the crossroads of the old drove roads)
-                    Block("Fingerpost",gw+Vector3.up*1.4f,new Vector3(.16f,2.8f,.16f),Quaternion.identity,white,true);
-                    var dir=track.Forward(track.Nearest(gw,out _));dir.y=0;dir.Normalize();
-                    foreach(var (word,turn) in new[]{("BRAMBLEWICK",90f),("VINELANDS",-90f),("THE BEACON",180f)}){var arm=Quaternion.Euler(0,turn,0)*dir;Block("Fingerpost arm",gw+Vector3.up*(2.4f-.3f*(turn<0?1:0)-.6f*(turn>100?1:0))+arm*.75f,new Vector3(.12f,.22f,1.4f),Quaternion.LookRotation(arm),white,false);
-                        Words(word,gw+Vector3.up*(2.4f-.3f*(turn<0?1:0)-.6f*(turn>100?1:0))+arm*.75f+Quaternion.Euler(0,90,0)*arm*.07f,Quaternion.LookRotation(Quaternion.Euler(0,-90,0)*arm),.018f);}
-                }
-                if(Outside("Orchard",10,16) is Vector3 oc)for(int a=-2;a<=2;a++)for(int b=0;b<3;b++){var f=track.Forward(track.Nearest(oc,out _));f.y=0;f.Normalize();var q=oc+f*a*6+Vector3.Cross(Vector3.up,f)*b*6*(1);if(ValleyField.RoadDistance(q.x,q.z)<half+9)continue;q.y=H(q.x,q.z)-.05f;Put("tree_blossom",q,(float)dressRng.NextDouble()*360,null,null,true,.65f);}
-                if(Outside("Cider Press",-15,20) is Vector3 cp) {   // (the cider press: a small barn with its barrels)
-                    if(BayviewKit.Has("barn"))Put("barn",cp,Yaw(cp,track.At(track.Nearest(cp,out _))),T(0xd9c9a3,0x8c2f2a,0x8c2f2a,0x5b4a3a),"CIDER",true,.75f);
-                    var barrel=Mat("Cider barrel",new Color(.48f,.32f,.18f));var f=track.Forward(track.Nearest(cp,out _));f.y=0;f.Normalize();
-                    for(int k=0;k<5;k++){var b=GameObject.CreatePrimitive(PrimitiveType.Cylinder);b.name="Cider barrel";b.transform.SetParent(root);var q=cp-f*7+Vector3.Cross(Vector3.up,f)*(k-2)*1.1f;q.y=H(q.x,q.z)+.5f;b.transform.position=q;b.transform.localScale=new Vector3(.9f,.5f,.9f);b.GetComponent<Renderer>().sharedMaterial=barrel;b.tag="Respawn";}
-                }
-                if(Outside("Long Meadow Roll",0,22) is Vector3 lm&&BayviewKit.Has("hay_bale"))for(int k=0;k<9;k++){var q=lm+new Vector3(((float)dressRng.NextDouble()-.5f)*40,0,((float)dressRng.NextDouble()-.5f)*40);if(ValleyField.RoadDistance(q.x,q.z)<half+10)continue;q.y=H(q.x,q.z);Put("hay_bale",q,(float)dressRng.NextDouble()*360,null,null,true,1.2f);}
-                if(Outside("Mill Bend",10,18) is Vector3 ml) {   // (the mill on the brook: a cottage and its water wheel)
-                    var f=track.Forward(track.Nearest(ml,out _));f.y=0;f.Normalize();
-                    if(BayviewKit.Has("cottage_thatch_c"))Put("cottage_thatch_c",ml,Yaw(ml,track.At(track.Nearest(ml,out _))),T(0xf3e6c8,0x2f5d46,0x2f5d46,0x2f5d46),null,true);
-                    var wheel=GameObject.CreatePrimitive(PrimitiveType.Cylinder);wheel.name="Mill wheel";wheel.transform.SetParent(root);var wq=ml-f*6;wq.y=H(wq.x,wq.z)+2.2f;wheel.transform.SetPositionAndRotation(wq,Quaternion.LookRotation(Vector3.Cross(Vector3.up,f))*Quaternion.Euler(90,0,0));
-                    wheel.transform.localScale=new Vector3(4.4f,.4f,4.4f);wheel.GetComponent<Renderer>().sharedMaterial=Mat("Mill wheel wood",new Color(.36f,.24f,.14f));wheel.tag="Respawn";
-                }
-                if(Bramblewick.Marks.TryGetValue("Hedge Brow",out var hb)){var q=new Vector3(hb.x,0,hb.y);float sc=track.Nearest(q,out _);var right=track.Right(sc);right.y=0;right.Normalize();var g=track.At(sc)+right*(half+3.4f);g.y=H(g.x,g.z);Put("field_gate",g,Yaw(g,g+track.Forward(sc)));}
-            }
             // ---- lamps where the lane leaves the village street, either end (the village's own lanes, lit)
             foreach(float s in new[]{14f,42f,lane.Length-14,lane.Length-42}){var right=lane.Right(s);right.y=0;right.Normalize();var lp=lane.At(s)+right*(s<100?1:-1)*(half+1.3f);lp.y=H(lp.x,lp.z);Put("lamp_post",lp,0,T(0xffffff,0x1d2b3a,0xffffff,0xffffff),null,false);}
 
