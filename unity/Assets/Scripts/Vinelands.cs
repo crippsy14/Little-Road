@@ -48,6 +48,8 @@ namespace LittleRoad
             ("Fojo Fundo",Kind.Velha,new Vector2[]{new(600,-1000),new(1000,-960),new(1020,-560),new(620,-540)}),
             ("Courelas de Cima",Kind.Courela,new Vector2[]{new(60,-330),new(290,-330),new(300,650),new(110,650)}),
             ("Vinhas do Casal",Kind.Velha,new Vector2[]{new(290,-160),new(720,-160),new(720,250),new(290,250)}),
+            ("Mortorio das Voltas",Kind.Mortorio,new Vector2[]{new(-100,-1250),new(280,-1250),new(280,-900),new(-100,-900)}),
+            ("Vinhas das Voltas",Kind.Velha,new Vector2[]{new(280,-1250),new(1000,-1250),new(1000,-1000),new(600,-1000),new(390,-860),new(280,-900)}),
             ("Olival do Cais",Kind.Olival,new Vector2[]{new(720,-100),new(990,-120),new(990,260),new(720,250)})};
         static bool InPoly(Vector2[] poly,Vector2 p){bool c=false;for(int i=0,j=poly.Length-1;i<poly.Length;j=i++)if((poly[i].y>p.y)!=(poly[j].y>p.y)&&p.x<(poly[j].x-poly[i].x)*(p.y-poly[i].y)/(poly[j].y-poly[i].y)+poly[i].x)c=!c;return c;}
         public static (string name,Kind kind)? ParcelAt(Vector2 frame){foreach(var (name,kind,poly) in Parcels)if(InPoly(poly,frame))return (name,kind);return null;}
@@ -86,11 +88,11 @@ namespace LittleRoad
             var p=F(x,z);float d=p.magnitude;
             if(d>Radius+50){float dB0=Vector2.Distance(new(x,z),Bramblewick.Centre);return x<2300?valley:Mathf.Lerp(-40,valley,1-S(1350,1550,dB0));}
             float n1=Mathf.PerlinNoise((x+900)*.004f,(z+4100)*.004f),n2=Mathf.PerlinNoise(x*.019f+7,z*.019f+19),n3=Mathf.PerlinNoise(x*.0028f+3,z*.0028f+41);
-            float ra=AtN(River,p.y);var (ca,hc)=CrestAt(p.y);float h;
+            float ra=AtN(River,p.y);var (ca,hc)=CrestAt(p.y);float h;float bowl=S(-650,-850,p.y)*S(-450,-250,p.x);   // (the south bowl: the Seis Voltas, zone 5)
             if(p.x>=ra)h=Water+140*S(0,700,p.x-ra)*(.75f+.5f*n3)*(1-.75f*S(1100,1600,d))+(n2-.5f)*3;   // (the far bank, lower towards the coast: round 1's 200 m cliff into the sea)
             else if(p.x>=ca) {   // (the amphitheatre, stepped into terraces)
                 float s=(p.x-ca)/Mathf.Max(1,ra-ca);s=1-s;h=Water+(hc-Water)*(s*(.55f+.45f*s))+(n2-.5f)*2.5f;
-                float mask=S(100,130,RiverDistance(p))*S(30,80,p.x-ca)*(1-S(1250,1450,d))*(1-InTown(p))*(1-NovaMask(p));   // (not under the town: its houses stand on the natural slope)
+                float mask=S(100,130,RiverDistance(p))*S(30,80,p.x-ca)*(1-S(1250+220*bowl,1450+220*bowl,d))*(1-InTown(p))*(1-NovaMask(p));   // (not under the town: its houses stand on the natural slope)
                 if(mask>0)h=Mathf.Lerp(h,Terrace(h),mask);
             }
             else{   // (the Vale: a steep upper flank, then a broad shelf falling about 4.5% west, the Vineyard Loop's ground)
@@ -103,12 +105,14 @@ namespace LittleRoad
             // Rim hills round the district (none towards Bramblewick, whose own hills frame that side); the river leaves
             // through gaps in them.
             float dB=Vector2.Distance(new(x,z),Bramblewick.Centre);
-            if(!channel)h+=55*S(1250,1500,d)*(1-S(1500,1750,d))*S(1000,1600,dB)*(.7f+.6f*n3);
+            // (none over the south bowl, the Seis Voltas' slope from the river to the knoll: zone 5 found its start on the rim, docs/90)
+            if(!channel)h+=55*S(1250,1500,d)*(1-S(1500,1750,d))*S(1000,1600,dB)*(.7f+.6f*n3)*(1-bowl);
             // Towards Bramblewick the district blends into its vale.
-            h=Mathf.Lerp(h,valley,S(1100,1500,d));
+            h=Mathf.Lerp(h,valley,S(1100,1500,d)*(1-bowl));
             // The coast: land only within the district or Bramblewick's hills (east of Bramblewick, the valley's own land
             // beyond them would stand on the sea floor, round 1's floating slab); everything falls to the sea bed by the edge.
-            float land=Mathf.Max(1-S(1450,Radius,d),x<2300?1:1-S(1350,1550,dB));
+            float land=Mathf.Max(1-S(1450+220*bowl,Radius,d),   // (the bowl's land reaches the river at the Seis Voltas' start)
+                x<2300?1:1-S(1350,1550,dB));
             return Mathf.Lerp(-40,h,land);   // (to the sea bed outside the district, -40: at -16 it stood as a shelf with a 24 m underwater cliff, the "slab")
         }
 
@@ -127,6 +131,8 @@ namespace LittleRoad
             yield return (new Vector2(PitStopAt.x,PitStopAt.z),27,38,PitStopAt.y);   // (the Pit Stop, level with Rua Direita: docs/88)
             foreach(var q in QuayPads)yield return (new Vector2(q.x,q.z),15,20,q.y);
             foreach(var j in JunctionPads)yield return (new Vector2(j.x,j.z),11,22,j.y);
+            yield return (new Vector2(Belvedere.x,Belvedere.z),26,44,Belvedere.y);   // (the knoll's car park and terrace: docs/90)
+            {var v=W(1050,-935);yield return (v,30,48,Veiga.y);}   // (the Veiga do Fojo, the climb's paddock, north of its start: level with the river road)
             foreach(var (a,n,r) in new[]{(475f,398f,38f),(565f,-288f,38f),(432f,-705f,38f),(575f,58f,34f)}){var g=OnGround(new Vector2(a,n));yield return (new Vector2(g.x,g.z),r,r+16,g.y);}   // (the quintas' yards and Casal do Meio's threshing floor, docs/89)
             if(Ponte!=null){var e=W(1110,-71);yield return (e,7,14,PonteDeck);var t=Ponte[^1];yield return (new Vector2(t.x,t.z),9,18,t.y);}   // (the far abutment and the far-bank lane's turning space: their seams, docs/88)   // (the quay, level along the river: docs/88)   // (the Terreiro da Feira, 80 x 40 m: a terrace cut into the slope, docs/87)
         }
@@ -200,7 +206,24 @@ namespace LittleRoad
         // are exact.
         public const string EntryName="Estrada de Vinelands",RiverRoadName="Estrada Ribeirinha",RuaDireitaName="Rua Direita",
             CaisRoadName="Estrada do Cais",MiranteName="Estrada do Mirante",ValeRoadName="Caminho Velho do Vale",FeiraName="Rua da Feira",PonteName="Ponte Nova";
-        public static int EntrySaddle,RiverNorthT,RiverCaisT,MiranteFeira,PonteRiverT;
+        public static int EntrySaddle,RiverNorthT,RiverCaisT,MiranteFeira,PonteRiverT,RiverClimbT;
+        // the Subida das Seis Voltas (zone 5, docs/90; track-design skill, review/tmp/sv3.txt): from the river road at the Veiga do
+        // Fojo up the south bowl in six voltas to the Belvedere's knoll, 2.2 km, about 10 %. Piece list in the frame, heading 180.
+        public const string ClimbName="Subida das Seis Voltas";
+        public const string VoltasSpec="M Veiga Start; S 60; A 32 180; S 120; M Volta do Rio; A -82 30; S 210; M Volta das Lajes; A 88 26; S 180; A -10 220; M Volta do Fojo; A -86 22; S 200; A 12 160; M Volta da Oliveira; A 92 20; S 180; M Volta da Capela; A -95 22; S 140; M Volta do Moinho; A 90 22; S 120; M Gancho do Alto; A -80 40; S 200; A 16 160; S 160; M Belvedere";
+        public static readonly List<(string name,Vector2 at)> ClimbMarks=new();public static Vector3 Veiga;
+        static List<Vector2> ClimbFrame()
+        {
+            var o=new List<Vector2>();ClimbMarks.Clear();float x=1115,y=-1000,h=180;o.Add(new(x,y));
+            foreach(var part in VoltasSpec.Split(';')) {
+                var t=part.Trim().Split(' ');if(t.Length<2)continue;
+                if(t[0]=="M"){ClimbMarks.Add((string.Join(" ",t,1,t.Length-1),new(x,y)));continue;}
+                if(t[0]=="S"){float L=float.Parse(t[1],System.Globalization.CultureInfo.InvariantCulture);int n=Mathf.Max(1,Mathf.CeilToInt(L/6));for(int i=0;i<n;i++){x+=L/n*Mathf.Cos(h*Mathf.Deg2Rad);y+=L/n*Mathf.Sin(h*Mathf.Deg2Rad);o.Add(new(x,y));}}
+                if(t[0]=="A"){float d=float.Parse(t[1],System.Globalization.CultureInfo.InvariantCulture),R=float.Parse(t[2],System.Globalization.CultureInfo.InvariantCulture);int n=Mathf.Max(2,Mathf.CeilToInt(Mathf.Abs(d)*Mathf.Deg2Rad*R/4));
+                    for(int i=0;i<n;i++){float s=d>0?1:-1;float h0=h;h+=d/n;float cx=x-s*R*Mathf.Sin(h0*Mathf.Deg2Rad),cy=y+s*R*Mathf.Cos(h0*Mathf.Deg2Rad);x=cx+s*R*Mathf.Sin(h*Mathf.Deg2Rad);y=cy-s*R*Mathf.Cos(h*Mathf.Deg2Rad);o.Add(new(x,y));}}
+            }
+            return o;
+        }
         public const string MeioName="Estrada do Meio",PombalTrack="Caminho da Quinta do Pombal",LajesTrack="Caminho da Quinta das Lajes",FojoTrack="Caminho da Quinta do Fojo";
         public static bool Track(string name)=>Enabled&&(name==PombalTrack||name==LajesTrack||name==FojoTrack);
         public static int CaisMeioT,EntryMeioT,MeioCasalT;public static readonly List<int> TrackStarts=new();public static readonly List<Vector3> JunctionPads=new();public static Vector3 CasalDoMeio;
@@ -272,6 +295,16 @@ namespace LittleRoad
             var m2=QuarryHills.Profile(m1[^1],Wv((-150,-180),(-300,-330),(-445,-472)),Ground(new Vector2(-590,-614)),.11f,20,20);
             var ml=new List<Vector3>(m1);for(int i=1;i<m2.Length;i++)ml.Add(m2[i]);var mline=ml.ToArray();
             var mirante=HillcrestRoute.Make(MiranteName,mline,6.5f,5,25);Belvedere=mline[^1];
+            // the Seis Voltas: from the river road's vertex at the Veiga up the turtle's line to the Belvedere (the Mirante's end)
+            RiverClimbT=VertexNear(rline,new Vector2(1115,-1000));var cf=ClimbFrame();var cvl=new List<Vector2>();for(int i=1;i<cf.Count;i++)cvl.Add(W(cf[i].x,cf[i].y));
+            {var a=cvl[^1];var b=new Vector2(Belvedere.x,Belvedere.z);int k=Mathf.CeilToInt(Vector2.Distance(a,b)/6);for(int i=1;i<k;i++)cvl.Add(Vector2.Lerp(a,b,i/(float)k));}   // (evenly spaced to the knoll: one long last segment made the spline loop back, round 3)
+            var cv=cvl.ToArray();
+            var climbLine=QuarryHills.Profile(rline[RiverClimbT],cv,Belvedere,.15f,14,20);var climb=HillcrestRoute.Make(ClimbName,climbLine,7.5f,5,20);
+            JunctionPads.Add(rline[RiverClimbT]);Veiga=rline[RiverClimbT];
+            {float worst=0;int wi=0;for(int i=1;i<climbLine.Length;i++){float g=Mathf.Abs(climbLine[i].y-climbLine[i-1].y)/Mathf.Max(.01f,Vector2.Distance(new(climbLine[i].x,climbLine[i].z),new(climbLine[i-1].x,climbLine[i-1].z)));if(g>worst){worst=g;wi=i;}}
+                float minSeg=float.MaxValue;for(int i=1;i<climbLine.Length;i++)minSeg=Mathf.Min(minSeg,Vector2.Distance(new(climbLine[i].x,climbLine[i].z),new(climbLine[i-1].x,climbLine[i-1].z)));
+                foreach(var q in climbLine)if(Vector2.Distance(new(q.x,q.z),new(2944,-4024))<8)Debug.Log($"LITTLE_ROAD_VINELANDS_CLIMB_PT {q}");
+                Debug.Log($"LITTLE_ROAD_VINELANDS_CLIMB length={climb.Length:0} m rise={Belvedere.y-rline[RiverClimbT].y:0.0} m steepest={worst*100:0.0}% at {climbLine[wi]} shortest segment={minSeg:0.00} m points={climbLine.Length}");}
             // Rua da Feira (zone 2, docs/87): off the Mirante road at the bus terminus, past the market hall to the Terreiro
             Terreiro=OnGround(new Vector2(50,-200));MiranteFeira=m1.Length-1;
             // (the Terreiro is a terrace cut and filled into the slope no lower than 15 m under the terminus, and the street winds
@@ -284,7 +317,7 @@ namespace LittleRoad
             // the old Vale road: the Largo west down to the Vale
             var vline=QuarryHills.Profile(Largo,Wv((-160,20),(-300,50),(-400,10)),Ground(new Vector2(-470,-20)),.12f,20,30);
             var vale=HillcrestRoute.Make(ValeRoadName,vline,6,5,25);
-            list.AddRange(new[]{river,entry,rua,calcada,mirante,vale,feira,HillcrestRoute.Make(PonteName,pline,7f,5,20),estradaMeio});list.AddRange(tracks);
+            list.AddRange(new[]{river,entry,rua,calcada,mirante,vale,feira,HillcrestRoute.Make(PonteName,pline,7f,5,20),estradaMeio,climb});list.AddRange(tracks);
             Debug.Log($"LITTLE_ROAD_VINELANDS_ROADS entry={entry.Length:0} m river={river.Length:0} m rua direita={rua.Length:0} m calcada={calcada.Length:0} m mirante={mirante.Length:0} m feira={feira.Length:0} m vale={vale.Length:0} m largo y={Largo.y:0.0} saddle y={eline[EntrySaddle].y:0.0} cais y={Cais.y:0.0} belvedere y={Belvedere.y:0.0}");
             return list;
         }

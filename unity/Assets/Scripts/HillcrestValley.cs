@@ -306,7 +306,7 @@ namespace LittleRoad
                     var en=HillcrestRoute.Find(Vinelands.EntryName);var rr=HillcrestRoute.Find(Vinelands.RiverRoadName);var rd=HillcrestRoute.Find(Vinelands.RuaDireitaName);
                     var cr=HillcrestRoute.Find(Vinelands.CaisRoadName);var mr=HillcrestRoute.Find(Vinelands.MiranteName);var vv=HillcrestRoute.Find(Vinelands.ValeRoadName);
                     int si=Vinelands.EntrySaddle,ni=Vinelands.RiverNorthT,ci=Vinelands.RiverCaisT;
-                    var nSaddle=net.Add(en.line[si]);var nRiverN=net.Add(rr.line[ni]);var nCais=net.Add(rr.line[ci]);var nLargo=net.Add(rd.line[^1]);
+                    RoadNetwork.Node nBelvedere=null;var nSaddle=net.Add(en.line[si]);var nRiverN=net.Add(rr.line[ni]);var nCais=net.Add(rr.line[ci]);var nLargo=net.Add(rd.line[^1]);
                     var on=new System.Collections.Generic.List<Vector3>(vr.line[iE..]);on.AddRange(en.line[1..(si+1)]);
                     net.Connect(vr.name,on.ToArray(),vr.width,.022f,nE,nSaddle);
                     var nAdega=net.Add(en.line[Vinelands.EntryMeioT]);   // (the Adega's junction, where the Estrada do Meio arrives: zone 4, docs/89)
@@ -314,7 +314,9 @@ namespace LittleRoad
                     net.Connect(rr.name,rr.line[..(ni+1)],rr.width,.022f,null,nRiverN);
                     net.Connect(rr.name,rr.line[ni..(ci+1)],rr.width,.022f,nRiverN,nCais);
                     {int pi=Vinelands.PonteRiverT;var nPonte=net.Add(rr.line[pi]);var pn=HillcrestRoute.Find(Vinelands.PonteName);   // (Ponte Nova leaves the river road south of the Cais, docs/88)
-                        net.Connect(rr.name,rr.line[ci..(pi+1)],rr.width,.022f,nCais,nPonte);net.Connect(rr.name,rr.line[pi..],rr.width,.022f,nPonte,null);
+                        int ki=Vinelands.RiverClimbT;var nClimb=net.Add(rr.line[ki]);var cl5=HillcrestRoute.Find(Vinelands.ClimbName);   // (the Seis Voltas leaves the river road at the Veiga: zone 5)
+                        net.Connect(rr.name,rr.line[ci..(pi+1)],rr.width,.022f,nCais,nPonte);net.Connect(rr.name,rr.line[pi..(ki+1)],rr.width,.022f,nPonte,nClimb);net.Connect(rr.name,rr.line[ki..],rr.width,.022f,nClimb,null);
+                        nBelvedere=net.Add(cl5.line[^1]);net.Connect(cl5.name,cl5.line,cl5.width,.022f,nClimb,nBelvedere,minorStart:true);
                         net.Connect(pn.name,pn.line,pn.width,.022f,nPonte,null,minorStart:true);}
                     net.Connect(rd.name,rd.line,rd.width,.022f,nSaddle,nLargo,minorStart:true);
                     {int ci2=Vinelands.CaisMeioT,mc=Vinelands.MeioCasalT;var em=HillcrestRoute.Find(Vinelands.MeioName);var nCasal=net.Add(cr.line[ci2]);   // (zone 4: the Estrada do Meio crosses the Calcada at Casal do Meio)
@@ -325,7 +327,7 @@ namespace LittleRoad
                         net.Connect(em.name,em.line[prev..],em.width,.022f,pn2,nAdega,minorEnd:true);
                         foreach(var tn in new[]{Vinelands.PombalTrack,Vinelands.LajesTrack,Vinelands.FojoTrack}){var tr=HillcrestRoute.Find(tn);int k=Vinelands.TrackStarts[System.Array.IndexOf(new[]{Vinelands.PombalTrack,Vinelands.LajesTrack,Vinelands.FojoTrack},tn)];net.Connect(tr.name,tr.line,tr.width,.022f,nodes[k],null,minorStart:true);}}
                     {var fr=HillcrestRoute.Find(Vinelands.FeiraName);int fi=Vinelands.MiranteFeira;var nFeira=net.Add(mr.line[fi]);   // (Rua da Feira leaves the Mirante road at the bus terminus, docs/87)
-                        net.Connect(mr.name,mr.line[..(fi+1)],mr.width,.022f,nLargo,nFeira);net.Connect(mr.name,mr.line[fi..],mr.width,.022f,nFeira,null);
+                        net.Connect(mr.name,mr.line[..(fi+1)],mr.width,.022f,nLargo,nFeira);net.Connect(mr.name,mr.line[fi..],mr.width,.022f,nFeira,nBelvedere);   // (the Mirante road and the climb meet at the knoll)
                         net.Connect(fr.name,fr.line,fr.width,.022f,nFeira,null,minorStart:true);}
                     net.Connect(vv.name,vv.line,vv.width,.022f,nLargo,null);
                 } else net.Connect(vr.name,vr.line[iE..],vr.width,.022f,nE,null);
@@ -369,7 +371,7 @@ namespace LittleRoad
             Shoulders(main.line,main.width*.5f,.03f,0,false,holder,gravel,"Road shoulder",quayEnd,q=>SurfacePoint(q,out var hit,false)?hit.point.y:-30,RoadTop);
             Shoulders(valleyRoad,valleyWidth*.5f,.024f,0,false,holder,gravel);
             if(Bramblewick.Enabled)foreach(var name in new[]{Bramblewick.RoadName,Bramblewick.LaneName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
-            if(Vinelands.Enabled)foreach(var name in new[]{Vinelands.EntryName,Vinelands.RiverRoadName,Vinelands.RuaDireitaName,Vinelands.CaisRoadName,Vinelands.MiranteName,Vinelands.ValeRoadName,Vinelands.FeiraName,Vinelands.MeioName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
+            if(Vinelands.Enabled)foreach(var name in new[]{Vinelands.EntryName,Vinelands.RiverRoadName,Vinelands.RuaDireitaName,Vinelands.CaisRoadName,Vinelands.MiranteName,Vinelands.ValeRoadName,Vinelands.FeiraName,Vinelands.MeioName,Vinelands.ClimbName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
             if(Vinelands.Enabled){var pn=HillcrestRoute.Find(Vinelands.PonteName);Shoulders(pn.line,pn.width*.5f,.022f,0,false,holder,gravel);foreach(var tn in new[]{Vinelands.PombalTrack,Vinelands.LajesTrack,Vinelands.FojoTrack}){var tr=HillcrestRoute.Find(tn);Shoulders(tr.line,tr.width*.5f,.022f,0,false,holder,gravel);}}   // (Ponte Nova: its approaches' shoulders; over the river its parapets, docs/88)
             if(QuarryHills.Enabled)foreach(var name in new[]{QuarryHills.QuarryRoadName,QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.HaulRoadName,QuarryHills.KettleRoadName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName}){var q=HillcrestRoute.Find(name);Shoulders(q.line,q.width*.5f,.02f,0,false,holder,gravel);}Shoulders(stationRoad,stationWidth*.5f,.018f,0,false,holder,gravel);Shoulders(crest.line,crest.width*.5f,.018f,0,false,holder,gravel);
             foreach(var n in net.nodes)if(n.arms.Count>1){JunctionSurface(n,holder);if(!n.HasExternal&&!VinelandsVila.Paved(n.at))KerbShoulders(n,holder,gravel);}

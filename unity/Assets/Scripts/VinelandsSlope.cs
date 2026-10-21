@@ -94,7 +94,7 @@ namespace LittleRoad
             float Contour(float n,float t,float a0,float a1){if(A(a0,n)<t||A(a1,n)>t)return float.NaN;for(int i=0;i<22;i++){float m=(a0+a1)*.5f;if(A(m,n)>t)a0=m;else a1=m;}return (a0+a1)*.5f;}
             const int K0=2,K1=46;var prevFoot=new Vector3?[K1+1];var prevTop=new Vector3?[K1+1];var plotOf=new int[K1+1];for(int k=0;k<=K1;k++)plotOf[k]=int.MinValue;
             int plantCount=0,scrubCount=0;const float step=1.5f;int idx=0;
-            for(float n=-1000;n<=700;n+=step,idx++) {
+            for(float n=-1250;n<=700;n+=step,idx++) {   // (to the Seis Voltas' bowl: zone 5)
                 var (ca,_)=Vinelands.CrestAtN(n);float ra=Vinelands.RiverAtN(n);float a0=ca+20,a1=ra-95;if(a1<=a0)continue;
                 for(int k=K0;k<=K1;k++) {
                     float step5=Vinelands.TerraceStep;float eE=Contour(n,k*step5+.05f,a0,a1),eW=Contour(n,k*step5+1.05f,a0,a1);
