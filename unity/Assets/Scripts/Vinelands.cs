@@ -25,7 +25,7 @@ namespace LittleRoad
         public const float LoopWidth=9,SubidaWidth=7.5f;
         public static Vector3[] Lap;   // (the Vineyard Loop's closed line, point 0 at the Adega junction; round 2 sets the start line)
         public static readonly Dictionary<string,Vector2> Marks=new();
-        public static Vector3 Largo,Adega,Cais,Belvedere,PitStopAt;public static float PitStopYaw;
+        public static Vector3 Largo,Adega,Cais,Belvedere,PitStopAt,Terreiro;public static float PitStopYaw;
         static Vector2 W(float a,float n)=>Centre+new Vector2(a,n);
         static Vector2 F(float x,float z)=>new Vector2(x,z)-Centre;
         public static bool Contains(float x,float z)=>Enabled&&(new Vector2(x,z)-Centre).sqrMagnitude<Radius*Radius;
@@ -101,6 +101,7 @@ namespace LittleRoad
         {
             yield return (new Vector2(Largo.x,Largo.z),42,80,Largo.y);   // (the Largo, 70 x 45 m: level on the crest)
             yield return (new Vector2(Cais.x,Cais.z),24,40,Cais.y);   // (the Praça do Cais)
+            yield return (new Vector2(Terreiro.x,Terreiro.z),46,66,Terreiro.y);   // (the Terreiro da Feira, 80 x 40 m: a terrace cut into the slope, docs/87)
         }
 
         // A track laid from pieces (the track-design skill's format): "S 40" straight, "A 28 70" arc (degrees, + left;
@@ -171,8 +172,8 @@ namespace LittleRoad
         // Each road ends on another's own vertex, so the junctions (the saddle, the river's north T, the Cais, the Largo)
         // are exact.
         public const string EntryName="Estrada de Vinelands",RiverRoadName="Estrada Ribeirinha",RuaDireitaName="Rua Direita",
-            CaisRoadName="Estrada do Cais",MiranteName="Estrada do Mirante",ValeRoadName="Caminho Velho do Vale";
-        public static int EntrySaddle,RiverNorthT,RiverCaisT;
+            CaisRoadName="Estrada do Cais",MiranteName="Estrada do Mirante",ValeRoadName="Caminho Velho do Vale",FeiraName="Rua da Feira";
+        public static int EntrySaddle,RiverNorthT,RiverCaisT,MiranteFeira;
         static Vector2[] Wv(params (float a,float n)[] f){var o=new Vector2[f.Length];for(int i=0;i<f.Length;i++)o[i]=W(f[i].a,f[i].n);return o;}
         static int VertexNear(Vector3[] line,Vector2 frame){var w=W(frame.x,frame.y);int best=0;float bd=float.MaxValue;for(int i=0;i<line.Length;i++){float d=(new Vector2(line[i].x,line[i].z)-w).sqrMagnitude;if(d<bd){bd=d;best=i;}}return best;}
         public static List<HillcrestRoute.Road> Roads(Vector3 gateEnd)
@@ -187,19 +188,32 @@ namespace LittleRoad
             var eline=QuarryHills.Profile(gateEnd,Wv((-450,1030),(-300,830),(-160,700),(-20,715),(150,750),(330,800),(520,860),(720,930),(900,985),(1080,1050)),rline[RiverNorthT],.09f,30,30);
             var entry=HillcrestRoute.Make(EntryName,eline,8,6,40);EntrySaddle=VertexNear(eline,new Vector2(-160,700));
             // Rua Direita: the saddle to the Largo
-            var dline=QuarryHills.Profile(eline[EntrySaddle],Wv((-152,655),(-100,500),(-40,250)),Largo,.08f,25,30);
+            var dline=QuarryHills.Profile(eline[EntrySaddle],Wv((-152,655),(-125,575),(-80,480),(-98,390),(-70,300),(-25,205),(-32,110),(-12,50)),Largo,.08f,25,30);   // (gentle bends, the old carriage road's: docs/87 round 2)
             var rua=HillcrestRoute.Make(RuaDireitaName,dline,8,5,30);
             // the Calçada: the Largo to the Cais, in Z bends
             var cline=QuarryHills.Profile(Largo,Wv((60,-25),(150,-45),(250,-80),(330,-130),(480,100),(700,-60),(850,40)),Cais,.14f,20,30);
             var calcada=HillcrestRoute.Make(CaisRoadName,cline,6.5f,5,25);
             // the Mirante road: the Largo to the Belvedere's knoll
-            var mline=QuarryHills.Profile(Largo,Wv((-60,-90),(-150,-180),(-300,-330),(-445,-472)),Ground(new Vector2(-590,-614)),.11f,20,30);
+            // (in two profiles meeting level at the bus terminus (-95,-125), on the same line: Rua da Feira leaves there, and a
+            // junction on the 11 % grade sank under the carved ground, docs/87)
+            var m1=QuarryHills.Profile(Largo,Wv((-60,-90)),Ground(new Vector2(-95,-125)),.11f,20,20);
+            var m2=QuarryHills.Profile(m1[^1],Wv((-150,-180),(-300,-330),(-445,-472)),Ground(new Vector2(-590,-614)),.11f,20,20);
+            var ml=new List<Vector3>(m1);for(int i=1;i<m2.Length;i++)ml.Add(m2[i]);var mline=ml.ToArray();
             var mirante=HillcrestRoute.Make(MiranteName,mline,6.5f,5,25);Belvedere=mline[^1];
+            // Rua da Feira (zone 2, docs/87): off the Mirante road at the bus terminus, past the market hall to the Terreiro
+            Terreiro=OnGround(new Vector2(50,-200));MiranteFeira=m1.Length-1;
+            // (the Terreiro is a terrace cut and filled into the slope no lower than 15 m under the terminus, and the street winds
+            // round the slope's shoulder to arrive level at its south-west corner: lower, its profile had no solution and fell 9 m
+            // in its first two metres (round 2); ending in the middle, it ran on down across the square in a hump (round 4))
+            Terreiro.y=Mathf.Max(Terreiro.y,mline[MiranteFeira].y-15f);var tend=W(13,-212);
+            var fline=QuarryHills.Profile(mline[MiranteFeira],Wv((-60,-152),(-25,-180),(-8,-214)),new Vector3(tend.x,Terreiro.y,tend.y),.13f,20,20);
+            var feira=HillcrestRoute.Make(FeiraName,fline,6.5f,5,25);
+            Debug.Log($"LITTLE_ROAD_VINELANDS_FEIRA terminus y={mline[MiranteFeira].y:0.0} terreiro y={Terreiro.y:0.0} feira {fline[0].y:0.0}..{fline[^1].y:0.0}");
             // the old Vale road: the Largo west down to the Vale
             var vline=QuarryHills.Profile(Largo,Wv((-160,20),(-300,50),(-400,10)),Ground(new Vector2(-470,-20)),.12f,20,30);
             var vale=HillcrestRoute.Make(ValeRoadName,vline,6,5,25);
-            list.AddRange(new[]{river,entry,rua,calcada,mirante,vale});
-            Debug.Log($"LITTLE_ROAD_VINELANDS_ROADS entry={entry.Length:0} m river={river.Length:0} m rua direita={rua.Length:0} m calcada={calcada.Length:0} m mirante={mirante.Length:0} m vale={vale.Length:0} m largo y={Largo.y:0.0} saddle y={eline[EntrySaddle].y:0.0} cais y={Cais.y:0.0} belvedere y={Belvedere.y:0.0}");
+            list.AddRange(new[]{river,entry,rua,calcada,mirante,vale,feira});
+            Debug.Log($"LITTLE_ROAD_VINELANDS_ROADS entry={entry.Length:0} m river={river.Length:0} m rua direita={rua.Length:0} m calcada={calcada.Length:0} m mirante={mirante.Length:0} m feira={feira.Length:0} m vale={vale.Length:0} m largo y={Largo.y:0.0} saddle y={eline[EntrySaddle].y:0.0} cais y={Cais.y:0.0} belvedere y={Belvedere.y:0.0}");
             return list;
         }
     }

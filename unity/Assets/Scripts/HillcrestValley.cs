@@ -315,7 +315,9 @@ namespace LittleRoad
                     net.Connect(rr.name,rr.line[ci..],rr.width,.022f,nCais,null);
                     net.Connect(rd.name,rd.line,rd.width,.022f,nSaddle,nLargo,minorStart:true);
                     net.Connect(cr.name,cr.line,cr.width,.022f,nLargo,nCais,minorEnd:true);
-                    net.Connect(mr.name,mr.line,mr.width,.022f,nLargo,null);
+                    {var fr=HillcrestRoute.Find(Vinelands.FeiraName);int fi=Vinelands.MiranteFeira;var nFeira=net.Add(mr.line[fi]);   // (Rua da Feira leaves the Mirante road at the bus terminus, docs/87)
+                        net.Connect(mr.name,mr.line[..(fi+1)],mr.width,.022f,nLargo,nFeira);net.Connect(mr.name,mr.line[fi..],mr.width,.022f,nFeira,null);
+                        net.Connect(fr.name,fr.line,fr.width,.022f,nFeira,null,minorStart:true);}
                     net.Connect(vv.name,vv.line,vv.width,.022f,nLargo,null);
                 } else net.Connect(vr.name,vr.line[iE..],vr.width,.022f,nE,null);
                 var cl=HillcrestRoute.Find(Bramblewick.LaneName);net.Connect(cl.name,cl.line,cl.width,.022f,nE,nW,minorStart:true,minorEnd:true,noCentre:true);   // (a lane: no centre line)
@@ -356,7 +358,7 @@ namespace LittleRoad
             Shoulders(main.line,main.width*.5f,.03f,0,false,holder,gravel,"Road shoulder",quayEnd,q=>SurfacePoint(q,out var hit,false)?hit.point.y:-30,RoadTop);
             Shoulders(valleyRoad,valleyWidth*.5f,.024f,0,false,holder,gravel);
             if(Bramblewick.Enabled)foreach(var name in new[]{Bramblewick.RoadName,Bramblewick.LaneName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
-            if(Vinelands.Enabled)foreach(var name in new[]{Vinelands.EntryName,Vinelands.RiverRoadName,Vinelands.RuaDireitaName,Vinelands.CaisRoadName,Vinelands.MiranteName,Vinelands.ValeRoadName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
+            if(Vinelands.Enabled)foreach(var name in new[]{Vinelands.EntryName,Vinelands.RiverRoadName,Vinelands.RuaDireitaName,Vinelands.CaisRoadName,Vinelands.MiranteName,Vinelands.ValeRoadName,Vinelands.FeiraName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
             if(QuarryHills.Enabled)foreach(var name in new[]{QuarryHills.QuarryRoadName,QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.HaulRoadName,QuarryHills.KettleRoadName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName}){var q=HillcrestRoute.Find(name);Shoulders(q.line,q.width*.5f,.02f,0,false,holder,gravel);}Shoulders(stationRoad,stationWidth*.5f,.018f,0,false,holder,gravel);Shoulders(crest.line,crest.width*.5f,.018f,0,false,holder,gravel);
             foreach(var n in net.nodes)if(n.arms.Count>1){JunctionSurface(n,holder);if(!n.HasExternal&&!VinelandsVila.Paved(n.at))KerbShoulders(n,holder,gravel);}
             // Quarry Hills' junctions: shoulders across each mouth (the gap between a road's own shoulder and the kerb ramps

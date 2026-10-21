@@ -9,7 +9,7 @@ namespace LittleRoad
     // Largo's frontages (the church, the town hall, the cafe, the post office and bank, the pastelaria and pharmacy); cobbled
     // lanes and stepped lanes (escadinhas); the oven's patio, the coopers' patio, the spring's square with its washing tanks;
     // the shrine, laundry across the lanes, cafe terraces, plane trees.
-    public sealed class VinelandsVila
+    public sealed partial class VinelandsVila
     {
         readonly Transform root;readonly System.Random rng=new(8601),dress=new(8602);
         readonly List<(Vector2 c,Vector2 half,float yaw)> footprints=new();Material plinth;
@@ -39,28 +39,31 @@ namespace LittleRoad
         static readonly Dictionary<int,float> Widths=new(){{5,5.2f},{6,6.1f},{7,7.0f}};
         static Vector2 Footprint(string id)
         {
+            if(id.StartsWith("rua_burguesa_"))return new(id.EndsWith("10")?10.1f:8.1f,14.3f);
             if(id.StartsWith("vila_varanda_"))return new(Widths[id[^1]-'0'],14.9f);
             if(id.StartsWith("vila_")&&char.IsDigit(id[^1]))return new(Widths[id[^1]-'0']+(id.StartsWith("vila_alta_")?.24f:0),13.9f);
-            return id switch{"vila_esquina"=>new(8.9f,9.2f),"vila_pacos"=>new(23f,13.8f),"vila_forno"=>new(6.4f,8.8f),"vila_lavadouro"=>new(11.1f,5.2f),"igreja_douro"=>new(14.5f,23f),_=>new(6,6)};
+            return id switch{"vila_esquina"=>new(8.9f,9.2f),"vila_pacos"=>new(23f,13.8f),"vila_forno"=>new(6.4f,8.8f),"vila_lavadouro"=>new(11.1f,5.2f),"igreja_douro"=>new(14.5f,23f),"rua_solar"=>new(16.3f,14.5f),"rua_mercado"=>new(36.8f,20.8f),"pit_stop_3"=>new(28f,20f),"rua_coreto"=>new(7.4f,7.4f),"rua_lago"=>new(6.6f,6.6f),"rua_claustro"=>new(13.2f,1.4f),"rua_buxo"=>new(4.1f,4.1f),_=>new(6,6)};
         }
 
         // A building with its floor at the ground under its front's middle (each house steps with the lane); a granite plinth
         // fills any fall under it; refused on another building or a road, or where the slope would bury it.
-        bool Building(string id,Vector3 centre,float yaw,BayviewKit.Tint tint=null,string sign=null,float maxFall=3.2f,float roadClear=4.4f,float maxRise=3f)
+        bool Building(string id,Vector3 centre,float yaw,BayviewKit.Tint tint=null,string sign=null,float maxFall=3.2f,float roadClear=4.4f,float maxRise=3f,System.Func<Vector3,GameObject> spawn=null)
         {
             var size=Footprint(id);var rot=Quaternion.Euler(0,yaw,0);var c2=new Vector2(centre.x,centre.z);var half=size*.5f-new Vector2(.08f,.3f);
-            foreach(var o in footprints)if(QuarryHillsTown.Overlap(c2,half,yaw,o.c,o.half,o.yaw)){Refused++;return false;}
+            // (why a landmark is refused goes in the log: one piece on a slope can fail for any of three reasons)
+            bool No(string why){Refused++;if(!id.StartsWith("vila_")&&!id.StartsWith("rua_burguesa"))Debug.Log($"LITTLE_ROAD_VINELANDS_REFUSED {id} at {centre}: {why}");return false;}
+            foreach(var o in footprints)if(QuarryHillsTown.Overlap(c2,half,yaw,o.c,o.half,o.yaw))return No($"overlaps a building at {o.c}");
             var front=centre+rot*new Vector3(0,0,size.y*.5f);float floor=H(front.x,front.z)+.05f,low=floor,high=floor;
             for(int i=0;i<5;i++)for(int j=0;j<5;j++) {
                 var q=centre+rot*new Vector3((i/2f-1)*(size.x*.5f),0,(j/2f-1)*(size.y*.5f));float g=H(q.x,q.z);low=Mathf.Min(low,g);high=Mathf.Max(high,g);
-                if((i%2==0&&j%2==0)&&ValleyField.RoadDistance(q.x,q.z)<roadClear){Refused++;return false;}
+                if((i%2==0&&j%2==0)&&ValleyField.RoadDistance(q.x,q.z)<roadClear)return No($"a corner {ValleyField.RoadDistance(q.x,q.z):0.0} m from a road");
             }
-            if(floor-low>maxFall||high-floor>maxRise){Refused++;return false;}
+            if(floor-low>maxFall||high-floor>maxRise)return No($"falls {floor-low:0.0} m, rises {high-floor:0.0} m");
             if(floor-low>.2f) {
                 var b=GameObject.CreatePrimitive(PrimitiveType.Cube);b.name="Granite plinth";b.transform.SetParent(root);b.transform.SetPositionAndRotation(new Vector3(centre.x,(low-.5f+floor)*.5f,centre.z),rot);
                 b.transform.localScale=new Vector3(size.x+.1f,floor-low+.5f,size.y+.1f);b.GetComponent<Renderer>().sharedMaterial=plinth;b.tag="Respawn";
             }
-            if(Put(id,new Vector3(centre.x,floor-.03f,centre.z),yaw,tint,sign)==null){Refused++;return false;}
+            if((spawn!=null?spawn(new Vector3(centre.x,floor-.03f,centre.z)):Put(id,new Vector3(centre.x,floor-.03f,centre.z),yaw,tint,sign))==null){Refused++;return false;}   // (spawn: a piece that places itself, the Pit Stop)
             footprints.Add((c2,half,yaw));Houses++;return true;
         }
 
@@ -68,7 +71,7 @@ namespace LittleRoad
         {
             Houses=Refused=0;Spots.Clear();Parking.Clear();yards.Clear();Yards=0;
             plinth=WorldLook.Kit("Vila granite plinth",new Color(.6f,.59f,.56f),WorldLook.Pattern.Stone,0,.1f,true);
-            Largo();Lanes();Patios();Escadinhas();Quintais();Details();Adro();Parked();
+            Largo();Lanes();Patios();Escadinhas();Zone2();Quintais();Details();Adro();Parked();   // (zone 2, VinelandsRua.cs: before the yards, so they fill behind its houses too)
             Debug.Log($"LITTLE_ROAD_VINELANDS_VILA houses={Houses} refused={Refused} yards={Yards} parking={Parking.Count}");
         }
 
@@ -121,6 +124,7 @@ namespace LittleRoad
             ("Rua da Igreja",4.2f,new Vector2[]{new(30,45),new(100,70),new(170,80),new(215,40)}),
             ("Rua do Forno",4f,new Vector2[]{new(-10,-35),new(50,-75),new(120,-100),new(200,-100)}),
             ("Rua do Poço",3.6f,new Vector2[]{new(40,-20),new(90,-60),new(110,-110)}),
+            ("Caminho da Cerca",3f,new Vector2[]{new(66,125),new(100,125.3f)}),   // (zone 2: from the coopers' patio to the convent garden's gate, docs/87)
             ("Travessa dos Tanoeiros",3f,new Vector2[]{new(60,45),new(80,95),new(60,125)}),
             ("Beco do Cego",2.4f,new Vector2[]{new(120,-100),new(150,-60),new(165,-30)})};
         public static readonly List<(string name,float width,Vector3[] line)> Lanes2=new();
@@ -222,8 +226,9 @@ namespace LittleRoad
         // shut-up house's yard has gone to a fig. Granite walls, 1.6 m, along each yard's sides and back, stepping with the ground.
         readonly List<(Vector3 back,Vector3 n,Vector3 along,float w,string fam)> yards=new();public static int Yards;
         // (inside the Largo's paving, 2 m in from its edge: the road shoulders stop here, the square's cobbles are its verge)
-        public static bool Paved(Vector3 p){if(!Vinelands.Enabled)return false;var f=new Vector2(p.x,p.z)-Vinelands.Centre;return f.x>-38&&f.x<28&&f.y>-21&&f.y<21;}
-        static readonly (Vector2 min,Vector2 max)[] Squares={(new(-40,-23),new(30,23)),(new(-165,-22),new(-135,4)),(new(104,-118),new(126,-100)),(new(52,117),new(68,133))};
+        public static bool Paved(Vector3 p){if(!Vinelands.Enabled)return false;var f=new Vector2(p.x,p.z)-Vinelands.Centre;return f.x>-38&&f.x<28&&f.y>-21&&f.y<21||PavedZone2(p);}
+        static readonly (Vector2 min,Vector2 max)[] Squares={(new(-40,-23),new(30,23)),(new(-165,-22),new(-135,4)),(new(104,-118),new(126,-100)),(new(52,117),new(68,133)),
+            (new(100,110),new(200,165)),(new(10,-220),new(90,-170))};   // (zone 2: the Jardim da Cerca, the Terreiro)
         void Quintais()
         {
             var paths=new List<(Vector3[] line,float half)>();foreach(var (_,w,l) in Lanes2)paths.Add((l,w*.5f+1f));foreach(var pts in Stairs)paths.Add((Dense(pts,1.5f),2.4f));
@@ -242,7 +247,7 @@ namespace LittleRoad
                 for(int i=0;i<k;i++){var m=a+d*((i+.5f)/k);var e0=a+d*(i/(float)k);var e1=a+d*((i+1f)/k);float g=H(m.x,m.z),lo=Mathf.Min(g,Mathf.Min(H(e0.x,e0.z),H(e1.x,e1.z)))-.3f,top=g+1.5f;   // (down to the lowest ground under it: no air on a slope)
                     walls.Add(Matrix4x4.TRS(new Vector3(m.x,(lo+top)*.5f,m.z),rot,new Vector3(.45f,top-lo,L/k+.02f)));}}
             foreach(var (back,n,along,w,fam) in yards) {
-                float want=7+(float)yrng.NextDouble()*6,d=0;
+                float want=fam=="rua"?20+(float)yrng.NextDouble()*14:7+(float)yrng.NextDouble()*6,d=0;   // (Rua Direita's gardens: long strips falling west)
                 for(float t=1;t<=want;t+=1){bool ok=true;foreach(float k in new[]{-.42f,0,.42f})if(!Free(back+n*t+along*(w*k))){ok=false;break;}if(!ok)break;d=t;}
                 if(d<3.5f)continue;
                 float yaw=Yaw(back,back+n);var mid=back+n*(d*.5f);claimed.Add((new Vector2(mid.x,mid.z),new Vector2(w*.5f,d*.5f),yaw));Yards++;
@@ -261,6 +266,15 @@ namespace LittleRoad
                 }
                 double r()=>yrng.NextDouble();float side=r()<.5?-1:1;
                 if(fam=="fechada"){Place("vila_figueira",side*(w*.5f-2.4f),d*.6f,2f,2f,true);continue;}
+                if(fam=="rua") {   // (a merchant's long garden: the pergola off the back door, plots down the strip, fruit trees at its end, a shed)
+                    if(r()<.6)Place("vila_latada",0,3.6f,Mathf.Min(2.1f,w*.5f-.5f),3.05f,false);
+                    for(float v=8.5f;v<d-5;v+=6f)if(r()<.75)Place("vila_horta",((float)r()-.5f)*Mathf.Max(0,w-4.5f),v,1.55f,2.55f,false);
+                    for(int k=0;k<2;k++)if(r()<.7)Place(r()<.5?"vila_figueira":"vila_laranjeira",(k==0?-1:1)*(w*.5f-1.6f),d-1.9f-k*2.5f,1.1f,1.1f,true);
+                    if(r()<.35)Place("vila_anexo",side*(w*.5f-2.1f),d*.55f,1.65f,1.35f,true);
+                    if(r()<.25)Place("vila_galinheiro",-side*(w*.5f-2.1f),d*.4f,1.4f,1f,true);
+                    if(r()<.3)Place("vila_tanque",side*(w*.5f-1.6f),d*.3f,.7f,1.15f,true);
+                    continue;
+                }
                 if(fam=="horta") {   // (a garden plot in a row's gap: plots across it, a tree or two, a shed, the tank)
                     for(float u=-w*.5f+2.2f;u<w*.5f-2f;u+=3.6f)if(r()<.8)Place("vila_horta",u,Mathf.Min(3.4f,d-2.6f),1.55f,2.55f,false);
                     for(float u=-w*.5f+2.2f;u<w*.5f-1.5f;u+=4.5f)for(float v=d-1.8f;v>1.5f;v-=4.5f)if(r()<.55)Place(r()<.5?"vila_figueira":"vila_laranjeira",u+((float)r()-.5f),v,1.1f,1.1f,true);   // (an orchard of a plot, fig and orange)
