@@ -478,6 +478,9 @@ namespace LittleRoad
             Cut(mainline.line,0,portalN,7,14,4);
             Cut(HillcrestRoute.Rail.line,0,HillcrestRoute.Rail.line.Length-1,3.5f,11,.35f);
             Cut(HillcrestRoute.SeaRail.line,0,HillcrestRoute.SeaRail.line.Length-1,3.5f,11,.35f);
+            // (--vinelands, docs/88: the river's channel again under Ponte Nova, where its road's corridor filled it as a causeway)
+            if(Vinelands.Enabled&&Vinelands.Ponte!=null){var pl=Vinelands.Ponte;for(int s=0;s<pl.Length-1;s++)Segment(pl[s],pl[s+1],34,(k,d,t)=>{int i=k%NX,j=k/NX;float x=X0+i*Cell,a=x-Vinelands.Centre.x;if(a<1000||a>1104)return;   // (between the abutments only: the approaches keep their fill)
+                float nat=Natural(x,Z0+j*Cell);if(nat<Vinelands.Water+.5f)h[k]=Mathf.Min(h[k],nat);});}
             // River bed (after roads: bridges span it).
             var river=HillcrestRoute.River.line;
             for(int s=0;s<river.Length-1;s++){Vector3 p=river[s],q=river[s+1];Segment(p,q,36,(k,d,t)=>{float bed=Mathf.Lerp(p.y,q.y,t)-2.6f;h[k]=Mathf.Min(h[k],Mathf.Lerp(bed,h[k],Blend(8,30,d)));});}

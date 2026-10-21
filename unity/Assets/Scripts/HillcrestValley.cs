@@ -312,7 +312,9 @@ namespace LittleRoad
                     net.Connect(en.name,en.line[si..],en.width,.022f,nSaddle,nRiverN,minorEnd:true);
                     net.Connect(rr.name,rr.line[..(ni+1)],rr.width,.022f,null,nRiverN);
                     net.Connect(rr.name,rr.line[ni..(ci+1)],rr.width,.022f,nRiverN,nCais);
-                    net.Connect(rr.name,rr.line[ci..],rr.width,.022f,nCais,null);
+                    {int pi=Vinelands.PonteRiverT;var nPonte=net.Add(rr.line[pi]);var pn=HillcrestRoute.Find(Vinelands.PonteName);   // (Ponte Nova leaves the river road south of the Cais, docs/88)
+                        net.Connect(rr.name,rr.line[ci..(pi+1)],rr.width,.022f,nCais,nPonte);net.Connect(rr.name,rr.line[pi..],rr.width,.022f,nPonte,null);
+                        net.Connect(pn.name,pn.line,pn.width,.022f,nPonte,null,minorStart:true);}
                     net.Connect(rd.name,rd.line,rd.width,.022f,nSaddle,nLargo,minorStart:true);
                     net.Connect(cr.name,cr.line,cr.width,.022f,nLargo,nCais,minorEnd:true);
                     {var fr=HillcrestRoute.Find(Vinelands.FeiraName);int fi=Vinelands.MiranteFeira;var nFeira=net.Add(mr.line[fi]);   // (Rua da Feira leaves the Mirante road at the bus terminus, docs/87)
@@ -359,6 +361,7 @@ namespace LittleRoad
             Shoulders(valleyRoad,valleyWidth*.5f,.024f,0,false,holder,gravel);
             if(Bramblewick.Enabled)foreach(var name in new[]{Bramblewick.RoadName,Bramblewick.LaneName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
             if(Vinelands.Enabled)foreach(var name in new[]{Vinelands.EntryName,Vinelands.RiverRoadName,Vinelands.RuaDireitaName,Vinelands.CaisRoadName,Vinelands.MiranteName,Vinelands.ValeRoadName,Vinelands.FeiraName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
+            if(Vinelands.Enabled){var pn=HillcrestRoute.Find(Vinelands.PonteName);Shoulders(pn.line,pn.width*.5f,.022f,0,false,holder,gravel);}   // (Ponte Nova: its approaches' shoulders; over the river its parapets, docs/88)
             if(QuarryHills.Enabled)foreach(var name in new[]{QuarryHills.QuarryRoadName,QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.HaulRoadName,QuarryHills.KettleRoadName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName}){var q=HillcrestRoute.Find(name);Shoulders(q.line,q.width*.5f,.02f,0,false,holder,gravel);}Shoulders(stationRoad,stationWidth*.5f,.018f,0,false,holder,gravel);Shoulders(crest.line,crest.width*.5f,.018f,0,false,holder,gravel);
             foreach(var n in net.nodes)if(n.arms.Count>1){JunctionSurface(n,holder);if(!n.HasExternal&&!VinelandsVila.Paved(n.at))KerbShoulders(n,holder,gravel);}
             // Quarry Hills' junctions: shoulders across each mouth (the gap between a road's own shoulder and the kerb ramps

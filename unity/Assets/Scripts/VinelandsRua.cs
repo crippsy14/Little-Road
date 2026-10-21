@@ -94,18 +94,20 @@ namespace LittleRoad
                 if(b-a>=4){float m=(a+b)*.5f;var nn=Norm(m);yards.Add((At(m)+nn*(offset+.3f),nn,Quaternion.Euler(0,90,0)*nn,b-a,"horta"));}}
             while(s0<total-4) {
                 var f=Frame(s0+4);
-                if(west&&!pit&&f.y<418) {   // (the Pit Stop: the town's garage, parts and body shop, the forecourt to the street)
-                    // (the first site along the next 40 m that takes it: the west side falls away, a granite plinth under it)
-                    pit=true;const float w=28;bool built=false;float ds=0;
-                    for(ds=0;ds<=40&&!built;ds+=4){float mid=s0+ds+w*.5f;var nn=Norm(mid);var at=At(mid);var c=at+nn*(offset+10.5f);c.y=H(c.x,c.z);float yaw=Yaw(c,at);
-                        built=Building("pit_stop_3",c,yaw,null,null,7f,4.4f,7f,pos=>PitStop.Build("vinelands",true,pos,yaw,root));if(built)Debug.Log($"LITTLE_ROAD_VINELANDS_PITSTOP at frame {Frame(mid)} after {ds:0} m");}
-                    if(!built)Debug.Log($"LITTLE_ROAD_VINELANDS_PITSTOP refused along 40 m from frame {f}");
-                    if(built){if(gap<0&&ds-4>3)gap=s0;s0+=ds-4;   // (the house rows resume past it: the ground it skipped becomes a garden)
+                if(west&&!pit&&f.y<Vinelands.PitN+17) {   // (the Pit Stop: the town's garage, parts and body shop, on its own level pad set
+                    // back from the street (Vinelands.PitStopAt), its forecourt paved out to the pavement)
+                    pit=true;var site=Vinelands.PitStopAt;site.y=H(site.x,site.z);float yaw=Vinelands.PitStopYaw;
+                    if(Building("pit_stop_3",site,yaw,null,null,2f,4.4f,2f,pos=>PitStop.Build("vinelands",true,pos,yaw,root))) {
+                        Debug.Log($"LITTLE_ROAD_VINELANDS_PITSTOP at {site}");
                         foreach(var (key,hostId) in new[]{("garage","vinelands/garage"),("parts","vinelands/parts"),("body","vinelands/body")})if(PitStop.Hosts.TryGetValue(hostId,out var host))Spots[key]=host;
-                        float ps=s0+w+5;var pa=At(ps)+Norm(ps)*(offset+3.4f);pa.y=H(pa.x,pa.z);float py=Yaw(At(ps-1),At(ps+1));   // (the pumps beside it, under their canopy)
+                        Forecourt(Vinelands.PitStopAt,yaw);
+                        if(gap>=0){Gap(gap,s0);gap=-1;}
+                        float sEnd=s0;while(sEnd<total-4&&Frame(sEnd).y>Vinelands.PitN-17)sEnd+=1;
+                        float ps=sEnd+4;var pa=At(ps)+Norm(ps)*(offset+3.4f);pa.y=H(pa.x,pa.z);float py=Yaw(At(ps-1),At(ps+1));   // (the pumps beside it, under their canopy)
                         if(Put("rua_bombas",pa,py)!=null)footprints.Add((new Vector2(pa.x,pa.z),new Vector2(4.2f,2.8f),py));
-                        if(gap>=0){Gap(gap,s0);gap=-1;}noParking.Add((s0-4,s0+w+12));s0+=w+11;last="";continue;
+                        noParking.Add((s0-4,ps+8));s0=ps+8;last="";continue;
                     }
+                    Debug.Log($"LITTLE_ROAD_VINELANDS_PITSTOP refused at {site}");
                 }
                 int lane=-1;for(int k=0;k<Travessas.Length;k++)if(!laneDone[k]&&Travessas[k].west==west&&f.y<Travessas[k].n){lane=k;break;}
                 if(lane>=0) {   // (a travessa: a cobbled lane 30 m back between the houses, their gable windows on it)
@@ -143,6 +145,20 @@ namespace LittleRoad
                 bool blocked=false;foreach(var (a,b) in noParking)if(s>a&&s<b)blocked=true;if(blocked||dress.NextDouble()>.42)continue;
                 var p=At(s)+Norm(s)*(half+1.0f);p.y=Top(At(s)+Norm(s)*half)+.1f;Parking.Add((p,Yaw(At(s-1),At(s+1))+(side>0?0:180)));
             }
+        }
+        // the Pit Stop's forecourt: concrete flags from the bays out to the pavement, level with the street, drivable
+        void Forecourt(Vector3 site,float yaw)
+        {
+            // (a 1 m grid, each point at the ground or the floor, whichever is higher, +4 cm: round 1's flat slab sank under the
+            // pad's blended edge, and grass showed in front of the parts bay)
+            var rot=Quaternion.Euler(0,yaw,0);var v=new List<Vector3>();var t=new List<int>();const int nx=34,nz=13;
+            for(int j=0;j<=nz;j++)for(int i=0;i<=nx;i++){var q=site+rot*new Vector3(-17+i,0,5.6f+j);v.Add(new Vector3(q.x,Mathf.Max(H(q.x,q.z),site.y)+.04f,q.z));}
+            for(int j=0;j<nz;j++)for(int i=0;i<nx;i++){int k=j*(nx+1)+i;t.AddRange(new[]{k,k+nx+1,k+1,k+1,k+nx+1,k+nx+2});}
+            var mesh=new Mesh{name="Pit Stop forecourt"};mesh.SetVertices(v);mesh.SetUVs(0,v.ConvertAll(q=>new Vector2(q.x/3f,q.z/3f)));mesh.SetTriangles(t,0);mesh.RecalculateNormals();
+            if(mesh.normals[0].y<0){for(int i=0;i<t.Count;i+=3)(t[i+1],t[i+2])=(t[i+2],t[i+1]);mesh.SetTriangles(t,0);mesh.RecalculateNormals();}
+            footprints.Add((new Vector2((site+rot*new Vector3(0,0,12)).x,(site+rot*new Vector3(0,0,12)).z),new Vector2(17,7),yaw));   // (no garden wall or yard on it)
+            var go=new GameObject("Pit Stop forecourt",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(root,false);go.GetComponent<MeshFilter>().sharedMesh=mesh;
+            go.GetComponent<MeshRenderer>().sharedMaterial=WorldLook.Kit("Pit forecourt flags",Toy.Hex(0xc9c4b8),WorldLook.Pattern.Stone,0,.12f,true);go.GetComponent<MeshCollider>().sharedMesh=mesh;go.AddComponent<RoadSurface>();
         }
         void LayWall(List<Vector3> pts)
         {

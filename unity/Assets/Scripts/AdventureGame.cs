@@ -74,7 +74,7 @@ namespace LittleRoad
             // Bramblewick (--bramblewick, docs/82): Jed the tuner, Maggie at The Plough, the vicar on the green, Peg at the dairy.
             foreach(var (id,at) in new[]{("bwtuner","tuner"),("bwpub","pub"),("bwvicar","church"),("bwdairy","dairy"),("bwmarshal","marshal")})if(BramblewickVillage.Spots.TryGetValue(at,out var bw)){residents[id]=bw.at;residentYaw[id]=bw.yaw;}
             // Vinelands (--vinelands, docs/86): the priest at the Matriz, the clerk at the town hall, the cafe, the baker, the washing tanks.
-            foreach(var (id,at) in new[]{("vlpriest","priest"),("vlclerk","clerk"),("vlcafe","cafe"),("vlbaker","baker"),("vlfonte","fonte"),("vlgarage","garage"),("vlparts","parts"),("vlbody","body"),("vlbus","bus"),("vlfruta","fruta")})if(VinelandsVila.Spots.TryGetValue(at,out var vl)){residents[id]=vl.at;residentYaw[id]=vl.yaw;}
+            foreach(var (id,at) in new[]{("vlpriest","priest"),("vlclerk","clerk"),("vlcafe","cafe"),("vlbaker","baker"),("vlfonte","fonte"),("vlgarage","garage"),("vlparts","parts"),("vlbody","body"),("vlbus","bus"),("vlfruta","fruta"),("vlbarco","barqueiro"),("vllodge","lodge"),("vltasca","tasca")})if(VinelandsVila.Spots.TryGetValue(at,out var vl)){residents[id]=vl.at;residentYaw[id]=vl.yaw;}
             // Quarry Hills built in the background (Districts): what needs it is set up when it arrives.
             quarryLater=Districts.Waiting("quarry-hills");if(quarryLater)Districts.WhenBuiltSteps("quarry-hills",QuarryHillsArrived);
             if(!quarryLater)QuarryHillsResidents();
@@ -646,6 +646,9 @@ namespace LittleRoad
             ["vlbody"]=(CarBodies.PitBody,PitPink,"CATIA / PIT STOP BODY SHOP","Catia",Toy.Pink,new[]{"Mind the paintwork, it's still wet!","Azulejo blue would hide that dent.","New look? Come in, come in."}),
             ["vlbus"]=("minibus",Toy.Hex(0x1f6f8b),"SR. VITOR / CARREIRA","Sr. Vitor",Toy.Sky,new[]{"Next bus at a quarter past. Don't block my stop!","Ei! Thirty years on this route without a scratch.","Bilhetes, please. Oh, you're a car."}),
             ["vlfruta"]=("postvan",Toy.Hex(0x3f7f6a),"DONA AMELIA / FRUTARIA","Dona Amelia",Toy.Mint,new[]{"My oranges! Mind my oranges!","Laranjas, uvas, couves! Fresh this morning!","Ai, you'll bruise the figs."}),
+            ["vlbarco"]=("kipper",Toy.Hex(0x1f3a5f),"MESTRE FERNANDO / BARCOS RABELOS","Mestre Fernando",Toy.Sky,new[]{"Ei! Mind the mooring lines!","Forty years on this river and never sank. Don't make me start now.","The boats leave at eleven. Bring a hat."}),
+            ["vllodge"]=("dover",Toy.Hex(0x7a1f2b),"DONA GRACA / LODGE SAMPAIO","Dona Graca",Toy.Pink,new[]{"Cuidado! The pipas are full!","Tasting at four. Not for drivers, querido.","That bump was a 1977 vintage."}),
+            ["vltasca"]=("otter",Toy.Hex(0x2e5e3e),"SR. ALBERTO / TASCA DO RIO","Sr. Alberto",Toy.Sun,new[]{"The grill's lit, mind the smoke!","Sardinhas at one, fado at nine!","Ai, the terrace chairs!"}),
             ["vlpriest"]=("tallboy",Toy.Hex(0x1c1c22),"PADRE AMERICO / IGREJA MATRIZ","Padre Americo",Toy.Sky,new[]{"Easy, my child! The bells are watching.","Mass at ten. Park by the fountain, not on it.","Deus me livre! My poor wing."}),
             ["vlclerk"]=("marlow",Toy.Hex(0x2e5e3e),"DONA FATIMA / PACOS DO CONCELHO","Dona Fatima",Toy.Mint,new[]{"That bump will need a form. In triplicate.","The clock is never wrong. You, however...","Carimbo! That's a stamp. On your bumper."}),
             ["vlcafe"]=("otter",Toy.Hex(0xe9dcc0),"SR. JOAQUIM / CAFE CENTRAL","Sr. Joaquim",Toy.Sun,new[]{"Cuidado! The bica is still hot!","Mind the terrace, the chairs are older than you.","Um cafe? After you stop bumping my van."}),
@@ -1389,7 +1392,7 @@ namespace LittleRoad
         {
             if(!residents.ContainsKey(id)||Vector3.Distance(player.body.position,residents[id])>7||Mathf.Abs(player.speed)>1.2f)return false;
             switch(id){case "garage":Mara();break;case "parts":Sid();break;case "hcparts":Rosa();break;case "hcbody":Lina();break;case "post":Pip();break;case "paint":Dot();break;case "motors":Gio();break;case "hillcafe":Fern();break;
-                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;case "blast":Dai();break;case "farm":Giles();break;case "bwtuner":Jed();break;case "bwpub":Maggie();break;case "bwvicar":Clem();break;case "bwdairy":Peg();break;case "bwmarshal":Ted();break;case "vlpriest":Americo();break;case "vlclerk":Fatima();break;case "vlcafe":Joaquim();break;case "vlbaker":Padeira();break;case "vlfonte":Lurdes();break;case "vlgarage":Armando();break;case "vlparts":Ines();break;case "vlbody":Catia();break;case "vlbus":Vitor();break;case "vlfruta":Amelia();break;default:Rowan();break;}
+                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;case "blast":Dai();break;case "farm":Giles();break;case "bwtuner":Jed();break;case "bwpub":Maggie();break;case "bwvicar":Clem();break;case "bwdairy":Peg();break;case "bwmarshal":Ted();break;case "vlpriest":Americo();break;case "vlclerk":Fatima();break;case "vlcafe":Joaquim();break;case "vlbaker":Padeira();break;case "vlfonte":Lurdes();break;case "vlgarage":Armando();break;case "vlparts":Ines();break;case "vlbody":Catia();break;case "vlbus":Vitor();break;case "vlfruta":Amelia();break;case "vlbarco":Fernando();break;case "vllodge":Graca();break;case "vltasca":Alberto();break;default:Rowan();break;}
             return true;
         }
         void Mara()
@@ -1634,6 +1637,12 @@ namespace LittleRoad
         void Vitor()=>Show("Sr. Vitor / Carreira","The bus can't turn in the Largo, so here's the end of the line: Rua da Feira. Twice a day to the Portela and the Adega, once to the Cais. On market day I can't move for vans.",
             new(){new("Back to the road",Close)});
         void Amelia()=>Show("Dona Amelia / Frutaria","Oranges from the yards up the hill, figs, grapes when it's the season, couves for the caldo verde. Wednesday's market is the big one: the Terreiro fills with stalls and half the valley comes up to shop.",
+            new(){new("Back to the road",Close)});
+        void Fernando()=>Show("Mestre Fernando / Barcos Rabelos","These boats carried the wine down to the coast for two hundred years: square sail, a long oar at the stern, and a lot of shouting. Now they carry visitors up to the gorge and back. Ponte Nova put the ferry out of work in fifty-seven; I was the ferryman's boy.",
+            new(){new("Back to the road",Close)});
+        void Graca()=>Show("Dona Graca / Lodge Sampaio","Welcome to Sampaio's. The wine comes down the Calcada from the quintas every September, rests here in the pipas, and goes out by boat, or these days by lorry over the bridge. The lodges are why there's a town on this river at all.",
+            new(){new("Back to the road",Close)});
+        void Alberto()=>Show("Sr. Alberto / Tasca do Rio","Sit down, sit down! Grilled sardines, bread from the forno up the hill, a jug of the green wine. The whole Cais eats here at one. In the evening the boatmen sing, and nobody can stop them.",
             new(){new("Back to the road",Close)});
         void Americo()=>Show("Padre Americo / Igreja Matriz","Bom dia! A chapel stood here where the cattle road crossed the ridge, long before the vines. Go round behind the church: from the adro you can see the whole valley, every terrace down to the river. The best view in Vinelands, and it costs nothing.",
             new(){new("Back to the road",Close)});

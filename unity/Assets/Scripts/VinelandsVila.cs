@@ -42,7 +42,7 @@ namespace LittleRoad
             if(id.StartsWith("rua_burguesa_"))return new(id.EndsWith("10")?10.1f:8.1f,14.3f);
             if(id.StartsWith("vila_varanda_"))return new(Widths[id[^1]-'0'],14.9f);
             if(id.StartsWith("vila_")&&char.IsDigit(id[^1]))return new(Widths[id[^1]-'0']+(id.StartsWith("vila_alta_")?.24f:0),13.9f);
-            return id switch{"vila_esquina"=>new(8.9f,9.2f),"vila_pacos"=>new(23f,13.8f),"vila_forno"=>new(6.4f,8.8f),"vila_lavadouro"=>new(11.1f,5.2f),"igreja_douro"=>new(14.5f,23f),"rua_solar"=>new(16.3f,14.5f),"rua_mercado"=>new(36.8f,20.8f),"pit_stop_3"=>new(28f,20f),"rua_coreto"=>new(7.4f,7.4f),"rua_lago"=>new(6.6f,6.6f),"rua_claustro"=>new(13.2f,1.4f),"rua_buxo"=>new(4.1f,4.1f),_=>new(6,6)};
+            return id switch{"vila_esquina"=>new(8.9f,9.2f),"vila_pacos"=>new(23f,13.8f),"vila_forno"=>new(6.4f,8.8f),"vila_lavadouro"=>new(11.1f,5.2f),"igreja_douro"=>new(14.5f,23f),"rua_solar"=>new(16.3f,14.5f),"rua_mercado"=>new(36.8f,20.8f),"pit_stop_3"=>new(28f,20f),"cais_armazem"=>new(40.6f,18.6f),"cais_casa"=>new(7.4f,11f),"cais_capela"=>new(6.4f,9.4f),"rua_coreto"=>new(7.4f,7.4f),"rua_lago"=>new(6.6f,6.6f),"rua_claustro"=>new(13.2f,1.4f),"rua_buxo"=>new(4.1f,4.1f),_=>new(6,6)};
         }
 
         // A building with its floor at the ground under its front's middle (each house steps with the lane); a granite plinth
@@ -71,7 +71,7 @@ namespace LittleRoad
         {
             Houses=Refused=0;Spots.Clear();Parking.Clear();yards.Clear();Yards=0;
             plinth=WorldLook.Kit("Vila granite plinth",new Color(.6f,.59f,.56f),WorldLook.Pattern.Stone,0,.1f,true);
-            Largo();Lanes();Patios();Escadinhas();Zone2();Quintais();Details();Adro();Parked();   // (zone 2, VinelandsRua.cs: before the yards, so they fill behind its houses too)
+            Largo();Lanes();Patios();Escadinhas();Zone2();Zone3();Quintais();Details();Adro();Parked();   // (zone 2, VinelandsRua.cs: before the yards, so they fill behind its houses too)
             Debug.Log($"LITTLE_ROAD_VINELANDS_VILA houses={Houses} refused={Refused} yards={Yards} parking={Parking.Count}");
         }
 
@@ -179,6 +179,7 @@ namespace LittleRoad
         bool OnWay(Vector3 q)
         {
             if(ValleyField.RoadDistance(q.x,q.z)<4.5f)return true;
+            {var p2=new Vector2(q.x,q.z);foreach(var o in footprints){var l=Quaternion.Euler(0,-o.yaw,0)*new Vector3(p2.x-o.c.x,0,p2.y-o.c.y);if(Mathf.Abs(l.x)<o.half.x+.3f&&Mathf.Abs(l.z)<o.half.y+.3f)return true;}}
             if(ways==null){ways=new();foreach(var (_,w,pts) in LaneDefs)ways.Add((Dense(pts,1.5f),w*.5f+.6f));foreach(var pts in Stairs)ways.Add((Dense(pts,1.5f),1.8f));}
             var p=new Vector2(q.x,q.z);foreach(var (line,half) in ways)foreach(var v in line)if((new Vector2(v.x,v.z)-p).sqrMagnitude<half*half)return true;
             var f=p-Vinelands.Centre;foreach(var (mn,mx) in Squares)if(f.x>mn.x&&f.x<mx.x&&f.y>mn.y&&f.y<mx.y)return true;
@@ -226,9 +227,9 @@ namespace LittleRoad
         // shut-up house's yard has gone to a fig. Granite walls, 1.6 m, along each yard's sides and back, stepping with the ground.
         readonly List<(Vector3 back,Vector3 n,Vector3 along,float w,string fam)> yards=new();public static int Yards;
         // (inside the Largo's paving, 2 m in from its edge: the road shoulders stop here, the square's cobbles are its verge)
-        public static bool Paved(Vector3 p){if(!Vinelands.Enabled)return false;var f=new Vector2(p.x,p.z)-Vinelands.Centre;return f.x>-38&&f.x<28&&f.y>-21&&f.y<21||PavedZone2(p);}
+        public static bool Paved(Vector3 p){if(!Vinelands.Enabled)return false;var f=new Vector2(p.x,p.z)-Vinelands.Centre;return f.x>-38&&f.x<28&&f.y>-21&&f.y<21||PavedZone2(p)||f.x>931&&f.x<965&&f.y>-17&&f.y<21||f.x>979&&f.x<996&&f.y>-61&&f.y<61;}   // (and zone 3: the Praca do Cais, the quay)
         static readonly (Vector2 min,Vector2 max)[] Squares={(new(-40,-23),new(30,23)),(new(-165,-22),new(-135,4)),(new(104,-118),new(126,-100)),(new(52,117),new(68,133)),
-            (new(100,110),new(200,165)),(new(10,-220),new(90,-170))};   // (zone 2: the Jardim da Cerca, the Terreiro)
+            (new(100,110),new(200,165)),(new(10,-220),new(90,-170)),(new(930,-18),new(966,22)),(new(978,-62),new(997,62))};   // (zone 3: the Praca do Cais, the quay)   // (zone 2: the Jardim da Cerca, the Terreiro)
         void Quintais()
         {
             var paths=new List<(Vector3[] line,float half)>();foreach(var (_,w,l) in Lanes2)paths.Add((l,w*.5f+1f));foreach(var pts in Stairs)paths.Add((Dense(pts,1.5f),2.4f));
