@@ -13,7 +13,9 @@ namespace LittleRoad
     // collider and roads as the valley does.
     public static class Bramblewick
     {
-        public static bool Enabled=>enabled??=RaceTrial.Has("--bramblewick");static bool? enabled;
+        // On in player builds since 21 Oct (the lanes race launch-ready, Richard: "into the play copy"); --no-bramblewick turns it
+        // off. The editor's checks and bakes build without it unless asked (--bramblewick), as with Prop Forge.
+        public static bool Enabled=>enabled??=Application.isEditor?RaceTrial.Has("--bramblewick"):!RaceTrial.Has("--no-bramblewick");static bool? enabled;
         public static readonly Vector2 Centre=new(2400,-1780);
         public const float GreenY=34,East=3500,South=-2500,FarmFloor=12;   // (FarmFloor: Golden Acre's level, about 11.7 m; not HillcrestRoute.FarmY, which asks this)
         public const string RoadName="Valley Road South";

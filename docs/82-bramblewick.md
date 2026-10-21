@@ -232,6 +232,13 @@ An English West Country farm village. The other places are Cornish/Scottish (Bay
     - Left as they are: the coping's vertical stones are real West Country "cock and hen" coping (LR4-02), and the
       rounded bank ends read as clipped hedge (LR3-04).
     - Outside the track, for the game-wide HUD: the 3D countdown, and "FINAL LAP" on one-lap races (LR2-02).
+- **21 Oct, step 6: Bramblewick is part of the game.** It's on by default in player builds (`--no-bramblewick` leaves it
+  out); the editor's checks and bakes still build without it unless asked, as with Prop Forge. Checks before publishing:
+  - the full regression (`review/bw-default-regression.txt`): every test passes. The audit's other-area FAILs are the
+    known leftovers (Bayview's waterline rocks, the valley's road-edge lips, one each in Quarry Hills and Hillcrest);
+  - the old world's fingerprint, with `--no-bramblewick` added to its flags, is unchanged (`3f164ae90677e486`);
+  - the career race at Jed's on the default build: 24/24, no resets.
+  Main was fast-forwarded and the play copy published from it.
 
 ## Where to pick up (handover, 20 Oct, after step 5's finds)
 1. **The rest of step 5:**
