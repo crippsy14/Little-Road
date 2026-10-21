@@ -88,7 +88,7 @@ namespace LittleRoad
             var p=F(x,z);float d=p.magnitude;
             if(d>Radius+50){float dB0=Vector2.Distance(new(x,z),Bramblewick.Centre);return x<2300?valley:Mathf.Lerp(-40,valley,1-S(1350,1550,dB0));}
             float n1=Mathf.PerlinNoise((x+900)*.004f,(z+4100)*.004f),n2=Mathf.PerlinNoise(x*.019f+7,z*.019f+19),n3=Mathf.PerlinNoise(x*.0028f+3,z*.0028f+41);
-            float ra=AtN(River,p.y);var (ca,hc)=CrestAt(p.y);float h;float bowl=S(-650,-850,p.y)*S(-450,-250,p.x);   // (the south bowl: the Seis Voltas, zone 5)
+            float ra=AtN(River,p.y);var (ca,hc)=CrestAt(p.y);float h;float bowl=S(-650,-850,p.y)*S(-450,-250,p.x);float entr=S(760,900,p.y)*S(560,720,p.x);   // (the south bowl: the Seis Voltas, zone 5; the Entroncamento, zone 6)
             if(p.x>=ra)h=Water+140*S(0,700,p.x-ra)*(.75f+.5f*n3)*(1-.75f*S(1100,1600,d))+(n2-.5f)*3;   // (the far bank, lower towards the coast: round 1's 200 m cliff into the sea)
             else if(p.x>=ca) {   // (the amphitheatre, stepped into terraces)
                 float s=(p.x-ca)/Mathf.Max(1,ra-ca);s=1-s;h=Water+(hc-Water)*(s*(.55f+.45f*s))+(n2-.5f)*2.5f;
@@ -106,9 +106,10 @@ namespace LittleRoad
             // through gaps in them.
             float dB=Vector2.Distance(new(x,z),Bramblewick.Centre);
             // (none over the south bowl, the Seis Voltas' slope from the river to the knoll: zone 5 found its start on the rim, docs/90)
-            if(!channel)h+=55*S(1250,1500,d)*(1-S(1500,1750,d))*S(1000,1600,dB)*(.7f+.6f*n3)*(1-bowl);
+            // (nor over the Entroncamento, the co-op quarter by the river road: zone 6 found it in a 100 m cutting through the rim and the vale's hills)
+            if(!channel)h+=55*S(1250,1500,d)*(1-S(1500,1750,d))*S(1000,1600,dB)*(.7f+.6f*n3)*(1-bowl)*(1-entr);
             // Towards Bramblewick the district blends into its vale.
-            h=Mathf.Lerp(h,valley,S(1100,1500,d)*(1-bowl));
+            h=Mathf.Lerp(h,valley,S(1100,1500,d)*(1-bowl)*(1-entr));
             // The coast: land only within the district or Bramblewick's hills (east of Bramblewick, the valley's own land
             // beyond them would stand on the sea floor, round 1's floating slab); everything falls to the sea bed by the edge.
             float land=Mathf.Max(1-S(1450+220*bowl,Radius,d),   // (the bowl's land reaches the river at the Seis Voltas' start)
@@ -131,7 +132,10 @@ namespace LittleRoad
             yield return (new Vector2(PitStopAt.x,PitStopAt.z),27,38,PitStopAt.y);   // (the Pit Stop, level with Rua Direita: docs/88)
             foreach(var q in QuayPads)yield return (new Vector2(q.x,q.z),15,20,q.y);
             foreach(var j in JunctionPads)yield return (new Vector2(j.x,j.z),11,22,j.y);
-            yield return (new Vector2(Belvedere.x,Belvedere.z),26,44,Belvedere.y);   // (the knoll's car park and terrace: docs/90)
+            yield return (new Vector2(Belvedere.x,Belvedere.z),26,44,Belvedere.y);
+            {var g=OnGround(new Vector2(0,840));yield return (new Vector2(g.x,g.z),66,90,g.y);}   // (the football ground and its courts, beyond the entry road's fill: docs/91)
+            foreach(var (c,_,inner,outer) in Sites.Values)yield return (new Vector2(c.x,c.z),inner,outer,c.y-.05f);
+            foreach(var (c,_,_) in AmendoeirasPlots)yield return (new Vector2(c.x,c.z),9,16,c.y-.05f);   // (the knoll's car park and terrace: docs/90)
             {var v=W(1050,-935);yield return (v,30,48,Veiga.y);}   // (the Veiga do Fojo, the climb's paddock, north of its start: level with the river road)
             foreach(var (a,n,r) in new[]{(475f,398f,38f),(565f,-288f,38f),(432f,-705f,38f),(575f,58f,34f)}){var g=OnGround(new Vector2(a,n));yield return (new Vector2(g.x,g.z),r,r+16,g.y);}   // (the quintas' yards and Casal do Meio's threshing floor, docs/89)
             if(Ponte!=null){var e=W(1110,-71);yield return (e,7,14,PonteDeck);var t=Ponte[^1];yield return (new Vector2(t.x,t.z),9,18,t.y);}   // (the far abutment and the far-bank lane's turning space: their seams, docs/88)   // (the quay, level along the river: docs/88)   // (the Terreiro da Feira, 80 x 40 m: a terrace cut into the slope, docs/87)
@@ -224,6 +228,16 @@ namespace LittleRoad
             }
             return o;
         }
+        public const string AmendoeirasName="Rua das Amendoeiras";public static int RuaAmendoeirasT;
+        // building sites on their own level platforms at their road's height (zone 6: the saddle and the flank are steep, and
+        // the buildings rose 6-9 m into them, round 1): the ground (Pads) and the buildings (VinelandsPortela) use the same list
+        public static readonly Dictionary<string,(Vector3 c,float yaw,float inner,float outer)> Sites=new();public static readonly List<(Vector3 c,float yaw,int side)> AmendoeirasPlots=new();
+        static void Site(string name,HillcrestRoute.Road road,Vector2 near,Vector2 toward,float off,float inner,float outer)
+        {
+            var w=W(near.x,near.y);float best=0,bd=float.MaxValue;for(float s=0;s<road.Length;s+=1){var q=road.At(s);float d=(new Vector2(q.x,q.z)-w).sqrMagnitude;if(d<bd){bd=d;best=s;}}
+            var at=road.At(best);var n=road.Right(best);n.y=0;n.Normalize();var t=W(toward.x,toward.y);if(Vector2.Dot(new Vector2(n.x,n.z),t-new Vector2(at.x,at.z))<0)n=-n;
+            var c=at+n*(road.width*.5f+off);c.y=at.y;var back=at-c;back.y=0;Sites[name]=(c,Quaternion.LookRotation(back).eulerAngles.y,inner,outer);
+        }
         public const string MeioName="Estrada do Meio",PombalTrack="Caminho da Quinta do Pombal",LajesTrack="Caminho da Quinta das Lajes",FojoTrack="Caminho da Quinta do Fojo";
         public static bool Track(string name)=>Enabled&&(name==PombalTrack||name==LajesTrack||name==FojoTrack);
         public static int CaisMeioT,EntryMeioT,MeioCasalT;public static readonly List<int> TrackStarts=new();public static readonly List<Vector3> JunctionPads=new();public static Vector3 CasalDoMeio;
@@ -260,9 +274,20 @@ namespace LittleRoad
             var eb=QuarryHills.Profile(ea[^1],Wv((1080,1050)),rline[RiverNorthT],.09f,30,30);
             var el=new List<Vector3>(ea);for(int i=1;i<eb.Length;i++)el.Add(eb[i]);var eline=el.ToArray();EntryMeioT=ea.Length-1;
             var entry=HillcrestRoute.Make(EntryName,eline,8,6,40);EntrySaddle=VertexNear(eline,new Vector2(-160,700));
+            Sites.Clear();Site("bombeiros",entry,new Vector2(-15,708),new Vector2(-15,680),15.3f,20,32);Site("escola",entry,new Vector2(110,735),new Vector2(110,690),18.8f,26,38);
             // Rua Direita: the saddle to the Largo
             var dline=QuarryHills.Profile(eline[EntrySaddle],Wv((-152,655),(-125,575),(-80,480),(-98,390),(-70,300),(-25,205),(-32,110),(-12,50)),Largo,.08f,25,30);   // (gentle bends, the old carriage road's: docs/87 round 2)
             var rua=HillcrestRoute.Make(RuaDireitaName,dline,8,5,30);
+            // Rua das Amendoeiras (zone 6, docs/91): the Portela's contour street off Rua Direita, west along the flank
+            RuaAmendoeirasT=VertexNear(dline,new Vector2(-112,560));
+            var amLine=QuarryHills.Profile(dline[RuaAmendoeirasT],Wv((-180,572),(-240,586),(-300,622)),Ground(new Vector2(-335,690)),.1f,20,20);
+            var amendoeiras=HillcrestRoute.Make(AmendoeirasName,amLine,6f,5,20);
+            AmendoeirasPlots.Clear();
+            Site("saude",rua,new Vector2(-110,600),new Vector2(-60,600),13.3f,16,26);
+            foreach(int side in new[]{1,-1})for(float s=26;s<amendoeiras.Length-14;s+=21) {
+                var at=amendoeiras.At(s);var n=amendoeiras.Right(s);n.y=0;n.Normalize();n*=side;var c=at+n*(3+4.5f+6.5f);c.y=at.y;var back=at-c;back.y=0;
+                AmendoeirasPlots.Add((c,Quaternion.LookRotation(back).eulerAngles.y,side));
+            }
             // the Pit Stop's site (zone 2): off the street's west side at n 402, set back 23 m for its forecourt, on its own level pad
             // at the street's height (on the falling slope it had the hill in its bays: docs/88)
             {int pi=0;float bd=float.MaxValue;for(int i=0;i<dline.Length;i++){float d=Mathf.Abs(dline[i].z-(Centre.y+PitN));if(d<bd){bd=d;pi=i;}}
@@ -300,7 +325,7 @@ namespace LittleRoad
             {var a=cvl[^1];var b=new Vector2(Belvedere.x,Belvedere.z);int k=Mathf.CeilToInt(Vector2.Distance(a,b)/6);for(int i=1;i<k;i++)cvl.Add(Vector2.Lerp(a,b,i/(float)k));}   // (evenly spaced to the knoll: one long last segment made the spline loop back, round 3)
             var cv=cvl.ToArray();
             var climbLine=QuarryHills.Profile(rline[RiverClimbT],cv,Belvedere,.15f,14,20);var climb=HillcrestRoute.Make(ClimbName,climbLine,7.5f,5,20);
-            JunctionPads.Add(rline[RiverClimbT]);Veiga=rline[RiverClimbT];
+            JunctionPads.Add(rline[RiverClimbT]);Veiga=rline[RiverClimbT];JunctionPads.Add(dline[RuaAmendoeirasT]);
             {float worst=0;int wi=0;for(int i=1;i<climbLine.Length;i++){float g=Mathf.Abs(climbLine[i].y-climbLine[i-1].y)/Mathf.Max(.01f,Vector2.Distance(new(climbLine[i].x,climbLine[i].z),new(climbLine[i-1].x,climbLine[i-1].z)));if(g>worst){worst=g;wi=i;}}
                 float minSeg=float.MaxValue;for(int i=1;i<climbLine.Length;i++)minSeg=Mathf.Min(minSeg,Vector2.Distance(new(climbLine[i].x,climbLine[i].z),new(climbLine[i-1].x,climbLine[i-1].z)));
                 foreach(var q in climbLine)if(Vector2.Distance(new(q.x,q.z),new(2944,-4024))<8)Debug.Log($"LITTLE_ROAD_VINELANDS_CLIMB_PT {q}");
@@ -317,7 +342,7 @@ namespace LittleRoad
             // the old Vale road: the Largo west down to the Vale
             var vline=QuarryHills.Profile(Largo,Wv((-160,20),(-300,50),(-400,10)),Ground(new Vector2(-470,-20)),.12f,20,30);
             var vale=HillcrestRoute.Make(ValeRoadName,vline,6,5,25);
-            list.AddRange(new[]{river,entry,rua,calcada,mirante,vale,feira,HillcrestRoute.Make(PonteName,pline,7f,5,20),estradaMeio,climb});list.AddRange(tracks);
+            list.AddRange(new[]{river,entry,rua,calcada,mirante,vale,feira,HillcrestRoute.Make(PonteName,pline,7f,5,20),estradaMeio,climb,amendoeiras});list.AddRange(tracks);
             Debug.Log($"LITTLE_ROAD_VINELANDS_ROADS entry={entry.Length:0} m river={river.Length:0} m rua direita={rua.Length:0} m calcada={calcada.Length:0} m mirante={mirante.Length:0} m feira={feira.Length:0} m vale={vale.Length:0} m largo y={Largo.y:0.0} saddle y={eline[EntrySaddle].y:0.0} cais y={Cais.y:0.0} belvedere y={Belvedere.y:0.0}");
             return list;
         }
