@@ -144,5 +144,17 @@ Each round: build, audit, photograph the zone's nine views, fix, repeat. Photos 
 6. **Walls never close a way.** A garden wall breaks where it meets a lane, a stair, a square or a road verge. Trees
    stand on sloping yards.
 
-Audit after round 5 (the town region, 460 m round the Largo, still holds unbuilt zones 2–5): residents 4, parked 14,
-life 9.9 per road km (needs 10); planting 428 per road km (needs 500); the Pit Stop and things to do belong to zone 2.
+7–11. **The Largo's paving, made clean.** Teeth and a strip across the square, found layer by layer: the road shoulders'
+   gravel (now stopped inside the paved square, `VinelandsVila.Paved`, and no kerb or mouth shoulders at its junction),
+   then the junction's paint (5 cm proud of its asphalt; found with the new `--list-renderers-near x,z,r` probe). The
+   paving now stands 15 cm over everything under it, ramped at 12 %, easing to 3 cm over its last 4 m.
+12. **The saddle junction.** Rua Direita left the saddle 33° off the entry road's arm, and the junction overlapped itself
+   (steps of 1.5 m). It now leaves heading south, square to it; the country's seams fell from 20 to 1.
+13. **Flush edges.** The paving meets each road leaving the square flush (it had carried its raised middle to the edge).
+
+Audit after round 13 (the town region, 460 m round the Largo, still holds unbuilt zones 2–5): residents 4, parked 15,
+life 10.3 per road km (passes); no seams or lips. Short: planting 458 per road km (needs 500), two steep banks on the
+moved Rua Direita, and the Pit Stop and things to do (both zone 2's).
+
+**Open for the next pass:** the Largo's north and west sides are open grass where Rua Direita and the Vale road come in
+(zone 2's frontage); the Rua Direita banks; one seam at the saddle junction (+0.14 m).
