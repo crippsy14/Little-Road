@@ -44,6 +44,9 @@ public static class HybridChecks
         s.charge=0;float v=30;for(int i=0;i<240&&v>10;i++){HybridPower.Step(ref s,t,v,-1,1f/120);v-=t.braking/120;}
         Check(s.charge>.05f&&s.regenKj>5,$"braking from 30 to 10 m/s refills the battery (to {s.charge:0.00}, {s.regenKj:0} kJ)");
         s.charge=1;HybridPower.Step(ref s,t,20,-1,1);Check(s.charge==1,"a full battery takes no more");
+        // PP sees the baseline battery effect: the motor's push counts, so a hybrid rates above the same car without it.
+        int ppPetrol=CarPerformanceRating.Calculate(petrol),ppHybrid=CarPerformanceRating.Calculate(t);
+        Check(ppHybrid>ppPetrol,$"PP counts the motor at its baseline share ({ppHybrid} against {ppPetrol} without it)");
         return checks;
     }
 }

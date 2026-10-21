@@ -24,6 +24,12 @@ namespace LittleRoad
         // Kilograms per unit of CarTuning.mass (RoadCar.Setup's body.mass=850*mass).
         public const float KgPerMass=850;
 
+        // The battery's baseline effect (Richard, 21 Oct: "a baseline battery effect and leave it there, so it's easier to
+        // judge performance impact for things like PP"): automatic deploy, no modes. For PP the motor counts at half its
+        // push, its share of the time it's wanted that it was there in the races (studies 243-244: deploy 11-16 s, flat
+        // 9-20 s a race).
+        public const float RatingShare=.5f;
+        public static float BaselineAccel(in CarTuning t,float speed)=>t.batteryKj<=0?0:RatingShare*Mathf.Min(MotorAccelCap,t.hybridKw*1000/(KgPerMass*Mathf.Max(.1f,t.mass)*Mathf.Max(speed,1)));
         public struct State {public float charge,deploySeconds,emptySeconds,regenKj,deployKj;}
         public static State Full=>new State{charge=1};
 

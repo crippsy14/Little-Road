@@ -90,9 +90,18 @@ to every car, so the same field races all Club 1.4 against all City hybrid. Four
   To see it: `--hybrid`, buy the City hybrid at Jed's, and race.
 
 ## Where it stands (21 Oct)
-The prototype is done and measured, behind `--hybrid`. Next, once Richard has played it:
-- the modes (Save, Balanced, Attack), so the battery can be managed rather than spent whenever possible;
-- the AI's speed planning reading the motor;
-- the Battery slot, with doc 83's slot decisions;
-- recharging at Pit Stops in free roam.
+**Richard, 21 Oct: "a baseline battery effect and leave it there, so it's easier to judge performance impact for things
+like PP".** The system stays as built:
+- automatic deploy and regen;
+- no modes, no Battery slot, no further tuning.
+
+**PP now counts it.** `CarPerformanceRating`'s pull at 10 m/s adds the motor's push at half strength
+(`HybridPower.RatingShare`). In the races the motor was there for about half the time it was wanted. The same car
+rates 123 with the motor against 113 without it (`HybridChecks`). Petrol cars' PP is unchanged.
+
+Left for later, only if wanted:
+- the modes;
+- AI planning for the motor;
+- a separate Battery part;
+- recharging at Pit Stops.
 

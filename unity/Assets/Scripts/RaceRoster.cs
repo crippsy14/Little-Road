@@ -9,7 +9,8 @@ namespace LittleRoad
     public static class CarPerformanceRating
     {
         public const string Version="dry-road-v1";
-        static float Pull(CarTuning t)=>Mathf.Max(.01f,Mathf.Min(DriveModel.EngineForce(t,10),t.roadGrip*1.65f)-DriveModel.Resistance(t,10));
+        // (a hybrid's motor counts at its baseline share, HybridPower.RatingShare; a petrol car's PP is unchanged)
+        static float Pull(CarTuning t)=>Mathf.Max(.01f,Mathf.Min(DriveModel.EngineForce(t,10)+HybridPower.BaselineAccel(t,10),t.roadGrip*1.65f)-DriveModel.Resistance(t,10));
         public static int Calculate(CarTuning tuning)
         {
             var stock=CarTuning.Stock;
