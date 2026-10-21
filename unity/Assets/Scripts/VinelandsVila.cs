@@ -71,7 +71,7 @@ namespace LittleRoad
         {
             Houses=Refused=0;Spots.Clear();Parking.Clear();yards.Clear();Yards=0;
             plinth=WorldLook.Kit("Vila granite plinth",new Color(.6f,.59f,.56f),WorldLook.Pattern.Stone,0,.1f,true);
-            Largo();Lanes();Patios();Escadinhas();Zone2();Zone3();Zone5();Zone6();Zone7();Zone4();Quintais();Details();Adro();Parked();   // (zone 2, VinelandsRua.cs: before the yards, so they fill behind its houses too)
+            Largo();Lanes();Patios();Escadinhas();Zone2();Zone3();Zone5();Zone6();Zone7();Zone8();Zone4();Quintais();Details();Adro();Parked();   // (zone 2, VinelandsRua.cs: before the yards, so they fill behind its houses too)
             Debug.Log($"LITTLE_ROAD_VINELANDS_VILA houses={Houses} refused={Refused} yards={Yards} parking={Parking.Count}");
         }
 

@@ -132,7 +132,8 @@ namespace LittleRoad
                 new GameObject("Bramblewick drivable support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
                 foreach(var surface in UnityEngine.Object.FindObjectsByType<RoadSurface>(FindObjectsSortMode.None))if(surface.GetComponent<Collider>()!=null&&surface.GetComponent<RoadSupport>()==null)surface.gameObject.AddComponent<RoadSupport>();}
             // The Vineyard Loop (--vinelands, docs/85): the Adega's loop on the Vale, 9 m wide, on the public roads as Bramblewick's.
-            else if((trackId=="vinelands"||trackId=="vinelands-long")&&Vinelands.Enabled&&Vinelands.Lap!=null){HillcrestRoute.All();var vlap=trackId=="vinelands-long"?Vinelands.LapLong:Vinelands.Lap;RaceArea.Set(vlap,450);yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(vlap,Vinelands.LoopWidth);RenderSettings.fogDensity=.00026f;
+            else if((trackId=="vinelands"||trackId=="vinelands-long")&&Vinelands.Enabled&&HillcrestRoute.All()!=null&&Vinelands.Lap!=null){   // (the roads first: the laps are made with them, so Lap was null until then)
+                var vlap=trackId=="vinelands-long"?Vinelands.LapLong:Vinelands.Lap;RaceArea.Set(vlap,450);yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(vlap,Vinelands.LoopWidth);RenderSettings.fogDensity=.00026f;
                 new GameObject("Vinelands drivable support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
                 foreach(var surface in UnityEngine.Object.FindObjectsByType<RoadSurface>(FindObjectsSortMode.None))if(surface.GetComponent<Collider>()!=null&&surface.GetComponent<RoadSupport>()==null)surface.gameObject.AddComponent<RoadSupport>();}
             else throw new ArgumentException("Unknown trial track: "+trackId);
