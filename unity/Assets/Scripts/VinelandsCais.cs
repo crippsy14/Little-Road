@@ -27,7 +27,7 @@ namespace LittleRoad
         // slipway (n -35), the pontoon (n 8) with two rabelos alongside; barrels waiting to load; cars nosed up to the river
         void Quay()
         {
-            Plaza("Cais quay",new Vector2(978,-62),new Vector2(997,62),Setts(),true);Physics.SyncTransforms();
+            Plaza("Cais quay",new Vector2(976.3f,-62),new Vector2(997,62),Setts(),true);   // (from the river road's very edge: beside the Cais junction its shoulder stops, and the quay met the road with a lip)Physics.SyncTransforms();
             var wall=new List<Matrix4x4>();float bed=Vinelands.Water-5;
             for(float n=-62;n<62;n+=2) {
                 if(n>-38&&n<-31)continue;   // (the slipway's gap)

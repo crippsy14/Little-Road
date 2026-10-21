@@ -465,12 +465,15 @@ namespace LittleRoad
             }
             // Quarry Hills' junctions: within 24 m of each, the ground stays 0.2 m under the lowest road near it (the corridors
             // follow whichever road is nearest, so a junction's surface, which blends its roads' heights, could be buried).
-            if(QuarryHills.Enabled)foreach(var node in QuarryHills.JunctionPoints()) {
+            // (and Vinelands' junctions off the town, docs/89: the river road's north T, Casal do Meio and the quinta tracks' starts)
+            var junctionPoints=new List<(Vector3 at,float under)>();if(QuarryHills.Enabled)foreach(var q in QuarryHills.JunctionPoints())junctionPoints.Add((q,.2f));if(Vinelands.Enabled)foreach(var q in Vinelands.JunctionPads)junctionPoints.Add((q,.05f));   // (Vinelands' 5 cm: at 20 cm a free end's curb showed)
+            foreach(var (node,under) in junctionPoints) {
                 int i0=Mathf.Max(0,(int)((node.x-24-X0)/Cell)),i1=Mathf.Min(NX-1,(int)((node.x+24-X0)/Cell)+1),j0=Mathf.Max(0,(int)((node.z-24-Z0)/Cell)),j1=Mathf.Min(NZ-1,(int)((node.z+24-Z0)/Cell)+1);
                 var near=new List<HillcrestRoute.Road>();foreach(var road in HillcrestRoute.All())if(HillcrestRoute.Distance(road.line,node.x,node.z,out _)<40)near.Add(road);
                 for(int j=j0;j<=j1;j++)for(int i=i0;i<=i1;i++) {
                     float x=X0+i*Cell,z=Z0+j*Cell;float r=Mathf.Sqrt((x-node.x)*(x-node.x)+(z-node.z)*(z-node.z));if(r>24)continue;
-                    float low=float.MaxValue;foreach(var road in near){float d=HillcrestRoute.Distance(road.line,x,z,out float ry);if(d<road.width*.5f+4)low=Mathf.Min(low,ry-.2f);}
+                    float low=float.MaxValue;foreach(var road in near){float d=HillcrestRoute.Distance(road.line,x,z,out float ry);if(d<road.width*.5f+4)low=Mathf.Min(low,ry-under);}
+                    if(under<.1f&&r<16)low=Mathf.Min(low,node.y-under);   // (Vinelands: the fillet corners too, beyond either road's corridor, docs/89)
                     if(low<float.MaxValue){int k=j*NX+i;h[k]=Mathf.Lerp(Mathf.Min(h[k],low),h[k],Blend(18,24,r));}
                 }
             }
