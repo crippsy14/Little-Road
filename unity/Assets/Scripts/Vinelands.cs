@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -133,6 +134,7 @@ namespace LittleRoad
             foreach(var q in QuayPads)yield return (new Vector2(q.x,q.z),15,20,q.y);
             foreach(var j in JunctionPads)yield return (new Vector2(j.x,j.z),11,22,j.y);
             yield return (new Vector2(Belvedere.x,Belvedere.z),26,44,Belvedere.y);
+            if(Lap!=null){var pk=OnGround(new Vector2(-625,-62));yield return (new Vector2(pk.x,pk.z),46,70,pk.y);}   // (the circuit's paddock at the infield's own height, blended wide: at the main straight's height it stood as a table with cliffs, round 2)
             {var g=OnGround(new Vector2(0,840));yield return (new Vector2(g.x,g.z),66,90,g.y);}   // (the football ground and its courts, beyond the entry road's fill: docs/91)
             foreach(var (c,_,inner,outer) in Sites.Values)yield return (new Vector2(c.x,c.z),inner,outer,c.y-.05f);
             foreach(var (c,_,_) in AmendoeirasPlots)yield return (new Vector2(c.x,c.z),9,16,c.y-.05f);   // (the knoll's car park and terrace: docs/90)
@@ -214,6 +216,27 @@ namespace LittleRoad
         // the Subida das Seis Voltas (zone 5, docs/90; track-design skill, review/tmp/sv3.txt): from the river road at the Veiga do
         // Fojo up the south bowl in six voltas to the Belvedere's knoll, 2.2 km, about 10 %. Piece list in the frame, heading 180.
         public const string ClimbName="Subida das Seis Voltas";
+        // the Circuito da Cumeada (zone 7, docs/92; track-design skill, review/tmp/cc4.txt): the club circuit on the Vale shelf,
+        // farm lanes closed on race days, counter-clockwise from the start line at (-470,-260); 1.85 km. And its long version
+        // for the faster classes (Richard's short-and-long idea, here): off the west leg before the Gancho, south through the
+        // montado and back to the lap after the chicane, about 2.4 km.
+        public const string CircuitName="Circuito da Cumeada",ExtName="Circuito da Cumeada - Montado";
+        public const string CircuitSpec="M Recta da Eira; S 369; M Curva da Eira Velha; A 40 90; S 40; M Lomba do Alto; A -18 140; S 40; A 68 80; S 134; M Curva do Carvalhal; A 85 75; S 130; M Esses do Amendoal; A 28 100; S 30; A -28 100; S 110; A -20 160; S 70; M Gancho do Sobreiro; A 110 22; S 190; M Chicane da Ribeira; A -40 40; A 40 40; S 100; M Curva da Fonte; A 95 45";
+        public const string ExtSpec="A -55 50; S 110; A 55 110; S 150; A 30 120; M Curva do Montado; A 70 40; S 350; M Curva dos Sobreiros; A 85 45; S 20";   // (off the west leg after the esses, out round the Gancho's outside: from 30 m before the Gancho its junction overlapped the hairpin, round 1)
+        public static Vector3[] LapLong;public static int LapA,LapB,LapVale;public static readonly List<(string name,Vector2 at)> CircuitMarks=new();
+        static float Length(Vector3[] l){float t=0;for(int i=1;i<l.Length;i++)t+=Vector3.Distance(l[i],l[i-1]);return t;}
+        static List<Vector2> Pieces(string spec,float x,float y,float h,List<(string,Vector2)> marks)
+        {
+            var o=new List<Vector2>{new(x,y)};
+            foreach(var part in spec.Split(';')) {
+                var t=part.Trim().Split(' ');if(t.Length<2)continue;
+                if(t[0]=="M"){marks?.Add((string.Join(" ",t,1,t.Length-1),new(x,y)));continue;}
+                if(t[0]=="S"){float L=float.Parse(t[1],System.Globalization.CultureInfo.InvariantCulture);int n=Mathf.Max(1,Mathf.CeilToInt(L/5));for(int i=0;i<n;i++){x+=L/n*Mathf.Cos(h*Mathf.Deg2Rad);y+=L/n*Mathf.Sin(h*Mathf.Deg2Rad);o.Add(new(x,y));}}
+                if(t[0]=="A"){float d=float.Parse(t[1],System.Globalization.CultureInfo.InvariantCulture),R=float.Parse(t[2],System.Globalization.CultureInfo.InvariantCulture);int n=Mathf.Max(2,Mathf.CeilToInt(Mathf.Abs(d)*Mathf.Deg2Rad*R/3));
+                    for(int i=0;i<n;i++){float s=d>0?1:-1;float h0=h;h+=d/n;float cx=x-s*R*Mathf.Sin(h0*Mathf.Deg2Rad),cy=y+s*R*Mathf.Cos(h0*Mathf.Deg2Rad);x=cx+s*R*Mathf.Sin(h*Mathf.Deg2Rad);y=cy-s*R*Mathf.Cos(h*Mathf.Deg2Rad);o.Add(new(x,y));}}
+            }
+            return o;
+        }
         public const string VoltasSpec="M Veiga Start; S 60; A 32 180; S 120; M Volta do Rio; A -82 30; S 210; M Volta das Lajes; A 88 26; S 180; A -10 220; M Volta do Fojo; A -86 22; S 200; A 12 160; M Volta da Oliveira; A 92 20; S 180; M Volta da Capela; A -95 22; S 140; M Volta do Moinho; A 90 22; S 120; M Gancho do Alto; A -80 40; S 200; A 16 160; S 160; M Belvedere";
         public static readonly List<(string name,Vector2 at)> ClimbMarks=new();public static Vector3 Veiga;
         static List<Vector2> ClimbFrame()
@@ -340,9 +363,34 @@ namespace LittleRoad
             var feira=HillcrestRoute.Make(FeiraName,fline,6.5f,5,25);
             Debug.Log($"LITTLE_ROAD_VINELANDS_FEIRA terminus y={mline[MiranteFeira].y:0.0} terreiro y={Terreiro.y:0.0} feira {fline[0].y:0.0}..{fline[^1].y:0.0}");
             // the old Vale road: the Largo west down to the Vale
-            var vline=QuarryHills.Profile(Largo,Wv((-160,20),(-300,50),(-400,10)),Ground(new Vector2(-470,-20)),.12f,20,30);
+            // the circuit: the lap from the start line round to it again (its last point dropped: closed), then the extension
+            CircuitMarks.Clear();var cfp=Pieces(CircuitSpec,-470,-260,90,CircuitMarks);var cw=new Vector2[cfp.Count-2];for(int i=1;i<cfp.Count-1;i++)cw[i-1]=W(cfp[i].x,cfp[i].y);
+            // (profiled in four pieces meeting level at its three junctions, each on a 20 m landing: on the lap's grade the
+            // extension's junction stood 1.3 m off its arms, round 2)
+            int Near(Vector2 f){int best=0;float bd=float.MaxValue;for(int i=0;i<cfp.Count;i++){float d=(cfp[i]-f).sqrMagnitude;if(d<bd){bd=d;best=i;}}return best;}
+            var cuts=new[]{0,Near(new(-470,-20)),Near(new(-829,-30)),Near(new(-575,-301)),cfp.Count-1};var lapPts=new List<Vector3>();
+            // (each junction at the height the whole lap's profile gives it there: pinned to the natural ground, a piece could
+            // need 12 % and broke into 6 m steps, round 3)
+            var lapWhole=QuarryHills.Profile(Ground(new Vector2(-470,-260)),cw,Ground(new Vector2(-470,-260)),.08f,30,0);
+            Vector3 At(int ci){var f=cfp[ci];var w=W(f.x,f.y);var q=lapWhole[VertexNear(lapWhole,f)];return new Vector3(w.x,q.y,w.y);}
+            for(int c=0;c<4;c++) {
+                var via=new List<Vector2>();for(int i=cuts[c]+1;i<cuts[c+1];i++)via.Add(W(cfp[i].x,cfp[i].y));
+                var from=c==0?At(0):lapPts[^1];var to=c==3?lapPts[0]:At(cuts[c+1]);
+                var seg=QuarryHills.Profile(from,via.ToArray(),to,.08f,30,20);for(int i=c==0?0:1;i<seg.Length;i++)lapPts.Add(seg[i]);
+            }
+            var lapLine=lapPts.ToArray();
+            var lapL=new List<Vector3>(lapLine);lapL.RemoveAt(lapL.Count-1);Lap=lapL.ToArray();
+            LapVale=VertexNear(Lap,new Vector2(-470,-20));LapA=VertexNear(Lap,new Vector2(-829,-30));LapB=VertexNear(Lap,new Vector2(-575,-301));
+            var efp=Pieces(ExtSpec,-829,-30,265,CircuitMarks);var ew=new List<Vector2>();for(int i=1;i<efp.Count;i++)ew.Add(W(efp[i].x,efp[i].y));
+            {var a=ew[^1];var b=new Vector2(Lap[LapB].x,Lap[LapB].z);int k=Mathf.CeilToInt(Vector2.Distance(a,b)/5);for(int i=1;i<k;i++)ew.Add(Vector2.Lerp(a,b,i/(float)k));}
+            var extLine=QuarryHills.Profile(Lap[LapA],ew.ToArray(),Lap[LapB],.08f,25,20);
+            var ll=new List<Vector3>();for(int i=0;i<=LapA;i++)ll.Add(Lap[i]);for(int i=1;i<extLine.Length-1;i++)ll.Add(extLine[i]);for(int i=LapB;i<Lap.Length;i++)ll.Add(Lap[i]);LapLong=ll.ToArray();
+            var circuit=HillcrestRoute.Make(CircuitName,lapLine,LoopWidth,5,25);var ext=HillcrestRoute.Make(ExtName,extLine,LoopWidth,5,25);
+            JunctionPads.Add(Lap[LapA]);JunctionPads.Add(Lap[LapB]);JunctionPads.Add(Lap[LapVale]);
+            Debug.Log($"LITTLE_ROAD_VINELANDS_CIRCUIT lap={circuit.Length:0} m long={Length(LapLong):0} m fall={Lap.Max(p=>p.y)-Lap.Min(p=>p.y):0.0} m ext={ext.Length:0} m");
+            var vline=QuarryHills.Profile(Largo,Wv((-160,20),(-300,50),(-400,10)),Lap[LapVale],.12f,20,30);   // (to the circuit's main straight, where the paddock is: zone 7)
             var vale=HillcrestRoute.Make(ValeRoadName,vline,6,5,25);
-            list.AddRange(new[]{river,entry,rua,calcada,mirante,vale,feira,HillcrestRoute.Make(PonteName,pline,7f,5,20),estradaMeio,climb,amendoeiras});list.AddRange(tracks);
+            list.AddRange(new[]{river,entry,rua,calcada,mirante,vale,feira,HillcrestRoute.Make(PonteName,pline,7f,5,20),estradaMeio,climb,amendoeiras,circuit,ext});list.AddRange(tracks);
             Debug.Log($"LITTLE_ROAD_VINELANDS_ROADS entry={entry.Length:0} m river={river.Length:0} m rua direita={rua.Length:0} m calcada={calcada.Length:0} m mirante={mirante.Length:0} m feira={feira.Length:0} m vale={vale.Length:0} m largo y={Largo.y:0.0} saddle y={eline[EntrySaddle].y:0.0} cais y={Cais.y:0.0} belvedere y={Belvedere.y:0.0}");
             return list;
         }

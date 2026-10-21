@@ -62,11 +62,11 @@ namespace LittleRoad
             // Vinelands' traffic (--vinelands, docs/86): up and down Rua Direita, the Calcada's bends, the Mirante road, the river road.
             if(Vinelands.Enabled) {
                 string[] says={"Bom dia! Mind the cobbles, they're older than my gearbox.","Off to the Cais? The ferry waits for nobody.","Beep! The Calcada has nine bends. I count them every day.","Fish van's on the Largo Thursday. Sardinhas!","Devagar, devagar! Slowly! The lanes are narrow."};
-                string[] who={"Rita","Quim","Ze","Graca","To","Lena","Nuno","Rui","Bia"};var vrng=new System.Random(93);
-                var vroads=new[]{(Vinelands.AmendoeirasName,12f,12f),(Vinelands.MeioName,20f,20f),(Vinelands.RuaDireitaName,15f,15f),(Vinelands.FeiraName,12f,12f),(Vinelands.PonteName,8f,8f),(Vinelands.CaisRoadName,25f,25f),(Vinelands.CaisRoadName,25f,25f),(Vinelands.MiranteName,20f,20f),(Vinelands.RiverRoadName,40f,40f)};
+                string[] who={"Edu","Rita","Quim","Ze","Graca","To","Lena","Nuno","Rui","Bia"};var vrng=new System.Random(93);
+                var vroads=new[]{(Vinelands.ValeRoadName,12f,12f),(Vinelands.AmendoeirasName,12f,12f),(Vinelands.MeioName,20f,20f),(Vinelands.RuaDireitaName,15f,15f),(Vinelands.FeiraName,12f,12f),(Vinelands.PonteName,8f,8f),(Vinelands.CaisRoadName,25f,25f),(Vinelands.CaisRoadName,25f,25f),(Vinelands.MiranteName,20f,20f),(Vinelands.RiverRoadName,40f,40f)};
                 for(int i=0;i<vroads.Length;i++) {
                     var road=HillcrestRoute.Find(vroads[i].Item1);if(road==null)continue;float from=vroads[i].Item2,to=road.Length-vroads[i].Item3;Color paint=PaintCatalog.All[vrng.Next(PaintCatalog.Standard)].color;
-                    var go=TrialWorld.Car(new[]{"heron","kipper","beetle","tallboy","pebble","postvan","ritz","bubble","marlow"}[i],paint);go.name="Vinelands traffic "+i;go.transform.SetParent(root);
+                    var go=TrialWorld.Car(new[]{"bubble","heron","kipper","beetle","tallboy","pebble","postvan","ritz","bubble","marlow"}[i],paint);go.name="Vinelands traffic "+i;go.transform.SetParent(root);
                     go.AddComponent<RoadCruiser>().Setup(road,from,to,Mathf.Lerp(from,to,(float)vrng.NextDouble()),vrng.Next(2)*2-1,player);
                     var chatter=go.AddComponent<NpcChatter>();chatter.speaker=who[i];chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=says;
                 }

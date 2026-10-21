@@ -1,7 +1,7 @@
 ﻿param(
     [string]$Executable=(Join-Path $PSScriptRoot '../../little-road-ai-review/Little Road Unity.exe'),
     [string]$OutputDirectory,
-    [ValidateSet('cedar','bayview','cedar-hills','hillcrest','quarry','bramblewick','vinelands')][string]$Track='cedar',
+    [ValidateSet('cedar','bayview','cedar-hills','hillcrest','quarry','bramblewick','vinelands','vinelands-long')][string]$Track='cedar',
     [ValidateSet('stock','street','club')][string]$Loadout='club',
     [ValidateSet('pack','line')][string]$Grid='pack',
     [ValidateRange(1,24)][int]$Cars=1,
@@ -47,7 +47,7 @@ if($Manual -and -not $Visible){throw 'Recorded manual driving requires -Visible.
 if($Manual -and $Cars -gt 1 -and $TrafficCase -ne 'field'){throw 'Manual multi-car comparisons require the normal field fixture.'}
 if($Manual -and $PlaybackRate -ne 1){throw 'Human comparison laps must use real-time playback.'}
 if($Fullscreen -and $Windowed){throw 'Choose fullscreen or windowed, not both.'}
-if($BayviewTransferStudy -and ($Track -notin @('bayview','hillcrest','quarry','bramblewick','vinelands') -or $Policy -notin @('legacy','racer','context') -or -not (($Cars -eq 1 -and $TrafficCase -eq 'standing-solo') -or ($Cars -eq 24 -and $TrafficCase -eq 'field')))){throw 'Invalid Bayview transfer fixture.'}
+if($BayviewTransferStudy -and ($Track -notin @('bayview','hillcrest','quarry','bramblewick','vinelands','vinelands-long') -or $Policy -notin @('legacy','racer','context') -or -not (($Cars -eq 1 -and $TrafficCase -eq 'standing-solo') -or ($Cars -eq 24 -and $TrafficCase -eq 'field')))){throw 'Invalid Bayview transfer fixture.'}
 if($Policy -in 'racer','context' -and -not $BayviewTransferStudy -and ($Track -notin @('cedar','cedar-hills') -or $TrafficCase -notin @('draft-straight','draft-pullout','solo','standing-solo','pace-solo','rear-control','rear-control-left','rear-control-right','follow','pass','crossing-pass','brake-leader','brake-probe','queue','no-room','field','merge-left','merge-right','merge-witness-left','merge-witness-right','corner-solo-left','corner-solo-middle','corner-solo-right','corner-solo-deep','corner-pair-left','corner-pair-right','corner-three'))){throw 'Context prototype requires a supported explicit Cedar fixture.'}
 if($TrafficCase -eq 'standing-solo' -and $Cars -ne 1){throw 'Standing solo requires one car in the24-car player grid slot.'}
 if(-not $OutputDirectory){$OutputDirectory=Join-Path $PSScriptRoot ('../review/technical-runs/'+[DateTime]::Now.ToString('yyyyMMdd-HHmmss')+'-'+[Guid]::NewGuid().ToString('N').Substring(0,6))}
