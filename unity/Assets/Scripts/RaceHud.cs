@@ -14,7 +14,7 @@ namespace LittleRoad
     {
         RaceTrial race;RaceTiming timing;Canvas canvas;RectTransform board;GearDisplay gears;Text speed,gear,lap,clock,position,notice,compactHint,totalTime,bestLap,speedUnit;
         Text[] names=new Text[11],places=new Text[11],gaps=new Text[11];CoastPanel[] strips=new CoastPanel[11];GameObject[] rows=new GameObject[11];
-        RectTransform gasFill,brakeFill,steerPip;float nextRefresh;bool compact;
+        RectTransform gasFill,brakeFill,steerPip,batteryFill;float nextRefresh;bool compact;
         readonly RaceLapHistory lapHistory=new();Text[] recentLaps=new Text[3];Text lapHistoryTitle;RaceMapCars mapCars;float finalLapUntil=-1;
         public RaceTiming Timing=>timing;
         public static bool Requested=>RaceTrial.Has("--race-hud")||RaceTrial.Has("--race-hud-review");
@@ -68,7 +68,8 @@ namespace LittleRoad
             gear=Readout(dash,"Drive selector","D",54,new Vector2(75,70),new Vector2(96,7),false,TextAnchor.MiddleCenter);
             var mode=Readout(dash,"Transmission","AUTO",13,new Vector2(76,23),new Vector2(96,-38),false,TextAnchor.MiddleCenter);
             gears=new GearDisplay(gear,mode,dash,330,46);
-            gasFill=Meter(dash,"THR",new Vector2(210,0),White);brakeFill=Meter(dash,"BRK / R",new Vector2(-210,0),new Color(1,.32f,.27f));
+            gasFill=Meter(dash,"THR",new Vector2(210,0),White);batteryFill=Meter(dash,"BAT",new Vector2(250,0),new Color(.36f,.8f,1f));   // (a hybrid's battery: HybridPower)
+            brakeFill=Meter(dash,"BRK / R",new Vector2(-210,0),new Color(1,.32f,.27f));
             CoastUI.Panel(dash,"Steering input rail",new Vector2(150,1),new Vector2(0,62),new Color(1,1,1,.45f),0);
             steerPip=CoastUI.Panel(dash,"Steering input",new Vector2(4,9),new Vector2(0,62),Accent,0);
             totalTime=Readout(canvas.transform,"Race time","",19,new Vector2(330,32),Vector2.zero);Anchor(totalTime.rectTransform,0,0,new Vector2(207,69));
@@ -97,7 +98,7 @@ namespace LittleRoad
         public void Refresh()
         {
             var player=race.cars[0];timing.Sort();speed.text=Mathf.RoundToInt(Units.FromMps(Mathf.Abs(player.speed))).ToString();speedUnit.text=Units.Label;gears.Show(player);steerPip.anchoredPosition=new Vector2(Mathf.Clamp(player.steering,-1,1)*75,62);
-            gasFill.sizeDelta=new Vector2(12,62*Mathf.Clamp01(player.throttle));brakeFill.sizeDelta=new Vector2(12,62*Mathf.Clamp01(-player.throttle));
+            gasFill.sizeDelta=new Vector2(12,62*Mathf.Clamp01(player.throttle));batteryFill.parent.gameObject.SetActive(player.tuning.batteryKj>0);batteryFill.sizeDelta=new Vector2(12,62*player.Hybrid.charge);brakeFill.sizeDelta=new Vector2(12,62*Mathf.Clamp01(-player.throttle));
             int rank=timing.Rank(0);position.text=rank+" / "+race.cars.Count;lap.text=$"{Mathf.Min(player.laps+1,race.requiredLaps)} / {race.requiredLaps}";
             float t=Mathf.Max(0,player.finished?player.finishTime:race.elapsed);totalTime.text=$"TOTAL  {(int)t/60:00}:{t%60:00.0}";float lapTime=player.CurrentLapTime;clock.text=player.nextGateProgress<=0?"—":$"{(int)lapTime/60:0}:{lapTime%60:00.000}";bestLap.text=player.bestLap==float.MaxValue?"":$"BEST  {(int)player.bestLap/60:0}:{player.bestLap%60:00.000}";
             notice.text=race.WaitingForReady?"PRESS ENTER / OPTIONS TO START":race.elapsed<0?"":player.CheckpointMissed?"MISSED CHECKPOINT  ·  R / D-pad Down: recover":race.PlayerRecoveryPending?"WAITING FOR A CLEAR RECOVERY SPACE":player.finished?"FINISHED  ·  "+rank+" / "+race.cars.Count:race.elapsed<1?"LET'S GO!":"";

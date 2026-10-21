@@ -1598,7 +1598,8 @@ namespace LittleRoad
         // ---------------------------------------------------------------- Farmer Giles (FarmChallenges, doc 64)
         // Bramblewick's four (docs/82). Jed's parts, Peg's duel and the race come in step 5.
         void Jed()=>Show("Jed / Backyard Tuner","Parts Bayview's never heard of, my 'ansum: still unpacking the crates, mind. But the lanes race is on: three laps of the village and Church Lane, two abreast if you're brave. The hedges don't give way, and neither do I.",
-            new(){new("Race Bramblewick Lanes · C",()=>PreviewRace("bramblewick",Jed)),new("Back to the road",Close)});
+            HybridPower.Enabled?new(){new("Race Bramblewick Lanes · C",()=>PreviewRace("bramblewick",Jed)),new("Buy parts",()=>OpenParts("bramblewick",PartsBrowser.Mode.Shop,Jed)),new("Back to the road",Close)}
+                :new(){new("Race Bramblewick Lanes · C",()=>PreviewRace("bramblewick",Jed)),new("Back to the road",Close)});   // (the hybrid prototype: Jed's crates are unpacked, docs/84)
         void Maggie()=>Show("Maggie / The Plough","Welcome to The Plough, my lover! Four hundred years of thatch, cider from the orchard up the hill, and Peg's milk float parked outside every Friday. Mind the hanging baskets on your way out.",
             new(){new("Back to the road",Close)});
         void Clem()=>Show("Reverend Clem / St Michael's","Bless you for stopping. That tower's been watching over the vale since before there were roads in it. Do have a look round the churchyard, and go gently past the lychgate.",

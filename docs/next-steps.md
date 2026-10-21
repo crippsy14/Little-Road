@@ -1,5 +1,15 @@
 # Next steps (3 October 2026)
 
+**21 October: Bramblewick is part of the game, and the hybrid prototype is under way.**
+- **Bramblewick** ([doc 82](82-bramblewick.md)) is on by default in player builds; `--no-bramblewick` leaves it out. This
+  covers the West Country village, the vale, and the Bramblewick Lanes race with Jed.
+  - The lanes race was judged LAUNCH-READY (launch review r4).
+  - The AI races it at skill 3, 7, 10 and 13: 12 of 12 races 24/24, no resets.
+  - Published to the play copy after a full regression.
+- **Hybrids** ([doc 84](84-hybrid-prototype.md)): Richard's battery idea, prototyped behind `--hybrid`.
+  - The City hybrid 1.5 is at Jed's, with regen and automatic deploy, and a battery bar on the dash.
+  - `--hybrid-everyone` is for same-field keep/reject races.
+
 **19 October: Bayview rebuilt ([doc 79](79-bayview-rebuilt-brief.md)): stages 1-3 done and stage 4 under way, behind `--new-bayview`.**
 - **Approved with the defaults:** the island grows to about 430 × 300 m, the lap runs clockwise, and the character is a Cornish and Scottish harbour.
 - **Built:**

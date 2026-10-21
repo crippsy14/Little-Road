@@ -15,6 +15,8 @@ namespace LittleRoad
         public float DragFactor=>1-dragSave;
         // Suspension firmness (visual only, BodyMotion): the body leans 1/(1+firm) as much as a street car's.
         public float firm;
+        // A hybrid's e-motor and battery (HybridPower, --hybrid): motor kW, pack kJ, regen kW; all 0 for a petrol car.
+        public float hybridKw,batteryKj,regenKw;
         // Real engine and gears (docs/47); null with --legacy-drivetrain.
         [NonSerialized] public Drivetrain drivetrain;
         public static CarTuning Stock => EquipmentCatalog.Stats(EquipmentCatalog.TestLoadout("stock"));

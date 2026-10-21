@@ -61,6 +61,8 @@ namespace LittleRoad
         public float BrakeSeconds {get;private set;}
         public float LiftSeconds {get;private set;}
         public float StoppedSeconds {get;private set;}
+        // A hybrid's battery (HybridPower; --hybrid): full at the start, drained by deploying, refilled by braking.
+        public HybridPower.State Hybrid=>hybrid;HybridPower.State hybrid=HybridPower.Full;
         public Vector3 CollisionHalf {get;private set;}
         public Vector3 CollisionCentre {get;private set;}
         // Lowest point of the car's physical contact shape, in local space.
@@ -230,6 +232,8 @@ namespace LittleRoad
                 // A recovery puts the car back on the road at rest: back into first (a manual box too).
                 if(gearRecoveries!=recoveries){gearRecoveries=recoveries;gears.Reset();}
                 engineAccel=gears.Step(speed,throttle,Time.fixedDeltaTime);
+                // A hybrid's motor adds its drive here, before the grip budget clips it (and fills the gear-change gaps).
+                if(tuning.batteryKj>0&&!finished)engineAccel+=HybridPower.Step(ref hybrid,tuning,speed,throttle,Time.fixedDeltaTime);
             } else gears=null;
             DriveModel.Forces(tuning,speed,throttle,yawRequest,grip,0,out float acceleration,out float yaw,DragReduction,engineAccel);
             // PhysX gravity and ground contact already produce the along-grade

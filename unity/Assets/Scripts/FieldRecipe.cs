@@ -66,7 +66,7 @@ namespace LittleRoad
         public static bool Open(string raceClass,int stars,EquipmentCatalog.Part p)
         {
             if(raceClass=="B")return RaceCalendar.Rank(p.tier)==0||UnlockStars(p)<=BStarsBefore[Mathf.Clamp(stars,0,10)];
-            return p.shop=="hillcrest"?stars>=2:p.shop=="quarry"?stars>=3:string.IsNullOrEmpty(p.unlock);
+            return p.motorKw>0?false:p.shop=="hillcrest"?stars>=2:p.shop=="quarry"?stars>=3:string.IsNullOrEmpty(p.unlock);   // (the hybrid prototype: not in fields; --hybrid-everyone tests it)
         }
         // (A ladder's first rung is always open, so every slot has a part: the B rally tyre is the gravel field's tyre
         // from the first B race, as it was before recipes.)

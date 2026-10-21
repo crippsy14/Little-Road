@@ -35,7 +35,7 @@ ENGINE_SOUND = {
     # recording; V8s keep V8 recordings where one scores (the Twelve-hour, the Duke's car, is the Ferrari 458's V8).
     # No high-revving six was found: the V6s take the Citroen C5 (a family car's engine, to 6,200 rpm; whether the
     # recording is its four or its V6 is unclear), the McLaren 720S (twin-turbo V8) and the rally cars.
-    'engine_stock': 'citroen-c2', 'engine_workshop': 'golf', 'engine_club': 'escort', 'engine_sport16': 'piazza', 'engine_valley': 'citroen-c5',
+    'engine_stock': 'citroen-c2', 'engine_workshop': 'golf', 'engine_city_hybrid': 'golf', 'engine_club': 'escort', 'engine_sport16': 'piazza', 'engine_valley': 'citroen-c5',
     'engine_b_twincam': 'piazza', 'engine_b_highcomp': 'ds3-wrc', 'engine_b_v6': 'mclaren-720s',
     'engine_a_touring': 'escort', 'engine_a_evo': 'ds3-wrc', 'engine_a_works': 'xsara-wrc',
     'engine_s_v6': 'ds3-wrc', 'engine_s_v8': 'ferrari-458', 'engine_s_v10': 'viper',
@@ -50,6 +50,7 @@ ENGINES = [
     ('engine_club', 'Club motor 1.4', 'Revs harder and pulls longer.', 1000, 'C', None, 29, 3.8, 'I4', 4, 1.4, 900, 4200, 6300, 6800, 105, 135, 'even', 'sport', 'cone', False),
     ('engine_sport16', 'Sport 1.6', 'The best a Street car can buy: sixteen valves and a free-flowing exhaust.', 1500, 'C', None, 31, 4.2, 'I4', 4, 1.6, 950, 4800, 6800, 7200, 128, 155, 'even', 'sport', 'cone', False),
     ('engine_valley', 'Valley V6 2.5', 'Built in Hillcrest: big pull out of every hairpin and up every hill.', 1800, 'C', 'hillcrest', 32, 4.6, 'V6', 6, 2.5, 800, 3600, 5800, 6600, 168, 230, 'even', 'sport', 'box', False),
+    ('engine_city_hybrid', 'City hybrid 1.5', "Petrol and a battery: an electric shove out of every slow corner. Brake hard to charge it; run it flat and you're hauling the weight.", 1100, 'C', 'bramblewick', 27.5, 3.5, 'I4', 4, 1.5, 850, 4000, 5600, 6200, 92, 135, 'even', 'road', 'box', True),
     ('engine_b_twincam', 'Twin-cam 16V 1.8', 'Double overhead cams: loves the top of the rev range.', None, 'B', None, 42, 5.0, 'I4', 4, 1.8, 950, 5200, 7200, 7800, 160, 175, 'even', 'sport', 'cone', False),
     ('engine_b_highcomp', 'High-comp twin-cam 2.0', 'High compression, lumpy cams, a hard edge at 8,000.', None, 'B', None, 45, 5.4, 'I4', 4, 2.0, 1000, 5600, 7700, 8200, 195, 205, 'even', 'race', 'cone', False),
     ('engine_b_v6', 'Tuner V6 3.0', 'Six smooth cylinders and torque everywhere.', None, 'B', None, 48, 5.8, 'V6', 6, 3.0, 900, 4800, 7000, 7600, 250, 300, 'even', 'sport', 'cone', False),
@@ -64,6 +65,9 @@ ENGINES = [
     ('engine_e_12h', 'Twelve-hour hybrid V8', 'Built to run flat out from dusk to dawn.', None, 'E', None, 70, 8.8, 'V8', 8, 4.0, 1300, 6200, 9000, 9600, 650, 590, 'crossplane', 'race', 'trumpets', True),
     ('engine_e_economy', 'Economy hybrid', 'Sidegrade: gentler power, far further on a tank.', None, 'E', None, 64, 7.5, 'V6', 6, 1.6, 1200, 5500, 8500, 9500, 480, 450, 'even', 'race', 'trumpets', True),
 ]
+# The hybrid prototype (docs/84, --hybrid): an e-motor (kW), a battery (kJ), regen (kW) and the system's weight (a
+# share of the car's). The game leaves these parts out of the catalogue unless --hybrid is on.
+HYBRIDS = {'engine_city_hybrid': {'motorKw': 18, 'batteryKj': 110, 'regenKw': 15, 'hybridMass': 0.06}}
 ENGINE_BASE = 1500
 for i, e in enumerate(ENGINES):
     (pid, name, hint, price, cls, shop, pl, acc, layout, cyl, litres, idle, tq, pw, red, hp, nm, firing, exhaust, intake, hybrid) = e
@@ -73,6 +77,7 @@ for i, e in enumerate(ENGINES):
     add(pid, 'engine', name, hint, price, cls, shop, power_limit=pl, accel=acc, layout=layout, cylinders=cyl, litres=litres,
         idleRpm=idle, torqueRpm=tq, powerRpm=pw, redline=red, hp=hp, nm=nm, firing=firing, exhaust=exhaust, intake=intake, hybrid=hybrid,
         sound=ENGINE_SOUND.get(pid, ''))
+    if pid in HYBRIDS: parts[-1].update(HYBRIDS[pid])
 
 # ---------------------------------------------------------------- induction
 # (id, name, hint, price, class, shop, power x, torque x, spoolStart, spoolFull (fraction of redline), lag s, blowoff, antilag, electric)

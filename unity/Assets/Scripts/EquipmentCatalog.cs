@@ -23,6 +23,9 @@ namespace LittleRoad
             public float power,torque,accel,power_limit,road,dirt,ceiling,pull,braking,response,yaw,mass;
             // Schema 2 (docs/47, tools/parts-ladder.py). Engine: real specs and a sound fingerprint.
             public string layout,firing,exhaust,intake,sound;public int cylinders,idleRpm,torqueRpm,powerRpm,redline,hp,nm;public float litres;public bool hybrid;
+            // A hybrid engine's e-motor and battery (HybridPower; only with --hybrid): motor kW, pack kJ, regen kW, and the
+            // system's weight as a share of the car's (added to the frame's mass).
+            public float motorKw,batteryKj,regenKw,hybridMass;
             // Induction: boost builds from spoolStart to spoolFull (fractions of the redline), lag seconds.
             public float spoolStart,spoolFull,lag;public bool blowoff,antilag,electric;
             // Gearbox: gears, first-to-top ratio spread, shift seconds, H/S/P/SL, revs at top speed x peak power.
@@ -51,6 +54,8 @@ namespace LittleRoad
                 throw new InvalidOperationException("Invalid equipment catalogue schema");
             var index=new Dictionary<string,Part>(StringComparer.Ordinal);
             var slots=new HashSet<string>(candidate.slots,StringComparer.Ordinal);
+            // The hybrid prototype's parts (an e-motor) exist only with --hybrid: without it the catalogue is as before.
+            if(!HybridPower.Enabled)candidate.parts=System.Array.FindAll(candidate.parts,p=>p.motorKw<=0);
             foreach(var p in candidate.parts) {
                 if(string.IsNullOrEmpty(p.id)||!slots.Contains(p.slot)||string.IsNullOrEmpty(p.name)||p.price<0||index.ContainsKey(p.id)||RaceCalendar.Rank(p.tier)<0)
                     throw new InvalidOperationException("Invalid or duplicate part: "+p.id);
@@ -157,16 +162,20 @@ namespace LittleRoad
             EnsureLoaded();
             foreach(string slot in data.slots)
                 if(!fit.TryGetValue(slot,out string id)||Get(id).slot!=slot)throw new ArgumentException("Missing or incompatible equipment: "+slot);
-            var e=Get(fit["engine"]);var t=Get(fit["tyres"]);var g=Get(fit["transmission"]);
+            // --field-engine <id> (a test flag, docs/84): every car runs that engine, for engine-against-engine races on one field.
+            var e=Get(FieldEngine!=null&&byId.ContainsKey(FieldEngine)?FieldEngine:fit["engine"]);var t=Get(fit["tyres"]);var g=Get(fit["transmission"]);
             var b=Get(fit["brakes"]);var s=Get(fit["steering"]);var c=Get(fit["chassis"]);var turbo=Get(fit["turbo"]);
             if(LegacyDrivetrain){var legacy=CarTuning.Create(e.power_limit,e.accel,g.ceiling,g.pull,turbo.power,turbo.torque,t.road,t.dirt,b.braking,s.response,s.yaw,c.mass);legacy.downforce=Downforce(c);legacy.dragSave=DragSave(c);legacy.firm=Firm(c);return legacy;}
             // Real gears (docs/47): no gearbox ceiling or pull; the gears come from the engine, turbo and box.
-            var tuning=CarTuning.Create(e.power_limit,e.accel,999,1,turbo.power,turbo.torque,t.road,t.dirt,b.braking,s.response,s.yaw,c.mass);
+            // A hybrid (HybridPower): the motor and battery's weight is the frame's to carry, charged or flat.
+            bool hybrid=e.motorKw>0||HybridPower.Everyone;
+            var tuning=CarTuning.Create(e.power_limit,e.accel,999,1,turbo.power,turbo.torque,t.road,t.dirt,b.braking,s.response,s.yaw,c.mass+(e.motorKw>0?e.hybridMass:hybrid?HybridPower.MildMass:0));
+            if(hybrid){tuning.hybridKw=e.motorKw>0?e.motorKw:HybridPower.MildKw;tuning.batteryKj=e.motorKw>0?e.batteryKj:HybridPower.MildKj;tuning.regenKw=e.motorKw>0?e.regenKw:HybridPower.MildRegenKw;}
             // Calibration: real gear gaps and shift cuts cost a stepped box some pace against the old gearless
             // curve; 10% more power keeps class C near its old standing-start times (docs/47).
             tuning.power*=PowerCalibration;tuning.downforce=Downforce(c);tuning.dragSave=DragSave(c);tuning.firm=Firm(c);
             if(tune!=null&&(tune.transmission!=g.id||!tune.Valid))tune=null;
-            string key=e.id+"|"+turbo.id+"|"+g.id+"|"+c.id+(tune==null?"":"|"+tune.final.ToString("0.000")+"|"+string.Join(",",tune.gears??new float[0]));
+            string key=e.id+"|"+turbo.id+"|"+g.id+"|"+c.id+(hybrid?"|hybrid":"")+(tune==null?"":"|"+tune.final.ToString("0.000")+"|"+string.Join(",",tune.gears??new float[0]));
             if(!drivetrains.TryGetValue(key,out var train)){train=new Drivetrain(e,turbo,g,tuning,tune?.final??1,tune?.gears);drivetrains.Add(key,train);}
             tuning.drivetrain=train;tuning.gearCeiling=train.RedlineSpeed;return tuning;
         }
@@ -192,6 +201,7 @@ namespace LittleRoad
         // One drivetrain per engine/turbo/box/frame, so repeated Stats() calls compare equal.
         static readonly Dictionary<string,Drivetrain> drivetrains=new(StringComparer.Ordinal);
         public const float PowerCalibration=1.1f;
+        static readonly string FieldEngine=RaceTrial.Arg("--field-engine");
         // --legacy-drivetrain: the old model (power cap, gearbox ceiling and pull), for comparison races.
         public static bool LegacyDrivetrain=>Array.IndexOf(Environment.GetCommandLineArgs(),"--legacy-drivetrain")>=0;
         public static int Reward(int place,string raceClass="C")
