@@ -16,8 +16,9 @@ namespace LittleRoad
     {
         // The square the maps cover: Bayview and Hillcrest Valley, and with --quarry-hills Quarry Hills to the west as well.
         // (--bramblewick: east to x 3550 for Bramblewick's vale, docs/82)
-        public static readonly float X0=QuarryHills.Enabled?-4400:-1150,Z0=QuarryHills.Enabled?-4100:Bramblewick.Enabled?-2650:-2100,
-            Size=(QuarryHills.Enabled?5900:2500)+(Bramblewick.Enabled?2050:0);public const int Pixels=4096;
+        // (--vinelands: east to x 5300 and south to z -5200 for Vinelands, docs/85)
+        public static readonly float X0=QuarryHills.Enabled?-4400:-1150,Z0=Vinelands.Enabled?-5200:QuarryHills.Enabled?-4100:Bramblewick.Enabled?-2650:-2100,
+            Size=Vinelands.Enabled?(QuarryHills.Enabled?9700:6450):(QuarryHills.Enabled?5900:2500)+(Bramblewick.Enabled?2050:0);public const int Pixels=4096;
         public static int BakePixels=>QuarryHills.Enabled?4096:2048;
         [Serializable] public class Label{public string name,kind,note;public float x,z;}
         [Serializable] public class Data{public float x0=X0,z0=Z0,size=Size;public int pixels=Pixels;public string image="world-map.jpg";public List<Label> labels=new();}

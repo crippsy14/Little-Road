@@ -12,9 +12,9 @@ namespace LittleRoad
     public static class AreaAudit
     {
         // Kit pieces by what they are (ids from source-art/build_bayview_kit.py).
-        static readonly string[] BuildingIds={"house_","terrace_","cottage_","shop","cafe","post_office","hotel","town_hall","church","mill","motors","station","barn","pit_stop","pit_garages","beach_hut","parish_church","pub","milking_parlour","dutch_barn"};
-        static readonly string[] FurnitureIds={"lamp_post","bench","fountain","kiosk","flower_bed","flower_bush","picnic_table","market_stall","bandstand","map_board","flag_pole","parasol","telescope","chevron_sign","ad_board","flag_wales","slate_stack","phone_box","pillar_box","village_lychgate","churn_stand"};
-        static readonly string[] NatureIds={"tree_","palm","bush","olive_tree","rock_","reeds","grass_tuft","vine_row","lavender_row","sunflower_row","hay_bale"};
+        static readonly string[] BuildingIds={"house_","terrace_","cottage_","shop","cafe","post_office","hotel","town_hall","church","mill","motors","station","barn","pit_stop","pit_garages","beach_hut","parish_church","pub","milking_parlour","dutch_barn","casa_douro_","igreja_douro","torre_belvedere","adega_coop","armazem_vinho","quinta_casa","vila_granito_","vila_azulejo_","vila_loja_","vila_varanda_","vila_alta_","vila_fechada_","vila_esquina","vila_pacos","vila_forno"};
+        static readonly string[] FurnitureIds={"lamp_post","bench","fountain","kiosk","flower_bed","flower_bush","picnic_table","market_stall","bandstand","map_board","flag_pole","parasol","telescope","chevron_sign","ad_board","flag_wales","slate_stack","phone_box","pillar_box","village_lychgate","churn_stand","vila_chafariz","vila_lavadouro","vila_cruzeiro","vila_anexo","vila_galinheiro","vila_tanque","vila_esplanada","vila_vasos","vila_oratorio","vila_estendal"};
+        static readonly string[] NatureIds={"tree_","palm","bush","olive_tree","rock_","reeds","grass_tuft","vine_row","lavender_row","sunflower_row","hay_bale","vila_latada","vila_figueira","vila_laranjeira","vila_horta","vila_cipreste"};
         static bool Is(string id,string[] set)=>set.Any(p=>p.EndsWith("_")?id.StartsWith(p):id==p);
 
         // The standard (docs/57): what every town and every stretch of countryside must reach. The numbers come from
@@ -48,6 +48,8 @@ namespace LittleRoad
             S("banks too steep (no barrier)","any",false,0,c=>c.banks),
             S("cars not on the ground","any",false,0,c=>c.carsOffGround),
             S("shop signs hidden from the street","any",false,0,c=>c.signsHidden),S("furniture tipped over","any",false,0,c=>c.tipped)};
+        // Planting built as merged meshes rather than kit pieces (Vinelands' vines: one entry per 12.8 m row, the vine_row it is).
+        public static readonly List<Vector3> ExtraNature=new();
         public static string CarContactReport="",SeamReport="";static readonly List<string> ForgeReport=new();   // (which Forge run or object failed its ground checks)
         static Standard S(string m,string k,bool atLeast,float bar,System.Func<Column,float> v)=>new(){measure=m,kind=k,atLeast=atLeast,bar=bar,value=v};
         public static List<string> Failures(Column c)=>Standards.Where(x=>x.kind=="any"||x.kind==c.kind).Where(x=>x.atLeast?x.value(c)<x.bar-1e-4f:x.value(c)>x.bar+1e-4f)
@@ -74,9 +76,10 @@ namespace LittleRoad
             var buildings=new List<(GameObject go,Column col)>();var walls=new Dictionary<Column,HashSet<string>>();var roofs=new Dictionary<Column,HashSet<string>>();
             var designs=new Dictionary<Column,Dictionary<string,int>>();
             foreach(var c in cols){walls[c]=new();roofs[c]=new();designs[c]=new();}
+            foreach(var q in ExtraNature)Of(q).nature++;
             foreach(var go in BayviewKit.Placed) {
                 if(go==null)continue;var col=Of(go.transform.position);col.pieces++;string id=go.name;
-                if(id=="lamp_post")col.lamps++;
+                if(id=="lamp_post"||id=="vila_lanterna")col.lamps++;   // (Vinelands' old lanes are lit from the walls)
                 if(Is(id,FurnitureIds))col.furniture++;else if(Is(id,NatureIds))col.nature++;
                 if(!Is(id,BuildingIds))continue;
                 col.buildings++;buildings.Add((go,col));designs[col][id]=designs[col].TryGetValue(id,out int n)?n+1:1;

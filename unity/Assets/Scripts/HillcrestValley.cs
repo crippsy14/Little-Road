@@ -302,7 +302,22 @@ namespace LittleRoad
                 var nW=net.Add(vr.line[iW]);var nE=net.Add(vr.line[iE]);
                 net.Connect(vr.name,vr.line[..(iW+1)],vr.width,.022f,nBramble,nW,minorStart:true);
                 net.Connect(vr.name,vr.line[iW..(iE+1)],vr.width,.022f,nW,nE);
-                net.Connect(vr.name,vr.line[iE..],vr.width,.022f,nE,null);
+                if(Vinelands.Enabled) {   // (--vinelands, zone 0: the entry road runs on from Bramblewick's gate as one ribbon to the saddle; docs/85)
+                    var en=HillcrestRoute.Find(Vinelands.EntryName);var rr=HillcrestRoute.Find(Vinelands.RiverRoadName);var rd=HillcrestRoute.Find(Vinelands.RuaDireitaName);
+                    var cr=HillcrestRoute.Find(Vinelands.CaisRoadName);var mr=HillcrestRoute.Find(Vinelands.MiranteName);var vv=HillcrestRoute.Find(Vinelands.ValeRoadName);
+                    int si=Vinelands.EntrySaddle,ni=Vinelands.RiverNorthT,ci=Vinelands.RiverCaisT;
+                    var nSaddle=net.Add(en.line[si]);var nRiverN=net.Add(rr.line[ni]);var nCais=net.Add(rr.line[ci]);var nLargo=net.Add(rd.line[^1]);
+                    var on=new System.Collections.Generic.List<Vector3>(vr.line[iE..]);on.AddRange(en.line[1..(si+1)]);
+                    net.Connect(vr.name,on.ToArray(),vr.width,.022f,nE,nSaddle);
+                    net.Connect(en.name,en.line[si..],en.width,.022f,nSaddle,nRiverN,minorEnd:true);
+                    net.Connect(rr.name,rr.line[..(ni+1)],rr.width,.022f,null,nRiverN);
+                    net.Connect(rr.name,rr.line[ni..(ci+1)],rr.width,.022f,nRiverN,nCais);
+                    net.Connect(rr.name,rr.line[ci..],rr.width,.022f,nCais,null);
+                    net.Connect(rd.name,rd.line,rd.width,.022f,nSaddle,nLargo,minorStart:true);
+                    net.Connect(cr.name,cr.line,cr.width,.022f,nLargo,nCais,minorEnd:true);
+                    net.Connect(mr.name,mr.line,mr.width,.022f,nLargo,null);
+                    net.Connect(vv.name,vv.line,vv.width,.022f,nLargo,null);
+                } else net.Connect(vr.name,vr.line[iE..],vr.width,.022f,nE,null);
                 var cl=HillcrestRoute.Find(Bramblewick.LaneName);net.Connect(cl.name,cl.line,cl.width,.022f,nE,nW,minorStart:true,minorEnd:true,noCentre:true);   // (a lane: no centre line)
             } else stationNet=net.Connect("Station road",stationRoad,stationWidth,.018f,nStation,null,minorStart:true,noCentre:true);
             net.Solve();Lap("roads network");
@@ -341,13 +356,14 @@ namespace LittleRoad
             Shoulders(main.line,main.width*.5f,.03f,0,false,holder,gravel,"Road shoulder",quayEnd,q=>SurfacePoint(q,out var hit,false)?hit.point.y:-30,RoadTop);
             Shoulders(valleyRoad,valleyWidth*.5f,.024f,0,false,holder,gravel);
             if(Bramblewick.Enabled)foreach(var name in new[]{Bramblewick.RoadName,Bramblewick.LaneName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
+            if(Vinelands.Enabled)foreach(var name in new[]{Vinelands.EntryName,Vinelands.RiverRoadName,Vinelands.RuaDireitaName,Vinelands.CaisRoadName,Vinelands.MiranteName,Vinelands.ValeRoadName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
             if(QuarryHills.Enabled)foreach(var name in new[]{QuarryHills.QuarryRoadName,QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.HaulRoadName,QuarryHills.KettleRoadName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName}){var q=HillcrestRoute.Find(name);Shoulders(q.line,q.width*.5f,.02f,0,false,holder,gravel);}Shoulders(stationRoad,stationWidth*.5f,.018f,0,false,holder,gravel);Shoulders(crest.line,crest.width*.5f,.018f,0,false,holder,gravel);
-            foreach(var n in net.nodes)if(n.arms.Count>1){JunctionSurface(n,holder);if(!n.HasExternal)KerbShoulders(n,holder,gravel);}
+            foreach(var n in net.nodes)if(n.arms.Count>1){JunctionSurface(n,holder);if(!n.HasExternal&&!VinelandsVila.Paved(n.at))KerbShoulders(n,holder,gravel);}
             // Quarry Hills' junctions: shoulders across each mouth (the gap between a road's own shoulder and the kerb ramps
             // left a 16 cm step) and low stone walls where a corner's ground stands well above or below the road.
             if(QuarryHills.Enabled){Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&QuarryHills.Contains(n.at.x,n.at.z))MouthShoulders(n,holder,gravel);}
             // (--bramblewick: the same across Valley Road South's T off the farm lane: the audit's two lips there)
-            if(Bramblewick.Enabled){Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&(Vector3.Distance(n.at,Bramblewick.Tee)<30||Bramblewick.Contains(n.at.x,n.at.z)))MouthShoulders(n,holder,gravel);}   // (and Church Lane's two Ts: the audit's lips there)
+            if(Bramblewick.Enabled){Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&(Vector3.Distance(n.at,Bramblewick.Tee)<30||Bramblewick.Contains(n.at.x,n.at.z)||Vinelands.Contains(n.at.x,n.at.z)&&!VinelandsVila.Paved(n.at)))MouthShoulders(n,holder,gravel);}   // (and Church Lane's two Ts: the audit's lips there)
             Lap("roads shoulders and junctions");RacewayCircuit(holder);Lap("roads raceway");
         }
         // Hillcrest Raceway: 16 m asphalt with runoff, edge paint, corner kerbs, start line and gantry.
@@ -486,7 +502,7 @@ namespace LittleRoad
                     if(roadTop!=null){float top=roadTop(line[i]+r*(halfWidth-.2f));if(!float.IsNaN(top))inner.y=top-.004f;}
                     // Junctions grow their own ramps round their kerbs (KerbShoulders): stop where this one would run onto
                     // a junction's surface or start on its kerb.
-                    bool ok=g>inner.y-.9f&&g<inner.y+1.2f&&!RiverBelow(outer)&&!OnJunction(outer,.6f)&&!OnJunction(inner,.3f);
+                    bool ok=g>inner.y-.9f&&g<inner.y+1.2f&&!RiverBelow(outer)&&!OnJunction(outer,.6f)&&!OnJunction(inner,.3f)&&!VinelandsVila.Paved(outer)&&!VinelandsVila.Paved(inner);   // (no gravel verge in a paved square: Vinelands' Largo, docs/86)
                     if(!ok){prev=-1;continue;}
                     outer.y=g-.02f;int s0=v.Count;v.Add(inner);v.Add(outer);
                     if(prev>=0){if(side>0)t.AddRange(new[]{prev,s0,prev+1,prev+1,s0,s0+1});else t.AddRange(new[]{prev,prev+1,s0,prev+1,s0+1,s0});}

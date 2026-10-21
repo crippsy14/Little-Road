@@ -20,7 +20,7 @@ namespace LittleRoad
         // (Every --perf-* switch counts: they change what's built or how it looks.)
         static readonly string[] WorldFlags={"--race-full-world","--no-corner-barriers"};   // (Prop Forge and the new Bayview by their state, below: both on by default since 20 Oct)
         public static string World{get{
-            var s=(QuarryHills.Enabled?"qh":"noqh")+(PropForge.Enabled?"-pf":"")+(NewBayview.On?"-nb":"")+(Bramblewick.Enabled?"-bw":"");foreach(var f in WorldFlags)if(RaceTrial.Has(f))s+=f;
+            var s=(QuarryHills.Enabled?"qh":"noqh")+(PropForge.Enabled?"-pf":"")+(NewBayview.On?"-nb":"")+(Bramblewick.Enabled?"-bw":"")+(Vinelands.Enabled?"-vl":"");foreach(var f in WorldFlags)if(RaceTrial.Has(f))s+=f;
             var perf=new List<string>();foreach(var a in Environment.GetCommandLineArgs())if(a.StartsWith("--perf-"))perf.Add(a);perf.Sort();foreach(var f in perf)s+=f;
             return s;}}
         public static string PathFor(string name,string ext="bin"){if(!Enabled)return null;PruneOnce();return System.IO.Path.Combine(Application.persistentDataPath,"world-cache",$"{name}-{Application.buildGUID}-{World}.{ext}");}

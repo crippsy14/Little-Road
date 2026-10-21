@@ -16,7 +16,7 @@ namespace LittleRoad
         // raycasts), so a player build keeps them in a small file per build and flag set: only its first launch pays.
         static List<(Vector3 at,Vector3 outward,Vector3 along,float dropAt,string road,float half)> Sites(Circuit bayview)
         {
-            string key=Application.isEditor||string.IsNullOrEmpty(Application.buildGUID)?null:$"{Application.buildGUID}-{(NewBayview.On?"nb":"b")}-{(QuarryHills.Enabled?"qh":"")}";
+            string key=Application.isEditor||string.IsNullOrEmpty(Application.buildGUID)?null:$"{Application.buildGUID}-{(NewBayview.On?"nb":"b")}-{(QuarryHills.Enabled?"qh":"")}{(Bramblewick.Enabled?"-bw":"")}{(Vinelands.Enabled?"-vl":"")}";   // (each place adds roads, so banks)
             string file=key==null?null:System.IO.Path.Combine(Application.persistentDataPath,$"bank-sites-{key}.txt");
             var I=System.Globalization.CultureInfo.InvariantCulture;
             if(file!=null&&System.IO.File.Exists(file)) {
@@ -45,6 +45,7 @@ namespace LittleRoad
                 //  armco, whose plumb posts follow a slope)
                 foreach(var kit in new[]{"dry_stone","post_rail","armco"})
                 foreach(float pull in new[]{.3f,.9f,99f}) {
+                    if(!Runs.Runnable(kit))continue;   // (armco's kit is single pieces, not a run: it threw here when both runs failed, on Vinelands' banks)
                     var line=new List<Vector3>();
                     for(int k=0;k<group.Count;k++){var g=group[k];float o=pull>50?g.half+.7f:Mathf.Max(g.dropAt-pull,g.half+.7f);var p=g.at+g.outward*o;if(k==0)line.Add(p-g.along*8);line.Add(p);if(k==group.Count-1)line.Add(p+g.along*8);}
                     var L=Runs.Solve(new RunSpec{name=$"Bank barrier {Walls}",kit=kit,seed=$"bank-{Walls}-{group[0].road}",along=line.ToArray(),restyle=quarry&&kit=="dry_stone"?slate:null});

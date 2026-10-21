@@ -59,6 +59,11 @@ namespace LittleRoad
             // (--list-near x,z,r: every kit piece within r metres, by name and place: to identify what a snap shows)
             if(RaceTrial.Arg("--list-near") is string near&&near.Contains(",")){var a=near.Split(',');float F(int i)=>float.Parse(a[i],System.Globalization.CultureInfo.InvariantCulture);var c=new Vector2(F(0),F(1));
                 foreach(var go in BayviewKit.Placed)if(go!=null){var p=go.transform.position;if(Vector2.Distance(new(p.x,p.z),c)<F(2))Debug.Log($"LITTLE_ROAD_NEAR {go.name} {p} yaw {go.transform.eulerAngles.y:0} parent {(go.transform.parent!=null?go.transform.parent.name:"-")}");}}
+            // (--list-renderers-near x,z,r: every renderer whose bounds come within r metres, kit or not, with its collider and top:
+            // to identify an unknown surface in a snap)
+            if(RaceTrial.Arg("--list-renderers-near") is string rn&&rn.Contains(",")){var a=rn.Split(',');float G(int i)=>float.Parse(a[i],System.Globalization.CultureInfo.InvariantCulture);var c=new Vector3(G(0),0,G(1));
+                foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)){var b=r.bounds;var q=b.ClosestPoint(new Vector3(c.x,b.center.y,c.z));if(Vector2.Distance(new(q.x,q.z),new(c.x,c.z))<G(2)&&b.size.magnitude<400)
+                    Debug.Log($"LITTLE_ROAD_RNEAR {r.name} parent {(r.transform.parent!=null?r.transform.parent.name:"-")} bounds {b.min}..{b.max} collider {(r.GetComponent<Collider>()!=null?r.GetComponent<Collider>().GetType().Name:"none")} mat {(r.sharedMaterial!=null?r.sharedMaterial.name:"-")}");}}
             residents["garage"]=new Vector3(-62,0,-100);
             // Pit Stop bay hosts (Bayview: garage + parts). Hillcrest's arrive through HillcrestTown.Spots.
             foreach(var (id,key) in new[]{("garage","bayview/garage"),("parts","bayview/parts")})if(PitStop.Hosts.TryGetValue(key,out var host)){residents[id]=host.at;residentYaw[id]=host.yaw;}
@@ -68,6 +73,8 @@ namespace LittleRoad
             foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout","farm"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
             // Bramblewick (--bramblewick, docs/82): Jed the tuner, Maggie at The Plough, the vicar on the green, Peg at the dairy.
             foreach(var (id,at) in new[]{("bwtuner","tuner"),("bwpub","pub"),("bwvicar","church"),("bwdairy","dairy"),("bwmarshal","marshal")})if(BramblewickVillage.Spots.TryGetValue(at,out var bw)){residents[id]=bw.at;residentYaw[id]=bw.yaw;}
+            // Vinelands (--vinelands, docs/86): the priest at the Matriz, the clerk at the town hall, the cafe, the baker, the washing tanks.
+            foreach(var (id,at) in new[]{("vlpriest","priest"),("vlclerk","clerk"),("vlcafe","cafe"),("vlbaker","baker"),("vlfonte","fonte")})if(VinelandsVila.Spots.TryGetValue(at,out var vl)){residents[id]=vl.at;residentYaw[id]=vl.yaw;}
             // Quarry Hills built in the background (Districts): what needs it is set up when it arrives.
             quarryLater=Districts.Waiting("quarry-hills");if(quarryLater)Districts.WhenBuiltSteps("quarry-hills",QuarryHillsArrived);
             if(!quarryLater)QuarryHillsResidents();
@@ -634,6 +641,11 @@ namespace LittleRoad
             ["bwpub"]=("otter",Toy.Hex(0x2f5d46),"MAGGIE / THE PLOUGH","Maggie",Toy.Mint,new[]{"Mind the hanging baskets, my lover!","Cider's for after the drive, not before!","The Plough's stood four hundred year. Don't you dent it!"}),
             ["bwvicar"]=("tallboy",Toy.Hex(0x2c3e50),"REVEREND CLEM / ST MICHAEL'S","Reverend Clem",Toy.Sky,new[]{"Bless you! ...and bless my bumper.","Gently now, the lychgate's older than both of us.","Evensong at six. Do park considerately."}),
             ["bwmarshal"]=("beetle",Toy.Hex(0xff8c1a),"TED / LANES MARSHAL","Ted",Toy.Sun,new[]{"Yellow flag! Yellow flag! Oh, it's you.","Lift over the crest, then commit.","Thirty years marshalling these lanes, never lost a sheep."}),
+            ["vlpriest"]=("tallboy",Toy.Hex(0x1c1c22),"PADRE AMERICO / IGREJA MATRIZ","Padre Americo",Toy.Sky,new[]{"Easy, my child! The bells are watching.","Mass at ten. Park by the fountain, not on it.","Deus me livre! My poor wing."}),
+            ["vlclerk"]=("marlow",Toy.Hex(0x2e5e3e),"DONA FATIMA / PACOS DO CONCELHO","Dona Fatima",Toy.Mint,new[]{"That bump will need a form. In triplicate.","The clock is never wrong. You, however...","Carimbo! That's a stamp. On your bumper."}),
+            ["vlcafe"]=("otter",Toy.Hex(0xe9dcc0),"SR. JOAQUIM / CAFE CENTRAL","Sr. Joaquim",Toy.Sun,new[]{"Cuidado! The bica is still hot!","Mind the terrace, the chairs are older than you.","Um cafe? After you stop bumping my van."}),
+            ["vlbaker"]=("postvan",Toy.Hex(0xd9a441),"DONA ROSA / O FORNO","Dona Rosa",Toy.Sun,new[]{"Ai! The broa! Forty loaves in the back!","Gently, querido, the hens are nervous.","The oven's been warm since five. So am I, now."}),
+            ["vlfonte"]=("doodle",Toy.Hex(0x3a6aa6),"TIA LURDES / LAVADOURO","Tia Lurdes",Toy.Pink,new[]{"Splash me again and you're scrubbing sheets!","The spring never stops, and nor do I.","Ai, these young drivers!"}),
             ["bwdairy"]=("pebble",Toy.Hex(0xf6f1e6),"PEG / BRAMBLEWICK DAIRY","Peg",Toy.Sun,new[]{"Oi! Forty years on the round and never a dent!","Think you're quick? Try me down Dairy Lane.","Mind the crates! Them's full!"}),
         };
         // Quarry Hills (--quarry-hills): Gwen at the rally school, the Pit Stop, the caban, the quay and Dai.
@@ -1372,7 +1384,7 @@ namespace LittleRoad
         {
             if(!residents.ContainsKey(id)||Vector3.Distance(player.body.position,residents[id])>7||Mathf.Abs(player.speed)>1.2f)return false;
             switch(id){case "garage":Mara();break;case "parts":Sid();break;case "hcparts":Rosa();break;case "hcbody":Lina();break;case "post":Pip();break;case "paint":Dot();break;case "motors":Gio();break;case "hillcafe":Fern();break;
-                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;case "blast":Dai();break;case "farm":Giles();break;case "bwtuner":Jed();break;case "bwpub":Maggie();break;case "bwvicar":Clem();break;case "bwdairy":Peg();break;case "bwmarshal":Ted();break;default:Rowan();break;}
+                case "raceway":Vito();break;case "station":Stella();break;case "bayhalt":Stanley();break;case "castle":Duke();break;case "vista":Wren();break;case "lookout":Moss();break;case "rallyschool":Gwen();break;case "qgarage":Huw();break;case "qparts":Bethan();break;case "qbody":Nia();break;case "caban":Megan();break;case "slatequay":Mari();break;case "blast":Dai();break;case "farm":Giles();break;case "bwtuner":Jed();break;case "bwpub":Maggie();break;case "bwvicar":Clem();break;case "bwdairy":Peg();break;case "bwmarshal":Ted();break;case "vlpriest":Americo();break;case "vlclerk":Fatima();break;case "vlcafe":Joaquim();break;case "vlbaker":Padeira();break;case "vlfonte":Lurdes();break;default:Rowan();break;}
             return true;
         }
         void Mara()
@@ -1601,6 +1613,16 @@ namespace LittleRoad
             HybridPower.Enabled?new(){new("Race Bramblewick Lanes · C",()=>PreviewRace("bramblewick",Jed)),new("Buy parts",()=>OpenParts("bramblewick",PartsBrowser.Mode.Shop,Jed)),new("Back to the road",Close)}
                 :new(){new("Race Bramblewick Lanes · C",()=>PreviewRace("bramblewick",Jed)),new("Back to the road",Close)});   // (the hybrid prototype: Jed's crates are unpacked, docs/84)
         void Maggie()=>Show("Maggie / The Plough","Welcome to The Plough, my lover! Four hundred years of thatch, cider from the orchard up the hill, and Peg's milk float parked outside every Friday. Mind the hanging baskets on your way out.",
+            new(){new("Back to the road",Close)});
+        void Americo()=>Show("Padre Americo / Igreja Matriz","Bom dia! A chapel stood here where the cattle road crossed the ridge, long before the vines. Go round behind the church: from the adro you can see the whole valley, every terrace down to the river. The best view in Vinelands, and it costs nothing.",
+            new(){new("Back to the road",Close)});
+        void Fatima()=>Show("Dona Fatima / Pacos do Concelho","Welcome to the town hall. Permits, stamps, the clock: all mine. Rua Direita runs north to the saddle and out to Bramblewick; the Calcada winds down to the quay in nine bends. Mind the bends. I have the forms for when you don't.",
+            new(){new("Back to the road",Close)});
+        void Joaquim()=>Show("Sr. Joaquim / Cafe Central","Sit, sit! Everyone in Vinelands crosses this square by noon, so you only need to wait here to meet them. The fish van comes on Thursdays and the whole Largo smells of sardines. Glorious.",
+            new(){new("Back to the road",Close)});
+        void Padeira()=>Show("Dona Rosa / O Forno","The oven's been lit since five: broa, the corn bread, for the whole street. Everyone brings their dough and their gossip. The lanes down here are narrow, querido. Go gently.",
+            new(){new("Back to the road",Close)});
+        void Lurdes()=>Show("Tia Lurdes / Lavadouro","The spring never stops, not even in August. We wash here, we talk here. Mostly we talk. The water comes off the ridge, under the Largo, and out of that spout, cold as the sea.",
             new(){new("Back to the road",Close)});
         void Clem()=>Show("Reverend Clem / St Michael's","Bless you for stopping. That tower's been watching over the vale since before there were roads in it. Do have a look round the churchyard, and go gently past the lychgate.",
             new(){new("Back to the road",Close)});

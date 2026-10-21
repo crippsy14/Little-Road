@@ -131,6 +131,10 @@ namespace LittleRoad
                 //  the shoulders and verges: on the mesh alone the cars rode the tarmac above it, ungrounded, and couldn't turn.)
                 new GameObject("Bramblewick drivable support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
                 foreach(var surface in UnityEngine.Object.FindObjectsByType<RoadSurface>(FindObjectsSortMode.None))if(surface.GetComponent<Collider>()!=null&&surface.GetComponent<RoadSupport>()==null)surface.gameObject.AddComponent<RoadSupport>();}
+            // The Vineyard Loop (--vinelands, docs/85): the Adega's loop on the Vale, 9 m wide, on the public roads as Bramblewick's.
+            else if(trackId=="vinelands"&&Vinelands.Enabled&&Vinelands.Lap!=null){HillcrestRoute.All();RaceArea.Set(Vinelands.Lap,450);yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(Vinelands.Lap,Vinelands.LoopWidth);RenderSettings.fogDensity=.00026f;
+                new GameObject("Vinelands drivable support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
+                foreach(var surface in UnityEngine.Object.FindObjectsByType<RoadSurface>(FindObjectsSortMode.None))if(surface.GetComponent<Collider>()!=null&&surface.GetComponent<RoadSupport>()==null)surface.gameObject.AddComponent<RoadSupport>();}
             else throw new ArgumentException("Unknown trial track: "+trackId);
             if(career)Debug.Log($"LITTLE_ROAD_RACE_MARK world t={Time.realtimeSinceStartup:0.00}");   // (race entry's stages: docs/72)
             // A reversed event (docs/67) drives the same circuit the other way; the world was built from the forward route.
@@ -140,7 +144,7 @@ namespace LittleRoad
             reportTrack=trackId;Reversed=reversed;bool loose=trackId=="quarry";RoadCar.LooseRace=loose&&!freeRoam;
             // The elevated Hillcrest Raceway always races grade-aware (its context drivers could not race it
             // otherwise; the model is exactly neutral on level circuits, study 124). Elsewhere it is opt-in.
-            GradeModel.Enabled=Has("--grade-aware")||((trackId=="hillcrest"||trackId=="quarry"||trackId=="bramblewick"||trackId=="bayview"&&NewBayview.On)&&track.hasElevation);GradeModel.Physics=GradeModel.Enabled&&!Has("--grade-no-physics");
+            GradeModel.Enabled=Has("--grade-aware")||((trackId=="hillcrest"||trackId=="quarry"||trackId=="bramblewick"||trackId=="vinelands"||trackId=="bayview"&&NewBayview.On)&&track.hasElevation);GradeModel.Physics=GradeModel.Enabled&&!Has("--grade-no-physics");
             RoadCar.GateFirst=Has("--gate-first");PhysicalRecovery.RejoinAtSpeed=Has("--rejoin-at-speed");
             bool connectedModern=career&&AdventureSession.EnteredRoster?.Modern==true;
             string policy=career?(connectedModern?"racer":"legacy"):Arg("--driver-policy","legacy");
@@ -148,7 +152,7 @@ namespace LittleRoad
             // older commands means v2.
             if(policy=="context")policy="racer";
             bool bayviewStudy=Has("--bayview-transfer-study")||connectedModern;
-            if(bayviewStudy&&((career&&!connectedModern)||(trackId!="bayview"&&trackId!="hillcrest"&&trackId!="quarry"&&trackId!="bramblewick")||(policy!="legacy"&&policy!="racer")||!((field==24&&Arg("--traffic-case")=="field")||(field==RaceGrid.ClassSortCars&&Arg("--traffic-case")=="class-sort")||(field==1&&Arg("--traffic-case")=="standing-solo")||(career&&connectedModern&&field==AdventureSession.EnteredRoster.Entries.Count))))throw new ArgumentException("Bayview transfer requires explicit standalone legacy/racer standing-solo or24-car field.");
+            if(bayviewStudy&&((career&&!connectedModern)||(trackId!="bayview"&&trackId!="hillcrest"&&trackId!="quarry"&&trackId!="bramblewick"&&trackId!="vinelands")||(policy!="legacy"&&policy!="racer")||!((field==24&&Arg("--traffic-case")=="field")||(field==RaceGrid.ClassSortCars&&Arg("--traffic-case")=="class-sort")||(field==1&&Arg("--traffic-case")=="standing-solo")||(career&&connectedModern&&field==AdventureSession.EnteredRoster.Entries.Count))))throw new ArgumentException("Bayview transfer requires explicit standalone legacy/racer standing-solo or24-car field.");
             DraftingEnabled=Has("--light-drafting");
             if(DraftingEnabled&&((career&&!connectedModern)||policy!="racer"))throw new ArgumentException("Light drafting is supported only by Racing AI v2.");
             if(policy=="reference"||policy=="racer") {
@@ -158,7 +162,8 @@ namespace LittleRoad
                 // Hillcrest's line is baked from the live circuit (same method as the Bayview/Cedar seeds).
                 // Cedar Hills reuses Cedar's authored line (same layout), so only the elevation differs.
                 ReferenceLine=trackId=="cedar-hills"?new RacingLine(track,RacingLine.Transfer(track,"cedar-smooth-v2","cedar-hills")):
-                    trackId=="bramblewick"?new RacingLine(track,RacingLine.BakeSmooth(track,"bramblewick-smooth-v1",trackId,RacingLine.MaxOffsetFor(track)*.7f)):   // (the smooth bake's bound in the same proportion to its corridor as the 16 m circuits' 4 m to 5.6 m)
+                    trackId=="bramblewick"?new RacingLine(track,RacingLine.BakeSmooth(track,"bramblewick-smooth-v1",trackId,RacingLine.MaxOffsetFor(track)*.7f)):
+                    trackId=="vinelands"?new RacingLine(track,RacingLine.BakeSmooth(track,"vinelands-smooth-v1",trackId,RacingLine.MaxOffsetFor(track)*.7f)):   // (the smooth bake's bound in the same proportion to its corridor as the 16 m circuits' 4 m to 5.6 m)
                     trackId=="hillcrest"||trackId=="quarry"||trackId=="test-loop"||reversed?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+(reversed?"-reversed":"")+"-smooth-v1",trackId)):
                     trackId=="bayview"&&NewBayview.On?new RacingLine(track,RacingLine.BakeSmooth(track,"harbour-loop-smooth-v1","harbour_loop")):
                     new RacingLine(track,Arg("--racing-line","cedar-mincurve-v1"),technical==null?"bayview":technical.definition.id,technical==null?"bayview-v1":technical.definition.version);DriverPolicyId=policy=="racer"?"racer-v2":"reference-v1";
@@ -196,7 +201,7 @@ namespace LittleRoad
             if(Has("--traffic-case")&&!bayviewStudy&&!career)gameObject.AddComponent<TrafficFixture>().Setup(this,technical);
             if((!career||connectedModern)&&(Has("--shared-driver-snapshot")||ReferenceLine!=null||Has("--physical-recovery"))){DriverSnapshot=gameObject.AddComponent<RaceWorldSnapshot>();DriverSnapshot.Setup(this);}
             if(ReferenceLine!=null&&!career&&!RaceHud.Requested&&!Has("--clean-view"))gameObject.AddComponent<RacingLineOverlay>().Setup(this,cars[0].referenceProfile);
-            chase=new GameObject("Chase camera").AddComponent<Camera>();chase.tag="MainCamera";chase.fieldOfView=52;chase.nearClipPlane=.12f;chase.farClipPlane=trackId=="hillcrest"||trackId=="quarry"||trackId=="bramblewick"?6000:1800;
+            chase=new GameObject("Chase camera").AddComponent<Camera>();chase.tag="MainCamera";chase.fieldOfView=52;chase.nearClipPlane=.12f;chase.farClipPlane=trackId=="hillcrest"||trackId=="quarry"||trackId=="bramblewick"||trackId=="vinelands"?6000:1800;
             chase.gameObject.AddComponent<AudioListener>();WorldLook.Camera(chase);
             if(GrassField.Wanted)gameObject.AddComponent<GrassField>().Setup(chase);
             if(!Application.isBatchMode)WorldLook.RaceBlur();

@@ -202,6 +202,7 @@ namespace LittleRoad
             // Quarry Hills' roads follow Hillcrest's seven (docs/59): stamped, filled, planted round and bridged the same way.
             if(QuarryHills.Enabled)list.AddRange(QuarryHills.Roads(list[3].line));
             if(Bramblewick.Enabled)list.AddRange(Bramblewick.Roads(list[6].line));   // (Valley Road South, off the farm lane: docs/82)
+            if(Vinelands.Enabled)list.AddRange(Vinelands.Roads(list.Find(r=>r.name==Bramblewick.RoadName).line[^1]));   // (on from Bramblewick's gate: docs/85)
             return list.ToArray();
         }
         public static Road Find(string name){foreach(var r in All())if(r.name==name)return r;return null;}
@@ -325,11 +326,11 @@ namespace LittleRoad
         // Hillcrest's grid (x -1100..1300, z -2000..-380); with Quarry Hills (docs/59) it reaches west to -4300 and south to
         // -4000. Cells south of the valley and east of the seam aren't part of either region and stay sea floor.
         public const float Cell=2.5f;
-        public static readonly float X0=QuarryHills.Enabled?QuarryHills.West:-1100,Z0=QuarryHills.Enabled?QuarryHills.South:Bramblewick.Enabled?Bramblewick.South:-2000;
+        public static readonly float X0=QuarryHills.Enabled?QuarryHills.West:-1100,Z0=Vinelands.Enabled?Vinelands.South:QuarryHills.Enabled?QuarryHills.South:Bramblewick.Enabled?Bramblewick.South:-2000;
         // (--bramblewick: east to x 3500 for Bramblewick's vale, docs/82)
-        public static readonly int NX=Mathf.RoundToInt(((Bramblewick.Enabled?Bramblewick.East:1300)-X0)/Cell)+1,NZ=Mathf.RoundToInt((-380-Z0)/Cell)+1;
+        public static readonly int NX=Mathf.RoundToInt(((Vinelands.Enabled?Vinelands.East:Bramblewick.Enabled?Bramblewick.East:1300)-X0)/Cell)+1,NZ=Mathf.RoundToInt((-380-Z0)/Cell)+1;
         // Outside both regions: east of the seam and south of the valley (with a 160 m margin for the chunk row that straddles it).
-        public static bool Outside(float x,float z)=>x>=QuarryHills.SeamX&&z<-2160&&!(Bramblewick.Enabled&&x>1000&&z>Bramblewick.South);
+        public static bool Outside(float x,float z)=>x>=QuarryHills.SeamX&&z<-2160&&!(Bramblewick.Enabled&&x>1000&&z>Bramblewick.South)&&!Vinelands.Contains(x,z);   // (--vinelands: its district, docs/85)
         static float[] h,roadDistance;
         static float Blend(float a,float b,float x)=>Mathf.SmoothStep(0,1,Mathf.InverseLerp(a,b,x));
         public static float Raw(int i,int j){if(h==null)Build();return h[Mathf.Clamp(j,0,NZ-1)*NX+Mathf.Clamp(i,0,NX-1)];}
@@ -363,7 +364,8 @@ namespace LittleRoad
         public static float Natural(float x,float z)
         {
             float v=!QuarryHills.Enabled?ValleyNatural(x,z):x<QuarryHills.SeamX?QuarryHills.Natural(x,z):QuarryHills.Gap(x,z,ValleyNatural(x,z));
-            return Bramblewick.Enabled&&x>500?Bramblewick.Natural(x,z,v):v;   // (--bramblewick: its vale and the pass to it, docs/82)
+            v=Bramblewick.Enabled&&x>500?Bramblewick.Natural(x,z,v):v;   // (--bramblewick: its vale and the pass to it, docs/82)
+            return Vinelands.Enabled&&x>1500?Vinelands.Natural(x,z,v):v;   // (--vinelands: the ridge, the amphitheatre and the river, docs/85)
         }
         public static float ValleyNatural(float x,float z)
         {
@@ -422,6 +424,7 @@ namespace LittleRoad
             if(QuarryHills.Enabled)foreach(var (padAt,padIn,padOut,padY) in QuarryHills.Pads())Pad(padAt,padIn,padOut,padY-.12f);
             // (--bramblewick: level ground under Valley Road South's T, so its corners meet the grass: the audit's two lips)
             if(Bramblewick.Enabled){HillcrestRoute.All();var t=Bramblewick.Tee;Pad(new(t.x,t.z),16,30,t.y-.08f);foreach(var (padAt,padIn,padOut,padY) in Bramblewick.Pads())Pad(padAt,padIn,padOut,padY-.12f);}
+            if(Vinelands.Enabled){HillcrestRoute.All();foreach(var (padAt,padIn,padOut,padY) in Vinelands.Pads())Pad(padAt,padIn,padOut,padY-.12f);}
             var before=(float[])h.Clone();
             // Roads and the raceway flatten their corridors; the railway only cuts through high ground.
             var mainline=HillcrestRoute.Mainline;int portalN=Index(mainline,HillcrestRoute.PortalNorth),portalS=Index(mainline,HillcrestRoute.PortalSouth);

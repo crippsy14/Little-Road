@@ -503,7 +503,7 @@ namespace LittleRoad
             if(ValleyDetail){if(hillcrest)Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");
                 // Quarry Hills far from where the car starts is built after the town is ready (Districts, docs/72).
                 if(deferQuarry)Districts.Defer("quarry-hills",QuarryHillsSceneryRoutine(),SettleQuarryHills,Rect.MinMaxRect(QuarryHills.West-30,QuarryHills.South-30,QuarryHills.SeamX+30,1e6f));else QuarryHillsScenery();Step("quarry-hills");
-                if(Bramblewick.Enabled){Physics.SyncTransforms();new BramblewickVillage(root).Build();Step("bramblewick");}Next(.93f,"Filling the sea");yield return null;}   // (Bramblewick: docs/82, step 3)
+                if(Bramblewick.Enabled){Physics.SyncTransforms();new BramblewickVillage(root).Build();Step("bramblewick");}if(Vinelands.Enabled){Physics.SyncTransforms();new VinelandsTown(root).Build();Step("vinelands");}Next(.93f,"Filling the sea");yield return null;}   // (Bramblewick: docs/82, step 3)
             // (Prop Forge last of the building, so its runs and objects see everything placed: the quay's dressing comes with Hillcrest)
             if(island&&PropForge.Enabled&&!NewBayview.On){Physics.SyncTransforms();PropForgeBayview.Build(this,root);Step("prop-forge");}
             Lap("settle start");Debug.Log("LITTLE_ROAD_RAILS_TRIMMED "+(deferQuarry?TrimRails(p=>!NearQuarryHills(p)):TrimRails()));   // (rails and junction corner walls in front of buildings; every build)

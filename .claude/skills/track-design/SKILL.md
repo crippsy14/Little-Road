@@ -190,7 +190,16 @@ print('hull ratio',sum(math.dist(lap[i],lap[i-1]) for i in range(len(lap)))/hull
 ```
 For macro turning, smooth the points (a moving average over ±40 m) and sum |Δheading|.
 
-**Loop:** edit the pieces, run the tool, and plot the points (any quick PNG; look at it every round). Adjust until all metrics sit in the band for the track type and class, the solved L1/L2 are sensible, and the issues list is empty.
+**Other track types:**
+- `--loop`: a closed circuit made only of pieces, with no street and no junction turns. Pass `--start=0,0 --target=0,0 --heading H`. It checks that the lap closes on its start heading, and merges the wrap-round straight.
+- `--p2p`: a point-to-point road, such as a hill climb. It does no closure and no L1/L2 solve. `--climb <m>` reports the average gradient.
+- Write negative values with `=`, as in `--start=0,0 --land=-2000,2000,-2000,2000`, or argparse rejects them.
+
+**Plot:** `powershell -ExecutionPolicy Bypass -File tools/track-plot.ps1 review/tmp/mine.json` draws the line, its start and its labelled markers on a 100 m grid.
+
+**Choosing L1 and L2 in a loop:** a loop's two long legs run nearly opposite, so solving them both explodes (a negative length). Solve the main straight and a leg about 90–110° from it instead, and fix the rest. Vinelands' Vineyard Loop took 12 rounds to learn this.
+
+**Loop:** edit the pieces, run the tool, and plot the points (look at the plan every round). Adjust until all metrics sit in the band for the track type and class, the solved L1/L2 are sensible, and the issues list is empty.
 
 Then write the design up with:
 - a corner table: name, deflection, radius, purpose, approach/apex/exit speeds, camber, elevation;
@@ -237,6 +246,6 @@ These are what the first track built with this skill taught; docs/82 has the ful
 - **Kerbs are paint, not obstacles.** 10 cm solid kerbs stopped cars dead. Make them visual and flush (0.04 m, no collider).
 - **Keep the run-off clear.** Board posts stand at half+4.2 or beyond, or are non-solid. Give bale walls enough length to catch the whole outside of a heavy braking zone.
 - **Open the banks round landmarks.** Build landmarks first, then the hedge banks, which skip each one. Otherwise the bank hides the barn or beacon the corner is named for.
-- **Boards are sized to their words.** Use width = letters × 0.36 + 1 m, a 1.05 m tall face on 2.9 m posts, standing above the bank just off the shoulder. Use near-black text on bright cream. Turn the text with `LookRotation(toward)` or it reads mirrored.
+- **Boards are sized to their words.** Use width = letters × 0.36 + 1 m, a 1.05 m tall face on 2.9 m posts, standing above the bank just off the shoulder. Use cream words on a dark green board: the text is unlit, so dark text on a cream board washed out in shade (launch round 7). Turn the text with `LookRotation(toward)` or it reads mirrored.
 - **Grounding:** the AI only grounds on surfaces with `RoadSupport`; a new circuit's road surfaces need it.
 - **Rounds:** build → audit (`--area-audit`) → views plus race photos (`--race-photos`) → one cheap reviewer → fix must-fix items → repeat until LAUNCH-READY. Delete each round's photos once they've been reviewed.

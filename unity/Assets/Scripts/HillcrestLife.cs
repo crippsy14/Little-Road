@@ -59,6 +59,18 @@ namespace LittleRoad
                     go.AddComponent<RoadCruiser>().Setup(cl,40,cl.Length-40,Mathf.Lerp(40,cl.Length-40,.3f+.4f*i),i*2-1,player);
                     var chatter=go.AddComponent<NpcChatter>();chatter.speaker=i==0?"Bert":"Ivy";chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=laneSays;}
             }
+            // Vinelands' traffic (--vinelands, docs/86): up and down Rua Direita, the Calcada's bends, the Mirante road, the river road.
+            if(Vinelands.Enabled) {
+                string[] says={"Bom dia! Mind the cobbles, they're older than my gearbox.","Off to the Cais? The ferry waits for nobody.","Beep! The Calcada has nine bends. I count them every day.","Fish van's on the Largo Thursday. Sardinhas!","Devagar, devagar! Slowly! The lanes are narrow."};
+                string[] who={"Ze","Graca","To","Lena","Nuno"};var vrng=new System.Random(93);
+                var vroads=new[]{(Vinelands.RuaDireitaName,15f,15f),(Vinelands.CaisRoadName,25f,25f),(Vinelands.CaisRoadName,25f,25f),(Vinelands.MiranteName,20f,20f),(Vinelands.RiverRoadName,40f,40f)};
+                for(int i=0;i<vroads.Length;i++) {
+                    var road=HillcrestRoute.Find(vroads[i].Item1);if(road==null)continue;float from=vroads[i].Item2,to=road.Length-vroads[i].Item3;Color paint=PaintCatalog.All[vrng.Next(PaintCatalog.Standard)].color;
+                    var go=TrialWorld.Car(new[]{"beetle","pebble","postvan","ritz","bubble"}[i],paint);go.name="Vinelands traffic "+i;go.transform.SetParent(root);
+                    go.AddComponent<RoadCruiser>().Setup(road,from,to,Mathf.Lerp(from,to,(float)vrng.NextDouble()),vrng.Next(2)*2-1,player);
+                    var chatter=go.AddComponent<NpcChatter>();chatter.speaker=who[i];chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=says;
+                }
+            }
             // Quarry Hills' traffic (--quarry-hills): the town's streets, and Dai's dumper grinding up and down the haul road.
             if(QuarryHills.Enabled) {
                 string[] welsh={"Bore da! Mind the slate dust!","Iawn? Off to the Caban?","Wrong side of the road, butt!","Chapel's at six. Don't be late!","Seen the Blondin running? Lush.","Rain later. Always is.","Hwyl fawr! See you at the quay!"};
@@ -87,6 +99,7 @@ namespace LittleRoad
             var lk=HillcrestRoute.Lookout;spots.Add((lk+new Vector3(-9,0,-6),40));spots.Add((HillcrestRoute.Vista+new Vector3(-8,0,-6),150));
             spots.AddRange(QuarryFloor.Parking); // outside the rally school (--quarry-hills)
             spots.AddRange(BramblewickVillage.Parking);   // (--bramblewick: by the green, outside The Plough, the vale's lay-bys, the dairy yard)
+            spots.AddRange(VinelandsVila.Parking);   // (--vinelands: round the Largo's edge, docs/86)
             parkRng=new System.Random(41);Park(root,spots);
             // (Quarry Hills built in the background: its cars park once it's there, carrying on the same draws: Districts.)
             if(Districts.Waiting("quarry-hills"))Districts.WhenBuilt("quarry-hills",()=>Park(root,new List<(Vector3,float)>(QuarryFloor.Parking)));

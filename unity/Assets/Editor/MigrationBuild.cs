@@ -165,6 +165,7 @@ public static class MigrationBuild
         evidence.checks.AddRange(RacerChecks.Run());
         evidence.checks.AddRange(DrivetrainChecks.Run());
         evidence.checks.AddRange(HybridChecks.Run());
+        evidence.checks.AddRange(VinelandsChecks.Run());
         evidence.checks.AddRange(RoadNetworkChecks.Run());
         evidence.checks.AddRange(PrototypeChecks.Run());
         evidence.checks.AddRange(DukeDriveChecks.Run());

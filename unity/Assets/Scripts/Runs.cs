@@ -101,6 +101,8 @@ namespace LittleRoad
         }
         static Vector3 Foot(Vector3 p)=>new(p.x,Ground.Surface(p.x,p.z),p.z);
         public static Vector3 Right(Vector3 t)=>new(t.z,0,-t.x);
+        // Whether a kit can be laid as a run (it has the run roles Solve asks for: a middle span, nodes, ends, gate posts).
+        public static bool Runnable(string kit){var k=PropKit.Load(kit);if(k?.file?.pieces==null)return false;var roles=new HashSet<string>();foreach(var p in k.file.pieces)roles.Add(p.role);return roles.Contains("middle")&&roles.Contains("node")&&roles.Contains("end")&&roles.Contains("gate_post");}
         public static string Role(PropKit kit,string role)
         {
             foreach(var p in kit.file.pieces)if(p.role==role)return p.name;

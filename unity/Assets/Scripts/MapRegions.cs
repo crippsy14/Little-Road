@@ -41,6 +41,14 @@ namespace LittleRoad
                 for(int k=0;k<32;k++){float a=k*Mathf.PI*2/32;vale.outline.Add(Bramblewick.Centre+new Vector2(Mathf.Sin(a),Mathf.Cos(a))*950);}
                 list.Add(bramble);list.Add(vale);
             }
+            // Vinelands (docs/85): the vila, and the district round it (the amphitheatre, the river, the Vale).
+            if(Vinelands.Enabled) {
+                var vila=new Region{id="vinelands",kind="town",name="Vinelands",blurb="Wine town · the amphitheatre · the Cais",colour=Toy.Hex(0x9b2f45),contains=Vinelands.Core};
+                for(int k=0;k<32;k++){float a=k*Mathf.PI*2/32;vila.outline.Add(Vinelands.Centre+new Vector2(Mathf.Sin(a),Mathf.Cos(a))*460);}
+                var vines=new Region{id="vinelands-valley",name="The Vinelands",blurb="Terraces · the river · the Vale",colour=Toy.Hex(0xb9a24f),contains=(x,z)=>Vinelands.Contains(x,z)&&!Vinelands.Core(x,z)&&!(Bramblewick.Enabled&&Bramblewick.Contains(x,z))};   // (Bramblewick's vale stays Bramblewick's: its audit counted its own lamps and residents as ours)
+                for(int k=0;k<32;k++){float a=k*Mathf.PI*2/32;vines.outline.Add(Vinelands.Centre+new Vector2(Mathf.Sin(a),Mathf.Cos(a))*Vinelands.Radius);}
+                list.Insert(0,vines);list.Insert(0,vila);
+            }
             list.Add(bay);list.Add(town);list.Add(valley);return list;
         }
         public static Region At(Vector3 p){foreach(var r in All)if(r.contains(p.x,p.z))return r;return All[^1];}
