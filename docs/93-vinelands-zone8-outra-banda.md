@@ -1,7 +1,7 @@
 # 93. Vinelands, Zone 8: the Outra Banda, the far bank (brief and status, 22 October 2026)
 
 The last zone of the rebuild (docs/85), from the town plan (section 5, "Far bank"). Frame as in docs/86. Built behind
-`--vinelands`. **Status: built; land and circuit fixes in round 4.** The races wait for Richard's go.
+`--vinelands`. **Status: built (round 6).** The races wait for Richard's go.
 
 ## What it is
 The far bank is the view the whole town looks at. It holds:
@@ -52,6 +52,21 @@ The far bank is the view the whole town looks at. It holds:
    - The long lap leaves the short lap at a narrow angle. Its junction's level patch reached 45 m down the lap, which
      fell 2 m under it. Both arms are now level for 50 m there.
 
+5. **Seen in round 4.** The river now runs north out to the sea between the hills. The aerial view showed the river
+   road's north stub running 250 m out on a sand spit into the sea.
+   - Ending the road at the entry road's T made a two-armed corner that stood 2.4 m off the beach.
+   - It now ends on the beach, 60 m past the T.
+6. **The long lap's fork.** Both arms are now dead level for their first 40 m, then blend into their landings over
+   20 m. The fork's 0.3 m step is gone.
+
+Audit after round 6:
+- The circuit has no seams.
+- Five small junction seams remain on town roads (0.07–0.17 m).
+- Six lips and two banks remain in the grass wedge between the fork's arms, away from the racing line.
+- Five other lips are older, from zones 4 and 6 (the Portela, the Casal do Meio junction, and the river's north T).
+- The headland at the far bank's north end, by the river's mouth, is steep and dark-shaded. It reads as a headland and
+  is left as it is.
+
 ## Race wiring (behind `--vinelands`)
 - **Class C:** the Circuito da Cumeada, three laps of the short lap, 3★ (docs/70's Vineyard Loop).
 - **Class B:** the Cumeada Tuners, three laps of the long lap, 2★ (docs/70's Vineyard Tuners).
@@ -59,7 +74,6 @@ The far bank is the view the whole town looks at. It holds:
   returns to the start line. Both events are tagged in `docs/data/race-stars.json`.
 
 ## Next
-1. Check round 4 (`vl-z8d`): the river north and its mouth, the long lap's junction, and the audit.
-2. Race both laps (study 247, `tools/run-frame-cost.ps1 -Track vinelands|vinelands-long`). Then the AI sweep at skills
+1. Race both laps (study 247, `tools/run-frame-cost.ps1 -Track vinelands|vinelands-long`). Then the AI sweep at skills
    3, 7, 10 and 13 (Bramblewick's launch bar: 12 out of 12 races with 24/24 finishing).
-3. Clear the audit's last lips and seams, which are small junction seams of 0.07–0.14 m in places.
+2. Clear the audit's last lips and seams (listed above).
