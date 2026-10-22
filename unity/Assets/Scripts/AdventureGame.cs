@@ -1677,8 +1677,9 @@ namespace LittleRoad
             new(){new("Back to the road",Close)});
         void Sofia()=>Show("Engenheira Sofia / Adega Cooperativa","Founded in fifty-six: four hundred growers who couldn't each afford a lagar. In September the tractors queue down the Estrada do Meio from dawn, we weigh every load on the bascula, and the tanks fill for a month. The bottling plant across the road ships it all over the bridge.",
             new(){new("Back to the road",Close)});
-        void Rogerio()=>Show("Sr. Rogerio / Clube Automovel da Cumeada","Farm lanes six days a week, a circuit on the seventh. The short lap is the club's, three laps for the little cars: Recta da Eira, the Eira Velha, over the Lomba, round by the Carvalhal, down the esses to the Gancho, and the chicane by the brook. The long lap takes the montado road through the cork oaks: that one's for the quick classes when they come. The race calendar's being drawn up.",
-            new(){new("Back to the road",Close)});
+        void Rogerio()=>Show("Sr. Rogerio / Clube Automovel da Cumeada","Farm lanes six days a week, a circuit on the seventh. The short lap is the club's, three laps for the little cars: Recta da Eira, the Eira Velha, over the Lomba, round by the Carvalhal, down the esses to the Gancho, and the chicane by the brook. The long lap takes the montado road through the cork oaks: that one's for the Tuners, once you've a class B car.\n"+RaceCalendar.Progress(Store.Data),
+            RogerioChoices());
+        List<AdventureUI.Choice> RogerioChoices(){var c=new List<AdventureUI.Choice>{new("Race the Circuito da Cumeada · C",()=>PreviewRace("vinelands",Rogerio))};AddTunerRaces(c,"vinelands-long",Rogerio);c.Add(new("Back to the road",Close));return c;}
         void Ilda()=>Show("Dona Ilda / Aldeia da Outra Banda","Twenty houses and eight of us all year: the rest are in France and Lisbon, and every one of them comes home for the festa of Sao Goncalo in August. Then the bunting goes up, the band crosses Ponte Nova, and you can hear us in the Largo. Look across the river from here: the whole town, every terrace, every window.",
             new(){new("Back to the road",Close)});
         void CorvoMan()=>Show("Sr. Joaquim Corvo / Quinta do Corvo","My grandfather's house. The roof went in sixty-two and nobody had the money to put it back. I come over the bridge on Saturdays and work the three hectares I've replanted. The fig in the yard was here before any of us; the Corvos are named after the crows that sit in it.",
@@ -1841,7 +1842,7 @@ namespace LittleRoad
             choices.Add(new("Back to the road",Close));Show("Pip / Lighthouse Post","You found the lighthouse! Some drivers only see the road. Others find the little places beside it. Keep an eye out for Bayview postcards."+photos,choices);
         }
         void Rowan()=>Show("Rowan / The Daily Mile","Bayview Coast · Class C · 24 cars · 3 laps\nEvery valid finish pays 100–500 credits. Rival equipment stays fixed as you improve your car. Across the causeway, Hillcrest Raceway's Valley Cup is a quicker Class C race for bigger prizes.\n"+RaceCalendar.Progress(Store.Data),new(){new("Race Bayview Coast · C",()=>PreviewRace("bayview")),new("Back to the road",Close)});
-        void PreviewRace(string track)=>PreviewRace(track,track=="hillcrest"?Vito:track=="quarry"?Gwen:track=="bramblewick"?Jed:Rowan);
+        void PreviewRace(string track)=>PreviewRace(track,track=="hillcrest"?Vito:track=="quarry"?Gwen:track=="bramblewick"?Jed:track=="vinelands"?Rogerio:Rowan);
         // Class B (docs/67): once it opens, each town's garage offers its Tuner races, easiest first, with their stars
         // and a tick for those you've won (each win's stars count once towards the Tuner parts).
         // The Tuner Garage (docs/67): at every town's garage bay once class B is open. The free Tuner first (a choice of
@@ -1892,6 +1893,7 @@ namespace LittleRoad
                 if(valley&&PitStop.Hosts.TryGetValue("hillcrest/garage",out var host)){AdventureSession.ReturnSpot=GarageForecourt(host);AdventureSession.ReturnYaw=host.yaw;}
                 else if(track=="quarry"&&QuarryHillsTown.Spots.TryGetValue("rallyschool",out var gwen)){AdventureSession.ReturnSpot=gwen.at+new Vector3(0,0,-8);AdventureSession.ReturnYaw=90;}
                 else if(track=="bramblewick"&&Bramblewick.Lap!=null){var at=Bramblewick.Lap[0];var on=Bramblewick.Lap[3]-at;AdventureSession.ReturnSpot=at;AdventureSession.ReturnYaw=Mathf.Atan2(on.x,on.z)*Mathf.Rad2Deg;}   // (on the start line, facing the way the race runs)
+                else if(track.StartsWith("vinelands")&&Vinelands.Lap!=null){var at=Vinelands.Lap[0];var on=Vinelands.Lap[3]-at;AdventureSession.ReturnSpot=at;AdventureSession.ReturnYaw=Mathf.Atan2(on.x,on.z)*Mathf.Rad2Deg;}
                 else AdventureSession.ReturnSpot=null;
                 SaveExplored();AdventureSession.StartRace(roster);}),()=>{ui.SetVisible(true);back();});
         }

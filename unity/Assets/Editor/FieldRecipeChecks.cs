@@ -37,7 +37,7 @@ public static class FieldRecipeChecks
         foreach(int serial in new[]{0,1,2}) {
             save.raceSerial=serial;save.settledSerial=serial;
             var rosters=new List<(RaceRoster r,string cls,int stars,string disc)>{
-                (RaceRoster.Adventure(save,true,true),"C",1,"road"),(RaceRoster.AdventureHillcrest(save,true,true),"C",2,"road"),(RaceRoster.AdventureQuarry(save,true,true),"C",3,"gravel"),(RaceRoster.AdventureBramblewick(save,true,true),"C",2,"road")};
+                (RaceRoster.Adventure(save,true,true),"C",1,"road"),(RaceRoster.AdventureHillcrest(save,true,true),"C",2,"road"),(RaceRoster.AdventureQuarry(save,true,true),"C",3,"gravel"),(RaceRoster.AdventureBramblewick(save,true,true),"C",2,"road"),(RaceRoster.AdventureVinelands(save,true),"C",3,"road")};
             foreach(var ev in RaceCalendar.Every.Where(e=>e.raceClass=="B"))rosters.Add((RaceRoster.AdventureTuner(save,ev,true,true),"B",ev.stars,FieldRecipe.Discipline(ev.track)));
             foreach(var (roster,cls,stars,disc) in rosters) {
                 var (lo,hi)=FieldRecipe.DriverBand(cls);var ai=roster.Entries.Skip(1).ToList();

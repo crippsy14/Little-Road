@@ -282,7 +282,7 @@ namespace LittleRoad
                 var a=r[i-1];var ab=r[i]-a;float seg=ab.magnitude;var dir=ab/seg;var across=new Vector2(-dir.y,dir.x)*70;
                 for(float u=0;u<=seg;u+=8) {
                     var f=a+ab*(u/seg);var w=Vinelands.Centre+f;if(f.magnitude>Vinelands.Radius-120)continue;
-                    var l=w-across;var rr=w+across;int k=v.Count;v.Add(new Vector3(l.x,Vinelands.Water,l.y));v.Add(new Vector3(rr.x,Vinelands.Water,rr.y));
+                    var l=w-across;var rr=w+across;int k=v.Count;float y=Vinelands.WaterAt(f);v.Add(new Vector3(l.x,y,l.y));v.Add(new Vector3(rr.x,y,rr.y));
                     if(k>=2){t.AddRange(new[]{k-2,k-1,k,k-1,k+1,k});}   // (clockwise from above: round 2's faced down and was culled)
                 }
             }

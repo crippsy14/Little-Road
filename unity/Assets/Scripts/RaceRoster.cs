@@ -70,7 +70,7 @@ namespace LittleRoad
                 entries[i]=new RaceEntrant(i,RaceGrid.TrialSlot(i,count,scenario),body,paint,equipment,EquipmentCatalog.TestLoadout(equipment),
                     driverMode==null?null:DriverIdentity.ForRace(i,seed,driverMode,form));
             }
-            return new RaceRoster(seed,laps,track,track=="bayview"?"BAYVIEW COAST":track=="hillcrest"?"HILLCREST RACEWAY":track=="quarry"?"QUARRY HILLS RALLYCROSS":track=="bramblewick"?"BRAMBLEWICK LANES":"CEDAR TECHNICAL",driverMode!=null,entries);
+            return new RaceRoster(seed,laps,track,track=="bayview"?"BAYVIEW COAST":track=="hillcrest"?"HILLCREST RACEWAY":track=="quarry"?"QUARRY HILLS RALLYCROSS":track=="bramblewick"?"BRAMBLEWICK LANES":track.StartsWith("vinelands")?"CIRCUITO DA CUMEADA":"CEDAR TECHNICAL",driverMode!=null,entries);
         }
         public static readonly Color FlagshipPaint=new(.05f,.22f,.62f);
         // The Duke's Challenge (docs/54; Richard, 2 Oct: "a great full circle moment at the end of the game... beat him
@@ -147,6 +147,13 @@ namespace LittleRoad
             var trial=Trial(24,3,seed,"bramblewick","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
             return Recipe(save,"bramblewick","C",RaceCalendar.StarsOf("bramblewick"),trial,seed,3,"bramblewick",false,"BRAMBLEWICK LANES / CLASS C",modern,CarBodies.Family,CarBodies.Sporty);
         }
+        // The Circuito da Cumeada (--vinelands, docs/92): class C, 3★, three laps of the club's short lap round the Vale.
+        public static RaceRoster AdventureVinelands(AdventureProgress save,bool modern=true)
+        {
+            save.Validate();int seed=1709+(save.raceSerial+1)*11;
+            var trial=Trial(24,3,seed,"vinelands","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
+            return Recipe(save,"vinelands","C",RaceCalendar.StarsOf("vinelands"),trial,seed,3,"vinelands",false,"CIRCUITO DA CUMEADA / CLASS C",modern,CarBodies.Family,CarBodies.Sporty);
+        }
         // Class B events (docs/67): the field on the event's star kit, the front of the grid a star up and the back a star
         // down; sporty bodies on tarmac, the off-roaders (on B rally tyres) at the rallycross; laps and direction from
         // the calendar. The field is the Tuner bodies: the road ones on tarmac, off-road and rally ones on gravel.
@@ -219,7 +226,7 @@ namespace LittleRoad
         public static RaceRoster ForEvent(string id,AdventureProgress save)
         {
             if(RaceCalendar.Known(id)){var ev=RaceCalendar.Get(id);if(ev.raceClass=="B")return AdventureTuner(save,ev);}
-            return id=="hillcrest"?AdventureHillcrest(save):id=="quarry"?AdventureQuarry(save):id=="bramblewick"?AdventureBramblewick(save):Adventure(save);
+            return id=="hillcrest"?AdventureHillcrest(save):id=="quarry"?AdventureQuarry(save):id=="bramblewick"?AdventureBramblewick(save):id=="vinelands"?AdventureVinelands(save):Adventure(save);
         }
         public bool MatchesPlayer(AdventureProgress save)
         {

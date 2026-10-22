@@ -311,7 +311,7 @@ namespace LittleRoad
                     net.Connect(vr.name,on.ToArray(),vr.width,.022f,nE,nSaddle);
                     var nAdega=net.Add(en.line[Vinelands.EntryMeioT]);   // (the Adega's junction, where the Estrada do Meio arrives: zone 4, docs/89)
                     net.Connect(en.name,en.line[si..(Vinelands.EntryMeioT+1)],en.width,.022f,nSaddle,nAdega);net.Connect(en.name,en.line[Vinelands.EntryMeioT..],en.width,.022f,nAdega,nRiverN,minorEnd:true);
-                    net.Connect(rr.name,rr.line[..(ni+1)],rr.width,.022f,null,nRiverN);
+                    if(ni>0)net.Connect(rr.name,rr.line[..(ni+1)],rr.width,.022f,null,nRiverN);
                     net.Connect(rr.name,rr.line[ni..(ci+1)],rr.width,.022f,nRiverN,nCais);
                     {int pi=Vinelands.PonteRiverT;var nPonte=net.Add(rr.line[pi]);var pn=HillcrestRoute.Find(Vinelands.PonteName);   // (Ponte Nova leaves the river road south of the Cais, docs/88)
                         int ki=Vinelands.RiverClimbT;var nClimb=net.Add(rr.line[ki]);var cl5=HillcrestRoute.Find(Vinelands.ClimbName);   // (the Seis Voltas leaves the river road at the Veiga: zone 5)

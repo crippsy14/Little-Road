@@ -32,6 +32,9 @@ namespace LittleRoad
         public static bool Contains(float x,float z)=>Enabled&&(new Vector2(x,z)-Centre).sqrMagnitude<Radius*Radius;
         public static bool Core(float x,float z)=>Enabled&&(new Vector2(x,z)-Centre).sqrMagnitude<460*460;   // (the vila: the Largo, its three streets and the Pit Stop at the town gate)
         static float S(float a,float b,float x)=>Mathf.SmoothStep(0,1,Mathf.InverseLerp(a,b,x));
+        // The river's surface at a frame point: Water through the district, falling to the sea over its last 180 m before the
+        // coast (rapids into the bay; at Water to the edge it hung 18 m over the beach, zone 8 round 3).
+        public static float WaterAt(Vector2 f)=>Mathf.Lerp(Water,CoastalLandscape.SeaLevel+.3f,S(1380,1560,f.magnitude));
 
         // ---- the working slope's parcels (zone 4, docs/89; the town plan section 5): who owns each piece of the amphitheatre,
         // and so what grows there. First match wins (the abandoned corners inside the quintas' parcels come first).
@@ -89,7 +92,7 @@ namespace LittleRoad
             var p=F(x,z);float d=p.magnitude;
             if(d>Radius+50){float dB0=Vector2.Distance(new(x,z),Bramblewick.Centre);return x<2300?valley:Mathf.Lerp(-40,valley,1-S(1350,1550,dB0));}
             float n1=Mathf.PerlinNoise((x+900)*.004f,(z+4100)*.004f),n2=Mathf.PerlinNoise(x*.019f+7,z*.019f+19),n3=Mathf.PerlinNoise(x*.0028f+3,z*.0028f+41);
-            float ra=AtN(River,p.y);var (ca,hc)=CrestAt(p.y);float h;float bowl=S(-650,-850,p.y)*S(-450,-250,p.x);float entr=S(760,900,p.y)*S(560,720,p.x);float farb=p.x>=ra?S(-650,-450,p.y)*(1-S(450,650,p.y)):0;   // (the far bank facing the town, zone 8: no rim wall over it)   // (the south bowl: the Seis Voltas, zone 5; the Entroncamento, zone 6)
+            float ra=AtN(River,p.y);var (ca,hc)=CrestAt(p.y);float h;float bowl=S(-650,-850,p.y)*S(-450,-250,p.x);float entr=S(760,900,p.y)*S(560,720,p.x);float farb=S(-100,-40,p.x-ra)*S(-650,-450,p.y)*(1-S(450,650,p.y));   // (the far bank facing the town, zone 8: no rim wall over it)   // (the south bowl: the Seis Voltas, zone 5; the Entroncamento, zone 6)
             if(p.x>=ra)h=Water+140*S(0,700,p.x-ra)*(.75f+.5f*n3)*(1-.75f*S(1100,1600,d))+(n2-.5f)*3;   // (the far bank, lower towards the coast: round 1's 200 m cliff into the sea)
             else if(p.x>=ca) {   // (the amphitheatre, stepped into terraces)
                 float s=(p.x-ca)/Mathf.Max(1,ra-ca);s=1-s;h=Water+(hc-Water)*(s*(.55f+.45f*s))+(n2-.5f)*2.5f;
@@ -102,15 +105,19 @@ namespace LittleRoad
             }
             // The river: about 100 m bank to bank and 5 m deep (round 1's 40 m ditch hid its water), its banks a metre or two
             // over the water before the slopes rise.
-            float dr=RiverDistance(p);bool channel=dr<100;if(channel)h=Mathf.Lerp(Water-5,Mathf.Max(h,Water+1.5f),S(45,100,dr));
+            float dr=RiverDistance(p),wl=WaterAt(p);bool channel=dr<100;if(channel)h=Mathf.Lerp(wl-5,Mathf.Max(h,wl+1.5f),S(45,100,dr));
             // Rim hills round the district (none towards Bramblewick, whose own hills frame that side); the river leaves
             // through gaps in them.
             float dB=Vector2.Distance(new(x,z),Bramblewick.Centre);
             // (none over the south bowl, the Seis Voltas' slope from the river to the knoll: zone 5 found its start on the rim, docs/90)
             // (nor over the Entroncamento, the co-op quarter by the river road: zone 6 found it in a 100 m cutting through the rim and the vale's hills)
-            if(!channel)h+=55*S(1250,1500,d)*(1-S(1500,1750,d))*S(1000,1600,dB)*(.7f+.6f*n3)*(1-bowl)*(1-entr)*(1-farb);
+            // (rising from the banks over 200 m: switched on at the channel's edge they stood as a cliff up to 55 m tall along
+            // both banks, the dark scars across the far bank and the sea gap, zone 8 round 2)
+            h+=55*S(100,300,dr)*S(1250,1500,d)*(1-S(1500,1750,d))*S(1000,1600,dB)*(.7f+.6f*n3)*(1-bowl)*(1-entr)*(1-farb);
             // Towards Bramblewick the district blends into its vale.
-            h=Mathf.Lerp(h,valley,S(1100,1500,d)*(1-bowl)*(1-entr)*(1-farb));
+            // (not in the river's channel: blended up to the vale's height it buried the river under a hill north of the Aldeia,
+            // its water ending in a straight edge, zone 8 round 3)
+            h=Mathf.Lerp(h,valley,S(1100,1500,d)*(1-bowl)*(1-entr)*(1-farb)*S(70,170,dr));
             // The coast: land only within the district or Bramblewick's hills (east of Bramblewick, the valley's own land
             // beyond them would stand on the sea floor, round 1's floating slab); everything falls to the sea bed by the edge.
             float land=Mathf.Max(1-S(1450+220*bowl,Radius,d),   // (the bowl's land reaches the river at the Seis Voltas' start)
@@ -273,8 +280,9 @@ namespace LittleRoad
         {
             var list=new List<HillcrestRoute.Road>();Marks.Clear();Lap=null;
             Largo=OnGround(Vector2.zero);Cais=OnGround(new Vector2(960,0));
-            // the river road, north to south
-            var rline=QuarryHills.Profile(Ground(new Vector2(1173,1320)),Wv((1131,1070),(1085,800),(1011,400),(965,150),(973,0),(995,-400),(1075,-800),(1115,-1000)),Ground(new Vector2(1089,-1320)),.06f,30,0);
+            // the river road, north to south, from the beach at the river's mouth: 60 m past the entry road's T (on to a 1173 n 1320
+            // it ran out on a sand spit into the sea; ending at the T, the two-armed corner stood 2.4 m off the beach, zone 8 rounds 4-5)
+            var rline=QuarryHills.Profile(Ground(new Vector2(1143,1128)),Wv((1131,1070),(1085,800),(1011,400),(965,150),(973,0),(995,-400),(1075,-800),(1115,-1000)),Ground(new Vector2(1089,-1320)),.06f,30,0);
             var river=HillcrestRoute.Make(RiverRoadName,rline,7.5f,11,30);   // (11 m level each side: the Passeio and the quay stand on it, docs/88)
             RiverNorthT=VertexNear(rline,new Vector2(1131,1070));RiverCaisT=VertexNear(rline,new Vector2(973,0));Cais=rline[RiverCaisT];
             QuayPads=new Vector3[7];for(int k=0;k<7;k++){float qn=-60+20*k;var w=W(986,qn);QuayPads[k]=new Vector3(w.x,rline[VertexNear(rline,new Vector2(973,qn))].y,w.y);}
@@ -386,20 +394,34 @@ namespace LittleRoad
             // need 12 % and broke into 6 m steps, round 3)
             var lapWhole=QuarryHills.Profile(Ground(new Vector2(-470,-260)),cw,Ground(new Vector2(-470,-260)),.08f,30,0);
             Vector3 At(int ci){var f=cfp[ci];var w=W(f.x,f.y);var q=lapWhole[VertexNear(lapWhole,f)];return new Vector3(w.x,q.y,w.y);}
+            // (and each within what its piece can climb from the last: 8 % less its two 1 % landings. On the whole lap's grade the
+            // main straight needed 19 m in 240 m, its profile ended in a 2 m step at both ends and the whole grid stuck, zone 8's race)
+            var hj=new float[4];var lc=new float[4];for(int c=0;c<4;c++){hj[c]=At(cuts[c]).y;for(int i=cuts[c]+1;i<=cuts[c+1];i++)lc[c]+=Vector2.Distance(cfp[i],cfp[i-1]);}
+            // (the long lap leaves at a narrow angle and its fillet reaches 45 m down the lap: both arms level for 50 m there, as the
+            // lap fell 2 m under the junction's level patch, round 3)
+            const float WideLanding=50;float Land(int c)=>c==2?WideLanding:20;
+            float Climb(int c)=>.85f*(QuarryHills.LandingGrade*2*Land(c)+.08f*Mathf.Max(0,lc[c]-2*Land(c)));
+            for(int it=0;it<12;it++){for(int c=0;c<3;c++)hj[c+1]=Mathf.Clamp(hj[c+1],hj[c]-Climb(c),hj[c]+Climb(c));for(int c=3;c>=1;c--){float nx=c==3?hj[0]:hj[c+1];hj[c]=Mathf.Clamp(hj[c],nx-Climb(c),nx+Climb(c));}}
             for(int c=0;c<4;c++) {
                 var via=new List<Vector2>();for(int i=cuts[c]+1;i<cuts[c+1];i++)via.Add(W(cfp[i].x,cfp[i].y));
-                var from=c==0?At(0):lapPts[^1];var to=c==3?lapPts[0]:At(cuts[c+1]);
-                var seg=QuarryHills.Profile(from,via.ToArray(),to,.08f,30,20);for(int i=c==0?0:1;i<seg.Length;i++)lapPts.Add(seg[i]);
+                var from=c==0?At(0):lapPts[^1];var to=c==3?lapPts[0]:At(cuts[c+1]);to.y=c==3?to.y:hj[c+1];
+                var seg=QuarryHills.Profile(from,via.ToArray(),to,.08f,30,Land(c));for(int i=c==0?0:1;i<seg.Length;i++)lapPts.Add(seg[i]);
             }
             var lapLine=lapPts.ToArray();
             var lapL=new List<Vector3>(lapLine);lapL.RemoveAt(lapL.Count-1);Lap=lapL.ToArray();
             LapVale=VertexNear(Lap,new Vector2(-470,-20));LapA=VertexNear(Lap,new Vector2(-829,-30));LapB=VertexNear(Lap,new Vector2(-575,-301));
             var efp=Pieces(ExtSpec,-829,-30,265,CircuitMarks);var ew=new List<Vector2>();for(int i=1;i<efp.Count;i++)ew.Add(W(efp[i].x,efp[i].y));
             {var a=ew[^1];var b=new Vector2(Lap[LapB].x,Lap[LapB].z);int k=Mathf.CeilToInt(Vector2.Distance(a,b)/5);for(int i=1;i<k;i++)ew.Add(Vector2.Lerp(a,b,i/(float)k));}
-            var extLine=QuarryHills.Profile(Lap[LapA],ew.ToArray(),Lap[LapB],.08f,25,20);
+            var extLine=QuarryHills.Profile(Lap[LapA],ew.ToArray(),Lap[LapB],.08f,25,WideLanding);
+            // (both arms dead level for their first 40 m, then into their 1 % landings over 20 m: the junction's level patch reaches
+            // 45 m down the narrow fork, and on the landing its edge stood 0.3 m proud of the arm, round 5)
+            void Level(Vector3[] line,int from){float y0=line[from].y,run=0;for(int i=from+1;i<line.Length&&run<60;i++){run+=Vector2.Distance(new(line[i].x,line[i].z),new(line[i-1].x,line[i-1].z));line[i].y=Mathf.Lerp(y0,line[i].y,S(40,60,run));}}
+            Level(lapLine,LapA);Level(Lap,LapA);Level(extLine,0);
             var ll=new List<Vector3>();for(int i=0;i<=LapA;i++)ll.Add(Lap[i]);for(int i=1;i<extLine.Length-1;i++)ll.Add(extLine[i]);for(int i=LapB;i<Lap.Length;i++)ll.Add(Lap[i]);LapLong=ll.ToArray();
             var circuit=HillcrestRoute.Make(CircuitName,lapLine,LoopWidth,5,25);var ext=HillcrestRoute.Make(ExtName,extLine,LoopWidth,5,25);
-            JunctionPads.Add(Lap[LapA]);JunctionPads.Add(Lap[LapB]);JunctionPads.Add(Lap[LapVale]);JunctionPads.Add(Lap[0]);   // (and the start line: the ground stood 18 cm over the road there and the whole grid stuck, zone 8's race)
+            JunctionPads.Add(Lap[LapA]);JunctionPads.Add(Lap[LapB]);JunctionPads.Add(Lap[LapVale]);JunctionPads.Add(Lap[0]);   // (and the start line, where the ground stood 18 cm over the road)
+            // (and the wedge between the long lap's two arms as they part, level with them: lips and a steep bank 25-57 m out, round 4)
+            for(int k=10;k<=24;k+=7)JunctionPads.Add((Lap[Mathf.Min(LapA+k,Lap.Length-1)]+extLine[Mathf.Min(k,extLine.Length-1)])*.5f);
             Debug.Log($"LITTLE_ROAD_VINELANDS_CIRCUIT lap={circuit.Length:0} m long={Length(LapLong):0} m fall={Lap.Max(p=>p.y)-Lap.Min(p=>p.y):0.0} m ext={ext.Length:0} m");
             var vline=QuarryHills.Profile(Largo,Wv((-160,20),(-300,50),(-400,10)),Lap[LapVale],.12f,20,30);   // (to the circuit's main straight, where the paddock is: zone 7)
             var vale=HillcrestRoute.Make(ValeRoadName,vline,6,5,25);
