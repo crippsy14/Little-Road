@@ -1350,7 +1350,9 @@ namespace LittleRoad
             if(!BayviewKit.Has("tree_round"))return;
             var holder=new GameObject("Mainland trees").transform;holder.SetParent(root);var rng=new System.Random(4127);int planted=0;bool nature=BayviewKit.Has("tree_fir");
             float R()=>(float)rng.NextDouble();
-            bool Open(float x,float z,float road=13)=>ValleyField.RoadDistance(x,z)>=road&&!HillcrestTown.Reserved(x,z)&&HillcrestRoute.Distance(HillcrestRoute.Rail.line,x,z,out _)>=9;
+            // (and off the junctions' own surfaces, which can reach 50 m from their roads' lines on a circuit's T: a bush stood in the
+            // middle of the Cumeada's Palheiro)
+            bool Open(float x,float z,float road=13)=>ValleyField.RoadDistance(x,z)>=road&&(network==null||!network.OnJunction(new Vector3(x,0,z),3))&&!HillcrestTown.Reserved(x,z)&&HillcrestRoute.Distance(HillcrestRoute.Rail.line,x,z,out _)>=9;
             // Trees and bushes carry a far stand-in (KitLod), which is what lets the woods be dense.
             // (Decided now, in the same order; built now or streamed in on its tile: WorldTiles.)
             void Plant(string id,float x,float z,float scale,bool solid=true)
@@ -1358,7 +1360,8 @@ namespace LittleRoad
                 var at=new Vector3(x,ValleyField.Height(x,z)-.1f,z);float yaw=R()*360;if(!RaceArea.Near(x,z,60))return;   // (a race: its area only)
                 // Bushes and tufts stay out of the river (street review, 4 Oct: a shrub stood on the water at the quay).
                 if((id=="bush"||id=="flower_bush"||id=="grass_tuft")&&HillcrestRoute.Distance(HillcrestRoute.River.line,x,z,out _)<HillcrestRoute.River.width*.5f+1.5f)return;
-                WorldTiles.Place(at,solid?1.2f*scale:0,()=>{var g=BayviewKit.Spawn(id,at,yaw,holder,solid:solid,scale:scale);
+                WorldTiles.Place(at,solid?1.2f*scale:0,()=>{if(network!=null&&network.OnJunction(at,2))return;var g=BayviewKit.Spawn(id,at,yaw,holder,solid:solid,scale:scale);   // (checked when built: the junctions are solved after the planting is decided)
+                    
                     if(id.StartsWith("tree_")||id=="olive_tree"||id=="bush"||id=="flower_bush")KitLod.Attach(g,id);if(WorldTiles.Late)PlacementAudit.SettleOne(g);});
             }
             bool Woodland(float x,float z)=>ValleyField.Height(x,z)>=HillcrestRoute.LakeY+1.2f&&Open(x,z)&&ValleyField.Normal(x,z).y>=.8f&&Vector2.Distance(new(x,z),HillcrestRoute.BalloonField)>=110&&
