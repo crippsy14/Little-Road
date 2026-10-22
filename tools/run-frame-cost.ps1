@@ -6,7 +6,7 @@ $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $exe="../little-road-dev-build/Little Road Unity.exe"
 # AI behaviour comes from the game's shared preset (RaceAiPreset in RaceRoster.cs, the same one adventure races use);
 # only race settings are passed here. Drop one preset switch with -Extra @('--preset-without','--some-switch').
-$opts=@{Executable=(Join-Path $root $exe);Track=$Track;Loadout='club';Cars=24;Laps=1;Duration=180;Seed=$Seed;Policy='racer';RacingLine='cedar-smooth-v2';TrafficCase='field';PassProcess=$true;RaceHud=$true;Width=1920;Height=1080;CleanView=$true;PlaybackRate=$PlaybackRate}
+$opts=@{Executable=(Join-Path $root $exe);Track=$Track;Loadout='club';Cars=24;Laps=1;Duration=$(if($Track -like 'vinelands*'){300}else{180});Seed=$Seed;Policy='racer';RacingLine='cedar-smooth-v2';TrafficCase='field';PassProcess=$true;RaceHud=$true;Width=1920;Height=1080;CleanView=$true;PlaybackRate=$PlaybackRate}
 $opts.ExtraArguments=@('--ai-preset','field')+$Extra
 # The town circuits race the field preset as the game does (Hillcrest and Quarry Hills bake their line at load; docs/67).
 if($Track -in 'bayview','hillcrest','quarry','bramblewick','vinelands','vinelands-long'){$opts.BayviewTransferStudy=$true;$opts.RacingLine='bayview-smooth-v1'}

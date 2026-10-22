@@ -61,6 +61,81 @@ About 2.4 km, for the faster classes; it skips the Gancho and the chicane, so it
 - a board with each corner's name;
 - spectators' cars at the Gancho, the chicane and the Eira Velha.
 
+## The circuit, second design (23 October)
+Richard looked at the first lap's map and said it was "a very safe design with all corners being generic and light
+turns". He was right. Against its own skill, the first lap:
+- was a loop round a field (hull ratio 1.01);
+- was mostly light turns, with one real hairpin;
+- had no mistake generators;
+- had its elevation left to the ground rather than designed.
+
+The redesign used the skill properly, with a design harness that ports the ground (`Vinelands.Natural` on the Vale
+side) and measures every band. Map: `review/tmp/cumeada-v2-map.svg`.
+
+**The land.** The Vale is a shelf tilted up to the south. North–south runs are steep (13–16 % south of n −100) and
+east–west runs are gentle (about 5 %). The lap is built around that: a plunge off the high ground, rhythm sections
+climbing back, and a hairpin folded deep into the infield. The grade limit is 10 %; at 8 % the climb back to the start
+needed a 15 m cutting.
+
+**The short lap (class C, 3★, two laps), 2.52 km:**
+
+| # | Corner | What it is |
+|---|---|---|
+| 1 | Recta da Eira | 330 m straight north, downhill at 8 %, with a view over the Vale. The start line is 130 m up it, so the grid stands on the straight. |
+| 2 | Curva da Eira Velha | Left, 100°, R26, braking downhill. Overtaking zone 1. The long lap goes straight on here, so it doubles as the escape road. |
+| 3 | Esses das Amendoeiras | Right-left (R70/R60). Rhythm section. |
+| 4 | Lomba do Carvalhal | Right, 25°, R150 over a 2.5 m carved crest, blind. The commitment corner, after a 120 m run-up. |
+| 5 | Curva do Carvalhal | Double-apex left round the farm, 120°, tightening from R130 to R50. Mistake generator. |
+| 6 | Fundão | Right kink through a 2.5 m carved dip. Compression. |
+| 7 | Curva das Courelas | Decreasing-radius left, 105°, R110 to R40. Mistake generator. |
+| 8 | Curva do Muro | Off-camber right kink, climbing past a dry-stone wall. |
+| 9 | Curva da Cruz | Left, 95°, R55, onto the plunge. |
+| 10 | Mergulho | 250 m downhill into the infield. Overtaking zone 2. |
+| 11 | Gancho do Sobreiro | Right hairpin, 170°, R21, round a big cork oak. The slowest corner, 14 m/s. |
+| 12 | Subida | The climb back out, 180 m. |
+| 13–14 | Esses do Alto, Curva do Alto | Uphill rhythm, cresting. |
+| 15 | Curva do Largo | Medium-fast left onto the main straight, so cars stay close. |
+
+**Its metrics:**
+- 14 corners (5.6/km); 405°/km of turning; macro turning 362°/km.
+- Curved share 0.43; hull ratio 1.26.
+- Angles 2/5/3/3/1 and radii 2/5/4/3 across the bands.
+- 43 % right-handers; 0.86 direction changes per corner.
+- Longest straight 0.13 of the lap; the Mergulho is 0.76 of the main straight.
+- Five heavy stops; the lap falls 54 m; cuttings and banks no deeper than 6.6 m.
+
+**The long lap (class B, 2★, two laps), 3.80 km.** Richard's direction: the long lap should "turn back in on itself"
+and add "a highly technical extended section… challenge, depth, and excitement", not be a bypass of the short lap.
+- It goes straight on at the Eira Velha, so its main straight is 690 m.
+- A big stop at the Curva da Ribeira (R30).
+- The fast Esses da Ribeira, then the Alto da Ribeira: a 3 m carved crest taken flat at R220.
+- The Gancho do Casal: a hairpin back in on itself.
+- The technical infield among the almonds:
+  - the Chicane do Lagar;
+  - the Caracol, a 185° carousel at R45;
+  - the switchback Esses do Pombal;
+  - the Curva da Adega.
+- A square T at the Curva do Palheiro, rejoining before the Carvalhal.
+
+Both junctions are square Ts. The first lap's narrow fork left lips, and both arms had to be held level to fix it.
+
+**Estimated lap times**, from a point-mass model on the line with grade (class C from the skill; class B from its
+class table). On 21 Oct the AI averaged 23.9 m/s round the old loop at skill 10, close to this model's class C pace.
+
+| | Short lap | Long lap |
+|---|---|---|
+| Class C | 104 s | 162 s |
+| Class B | 96 s | 150 s |
+
+The races are two laps each, about 3.5 and 5 minutes. Class A may take the long lap at three laps later (Richard).
+
+**Code:**
+- `Vinelands.CircuitSpec` and `ExtSpec`; straights solved to close; `Carves` for the crests and the dip;
+  `CircuitGrade` is 0.10; junctions at `ValeAt`, (−470, 269) and `PalheiroAt`.
+- The farms that stood on the new lines moved: the Casal das Amendoeiras and the Casal da Ribeira.
+- The paddock is in the infield between the straight and the Subida.
+- Fields are now cleared on a 5 × 5 grid.
+
 ## Architecture
 - **Reused:**
   - the douro farmhouses;

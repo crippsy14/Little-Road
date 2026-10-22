@@ -225,14 +225,24 @@ namespace LittleRoad
         // the Subida das Seis Voltas (zone 5, docs/90; track-design skill, review/tmp/sv3.txt): from the river road at the Veiga do
         // Fojo up the south bowl in six voltas to the Belvedere's knoll, 2.2 km, about 10 %. Piece list in the frame, heading 180.
         public const string ClimbName="Subida das Seis Voltas";
-        // the Circuito da Cumeada (zone 7, docs/92; track-design skill, review/tmp/cc4.txt): the club circuit on the Vale shelf,
-        // farm lanes closed on race days, counter-clockwise from the start line at (-470,-260); 1.85 km. And its long version
-        // for the faster classes (Richard's short-and-long idea, here): off the west leg before the Gancho, south through the
-        // montado and back to the lap after the chicane, about 2.4 km.
+        // the Circuito da Cumeada (zone 7, docs/92 "The circuit, second design"; track-design skill): the club circuit on the
+        // Vale's tilted shelf, farm lanes closed on race days, anticlockwise from the start line at (-470,70): down the Recta da
+        // Eira, round the Carvalhal, the plunge into the infield to the Gancho and the climb back; 2.52 km. The long lap
+        // (Richard's short-and-long idea) goes straight on at the Eira Velha, its escape road, to the Ribeira, then back in on
+        // itself through the technical infield among the almonds (the Gancho do Casal, the Chicane do Lagar, the Caracol, the
+        // Esses do Pombal) to a square T at the Palheiro before the Carvalhal; 3.80 km. Straights solved to close: the
+        // design harness's turtle (review/tmp/cumeada-v2-map.svg).
         public const string CircuitName="Circuito da Cumeada",ExtName="Circuito da Cumeada - Montado";
-        public const string CircuitSpec="M Recta da Eira; S 369; M Curva da Eira Velha; A 40 90; S 40; M Lomba do Alto; A -18 140; S 40; A 68 80; S 134; M Curva do Carvalhal; A 85 75; S 130; M Esses do Amendoal; A 28 100; S 30; A -28 100; S 110; A -20 160; S 70; M Gancho do Sobreiro; A 110 22; S 190; M Chicane da Ribeira; A -40 40; A 40 40; S 100; M Curva da Fonte; A 95 45";
-        public const string ExtSpec="A -55 50; S 110; A 55 110; S 150; A 30 120; M Curva do Montado; A 70 40; S 350; M Curva dos Sobreiros; A 85 45; S 20";   // (off the west leg after the esses, out round the Gancho's outside: from 30 m before the Gancho its junction overlapped the hairpin, round 1)
-        public static Vector3[] LapLong;public static int LapA,LapB,LapVale;public static readonly List<(string name,Vector2 at)> CircuitMarks=new();
+        public const string CircuitSpec="M Recta da Eira; S 199.003; M Curva da Eira Velha; A 100 26; S 50; M Esses das Amendoeiras; A -45 70; S 15; A 50 60; S 120; M Lomba do Carvalhal; A -25 150; S 140; M Curva do Carvalhal; A 55 130; S 25; A 65 50; S 40; M Fundao; A -30 140; S 60; M Curva das Courelas; A 50 110; A 55 40; S 90.139; M Curva do Muro; A -20 160; S 50; M Curva da Cruz; A 95 55; M Mergulho; S 250; M Gancho do Sobreiro; A -170 21; M Subida; S 180; M Esses do Alto; A 50 45; S 15; A -40 60; M Curva do Alto; A 80 70; S 70; M Curva do Largo; A 90 55; S 130";   // (the start line 130 m up the straight: the grid stands on it, not round the Largo)
+        public const string ExtSpec="S 362; M Curva da Ribeira; A 110 30; M Esses da Ribeira; A -45 120; S 20; A 40 110; M Recta das Amendoeiras; S 120; M Alto da Ribeira; A -20 220; S 80; M Gancho do Casal; A 170 22; S 120; M Chicane do Lagar; A -35 32; S 8; A 45 32; S 48.633; M Caracol; A -185 45; S 10; M Esses do Pombal; A 55 28; S 10; A -70 28; S 10; A 60 30; S 23.136; M Curva da Adega; A 75 45; S 30; M Curva do Palheiro; A -120 30";
+        // (crests and dips carved into the profile: name, metres, half-length; the Lomba and the Alto blind over the top)
+        // (at points on the lines: the Lomba's crest 70 m short of the Palheiro's T, just before the kink; at its marker, 39 m from
+        // the T, it tilted the junction 1.4 m, second design round 2)
+        static readonly (Vector2 at,float dh,float half)[] Carves={(new(-750,291),2f,35),(new(-1113,162),-2.5f,50),(new(-811,645),3f,70)};
+        public const float CircuitGrade=.10f;   // (the hillside lap: at 8 % it cut 15 m into the climb back to the start)
+        public static Vector3[] LapLong,CircuitNodes;public static int LapA,LapB,LapVale,RoadA,RoadB,RoadVale;public static readonly Vector2 ValeAt=new(-470,170),PalheiroAt=new(-949.475f,299.454f);public static readonly List<(string name,Vector2 at)> CircuitMarks=new();
+        // (PalheiroAt: the long lap rejoins 80 m further west than drawn first: its T, 52 m up the lap from there, stood on the
+        // Lomba's kink and its big kerb's straight side cut across the bend, 12 lips, second design round 4)
         static float Length(Vector3[] l){float t=0;for(int i=1;i<l.Length;i++)t+=Vector3.Distance(l[i],l[i-1]);return t;}
         static List<Vector2> Pieces(string spec,float x,float y,float h,List<(string,Vector2)> marks)
         {
@@ -385,45 +395,63 @@ namespace LittleRoad
             Debug.Log($"LITTLE_ROAD_VINELANDS_FEIRA terminus y={mline[MiranteFeira].y:0.0} terreiro y={Terreiro.y:0.0} feira {fline[0].y:0.0}..{fline[^1].y:0.0}");
             // the old Vale road: the Largo west down to the Vale
             // the circuit: the lap from the start line round to it again (its last point dropped: closed), then the extension
-            CircuitMarks.Clear();var cfp=Pieces(CircuitSpec,-470,-260,90,CircuitMarks);var cw=new Vector2[cfp.Count-2];for(int i=1;i<cfp.Count-1;i++)cw[i-1]=W(cfp[i].x,cfp[i].y);
+            CircuitMarks.Clear();var cfp=Pieces(CircuitSpec,-470,70,90,CircuitMarks);var cw=new Vector2[cfp.Count-2];for(int i=1;i<cfp.Count-1;i++)cw[i-1]=W(cfp[i].x,cfp[i].y);
             // (profiled in four pieces meeting level at its three junctions, each on a 20 m landing: on the lap's grade the
             // extension's junction stood 1.3 m off its arms, round 2)
             int Near(Vector2 f){int best=0;float bd=float.MaxValue;for(int i=0;i<cfp.Count;i++){float d=(cfp[i]-f).sqrMagnitude;if(d<bd){bd=d;best=i;}}return best;}
-            var cuts=new[]{0,Near(new(-470,-20)),Near(new(-829,-30)),Near(new(-575,-301)),cfp.Count-1};var lapPts=new List<Vector3>();
+            var palMid=PalheiroAt+26*new Vector2(Mathf.Cos(-10*Mathf.Deg2Rad),Mathf.Sin(-10*Mathf.Deg2Rad));   // (half way between the T and where the long lap's arc meets the lap)
+            var cuts=new[]{0,Near(ValeAt),Near(new(-470,269)),Near(palMid),cfp.Count-1};var lapPts=new List<Vector3>();
             // (each junction at the height the whole lap's profile gives it there: pinned to the natural ground, a piece could
             // need 12 % and broke into 6 m steps, round 3)
-            var lapWhole=QuarryHills.Profile(Ground(new Vector2(-470,-260)),cw,Ground(new Vector2(-470,-260)),.08f,30,0);
+            var lapWhole=QuarryHills.Profile(Ground(new Vector2(-470,70)),cw,Ground(new Vector2(-470,70)),CircuitGrade,30,0);
             Vector3 At(int ci){var f=cfp[ci];var w=W(f.x,f.y);var q=lapWhole[VertexNear(lapWhole,f)];return new Vector3(w.x,q.y,w.y);}
             // (and each within what its piece can climb from the last: 8 % less its two 1 % landings. On the whole lap's grade the
             // main straight needed 19 m in 240 m, its profile ended in a 2 m step at both ends and the whole grid stuck, zone 8's race)
             var hj=new float[4];var lc=new float[4];for(int c=0;c<4;c++){hj[c]=At(cuts[c]).y;for(int i=cuts[c]+1;i<=cuts[c+1];i++)lc[c]+=Vector2.Distance(cfp[i],cfp[i-1]);}
-            // (the long lap leaves at a narrow angle and its fillet reaches 45 m down the lap: both arms level for 50 m there, as the
-            // lap fell 2 m under the junction's level patch, round 3)
-            const float WideLanding=50;float Land(int c)=>c==2?WideLanding:20;
-            float Climb(int c)=>.85f*(QuarryHills.LandingGrade*2*Land(c)+.08f*Mathf.Max(0,lc[c]-2*Land(c)));
+            // (60 m landings round the two Ts: their corners lie 31-52 m from the cuts, and on 20 m landings the arms met the junctions
+            // up to 1.5 m apart on the straight's 8 %, second design round 2)
+            const float JunctionLanding=60;float Land(int c)=>c==0?20:JunctionLanding;
+            float Climb(int c)=>.85f*(QuarryHills.LandingGrade*2*Land(c)+CircuitGrade*Mathf.Max(0,lc[c]-2*Land(c)));
             for(int it=0;it<12;it++){for(int c=0;c<3;c++)hj[c+1]=Mathf.Clamp(hj[c+1],hj[c]-Climb(c),hj[c]+Climb(c));for(int c=3;c>=1;c--){float nx=c==3?hj[0]:hj[c+1];hj[c]=Mathf.Clamp(hj[c],nx-Climb(c),nx+Climb(c));}}
             for(int c=0;c<4;c++) {
                 var via=new List<Vector2>();for(int i=cuts[c]+1;i<cuts[c+1];i++)via.Add(W(cfp[i].x,cfp[i].y));
                 var from=c==0?At(0):lapPts[^1];var to=c==3?lapPts[0]:At(cuts[c+1]);to.y=c==3?to.y:hj[c+1];
-                var seg=QuarryHills.Profile(from,via.ToArray(),to,.08f,30,Land(c));for(int i=c==0?0:1;i<seg.Length;i++)lapPts.Add(seg[i]);
+                var seg=QuarryHills.Profile(from,via.ToArray(),to,CircuitGrade,30,Land(c));for(int i=c==0?0:1;i<seg.Length;i++)lapPts.Add(seg[i]);
             }
             var lapLine=lapPts.ToArray();
             var lapL=new List<Vector3>(lapLine);lapL.RemoveAt(lapL.Count-1);Lap=lapL.ToArray();
-            LapVale=VertexNear(Lap,new Vector2(-470,-20));LapA=VertexNear(Lap,new Vector2(-829,-30));LapB=VertexNear(Lap,new Vector2(-575,-301));
-            var efp=Pieces(ExtSpec,-829,-30,265,CircuitMarks);var ew=new List<Vector2>();for(int i=1;i<efp.Count;i++)ew.Add(W(efp[i].x,efp[i].y));
+            LapVale=VertexNear(Lap,ValeAt);LapA=VertexNear(Lap,new Vector2(-470,269));LapB=VertexNear(Lap,PalheiroAt);
+            var efp=Pieces(ExtSpec,-470,267.009f,90,CircuitMarks);var ew=new List<Vector2>();for(int i=1;i<efp.Count;i++)ew.Add(W(efp[i].x,efp[i].y));
             {var a=ew[^1];var b=new Vector2(Lap[LapB].x,Lap[LapB].z);int k=Mathf.CeilToInt(Vector2.Distance(a,b)/5);for(int i=1;i<k;i++)ew.Add(Vector2.Lerp(a,b,i/(float)k));}
-            var extLine=QuarryHills.Profile(Lap[LapA],ew.ToArray(),Lap[LapB],.08f,25,WideLanding);
-            // (both arms dead level for their first 40 m, then into their 1 % landings over 20 m: the junction's level patch reaches
-            // 45 m down the narrow fork, and on the landing its edge stood 0.3 m proud of the arm, round 5)
-            void Level(Vector3[] line,int from){float y0=line[from].y,run=0;for(int i=from+1;i<line.Length&&run<60;i++){run+=Vector2.Distance(new(line[i].x,line[i].z),new(line[i-1].x,line[i-1].z));line[i].y=Mathf.Lerp(y0,line[i].y,S(40,60,run));}}
-            Level(lapLine,LapA);Level(Lap,LapA);Level(extLine,0);
+            var extLine=QuarryHills.Profile(Lap[LapA],ew.ToArray(),Lap[LapB],CircuitGrade,25,JunctionLanding);
+            // the carved crests and dip (a cosine bump round each marker; the junctions are 90 m or more away)
+            void Carve(Vector3[] line){foreach(var (at,dh,half) in Carves){var w=W(at.x,at.y);
+                for(int i=0;i<line.Length;i++){float d=Vector2.Distance(new(line[i].x,line[i].z),w);if(d<half)line[i].y+=dh*(Mathf.Cos(d/half*Mathf.PI)+1)*.5f;}}}
+            Carve(lapLine);Carve(Lap);Carve(extLine);
             var ll=new List<Vector3>();for(int i=0;i<=LapA;i++)ll.Add(Lap[i]);for(int i=1;i<extLine.Length-1;i++)ll.Add(extLine[i]);for(int i=LapB;i<Lap.Length;i++)ll.Add(Lap[i]);LapLong=ll.ToArray();
-            var circuit=HillcrestRoute.Make(CircuitName,lapLine,LoopWidth,5,25);var ext=HillcrestRoute.Make(ExtName,extLine,LoopWidth,5,25);
-            JunctionPads.Add(Lap[LapA]);JunctionPads.Add(Lap[LapB]);JunctionPads.Add(Lap[LapVale]);JunctionPads.Add(Lap[0]);   // (and the start line, where the ground stood 18 cm over the road)
-            // (and the wedge between the long lap's two arms as they part, level with them: lips and a steep bank 25-57 m out, round 4)
-            for(int k=10;k<=24;k+=7)JunctionPads.Add((Lap[Mathf.Min(LapA+k,Lap.Length-1)]+extLine[Mathf.Min(k,extLine.Length-1)])*.5f);
+            // The roads the circuit is built as, with its two T junctions as corners: the turning arm leaves the node at an angle and
+            // the corner is the junction's fillet (Bramblewick's lanes). The race lines, Lap and LapLong, keep the arcs. (Leaving
+            // tangent, at the Eira Velha the branch and the lap both left the node heading north, and at the Palheiro the branch
+            // merged along the lap: two arms pointing the same way, and the junctions' fillets ran to 278 and 541 m, the long lap's
+            // first race 0/24. Second design, round 1.)
+            Vector3 OnLap(Vector2 frame){var w=W(frame.x,frame.y);var q=lapLine[VertexNear(lapLine,frame)];return new Vector3(w.x,q.y,w.y);}
+            // (the Eira Velha: 100 degrees at R26 from (-470,269), its corner 31 m on; the Palheiro: 120 degrees at R30 onto the lap,
+            // its corner 52 m back up the lap from where the arc meets it)
+            var v1f=new Vector2(-470,269.003f+26*Mathf.Tan(50*Mathf.Deg2Rad));var t1End=v1f+26*Mathf.Tan(50*Mathf.Deg2Rad)*new Vector2(Mathf.Cos(190*Mathf.Deg2Rad),Mathf.Sin(190*Mathf.Deg2Rad));
+            float tp=30*Mathf.Tan(60*Mathf.Deg2Rad);var v2f=PalheiroAt-tp*new Vector2(Mathf.Cos(170*Mathf.Deg2Rad),Mathf.Sin(170*Mathf.Deg2Rad));var palStart=v2f-tp*new Vector2(Mathf.Cos(290*Mathf.Deg2Rad),Mathf.Sin(290*Mathf.Deg2Rad));
+            int ia0=VertexNear(lapLine,new Vector2(-470,269)),ia1=VertexNear(lapLine,t1End);
+            var v1=OnLap(v1f);v1.y=(lapLine[ia0].y+lapLine[ia1].y)*.5f;
+            var road=new List<Vector3>();for(int i=0;i<=ia0;i++)road.Add(lapLine[i]);road.Add(v1);for(int i=ia1;i<lapLine.Length;i++)road.Add(lapLine[i]);var lapRoad=road.ToArray();
+            RoadA=ia0+1;RoadB=VertexNear(lapRoad,v2f);RoadVale=VertexNear(lapRoad,ValeAt);
+            var er=new List<Vector3>{v1};int ie=VertexNear(extLine,palStart);for(int i=1;i<=ie;i++){var q=extLine[i];if(q.z-Centre.y>v1f.y+3)er.Add(q);}er.Add(lapRoad[RoadB]);var extRoad=er.ToArray();
+            CircuitNodes=new[]{lapRoad[RoadA],lapRoad[RoadB],lapRoad[RoadVale]};
+            // (and every line dead level with each junction within 52 m of it, blending back over the next 18: what the landings leave)
+            void Flat(Vector3[] line){foreach(var j in CircuitNodes)for(int i=0;i<line.Length;i++){float d=Vector2.Distance(new(line[i].x,line[i].z),new(j.x,j.z));if(d<70)line[i].y=Mathf.Lerp(j.y,line[i].y,S(52,70,d));}}   // (the junctions' kerbs follow the race arcs: their surfaces reach 52 m)
+            Flat(lapRoad);Flat(extRoad);Flat(Lap);Flat(LapLong);
+            var circuit=HillcrestRoute.Make(CircuitName,lapRoad,LoopWidth,5,25);var ext=HillcrestRoute.Make(ExtName,extRoad,LoopWidth,5,25);
+            foreach(var j in CircuitNodes)JunctionPads.Add(j);JunctionPads.Add(Lap[0]);   // (and the start line, where the ground stood 18 cm over the road)
             Debug.Log($"LITTLE_ROAD_VINELANDS_CIRCUIT lap={circuit.Length:0} m long={Length(LapLong):0} m fall={Lap.Max(p=>p.y)-Lap.Min(p=>p.y):0.0} m ext={ext.Length:0} m");
-            var vline=QuarryHills.Profile(Largo,Wv((-160,20),(-300,50),(-400,10)),Lap[LapVale],.12f,20,30);   // (to the circuit's main straight, where the paddock is: zone 7)
+            var vline=QuarryHills.Profile(Largo,Wv((-160,20),(-300,40),(-400,90)),circuit.line[RoadVale],.15f,20,30);   // (to the circuit's main straight, 100 m past the start line and clear of the grid; 65 m down from the Largo in 520 m, at 15 %: at 12 % it met the junction 7 m up; 30 m landings, or its arm tilted the Largo's junction a metre off the paving)
             var vale=HillcrestRoute.Make(ValeRoadName,vline,6,5,25);
             list.AddRange(new[]{river,entry,rua,calcada,mirante,vale,feira,HillcrestRoute.Make(PonteName,pline,7f,5,20),estradaMeio,climb,amendoeiras,circuit,ext,HillcrestRoute.Make(CorvoName,CorvoLine,6f,5,20),HillcrestRoute.Make(OutraName,OutraLine,6f,5,20)});list.AddRange(tracks);
             Debug.Log($"LITTLE_ROAD_VINELANDS_ROADS entry={entry.Length:0} m river={river.Length:0} m rua direita={rua.Length:0} m calcada={calcada.Length:0} m mirante={mirante.Length:0} m feira={feira.Length:0} m vale={vale.Length:0} m largo y={Largo.y:0.0} saddle y={eline[EntrySaddle].y:0.0} cais y={Cais.y:0.0} belvedere y={Belvedere.y:0.0}");

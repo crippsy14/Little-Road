@@ -147,12 +147,12 @@ namespace LittleRoad
             var trial=Trial(24,3,seed,"bramblewick","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
             return Recipe(save,"bramblewick","C",RaceCalendar.StarsOf("bramblewick"),trial,seed,3,"bramblewick",false,"BRAMBLEWICK LANES / CLASS C",modern,CarBodies.Family,CarBodies.Sporty);
         }
-        // The Circuito da Cumeada (--vinelands, docs/92): class C, 3★, three laps of the club's short lap round the Vale.
+        // The Circuito da Cumeada (--vinelands, docs/92): class C, 3★, two laps of the club's short lap round the Vale.
         public static RaceRoster AdventureVinelands(AdventureProgress save,bool modern=true)
         {
             save.Validate();int seed=1709+(save.raceSerial+1)*11;
-            var trial=Trial(24,3,seed,"vinelands","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
-            return Recipe(save,"vinelands","C",RaceCalendar.StarsOf("vinelands"),trial,seed,3,"vinelands",false,"CIRCUITO DA CUMEADA / CLASS C",modern,CarBodies.Family,CarBodies.Sporty);
+            var trial=Trial(24,2,seed,"vinelands","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
+            return Recipe(save,"vinelands","C",RaceCalendar.StarsOf("vinelands"),trial,seed,2,"vinelands",false,"CIRCUITO DA CUMEADA / CLASS C",modern,CarBodies.Family,CarBodies.Sporty);
         }
         // Class B events (docs/67): the field on the event's star kit, the front of the grid a star up and the back a star
         // down; sporty bodies on tarmac, the off-roaders (on B rally tyres) at the rallycross; laps and direction from

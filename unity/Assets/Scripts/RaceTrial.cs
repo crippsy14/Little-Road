@@ -164,7 +164,7 @@ namespace LittleRoad
                 // Cedar Hills reuses Cedar's authored line (same layout), so only the elevation differs.
                 ReferenceLine=trackId=="cedar-hills"?new RacingLine(track,RacingLine.Transfer(track,"cedar-smooth-v2","cedar-hills")):
                     trackId=="bramblewick"?new RacingLine(track,RacingLine.BakeSmooth(track,"bramblewick-smooth-v1",trackId,RacingLine.MaxOffsetFor(track)*.7f)):
-                    trackId.StartsWith("vinelands")?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+"-smooth-v2",trackId,RacingLine.MaxOffsetFor(track)*.7f)):   // (the smooth bake's bound in the same proportion to its corridor as the 16 m circuits' 4 m to 5.6 m)
+                    trackId.StartsWith("vinelands")?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+"-smooth-v3",trackId,RacingLine.MaxOffsetFor(track)*.7f)):   // (the smooth bake's bound in the same proportion to its corridor as the 16 m circuits' 4 m to 5.6 m)
                     trackId=="hillcrest"||trackId=="quarry"||trackId=="test-loop"||reversed?new RacingLine(track,RacingLine.BakeSmooth(track,trackId+(reversed?"-reversed":"")+"-smooth-v1",trackId)):
                     trackId=="bayview"&&NewBayview.On?new RacingLine(track,RacingLine.BakeSmooth(track,"harbour-loop-smooth-v1","harbour_loop")):
                     new RacingLine(track,Arg("--racing-line","cedar-mincurve-v1"),technical==null?"bayview":technical.definition.id,technical==null?"bayview-v1":technical.definition.version);DriverPolicyId=policy=="racer"?"racer-v2":"reference-v1";

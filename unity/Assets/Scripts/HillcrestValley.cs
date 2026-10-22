@@ -332,8 +332,11 @@ namespace LittleRoad
                     {var fr=HillcrestRoute.Find(Vinelands.FeiraName);int fi=Vinelands.MiranteFeira;var nFeira=net.Add(mr.line[fi]);   // (Rua da Feira leaves the Mirante road at the bus terminus, docs/87)
                         net.Connect(mr.name,mr.line[..(fi+1)],mr.width,.022f,nLargo,nFeira);net.Connect(mr.name,mr.line[fi..],mr.width,.022f,nFeira,nBelvedere);   // (the Mirante road and the climb meet at the knoll)
                         net.Connect(fr.name,fr.line,fr.width,.022f,nFeira,null,minorStart:true);}
-                    {var cr7=HillcrestRoute.Find(Vinelands.CircuitName);var ex=HillcrestRoute.Find(Vinelands.ExtName);var lap=cr7.line;int iv=Vinelands.LapVale,ia=Vinelands.LapA,ib=Vinelands.LapB;   // (zone 7: the circuit in three pieces between its junctions, the extension, the Vale road's T on the main straight)
+                    {var cr7=HillcrestRoute.Find(Vinelands.CircuitName);var ex=HillcrestRoute.Find(Vinelands.ExtName);var lap=cr7.line;int iv=Vinelands.RoadVale,ia=Vinelands.RoadA,ib=Vinelands.RoadB;   // (zone 7: the circuit in three pieces between its junctions, the extension, the Vale road's T on the main straight)
                         var nV=net.Add(lap[iv]);var nA=net.Add(lap[ia]);var nB=net.Add(lap[ib]);
+                        // (kerbs on the race lines' arcs, R26 and R30, less half the road: on the network's 6 m kerb the short lap's line
+                        // ran on the grass inside the Eira Velha and its race stuck there, second design round 3)
+                        nA.fillet=26-cr7.width*.5f;nB.fillet=30-cr7.width*.5f;
                         net.Connect(vv.name,vv.line,vv.width,.022f,nLargo,nV,minorEnd:true);
                         net.Connect(cr7.name,lap[iv..(ia+1)],cr7.width,.022f,nV,nA);net.Connect(cr7.name,lap[ia..(ib+1)],cr7.width,.022f,nA,nB);
                         var wrap=new System.Collections.Generic.List<Vector3>(lap[ib..^1]);wrap.AddRange(lap[..(iv+1)]);net.Connect(cr7.name,wrap.ToArray(),cr7.width,.022f,nB,nV);

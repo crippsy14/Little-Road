@@ -12,6 +12,12 @@ namespace LittleRoad
     public sealed partial class VinelandsVila
     {
         void Zone7(){Eiras();Vale();Clube();}
+        // the long lap's own corners (their boards and bales go on its line), and the heavy stops (bale walls on the outside)
+        static readonly string[] LongOnly={"Curva da Ribeira","Esses da Ribeira","Recta das Amendoeiras","Alto da Ribeira","Gancho do Casal","Chicane do Lagar","Caracol","Esses do Pombal","Curva da Adega","Curva do Palheiro"};
+        static readonly string[] HeavyStops={"Curva da Eira Velha","Curva do Carvalhal","Curva das Courelas","Gancho do Sobreiro","Curva da Ribeira","Gancho do Casal","Caracol","Curva do Palheiro"};
+        // (field walls keep off the junctions' corners, which lie beyond both roads' lines: a stub on the Eira Velha's inside corner stuck
+        // five cars, second design round 2)
+        static bool NearNode(Vector3 p,float d){if(Vinelands.CircuitNodes==null)return false;foreach(var j in Vinelands.CircuitNodes)if(Vector2.Distance(new(p.x,p.z),new(j.x,j.z))<d)return true;return false;}
         bool InPolyF(Vector2[] poly,Vector2 p){bool c=false;for(int i=0,j=poly.Length-1;i<poly.Length;j=i++)if((poly[i].y>p.y)!=(poly[j].y>p.y)&&p.x<(poly[j].x-poly[i].x)*(p.y-poly[i].y)/(poly[j].y-poly[i].y)+poly[i].x)c=!c;return c;}
         // trees on a jittered grid inside a frame polygon, clear of roads, buildings and the circuit's run-off
         int Grove(Vector2[] poly,float step,string id,float scaleMin,float scaleMax,int salt,float keep=1,BayviewKit.Tint tint=null)
@@ -67,18 +73,18 @@ namespace LittleRoad
                 while(fn<720) {
                     float d=34+50*far+(Hash(fa,fn,131)-.5f)*14;var c=new Vector2(fa+w*.5f,fn+d*.5f);fn+=d+6;
                     bool skip=Hash(fa,fn,132)<.25f;foreach(var poly in keep)if(InPolyF(poly,c))skip=true;if(skip)continue;
-                    bool clear=true;foreach(var (da,dn) in new[]{(-.5f,-.5f),(.5f,-.5f),(-.5f,.5f),(.5f,.5f),(0f,0f)}){var q=FV(c+new Vector2(da*w,dn*d));if(!Clear(q,4f,true)){clear=false;break;}}if(!clear)continue;
+                    bool clear=true;for(int gi=0;gi<5&&clear;gi++)for(int gj=0;gj<5;gj++){var q=FV(c+new Vector2((gi/4f-.5f)*w,(gj/4f-.5f)*d));if(!Clear(q,6f,true)){clear=false;break;}}if(!clear)continue;   // (on a 5 x 5 grid: a road could pass between the corners under a 2 ha field)
                     float r=Hash(fa,fn,133);Field("Vale field "+fields,c-new Vector2(w*.5f-3,d*.5f-3),c+new Vector2(w*.5f-3,d*.5f-3),r<.4f?stub:r<.75f?past:plough);fields++;
                     if(r<.4f&&BayviewKit.Has("hay_bale"))for(int k=0;k<3;k++){var q=FV(c+new Vector2((Hash(fa,k,134)-.5f)*w*.6f,(Hash(fn,k,135)-.5f)*d*.6f));Put("hay_bale",q,Hash(fa,fn+k,136)*360,null,null,true,1f);}
                     // (its dry-stone walls along its west and south sides, broken where they meet a road or a way)
                     var corners=new[]{c+new Vector2(-w*.5f,d*.5f),c+new Vector2(-w*.5f,-d*.5f),c+new Vector2(w*.5f,-d*.5f)};
-                    for(int sg=0;sg<2;sg++){var pts=new List<Vector3>();int k2=Mathf.CeilToInt(Vector2.Distance(corners[sg],corners[sg+1])/2);for(int i=0;i<=k2;i++){var q=FV(Vector2.Lerp(corners[sg],corners[sg+1],i/(float)k2));if(OnWay(q)){LayWall(pts);pts=new List<Vector3>();}else pts.Add(q);}LayWall(pts);}
+                    for(int sg=0;sg<2;sg++){var pts=new List<Vector3>();int k2=Mathf.CeilToInt(Vector2.Distance(corners[sg],corners[sg+1])/2);for(int i=0;i<=k2;i++){var q=FV(Vector2.Lerp(corners[sg],corners[sg+1],i/(float)k2));if(OnWay(q)||NearNode(q,40)||ValleyField.RoadDistance(q.x,q.z)<Vinelands.LoopWidth*.5f+4){LayWall(pts);pts=new List<Vector3>();}else pts.Add(q);}LayWall(pts);}
                 }
                 fa+=w+6;
             }
             Debug.Log($"LITTLE_ROAD_VINELANDS_FIELDS fields={fields}");
             // the farmsteads: a farmhouse, its barn, a threshing floor, a fig
-            foreach(var (a,n,name) in new[]{(-1040f,160f,"Casal do Carvalhal"),(-760f,420f,"Casal das Amendoeiras"),(-1120f,-480f,"Casal do Sobreiro"),(-980f,640f,"Casal da Ribeira")}) {
+            foreach(var (a,n,name) in new[]{(-1040f,160f,"Casal do Carvalhal"),(-575f,445f,"Casal das Amendoeiras"),(-1120f,-480f,"Casal do Sobreiro"),(-1075f,525f,"Casal da Ribeira")}) {
                 var h=F(a,n);if(!Building("casa_douro_c",h,(a*n)%360,House("granito"),null,4f,4.4f,4f))continue;
                 var b=F(a+18,n+6);if(BayviewKit.Has("barn"))Building("barn",b,Yaw(b,h),null,null,4f,4.4f,4f);
                 var e=F(a-6,n-20);Building("quinta_eira",e,0,null,null,1.5f,4.4f,1.5f);
@@ -109,13 +115,14 @@ namespace LittleRoad
             Material Mat(string name,Color c)=>TrialWorld.Material(name,c,0,.3f);
             var white=Mat("Cumeada paint",new Color(.96f,.96f,.92f));var red=Mat("Cumeada kerb red",new Color(.84f,.2f,.17f));var dark=Mat("Cumeada chequer",new Color(.1f,.1f,.12f));
             GameObject Block(string name,Vector3 at,Vector3 size,Quaternion rot,Material m,bool solid){var g=GameObject.CreatePrimitive(PrimitiveType.Cube);g.name=name;g.transform.SetParent(root);g.transform.SetPositionAndRotation(at,rot);g.transform.localScale=size;g.GetComponent<Renderer>().sharedMaterial=m;if(!solid)Object.Destroy(g.GetComponent<Collider>());else g.tag="Respawn";return g;}
-            var nodes=new[]{Vinelands.Lap[Vinelands.LapA],Vinelands.Lap[Vinelands.LapB],Vinelands.Lap[Vinelands.LapVale]};
+            var nodes=Vinelands.CircuitNodes;
             bool NearJunction(Vector3 p,float d){foreach(var j in nodes)if(Vector2.Distance(new(p.x,p.z),new(j.x,j.z))<d)return true;return false;}
             // the start: chequers across the main straight, grid boxes, the gantry with its banner
             {var s0=track.At(0);var fw=track.Forward(0);fw.y=0;fw.Normalize();var r0=Vector3.Cross(Vector3.up,fw);
                 for(int i=0;i<9;i++)for(int j=0;j<2;j++)Block("Cumeada start line",s0+r0*(-4f+i)+fw*j*.5f+Vector3.up*.05f,new Vector3(1,.02f,.5f),Quaternion.LookRotation(fw),(i+j)%2==0?white:dark,false);
-                for(int slot=0;slot<24;slot++){float d=RaceGrid.Distance(slot,false);var p=RaceGrid.Position(track,slot,false);var f=track.Forward(d);f.y=0;f.Normalize();var rr=Vector3.Cross(Vector3.up,f);var front=p+f*2.3f+Vector3.down*.07f;
-                    Block("Cumeada grid box",front,new Vector3(2.3f,.02f,.16f),Quaternion.LookRotation(f),white,false);foreach(int leg in new[]{-1,1})Block("Cumeada grid box",front+rr*leg*1.07f-f*.6f,new Vector3(.16f,.02f,1.2f),Quaternion.LookRotation(f),white,false);}
+                for(int slot=0;slot<24;slot++){float d=RaceGrid.Distance(slot,false);var p=RaceGrid.Position(track,slot,false);var f=track.Forward(d).normalized;var fl=f;fl.y=0;fl.Normalize();var rr=Vector3.Cross(Vector3.up,fl);   // (along the road's slope: flat on the 8 % straight, their ends stood off it)
+                    Vector3 OnRoad(Vector3 q){q.y=Top(q)+.03f;return q;}var front=OnRoad(p+fl*2.3f);
+                    Block("Cumeada grid box",front,new Vector3(2.3f,.02f,.16f),Quaternion.LookRotation(f),white,false);foreach(int leg in new[]{-1,1})Block("Cumeada grid box",OnRoad(front+rr*leg*1.07f-fl*.6f),new Vector3(.16f,.02f,1.2f),Quaternion.LookRotation(f),white,false);}
                 var green=Mat("Cumeada gantry",Toy.Hex(0x7a1f2b));var banner=Mat("Cumeada banner",new Color(.97f,.95f,.88f));
                 foreach(int side in new[]{-1,1})Block("Cumeada gantry post",s0+r0*side*7f+Vector3.up*3.2f,new Vector3(.45f,6.4f,.45f),Quaternion.identity,green,true);
                 Block("Cumeada gantry",s0+Vector3.up*6.2f,new Vector3(14.4f,1.1f,.45f),Quaternion.LookRotation(fw),green,false);
@@ -132,8 +139,9 @@ namespace LittleRoad
             // bale walls on the outside of the heavy stops; a board with each corner's name; spectators' cars at the best corners
             int bales=0,boards=0;
             foreach(var (name,at) in Vinelands.CircuitMarks) {
-                var tr=name=="Curva do Montado"||name=="Curva dos Sobreiros"?longT:track;var w=Vinelands.Centre+at;float sc=tr.Nearest(new Vector3(w.x,0,w.y),out _);
-                bool heavy=name=="Gancho do Sobreiro"||name=="Curva do Montado"||name=="Curva dos Sobreiros"||name=="Curva da Eira Velha"||name=="Chicane da Ribeira"||name=="Curva do Carvalhal";
+                if(name=="Recta da Eira"||name=="Mergulho"||name=="Subida"||name=="Recta das Amendoeiras")continue;   // (straights: no board)
+                var tr=System.Array.IndexOf(LongOnly,name)>=0?longT:track;var w=Vinelands.Centre+at;float sc=tr.Nearest(new Vector3(w.x,0,w.y),out _);
+                bool heavy=System.Array.IndexOf(HeavyStops,name)>=0;
                 if(heavy&&BayviewKit.Has("hay_bale"))for(float s=sc;s<sc+70;s+=1.6f) {
                     var f0=tr.Forward(s-8);var f1=tr.Forward(s+8);f0.y=f1.y=0;float turn=Vector3.SignedAngle(f0,f1,Vector3.up);if(Mathf.Abs(turn)<4)continue;
                     var f=tr.Forward(s);f.y=0;f.Normalize();var right=Vector3.Cross(Vector3.up,f);int outside=turn>0?-1:1;var p=tr.At(s)+right*outside*(half+6.2f);
@@ -147,20 +155,28 @@ namespace LittleRoad
                         Block("Sign board",p+Vector3.up*2.75f,new Vector3(bw,1.05f,.07f),face,Mat("Cumeada board",Toy.Hex(0x4a0f18)),false);
                         var go=new GameObject("Sign / "+name);go.transform.SetParent(root);go.transform.SetPositionAndRotation(p+Vector3.up*2.75f-f*.045f,Quaternion.LookRotation(f));var tm=go.AddComponent<TextMesh>();tm.text=name.ToUpperInvariant();tm.anchor=TextAnchor.MiddleCenter;tm.fontSize=80;tm.characterSize=.058f;tm.color=new Color(.98f,.95f,.82f);tm.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");tm.fontStyle=FontStyle.Bold;go.GetComponent<Renderer>().sharedMaterial=tm.font.material;go.AddComponent<WorldText>();boards++;}
                 }
-                if(name=="Gancho do Sobreiro"||name=="Chicane da Ribeira"||name=="Curva da Eira Velha") {   // (spectators: a row of cars on the outside bank)
+                if(name=="Gancho do Sobreiro"||name=="Curva da Eira Velha"||name=="Curva do Carvalhal"||name=="Gancho do Casal"||name=="Caracol") {   // (spectators: a row of cars on the outside bank)
                     var f=tr.Forward(sc+10);f.y=0;f.Normalize();var right=Vector3.Cross(Vector3.up,f);var f0=tr.Forward(sc-8);var f1=tr.Forward(sc+8);f0.y=f1.y=0;int outside=Vector3.SignedAngle(f0,f1,Vector3.up)>0?-1:1;
                     var bank=tr.At(sc+10)+right*outside*(half+16);
                     for(int k=0;k<7;k++){var p=bank+f*((k-3)*3.4f);if(ValleyField.RoadDistance(p.x,p.z)<half+7||NearJunction(p,14))continue;p.y=H(p.x,p.z);
                         var car=TrialWorld.Car(new[]{"marlow","heron","picnic","doodle","otter","pebble","tallboy","dover","kipper","beetle"}[(int)(Hash(k,sc,120)*10)],PaintCatalog.All[(int)(Hash(k,sc,121)*PaintCatalog.Standard)].color);car.name="Parked car";car.transform.SetParent(root);car.transform.SetPositionAndRotation(p+Vector3.up*.02f,Quaternion.Euler(0,Yaw(p,tr.At(sc+10)),0));}
                 }
             }
+            // the landmarks the corners are named for: the old cork oak inside the Gancho do Sobreiro, the wayside cross outside the
+            // Curva da Cruz
+            foreach(var (name,at) in Vinelands.CircuitMarks) {
+                if(name!="Gancho do Sobreiro"&&name!="Curva da Cruz")continue;var w=Vinelands.Centre+at;float sc=track.Nearest(new Vector3(w.x,0,w.y),out _);
+                var f=track.Forward(sc);f.y=0;f.Normalize();var right=Vector3.Cross(Vector3.up,f);var p=track.At(sc);
+                if(name=="Gancho do Sobreiro"){var c=p+right*21f;c.y=H(c.x,c.z);Put("tree_round",new Vector3(c.x,c.y-.05f,c.z),40,T(0xffffff,0xffffff,0xffffff,0xffffff),null,true,2.4f);}
+                else{var c=p+right*(half+7f);c.y=H(c.x,c.z);Put("vila_cruzeiro",c,Quaternion.LookRotation(-right).eulerAngles.y);}
+            }
             // the paddock in the infield, west of the main straight: gravel, the clubhouse, awnings, the club's cars and trailers
-            Plaza("Cumeada paddock",new Vector2(-680,-95),new Vector2(-568,-28),Gravel(),true);   // (70 m west of the straight: beside it, the straight's corridor held its east edge 15 m up, round 4)
-            {var c=F(-635,-80);c.y=H(c.x,c.z);Building("portela_saude",c,Yaw(c,F(-635,-40)),T(0xf3eee2,0x7a1f2b,0x7a1f2b,0x7a1f2b),"CLUBE AUTOMOVEL DA CUMEADA",3f,1f,3f);}
-            if(BayviewKit.Has("tent"))foreach(var (a,n) in new[]{(-670f,-40f),(-655f,-40f)}){var t=F(a,n);t.y=Top(t)+.05f;Put("tent",t,180,T(0xffffff,0x7a1f2b,0x7a1f2b,0xffffff),null,false);}
-            if(BayviewKit.Has("market_stall")){var m=F(-580,-88);m.y=Top(m)+.05f;Put("market_stall",m,90,T(0xffffff,0xffffff,0x7a1f2b,0xffffff),null,false);}
-            for(int k=0;k<10;k++){var q=F(-620+(k%5)*8,-60-(k/5)*14);q.y=Top(q)+.15f;Parking.Add((q,k/5==0?180:0));}
-            {var q=F(-600,-50);q.y=Top(q)+.1f;Spots["clube"]=(q,90);}
+            Plaza("Cumeada paddock",new Vector2(-625,-5),new Vector2(-535,62),Gravel(),true);   // (in the infield between the Recta da Eira and the Subida, 60 m off each: the second design)
+            {var c=F(-600,45);c.y=H(c.x,c.z);Building("portela_saude",c,Yaw(c,F(-600,10)),T(0xf3eee2,0x7a1f2b,0x7a1f2b,0x7a1f2b),"CLUBE AUTOMOVEL DA CUMEADA",3f,1f,3f);}
+            if(BayviewKit.Has("tent"))foreach(var (a,n) in new[]{(-612f,15f),(-597f,15f)}){var t=F(a,n);t.y=Top(t)+.05f;Put("tent",t,90,T(0xffffff,0x7a1f2b,0x7a1f2b,0xffffff),null,false);}
+            if(BayviewKit.Has("market_stall")){var m=F(-548,45);m.y=Top(m)+.05f;Put("market_stall",m,90,T(0xffffff,0xffffff,0x7a1f2b,0xffffff),null,false);}
+            for(int k=0;k<10;k++){var q=F(-585+(k%5)*8,20-(k/5)*14);q.y=Top(q)+.15f;Parking.Add((q,k/5==0?180:0));}
+            {var q=F(-555,10);q.y=Top(q)+.1f;Spots["clube"]=(q,90);}
             Debug.Log($"LITTLE_ROAD_VINELANDS_CLUBE kerbs={kerbs} bales={bales} boards={boards}");
         }
     }

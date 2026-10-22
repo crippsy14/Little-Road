@@ -22,6 +22,10 @@ namespace LittleRoad
             public (bool straight,float s,float t,Vector3 centre)[] solved;
             public readonly List<Vector3> polygon=new();public readonly List<List<Vector3>> kerbs=new();public readonly List<List<Vector3>> corners=new();
             public float Radius;
+            // This junction's own kerb radius (0: the network's Fillet). A circuit's T whose race line turns through it takes the
+            // line's radius less half the road, so the kerb follows the race corridor's inside edge (Vinelands' Eira Velha).
+            public float fillet;
+            public float F(float d)=>fillet>0?fillet:d;
         }
         public sealed class Road{public string name;public Vector3[] line;public float width,lift;public Arm start,end;public bool noCentre;public Vector3[] trimmed;}
         public sealed class Arm
@@ -76,9 +80,9 @@ namespace LittleRoad
                     if(sweep>170){corners[i]=(true,0,0,default);continue;}   // straight on (or the reflex side): kerbs simply continue
                     Vector3 ra=Vector3.Cross(Vector3.up,A.dir),lb=-Vector3.Cross(Vector3.up,B.dir);
                     // Kerbs offset by the corner radius into the corner; where they cross is the fillet's centre.
-                    if(!Cross(A.dir,ra*(A.half+Fillet),B.dir,lb*(B.half+Fillet),out float s,out float t)){corners[i]=(true,0,0,default);continue;}
+                    float F=n.F(Fillet);if(!Cross(A.dir,ra*(A.half+F),B.dir,lb*(B.half+F),out float s,out float t)){corners[i]=(true,0,0,default);continue;}
                     s=Mathf.Max(s,0);t=Mathf.Max(t,0);
-                    corners[i]=(false,s,t,n.at+A.dir*s+ra*(A.half+Fillet));
+                    corners[i]=(false,s,t,n.at+A.dir*s+ra*(A.half+F));
                     A.trim=Mathf.Max(A.trim,s);B.trim=Mathf.Max(B.trim,t);
                 }
                 // External roads aren't trimmed (the network doesn't build them); a road meeting one starts exactly at its
@@ -118,13 +122,13 @@ namespace LittleRoad
                         // (an average approach direction put notches where a curving road met its corner).
                         Vector3 da=A.hasMouth?A.endDir:A.dir,db=B.hasMouth?B.endDir:B.dir;
                         Vector3 pa=A.hasMouth?A.MouthRight:A.Right(0),pb=B.hasMouth?B.MouthLeft:B.Left(0);
-                        Vector3 ra=Vector3.Cross(Vector3.up,da),lb=-Vector3.Cross(Vector3.up,db);
-                        if(!Cross2(pa+ra*Fillet,da,pb+lb*Fillet,db,out float s,out float u)){kerb.Add(B.MouthLeft);}
+                        Vector3 ra=Vector3.Cross(Vector3.up,da),lb=-Vector3.Cross(Vector3.up,db);float F=n.F(Fillet);
+                        if(!Cross2(pa+ra*F,da,pb+lb*F,db,out float s,out float u)){kerb.Add(B.MouthLeft);}
                         else {
-                            var centre=pa+ra*Fillet+da*s;var ta=pa+da*s;var tb=pb+db*u;ta.y=pa.y;tb.y=pb.y;
+                            var centre=pa+ra*F+da*s;var ta=pa+da*s;var tb=pb+db*u;ta.y=pa.y;tb.y=pb.y;
                             if(s<-.01f)kerb.Add(ta);
                             var from=Flat(ta-centre).normalized;var to=Flat(tb-centre).normalized;float sweep=Vector3.SignedAngle(from,to,Vector3.up);
-                            for(int k=1;k<12;k++){float w=k/12f;var p=centre+Quaternion.Euler(0,sweep*w,0)*from*Fillet;p.y=Mathf.Lerp(ta.y,tb.y,w);kerb.Add(p);}
+                            for(int k=1;k<12;k++){float w=k/12f;var p=centre+Quaternion.Euler(0,sweep*w,0)*from*F;p.y=Mathf.Lerp(ta.y,tb.y,w);kerb.Add(p);}
                             if(u<-.01f)kerb.Add(tb);
                             kerb.Add(B.MouthLeft);
                             // The corner piece: a fan from the kerbs' own corner over the fillet (nodes with an external road).
