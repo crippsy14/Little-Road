@@ -107,6 +107,43 @@ namespace LittleRoad
         }
         static readonly Dictionary<string,Material> fieldMats=new();
         static Material FieldMat(string name,Color c){if(fieldMats.TryGetValue(name,out var m)&&m!=null)return m;m=WorldLook.Kit("Vale "+name,c,WorldLook.Pattern.Leaf,0,.15f,true);fieldMats[name]=m;return m;}
+        // ---- race day's layout (in a race only): the road the race doesn't use is closed with a wall of bales across it, and a
+        // chevron board on the outside shows the way. The short lap: the long lap's road shut 70 m up the Eira Velha's escape
+        // road, the chevrons pointing left; and at the Palheiro, the long lap's arm shut. The long lap: the short lap's road
+        // shut past both its Ts, the chevrons at the Palheiro pointing right. (Richard: "how do I know to turn on the short
+        // track?" Until now nothing told a driver.)
+        public static void RaceDay(bool longLap)
+        {
+            var nodes=Vinelands.CircuitNodes;if(nodes==null||!BayviewKit.Has("hay_bale"))return;var root=new GameObject("Cumeada race day").transform;
+            Vector3 D(float heading)=>new(Mathf.Cos(heading*Mathf.Deg2Rad),0,Mathf.Sin(heading*Mathf.Deg2Rad));
+            // (on the road where it crosses one, at its line's own height: the ray found the ground under the road's embankment
+            // while the world was building, and the bales stood 1.5 m deep in the road, first pictures)
+            var lines=new[]{HillcrestRoute.Find(Vinelands.CircuitName)?.line,HillcrestRoute.Find(Vinelands.ExtName)?.line};
+            Vector3 OnTop(Vector3 p){if(Physics.Raycast(new Vector3(p.x,p.y+60,p.z),Vector3.down,out var hit,140,~0,QueryTriggerInteraction.Ignore))p.y=hit.point.y;else p.y=ValleyField.Height(p.x,p.z);
+                foreach(var l in lines)if(l!=null)foreach(var q in l)if(new Vector2(q.x-p.x,q.z-p.z).sqrMagnitude<Vinelands.LoopWidth*Vinelands.LoopWidth*.36f)p.y=Mathf.Max(p.y,q.y+.03f);return p;}
+            void Close(Vector3 node,Vector3 dir,float d){var c=node+dir*d;var across=Vector3.Cross(Vector3.up,dir);float yaw=Quaternion.LookRotation(across).eulerAngles.y;for(float x=-7;x<=7.01f;x+=1.75f)BayviewKit.Spawn("hay_bale",OnTop(c+across*x),yaw,root,null,null,true,1.15f);}
+            var boardMat=TrialWorld.Material("Cumeada chevron board",Toy.Hex(0x4a0f18),0,.3f);var postMat=TrialWorld.Material("Board post",new Color(.3f,.3f,.32f),0,.3f);
+            void Cube(Vector3 at,Vector3 size,Quaternion rot,Material m){var g=GameObject.CreatePrimitive(PrimitiveType.Cube);g.name="Cumeada chevron";g.transform.SetParent(root);g.transform.SetPositionAndRotation(at,rot);g.transform.localScale=size;g.GetComponent<Renderer>().sharedMaterial=m;Object.Destroy(g.GetComponent<Collider>());}
+            // (f: the forward of the cars that read it; not solid, as the boards in the run-off)
+            void Chevrons(Vector3 at,Vector3 f,string arrows){f.y=0;f.Normalize();at=OnTop(at);var across=Vector3.Cross(Vector3.up,f);
+                float bw=Mathf.Max(6.6f,arrows.Length*.82f);foreach(int s in new[]{-1,1})Cube(at+across*s*(bw*.5f-.4f)+Vector3.up*1.6f,new Vector3(.16f,3.2f,.16f),Quaternion.identity,postMat);
+                Cube(at+Vector3.up*3.1f,new Vector3(bw,1.7f,.08f),Quaternion.LookRotation(-f),boardMat);
+                var go=new GameObject("Sign / "+arrows);go.transform.SetParent(root);go.transform.SetPositionAndRotation(at+Vector3.up*3.1f-f*.05f,Quaternion.LookRotation(f));var tm=go.AddComponent<TextMesh>();tm.text=arrows;tm.anchor=TextAnchor.MiddleCenter;tm.fontSize=96;tm.characterSize=.16f;tm.color=new Color(.98f,.95f,.82f);tm.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");tm.fontStyle=FontStyle.Bold;go.GetComponent<Renderer>().sharedMaterial=tm.font.material;go.AddComponent<WorldText>();}
+            Vector3 eira=nodes[0],pal=nodes[1];
+            if(!longLap) {
+                // (straight on at the Eira Velha is the escape road: the board at its mouth, the bales 22 m behind it; at 46 m the board
+                // read small from the straight, first pictures)
+                Close(eira,D(90),60);Chevrons(eira+D(90)*38,D(90),"<  SHORT LAP  <");
+                Close(pal,D(110),62);
+            } else {
+                // (the closed road at the Eira Velha is round the corner behind its wall: a board on the right of the way on, seen from
+                // the straight, and the bales right at the arm's mouth)
+                Close(eira,D(190),34);Chevrons(eira+D(90)*40+D(0)*(Vinelands.LoopWidth*.5f+5),D(90),"^  LONG LAP  ^");
+                Close(pal,D(-10),46);
+                Chevrons(pal+D(-90)*15+D(-10)*12,D(290),">  LONG LAP  >");   // (on the Palheiro's outside, facing the cars coming down from the Casal)
+            }
+        }
+
         // ---- the Clube Automovel da Cumeada: the circuit's race day and its paddock
         void Clube()
         {
@@ -178,6 +215,7 @@ namespace LittleRoad
             for(int k=0;k<10;k++){var q=F(-585+(k%5)*8,20-(k/5)*14);q.y=Top(q)+.15f;Parking.Add((q,k/5==0?180:0));}
             {var q=F(-555,10);q.y=Top(q)+.1f;Spots["clube"]=(q,90);}
             Debug.Log($"LITTLE_ROAD_VINELANDS_CLUBE kerbs={kerbs} bales={bales} boards={boards}");
+            if(RaceTrial.Has("--race-day"))RaceDay(RaceTrial.Arg("--race-day")=="long");   // (test views: the race-day closures in free roam, short|long)
         }
     }
 }

@@ -135,7 +135,8 @@ namespace LittleRoad
             else if((trackId=="vinelands"||trackId=="vinelands-long")&&Vinelands.Enabled&&HillcrestRoute.All()!=null&&Vinelands.Lap!=null){   // (the roads first: the laps are made with them, so Lap was null until then)
                 var vlap=trackId=="vinelands-long"?Vinelands.LapLong:Vinelands.Lap;RaceArea.Set(vlap,450);yield return TrialWorld.CreateRoutine(new Circuit(),false);track=new Circuit(vlap,Vinelands.LoopWidth);RenderSettings.fogDensity=.00026f;
                 new GameObject("Vinelands drivable support",typeof(RoadSupport)).AddComponent<MeshCollider>().sharedMesh=track.DrivableSupport();
-                foreach(var surface in UnityEngine.Object.FindObjectsByType<RoadSurface>(FindObjectsSortMode.None))if(surface.GetComponent<Collider>()!=null&&surface.GetComponent<RoadSupport>()==null)surface.gameObject.AddComponent<RoadSupport>();}
+                foreach(var surface in UnityEngine.Object.FindObjectsByType<RoadSurface>(FindObjectsSortMode.None))if(surface.GetComponent<Collider>()!=null&&surface.GetComponent<RoadSupport>()==null)surface.gameObject.AddComponent<RoadSupport>();
+                VinelandsVila.RaceDay(trackId=="vinelands-long");}   // (the road the race doesn't use, closed: docs/92)
             else throw new ArgumentException("Unknown trial track: "+trackId);
             if(career)Debug.Log($"LITTLE_ROAD_RACE_MARK world t={Time.realtimeSinceStartup:0.00}");   // (race entry's stages: docs/72)
             // A reversed event (docs/67) drives the same circuit the other way; the world was built from the forward route.
