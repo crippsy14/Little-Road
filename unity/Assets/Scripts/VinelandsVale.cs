@@ -107,9 +107,9 @@ namespace LittleRoad
         }
         static readonly Dictionary<string,Material> fieldMats=new();
         static Material FieldMat(string name,Color c){if(fieldMats.TryGetValue(name,out var m)&&m!=null)return m;m=WorldLook.Kit("Vale "+name,c,WorldLook.Pattern.Leaf,0,.15f,true);fieldMats[name]=m;return m;}
-        // ---- race day's layout (in a race only): the road the race doesn't use is closed with a wall of bales across it, and a
-        // "THIS WAY" board on the turn, straight ahead of the cars as they brake for it (Richard: "how do I know to turn on the
-        // short track?", then: "It should just say This Way and have the sign be on the turn so people can see it").
+        // ---- race day's layout (in a race only): the road the race doesn't use is blocked off with a wall of bales right across
+        // its mouth, 1 m out from the junction's edge, so the only way on is obvious (Richard, 23 Oct: no signs, "too confusing";
+        // "just block off the routes that aren't available... the hay bales right up to the boundary minus a metre").
         public static void RaceDay(bool longLap)
         {
             var nodes=Vinelands.CircuitNodes;if(nodes==null||!BayviewKit.Has("hay_bale"))return;var root=new GameObject("Cumeada race day").transform;
@@ -121,37 +121,20 @@ namespace LittleRoad
                 foreach(var l in lines)if(l!=null)foreach(var q in l)if(new Vector2(q.x-p.x,q.z-p.z).sqrMagnitude<Vinelands.LoopWidth*Vinelands.LoopWidth*.36f)p.y=Mathf.Max(p.y,q.y+.03f);return p;}
             // (put back where they were meant after the spawn: its ground fit dropped them onto the land under the road's embankment,
             // 1.5 m deep in the road at the Eira Velha)
-            void Close(Vector3 node,Vector3 dir,float d){var c=node+dir*d;var across=Vector3.Cross(Vector3.up,dir);float yaw=Quaternion.LookRotation(across).eulerAngles.y;
-                for(float x=-7;x<=7.01f;x+=1.75f){var at=OnTop(c+across*x);var g=BayviewKit.Spawn("hay_bale",at,yaw,root,null,null,true,1.15f);if(g!=null){g.transform.SetPositionAndRotation(at,Quaternion.Euler(0,yaw,0));g.name="Race day bale";
+            void Close(Vector3 node,Vector3 dir,float d,float span){var c=node+dir*d;var across=Vector3.Cross(Vector3.up,dir);float yaw=Quaternion.LookRotation(across).eulerAngles.y;
+                int k2=Mathf.CeilToInt(span*2/1.75f);for(int xi=0;xi<=k2;xi++){float x=-span+xi*span*2/k2;var at=OnTop(c+across*x);var g=BayviewKit.Spawn("hay_bale",at,yaw,root,null,null,true,1.15f);if(g!=null){g.transform.SetPositionAndRotation(at,Quaternion.Euler(0,yaw,0));g.name="Race day bale";
                     // (always drawn: a small prop's LOD culls it beyond about 40 m, and a closed road has to read from the braking zone)
                     foreach(var lg in g.GetComponentsInChildren<LODGroup>()){var lods=lg.GetLODs();for(int k=1;k<lods.Length;k++)foreach(var r in lods[k].renderers)if(r!=null)r.enabled=false;Object.Destroy(lg);}}}}   // (renamed: the placement pass settles "hay_bale"s onto the land, under the road)
-            var boardMat=TrialWorld.Material("Cumeada chevron board",Toy.Hex(0x4a0f18),0,.3f);var postMat=TrialWorld.Material("Board post",new Color(.3f,.3f,.32f),0,.3f);
-            void Cube(Vector3 at,Vector3 size,Quaternion rot,Material m){var g=GameObject.CreatePrimitive(PrimitiveType.Cube);g.name="Cumeada chevron";g.transform.SetParent(root);g.transform.SetPositionAndRotation(at,rot);g.transform.localScale=size;g.GetComponent<Renderer>().sharedMaterial=m;Object.Destroy(g.GetComponent<Collider>());}
-            // (f: the forward of the cars that read it; not solid, as the boards in the run-off)
-            // the board: THIS WAY in cream on the club's maroon, with a big drawn arrow beside it (the font's arrows were hairlines)
-            // pointing the way: -1 left, 1 right, 0 straight on (an arrow each side)
-            void ThisWay(Vector3 at,Vector3 f,int turn){f.y=0;f.Normalize();at=OnTop(at);var across=Vector3.Cross(Vector3.up,f);var face=Quaternion.LookRotation(-f);
-                const float bw=10f,h=3.1f;foreach(int s in new[]{-1,1})Cube(at+across*s*(bw*.5f-.5f)+Vector3.up*1.6f,new Vector3(.18f,3.2f,.18f),Quaternion.identity,postMat);
-                Cube(at+Vector3.up*h,new Vector3(bw,1.8f,.08f),face,boardMat);
-                var cream=TrialWorld.Material("Cumeada board text",new Color(.98f,.95f,.82f),0,.3f);var front=at+Vector3.up*h-f*.07f;
-                // (an arrow at `x` along the board, seen by the driver: x>0 is their right; dir -1/1 sideways, 0 up)
-                void Arrow(float x,int dir){var c=front+across*x;var r=Quaternion.LookRotation(-f);
-                    if(dir==0){Cube(c-Vector3.up*.12f,new Vector3(.22f,.95f,.03f),r,cream);foreach(int s in new[]{-1,1})Cube(c+Vector3.up*.25f+across*s*.2f,new Vector3(.22f,.62f,.03f),r*Quaternion.Euler(0,0,-s*45),cream);}
-                    else{Cube(c-across*dir*.12f,new Vector3(1.0f,.22f,.03f),r,cream);foreach(int s in new[]{-1,1})Cube(c+across*dir*.25f+Vector3.up*s*.2f,new Vector3(.62f,.22f,.03f),r*Quaternion.Euler(0,0,s*dir*45),cream);}}
-                float tx=turn==0?0:-turn*.8f;if(turn==0){Arrow(-3.9f,0);Arrow(3.9f,0);}else Arrow(turn*3.7f,turn);
-                var go=new GameObject("Sign / THIS WAY");go.transform.SetParent(root);go.transform.SetPositionAndRotation(front+across*tx-f*.01f,Quaternion.LookRotation(f));var tm=go.AddComponent<TextMesh>();tm.text="THIS WAY";tm.anchor=TextAnchor.MiddleCenter;tm.fontSize=96;tm.characterSize=.15f;tm.color=new Color(.98f,.95f,.82f);tm.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");tm.fontStyle=FontStyle.Bold;go.GetComponent<Renderer>().sharedMaterial=tm.font.material;go.AddComponent<WorldText>();}
+            // (the closed arm's mouth: where the junction's surface ends on that road, from the solved network; the bales span the
+            // road and its shoulders)
+            void Block(Vector3 node,Vector3 dir){float d=30,half=Vinelands.LoopWidth*.5f;var net=CoastalLandscape.Network;
+                if(net!=null){RoadNetwork.Node best=null;float bd=12;foreach(var n in net.nodes){float dn=Vector2.Distance(new(n.at.x,n.at.z),new(node.x,node.z));if(dn<bd){bd=dn;best=n;}}
+                    if(best!=null){float bdot=.7f;foreach(var a in best.arms)if(!a.external&&Vector3.Dot(a.dir,dir)>bdot){bdot=Vector3.Dot(a.dir,dir);d=a.trim;dir=a.dir;half=a.half;}}}
+                Close(node,dir,d+1,half+1.5f);}
             Vector3 eira=nodes[0],pal=nodes[1];
-            if(!longLap) {
-                // (the Eira Velha turns left: the board on the outside of the turn, at the mouth of the closed road straight ahead, the
-                // bales close behind it)
-                ThisWay(eira+D(90)*25,D(90),-1);Close(eira,D(90),30);
-                Close(pal,D(110),26);
-            } else {
-                // (straight on at the Eira Velha: the board beside the way on, just past the junction; the bales across the left arm's mouth)
-                ThisWay(eira+D(90)*26+D(0)*(Vinelands.LoopWidth*.5f+6),D(90),0);Close(eira,D(190),34);
-                // (the Palheiro turns right: the board straight ahead of the cars coming down from the Casal, across the lap)
-                ThisWay(pal+D(290)*14,D(290),1);Close(pal,D(-10),46);
-            }
+            // short lap: the long lap's road at both Ts; long lap: the short lap's road at both
+            if(!longLap){Block(eira,D(90));Block(pal,D(110));}
+            else{Block(eira,D(190));Block(pal,D(-10));}
         }
 
         // ---- the Clube Automovel da Cumeada: the circuit's race day and its paddock

@@ -136,6 +136,23 @@ The races are two laps each, about 3.5 and 5 minutes. Class A may take the long 
 - The paddock is in the infield between the straight and the Subida.
 - Fields are now cleared on a 5 × 5 grid.
 
+**Built and raced (23 October).**
+- **Junctions:** both are square Ts. Each junction's kerb radius follows the race line's arc (`RoadNetwork.Node.fillet`).
+  Both arms sit on 60 m landings, and field walls and planting keep off the junction surfaces.
+- **The long lap's rejoin:** moved 80 m further west than drawn first. Its T had stood on the Lomba's kink. The long
+  lap is now 3.63 km.
+- **Best laps (study 252):** 104.7 s on the short lap and 142.8 s on the long, against estimates of 104 s and about
+  143 s.
+- **The AI sweep (study 253):** skills 3, 7, 10 and 13, seeds 1709–1711, both laps. All 24 races finished 24/24, with
+  one assisted reset (long lap, skill 13).
+- **Race day:** in a race the road the race doesn't use is blocked off with a wall of hay bales right across its mouth,
+  1 m out from the junction's edge (`VinelandsVila.RaceDay`; `--race-day short|long` shows it in test views). Free
+  roam leaves both farm lanes open.
+  - Richard tried direction boards first ("SHORT LAP", "THIS WAY") and found them too confusing. No signs: the blocked
+    road shows the way.
+  - The bales are renamed out of the placement pass's settle list, which had dropped them under the road's embankment.
+  - Their LOD is removed, because small props cull at about 40 m.
+
 ## Architecture
 - **Reused:**
   - the douro farmhouses;
