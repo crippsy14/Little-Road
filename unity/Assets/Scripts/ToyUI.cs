@@ -112,6 +112,15 @@ namespace LittleRoad
             var data=menuCamera.GetUniversalAdditionalCameraData();data.renderType=CameraRenderType.Base;data.renderPostProcessing=false;
             return menuCamera;
         }
+        // A full-screen shop (the body shop, the garage) covers the world, so the world camera draws nothing behind it: no
+        // renderers, no post-processing (it drew the whole town, 23 Oct). Show it again on leaving.
+        static Camera hiddenFrom;static int hiddenMask;static bool hiddenPost;
+        public static void HideWorld(bool hide)
+        {
+            if(hide&&hiddenFrom==null){var main=Camera.main;if(main==null)return;var data=main.GetUniversalAdditionalCameraData();
+                hiddenFrom=main;hiddenMask=main.cullingMask;hiddenPost=data.renderPostProcessing;main.cullingMask=0;data.renderPostProcessing=false;}
+            else if(!hide&&hiddenFrom!=null){hiddenFrom.cullingMask=hiddenMask;hiddenFrom.GetUniversalAdditionalCameraData().renderPostProcessing=hiddenPost;hiddenFrom=null;}
+        }
         public static void UseMenuCamera(Canvas canvas)
         {
             if(canvas.renderMode==RenderMode.ScreenSpaceOverlay)return;

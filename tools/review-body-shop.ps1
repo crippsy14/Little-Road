@@ -1,8 +1,8 @@
 ﻿# Usage (from project root): .\tools\review-body-shop.ps1 -Name b1
-# Rendered review of the Hillcrest Pit Stop body shop on a throwaway save: Lina's menu, the shop,
-# buying the Comet, then Gio's garage bay swapping the live car. Captures to
-# review/ui-screens/<Name>/ (never overwrites); exit 0 only if the swap happened.
-param([Parameter(Mandatory)][ValidatePattern('^[a-z0-9-]+$')][string]$Name)
+# Rendered review of the Hillcrest Pit Stop body shop on a throwaway save: Lina's menu, the shop (and its frame times,
+# BODY_SHOP_FRAMES), buying the Kestrel, then Gio's garage bay: the garage screen (GARAGE_FRAMES) driving it. Captures to
+# review/ui-screens/<Name>/ (never overwrites); exit 0 only if the swap happened. -Flags: e.g. '--old-shop-preview' (A/B).
+param([Parameter(Mandatory)][ValidatePattern('^[a-z0-9-]+$')][string]$Name,[string[]]$Flags=@())
 $ErrorActionPreference='Stop'
 . "$PSScriptRoot/quiet-start.ps1"
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -13,7 +13,7 @@ $exe=[IO.Path]::GetFullPath((Join-Path $root '../little-road-dev-build/Little Ro
 Copy-Item (Join-Path $root 'tools/fixtures/watch-cars-save.json') (Join-Path $folder 'save.json')
 $arguments=@('--silent','-screen-width','1920','-screen-height','1080','-screen-fullscreen','0','-monitor','1','--body-shop-review','--adventure-save',('"'+(Join-Path $folder 'save.json')+'"'),
   '--trial-captures',('"'+$folder+'"'),'-logFile',('"'+(Join-Path $folder 'player.log')+'"'))
-$run=Start-Quiet -FilePath $exe -PassThru -ArgumentList $arguments
+$run=Start-Quiet -FilePath $exe -PassThru -ArgumentList ($arguments+$Flags)
 $run.WaitForExit()
 Write-Output "exit=$($run.ExitCode)"
-Select-String -LiteralPath (Join-Path $folder 'player.log') -Pattern 'BODY_SHOP_REVIEW|Exception' | Select-Object -First 6 | ForEach-Object { $_.Line }
+Select-String -LiteralPath (Join-Path $folder 'player.log') -Pattern 'BODY_SHOP_REVIEW|_FRAMES|Exception' | Select-Object -First 9 | ForEach-Object { $_.Line }

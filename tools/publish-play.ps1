@@ -4,15 +4,17 @@
 # Run it only after a build has passed its checks and smoke tests. The shortcut opens on the main screen
 # (-monitor 1); saves are shared with every build (they live in the user's AppData), so nothing is lost either way.
 # -Flags: game flags the shortcut opens with, e.g. -Flags '--prop-forge','--new-bayview' (the remodelled towns, docs/80).
-param([string[]]$Flags=@())
+# -From / -To: another build folder and play folder (from a second worktree, whose ../ is not the project's: 23 Oct).
+param([string[]]$Flags=@(),[string]$From,[string]$To)
 $ErrorActionPreference='Stop'
 $Flags=@($Flags|ForEach-Object{$_ -split ','}|Where-Object{$_})   # (from powershell -File, a list arrives as one comma-joined string)
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$from=[IO.Path]::GetFullPath((Join-Path $root '../little-road-dev-build'))
-$to=[IO.Path]::GetFullPath((Join-Path $root '../little-road-play'))
+$from=[IO.Path]::GetFullPath($(if($From){$From}else{Join-Path $root '../little-road-dev-build'}))
+$to=[IO.Path]::GetFullPath($(if($To){$To}else{Join-Path $root '../little-road-play'}))
 $exe='Little Road Unity.exe'
 if(-not (Test-Path (Join-Path $from $exe))){throw "No dev build at $from"}
-if(Get-Process 'Little Road Unity' -ErrorAction SilentlyContinue){throw 'Close the game first (it is running).'}
+# Only a game running from the play copy blocks replacing it (test runs from a dev build can carry on, as in build-dev).
+if(Get-Process 'Little Road Unity' -ErrorAction SilentlyContinue|Where-Object{-not $_.Path -or $_.Path.StartsWith($to,[StringComparison]::OrdinalIgnoreCase)}){throw 'Close the game first (it is running).'}
 robocopy $from $to /MIR /NFL /NDL /NJH /NJS /NP | Out-Null
 if($LASTEXITCODE -ge 8){throw "Copy failed (robocopy $LASTEXITCODE)"}
 $git='-c',"safe.directory=$($root -replace '\\','/')"

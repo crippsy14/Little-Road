@@ -42,7 +42,7 @@ public static class RaceRosterChecks
         Require(upgraded.Entries[0].Rating>roster.Entries[0].Rating,"actual player upgrade absent in preview");
         checks.Add("Adventure preview starts player24th, does not spend a race serial/re-roll form, rejects stale equipment and fixes opponents across upgrades");
 
-        var fresh=AdventureProgress.New();Require(fresh.bodyId==CarBodies.Starter,"new save does not start in the starter car");
+        var fresh=AdventureProgress.New();Require(fresh.bodyId==CarBodies.StarterBody,"new save does not start in the starter car");
         foreach(var track in new[]{"cedar","bayview"}) {
             var trialField=RaceRoster.Trial(24,1,1709,track,"stock",Array.Empty<string>(),"field","mixed",true);
             Require(trialField.Entries[0].Body=="compact_v1","trial car 0 is not the compact master");

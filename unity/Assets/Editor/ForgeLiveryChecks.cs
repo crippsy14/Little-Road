@@ -36,8 +36,10 @@ public static class ForgeLiveryChecks
             t=ForgeLivery.Compose(paint,stripe,7,"roundel");Check(Near(A(top.center*S),paint)&&Near(A(new Vector2(top.center.x*S,(top.yMin+top.height*stripeB)*S)),paint),"Livery roundel style: no stripes");UnityEngine.Object.DestroyImmediate(t);
             var probe=new GameObject("livery-probe");try{Check(Array.IndexOf(ForgeLivery.Styles,"plain")>=0&&ForgeLivery.Apply(probe,paint,stripe,7,"plain")==0,"Livery plain leaves the paint alone");}finally{UnityEngine.Object.DestroyImmediate(probe);}
         }
-        // (--forge-drive: a Forge body as the player's car, in a blank save of its own; off, no save may hold one)
-        Check(AdventureSession.ForgeDrive!=null||(!CarBodies.Ownable("forge_kestrel")&&!CarBodies.Ownable("forge_closed_hatch")),"Forge bodies can't be owned without --forge-drive");
+        // (--forge-drive: a Forge body as the player's car, in a blank save of its own; off, no save may hold one of the engine's
+        //  test designs. The roster's cars are the body shops' range since 23 Oct, so a save may own them.)
+        Check(AdventureSession.ForgeDrive!=null||!CarBodies.Ownable("forge_closed_hatch"),"The Forge engine's test designs can't be owned without --forge-drive");
+        Check(CarBodies.Ownable("forge_kestrel")&&CarBodies.Ownable(CarBodies.ForgeStarter),"The Forge roster's cars can be owned (the body shops sell them)");
         Check(System.IO.Path.GetFileName(AdventureSession.ForgeDrivePath)=="little-road-forge-drive.json"&&AdventureSession.ForgeDrivePath!=SaveSlots.LivePath,"The Forge test drive saves to its own file, never a slot");
         foreach(var id in CarBodies.Forge) {
             var model=Resources.Load<GameObject>("Cars/"+id);Check(model!=null,"Forge body model: "+id);

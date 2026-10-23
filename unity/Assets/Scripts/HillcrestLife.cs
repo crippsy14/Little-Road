@@ -27,7 +27,8 @@ namespace LittleRoad
         }
         void Traffic(Transform root)
         {
-            string[] bodies={"minibus","taxi","postvan","beetle","ritz","bubble","camper","pebble","tallboy","marlow"};
+            // (with the Forge roster, the valley's working cars come out too: the milk float, the window cleaner, the chip van, the tow truck)
+            string[] bodies=CarBodies.RosterEnabled?new[]{"minibus","taxi","gold_top","beetle","ladders","bubble","chippy","pebble","pronto","hookline"}:new[]{"minibus","taxi","postvan","beetle","ritz","bubble","camper","pebble","tallboy","marlow"};
             string[] names={"Nell","Hugo","Bea","Otis","Ivy","Rufus","Poppy","Alfie","Mabel","Stan","Juno","Percy"};
             var roads=new List<(HillcrestRoute.Road road,float from,float to)>{
                 (HillcrestRoute.Quay,6,HillcrestRoute.Quay.Length-6),(HillcrestRoute.Quay,6,HillcrestRoute.Quay.Length-6),(HillcrestRoute.Quay,6,HillcrestRoute.Quay.Length-6),
@@ -46,7 +47,7 @@ namespace LittleRoad
             }
             // Bramblewick's traffic (--bramblewick, docs/82): the village's own cars up and down Valley Road South.
             if(Bramblewick.Enabled) {
-                var vr=HillcrestRoute.Find(Bramblewick.RoadName);var br=new System.Random(91);string[] vbodies={"beetle","camper","postvan","pebble"},folk={"Arthur","Edie","Walt","Hetty"};
+                var vr=HillcrestRoute.Find(Bramblewick.RoadName);var br=new System.Random(91);string[] vbodies={"beetle",CarBodies.RosterEnabled?"gold_top":"camper","postvan","pebble"},folk={"Arthur","Edie","Walt","Hetty"};
                 string[] says={"Arr, mind the cows, my lover!","Off to The Plough? Save us a seat.","Lanes are for sharing, my 'ansum!","Peg's float's quicker than it looks, mind.","Lovely drop of rain for the barley."};
                 for(int i=0;i<4;i++) {
                     Color paint=PaintCatalog.All[br.Next(PaintCatalog.Standard)].color;var go=TrialWorld.Car(vbodies[i],paint);go.name="Bramblewick traffic "+i;go.transform.SetParent(root);
@@ -66,7 +67,7 @@ namespace LittleRoad
                 var vroads=new[]{(Vinelands.ValeRoadName,12f,12f),(Vinelands.AmendoeirasName,12f,12f),(Vinelands.MeioName,20f,20f),(Vinelands.RuaDireitaName,15f,15f),(Vinelands.FeiraName,12f,12f),(Vinelands.PonteName,8f,8f),(Vinelands.CaisRoadName,25f,25f),(Vinelands.CaisRoadName,25f,25f),(Vinelands.MiranteName,20f,20f),(Vinelands.RiverRoadName,40f,40f)};
                 for(int i=0;i<vroads.Length;i++) {
                     var road=HillcrestRoute.Find(vroads[i].Item1);if(road==null)continue;float from=vroads[i].Item2,to=road.Length-vroads[i].Item3;Color paint=PaintCatalog.All[vrng.Next(PaintCatalog.Standard)].color;
-                    var go=TrialWorld.Car(new[]{"bubble","heron","kipper","beetle","tallboy","pebble","postvan","ritz","bubble","marlow"}[i],paint);go.name="Vinelands traffic "+i;go.transform.SetParent(root);
+                    var go=TrialWorld.Car((CarBodies.RosterEnabled?new[]{"bubble","heron","kipper","beetle","pronto","pebble","postvan","ritz","wren","sunday_best"}:new[]{"bubble","heron","kipper","beetle","tallboy","pebble","postvan","ritz","bubble","marlow"})[i],paint);go.name="Vinelands traffic "+i;go.transform.SetParent(root);
                     go.AddComponent<RoadCruiser>().Setup(road,from,to,Mathf.Lerp(from,to,(float)vrng.NextDouble()),vrng.Next(2)*2-1,player);
                     var chatter=go.AddComponent<NpcChatter>();chatter.speaker=who[i];chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=says;
                 }
@@ -77,7 +78,7 @@ namespace LittleRoad
                 var quarryRoads=new List<(string road,float from,float back)>{(QuarryHills.QuarryRoadName,30,40),(QuarryHills.QuarryRoadName,30,40),(QuarryHills.HighStreetName,10,10),(QuarryHills.QuayLaneName,10,12),(QuarryHills.ChapelStreetName,8,8),(QuarryHills.TerraceRowName,8,8)};
                 for(int i=0;i<quarryRoads.Count;i++) {
                     var road=HillcrestRoute.Find(quarryRoads[i].road);float from=quarryRoads[i].from,to=road.Length-quarryRoads[i].back;Color paint=PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color;
-                    var go=TrialWorld.Car(i%3==2?bodies[(i+3)%bodies.Length]:CarBodies.OffRoad[i%CarBodies.OffRoad.Length],paint);go.name="Quarry traffic "+i;go.transform.SetParent(root);
+                    var go=TrialWorld.Car(i%3==2?bodies[(i+3)%bodies.Length]:CarBodies.OffRoadFolk[i%CarBodies.OffRoadFolk.Length],paint);go.name="Quarry traffic "+i;go.transform.SetParent(root);
                     go.AddComponent<RoadCruiser>().Setup(road,from,to,Mathf.Lerp(from,to,(float)rng.NextDouble()),rng.Next(2)*2-1,player);
                     var chatter=go.AddComponent<NpcChatter>();chatter.speaker=new[]{"Delyth","Rhodri","Nerys","Ifan","Carys","Geraint"}[i%6];chatter.colour=paint;chatter.title="Out for a drive";chatter.lines=welsh;
                 }
@@ -112,7 +113,7 @@ namespace LittleRoad
             foreach(float x in new[]{0f,-.9f,.9f}){var q=p+right*x;foreach(var h in Physics.RaycastAll(q+Vector3.up*3,Vector3.down,8,~0,QueryTriggerInteraction.Ignore))if(IsCarriageway(h.collider))return true;}
             return false;
         }
-        static readonly string[] ParkBodies={"marlow","heron","picnic","doodle","otter","bramble","pebble","tallboy","dover","kipper","sprint","roadster"};
+        static readonly string[] ParkBodies=CarBodies.WithForge(new[]{"marlow","heron","picnic","doodle","otter","bramble","pebble","tallboy","dover","kipper","sprint","roadster"},"rattler","patchwork","woody","sunday_best","l_plate","stock_banger","shedbuilt");
         void Park(Transform root,List<(Vector3 at,float yaw)> spots)
         {
             var rng=parkRng;var bodies=ParkBodies;
@@ -124,7 +125,7 @@ namespace LittleRoad
                 var p=at;p.y=Mathf.Max(ValleyField.Height(p.x,p.z),at.y>0?at.y:-99)+.02f;
                 // (In Quarry Hills, the rally town, most cars are its off-roaders.)
                 bool rally=QuarryHills.Enabled&&QuarryHills.Contains(p.x,p.z);
-                var go=TrialWorld.Car(rally&&rng.NextDouble()<.8?CarBodies.OffRoad[rng.Next(CarBodies.OffRoad.Length)]:bodies[rng.Next(bodies.Length)],PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color);go.name="Parked car";go.transform.SetParent(root);
+                var go=TrialWorld.Car(rally&&rng.NextDouble()<.8?CarBodies.OffRoadFolk[rng.Next(CarBodies.OffRoadFolk.Length)]:bodies[rng.Next(bodies.Length)],PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color);go.name="Parked car";go.transform.SetParent(root);
                 go.transform.SetPositionAndRotation(p,Quaternion.Euler(0,yaw,0));
                 var renderers=go.GetComponentsInChildren<Renderer>();var bounds=renderers[0].bounds;foreach(var x in renderers)bounds.Encapsulate(x.bounds);
                 var box=go.AddComponent<BoxCollider>();box.center=go.transform.InverseTransformPoint(bounds.center);box.size=new Vector3(1.8f,1.5f,3.8f);go.tag="Respawn";
@@ -207,7 +208,7 @@ namespace LittleRoad
             Debug.Log("LITTLE_ROAD_TOWNSFOLK placed="+People.Count+" homeSkipped="+homeSkipped);
         }
         System.Random folkRng;
-        static readonly string[] FolkBodies={"bubble","beetle","taxi","camper","ritz","postvan","gelato","minibus","pebble","tallboy","marlow","dover","heron","bramble","picnic","kipper","doodle","otter"};
+        static readonly string[] FolkBodies=CarBodies.WithForge(new[]{"bubble","beetle","taxi","camper","ritz","postvan","gelato","minibus","pebble","tallboy","marlow","dover","heron","bramble","picnic","kipper","doodle","otter"},"chippy","gold_top","ladders","hookline","pronto","wren","sunday_best","woody","l_plate");
         System.Collections.IEnumerator QuarryFolkLater(Transform root)
         {
             yield return QuarryFolk(root);
@@ -220,7 +221,7 @@ namespace LittleRoad
             var rng=folkRng;var bodies=FolkBodies;int quarryPlaced=0;
             for(int i=0;i<QuarryHillsTown.Homes.Count&&quarryPlaced<110;i++) {yield return null;
                 if(rng.NextDouble()>.7)continue;var (yard,yaw,_)=QuarryHillsTown.Homes[i]; // (only houses with a drive are homes)
-                string body=rng.NextDouble()<.55?CarBodies.OffRoad[rng.Next(CarBodies.OffRoad.Length)]:bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
+                string body=rng.NextDouble()<.55?CarBodies.OffRoadFolk[rng.Next(CarBodies.OffRoadFolk.Length)]:bodies[rng.Next(bodies.Length)];if(body=="gelato"||body=="minibus")body="beetle";
                 if(Spawn(root,body,PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color,yard,yaw,QuarryNames[quarryPlaced%QuarryNames.Length],"Quarry Hills",new[]{QuarryGossip[rng.Next(QuarryGossip.Length)],QuarryGossip[rng.Next(QuarryGossip.Length)]},true))quarryPlaced++;
             }
         }
