@@ -25,6 +25,8 @@ def summary(path):
         'maxImpact': max((c['maxImpact'] for c in cars), default=0),
         'brake': mean('brakeSeconds'), 'lift': mean('liftSeconds'), 'stopped': mean('stoppedSeconds'),
         'traffic': mean('trafficSeconds'), 'guard': mean('guardSeconds'),
+        # Racecraft v3 (docs/94): seconds lost behind traffic, seconds attacking (per car), lane changes (whole field).
+        'loss': mean('trafficLossSeconds'), 'attackS': mean('attackSeconds'), 'lanes': sum(c.get('laneChanges', 0) for c in cars),
         'attacks': sum(c.get('passCommits', 0) for c in cars), 'passes': sum(c.get('passCompleted', 0) for c in cars),
         'aborts': sum(c.get('passAborted', 0) for c in cars), 'defends': sum(c.get('defendMoves', 0) for c in cars),
         'reversals': sum(c.get('planReversals', 0) for c in cars),
@@ -32,7 +34,7 @@ def summary(path):
 
 paths = [p for a in sys.argv[1:] for p in glob.glob(a)]
 rows = [summary(p) for p in sorted(paths)]
-cols = ['run', 'policy', 'finished', 'total', 'winner', 'last', 'resets', 'contacts', 'hard', 'maxImpact', 'brake', 'lift', 'stopped', 'traffic', 'guard', 'attacks', 'passes', 'aborts', 'defends', 'reversals']
+cols = ['run', 'policy', 'finished', 'total', 'winner', 'last', 'resets', 'contacts', 'hard', 'maxImpact', 'brake', 'lift', 'stopped', 'traffic', 'guard', 'loss', 'attackS', 'lanes', 'attacks', 'passes', 'aborts', 'defends', 'reversals']
 fmt = lambda v: '-' if v is None else (f"{v:.1f}" if isinstance(v, float) else str(v))
 print('\t'.join(cols))
 for row in rows:

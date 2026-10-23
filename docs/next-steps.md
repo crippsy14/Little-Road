@@ -1,5 +1,16 @@
 # Next steps (3 October 2026)
 
+**22 October, late: racing AI pace review ([doc 94](94-racing-ai-pace-review.md)); racecraft v3 behind `--racecraft-v3`.**
+- The review found the driving core near its ceiling (full-ability drivers only 2% quicker; more corner grip pace-neutral and
+  risky) and the race itself the cost: a 24-car field finishes about 10% behind its solo pace, the order is the grid order,
+  and 95% of attacks aborted because the lane target jumped 3-6 m every second.
+- Racecraft v3 (lane commitment, attacks that own a clear lane, closer following of the target) passes keep/reject in round
+  two (study 259): 24/24, no resets, -88 s over six races (-0.8%), passes doubled on Cedar, attack time -40%, contacts level.
+  A modest gain; the flag is off by default and uncommitted.
+- 23 October: the Hillcrest loop (studies 260-261) tried more attacking (worse), giving up blocked attacks sooner (fewer
+  passes) and closer following (same gain, 60% more contacts); round two stayed the version. The full sweep (study 262)
+  passes keep/reject: 144/144, no resets, -0.8%, passes 44 -> 74, contacts level. Off by default; Richard's call to make it on.
+
 **21 October: Bramblewick is part of the game, and the hybrid prototype is under way.**
 - **Bramblewick** ([doc 82](82-bramblewick.md)) is on by default in player builds; `--no-bramblewick` leaves it out. This
   covers the West Country village, the vale, and the Bramblewick Lanes race with Jed.

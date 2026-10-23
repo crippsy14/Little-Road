@@ -82,6 +82,29 @@ namespace LittleRoad
         static readonly bool TrafficCornerMargin=RaceTrial.Has("--traffic-corner-margin")||FieldRecipe.On&&!RaceTrial.Has("--no-traffic-corner-margin");
         const float TrafficCornerCap=.92f;
         static readonly float CornerScale=Scale("--racer-corner-scale"),BrakeScale=Scale("--racer-brake-scale"),ReactionScale=Scale("--racer-reaction-scale"),GapScale=Scale("--racer-gap-scale"),LeaderBrakeScale=Scale("--racer-leader-brake-scale");
+        // Racecraft v3 (docs/94, 22 Oct; --racecraft-v3, off by default). Study 256: in a 24-car field the finishing order
+        // was the grid order (5-11 passes a race from 120-190 attacks; a 10% faster club car from the back passed one car),
+        // because the lane target moved 3-6 m nearly every second (380-670 reversals a race), so no move completed, and an
+        // attack sat beside its target until the 9 s timeout or the door closed at the apex (70% of aborts). Traffic bound
+        // the speed 58-62% of the race at 6-8 m/s below the car's own plan; full-ability drivers were only 2% faster.
+        // Three parts, each droppable with --racecraft-v3-without <commit|attack|gap> for diagnosis:
+        //   commit  the chosen lane is kept until it is blocked, clearly worse, or a dwell has passed (AcceptLaneChange);
+        //   attack  an attack owns the lane beside its target (no heat roll), gives a closing door 1.5 s to reopen, never
+        //           aborts for it while overlapping (the target must leave a car's width), and a closed door costs a short
+        //           cool-down rather than Patience's;
+        //   gap     the target of an attack is followed on a shorter reaction and gap, and not at all once we are beside it
+        //           (the close guard still brakes for bodies).
+        public static readonly bool RacecraftV3=RaceTrial.Has("--racecraft-v3");
+        static bool Dropped(string part){var args=Environment.GetCommandLineArgs();for(int i=0;i+1<args.Length;i++)if(args[i]=="--racecraft-v3-without"&&args[i+1]==part)return true;return false;}
+        public static readonly bool V3Commit=RacecraftV3&&!Dropped("commit"),V3Attack=RacecraftV3&&!Dropped("attack"),V3Gap=RacecraftV3&&!Dropped("gap");
+        // A lane change is a move of LaneShift or more from the shift held at the last accepted change (so a lane can't be
+        // crossed in small steps). It waits LaneDwell seconds and needs LaneGain of heat; LaneBigGain (a slow car's hill in
+        // our lane) or a blocked lane moves at once.
+        public const float LaneShift=1.5f,LaneDwell=1.2f,LaneGain=1f,LaneBigGain=4f;
+        public static bool AcceptLaneChange(float gain,float sinceLastChange,bool blocked)=>blocked||gain>=LaneBigGain||(sinceLastChange>=LaneDwell&&gain>=LaneGain);
+        // Telemetry: seconds lost behind traffic (deficit to our own plan over our speed), seconds attacking, lane changes.
+        public float TrafficLossSeconds,AttackSeconds;public int LaneChanges;
+        float laneAnchor,attackLane;bool attackLaneValid;
         public RacerDriverPolicy(RacingLine line,RacerAbilities abilities,int driverId,int raceSeed,Vector3 colliderHalf)
         {
             track=RacerTrack.For(line);HalfRoad=line.halfRoad;MaxLine=line.MaxOffset;ability=abilities;id=driverId;
@@ -143,6 +166,8 @@ namespace LittleRoad
             if(Elapsed>0&&!observation.finished) {
                 if(reason==Reason.Follow){TrafficSeconds+=dt;if(accel<-.5f)TrafficBrakeSeconds+=dt;}
                 if(reason==Reason.Guard)GuardSeconds+=dt;
+                if(reason==Reason.Follow||reason==Reason.Guard)TrafficLossSeconds+=dt*Mathf.Min(3,Mathf.Max(0,allowedHere-v)/Mathf.Max(v,3));
+                if(State==Intent.Attack)AttackSeconds+=dt;
             }
             WaitingForTraffic=(reason==Reason.Follow||reason==Reason.Guard)&&v<3;
 
@@ -268,13 +293,18 @@ namespace LittleRoad
                 // it instead of waiting for it (and it for us).
                 float mine=v<2&&other.speed<1?PathTarget(s,rel,edge):PathOffset(s,o,rel,edge,lateralDistance);
                 if(Mathf.Abs(mine-other.offset)>=halfWidth+other.halfWidth+.3f)continue;
+                // Racecraft v3 (gap): the car we are attacking is followed on 60% of the reaction time and half the standstill
+                // gap, and not at all once we are beside it (its width all but cleared): the close guard brakes for bodies.
+                bool attacking=V3Gap&&State==Intent.Attack&&other.id==target;
+                if(attacking&&Mathf.Abs(o-other.offset)-halfWidth-other.halfWidth>=0)continue;
+                float tauHere=attacking?tau*.75f:tau;
                 // Racecraft: read a leader that is pulling away (the launch, a corner exit) instead of
                 // assuming it may stop dead this instant.
-                float lead=Mathf.Max(0,other.speed+Mathf.Max(0,seenAccel[other.id&63])*tau);
-                float g=gap-ability.Standstill*GapScale*(launch?.6f:1);
-                float term=b*b*tau*tau+b*(2*g-v*tau+lead*lead/bh);
-                float safe=term<=0?0:-b*tau+Mathf.Sqrt(term);
-                float accel=(safe-v)/Mathf.Max(tau,.25f);
+                float lead=Mathf.Max(0,other.speed+Mathf.Max(0,seenAccel[other.id&63])*tauHere);
+                float g=gap-ability.Standstill*GapScale*(launch?.6f:1)*(attacking?.7f:1);
+                float term=b*b*tauHere*tauHere+b*(2*g-v*tauHere+lead*lead/bh);
+                float safe=term<=0?0:-b*tauHere+Mathf.Sqrt(term);
+                float accel=(safe-v)/Mathf.Max(tauHere,.25f);
                 if(accel<best){best=accel;leader=other.id;}
             }
             return best;
@@ -327,6 +357,7 @@ namespace LittleRoad
             }
             if(State==Intent.Defend)Hill(DefendOffset(corner,edge),.6f,-2.5f);
 
+            attackLaneValid=false;
             foreach(var other in observation.traffic) {
                 if(other.id==me.id)continue;
                 float rel=track.Relative(other.route,s);if(rel<-16||rel>75)continue;
@@ -352,7 +383,8 @@ namespace LittleRoad
                     else if(closing>.5f&&gap/closing<2)Hill(otherAt,width,8);
                 }
                 if(State==Intent.Attack&&other.id==target) {
-                    Hill(Mathf.Clamp(otherAt+side*(width+.3f),-edge,edge),.9f,-3.5f);
+                    attackLane=Mathf.Clamp(otherAt+side*(width+.3f),-edge,edge);attackLaneValid=true;
+                    Hill(attackLane,.9f,-3.5f);
                     Hill(otherAt-side*width,1,3);
                 }
             }
@@ -378,16 +410,28 @@ namespace LittleRoad
             int best=local;for(int i=lo;i<=hi;i++)if(smooth[i]<smooth[best])best=i;
             if(best!=local&&smooth[best]>smooth[local]-.8f)best=local;
             if(boxedHold)best=from;
+            // Racecraft v3 (attack): an attack owns the lane beside its target, when that lane is in our wall-free range
+            // (a third car there, and the heat decides as before).
+            int attackBin=Bin(attackLane);
+            bool owned=V3Attack&&State==Intent.Attack&&attackLaneValid&&attackBin>=lo&&attackBin<=hi&&smooth[attackBin]<Wall;
+            if(owned)best=attackBin;
             // Committed through a corner: once braking for it or turning in, keep the chosen line (a metre of
             // adjustment) unless a car's body is in the way.
             bool cornering=corner.found&&corner.brakeStart<v*.5f||Mathf.Abs(track.LineCurvature(track.Index(s)))>1/60f;
             if(cornering&&smooth[from]<Wall)best=Mathf.Clamp(best,from-4,from+4);
             float chosen=BinLow+best*BinStep;
+            // Racecraft v3 (commit): a lane change (LaneShift from the anchor) is kept back unless AcceptLaneChange says so;
+            // the lane is then held exactly (not re-rounded to a bin, which would walk it).
+            if(V3Commit&&!owned&&Mathf.Abs(chosen-lineAt-laneAnchor)>=LaneShift) {
+                int current=Bin(held);
+                if(AcceptLaneChange(smooth[current]-smooth[best],clock-lastChange,smooth[current]>=Wall||boxedHold)){laneAnchor=chosen-lineAt;lastChange=clock;}
+                else chosen=held;
+            }
             float newDelta=chosen-lineAt;
             float change=newDelta-delta;
             if(Mathf.Abs(change)>1.5f) {
                 if(Mathf.Sign(change)==-lastChangeDirection&&clock-lastChange<3)Reversals++;
-                lastChange=clock;lastChangeDirection=Mathf.Sign(change);
+                lastChange=clock;lastChangeDirection=Mathf.Sign(change);laneAnchor=newDelta;LaneChanges++;
             }
             delta=newDelta;planned++;
             // Test fixture (--racer-hold <metres>): drive the whole lap at a fixed shift from the racing line.
@@ -418,18 +462,32 @@ namespace LittleRoad
             float reachAhead=hasAhead?halfLength+ahead.halfLength:0;
             bool stuck=hasAhead&&aheadRel-reachAhead<14&&v-ahead.speed<1.5f;
             if(stuck){if(followingSince<0)followingSince=clock;}else followingSince=-1;
+            // Racecraft v3 (attack): is the car ahead free, or itself following (a car within 15 m ahead of it, within 3.5 m
+            // across)? In a train every car's plan is faster than the pace, so "my plan beats its speed" says nothing about
+            // who is quicker; only a free car's speed is its own pace.
+            bool targetFree=true;
+            if(hasAhead&&V3Attack)foreach(var other in observation.traffic) {
+                if(other.id==me.id||other.id==ahead.id)continue;
+                float rel=track.Relative(other.route,ahead.route);
+                if(rel>0&&rel<15&&Mathf.Abs(other.offset-ahead.offset)<3.5f){targetFree=false;break;}
+            }
 
             switch(State) {
                 case Intent.Race:
                     if(hasAhead&&clock>=cooldownUntil&&aheadRel-reachAhead<24) {
-                        float closing=Mathf.Max(v-ahead.speed,.7f*(DesiredAt(aheadRel)-ahead.speed));
+                        float closingNow=v-ahead.speed,surplus=.7f*(DesiredAt(aheadRel)-ahead.speed),closingAny=Mathf.Max(closingNow,surplus);
                         bool corners=corner.found&&corner.distance<140;
                         bool straightDraft=!corners&&aheadRel<18;
                         // Racecraft: only go for it with a real speed advantage (equal cars rarely complete a pass,
                         // and each pull-out and abort costs time); patience decides how long a small edge must wait.
+                        // Racecraft v3: a car in a train is attacked on the real closing speed. (Counting the plan surplus once
+                        // held behind it for Patience's wait was tried on 23 Oct, study 261: attacks 362 -> 410, passes 43 -> 42,
+                        // contacts 55 -> 66, total 20 s worse over three Hillcrest races. Everyone in a train has a surplus.)
+                        bool held=followingSince>=0&&clock-followingSince>ability.FollowBeforeTrying;
+                        float closing=!V3Attack||targetFree?closingAny:closingNow;
                         float edgeNeeded=2.4f-1.2f*ability.aggression;
-                        bool want=closing>edgeNeeded||(closing>edgeNeeded*.4f&&followingSince>=0&&clock-followingSince>ability.FollowBeforeTrying&&(corners||straightDraft));
-                        if(want&&PickSide(ahead,corner,edge,me.offset,v,out float chosenSide)) {
+                        bool want=closing>edgeNeeded||(closing>edgeNeeded*.4f&&held&&(corners||straightDraft));
+                        if(want&&PickSide(in observation,ahead,corner,edge,me.offset,v,aheadRel,out float chosenSide)) {
                             target=ahead.id;side=chosenSide;sideClosedSince=-1;Attacks++;Enter(Intent.Attack,clock);return;
                         }
                     }
@@ -450,9 +508,11 @@ namespace LittleRoad
                     if(rel-reach>35){AbortLost++;Abort(clock);return;}
                     if(clock-intentSince>9){AbortTimeout++;Abort(clock);return;}
                     float room=side>0?edge-(targetCar.offset+targetCar.halfWidth):(targetCar.offset-targetCar.halfWidth)+edge;
-                    if(room<halfWidth*2+.15f){if(sideClosedSince<0)sideClosedSince=clock;if(clock-sideClosedSince>.5f){AbortSideClosed++;Abort(clock);return;}}
-                    else sideClosedSince=-1;
                     bool overlap=rel-reach<.5f;
+                    // Racecraft v3 (attack): the door closing is the target's move (its line reaching the apex), not a failed
+                    // attack: 1.5 s for it to reopen, never while we overlap, and a 1 s cool-down rather than Patience's.
+                    if(room<halfWidth*2+.15f&&!(V3Attack&&overlap)){if(sideClosedSince<0)sideClosedSince=clock;if(clock-sideClosedSince>(V3Attack?1.5f:.5f)){AbortSideClosed++;Abort(clock,V3Attack?1f:ability.AttackCooldown);return;}}
+                    else sideClosedSince=-1;
                     if(corner.found&&corner.brakeStart<0&&!overlap&&v-targetCar.speed<1){AbortNoOverlap++;Abort(clock);return;}
                     break;
                 }
@@ -464,7 +524,8 @@ namespace LittleRoad
             }
         }
 
-        void Abort(float clock){Aborts++;cooldownUntil=clock+ability.AttackCooldown;target=-1;Enter(Intent.Race,clock);}
+        void Abort(float clock)=>Abort(clock,ability.AttackCooldown);
+        void Abort(float clock,float cooldown){Aborts++;cooldownUntil=clock+cooldown;target=-1;Enter(Intent.Race,clock);}
         void Enter(Intent next,float clock){if(next!=Intent.Attack)target=-1;State=next;intentSince=clock;}
 
         // Attack the inside of the next corner; on a straight, the side with more room.
@@ -475,19 +536,37 @@ namespace LittleRoad
         public const int BoxedStepBins=10; // 2.5 m
         public const float PassLateralRate=2.5f;
         public static bool CanReachSide(float cross,float brakeStart,float speed)=>cross<=1.5f+PassLateralRate*Mathf.Max(0,brakeStart)/Mathf.Max(speed,1);
-        bool PickSide(in ObservedCar car,in Corner corner,float edge,float myOffset,float speed,out float chosen)
+        bool PickSide(in DriverObservation observation,in ObservedCar car,in Corner corner,float edge,float myOffset,float speed,float aheadRel,out float chosen)
         {
             float need=halfWidth*2+.15f;
             float right=edge-(car.offset+car.halfWidth),left=(car.offset-car.halfWidth)+edge;
-            bool guard=PassReachGuard&&corner.found&&corner.distance<150;float brakeStart=corner.brakeStart,carOffset=car.offset,carHalf=car.halfWidth;
-            bool Reach(float side){if(!guard)return true;
-                float lane=side>0?carOffset+carHalf+halfWidth+.3f:carOffset-carHalf-halfWidth-.3f;
-                return CanReachSide(Mathf.Abs(lane-myOffset),brakeStart,speed);}
+            bool guard=PassReachGuard&&corner.found&&corner.distance<150;
+            float laneRight=car.offset+car.halfWidth+halfWidth+.3f,laneLeft=car.offset-car.halfWidth-halfWidth-.3f;
+            // A side is open when we can reach it before braking and (racecraft v3) its lane is clear to a car length past
+            // the target: an attack into an occupied lane ends beside the target with nowhere to go, a stalemate that slows
+            // both and blocks the lane behind (study 257: everyone diving for the inside stopped the pack at Bayview's bridge).
+            bool openRight=(!guard||CanReachSide(Mathf.Abs(laneRight-myOffset),corner.brakeStart,speed))&&(!V3Attack||LaneClear(in observation,car,laneRight,aheadRel));
+            bool openLeft=(!guard||CanReachSide(Mathf.Abs(laneLeft-myOffset),corner.brakeStart,speed))&&(!V3Attack||LaneClear(in observation,car,laneLeft,aheadRel));
             chosen=corner.found&&corner.distance<150?corner.sign:(right>=left?1:-1);
             float room=chosen>0?right:left;
-            if(room>=need&&Reach(chosen))return true;
+            if(room>=need&&(chosen>0?openRight:openLeft))return true;
             chosen=-chosen;room=chosen>0?right:left;
-            return room>=need+.4f&&!(corner.found&&corner.distance<60)&&Reach(chosen);
+            return room>=need+.4f&&!(corner.found&&corner.distance<60)&&(chosen>0?openRight:openLeft);
+        }
+        // No other car's body in `lane` from our own tail to 12 m past the target. (Study 261, 23 Oct: also requiring the next car
+        // in the lane within 45 m to be pulling away from the target, and ending an attack once the car ahead in our own lane ran
+        // level with it, turned the 9 s timeouts into early aborts but cost passes, 43 -> 29, and the total gain, −1.0% -> −0.4%:
+        // a car that gives up tucks in and coasts, while running alongside kept the pack wider and quicker. Kept as round two.)
+        bool LaneClear(in DriverObservation observation,in ObservedCar target,float lane,float aheadRel)
+        {
+            var me=observation.self;
+            foreach(var other in observation.traffic) {
+                if(other.id==me.id||other.id==target.id)continue;
+                float rel=track.Relative(other.route,me.route);
+                if(rel<-halfLength-other.halfLength||rel>aheadRel+12)continue;
+                if(Mathf.Abs(other.offset-lane)<halfWidth+other.halfWidth+.3f)return false;
+            }
+            return true;
         }
 
         float DefendOffset(in Corner corner,float edge)=>Mathf.Clamp(corner.sign*Mathf.Min(3.2f,edge-1),-edge,edge);
