@@ -134,6 +134,22 @@ public static class WorldStreamingChecks
             }
         Require(clips>=10,$"expected the music and ambience loops, found {clips}");
         checks.Add($"Music and ambience ({clips} loops) compressed in memory, loaded in the background (no main-thread decode on first play)");
+        // Build near the start (--near-start, docs/brief-near-start.md): Hillcrest's valley layer covers all its landmarks; a
+        // Bayview start leaves it for the background, a start in the valley builds it at load; and from Bayview's forecourt the
+        // district builds on the boosted budget without the reach guard finishing it at once.
+        {
+            var ground=NearStart.HillcrestGround;bool In(Vector3 p)=>ground.Contains(new Vector2(p.x,p.z));
+            var landmarks=new (string,Vector3)[]{("square",HillcrestRoute.Square),("castle",HillcrestRoute.CastleCourt),("paddock",HillcrestRoute.Paddock),("lookout",HillcrestRoute.Lookout),
+                ("vista",HillcrestRoute.Vista),("station",HillcrestTown.StationSpot),("farm",new Vector3(HillcrestRoute.FarmCentre.x,0,HillcrestRoute.FarmCentre.y)),
+                ("balloon field",new Vector3(HillcrestRoute.BalloonField.x,0,HillcrestRoute.BalloonField.y)),("lake",new Vector3(HillcrestRoute.Lake.x,0,HillcrestRoute.Lake.y))};
+            foreach(var (name,at) in landmarks){Require(In(at),$"Hillcrest's {name} {at} is outside its district's ground");Require(!NearStart.OutsideHillcrest(at),$"a start at Hillcrest's {name} would leave the valley for later");}
+            var bayview=NewBayview.Spawn;float away=NearStart.Away(ground,bayview);
+            Require(NearStart.OutsideHillcrest(bayview),$"a Bayview start ({away:0} m from the valley) builds Hillcrest at load");
+            Require(away>Districts.ReachDistance&&away<Districts.BoostDistance,$"Bayview's start is {away:0} m from the valley: the reach guard ({Districts.ReachDistance} m) or the boost ({Districts.BoostDistance} m) is wrong");
+            foreach(var (name,c) in new[]{("Quarry Hills",QuarryHills.Square),("Bramblewick",Bramblewick.Centre),("Vinelands",Vinelands.Centre)})
+                Require(NearStart.OutsideHillcrest(new Vector3(c.x,0,c.y)),$"{name}'s centre is inside the near ring of Hillcrest's ground");
+            checks.Add($"Near start: Hillcrest's ground holds its {landmarks.Length} landmarks; a Bayview start ({away:0} m out) defers it on the boosted budget, a start in the valley doesn't");
+        }
         return checks;
     }
 }

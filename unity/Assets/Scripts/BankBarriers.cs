@@ -77,6 +77,10 @@ namespace LittleRoad
     public static class TyreBarriers
     {
         public static int Laid,Refused;
+        // Each run is numbered (named and seeded) by how many came before it. A district built later (--near-start: NearStart)
+        // numbers its own from where its build stood at load, so its runs come out the same.
+        public static int Offset;
+        static int Next=>Laid+Refused+Offset;
         public static bool Lay(System.Collections.Generic.List<UnityEngine.Vector3> points,UnityEngine.Transform parent,string name)
         {
             if(points.Count<2){Refused++;return false;}
@@ -84,7 +88,7 @@ namespace LittleRoad
             points=new System.Collections.Generic.List<UnityEngine.Vector3>(points);
             var d0=points[0]-points[1];d0.y=0;var d1=points[^1]-points[^2];d1.y=0;
             if(d0.sqrMagnitude>1e-4f)points.Insert(0,points[0]+d0.normalized*4);if(d1.sqrMagnitude>1e-4f)points.Add(points[^1]+d1.normalized*4);
-            var L=Runs.Solve(new RunSpec{name=$"{name} {Laid+Refused}",kit="tyres",seed=$"{name}-{Laid+Refused}",along=points.ToArray()});
+            var L=Runs.Solve(new RunSpec{name=$"{name} {Next}",kit="tyres",seed=$"{name}-{Next}",along=points.ToArray()});
             if(L.failures.Count>0||L.items.Count==0){Refused++;if(Refused<=4)Debug.Log($"LITTLE_ROAD_TYRES refused {name} ({points.Count} points, {points[0]}): {(L.failures.Count>0?L.failures[0]:L.notes.Count>0?L.notes[0]:"nothing laid")}");return false;}
             Runs.Draw(L,parent);Runs.Laid.Add(L);Laid++;return true;
         }

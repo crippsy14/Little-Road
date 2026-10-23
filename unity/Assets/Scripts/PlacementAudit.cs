@@ -41,7 +41,9 @@ namespace LittleRoad
                 float ground=float.MinValue;var ex=b.extents*.7f;
                 foreach(var o in new[]{Vector3.zero,new Vector3(ex.x,0,ex.z),new Vector3(-ex.x,0,ex.z),new Vector3(ex.x,0,-ex.z),new Vector3(-ex.x,0,-ex.z)})
                     foreach(var hit in Physics.RaycastAll(new Vector3(b.center.x+o.x,b.max.y+.5f,b.center.z+o.z),Vector3.down,b.size.y+60)) {
-                        if(hit.collider.isTrigger||hit.collider.transform.IsChildOf(go.transform)||hit.collider.GetComponentInParent<RoadCar>()!=null)continue;
+                        // (not the deep sea floor, 50 m down under a piece set into a hillside: the town at load settled before the
+                        //  sea was made, a district built later after it, and its crop rows fell to it, --near-start)
+                        if(hit.collider.isTrigger||hit.collider.transform.IsChildOf(go.transform)||hit.collider.GetComponentInParent<RoadCar>()!=null||hit.collider.name=="Deep sea floor")continue;
                         if(hit.point.y<=b.max.y)ground=Mathf.Max(ground,Mathf.Min(hit.point.y,b.min.y+5));
                     }
                 if(ground==float.MinValue||b.min.y-ground<=.3f)return false;

@@ -482,7 +482,7 @@ namespace LittleRoad
         public void Build()=>TrialWorld.RunNow(BuildRoutine());
         public System.Collections.IEnumerator BuildRoutine()
         {
-            WorldTiles.Begin(ValleyDetail);Districts.Begin();Runs.Batching=!RaceTrial.Has("--no-run-batching");WorldRoot=root;stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.FootprintOwners.Clear();GroundFit.Reset();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;   // (Runs.Batching: the runs' meshes made together, on every core, before the settle pass: Runs.Flush; --no-run-batching draws each as it comes)
+            WorldTiles.Begin(ValleyDetail);Districts.Begin();Runs.Batching=!RaceTrial.Has("--no-run-batching");WorldRoot=root;PropForgeDressing.Later=null;stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.FootprintOwners.Clear();GroundFit.Reset();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;   // (Runs.Batching: the runs' meshes made together, on every core, before the settle pass: Runs.Flush; --no-run-batching draws each as it comes)
             // (A race far from Bayview builds none of the island: RaceArea. Its heights stay analytic for everything else.)
             bool island=Island;
             if(island)LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;
@@ -503,12 +503,22 @@ namespace LittleRoad
             // circuit: Bayview races skip them (ValleyDetail false) and keep their frame cost.
             // (A race leaves Hillcrest's town and railway out unless they're in its area: RaceArea.)
             bool hillcrest=RaceArea.Near(HillcrestRoute.Square,500);
-            if(ValleyDetail){if(hillcrest)Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");
+            if(ValleyDetail){if(hillcrest)Railway();Step("railway");Physics.SyncTransforms();
+                // (--near-start, stage 1: Hillcrest's valley layer in the background from an island-side start, the places that
+                //  share its ground after it: NearStart)
+                bool vinelandsHere=Vinelands.Enabled&&RaceArea.Near(Vinelands.Centre,200);
+                bool laterHillcrest=Districts.Enabled&&WorldTiles.Streams&&!RaceArea.Active&&NearStart.DeferHillcrest(WorldTiles.Focus,(!QuarryHills.Enabled||deferQuarry)&&(!Bramblewick.Enabled||DeferFar(Bramblewick.Centre))&&(!vinelandsHere||DeferFar(Vinelands.Centre)));
+                string after=laterHillcrest?"hillcrest":null;
+                if(laterHillcrest) {
+                    hillcrestTyres=TyreBarriers.Laid+TyreBarriers.Refused;PropForgeDressing.Later=p=>OnHillcrestGround(p)&&Districts.Waiting("hillcrest");
+                    Districts.Defer("hillcrest",HillcrestRoutine(),()=>SettleDistrict("hillcrest",()=>hillcrestHolder,g=>OnHillcrestGround(g.transform.position)),NearStart.HillcrestGround,OnHillcrestGround,NearStart.Away(NearStart.HillcrestGround,WorldTiles.Focus));Step("hillcrest-town");
+                }
+                else{new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");}
                 // Quarry Hills far from where the car starts is built after the town is ready (Districts, docs/72).
-                if(deferQuarry)Districts.Defer("quarry-hills",QuarryHillsSceneryRoutine(),()=>SettleDistrict("quarry-hills",()=>quarryHolder),Rect.MinMaxRect(QuarryHills.West-30,QuarryHills.South-30,QuarryHills.SeamX+30,1e6f),NearQuarryHills,StartDistance(QuarryHills.Square));else QuarryHillsScenery();Step("quarry-hills");
+                if(deferQuarry)Districts.Defer("quarry-hills",QuarryHillsSceneryRoutine(),()=>SettleDistrict("quarry-hills",()=>quarryHolder),Rect.MinMaxRect(QuarryHills.West-30,QuarryHills.South-30,QuarryHills.SeamX+30,1e6f),NearQuarryHills,StartDistance(QuarryHills.Square),after);else QuarryHillsScenery();Step("quarry-hills");
                 // The far places the same way (FarDistricts, 23 Oct): built in the background when the car starts far from them (--no-far-districts: at load, as before).
-                if(Bramblewick.Enabled){if(DeferFar(Bramblewick.Centre))Districts.Defer("bramblewick",BramblewickRoutine(),()=>SettleDistrict("bramblewick",()=>bramblewickHolder),Rect.MinMaxRect(730,Bramblewick.South-30,Bramblewick.East+30,Bramblewick.Centre.y+980),NearBramblewick,StartDistance(Bramblewick.Centre));else TrialWorld.RunNow(BramblewickRoutine());Step("bramblewick");}   // (Bramblewick: docs/82, step 3)
-                if(Vinelands.Enabled&&RaceArea.Near(Vinelands.Centre,200)){if(DeferFar(Vinelands.Centre))Districts.Defer("vinelands",VinelandsRoutine(),()=>SettleDistrict("vinelands",()=>vinelandsHolder),Rect.MinMaxRect(Vinelands.Centre.x-Vinelands.Radius-30,Vinelands.South-30,Vinelands.East+30,Vinelands.Centre.y+Vinelands.Radius+30),NearVinelands,StartDistance(Vinelands.Centre));else TrialWorld.RunNow(VinelandsRoutine());Step("vinelands");}   // (Vinelands: a race far from it, Bramblewick's, leaves its town and vines out: 64 frames over 33 ms there with them, 2 without, 23 Oct)
+                if(Bramblewick.Enabled){if(DeferFar(Bramblewick.Centre))Districts.Defer("bramblewick",BramblewickRoutine(),()=>SettleDistrict("bramblewick",()=>bramblewickHolder),Rect.MinMaxRect(730,Bramblewick.South-30,Bramblewick.East+30,Bramblewick.Centre.y+980),NearBramblewick,StartDistance(Bramblewick.Centre),after);else TrialWorld.RunNow(BramblewickRoutine());Step("bramblewick");}   // (Bramblewick: docs/82, step 3)
+                if(vinelandsHere){if(DeferFar(Vinelands.Centre))Districts.Defer("vinelands",VinelandsRoutine(),()=>SettleDistrict("vinelands",()=>vinelandsHolder),Rect.MinMaxRect(Vinelands.Centre.x-Vinelands.Radius-30,Vinelands.South-30,Vinelands.East+30,Vinelands.Centre.y+Vinelands.Radius+30),NearVinelands,StartDistance(Vinelands.Centre),after);else TrialWorld.RunNow(VinelandsRoutine());Step("vinelands");}   // (Vinelands: a race far from it, Bramblewick's, leaves its town and vines out: 64 frames over 33 ms there with them, 2 without, 23 Oct)
                 Next(.93f,"Filling the sea");yield return null;}
             // (Prop Forge last of the building, so its runs and objects see everything placed: the quay's dressing comes with Hillcrest)
             if(island&&PropForge.Enabled&&!NewBayview.On){Physics.SyncTransforms();PropForgeBayview.Build(this,root);Step("prop-forge");}

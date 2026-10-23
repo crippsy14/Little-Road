@@ -70,8 +70,8 @@ namespace LittleRoad
             foreach(var (id,key) in new[]{("garage","bayview/garage"),("parts","bayview/parts")})if(PitStop.Hosts.TryGetValue(key,out var host)){residents[id]=host.at;residentYaw[id]=host.yaw;}
             residents["cafe"]=NewBayview.On?NewBayview.Cafe:new Vector3(-40.5f,0,-101.8f);residents["paint"]=NewBayview.On?NewBayview.Paint:new Vector3(3.5f,0,-102.2f);
             if(NewBayview.On){residentYaw["cafe"]=NewBayview.CafeYaw;residentYaw["paint"]=NewBayview.PaintYaw;}
-            if(HillcrestTown.Spots.Count>0){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}
-            foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout","farm"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
+            // Hillcrest's valley built in the background (--near-start: NearStart): its residents, signs and stamps when it arrives.
+            hillcrestLater=Districts.Waiting("hillcrest");if(hillcrestLater)Districts.WhenBuiltSteps("hillcrest",HillcrestArrived);else HillcrestResidents();
             // Bramblewick and Vinelands, built in the background when you start far from them (Districts, FarDistricts): their
             // residents, fingerposts, keepsakes and photo sights come when each arrives (FarPlaceArrived); otherwise now.
             foreach(var far in new[]{"bramblewick","vinelands"}){if(Districts.Waiting(far)){var place=far;Districts.WhenBuiltSteps(place,()=>FarPlaceArrived(place));}else FarPlaceResidents(far);}
@@ -87,6 +87,7 @@ namespace LittleRoad
             else if(!Testing&&Store.Data.spot!=null&&Store.Data.spot.Length==4){var s=Store.Data.spot;var at=new Vector3(s[0],s[1],s[2]);
                 if(ClearSpot(ref at)){car.transform.SetPositionAndRotation(at+Vector3.up*.2f,Quaternion.Euler(0,s[3],0));resumed=true;}else Debug.Log("LITTLE_ROAD_RESUME refused "+at);}
             player=car.AddComponent<RoadCar>();player.Setup(world,0,EquipmentCatalog.Stats(Store.Data.Loadout(),Store.Data.Tune()),false,1709,"owned equipment");world.cars.Add(player);world.running=true;FrameProbe.Attach(player.transform);Grazer.Car=player.transform;
+            Districts.Car=()=>player!=null?player.transform.position:(Vector3?)null;   // (the reach guard: a district the car reaches is finished at once)
             if(QuarryHills.Enabled&&QuarryHillsTown.Spots.Count>0&&!quarryLater)QuarryFestival.Build(transform,Store.Data,player);CameraShake.Reset();CameraShake.Watch(player);
             playerHorn=Horn.Attach(car,Horn.PitchFor(Store.Data.bodyId),player:true);
             player.Bumped+=(other,speed)=>{if(speed>1f&&!ui.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen&&!garage.IsOpen)other.GetComponentInParent<NpcChatter>()?.TrySay(bubbles);};
@@ -143,7 +144,15 @@ namespace LittleRoad
             Debug.Log("LITTLE_ROAD_ADVENTURE_READY save="+Store.path+" quest="+Store.Data.questStage+" credits="+Store.Data.credits+" "+RaceTrial.LoadTime);LoadingScreen.Ready();
             if(RaceTrial.Has("--town-print")){yield return TownPrint();yield break;}
             // --load-timing: measure the load (LITTLE_ROAD_LOAD_STEP lines) and quit (W1 world tiles).
-            if(RaceTrial.Has("--load-timing")){yield return new WaitForSeconds(2);Application.Quit(0);yield break;}
+            if(RaceTrial.Has("--load-timing")){yield return new WaitForSeconds(2);
+                // (--until-districts: on until every background district has arrived, then the slowest whole frames on the way)
+                if(RaceTrial.Has("--until-districts")) {
+                    float from=Time.realtimeSinceStartup;var slow=new List<(float ms,string when)>();int frames=0;string was=Districts.Now+" / "+CoastalLandscape.LastLap;
+                    while(Districts.Pending&&Time.realtimeSinceStartup-from<120){yield return null;frames++;slow.Add((Time.unscaledDeltaTime*1000,was));was=Districts.Now+" / "+CoastalLandscape.LastLap;}
+                    slow.Sort((a,b)=>b.ms.CompareTo(a.ms));int over=slow.Count(s=>s.ms>50);
+                    Debug.Log($"LITTLE_ROAD_DISTRICTS_DONE seconds={Time.realtimeSinceStartup-from:0.0} frames={frames} over50ms={over} pending={Districts.Pending} slowest: {string.Join("; ",slow.Take(8).Select(s=>$"{s.ms:0} ({s.when})"))}");
+                }
+                Application.Quit(0);yield break;}
             if(RaceTrial.Has("--minimap-review")){reviewing=true;yield return MinimapReview();yield break;}
             if(RaceTrial.Has("--pause-review")){yield return PauseReview();yield break;}
             if(RaceTrial.Has("--zip-ride-review")){yield return ZipRideReview();yield break;}
@@ -216,11 +225,11 @@ namespace LittleRoad
             // (Bayview's loop isn't tagged as road: measured from its centreline, 8 m to the edge.)
             Wayfinding.PlaceBoard(holder,"Bayview",residents["cafe"],p=>{float d=world.track.Nearest(new Vector3(p.x,0,p.z),out _);var on=world.track.At(d);var way=new Vector3(on.x-p.x,0,on.z-p.z);
                 return (way.magnitude-8,way.normalized);});
-            if(HillcrestTown.Spots.Count==0)return;
-            Wayfinding.PlaceBoard(holder,"Hillcrest",HillcrestRoute.Square);
+            if(HillcrestTown.Spots.Count==0&&!hillcrestLater)return;
+            if(!hillcrestLater)Wayfinding.PlaceBoard(holder,"Hillcrest",HillcrestRoute.Square);   // (still building: HillcrestArrived)
             var places=new List<(string,Vector3)>{("Bayview",HillcrestRoute.Mainline.line[0]),("Hillcrest",HillcrestRoute.Square),("Hillcrest Castle",HillcrestRoute.CastleCourt),("Raceway",HillcrestRoute.Paddock),
                 ("Silver Falls",HillcrestRoute.Lookout),("Golden Acre Farm",HillcrestRoute.Farm(0,0)),("Valley Viewpoint",HillcrestRoute.Vista)};
-            if(residents.TryGetValue("station",out var station))places.Add(("Station",station));
+            if(residents.TryGetValue("station",out var station))places.Add(("Station",station));else if(hillcrestLater)places.Add(("Station",HillcrestTown.StationSpot));
             wayHolder=holder;wayPlaces=places;
             if(QuarryHills.Enabled) {
                 var square=new Vector3(QuarryHills.Square.x,QuarryHills.SquareY,QuarryHills.Square.y);if(!quarryLater)Wayfinding.PlaceBoard(holder,"Quarry Hills",square);places.Add(("Quarry Hills",square));
@@ -694,6 +703,22 @@ namespace LittleRoad
             if(BramblewickVillage.Horseshoes.Count!=Collectibles.Horseshoes)return;
             for(int i=0;i<Collectibles.Horseshoes;i++){string id=Collectibles.Horseshoe(i);if(finds.ContainsKey(id))continue;var p=BramblewickVillage.Horseshoes[i]+Vector3.up*1.2f;MapRegions.Keepsakes[id]=(p,MapRegions.HorseshoePlace(i));if(Store.Data.collected.Contains(id))continue;finds[id]=Keepsake(id,p,3,i);}
         }
+        bool hillcrestLater;
+        void HillcrestResidents()
+        {
+            if(HillcrestTown.Spots.Count>0){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}
+            foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout","farm"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
+        }
+        // Hillcrest's valley has been built in the background (--near-start): its residents, its board and junction
+        // fingerposts, its stamps, as at load. (Its parked cars, townsfolk and chimney smoke come through ValleyLife.)
+        IEnumerator HillcrestArrived()
+        {
+            var before=new HashSet<string>(residents.Keys);HillcrestResidents();var added=residents.Keys.Where(k=>!before.Contains(k)).ToList();
+            yield return PlaceResidentsSteps(added);
+            if(wayHolder!=null&&HillcrestTown.Spots.Count>0){Wayfinding.PlaceBoard(wayHolder,"Hillcrest",HillcrestRoute.Square);Wayfinding.Fingerposts(wayHolder,CoastalLandscape.Network,wayPlaces,p=>Districts.Completes("hillcrest",p));}yield return null;
+            HillcrestStamps();hillcrestLater=false;yield return null;
+            Debug.Log($"LITTLE_ROAD_DISTRICT arrived hillcrest residents={added.Count}");
+        }
         void QuarryHillsResidents()
         {
             foreach(var id in new[]{"rallyschool","qgarage","qparts","qbody","caban","slatequay"})if(QuarryHillsTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
@@ -780,6 +805,12 @@ namespace LittleRoad
             Vector3 outward=(post-a).normalized;
             Vector3 laneStart=a+outward*12,laneEnd=post+outward*2.5f,delta=laneEnd-laneStart;
             var spur=Block("Lighthouse lane",(laneStart+laneEnd)*.5f+Vector3.up*.043f,new Vector3(6,.04f,delta.magnitude),new Color(.66f,.62f,.46f));spur.transform.rotation=Quaternion.LookRotation(delta);
+            if(!hillcrestLater)HillcrestStamps();   // (still building: HillcrestArrived)
+            OtherKeepsakes();
+        }
+        // Hillcrest's stamps, once the town is there.
+        void HillcrestStamps()
+        {
             if(HillcrestTown.Spots.Count>0) {
                 var stampSpots=new[]{HillcrestRoute.Vista+new Vector3(-9,0,4),HillcrestRoute.Lookout+new Vector3(-8,0,-8),HillcrestRoute.CastleCourt+new Vector3(-14,0,4),HillcrestRoute.Paddock+new Vector3(-24,0,6),
                     HillcrestTown.Spots["station"].at+new Vector3(-6,0,-12),new Vector3(HillcrestRoute.BalloonField.x,0,HillcrestRoute.BalloonField.y),new Vector3(214,0,-1398),new Vector3(-30,0,-1222)};
@@ -790,7 +821,10 @@ namespace LittleRoad
                     finds[id]=Keepsake(id,p,1,i);
                 }
             }
-            // Quarry Hills' slate carvings (--quarry-hills).
+        }
+        // Quarry Hills' slate carvings (--quarry-hills), Bramblewick's horseshoes and Bayview's postcards.
+        void OtherKeepsakes()
+        {
             if(QuarryHillsTown.Spots.Count>0||quarryLater) {
                 var spots=QuarryHills.CarvingSpots();if(spots.Length!=Collectibles.Carvings)throw new InvalidOperationException("Carving spots and Collectibles.Carvings disagree.");
                 for(int i=0;i<spots.Length;i++){string id=Collectibles.Carving(i);var p=spots[i]+Vector3.up*1.3f;MapRegions.Keepsakes[id]=(p,MapRegions.CarvingPlace(i));if(Store.Data.collected.Contains(id))continue;finds[id]=Keepsake(id,p,2,i);}

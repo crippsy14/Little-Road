@@ -23,7 +23,8 @@ namespace LittleRoad
         // its planting settled on the ground, standing cars seated, its streets dressed and its banks barriered (both read
         // what's built, so they come with it), its geometry static-batched. (In pieces, a frame each in the background.)
         // `holderOf`: the district's holder, made by its builder.
-        System.Collections.IEnumerator SettleDistrict(string district,System.Func<Transform> holderOf)
+        // `dressAlso`: other pieces its dressing covers (what stands on its ground, NearStart).
+        System.Collections.IEnumerator SettleDistrict(string district,System.Func<Transform> holderOf,System.Func<GameObject,bool> dressAlso=null)
         {
             var clock=System.Diagnostics.Stopwatch.StartNew();var holder=holderOf();
             int trimmed=TrimRails(Districts.Built);Physics.SyncTransforms();int settled=0;
@@ -32,7 +33,7 @@ namespace LittleRoad
             yield return null;if(holder!=null)CarContact.SeatUnder(holder);yield return null;
             int dressed=0,barriers=0;
             if(PropForge.Enabled) {
-                Physics.SyncTransforms();if(holder!=null)yield return PropForgeDressing.DressRoutine(root,holder,n=>dressed=n);
+                Physics.SyncTransforms();if(holder!=null)yield return PropForgeDressing.DressRoutine(root,holder,n=>dressed=n,8,dressAlso);
                 // (The edge audit of its roads, raycasts: a build's first launch pays, the bank sites are cached after: BankBarriers.
                 //  Its walls' meshes are queued and made on every core, as the district's own: fifteen drawn as they came took a 280 ms frame.)
                 bool was=Runs.Batching;Runs.Batching=true;barriers=BankBarriers.Build(root,null,p=>Districts.Completes(district,p),district);Runs.Batching=was;

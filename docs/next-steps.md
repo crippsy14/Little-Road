@@ -6,6 +6,11 @@ Add new status at the top of "Latest" in a line or two, and move anything that b
 
 ## Latest
 
+- **23 Oct (night): build near the start, stage 1** ([brief-near-start.md](brief-near-start.md), behind `--near-start`,
+  off): from Bayview, Hillcrest's valley layer (town and trees) builds in the background, the places that share its ground
+  after it. Ready **3.2–3.3 s** against 4.7–6.0 s the same hour; Hillcrest arrives 1.8 s after you can drive; the same world
+  (fingerprint and town print). Starts elsewhere unchanged for now (Hillcrest 5.0 s, Quarry Hills 6.7, Bramblewick 6.1,
+  Vinelands 7.9). Next: split Hillcrest's five slow parts (to 109 ms a frame), then stages 2-5.
 - **23 Oct (evening): start-up 7.24 s → 6.52 s** (two second launches: 6.53, 6.51). Three more things are cooked in the
   world cache: the island's heights (476 → 15 ms), the road lines' ground samples (201 → 99 ms; Vinelands' were 116 ms), and
   the valley's tint texture with its mips (128 → 11 ms, the same checksum). Each build fingerprints the same cooked and with
@@ -50,7 +55,7 @@ Opt-outs exist for everything that became a default: `--old-bayview`, `--no-prop
 `--no-quarry-hills`, `--no-bramblewick`, `--no-vinelands`, `--no-racecraft-v3`, `--no-field-recipe`, `--no-grip-budget`,
 `--no-car-lines`, `--no-background-districts`, `--no-far-districts`, `--no-world-tiles`.
 
-**Behind flags, off:** `--hybrid` (the City hybrid at Jed's), `--duke-drive` (waits for traffic that can handle a car at
+**Behind flags, off:** `--near-start` (build near the start: stage 1), `--hybrid` (the City hybrid at Jed's), `--duke-drive` (waits for traffic that can handle a car at
 pace), `--distant-mountains`, `--turbo-sound`/`--hybrid-sound`, `--scale-test` (the graybox continent).
 
 ## In progress (other sessions, 23 Oct)
@@ -59,10 +64,10 @@ pace), `--distant-mountains`, `--turbo-sound`/`--hybrid-sound`, `--scale-test` (
 
 ## Next three pieces
 
-1. **Start-up from 6.5 s to the 3.5 s budget:** prepare the runs' meshes as they are solved (the flush is 0.52 s), then
-   Hillcrest's town as a district (0.89 s; it is 0.9 km from the start, under the 1.5 km rule) or the far terrain chunks
-   with their districts (0.47 s). Also left: the roads' shoulders and junctions (0.38 s), settle-planting (0.62 s), the island
-   collider's cook (0.14 s) and the first loading frame (~0.2 s before the island starts). Also the open Quarry Hills audit line (a car not on the ground, from commits
+1. **Build near the start** ([brief-near-start.md](brief-near-start.md)): stage 1 is in behind `--near-start` (3.2–3.3 s
+   from Bayview). Next, split Hillcrest's slow parts so no background frame passes 50 ms, then stage 2 (each place's roads
+   with it), 3 (terrain chunks by distance), 4 (Bayview's island as a district, for starts elsewhere) and 5 (the town
+   set-up), then default on and the play copy. Also the open Quarry Hills audit line (a car not on the ground, from commits
    since 21 Oct), and the background districts' busiest frames (Quarry Hills' kettle street 190 ms, Vinelands' parts 180 ms;
    the bar is 50 ms).
 2. **Vinelands leftovers:** the planting top-up and the small junction seams and lips.
@@ -91,7 +96,10 @@ pace), `--distant-mountains`, `--turbo-sound`/`--hybrid-sound`, `--scale-test` (
 
 ## Known issues
 
-- Start-up time (above: 6.5 s against 3.5 s).
+- Start-up time: 4.7–6.5 s by default (the machine's load moves it), 3.2–3.3 s with `--near-start` from Bayview; starts
+  elsewhere 5-8 s.
+- A build's first start from a place it hasn't started from before audits the bank sites for that set of pending
+  districts: 17.4 s from Hillcrest's square, 10.8 s from Vinelands (seconds, cached after).
 - The Ponte Nova's bank barrier (4514, -3350) is found on some builds' first launch and not others (22 or 21 Vinelands
   bank sites, cached per build): the edge audit counts anything solid as a guard, and a moving thing near the bridge's
   edge (likely a resident's idling car, which isn't a `RoadCar`) can hide the drop. Fix: the audit skips anything that moves. Workshop engine feedback at dusk near the Bayview garage (bug #1, cause unknown).

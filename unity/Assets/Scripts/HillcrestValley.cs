@@ -1352,9 +1352,12 @@ namespace LittleRoad
         // Woods by biome (firs up high, birches by the lake, autumn maples for colour), poplar
         // avenues along the country roads, blossom orchards, boulders on the slopes, reeds on the
         // banks, grass tufts and flowering bushes on the verges.
-        void MainlandTrees()
+        void MainlandTrees()=>TrialWorld.RunNow(MainlandTreesRoutine());
+        // (As a coroutine: Hillcrest's background district, --near-start, yields every 8 ms or so; the draws are the same.)
+        System.Collections.IEnumerator MainlandTreesRoutine()
         {
-            if(!BayviewKit.Has("tree_round"))return;
+            if(!BayviewKit.Has("tree_round"))yield break;
+            var slice=System.Diagnostics.Stopwatch.StartNew();bool Due(){if(slice.ElapsedMilliseconds<8)return false;slice.Restart();return true;}
             var holder=new GameObject("Mainland trees").transform;holder.SetParent(root);var rng=new System.Random(4127);int planted=0;bool nature=BayviewKit.Has("tree_fir");
             float R()=>(float)rng.NextDouble();
             // (and off the junctions' own surfaces, which can reach 50 m from their roads' lines on a circuit's T: a bush stood in the
@@ -1385,6 +1388,7 @@ namespace LittleRoad
             int copses=0;
             int treeCap=RaceTrial.Has("--perf-sparse-woods")?2200:5400;
             for(int i=0;i<40000&&planted<treeCap;i++) {
+                if(Due())yield return null;
                 float x=R()*2300-1080,z=R()*1580-1990;float woods=Mathf.PerlinNoise(x*.008f+11,z*.008f+23);
                 if(woods<.47f||!Woodland(x,z))continue;
                 int n=3+(int)(Mathf.Clamp01((woods-.47f)/.25f)*9+R()*2);float radius=6+woods*16;string dominant=Species(x,z,R());copses++;
@@ -1396,7 +1400,8 @@ namespace LittleRoad
                 }
             }
             Debug.Log($"LITTLE_ROAD_COPSES copses={copses}");
-            if(!nature){Debug.Log("LITTLE_ROAD_MAINLAND_TREES planted="+planted);return;}
+            if(!nature){Debug.Log("LITTLE_ROAD_MAINLAND_TREES planted="+planted);yield break;}
+            yield return null;
             // Poplar avenues.
             int poplars=0;var main=HillcrestRoute.Mainline;
             foreach(var (road,from,to) in new[]{(main,HillcrestRoute.PortalSouthRun+70,main.Length-60),(HillcrestRoute.RacewayAccess,20f,HillcrestRoute.RacewayAccess.Length-80),(HillcrestRoute.Falls,20f,HillcrestRoute.Falls.Length-40),(HillcrestRoute.FarmLane,30f,HillcrestRoute.FarmLane.Length-60)})
@@ -1406,6 +1411,7 @@ namespace LittleRoad
                     if(HillcrestRoute.Distance(HillcrestRoute.River.line,q.x,q.z,out _)<14)continue;
                     Plant("tree_poplar",q.x,q.z,.95f+R()*.2f);poplars++;
                 }
+            yield return null;
             // Blossom orchards.
             int orchard=0;
             foreach(var c in new[]{new Vector2(-40,-1310),new Vector2(430,-1190),new Vector2(-470,-960),new Vector2(-30,-1000)})
@@ -1417,6 +1423,7 @@ namespace LittleRoad
             // Boulders on slopes and summits; scree in the gorge.
             int rocks=0;
             for(int i=0;i<9000&&rocks<650;i++) {
+                if(Due())yield return null;
                 float x=R()*2300-1080,z=R()*1580-1990;float h=ValleyField.Height(x,z),ny=ValleyField.Normal(x,z).y;
                 bool slope=ny>.5f&&ny<.86f,summit=h>70&&R()<.35f;
                 if((!slope&&!summit)||h<0||!Open(x,z,10))continue;
@@ -1425,6 +1432,7 @@ namespace LittleRoad
             // Sea stacks and boulders along the foot of the headland's sea cliffs.
             int seaRocks=0;
             for(float x=-640;x<780;x+=7+R()*6) {
+                if(Due())yield return null;
                 float z=ValleyField.RidgeZ(x);while(z<-386&&ValleyField.Height(x,z)>SeaLevel+.6f)z+=1.5f;
                 if(z>=-386||(x>70&&x<164)||HillcrestRoute.Distance(HillcrestRoute.Causeway,x,z,out _)<9||HillcrestRoute.Distance(HillcrestRoute.SeaRail.line,x,z,out _)<7||HillcrestRoute.Distance(HillcrestRoute.River.line,x,z,out _)<34)continue;
                 float out1=R()*9-2;var q=new Vector3(x+R()*3,0,z+out1);float roll=R();
@@ -1436,7 +1444,7 @@ namespace LittleRoad
                     if(b.max.y<want&&b.size.y>.1f){var sc=rock.transform.localScale;sc.y*=Mathf.Min(4,(want-b.min.y)/b.size.y);rock.transform.localScale=sc;}}
                 seaRocks++;
             }
-            Debug.Log($"LITTLE_ROAD_SEA_ROCKS placed={seaRocks}");
+            Debug.Log($"LITTLE_ROAD_SEA_ROCKS placed={seaRocks}");yield return null;
             // Reeds along the river banks and round the lake.
             int reeds=0;var river=HillcrestRoute.River;
             // (From where Hillcrest's own river starts: Quarry Hills plants its own upper reach.)
@@ -1450,9 +1458,11 @@ namespace LittleRoad
                 var dir=new Vector2(Mathf.Sin(a*Mathf.Deg2Rad),Mathf.Cos(a*Mathf.Deg2Rad));
                 for(float r=HillcrestRoute.LakeRadius-12;r<HillcrestRoute.LakeRadius+34;r+=1.5f){var q=HillcrestRoute.Lake+dir*r;if(ValleyField.Height(q.x,q.y)>HillcrestRoute.LakeY+.2f){if(ValleyField.RoadDistance(q.x,q.y)>10&&R()<.7f){Plant("reeds",q.x,q.y,.8f+R()*.5f,false);reeds++;}break;}}
             }
+            yield return null;
             // Verges: grass tufts and flowering bushes.
             int tufts=0,bushes=0;
             foreach(var road in HillcrestRoute.All())for(float d=0;d<road.Length;d+=2.2f) {
+                if(Due())yield return null;
                 if(QuarryHills.Owns(road.name))break; // Quarry Hills plants its own verges
                 if(road==main&&d<HillcrestRoute.PortalSouthRun+8)continue;
                 int side=R()<.5f?-1:1;var q=road.At(d)+road.Right(d)*side*(road.width*.5f+2.6f+R()*6);
@@ -1460,6 +1470,7 @@ namespace LittleRoad
                 if(R()<.12f){Plant("flower_bush",q.x,q.z,.7f+R()*.5f,false);bushes++;}else{Plant("grass_tuft",q.x,q.z,.9f+R()*.8f,false);tufts++;}
             }
             for(int i=0;i<5000&&tufts<5200;i++) {
+                if(Due())yield return null;
                 float x=R()*1500-620,z=R()*900-1500;if(!Open(x,z,9)||ValleyField.Normal(x,z).y<.9f||ValleyField.Height(x,z)<HillcrestRoute.LakeY+.8f)continue;
                 for(int k=0;k<5;k++){float px=x+R()*6-3,pz=z+R()*6-3;Plant(k==0&&R()<.3f?"flower_bush":"grass_tuft",px,pz,.8f+R()*.9f,false);tufts++;}
             }

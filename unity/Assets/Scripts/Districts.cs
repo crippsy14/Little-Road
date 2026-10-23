@@ -26,7 +26,13 @@ namespace LittleRoad
         // Districts nearer the start than this are built at load as before.
         public const float NearStart=1500;
         enum State{Queued,Building,Settling,Done}
-        sealed class District{public string name;public IEnumerator build;public Func<IEnumerator> settle;public Rect covers;public Func<Vector3,bool> contains;public float distance;public State state;}
+        sealed class District{public string name,after;public IEnumerator build;public Func<IEnumerator> settle;public Rect covers;public Func<Vector3,bool> contains;public float distance;public State state;}
+        // Where the player's car is (AdventureGame), for the reach guard (--near-start, docs/brief-near-start.md): a district's
+        // budget goes from 3 to 12 ms a frame once the car is within BoostDistance of its ground, and it's finished at once
+        // (one hitch, logged) if the car gets within ReachDistance before it has arrived.
+        public static Func<Vector3?> Car;
+        public const float BoostDistance=400,ReachDistance=150;
+        static float Away(Rect r,Vector3 p){float dx=Mathf.Max(r.xMin-p.x,0,p.x-r.xMax),dz=Mathf.Max(r.yMin-p.z,0,p.z-r.yMax);return Mathf.Sqrt(dx*dx+dz*dz);}
         // In build order: nearest the start first.
         static readonly List<District> all=new();
         static readonly Stack<IEnumerator> stack=new();
@@ -36,6 +42,8 @@ namespace LittleRoad
         // Is this district still to come? (Once it has arrived, what asks for it gets it at once.)
         public static bool Waiting(string district){var d=Find(district);return d!=null&&d.state!=State.Done;}
         static District Find(string district)=>all.Find(d=>d.name==district);
+        // What's under way (load timing: which district a slow frame was in): "hillcrest Building", or "idle".
+        public static string Now{get{var d=all.Find(x=>x.state!=State.Done&&x.state!=State.Queued);return d!=null?$"{d.name} {d.state}":Pending?"setting up":"idle";}}
         static bool Pieces(District d)=>d.state>=State.Settling;   // (its pieces all exist)
         // Is everything at p built? False while a district whose ground it is has still to build.
         public static bool Built(Vector3 p){foreach(var d in all)if(!Pieces(d)&&d.contains(p))return false;return true;}
@@ -55,12 +63,15 @@ namespace LittleRoad
         public static void Begin(){all.Clear();stack.Clear();waiting.Clear();}
         // Build `district` later: `build` is its builder as a coroutine, `settle` its settle pass (a coroutine too), `covers`
         // its ground for the tile streamer, `contains` its ground for what's placed by what stands there (the rect itself if
-        // null), `distance` from where the car starts (the nearest builds first).
-        public static void Defer(string district,IEnumerator build,Func<IEnumerator> settle,Rect covers,Func<Vector3,bool> contains=null,float distance=0)
+        // null), `distance` from where the car starts (the nearest builds first), `after` a district it must follow whatever the
+        // distances (one whose ground or data it shares: the build order at load).
+        public static void Defer(string district,IEnumerator build,Func<IEnumerator> settle,Rect covers,Func<Vector3,bool> contains=null,float distance=0,string after=null)
         {
             var rect=covers;contains??=p=>rect.Contains(new Vector2(p.x,p.z));
-            var d=new District{name=district,build=build,settle=settle,covers=covers,contains=contains,distance=distance};
-            int i=0;while(i<all.Count&&all[i].distance<=distance)i++;all.Insert(i,d);
+            var d=new District{name=district,build=build,settle=settle,covers=covers,contains=contains,distance=distance,after=after};
+            int i=0;while(i<all.Count&&all[i].distance<=distance)i++;
+            if(after!=null){int first=all.FindIndex(o=>o.name==after);if(first>=i)i=first+1;}
+            all.Insert(i,d);
             Debug.Log($"LITTLE_ROAD_DISTRICT deferred {district} distance={distance:0} order={i+1}");
         }
         // Run `then` once `district` has arrived: now, if it already has (or was never deferred).
@@ -93,6 +104,7 @@ namespace LittleRoad
         static void Finish(District d)
         {
             if(d.state==State.Done)return;
+            if(d.after!=null&&Find(d.after) is District first&&first.state!=State.Done)Finish(first);   // (what it follows first)
             if(d.state==State.Queued){var own=new Stack<IEnumerator>();own.Push(Run(d));while(own.Count>0)Step(own,double.MaxValue);}
             else{Ensure();while(d.state!=State.Done&&stack.Count>0)Step(stack,0);}
             if(d.state!=State.Done)GiveUp(d);
@@ -142,7 +154,16 @@ namespace LittleRoad
         {
             static Runner instance;
             public static void Ensure(){if(instance!=null)return;instance=new GameObject("District builder").AddComponent<Runner>();}
-            void Update(){Districts.Ensure();if(!Pending||Step(stack,3)){Destroy(gameObject);}}
+            void Update()
+            {
+                Districts.Ensure();double budget=3;
+                if(Car?.Invoke() is Vector3 car)foreach(var d in all.ToArray()) {
+                    if(d.state==State.Done)continue;float away=Away(d.covers,car);
+                    if(away<ReachDistance){var clock=System.Diagnostics.Stopwatch.StartNew();Finish(d);Debug.Log($"LITTLE_ROAD_DISTRICT reached {d.name} away={away:0} m: finished at once ms={clock.ElapsedMilliseconds}");}
+                    else if(away<BoostDistance)budget=12;
+                }
+                if(!Pending||Step(stack,budget)){Destroy(gameObject);}
+            }
             void OnDestroy(){if(instance==this)instance=null;}
         }
     }

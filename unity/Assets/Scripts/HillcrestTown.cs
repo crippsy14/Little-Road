@@ -64,20 +64,34 @@ namespace LittleRoad
         // (--prop-forge: a baluster or post drawn as the railings kit's turned stone, authored in the unit cube, so the box's own
         //  scale, collider and paint stay: docs/80 round 5, as the causeway's)
         static void Turned(GameObject piece,string part){if(PropForge.Enabled)piece.GetComponent<MeshFilter>().sharedMesh=PropKit.Load("railings").Mesh(part);}
+        // A primitive's collider gone now, not at the end of the frame (Destroy): a district finished at once (--near-start, a
+        // race entered before it arrived, the world fingerprint) dresses the town in the same frame, and its streets' dressing
+        // met the square's paving disc and the garden paths still solid.
+        static void NoCollider(GameObject g){var c=g.GetComponent<Collider>();if(c==null)return;c.enabled=false;Object.Destroy(c);}
         GameObject Box(string name,Vector3 p,Vector3 size,Quaternion rotation,Material material,bool solid)
         {
             var go=GameObject.CreatePrimitive(PrimitiveType.Cube);go.name=name;go.transform.SetParent(root);go.transform.SetPositionAndRotation(p,rotation);go.transform.localScale=size;
-            go.GetComponent<Renderer>().sharedMaterial=material;if(solid)go.tag="Respawn";else Object.Destroy(go.GetComponent<Collider>());return go;
+            go.GetComponent<Renderer>().sharedMaterial=material;if(solid)go.tag="Respawn";else NoCollider(go);return go;
         }
-        public void Build()
+        public Transform Root=>root;
+        public void Build()=>TrialWorld.RunNow(BuildRoutine());
+        // As a coroutine (--near-start: a background district, NearStart): the same parts in the same order, a frame between them.
+        public System.Collections.IEnumerator BuildRoutine()
         {
-            if(!BayviewKit.Has("terrace_a"))return;
+            if(!BayviewKit.Has("terrace_a"))yield break;
             Spots.Clear();reserved.Clear();landmarks.Clear();Homes.Clear();Chimneys.Clear();StreetLamps.Clear();ZipTop=null;ZipLine.Active=null;ZipLine.All.Clear();
             paving=WorldLook.Kit("Hillcrest paving",Toy.Hex(0xb3a68c),WorldLook.Pattern.Stone,0,.15f,true);plinth=WorldLook.Kit("Hillcrest stone plinth",Toy.Hex(0xc2b08e),WorldLook.Pattern.Stone,0,.12f,true);
             railWhite=TrialWorld.Material("Balustrade white",Toy.Hex(0xfff8ec),0,.25f);
             // A race away from the town (RaceArea) builds only the raceway's own buildings.
-            if(RaceArea.Active&&!RaceArea.Near(Square,500)){if(RaceArea.Near(HillcrestRoute.Circuit[0],600))Raceway();Debug.Log($"LITTLE_ROAD_HILLCREST race-area only buildings={buildings}");return;}
-            CoastalLandscape.Lap("town start");ReserveZipLanding();CoastalLandscape.Lap("town ReserveZipLanding");MarketSquare();CoastalLandscape.Lap("town MarketSquare");Castle();CoastalLandscape.Lap("town Castle");LowerTown();CoastalLandscape.Lap("town LowerTown");Station();CoastalLandscape.Lap("town Station");Streets();CoastalLandscape.Lap("town Streets");SquareRim();CoastalLandscape.Lap("town SquareRim");Vista();CoastalLandscape.Lap("town Vista");Lookout();CoastalLandscape.Lap("town Lookout");Raceway();CoastalLandscape.Lap("town Raceway");Countryside();CoastalLandscape.Lap("town Countryside");HillSlopes();CoastalLandscape.Lap("town HillSlopes");Patchwork();CoastalLandscape.Lap("town Patchwork");ZipLineBuild();CoastalLandscape.Lap("town ZipLineBuild");TunnelFrame();CoastalLandscape.Lap("town TunnelFrame");Gardens();CoastalLandscape.Lap("town Gardens");
+            if(RaceArea.Active&&!RaceArea.Near(Square,500)){if(RaceArea.Near(HillcrestRoute.Circuit[0],600))Raceway();Debug.Log($"LITTLE_ROAD_HILLCREST race-area only buildings={buildings}");yield break;}
+            CoastalLandscape.Lap("town start");
+            // (the slow parts yield inside too: a background district's frames, 50 ms at most)
+            static System.Func<System.Collections.IEnumerator> Do(System.Action part)=>()=>Once(part);
+            static System.Collections.IEnumerator Once(System.Action part){part();yield break;}
+            foreach(var (name,part) in new (string,System.Func<System.Collections.IEnumerator>)[]{("ReserveZipLanding",Do(ReserveZipLanding)),("MarketSquare",Do(MarketSquare)),("Castle",Do(Castle)),("LowerTown",Do(LowerTown)),
+                ("Station",Do(Station)),("Streets",StreetsRoutine),("SquareRim",Do(SquareRim)),("Vista",Do(Vista)),("Lookout",Do(Lookout)),("Raceway",Do(Raceway)),("Countryside",Do(Countryside)),("HillSlopes",Do(HillSlopes)),
+                ("Patchwork",Do(Patchwork)),("ZipLineBuild",Do(ZipLineBuild)),("TunnelFrame",Do(TunnelFrame)),("Gardens",Do(Gardens))})
+                {yield return part();CoastalLandscape.Lap("town "+name);yield return null;}
             if(footingBoxes.Count>0){QuarryFloor.Combine("Hillside footings",footingBoxes,plinth,root,false);footingBoxes.Clear();}
             Debug.Log($"LITTLE_ROAD_HILLCREST buildings={buildings} plinths={plinths} buried={buried} footings={footings} overlaps={overlaps} spots={Spots.Count}");
         }
@@ -265,7 +279,7 @@ namespace LittleRoad
             reserved.Add((new(c.x,c.z),46));
             Vector3 Rim(float phi,float rho){var d=Quaternion.Euler(0,phi,0)*outward;var p=c+d*rho;p.y=HillcrestRoute.SquareY;return p;}
             // Paving disc (visual) with a grip trigger.
-            var disc=GameObject.CreatePrimitive(PrimitiveType.Cylinder);disc.name="Market square paving";disc.transform.SetParent(root);Object.Destroy(disc.GetComponent<Collider>());
+            var disc=GameObject.CreatePrimitive(PrimitiveType.Cylinder);disc.name="Market square paving";disc.transform.SetParent(root);NoCollider(disc);
             disc.transform.position=c+Vector3.up*.03f+outward*3;disc.transform.localScale=new Vector3(66,.02f,66);disc.GetComponent<Renderer>().sharedMaterial=paving;
             var grip=new GameObject("Market square grip",typeof(BoxCollider),typeof(RoadSurface));grip.transform.SetParent(root);grip.transform.position=c+outward*3;
             var box=grip.GetComponent<BoxCollider>();box.isTrigger=true;box.size=new Vector3(66,1.5f,66);
@@ -355,7 +369,7 @@ namespace LittleRoad
                 var donjon=At(265,13)+Vector3.down*.05f;Put("castle_donjon",donjon,Yaw(donjon,At(gateTheta,R)),red);
                 Put("castle_palace",At(95,25.5f)+Vector3.down*.05f,95,T(0xe3a83b,0x2f6b3f,0xd8343f,0x3b5f8a));
                 // Cobbled courtyard with a grip trigger, like the market square.
-                var disc=GameObject.CreatePrimitive(PrimitiveType.Cylinder);disc.name="Castle courtyard paving";disc.transform.SetParent(root);Object.Destroy(disc.GetComponent<Collider>());
+                var disc=GameObject.CreatePrimitive(PrimitiveType.Cylinder);disc.name="Castle courtyard paving";disc.transform.SetParent(root);NoCollider(disc);
                 disc.transform.position=c+Vector3.up*.03f;disc.transform.localScale=new Vector3(74,.02f,74);disc.GetComponent<Renderer>().sharedMaterial=plinth;
                 var grip=new GameObject("Castle courtyard grip",typeof(BoxCollider),typeof(RoadSurface));grip.transform.SetParent(root);grip.transform.position=c;
                 var box=grip.GetComponent<BoxCollider>();box.isTrigger=true;box.size=new Vector3(74,1.5f,74);
@@ -488,10 +502,13 @@ namespace LittleRoad
             Put("pier",jetty,Yaw(jetty,river.At(js)),null,null,.6f);
             for(int i=0;i<3;i++){var bp=river.At(js+8+i*9)-river.Right(js+8+i*9)*(i%2==0?2:-3);bp.y=river.At(js).y+.05f;var boat=Put("boat",bp,Yaw(river.At(js),river.At(js+10))+90*i,T(0xffffff,0,Awnings[i],0),null,.7f,false,BayviewKit.AnimatedRoot);boat.AddComponent<KitBob>().phase=i;}
         }
+        // Where the station stands, and its resident's spot (known before the town is built: the signs elsewhere point to it,
+        // --near-start).
+        static Vector3 StationCentre{get{var loop=HillcrestRoute.StationLoop;var west=new Vector3(loop.x-HillcrestRoute.StationLoopRadius,HillcrestRoute.RailY,loop.y);return new Vector3(west.x-12,HillcrestRoute.StationYard.y+.02f,west.z);}}
+        public static Vector3 StationSpot=>StationCentre+new Vector3(-8,0,7);
         void Station()
         {
-            var loop=HillcrestRoute.StationLoop;var west=new Vector3(loop.x-HillcrestRoute.StationLoopRadius,HillcrestRoute.RailY,loop.y);
-            var centre=new Vector3(west.x-12,HillcrestRoute.StationYard.y+.02f,west.z);
+            var centre=StationCentre;
             Building("station",centre,270,T(0xfbe3a2,0x1f8a70,0xff4d5e,0x1f8a70),"HILLCREST",true);
             reserved.Add((new(centre.x,centre.z),40));
             Spots["station"]=(centre+new Vector3(-8,0,7),180);Spots["taxirank"]=(centre+new Vector3(-16,0,-8),0);
@@ -521,12 +538,12 @@ namespace LittleRoad
             at.y=Mathf.Max(H(at.x,at.z),H(at.x,at.z+length*.5f),H(at.x,at.z-length*.5f),H(at.x+1,at.z),H(at.x-1,at.z))+.07f;
             Box("Bay line",at,new Vector3(.14f,.02f,length),Quaternion.LookRotation(along),paint,false);
         }
-        void Streets()
+        System.Collections.IEnumerator StreetsRoutine()
         {
             var crest=HillcrestRoute.Crest;
-            Row(crest,1,14,crest.Length-60);Row(crest,-1,14,crest.Length-60,12.2f,.22f);
-            Pavements(crest,4,crest.Length-50);Lamps(crest,10,crest.Length-40,26);
-            for(float s=60;s<crest.Length-60;s+=90)StreetBunting(crest,s);
+            Row(crest,1,14,crest.Length-60);yield return null;Row(crest,-1,14,crest.Length-60,12.2f,.22f);yield return null;
+            Pavements(crest,4,crest.Length-50);yield return null;Lamps(crest,10,crest.Length-40,26);yield return null;
+            for(float s=60;s<crest.Length-60;s+=90)StreetBunting(crest,s);yield return null;
             Parapets(crest,14,crest.Length-30);
         }
         // A low stone parapet along the downhill side of a hill street, where the ground beyond the pavement falls away
@@ -717,7 +734,7 @@ namespace LittleRoad
             var silo=GameObject.CreatePrimitive(PrimitiveType.Cylinder);silo.name="Farm silo";silo.transform.SetParent(holder);silo.transform.position=F(-44,82)+Vector3.up*7;silo.transform.localScale=new Vector3(5.2f,7,5.2f);
             silo.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Silo steel",new Color(.84f,.86f,.88f),.3f,.45f);silo.tag="Respawn";
             var dome=GameObject.CreatePrimitive(PrimitiveType.Sphere);dome.name="Silo dome";dome.transform.SetParent(holder);dome.transform.position=F(-44,82)+Vector3.up*14;dome.transform.localScale=new Vector3(5.4f,3.2f,5.4f);
-            dome.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Silo dome red",Toy.Hex(0xd94040),.1f,.4f);Object.Destroy(dome.GetComponent<Collider>());}
+            dome.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Silo dome red",Toy.Hex(0xd94040),.1f,.4f);NoCollider(dome);}
             Kit("tractor",-70,52,55);Kit("tractor",-86,48,-30,null,null,.95f);
             foreach(var (x,z,y) in new[]{(-50f,64f,.65f),(-48.7f,64f,.65f),(-51.3f,64f,.65f),(-49.35f,64f,1.9f),(-50.65f,64f,1.9f),(-50f,64f,3.1f)}) {var b=Kit("hay_bale",x,z,0);b.transform.position+=Vector3.up*(y-.65f);}
             Fence(new(-100,46),new(-52,46),new Vector2(-94,-80));Fence(new(-52,46),new(-52,78));
@@ -734,7 +751,7 @@ namespace LittleRoad
             Box("Scarecrow arms",sc+Vector3.up*2.35f,new Vector3(2.2f,.12f,.12f),rot,wood,false).transform.SetParent(holder);
             Box("Scarecrow shirt",sc+Vector3.up*2.1f,new Vector3(.9f,.9f,.35f),rot,TrialWorld.Material("Scarecrow shirt",Toy.Hex(0x3a7bd5),0,.1f),false).transform.SetParent(holder);
             var head=GameObject.CreatePrimitive(PrimitiveType.Sphere);head.name="Scarecrow head";head.transform.SetParent(holder);head.transform.position=sc+Vector3.up*2.95f;head.transform.localScale=Vector3.one*.55f;
-            head.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Scarecrow sack",new Color(.9f,.8f,.55f),0,.1f);Object.Destroy(head.GetComponent<Collider>());
+            head.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Scarecrow sack",new Color(.9f,.8f,.55f),0,.1f);NoCollider(head);
             Box("Scarecrow hat",sc+Vector3.up*3.27f,new Vector3(.8f,.1f,.8f),rot,TrialWorld.Material("Scarecrow hat",Toy.Hex(0xd94040),0,.1f),false).transform.SetParent(holder);
             Box("Scarecrow crown",sc+Vector3.up*3.42f,new Vector3(.42f,.3f,.42f),rot,TrialWorld.Material("Scarecrow hat",Toy.Hex(0xd94040),0,.1f),false).transform.SetParent(holder);
             // Sunflowers and lavender beside the wheat, rows along the farm's axis.

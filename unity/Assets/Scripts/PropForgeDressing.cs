@@ -22,23 +22,27 @@ namespace LittleRoad
         static readonly Dictionary<string,int> counts=new(),refused=new();static void No(string why){refused[why]=refused.TryGetValue(why,out int n)?n+1:1;}
         public static string Summary=>string.Join(" ",counts.OrderBy(k=>k.Key).Select(k=>$"{k.Key}={k.Value}"));
 
+        // Ground whose dressing waits (--near-start: a district still to come dresses everything standing on its ground, its
+        // own pieces and those already there, once it's built, as the world at load is dressed once it's all there: NearStart).
+        public static System.Func<Vector3,bool> Later;
         public static void Build(Transform parent)
         {
             root=new GameObject("Prop Forge dressing").transform;root.SetParent(parent,false);rng=new System.Random(4711);Placed=0;counts.Clear();refused.Clear();
             if(!BayviewKit.Has("litter_bin"))return;
             var placed=BayviewKit.Placed.Where(g=>g!=null).ToList();
-            foreach(var g in placed)Dress(g);
+            foreach(var g in placed)if(Later==null||!Later(g.transform.position))Dress(g);
             Debug.Log($"LITTLE_ROAD_PROP_FORGE_DRESSING placed={Placed} {Summary} refused: {string.Join(" ",refused.Select(k=>k.Key+"="+k.Value))} seen: {string.Join(" ",placed.GroupBy(x=>x.name).Where(x=>new[]{"bench","shop","cafe","motors","post_office","fountain","beach_hut","barn","station","house_a","house_c","cottage_a","tree_blossom"}.Contains(x.Key)).Select(x=>x.Key+"="+x.Count()))}");
         }
         // The same for a district built in the background (Districts): the pieces under `holder`, once they're all there, a few
         // a frame; `done` gets the count. Each piece's draws come from its own spot (Seed), so a street dressed later comes out
         // as it would have at load.
-        public static System.Collections.IEnumerator DressRoutine(Transform parent,Transform holder,System.Action<int> done,int perFrame=8)
+        // (`also`: other pieces it dresses, in their order among its own: those on its ground, NearStart)
+        public static System.Collections.IEnumerator DressRoutine(Transform parent,Transform holder,System.Action<int> done,int perFrame=8,System.Func<GameObject,bool> also=null)
         {
             if(root==null){root=new GameObject("Prop Forge dressing").transform;root.SetParent(parent,false);}
             int before=Placed;
             if(BayviewKit.Has("litter_bin")) {
-                var mine=new List<GameObject>();foreach(var g in BayviewKit.Placed)if(g!=null&&g.transform.IsChildOf(holder))mine.Add(g);   // (a copy: dressing adds to the list)
+                var mine=new List<GameObject>();foreach(var g in BayviewKit.Placed)if(g!=null&&(g.transform.IsChildOf(holder)||also!=null&&also(g)))mine.Add(g);   // (a copy: dressing adds to the list)
                 for(int i=0;i<mine.Count;i++){Dress(mine[i]);if(i%perFrame==perFrame-1)yield return null;}
             }
             done(Placed-before);
@@ -151,7 +155,7 @@ namespace LittleRoad
             if(Mathf.Abs(top-at.y)>4){No(id+":height");return false;}   // (a roof, a cliff: not the street it was meant for)
             var spot=new Vector3(at.x,top,at.z);var box=new Bounds(spot+Vector3.up*(.15f+1f),new Vector3(room*2,2f,room*2));   // (room: half its width; a box 2 m tall from just above the ground)
             if(BayviewKit.Occupied(box)){No(id+":footprint");return false;}
-            if(Physics.OverlapBox(box.center,box.extents*.9f).Any(c=>!c.isTrigger)){No(id+":collider");return false;}
+            if(Physics.OverlapBox(box.center,box.extents*.9f).Any(c=>!c.isTrigger&&c.attachedRigidbody==null)){No(id+":collider");return false;}   // (not a car going by: a district dressed in play, NearStart)
             float s1=Ground.Surface(at.x+.6f,at.z),s2=Ground.Surface(at.x,at.z+.6f),s0=Ground.Surface(at.x,at.z);
             if(Mathf.Abs(top-s0)<.3f&&(Mathf.Abs(s1-s0)>.12f||Mathf.Abs(s2-s0)>.12f)){No(id+":slope");return false;}
             var g=BayviewKit.Spawn(id,spot,yaw,root,tint);Physics.SyncTransforms();
