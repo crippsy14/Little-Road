@@ -13,7 +13,7 @@ Add new status at the top of "Latest" in a line or two, and move anything that b
   barrier on the Estrada do Cais). Also fixed: the kept world was dressed and barriered again on every return to town.
   Still to cut (the world build is 5.9 s): the island heights (0.48 s), the mainland chunks (0.46 s), the roads (0.88 s),
   Hillcrest's town (0.9 s), the runs' flush (0.54 s), the town's set-up (1.3 s). A build's first launch is about 37 s: the
-  map bake completes every district at once.
+  map bake completes every district at once. Play copy published from main 3b2f2da (Richard, 23 Oct: no regression first).
 - **23 Oct: the docs sweep.** 65 docs were folded into five living records (see [docs/README.md](README.md)).
 - **23 Oct: Car Forge models everywhere** (main 861900d, 35a4d35; play copy published): every old class C body shows as
   its Forge namesake, the body shops sell the Forge range, a "My garage" screen, and a smooth body shop preview (24.3 →
