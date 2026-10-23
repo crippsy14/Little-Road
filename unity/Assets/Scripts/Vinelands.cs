@@ -16,7 +16,9 @@ namespace LittleRoad
     // The valley's height grid reaches east to x 5250 and south to z -5130 with it (ValleyField).
     public static class Vinelands
     {
-        public static bool Enabled=>enabled??=RaceTrial.Has("--vinelands")&&Bramblewick.Enabled;static bool? enabled;
+        // On in player builds since 23 Oct (all eight zones and the Circuito da Cumeada built, Richard: "make sure everything is in
+        // the main build"); --no-vinelands leaves it out, and the editor still needs --vinelands. Needs Bramblewick (its gate).
+        public static bool Enabled=>enabled??=(Application.isEditor?RaceTrial.Has("--vinelands"):!RaceTrial.Has("--no-vinelands"))&&Bramblewick.Enabled;static bool? enabled;
         public static readonly Vector2 Centre=new(3400,-3280);
         public const float East=5250,South=-5130,Radius=1800,Water=6;
         public const string RoadName="Vinelands Road",SubidaName="Subida",AdegaLaneName="Adega Lane",LoopName="Vineyard Loop",VinesTrackName="Adega Vines";

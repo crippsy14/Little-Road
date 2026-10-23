@@ -14,6 +14,15 @@
   rc3 passed and the play copy published 23 Oct 12:50. The audit's new line, a Quarry Hills car not on the ground, is not
   the AI's: it came with the branch's commits since 21 Oct and is open.
 
+**23 October: Vinelands is part of the game.** All eight zones ([docs 85–93](85-vinelands.md)) and the redesigned
+Circuito da Cumeada ([doc 92](92-vinelands-zone7-eiras-vale-circuit.md)) are on by default in player builds;
+`--no-vinelands` leaves the place out. The two races are a class C race on the short lap (3★, two laps) and a class B race
+on the long lap (2★, two laps), both with Sr. Rogério. In the AI sweep, all 24 races finished 24/24. A race with no flags
+on the racecraft v3 build also finished 24/24, with no resets. No regression was run, at Richard's call: rc3 had just
+passed in the AI thread. Still open:
+- the planting top-up, since the area audit fails on planting per road km;
+- a handful of small junction seams.
+
 **21 October: Bramblewick is part of the game, and the hybrid prototype is under way.**
 - **Bramblewick** ([doc 82](82-bramblewick.md)) is on by default in player builds; `--no-bramblewick` leaves it out. This
   covers the West Country village, the vale, and the Bramblewick Lanes race with Jed.
