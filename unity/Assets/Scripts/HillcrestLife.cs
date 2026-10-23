@@ -105,6 +105,13 @@ namespace LittleRoad
             if(Districts.Waiting("quarry-hills"))Districts.WhenBuilt("quarry-hills",()=>Park(root,new List<(Vector3,float)>(QuarryFloor.Parking)));
         }
         System.Random parkRng;
+        // (on a road's ribbon or junction, not its shoulder nor a square's paving: the car's centre or either side, 0.9 m out)
+        static bool IsCarriageway(Collider c){if(c.GetComponent<RoadSurface>()==null||c.transform.parent==null||c.transform.parent.name!="Hillcrest roads")return false;var n=c.name;return !n.Contains("shoulder")&&!n.Contains("verge")&&!n.Contains("Shoulder");}
+        static bool OnRoad(Vector3 p,Vector3 right)
+        {
+            foreach(float x in new[]{0f,-.9f,.9f}){var q=p+right*x;foreach(var h in Physics.RaycastAll(q+Vector3.up*3,Vector3.down,8,~0,QueryTriggerInteraction.Ignore))if(IsCarriageway(h.collider))return true;}
+            return false;
+        }
         static readonly string[] ParkBodies={"marlow","heron","picnic","doodle","otter","bramble","pebble","tallboy","dover","kipper","sprint","roadster"};
         void Park(Transform root,List<(Vector3 at,float yaw)> spots)
         {
@@ -121,7 +128,11 @@ namespace LittleRoad
                 go.transform.SetPositionAndRotation(p,Quaternion.Euler(0,yaw,0));
                 var renderers=go.GetComponentsInChildren<Renderer>();var bounds=renderers[0].bounds;foreach(var x in renderers)bounds.Encapsulate(x.bounds);
                 var box=go.AddComponent<BoxCollider>();box.center=go.transform.InverseTransformPoint(bounds.center);box.size=new Vector3(1.8f,1.5f,3.8f);go.tag="Respawn";
-                StationarySpot.Settle(go);
+                // (in Vinelands a car never settles onto a road: nudged off the pavement's kerb and lamps it slid into the traffic lane, and
+                // the cruisers queued behind it, Richard 23 Oct; one with nowhere clear but the road stays home)
+                bool vila=Vinelands.Enabled&&Vector2.Distance(new(p.x,p.z),Vinelands.Centre)<Vinelands.Radius;
+                if(vila){float moved=StationarySpot.Settle(go,q=>!OnRoad(q,go.transform.right));if(moved<0||OnRoad(go.transform.position,go.transform.right)){Object.Destroy(go);continue;}}
+                else StationarySpot.Settle(go);
                 var chatter=go.AddComponent<NpcChatter>();chatter.speaker=new[]{"Lou","Kit","Vera","Ned","Olive","Sid","Tess","Arlo"}[rng.Next(8)];chatter.colour=Toy.Sky;
                 chatter.title="Parked up";chatter.talk=new[]{Gossip[rng.Next(Gossip.Length)],Gossip[rng.Next(Gossip.Length)]};go.AddComponent<ResidentIdle>();
             }

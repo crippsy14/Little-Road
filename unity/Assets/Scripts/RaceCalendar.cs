@@ -25,8 +25,8 @@ namespace LittleRoad
             new("hillcrest","Hillcrest Raceway","C",1.5f,2,2),
             // Quarry Hills Rallycross (--quarry-hills): loose slate on the quarry floor, the town's off-roaders.
             new("quarry","Quarry Hills Rallycross","C",1.8f,3,3),
-            // Bramblewick Lanes (--bramblewick, docs/82): the village street and Church Lane, 2★ (docs/70), three laps.
-            new("bramblewick","Bramblewick Lanes","C",1.5f,2,3),
+            // Bramblewick Lanes (--bramblewick, docs/82): the village street and Church Lane, 2★ (docs/70), two laps (Richard, 23 Oct).
+            new("bramblewick","Bramblewick Lanes","C",1.5f,2,2),
             // The Circuito da Cumeada (--vinelands, docs/92): the club's short lap round the Vale, 3★ (docs/70's Vineyard Loop), two laps.
             new("vinelands","Circuito da Cumeada","C",1.8f,3,2)};
         // Class B on today's tracks (docs/67): each town an easier event forwards and a harder one reversed. The planned

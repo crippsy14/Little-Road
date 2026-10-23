@@ -262,7 +262,7 @@ namespace LittleRoad
             DriverAudit?.EndFrame(elapsed);
             if(Has("--trial-human")&&cars[0].finished&&!reportWritten)WriteReport();
             if(technical!=null&&Keyboard.current?.cKey.wasPressedThisFrame==true)overview=!overview;
-            if(elapsed>5)frameTimes.Add(Time.unscaledDeltaTime*1000);
+            if(elapsed>5){frameTimes.Add(Time.unscaledDeltaTime*1000);if(Time.unscaledDeltaTime>.05f&&slowFramesLogged++<40)Debug.Log($"LITTLE_ROAD_RACE_SLOW_FRAME t={elapsed:0.0} ms={Time.unscaledDeltaTime*1000:0} at={(cars.Count>0?cars[0].transform.position.ToString("0"):"-")} progress={(cars.Count>0?cars[0].progress:0):0}");}   // (where the slow frames are: Richard felt them at Bramblewick, 23 Oct)
             if(!cars[0].finished&&Controls.Pressed(Controls.Act.Recover))PlayerRecoveryPending=true;
             // Off the edge of a race's built area (RaceArea): back onto the circuit.
             if(RaceArea.Active&&!cars[0].finished&&!PlayerRecoveryPending&&Time.frameCount%15==0) {
@@ -537,6 +537,7 @@ namespace LittleRoad
             assistedRecoveries.Add(new RecoverySample{id=car.driverId,time=elapsed,positionBefore=before,positionAfter=after,progressBefore=beforeProgress,progressAfter=car.progress,gateBefore=beforeGate,gateAfter=car.nextGate,reason=reason,rejectedDestinations=rejected});
             Debug.Log($"ASSISTED_RECOVERY id={car.driverId} time={elapsed:0.00} reason={reason} progress={beforeProgress:0.00}->{car.progress:0.00} rejected={rejected}");
         }
+        int slowFramesLogged;
         void WriteReport()
         {
             if(reportWritten)return;reportWritten=true;

@@ -479,7 +479,7 @@ namespace LittleRoad
         public void Build()=>TrialWorld.RunNow(BuildRoutine());
         public System.Collections.IEnumerator BuildRoutine()
         {
-            WorldTiles.Begin(ValleyDetail);Districts.Begin();WorldRoot=root;stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.FootprintOwners.Clear();GroundFit.Reset();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;
+            WorldTiles.Begin(ValleyDetail);Districts.Begin();Runs.Batching=!RaceTrial.Has("--no-run-batching");WorldRoot=root;   // (the runs' meshes made together, on every core, before the settle pass: Runs.Flush; --no-run-batching draws each as it comes)stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.FootprintOwners.Clear();GroundFit.Reset();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;
             // (A race far from Bayview builds none of the island: RaceArea. Its heights stay analytic for everything else.)
             bool island=Island;
             if(island)LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;
@@ -503,10 +503,10 @@ namespace LittleRoad
             if(ValleyDetail){if(hillcrest)Railway();Step("railway");Physics.SyncTransforms();new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");
                 // Quarry Hills far from where the car starts is built after the town is ready (Districts, docs/72).
                 if(deferQuarry)Districts.Defer("quarry-hills",QuarryHillsSceneryRoutine(),SettleQuarryHills,Rect.MinMaxRect(QuarryHills.West-30,QuarryHills.South-30,QuarryHills.SeamX+30,1e6f));else QuarryHillsScenery();Step("quarry-hills");
-                if(Bramblewick.Enabled){Physics.SyncTransforms();new BramblewickVillage(root).Build();Step("bramblewick");}if(Vinelands.Enabled){Physics.SyncTransforms();new VinelandsTown(root).Build();Step("vinelands");}Next(.93f,"Filling the sea");yield return null;}   // (Bramblewick: docs/82, step 3)
+                if(Bramblewick.Enabled){Physics.SyncTransforms();new BramblewickVillage(root).Build();Step("bramblewick");}if(Vinelands.Enabled&&RaceArea.Near(Vinelands.Centre,200)){Physics.SyncTransforms();new VinelandsTown(root).Build();Step("vinelands");}Next(.93f,"Filling the sea");yield return null;}   // (Bramblewick: docs/82, step 3)   // (Vinelands: a race far from it, Bramblewick's, leaves its town and vines out: 64 frames over 33 ms there with them, 2 without, 23 Oct)
             // (Prop Forge last of the building, so its runs and objects see everything placed: the quay's dressing comes with Hillcrest)
             if(island&&PropForge.Enabled&&!NewBayview.On){Physics.SyncTransforms();PropForgeBayview.Build(this,root);Step("prop-forge");}
-            Lap("settle start");Debug.Log("LITTLE_ROAD_RAILS_TRIMMED "+(deferQuarry?TrimRails(p=>!NearQuarryHills(p)):TrimRails()));   // (rails and junction corner walls in front of buildings; every build)
+            Lap("settle start");Runs.Flush();Runs.Batching=false;Lap("runs flush");Debug.Log("LITTLE_ROAD_RAILS_TRIMMED "+(deferQuarry?TrimRails(p=>!NearQuarryHills(p)):TrimRails()));   // (rails and junction corner walls in front of buildings; every build)
             Lap("settle trim rails");RegisterRoads();Lap("settle register roads");
             // Runtime static batching converts combined geometry to 16-bit
             // chunks. Keep the large grass mesh and displaced sea independent.
@@ -514,6 +514,7 @@ namespace LittleRoad
             if(StaticBatching)StaticBatchingUtility.Combine(root.gameObject);Step("static-batching");
             Sea();if(island)new CoastalGroundCover(this,track,root).Build();Step("sea-ground-cover");
             WorldTiles.EndBuild();
+            Runs.LogTimes();   // (where the runs' time goes: load timing)
             Debug.Log("LITTLE_ROAD_LANDSCAPE_READY bridgeDistance="+bridgeDistance+" sea="+SeaLevel+" deferred="+WorldTiles.Deferred);
         }
     }

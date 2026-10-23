@@ -71,7 +71,7 @@ namespace LittleRoad
 
         public void Build()
         {
-            Buildings=Plinths=Refused=0;Spots.Clear();Parking.Clear();Horseshoes.Clear();
+            Buildings=Plinths=Refused=0;Spots.Clear();Parking.Clear();Horseshoes.Clear();clock=System.Diagnostics.Stopwatch.StartNew();lapAt=0;
             plinth=WorldLook.Kit("Bramblewick plinth",new Color(.62f,.58f,.50f),WorldLook.Pattern.Stone,0,.1f,true);
             var road=HillcrestRoute.Find(Bramblewick.RoadName);float sC=road.Nearest(new Vector3(Bramblewick.Centre.x,0,Bramblewick.Centre.y),out _);
             Vector3 N(float s){var r=road.Right(s);r.y=0;r.Normalize();return r.z>0?r:-r;}   // (the north side: the green's)
@@ -150,8 +150,8 @@ namespace LittleRoad
             Park(sC-30,N(sC-30),4f);Park(sC+26,N(sC+26),4f);Park(sC-5,-N(sC-5),4f);Park(sC+5,-N(sC+5),4f);   // (4 m off the edge: at 2.6-3 m they sat over the edge line, review BW1-01)
             foreach(float ds in new[]{-470f,-640f,-820f,-1000f,-1180f,-1350f})Park(sC+ds,N(sC+ds),3.8f);   // (out along the pass, where the vale's fields are)
             Park(sC+440,-N(sC+440),4f);Park(sC+447,-N(sC+447),4f);
-            Vale(road,sC,herd);
-            HumpbackBridge();Ford();RaceDay();
+            Lap("village");Vale(road,sC,herd);
+            HumpbackBridge();Lap("bridge");Ford();Lap("ford");RaceDay();Lap("race day");
             // (the top of the pass: the road's highest point between the T and the village, 7 m off its north side)
             {float top=-1,best=float.MinValue;for(float s=60;s<sC-500;s+=10)if(road.At(s).y>best){best=road.At(s).y;top=s;}
              if(top>0){var s0=road.At(top)+N(top)*(half+7);s0.y=H(s0.x,s0.z);shoe[5]=s0;}}
@@ -164,6 +164,8 @@ namespace LittleRoad
         // the car can plough through (CropField, CropTrample). Every field hedged all round, one hedge on each shared boundary,
         // each side with a gateway; copses in the corners the fields leave, and the orchard on the north slope.
         public static int Fields,Copses;
+        // (each part timed: LITTLE_ROAD_LOAD_LAP bramblewick ...)
+        System.Diagnostics.Stopwatch clock;long lapAt;void Lap(string part){Debug.Log($"LITTLE_ROAD_LOAD_LAP bramblewick {part} ms={clock.ElapsedMilliseconds-lapAt}");lapAt=clock.ElapsedMilliseconds;}
         void Vale(HillcrestRoute.Road road,float sC,Vector3 cowField)
         {
             var yaw=Yaw(road.At(sC-1),road.At(sC+1));var rot=Quaternion.Euler(0,yaw,0);var c0=new Vector3(Bramblewick.Centre.x,0,Bramblewick.Centre.y);
@@ -187,6 +189,7 @@ namespace LittleRoad
             }
             int nx=xs.Count-1,nz=zs.Count-1;var kind=new int[nx,nz];
             for(int i=0;i<nx;i++)for(int j=0;j<nz;j++){kind[i,j]=CellKind(i,j);if(kind[i,j]==1&&rng.NextDouble()<.1)kind[i,j]=2;}
+            Lap("vale lattice");
             var crops=CropTrample.Material("Bramblewick",new Rect(Bramblewick.Centre.x-800,Bramblewick.Centre.y-800,1600,1600));
             var v=new List<Vector3>();var col=new List<Color>();var t=new List<int>();var lift=new List<Vector2>();var rowAt=new List<Vector2>();
             void Flush()
@@ -212,7 +215,7 @@ namespace LittleRoad
                 if(rng.NextDouble()<.5)q=new[]{q[1],q[2],q[3],q[0]};   // (drilled the other way)
                 CropField.Canopy(v,col,t,lift,rowAt,q,a,b,h,Ground,CropField.Tone);if(v.Count>50000)Flush();
             }
-            Flush();
+            Flush();Lap("vale crops");
             // Hedges along every lattice line with a field on either side: one hedge to a boundary, continuous but for a
             // gateway in about half of them (with its gate in most), and where a road crosses.
             void Hedge(Vector3 a,Vector3 b,bool gateway)
@@ -235,6 +238,7 @@ namespace LittleRoad
                 if(i<nx&&(Field(i,j)||Field(i,j-1)))Hedge(L[i,j],L[i+1,j],rng.NextDouble()<.5);   // (along x: between cells (i,j-1) and (i,j))
                 if(j<nz&&(Field(i,j)||Field(i-1,j)))Hedge(L[i,j],L[i,j+1],rng.NextDouble()<.5);   // (along z: between cells (i-1,j) and (i,j))
             }
+            Lap("vale hedges");
             // Copses on the rough ground the fields leave, off the roads.
             Copses=0;
             for(int i=0;i<nx;i++)for(int j=0;j<nz;j++) {
@@ -252,6 +256,7 @@ namespace LittleRoad
                 q.y=H(q.x,q.z)-.05f;Put("tree_blossom",q,(float)rng.NextDouble()*360,null,null,true,.62f+(float)rng.NextDouble()*.15f);
              }
              o.y=H(o.x,o.z);Spots["orchard"]=(o,yaw);}
+            Lap("vale copses orchard");
         }
         Vector3 herd;
         // The ford on Church Lane, where the lanes circuit crosses the brook's low point (rebuilt after launch review r1,

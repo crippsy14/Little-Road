@@ -65,6 +65,7 @@ namespace LittleRoad
     public static class Runs
     {
         public static readonly List<RunLayout> Laid=new();
+        public static void LogTimes(){foreach(var g in Laid.GroupBy(r=>r.spec.kit))UnityEngine.Debug.Log($"LITTLE_ROAD_RUNS_TIME kit={g.Key} runs={g.Count()} items={g.Sum(r=>r.items.Count)} solve_ms={g.Sum(r=>r.solveMs):0} draw_ms={g.Sum(r=>r.drawMs):0}");}
         const float Step=.5f;
         // (a span may be split down to this to keep its rails at the right height over a dip or a crest: by a drive cut
         //  into the bank on the range, a 2.3 m span had to become two, 18 Oct)
@@ -289,31 +290,51 @@ namespace LittleRoad
         public static GameObject Draw(RunLayout L,Transform parent)
         {
             var sw=Stopwatch.StartNew();var root=new GameObject("Run "+L.spec.name);root.transform.SetParent(parent,false);
-            DrawChunks(root.transform,"Run "+L.spec.name,L.kit,L.items.GroupBy(i=>Mathf.FloorToInt(i.arc/Chunk)),(it,a,v,n,u1,u2)=>Bend(L,it,a,v,n,u1,u2),
-                m=>L.spec.restyle!=null&&L.spec.restyle.TryGetValue(m,out var r)?r:m);
+            // (while the world builds, the meshes wait for Flush, which works them out on every core: drawing the runs one by one
+            // took about 4 s of the start-up, 23 Oct; the colliders are made now, as before)
+            if(Batching)queued.Add((L,root.transform));else Commit(L,root.transform,Prepare(L));
             if(L.spec.solid)Colliders(L,root.transform);
             L.drawMs=sw.Elapsed.TotalMilliseconds;return root;
         }
+        // Batch the runs' meshes until Flush (the world build turns it on, and flushes before its settle pass).
+        public static bool Batching;static readonly List<(RunLayout L,Transform root)> queued=new();
+        public static void Flush()
+        {
+            if(queued.Count==0)return;var sw=Stopwatch.StartNew();var jobs=queued.ToArray();queued.Clear();
+            // (the kits' arrays made here first: ArraysOf fills a cache, which the workers then only read)
+            foreach(var (L,_) in jobs)foreach(var it in L.items)for(int lod=0;lod<2;lod++)L.kit.ArraysOf(it.piece,lod);
+            var built=new List<ChunkData>[jobs.Length];
+            System.Threading.Tasks.Parallel.For(0,jobs.Length,i=>built[i]=Prepare(jobs[i].L));
+            double prepared=sw.Elapsed.TotalMilliseconds;
+            for(int i=0;i<jobs.Length;i++)Commit(jobs[i].L,jobs[i].root,built[i]);
+            UnityEngine.Debug.Log($"LITTLE_ROAD_RUNS_FLUSH runs={jobs.Length} prepare_ms={prepared:0} commit_ms={sw.Elapsed.TotalMilliseconds-prepared:0}");
+        }
+        static List<ChunkData> Prepare(RunLayout L)=>PrepareChunks(L.kit,L.items.GroupBy(i=>Mathf.FloorToInt(i.arc/Chunk)),(it,a,v,n,u1,u2)=>Bend(L,it,a,v,n,u1,u2));
+        static void Commit(RunLayout L,Transform root,List<ChunkData> chunks)=>CommitChunks(root,"Run "+L.spec.name,chunks,m=>L.spec.restyle!=null&&L.spec.restyle.TryGetValue(m,out var r)?r:m);
         // Chunks of a kit's laid pieces (runs or objects): per chunk, one mesh per LOD with a submesh per material class, and
         // a LOD group. Each piece is written straight from the kit's arrays into its chunk's buffers (only the vertices its
         // triangles use, per material): a bent piece through `bend` in world space, a rigid one through its matrix. (It
         // was a mesh per bent piece and two rounds of CombineMeshes: 99 ms for Bayview's coast wall, 18 Oct.)
         public delegate void Bender(RunItem it,PropKit.Arrays a,Vector3[] v,Vector3[] n,Vector2[] u1,Vector2[] u2);
         sealed class Buffer{public readonly List<Vector3> v=new(),n=new();public readonly List<Vector2> uv=new(),u1=new(),u2=new();public readonly List<int> t=new();}
-        public static void DrawChunks(Transform root,string name,PropKit kit,IEnumerable<IGrouping<int,RunItem>> chunks,Bender bend,Func<string,string> restyle=null)
+        // A chunk's geometry, worked out (on any thread) before its objects are made (on the main one): per LOD, the materials
+        // in order and a buffer each.
+        sealed class ChunkData{public int key;public readonly List<string>[] order={new(),new()};public readonly Dictionary<string,Buffer>[] byMat={new(),new()};}
+        public static void DrawChunks(Transform root,string name,PropKit kit,IEnumerable<IGrouping<int,RunItem>> chunks,Bender bend,Func<string,string> restyle=null)=>
+            CommitChunks(root,name,PrepareChunks(kit,chunks,bend),restyle);
+        static List<ChunkData> PrepareChunks(PropKit kit,IEnumerable<IGrouping<int,RunItem>> chunks,Bender bend)
         {
-            Vector3[] wv=new Vector3[64],wn=new Vector3[64];Vector2[] w1=new Vector2[64],w2=new Vector2[64];int[] map=new int[64];
+            Vector3[] wv=new Vector3[64],wn=new Vector3[64];Vector2[] w1=new Vector2[64],w2=new Vector2[64];int[] map=new int[64];var list=new List<ChunkData>();
             foreach(var group in chunks) {
-                var chunk=new GameObject($"{name} chunk {group.Key}");chunk.transform.SetParent(root,false);
-                var lods=new List<LOD>();
+                var ch=new ChunkData{key=group.Key};list.Add(ch);
                 for(int lod=0;lod<2;lod++) {
-                    var byMat=new Dictionary<string,Buffer>();var order=new List<string>();
+                    var byMat=ch.byMat[lod];var order=ch.order[lod];
                     foreach(var it in group) {
                         var a=kit.ArraysOf(it.piece,lod);int count=a.v.Length;
                         if(wv.Length<count){wv=new Vector3[count];wn=new Vector3[count];w1=new Vector2[count];w2=new Vector2[count];map=new int[count];}
                         if(it.deform)bend(it,a,wv,wn,w1,w2);
                         else {
-                            var nm=it.m.inverse.transpose;
+                            var nm=NormalMatrix(it.m);
                             for(int i=0;i<count;i++){wv[i]=it.m.MultiplyPoint3x4(a.v[i]);wn[i]=nm.MultiplyVector(a.n[i]).normalized;w1[i]=a.uv[i];w2[i]=new Vector2(a.v[i].y,0);}
                         }
                         for(int s=0;s<a.tris.Length;s++) {
@@ -325,6 +346,17 @@ namespace LittleRoad
                             }
                         }
                     }
+                }
+            }
+            return list;
+        }
+        static void CommitChunks(Transform root,string name,List<ChunkData> chunks,Func<string,string> restyle)
+        {
+            foreach(var ch in chunks) {
+                var chunk=new GameObject($"{name} chunk {ch.key}");chunk.transform.SetParent(root,false);
+                var lods=new List<LOD>();
+                for(int lod=0;lod<2;lod++) {
+                    var byMat=ch.byMat[lod];var order=ch.order[lod];
                     var mesh=new Mesh{name=chunk.name+" lod"+lod,indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};
                     var V=new List<Vector3>();var N=new List<Vector3>();var U0=new List<Vector2>();var U1=new List<Vector2>();var U2=new List<Vector2>();var bases=new List<int>();
                     foreach(var m in order){var b=byMat[m];bases.Add(V.Count);V.AddRange(b.v);N.AddRange(b.n);U0.AddRange(b.uv);U1.AddRange(b.u1);U2.AddRange(b.u2);}
@@ -337,6 +369,18 @@ namespace LittleRoad
                 }
                 chunk.AddComponent<LODGroup>().SetLODs(lods.ToArray());
             }
+        }
+        // The inverse transpose of a TRS matrix's 3x3 (normals), in plain arithmetic: Matrix4x4.inverse is an engine call,
+        // not for the workers. (A rigid piece's matrix has no shear, so this is the general 3x3 inverse, transposed.)
+        static Matrix4x4 NormalMatrix(Matrix4x4 m)
+        {
+            float a=m.m00,b=m.m01,c=m.m02,d=m.m10,e=m.m11,f=m.m12,g=m.m20,h=m.m21,k=m.m22;
+            float A=e*k-f*h,B=-(d*k-f*g),C=d*h-e*g,det=a*A+b*B+c*C;if(Mathf.Abs(det)<1e-12f)return Matrix4x4.identity;float id=1/det;
+            var r=Matrix4x4.identity;   // (the inverse's transpose: the cofactors over the determinant)
+            r.m00=A*id;r.m01=B*id;r.m02=C*id;
+            r.m10=-(b*k-c*h)*id;r.m11=(a*k-c*g)*id;r.m12=-(a*h-b*g)*id;
+            r.m20=(b*f-c*e)*id;r.m21=-(a*f-c*d)*id;r.m22=(a*e-b*d)*id;
+            return r;
         }
         public static GameObject Colliders(RunLayout L,Transform root)
         {

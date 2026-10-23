@@ -138,14 +138,14 @@ namespace LittleRoad
             entries[0]=new RaceEntrant(0,23,save.bodyId,AdventureGame.Paints[save.paintIndex],"owned equipment",save.Loadout(),trial.Entries[0].Driver,save.Tune());
             return new RaceRoster(seed,3,"quarry","QUARRY HILLS RALLYCROSS / CLASS C",modern,entries);
         }
-        // Bramblewick Lanes (--bramblewick, docs/82): class C, 2★, three laps of the village street and Church Lane, a field
+        // Bramblewick Lanes (--bramblewick, docs/82): class C, 2★, two laps of the village street and Church Lane, a field
         // by recipe (the family and sporty road bodies).
         public static RaceRoster AdventureBramblewick(AdventureProgress save,bool modern=true)=>AdventureBramblewick(save,modern,true);
         public static RaceRoster AdventureBramblewick(AdventureProgress save,bool modern,bool recipe)
         {
             save.Validate();int seed=1709+(save.raceSerial+1)*11;
-            var trial=Trial(24,3,seed,"bramblewick","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
-            return Recipe(save,"bramblewick","C",RaceCalendar.StarsOf("bramblewick"),trial,seed,3,"bramblewick",false,"BRAMBLEWICK LANES / CLASS C",modern,CarBodies.Family,CarBodies.Sporty);
+            var trial=Trial(24,2,seed,"bramblewick","stock",Array.Empty<string>(),"field",modern?"mixed":null,modern);
+            return Recipe(save,"bramblewick","C",RaceCalendar.StarsOf("bramblewick"),trial,seed,2,"bramblewick",false,"BRAMBLEWICK LANES / CLASS C",modern,CarBodies.Family,CarBodies.Sporty);
         }
         // The Circuito da Cumeada (--vinelands, docs/92): class C, 3★, two laps of the club's short lap round the Vale.
         public static RaceRoster AdventureVinelands(AdventureProgress save,bool modern=true)

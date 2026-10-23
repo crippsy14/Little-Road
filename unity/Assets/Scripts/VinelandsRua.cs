@@ -142,7 +142,7 @@ namespace LittleRoad
             // 2's lamps on the kerb line pushed them out into the traffic lane)
             for(float s=nextLamp;s<total-3;s+=36){var p=At(s)+Norm(s)*(half+1.95f);p.y=Top(At(s)+Norm(s)*half)+.08f;Put("lamp_post",p,0,T(0xffffff,0x1d2b3a,0xffffff,0xffffff),null,false);}
             for(float s=nextCar;s<total-5;s+=7.5f) {
-                bool blocked=false;foreach(var (a,b) in noParking)if(s>a&&s<b)blocked=true;if(blocked||dress.NextDouble()>.42)continue;
+                bool blocked=false;foreach(var (a,b) in noParking)if(s>a&&s<b)blocked=true;if(blocked||dress.NextDouble()>.2)continue;   // (one bay in five: at two in five the street read as a car park, Richard 23 Oct)
                 var p=At(s)+Norm(s)*(half+1.0f);p.y=Top(At(s)+Norm(s)*half)+.1f;Parking.Add((p,Yaw(At(s-1),At(s+1))+(side>0?0:180)));
             }
         }

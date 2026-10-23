@@ -324,7 +324,7 @@ namespace LittleRoad
             foreach(var (a,b) in new[]{(new Vector2(-37,-17),new Vector2(-37,21)),(new Vector2(-32,-21.5f),new Vector2(24,-21.5f)),(new Vector2(6,23),new Vector2(26,23))}) {
                 float L=Vector2.Distance(a,b);for(float s=3;s<L-2;s+=6.2f) {
                     var f=Vector2.Lerp(a,b,s/L);var p=F(f.x,f.y);if(ValleyField.RoadDistance(p.x,p.z)<6f)continue;
-                    if(dress.NextDouble()<.15)continue;   // (gaps: not every bay taken)
+                    if(dress.NextDouble()<.5)continue;   // (gaps: half the bays empty, Richard 23 Oct: far too many cars)
                     var q=F(b.x,b.y);Parking.Add((new Vector3(p.x,p.y+.08f,p.z),Yaw(F(a.x,a.y),q)));
                 }
             }
