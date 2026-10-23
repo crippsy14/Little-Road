@@ -152,6 +152,7 @@ From the project root in PowerShell, with the Unity editor closed:
 | `capture-adventure.ps1 -Name smokeN` | Smoke test: quest, delivery, finds, buy and fit, a 24-car race and payout, reload |
 | `capture-map.ps1 -Name x -Rendered -Flags @(...)` | Captures and test flags: `--area-audit`, `--edge-audit`, `--car-audit`, `--contact-review`, `--pause-review`, `--minimap-review`, `--view-shots`, `--spot-views "x,z,yaw[,h]"`, `--probe-line`, the activity tests (`--trap-test`, `--train-race-test`, `--wayfinding-test`, `--crop-test` …) |
 | `regression.ps1 -Name x` | The full regression (§3) |
+| Game flags for quick tests | `--race-laps N` (shorter races), `--trial-auto` (autopilot), `--load-timing`, `--world-fingerprint --no-static-batching`, `--town-print`, `--sound-bench <engine>` |
 | `run-pace-parallel.ps1`, `summarize-racer.py`, `racer-traffic.py`, `racer-held.py` | Keep/reject races and their summaries; traffic, passes and held-up time |
 | `run-frame-cost.ps1 -Track <id>`, `drive-benchmark.ps1`, `route-drive.ps1` | Race frame cost, free-roam frame cost, an autopilot drive |
 | `event-race-review.ps1`, `duke-race-review.ps1`, `quarry-run.ps1`, `test-loop.ps1` | Enter any calendar event; the Duke's Challenge; Quarry Hills tests; the 2.5-mile gearing and sound test loop |

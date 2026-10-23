@@ -6,7 +6,7 @@ Add new status at the top of "Latest" in a line or two, and move anything that b
 
 ## Latest
 
-- **23 Oct: the docs sweep.** About 60 docs were folded into five living records (see [docs/README.md](README.md)).
+- **23 Oct: the docs sweep.** 65 docs were folded into five living records (see [docs/README.md](README.md)).
 - **23 Oct: Car Forge models everywhere** (main 861900d, 35a4d35; play copy published): every old class C body shows as
   its Forge namesake, the body shops sell the Forge range, a "My garage" screen, and a smooth body shop preview (24.3 →
   7.3 ms a frame). Class B Tuners keep the old models until their roster is redone.
@@ -63,6 +63,7 @@ pace), `--distant-mountains`, `--turbo-sound`/`--hybrid-sound`, `--scale-test` (
 
 - **Parts slots** ([design.md](design.md) §5): Induction in place of Turbo, a Suspension slot with road roughness, the
   speciality rule, field-stars in data. Jed's rural parts wait on this.
+- **Platforms for A to E:** a platform purchase, or a free car plus kits as in class B.
 - **Class B parts curve:** some Hillcrest C specialities out-pull Good Tuner parts; a real class B gravel tyre; ice tyres.
 - **Peak and floor:** a slower stock car would make early upgrades feel bigger (a keep/reject question); retune class S
   gearing in the class S phase.

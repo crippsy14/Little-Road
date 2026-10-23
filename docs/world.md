@@ -151,7 +151,8 @@ Prove yourself, earn entry to the yearly Aurora Endurance, beat Duke Rolo.
    One zone per round, done well. Density is scaled to what plays and performs: it should feel dense, not literal.
 
 ### The per-place loop (since 20 Oct)
-Brief (Richard's questions asked once, each with a default) → kits → build behind the place's flag → checks
+A game-design agent's concepts first (Richard, 21 Oct: "take the ideas you like and leave the ones you don't") → brief
+(Richard's questions asked once, each with a default) → kits → build behind the place's flag → checks
 (`--area-audit` and the street audit at zero defects, the old world's fingerprint unchanged, races 24/24 on seeds
 1709–1711, the AI at skill 3/7/10/13, photos of flagged spots) → one review agent on a ~12-view contact sheet (a launch
 review until LAUNCH-READY) → default on, commit, push, merge to main, publish the play copy.
@@ -224,7 +225,7 @@ with `tools/track-eval.py`.
   generators. A loop round a field with light turns fails (Richard, 23 Oct, on the first Cumeada: "a very safe design
   with all corners being generic and light turns").
 - **Short and long versions** (Richard, 21 Oct: "Certain tracks have a short and long version... It doesn't have to be
-  every location... definitely not every time"): class C races a 3-lap short layout; later classes race a long layout that
+  every location... definitely not every time"): class C races a short layout (usually 3 laps; Cumeada's short lap is 2); later classes race a long layout that
   turns back on itself with a technical extension, not a bypass. Vinelands has it.
 - **Route closures** (23 Oct): block every arm the race doesn't use with a wall of hay bales across its mouth, 1 m out from
   the junction edge. No direction boards: Richard found them "too confusing".
