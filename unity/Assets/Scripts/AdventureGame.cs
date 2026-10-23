@@ -49,8 +49,9 @@ namespace LittleRoad
             // World tiles (W1): the woods near where the car will start are built now, the rest stream in around you.
             WorldTiles.Plan(AdventureSession.ReturnSpot??(!Testing&&Store.Data.spot!=null&&Store.Data.spot.Length==4?new Vector3(Store.Data.spot[0],Store.Data.spot[1],Store.Data.spot[2]):NewBayview.On?NewBayview.Spawn:new Vector3(-63,0,-94)));
             RaceArea.Clear();world=GetComponent<RaceTrial>();world.freeRoam=true;world.track=new Circuit();world.elapsed=1;yield return TrialWorld.CreateRoutine(world.track,false);Mark("world");
-            // (--prop-forge: the streets dressed once everything is built, the village and the towns included; docs/78)
-            if(PropForge.Enabled&&CoastalLandscape.WorldRoot!=null){Physics.SyncTransforms();PropForgeDressing.Build(CoastalLandscape.WorldRoot);Mark("dressing");BankBarriers.Build(CoastalLandscape.WorldRoot,world.track);Mark("bank-barriers");Debug.Log("LITTLE_ROAD_GROUND_FIT "+GroundFit.Summary);}
+            // (--prop-forge: the streets dressed once everything is built, the village and the towns included; docs/78. Once per
+            // world: the kept world came back with its dressing and barriers, and was given them again on every return, 23 Oct.)
+            if(PropForge.Enabled&&CoastalLandscape.WorldRoot!=null&&!PersistentWorld.Reused){Physics.SyncTransforms();PropForgeDressing.Build(CoastalLandscape.WorldRoot);Mark("dressing");BankBarriers.Build(CoastalLandscape.WorldRoot,world.track,Districts.Pending?(System.Func<Vector3,bool>)Districts.Built:null,Districts.PendingScope);Mark("bank-barriers");Debug.Log("LITTLE_ROAD_GROUND_FIT "+GroundFit.Summary);}
             // (--world-fingerprint: the built world, every streamed tile included, before the town's life and cars are added.)
             if(RaceTrial.Has("--world-fingerprint")){WorldTiles.Complete();yield return null;Debug.Log("LITTLE_ROAD_WORLD_FINGERPRINT "+CoastalLandscape.Fingerprint());}   // (a frame: deferred destroys land)
             // (Tests and audits see the whole world at once; --world-tiles-test watches it stream.)
@@ -71,10 +72,9 @@ namespace LittleRoad
             if(NewBayview.On){residentYaw["cafe"]=NewBayview.CafeYaw;residentYaw["paint"]=NewBayview.PaintYaw;}
             if(HillcrestTown.Spots.Count>0){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}
             foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout","farm"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
-            // Bramblewick (--bramblewick, docs/82): Jed the tuner, Maggie at The Plough, the vicar on the green, Peg at the dairy.
-            foreach(var (id,at) in new[]{("bwtuner","tuner"),("bwpub","pub"),("bwvicar","church"),("bwdairy","dairy"),("bwmarshal","marshal")})if(BramblewickVillage.Spots.TryGetValue(at,out var bw)){residents[id]=bw.at;residentYaw[id]=bw.yaw;}
-            // Vinelands (--vinelands, docs/86): the priest at the Matriz, the clerk at the town hall, the cafe, the baker, the washing tanks.
-            foreach(var (id,at) in new[]{("vlpriest","priest"),("vlclerk","clerk"),("vlcafe","cafe"),("vlbaker","baker"),("vlfonte","fonte"),("vlgarage","garage"),("vlparts","parts"),("vlbody","body"),("vlbus","bus"),("vlfruta","fruta"),("vlbarco","barqueiro"),("vllodge","lodge"),("vltasca","tasca"),("vlpombal","pombal"),("vllajes","lajes"),("vlfojo","fojo"),("vlcasal","casal"),("vlmirante","mirante"),("vlbelvedere","belvedere"),("vlveiga","veiga"),("vlbombeiros","bombeiros"),("vlescola","escola"),("vladega","adega"),("vlclube","clube"),("vlaldeia","aldeia"),("vlcorvo","corvo")})if(VinelandsVila.Spots.TryGetValue(at,out var vl)){residents[id]=vl.at;residentYaw[id]=vl.yaw;}
+            // Bramblewick and Vinelands, built in the background when you start far from them (Districts, FarDistricts): their
+            // residents, fingerposts, keepsakes and photo sights come when each arrives (FarPlaceArrived); otherwise now.
+            foreach(var far in new[]{"bramblewick","vinelands"}){if(Districts.Waiting(far)){var place=far;Districts.WhenBuiltSteps(place,()=>FarPlaceArrived(place));}else FarPlaceResidents(far);}
             // Quarry Hills built in the background (Districts): what needs it is set up when it arrives.
             quarryLater=Districts.Waiting("quarry-hills");if(quarryLater)Districts.WhenBuiltSteps("quarry-hills",QuarryHillsArrived);
             if(!quarryLater)QuarryHillsResidents();
@@ -229,8 +229,8 @@ namespace LittleRoad
                 if(residents.TryGetValue("rallyschool",out var school))places.Add(("Rally School",school));else if(quarryLater)places.Add(("Rally School",QuarryFloor.School));
                 places.Add(("Kettle Falls",HillcrestRoute.Find(QuarryHills.KettleRoadName).line[^1]));
             }
-            // (Quarry Hills' own junctions get their fingerposts once its buildings are there: QuarryHillsWayfinding.)
-            Wayfinding.Fingerposts(holder,CoastalLandscape.Network,places,quarryLater?p=>!CoastalLandscape.NearQuarryHills(p):null);
+            // (A background district's own junctions get their fingerposts once its buildings are there: QuarryHillsWayfinding, FarPlaceArrived.)
+            Wayfinding.Fingerposts(holder,CoastalLandscape.Network,places,Districts.Pending?(System.Func<Vector3,bool>)Districts.Built:null);
         }
         Transform wayHolder;List<(string,Vector3)> wayPlaces;
         void QuarryHillsWayfinding()
@@ -243,7 +243,7 @@ namespace LittleRoad
                 else if(name=="Rally School"&&residents.TryGetValue("rallyschool",out var s))places.Add((name,s));
                 else places.Add((name,at));
             }
-            Wayfinding.Fingerposts(wayHolder,CoastalLandscape.Network,places,CoastalLandscape.NearQuarryHills);
+            Wayfinding.Fingerposts(wayHolder,CoastalLandscape.Network,places,p=>Districts.Completes("quarry-hills",p));
         }
         static Wayfinding.Board NearestBoard(Vector3 p){Wayfinding.Board best=null;float d=float.MaxValue;foreach(var b in Wayfinding.Boards){float e=Vector3.Distance(p,b.at);if(e<d){d=e;best=b;}}return best;}
         // What's on in the board's town: each line pins its place (a null label can't be pinned).
@@ -670,6 +670,30 @@ namespace LittleRoad
             ["bwdairy"]=("pebble",Toy.Hex(0xf6f1e6),"PEG / BRAMBLEWICK DAIRY","Peg",Toy.Sun,new[]{"Oi! Forty years on the round and never a dent!","Think you're quick? Try me down Dairy Lane.","Mind the crates! Them's full!"}),
         };
         // Quarry Hills (--quarry-hills): Gwen at the rally school, the Pit Stop, the caban, the quay and Dai.
+        // Bramblewick (--bramblewick, docs/82): Jed the tuner, Maggie at The Plough, the vicar on the green, Peg at the dairy.
+        // Vinelands (--vinelands, docs/86): the priest at the Matriz, the clerk at the town hall, the cafe, the baker, the washing tanks.
+        void FarPlaceResidents(string place)
+        {
+            if(place=="bramblewick")foreach(var (id,at) in new[]{("bwtuner","tuner"),("bwpub","pub"),("bwvicar","church"),("bwdairy","dairy"),("bwmarshal","marshal")})if(BramblewickVillage.Spots.TryGetValue(at,out var bw)){residents[id]=bw.at;residentYaw[id]=bw.yaw;}
+            if(place=="vinelands")foreach(var (id,at) in new[]{("vlpriest","priest"),("vlclerk","clerk"),("vlcafe","cafe"),("vlbaker","baker"),("vlfonte","fonte"),("vlgarage","garage"),("vlparts","parts"),("vlbody","body"),("vlbus","bus"),("vlfruta","fruta"),("vlbarco","barqueiro"),("vllodge","lodge"),("vltasca","tasca"),("vlpombal","pombal"),("vllajes","lajes"),("vlfojo","fojo"),("vlcasal","casal"),("vlmirante","mirante"),("vlbelvedere","belvedere"),("vlveiga","veiga"),("vlbombeiros","bombeiros"),("vlescola","escola"),("vladega","adega"),("vlclube","clube"),("vlaldeia","aldeia"),("vlcorvo","corvo")})if(VinelandsVila.Spots.TryGetValue(at,out var vl)){residents[id]=vl.at;residentYaw[id]=vl.yaw;}
+        }
+        // A far place has been built in the background (Districts): its residents, its junctions' fingerposts, its keepsakes
+        // and photo sights, as at load. (Its parked cars and speed traps come through ValleyLife and SpeedTraps.)
+        IEnumerator FarPlaceArrived(string place)
+        {
+            var before=new HashSet<string>(residents.Keys);FarPlaceResidents(place);var added=residents.Keys.Where(k=>!before.Contains(k)).ToList();
+            yield return PlaceResidentsSteps(added);
+            if(wayHolder!=null)Wayfinding.Fingerposts(wayHolder,CoastalLandscape.Network,wayPlaces,p=>Districts.Completes(place,p));yield return null;
+            if(place=="bramblewick"){PhotoRequests.AddBramblewick();BramblewickKeepsakes();}
+            yield return null;   // (its residents were seated as they were placed: no pass over the world's cars, which moves them a little each time)
+            Debug.Log($"LITTLE_ROAD_DISTRICT arrived {place} residents={added.Count}");
+        }
+        // Bramblewick's lucky horseshoes (--bramblewick, docs/82), once the village is there.
+        void BramblewickKeepsakes()
+        {
+            if(BramblewickVillage.Horseshoes.Count!=Collectibles.Horseshoes)return;
+            for(int i=0;i<Collectibles.Horseshoes;i++){string id=Collectibles.Horseshoe(i);if(finds.ContainsKey(id))continue;var p=BramblewickVillage.Horseshoes[i]+Vector3.up*1.2f;MapRegions.Keepsakes[id]=(p,MapRegions.HorseshoePlace(i));if(Store.Data.collected.Contains(id))continue;finds[id]=Keepsake(id,p,3,i);}
+        }
         void QuarryHillsResidents()
         {
             foreach(var id in new[]{"rallyschool","qgarage","qparts","qbody","caban","slatequay"})if(QuarryHillsTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
@@ -682,7 +706,7 @@ namespace LittleRoad
         IEnumerator QuarryHillsArrived()
         {
             var before=new HashSet<string>(residents.Keys);QuarryHillsResidents();var added=residents.Keys.Where(k=>!before.Contains(k)).ToList();
-            PlaceResidents(added);yield return null;QuarryHillsWayfinding();yield return null;
+            yield return PlaceResidentsSteps(added);QuarryHillsWayfinding();yield return null;
             if(QuarryHills.Enabled&&QuarryHillsTown.Spots.Count>0&&player!=null)QuarryFestival.Build(transform,Store.Data,player);yield return null;
             if(TipLeap.Ready&&leap==null&&player!=null){leap=gameObject.AddComponent<TipLeap>();leap.Setup(player,()=>Store,Notify,(title,detail)=>ui.Card(title,detail,Toy.Orange,"TIP LEAP"));}
             if(BlastRun.Ready&&blast==null){blast=gameObject.AddComponent<BlastRun>();blast.Crossed+=BlastCrossed;blast.Shot+=BlastShot;}
@@ -707,6 +731,8 @@ namespace LittleRoad
             }
             if(lift>0&&lift<1)t.position+=Vector3.up*lift;
         }
+        // (A district's residents a few a frame: 25 at once took a 280 ms frame, Vinelands, 23 Oct.)
+        IEnumerator PlaceResidentsSteps(List<string> keys){for(int i=0;i<keys.Count;i+=4){PlaceResidents(keys.GetRange(i,Math.Min(4,keys.Count-i)));yield return null;}}
         void PlaceResidents(List<string> keys)
         {
             var moved=new Dictionary<string,Vector3>();
@@ -769,9 +795,8 @@ namespace LittleRoad
                 var spots=QuarryHills.CarvingSpots();if(spots.Length!=Collectibles.Carvings)throw new InvalidOperationException("Carving spots and Collectibles.Carvings disagree.");
                 for(int i=0;i<spots.Length;i++){string id=Collectibles.Carving(i);var p=spots[i]+Vector3.up*1.3f;MapRegions.Keepsakes[id]=(p,MapRegions.CarvingPlace(i));if(Store.Data.collected.Contains(id))continue;finds[id]=Keepsake(id,p,2,i);}
             }
-            // Bramblewick's lucky horseshoes (--bramblewick, docs/82).
-            if(BramblewickVillage.Horseshoes.Count==Collectibles.Horseshoes)
-                for(int i=0;i<Collectibles.Horseshoes;i++){string id=Collectibles.Horseshoe(i);var p=BramblewickVillage.Horseshoes[i]+Vector3.up*1.2f;MapRegions.Keepsakes[id]=(p,MapRegions.HorseshoePlace(i));if(Store.Data.collected.Contains(id))continue;finds[id]=Keepsake(id,p,3,i);}
+            // Bramblewick's lucky horseshoes (--bramblewick, docs/82); a village still building comes with them (FarPlaceArrived).
+            if(!Districts.Waiting("bramblewick"))BramblewickKeepsakes();
             for(int i=0;i<Collectibles.Postcards;i++) {
                 string id=Collectibles.Postcard(i);
                 float d=world.track.length*(.12f+i*.17f);Vector3 p=world.track.At(d)+world.track.Right(d)*(i%2==0?13:-13)+Vector3.up*1.1f;MapRegions.Keepsakes[id]=(p,MapRegions.PostcardPlace(i));

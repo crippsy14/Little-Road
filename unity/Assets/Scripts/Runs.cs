@@ -309,6 +309,22 @@ namespace LittleRoad
             for(int i=0;i<jobs.Length;i++)Commit(jobs[i].L,jobs[i].root,built[i]);
             UnityEngine.Debug.Log($"LITTLE_ROAD_RUNS_FLUSH runs={jobs.Length} prepare_ms={prepared:0} commit_ms={sw.Elapsed.TotalMilliseconds-prepared:0}");
         }
+        // The same for a district built in the background (Districts): the meshes worked out on the worker pool while frames
+        // go by, then handed to the scene a few at a time (about `budgetMs` a frame).
+        public static System.Collections.IEnumerator FlushRoutine(double budgetMs=6)
+        {
+            if(queued.Count==0)yield break;var sw=Stopwatch.StartNew();var jobs=queued.ToArray();queued.Clear();
+            foreach(var (L,_) in jobs)foreach(var it in L.items)for(int lod=0;lod<2;lod++)L.kit.ArraysOf(it.piece,lod);
+            var built=new List<ChunkData>[jobs.Length];
+            var task=System.Threading.Tasks.Task.Run(()=>System.Threading.Tasks.Parallel.For(0,jobs.Length,i=>built[i]=Prepare(jobs[i].L)));
+            while(!task.IsCompleted)yield return null;task.Wait();   // (Wait: a worker's exception surfaces here)
+            double prepared=sw.Elapsed.TotalMilliseconds;int frames=1;var frame=Stopwatch.StartNew();double committing=0;
+            for(int i=0;i<jobs.Length;i++) {
+                var t0=frame.Elapsed.TotalMilliseconds;Commit(jobs[i].L,jobs[i].root,built[i]);committing+=frame.Elapsed.TotalMilliseconds-t0;
+                if(frame.Elapsed.TotalMilliseconds>=budgetMs&&i<jobs.Length-1){yield return null;frame.Restart();frames++;}
+            }
+            UnityEngine.Debug.Log($"LITTLE_ROAD_RUNS_FLUSH runs={jobs.Length} prepare_ms={prepared:0} commit_ms={committing:0} frames={frames} background");
+        }
         static List<ChunkData> Prepare(RunLayout L)=>PrepareChunks(L.kit,L.items.GroupBy(i=>Mathf.FloorToInt(i.arc/Chunk)),(it,a,v,n,u1,u2)=>Bend(L,it,a,v,n,u1,u2));
         static void Commit(RunLayout L,Transform root,List<ChunkData> chunks)=>CommitChunks(root,"Run "+L.spec.name,chunks,m=>L.spec.restyle!=null&&L.spec.restyle.TryGetValue(m,out var r)?r:m);
         // Chunks of a kit's laid pieces (runs or objects): per chunk, one mesh per LOD with a submesh per material class, and

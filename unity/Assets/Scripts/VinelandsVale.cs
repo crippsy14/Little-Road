@@ -11,7 +11,6 @@ namespace LittleRoad
     // infield, entered from the Caminho Velho do Vale.
     public sealed partial class VinelandsVila
     {
-        void Zone7(){Eiras();Vale();Clube();}
         // the long lap's own corners (their boards and bales go on its line), and the heavy stops (bale walls on the outside)
         static readonly string[] LongOnly={"Curva da Ribeira","Esses da Ribeira","Recta das Amendoeiras","Alto da Ribeira","Gancho do Casal","Chicane do Lagar","Caracol","Esses do Pombal","Curva da Adega","Curva do Palheiro"};
         static readonly string[] HeavyStops={"Curva da Eira Velha","Curva do Carvalhal","Curva das Courelas","Gancho do Sobreiro","Curva da Ribeira","Gancho do Casal","Caracol","Curva do Palheiro"};
@@ -47,7 +46,8 @@ namespace LittleRoad
         }
 
         // ---- the Vale shelf's land, by what grows where (the town plan's section 5)
-        void Vale()
+        // (As a coroutine: a frame after the plots, the groves, each column of fields and each farmstead, when built in the background.)
+        System.Collections.IEnumerator ValeRoutine()
         {
             int hortas=0;
             // the Hortas da Ribeira: kitchen plots along the brook from the Fonte Velha, reeds along the water's line
@@ -58,10 +58,11 @@ namespace LittleRoad
                 {float lo=float.MaxValue,hi=float.MinValue;foreach(var (da,dn) in new[]{(-1.6f,-2.6f),(1.6f,-2.6f),(-1.6f,2.6f),(1.6f,2.6f)}){var q=FV(f+new Vector2(da,dn));lo=Mathf.Min(lo,q.y);hi=Mathf.Max(hi,q.y);}if(hi-lo>1f)continue;p.y=lo+.02f;}   // (on level enough ground: one hung off the slope by the start, round 2)
                 if(Put("vila_horta",p,90+(Hash(a,n,74)-.5f)*12,null,null,false)!=null){hortas++;if(hortas%2==0)AreaAudit.ExtraNature.Add(p);}
             }
+            yield return null;
             // the almond and fruit orchards; the olive grove on the north-west flank; the cork-oak montado
-            int almonds=Grove(new Vector2[]{new(-980,300),new(-720,300),new(-560,430),new(-520,640),new(-980,640)},11,"tree_blossom",.8f,1.1f,80,.85f);
-            int olives=Grove(new Vector2[]{new(-700,1100),new(-400,1060),new(-270,860),new(-310,740),new(-460,660),new(-700,700)},12,"olive_tree",.8f,1.1f,90,.8f);
-            int cork=Grove(new Vector2[]{new(-1200,-380),new(-900,-380),new(-640,-600),new(-660,-1000),new(-700,-1300),new(-1200,-1320)},20,"tree_round",1.1f,1.6f,100,.6f,T(0xffffff,0xffffff,0xffffff,0xffffff));
+            int almonds=Grove(new Vector2[]{new(-980,300),new(-720,300),new(-560,430),new(-520,640),new(-980,640)},11,"tree_blossom",.8f,1.1f,80,.85f);yield return null;
+            int olives=Grove(new Vector2[]{new(-700,1100),new(-400,1060),new(-270,860),new(-310,740),new(-460,660),new(-700,700)},12,"olive_tree",.8f,1.1f,90,.8f);yield return null;
+            int cork=Grove(new Vector2[]{new(-1200,-380),new(-900,-380),new(-640,-600),new(-660,-1000),new(-700,-1300),new(-1200,-1320)},20,"tree_round",1.1f,1.6f,100,.6f,T(0xffffff,0xffffff,0xffffff,0xffffff));yield return null;
             // the open fields between: rye stubble, pasture, fresh plough, in plots that grow from 0.2 ha near the town to 2-3 ha
             // out west, each walled in dry stone along its two downhill sides (the town plan's courelas), clear of the orchards
             int fields=0;var stub=FieldMat("Rye stubble",new Color(.78f,.68f,.36f));var past=FieldMat("Pasture",new Color(.36f,.52f,.22f));var plough=FieldMat("Plough",new Color(.52f,.40f,.28f));
@@ -80,7 +81,7 @@ namespace LittleRoad
                     var corners=new[]{c+new Vector2(-w*.5f,d*.5f),c+new Vector2(-w*.5f,-d*.5f),c+new Vector2(w*.5f,-d*.5f)};
                     for(int sg=0;sg<2;sg++){var pts=new List<Vector3>();int k2=Mathf.CeilToInt(Vector2.Distance(corners[sg],corners[sg+1])/2);for(int i=0;i<=k2;i++){var q=FV(Vector2.Lerp(corners[sg],corners[sg+1],i/(float)k2));if(OnWay(q)||NearNode(q,40)||ValleyField.RoadDistance(q.x,q.z)<Vinelands.LoopWidth*.5f+4){LayWall(pts);pts=new List<Vector3>();}else pts.Add(q);}LayWall(pts);}
                 }
-                fa+=w+6;
+                fa+=w+6;yield return null;
             }
             Debug.Log($"LITTLE_ROAD_VINELANDS_FIELDS fields={fields}");
             // the farmsteads: a farmhouse, its barn, a threshing floor, a fig
@@ -90,6 +91,7 @@ namespace LittleRoad
                 var e=F(a-6,n-20);Building("quinta_eira",e,0,null,null,1.5f,4.4f,1.5f);
                 var g=F(a-14,n+10);Put("vila_figueira",new Vector3(g.x,g.y-.05f,g.z),Hash(a,n,110)*360);
                 for(int k=0;k<4;k++){var q=F(a+30+k*6,n-14);if(Clear(q,1,true))Put("vila_horta",q,0,null,null,false);}
+                yield return null;
             }
             Debug.Log($"LITTLE_ROAD_VINELANDS_VALE hortas={hortas} almonds={almonds} olives={olives} cork={cork}");
         }
@@ -138,9 +140,10 @@ namespace LittleRoad
         }
 
         // ---- the Clube Automovel da Cumeada: the circuit's race day and its paddock
-        void Clube()
+        // (As a coroutine: a frame after the start, each lap's kerbs and each named corner, when built in the background.)
+        System.Collections.IEnumerator ClubeRoutine()
         {
-            if(Vinelands.Lap==null)return;
+            if(Vinelands.Lap==null)yield break;
             var track=new Circuit(Vinelands.Lap,Vinelands.LoopWidth);var longT=new Circuit(Vinelands.LapLong,Vinelands.LoopWidth);float half=Vinelands.LoopWidth*.5f;
             Material Mat(string name,Color c)=>TrialWorld.Material(name,c,0,.3f);
             var white=Mat("Cumeada paint",new Color(.96f,.96f,.92f));var red=Mat("Cumeada kerb red",new Color(.84f,.2f,.17f));var dark=Mat("Cumeada chequer",new Color(.1f,.1f,.12f));
@@ -158,14 +161,15 @@ namespace LittleRoad
                 Block("Cumeada gantry",s0+Vector3.up*6.2f,new Vector3(14.4f,1.1f,.45f),Quaternion.LookRotation(fw),green,false);
                 foreach(int face in new[]{-1,1}){Block("Cumeada gantry banner",s0+Vector3.up*6.2f+fw*face*.26f,new Vector3(10,.8f,.06f),Quaternion.LookRotation(fw),banner,false);
                     var go=new GameObject("Sign / CIRCUITO DA CUMEADA");go.transform.SetParent(root);go.transform.SetPositionAndRotation(s0+Vector3.up*6.2f+fw*face*.31f,Quaternion.LookRotation(-fw*face));var tm=go.AddComponent<TextMesh>();tm.text="CIRCUITO DA CUMEADA";tm.anchor=TextAnchor.MiddleCenter;tm.fontSize=80;tm.characterSize=.08f;tm.color=Toy.Hex(0x4a0f18);tm.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");tm.fontStyle=FontStyle.Bold;go.GetComponent<Renderer>().sharedMaterial=tm.font.material;go.AddComponent<WorldText>();}}
+            yield return null;
             // kerbs inside every corner tighter than 75 m, on both laps (painted, flush, no collider: Bramblewick's lesson)
             int kerbs=0;var laid=new List<Vector3>();
-            foreach(var tr in new[]{track,longT})for(float s=0;s<tr.length;s+=3.6f) {
+            foreach(var tr in new[]{track,longT}){for(float s=0;s<tr.length;s+=3.6f) {
                 var a=tr.At(s);if(NearJunction(a,24))continue;bool done=false;foreach(var q in laid)if((q-a).sqrMagnitude<4){done=true;break;}if(done)continue;
                 var f0=tr.Forward(s-10);var f1=tr.Forward(s+10);f0.y=f1.y=0;float turn=Vector3.SignedAngle(f0,f1,Vector3.up);float radius=20/Mathf.Max(.001f,Mathf.Abs(turn)*Mathf.Deg2Rad);if(radius>75)continue;
                 var f=tr.Forward(s);f.y=0;f.Normalize();var right=Vector3.Cross(Vector3.up,f);int inside=turn>0?1:-1;var k=a+right*inside*(half+.35f);k.y=Mathf.Max(a.y,H(k.x,k.z))+.035f;
                 Block("Cumeada kerb",k,new Vector3(.7f,.04f,3.4f),Quaternion.LookRotation(f),kerbs++%2==0?red:white,false);laid.Add(a);
-            }
+            }yield return null;}
             // bale walls on the outside of the heavy stops; a board with each corner's name; spectators' cars at the best corners
             int bales=0,boards=0;
             foreach(var (name,at) in Vinelands.CircuitMarks) {
@@ -191,6 +195,7 @@ namespace LittleRoad
                     for(int k=0;k<7;k++){var p=bank+f*((k-3)*3.4f);if(ValleyField.RoadDistance(p.x,p.z)<half+7||NearJunction(p,14))continue;p.y=H(p.x,p.z);
                         var car=TrialWorld.Car(new[]{"marlow","heron","picnic","doodle","otter","pebble","tallboy","dover","kipper","beetle"}[(int)(Hash(k,sc,120)*10)],PaintCatalog.All[(int)(Hash(k,sc,121)*PaintCatalog.Standard)].color);car.name="Parked car";car.transform.SetParent(root);car.transform.SetPositionAndRotation(p+Vector3.up*.02f,Quaternion.Euler(0,Yaw(p,tr.At(sc+10)),0));}
                 }
+                yield return null;
             }
             // the landmarks the corners are named for: the old cork oak inside the Gancho do Sobreiro, the wayside cross outside the
             // Curva da Cruz

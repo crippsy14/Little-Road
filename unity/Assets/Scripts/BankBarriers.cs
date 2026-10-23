@@ -14,9 +14,11 @@ namespace LittleRoad
         public static int Walls,Left;
         // The sites only change with the build and the world's flags, and finding them costs ~1.5 s (the edge audit's
         // raycasts), so a player build keeps them in a small file per build and flag set: only its first launch pays.
-        static List<(Vector3 at,Vector3 outward,Vector3 along,float dropAt,string road,float half)> Sites(Circuit bayview)
+        // (`only`: the part of the world to audit, `scope` its name in the cache: the world less its background districts at
+        // load, then each district when it arrives, Districts.)
+        static List<(Vector3 at,Vector3 outward,Vector3 along,float dropAt,string road,float half)> Sites(Circuit bayview,System.Func<Vector3,bool> only,string scope)
         {
-            string key=Application.isEditor||string.IsNullOrEmpty(Application.buildGUID)?null:$"{Application.buildGUID}-{(NewBayview.On?"nb":"b")}-{(QuarryHills.Enabled?"qh":"")}{(Bramblewick.Enabled?"-bw":"")}{(Vinelands.Enabled?"-vl":"")}";   // (each place adds roads, so banks)
+            string key=Application.isEditor||string.IsNullOrEmpty(Application.buildGUID)?null:$"{Application.buildGUID}-{(NewBayview.On?"nb":"b")}-{(QuarryHills.Enabled?"qh":"")}{(Bramblewick.Enabled?"-bw":"")}{(Vinelands.Enabled?"-vl":"")}{(scope!=null?"-"+scope:"")}";   // (each place adds roads, so banks)
             string file=key==null?null:System.IO.Path.Combine(Application.persistentDataPath,$"bank-sites-{key}.txt");
             var I=System.Globalization.CultureInfo.InvariantCulture;
             if(file!=null&&System.IO.File.Exists(file)) {
@@ -26,13 +28,14 @@ namespace LittleRoad
                     Debug.Log($"LITTLE_ROAD_BANK_SITES cached {list.Count}");return list;}
                 catch(System.Exception e){Debug.LogWarning("Bank sites cache unreadable, finding them again: "+e.Message);}
             }
-            PlacementAudit.Edges(bayview);var found=new List<(Vector3,Vector3,Vector3,float,string,float)>(PlacementAudit.BankSites);
+            PlacementAudit.Edges(bayview,only);var found=new List<(Vector3,Vector3,Vector3,float,string,float)>(PlacementAudit.BankSites);
             if(file!=null)try{System.IO.File.WriteAllLines(file,found.ConvertAll(x=>string.Join("|",new[]{x.Item1.x,x.Item1.y,x.Item1.z,x.Item2.x,x.Item2.y,x.Item2.z,x.Item3.x,x.Item3.y,x.Item3.z,x.Item4,x.Item6}.Select(v=>v.ToString("R",I)))+"|"+x.Item5));}catch(System.Exception e){Debug.LogWarning("Bank sites not cached: "+e.Message);}
             return found;
         }
-        public static void Build(Transform parent,Circuit bayview)
+        // Returns the walls built. `only` and `scope`: a part of the world (Sites); all of it when null.
+        public static int Build(Transform parent,Circuit bayview,System.Func<Vector3,bool> only=null,string scope=null)
         {
-            var clock=System.Diagnostics.Stopwatch.StartNew();Walls=Left=0;var sites=Sites(bayview);if(sites.Count==0){Debug.Log($"LITTLE_ROAD_BANK_BARRIERS sites=0 ms={clock.ElapsedMilliseconds}");return;}
+            var clock=System.Diagnostics.Stopwatch.StartNew();Walls=Left=0;var sites=Sites(bayview,only,scope);if(sites.Count==0){Debug.Log($"LITTLE_ROAD_BANK_BARRIERS sites=0 scope={scope??"all"} ms={clock.ElapsedMilliseconds}");return 0;}
             var root=new GameObject("Bank barriers").transform;root.SetParent(parent,false);
             var slate=new Dictionary<string,string>{{"drystone","drystone_slate"},{"drystone_pier","drystone_slate_pier"}};
             var group=new List<(Vector3 at,Vector3 outward,Vector3 along,float dropAt,string road,float half)>();
@@ -48,7 +51,8 @@ namespace LittleRoad
                     if(!Runs.Runnable(kit))continue;   // (armco's kit is single pieces, not a run: it threw here when both runs failed, on Vinelands' banks)
                     var line=new List<Vector3>();
                     for(int k=0;k<group.Count;k++){var g=group[k];float o=pull>50?g.half+.7f:Mathf.Max(g.dropAt-pull,g.half+.7f);var p=g.at+g.outward*o;if(k==0)line.Add(p-g.along*8);line.Add(p);if(k==group.Count-1)line.Add(p+g.along*8);}
-                    var L=Runs.Solve(new RunSpec{name=$"Bank barrier {Walls}",kit=kit,seed=$"bank-{Walls}-{group[0].road}",along=line.ToArray(),restyle=quarry&&kit=="dry_stone"?slate:null});
+                    // (named and seeded by where it starts, so a barrier is the same whichever pass builds it: Districts)
+                    var L=Runs.Solve(new RunSpec{name=$"Bank barrier {group[0].at.x:0},{group[0].at.z:0}",kit=kit,seed=$"bank-{group[0].at.x:0}-{group[0].at.z:0}-{group[0].road}",along=line.ToArray(),restyle=quarry&&kit=="dry_stone"?slate:null});
                     if(L.failures.Count==0&&L.items.Count>0){Runs.Draw(L,root);Runs.Laid.Add(L);Walls++;group.Clear();return;}
                     why=L.failures.Count>0?L.failures[0]:L.notes.Count>0?L.notes[0]:"nothing laid";
                 }
@@ -59,7 +63,8 @@ namespace LittleRoad
                 group.Add((s.at,s.outward,s.along,s.dropAt,s.road,s.half));
             }
             Flush();Physics.SyncTransforms();
-            Debug.Log($"LITTLE_ROAD_BANK_BARRIERS sites={sites.Count} walls={Walls} left={Left} ms={clock.ElapsedMilliseconds}");
+            Debug.Log($"LITTLE_ROAD_BANK_BARRIERS sites={sites.Count} walls={Walls} left={Left} scope={scope??"all"} ms={clock.ElapsedMilliseconds}");
+            return Walls;
         }
     }
 }

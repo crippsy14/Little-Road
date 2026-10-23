@@ -58,9 +58,10 @@ namespace LittleRoad
                 SpectatorCar(p,yaw);
             }
         }
-        void RaceDay()
+        // (As a coroutine: a frame after the start, the kerbs, the bale walls and the spectators, when built in the background.)
+        System.Collections.IEnumerator RaceDayRoutine()
         {
-            if(Bramblewick.Lap==null)return;
+            if(Bramblewick.Lap==null)yield break;
             Banks=BankRefused=Kerbs=Bales=Boards=0;
             var lane=HillcrestRoute.Find(Bramblewick.LaneName);var street=HillcrestRoute.Find(Bramblewick.RoadName);
             var track=new Circuit(Bramblewick.Lap,Bramblewick.LaneWidth);float half=Bramblewick.LaneWidth*.5f;
@@ -98,6 +99,7 @@ namespace LittleRoad
                     pa.y=H(pa.x,pa.z)+5.2f;pb.y=H(pb.x,pb.z)+5.2f;HillcrestTown.BuntingLine(root,pa,pb,1.1f);}
             }
 
+            yield return null;
             // ---- kerbs on the inside of every corner tighter than 75 m (not in the junctions, which have their own kerbs)
             {
                 float L=track.length;int block=0;
@@ -113,6 +115,7 @@ namespace LittleRoad
                 }
             }
 
+            yield return null;
             // ---- hay-bale walls on the outside of the heavy stops, and the spectators' banks behind them
             var bales=new List<(Vector3 at,float radius)>();
             void BaleWall(string mark,float back,float ahead)
@@ -129,6 +132,7 @@ namespace LittleRoad
             }
             BaleWall("Dairy T",40,25);BaleWall("Barn Corner",15,50);BaleWall("Green Hairpin",10,80);BaleWall("Mill Bend",30,70);BaleWall("Cider Press",10,60);
 
+            yield return null;
             // ---- spectators: a grandstand and parked cars on the Green Hairpin's outside bank, cars at the Dairy T and the bridge
             var stands=new List<(Vector3 at,float radius)>();
             void Spectators(string mark,int cars,bool grandstand)
@@ -147,6 +151,7 @@ namespace LittleRoad
             if(Bramblewick.Marks.TryGetValue("Beacon Apex",out var be)){var bp=new Vector3(be.x,0,be.y);float sb=track.Nearest(bp,out _);var fb=track.Forward(sb);fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);
                 var f0=track.Forward(sb-8);var f1=track.Forward(sb+8);f0.y=f1.y=0;int outside=Vector3.SignedAngle(f0,f1,Vector3.up)>0?-1:1;var ted=track.At(sb)+rb*outside*(half+9)-fb*14;ted.y=H(ted.x,ted.z);Spots["marshal"]=(ted,Yaw(ted,track.At(sb)));}
 
+            yield return null;
             // ---- a landmark for each corner it's named after, on the outside, clear of the lane (one per section, so the lap
             //      is learnt by what you see, and the hedge corridor is broken up: LR1 "monotony")
             var landmarks=new List<(Vector3 at,float radius)>();

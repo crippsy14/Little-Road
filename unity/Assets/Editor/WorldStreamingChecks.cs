@@ -69,6 +69,30 @@ public static class WorldStreamingChecks
             Districts.Begin();
             checks.Add("Background districts: builder, settle and waiting set-up run in order on completion; ground held while pending; built districts answer at once");
         }
+        // Several districts (23 Oct): they build nearest the start first, whatever order they were deferred in; each owns its
+        // ground until it has built; a spot on two grounds is completed by the later one, so it is done once; what waits for
+        // each runs when that one arrives.
+        {
+            var log=new List<string>();
+            System.Collections.IEnumerator B(string n){log.Add("b"+n);yield break;}
+            Districts.Begin();
+            Districts.Defer("far",B("far"),()=>B("sfar"),new Rect(50,0,100,100),null,3000);Districts.Defer("near",B("near"),()=>B("snear"),new Rect(0,0,100,100),null,1000);
+            Districts.WhenBuilt("far",()=>log.Add("wfar"));Districts.WhenBuilt("near",()=>log.Add("wnear"));
+            var both=new Vector3(75,0,50);var nearOnly=new Vector3(25,0,50);var farOnly=new Vector3(125,0,50);var outside=new Vector3(500,0,500);
+            Require(!Districts.Built(both)&&!Districts.Built(nearOnly)&&!Districts.Built(farOnly)&&Districts.Built(outside),"a queued district's ground counts as built, or open ground doesn't");
+            Require(Districts.PendingAt(both)=="far"&&Districts.PendingAt(nearOnly)=="near"&&Districts.PendingAt(farOnly)=="far"&&Districts.PendingAt(outside)==null,"the pending district at a spot is wrong");
+            Require(Districts.Completes("near",nearOnly)&&!Districts.Completes("near",both)&&!Districts.Completes("near",farOnly)&&!Districts.Completes("far",both),"which district completes a spot is wrong");
+            Require(Districts.PendingScope=="x-near-far","the pending scope is "+Districts.PendingScope);
+            Require(Districts.Holds(new Rect(120,50,10,10))&&!Districts.Holds(new Rect(300,300,10,10)),"two districts don't hold their ground");
+            // (A race in the far one's ground finishes that one alone; the near one carries on later.)
+            Districts.Complete(false,ground=>ground.xMin>=50);
+            Require(!Districts.Waiting("far")&&Districts.Waiting("near")&&Districts.Pending&&string.Join(",",log)=="bfar,bsfar,wfar",$"finishing one district ran: {string.Join(",",log)}");
+            Districts.Complete();
+            Require(string.Join(",",log)=="bfar,bsfar,wfar,bnear,bsnear,wnear",$"two districts ran out of order: {string.Join(",",log)}");
+            Require(Districts.Built(both)&&Districts.Completes("far",both)&&Districts.PendingAt(both)==null&&Districts.PendingScope==null&&!Districts.Pending,"completed districts still own ground");
+            Districts.Begin();
+            checks.Add("Several background districts: nearest first, each owning its ground until built, overlapping ground completed once by the later one, waiters run per district");
+        }
         // Race entry builds the field's engine sounds on worker threads (CarAudio.Prepare): one built there renders exactly
         // what the same engine built on the main thread does.
         {

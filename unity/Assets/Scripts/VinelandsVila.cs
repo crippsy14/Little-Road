@@ -67,14 +67,24 @@ namespace LittleRoad
             footprints.Add((c2,half,yaw));Houses++;return true;
         }
 
-        public void Build()
+        public void Build()=>TrialWorld.RunNow(BuildRoutine());
+        // As a coroutine (Districts): at load it runs straight through; built in the background it yields between its parts,
+        // the slope and the yards in pieces (SlopeRoutine, QuintaisRoutine).
+        public System.Collections.IEnumerator BuildRoutine()
         {
             Houses=Refused=0;Spots.Clear();Parking.Clear();yards.Clear();Yards=0;
             plinth=WorldLook.Kit("Vila granite plinth",new Color(.6f,.59f,.56f),WorldLook.Pattern.Stone,0,.1f,true);
             // (each part timed: the place took 29 s of a 46 s start-up on 23 Oct)
-            var clock=System.Diagnostics.Stopwatch.StartNew();void Lap(string part,System.Action a){long t=clock.ElapsedMilliseconds;a();Debug.Log($"LITTLE_ROAD_LOAD_LAP vinelands {part} ms={clock.ElapsedMilliseconds-t}");}
-            Lap("largo",Largo);Lap("lanes",Lanes);Lap("patios",Patios);Lap("escadinhas",Escadinhas);Lap("zone2",Zone2);Lap("zone3",Zone3);Lap("zone5",Zone5);Lap("zone6",Zone6);Lap("zone7",Zone7);Lap("zone8",Zone8);Lap("zone4",Zone4);
-            Lap("quintais",Quintais);Lap("details",Details);Lap("adro",Adro);Lap("parked",Parked);   // (zone 2, VinelandsRua.cs: before the yards, so they fill behind its houses too)
+            var clock=System.Diagnostics.Stopwatch.StartNew();long at=0;void Lap(string part){Debug.Log($"LITTLE_ROAD_LOAD_LAP vinelands {part} ms={clock.ElapsedMilliseconds-at}");at=clock.ElapsedMilliseconds;}
+            // (the same parts in the same order as the zones' build, a frame between each: zone 1, 2, 3, 5, 6, 7, 8, 4, the yards, the details)
+            Largo();Lap("largo");yield return null;Lanes();Lap("lanes");yield return null;Patios();Lap("patios");Escadinhas();Lap("escadinhas");yield return null;
+            RuaDireita();Lap("zone2 rua direita");yield return null;Feira();Lap("zone2 feira");yield return null;Jardim();Lap("zone2 jardim");yield return null;Zone3();Lap("zone3");yield return null;
+            Cemiterio();Moinhos();Lap("zone5 cemiterio moinhos");yield return null;Belvedere();Lap("zone5 belvedere");yield return null;Villas();Lap("zone5 villas");yield return null;Voltas();Lap("zone5 voltas");yield return null;
+            Portela();Lap("zone6 portela");yield return null;Entroncamento();Lap("zone6 entroncamento");yield return null;
+            Eiras();Lap("zone7 eiras");yield return null;yield return ValeRoutine();Lap("zone7 vale");yield return ClubeRoutine();Lap("zone7 clube");
+            Margem();Lap("zone8 margem");yield return null;Encosta();Lap("zone8 encosta");yield return null;Aldeia();Lap("zone8 aldeia");yield return null;Corvo();Lap("zone8 corvo");yield return null;
+            Quintas();Lap("zone4 quintas");yield return null;Casal();Lap("zone4 casal");yield return null;yield return SlopeRoutine();Lap("zone4 slope");
+            yield return QuintaisRoutine();Lap("quintais");Details();Lap("details");yield return null;Adro();Lap("adro");Parked();Lap("parked");   // (zone 2, VinelandsRua.cs: before the yards, so they fill behind its houses too)
             Debug.Log($"LITTLE_ROAD_VINELANDS_VILA houses={Houses} refused={Refused} yards={Yards} parking={Parking.Count}");
         }
 
@@ -246,7 +256,8 @@ namespace LittleRoad
         public static bool Paved(Vector3 p){if(!Vinelands.Enabled)return false;var f=new Vector2(p.x,p.z)-Vinelands.Centre;return f.x>-38&&f.x<28&&f.y>-21&&f.y<21||PavedZone2(p)||f.x>931&&f.x<965&&f.y>-17&&f.y<21||f.x>979&&f.x<996&&f.y>-61&&f.y<61;}   // (and zone 3: the Praca do Cais, the quay)
         static readonly (Vector2 min,Vector2 max)[] Squares={(new(-40,-23),new(30,23)),(new(-165,-22),new(-135,4)),(new(104,-118),new(126,-100)),(new(52,117),new(68,133)),
             (new(100,110),new(200,165)),(new(10,-220),new(90,-170)),(new(930,-18),new(966,22)),(new(978,-62),new(997,62))};   // (zone 3: the Praca do Cais, the quay)   // (zone 2: the Jardim da Cerca, the Terreiro)
-        void Quintais()
+        // (As a coroutine: a frame every three yards when built in the background, Districts.)
+        System.Collections.IEnumerator QuintaisRoutine()
         {
             var paths=new List<(Vector3[] line,float half)>();foreach(var (_,w,l) in Lanes2)paths.Add((l,w*.5f+1f));foreach(var pts in Stairs)paths.Add((Dense(pts,1.5f),2.4f));
             var claimed=new List<(Vector2 c,Vector2 half,float yaw)>();var walls=new List<Matrix4x4>();var yrng=new System.Random(8603);
@@ -263,7 +274,9 @@ namespace LittleRoad
             void Wall(Vector3 a,Vector3 b){var d=b-a;d.y=0;float L=d.magnitude;if(L<.5f)return;int k=Mathf.CeilToInt(L/1.5f);var rot=Quaternion.LookRotation(d);
                 for(int i=0;i<k;i++){var m=a+d*((i+.5f)/k);var e0=a+d*(i/(float)k);var e1=a+d*((i+1f)/k);float g=H(m.x,m.z),lo=Mathf.Min(g,Mathf.Min(H(e0.x,e0.z),H(e1.x,e1.z)))-.3f,top=g+1.5f;   // (down to the lowest ground under it: no air on a slope)
                     walls.Add(Matrix4x4.TRS(new Vector3(m.x,(lo+top)*.5f,m.z),rot,new Vector3(.45f,top-lo,L/k+.02f)));}}
+            int done=0;
             foreach(var (back,n,along,w,fam) in yards) {
+                if(++done%3==0)yield return null;
                 float want=fam=="rua"?20+(float)yrng.NextDouble()*14:7+(float)yrng.NextDouble()*6,d=0;   // (Rua Direita's gardens: long strips falling west)
                 for(float t=1;t<=want;t+=1){bool ok=true;foreach(float k in new[]{-.42f,0,.42f})if(!Free(back+n*t+along*(w*k))){ok=false;break;}if(!ok)break;d=t;}
                 if(d<3.5f)continue;

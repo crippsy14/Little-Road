@@ -11,7 +11,7 @@ namespace LittleRoad
     // the Veiga do Fojo. The mirante kit is car-forge forge/world/kits/mirante.py.
     public sealed partial class VinelandsVila
     {
-        void Zone5(){Cemiterio();Moinhos();Belvedere();Villas();Voltas();}   // (the cemetery, mills and knoll first: the villas fit round them)
+        // (Zone 5's parts, in VinelandsVila.BuildRoutine's order: the cemetery, mills and knoll first: the villas fit round them.)
 
         // ---- the villas: both sides of the Mirante road from past the bus terminus to the windmills, set back behind their
         // garden walls, a gate on the road, a palm or a camellia in the front garden

@@ -30,8 +30,30 @@ namespace LittleRoad
             foreach(var g in placed)Dress(g);
             Debug.Log($"LITTLE_ROAD_PROP_FORGE_DRESSING placed={Placed} {Summary} refused: {string.Join(" ",refused.Select(k=>k.Key+"="+k.Value))} seen: {string.Join(" ",placed.GroupBy(x=>x.name).Where(x=>new[]{"bench","shop","cafe","motors","post_office","fountain","beach_hut","barn","station","house_a","house_c","cottage_a","tree_blossom"}.Contains(x.Key)).Select(x=>x.Key+"="+x.Count()))}");
         }
+        // The same for a district built in the background (Districts): the pieces under `holder`, once they're all there, a few
+        // a frame; `done` gets the count. Each piece's draws come from its own spot (Seed), so a street dressed later comes out
+        // as it would have at load.
+        public static System.Collections.IEnumerator DressRoutine(Transform parent,Transform holder,System.Action<int> done,int perFrame=8)
+        {
+            if(root==null){root=new GameObject("Prop Forge dressing").transform;root.SetParent(parent,false);}
+            int before=Placed;
+            if(BayviewKit.Has("litter_bin")) {
+                var mine=new List<GameObject>();foreach(var g in BayviewKit.Placed)if(g!=null&&g.transform.IsChildOf(holder))mine.Add(g);   // (a copy: dressing adds to the list)
+                for(int i=0;i<mine.Count;i++){Dress(mine[i]);if(i%perFrame==perFrame-1)yield return null;}
+            }
+            done(Placed-before);
+        }
+        // Seeded from the piece, its kind and where it stands (23 Oct): the dressing of one doesn't depend on what was placed before it.
+        static int Seed(GameObject g)
+        {
+            var p=g.transform.position;uint h=2166136261;
+            foreach(char ch in g.name){h^=ch;h*=16777619;}
+            foreach(int v in new[]{Mathf.RoundToInt(p.x*10),Mathf.RoundToInt(p.y*10),Mathf.RoundToInt(p.z*10)}){h^=(uint)v;h*=16777619;}
+            return (int)(h&0x7fffffff);
+        }
         static void Dress(GameObject g)
         {
+            rng=new System.Random(Seed(g));
             var p=g.transform.position;var right=g.transform.right;var fwd=g.transform.forward;string id=g.name;
             switch(id) {
                 case "bench":   // (a bin at one end, on the side away from the next bench)

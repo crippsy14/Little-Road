@@ -17,6 +17,9 @@ namespace LittleRoad
         public static bool Enabled=>!RaceTrial.Has("--fresh-world");
         int footprints,placed;
         public int Reuses{get;private set;}
+        // Is this load's world the kept one (a race or the town again), not freshly built? What's placed once per world
+        // (the streets' dressing, the bank barriers) checks this: on every return it was placed again, 23 Oct.
+        public static bool Reused=>Current!=null&&Current.Reuses>0;
 
         public static HashSet<GameObject> Roots(){var set=new HashSet<GameObject>();foreach(var go in SceneManager.GetActiveScene().GetRootGameObjects())set.Add(go);return set;}
 
@@ -25,9 +28,10 @@ namespace LittleRoad
         public static bool TryReuse()
         {
             if(!Enabled||Current==null)return false;
-            // A district still building in the background is finished now, behind this load's card; what waited for it
-            // belonged to the scene that just went (the new one asks again).
-            Districts.Complete(abandonWaiting:true);
+            // A district still building in the background is finished now, behind this load's card, if a race's area touches
+            // its ground (a town load, or a race elsewhere, leaves it to carry on once the town is back: Districts.Start); what
+            // waited for it belonged to the scene that just went (the new one asks again).
+            Districts.Complete(abandonWaiting:true,only:ground=>{if(!RaceArea.Active)return false;var c=RaceArea.Centre;return RaceArea.Near(new Vector2(Mathf.Clamp(c.x,ground.xMin,ground.xMax),Mathf.Clamp(c.y,ground.yMin,ground.yMax)),100);});
             // Pieces that went with the old scene (parked cars, notices) leave the registries; the world's own stay,
             // trees streamed in after the build included.
             for(int i=BayviewKit.Footprints.Count-1;i>=0;i--)if(BayviewKit.FootprintOwners[i]==null){BayviewKit.Footprints.RemoveAt(i);BayviewKit.FootprintOwners.RemoveAt(i);}

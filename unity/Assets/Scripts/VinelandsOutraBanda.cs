@@ -10,7 +10,6 @@ namespace LittleRoad
     // chapel's August festa; the ruined Quinta do Corvo with its one huge fig at the end of the lane south.
     public sealed partial class VinelandsVila
     {
-        void Zone8(){Margem();Encosta();Aldeia();Corvo();}
 
         // ---- the strip by the water: the café and houses at the bridge's foot, then groves and plots north along the lane
         void Margem()

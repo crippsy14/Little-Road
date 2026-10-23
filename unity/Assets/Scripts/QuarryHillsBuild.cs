@@ -16,21 +16,7 @@ namespace LittleRoad
             Vector2.Distance(new Vector2(WorldTiles.Focus.x,WorldTiles.Focus.z),QuarryHills.Square)>Districts.NearStart;
         // Rails and corner walls that a Quarry Hills building could trim (within 30 m of the district).
         public static bool NearQuarryHills(Vector3 p)=>p.x<QuarryHills.SeamX+30&&p.x>QuarryHills.West-30&&p.z>QuarryHills.South-30;
-        // The district's own settle pass, as the world's (CoastalLandscape.BuildRoutine) did for it at load: its rails
-        // trimmed, its planting settled on the ground, standing cars seated, its geometry static-batched.
-        // (In pieces, a frame each in the background: the batching a part of the district at a time.)
-        System.Collections.IEnumerator SettleQuarryHills()
-        {
-            var clock=System.Diagnostics.Stopwatch.StartNew();
-            int trimmed=TrimRails();Physics.SyncTransforms();int settled=0;
-            if(quarryHolder!=null)foreach(var go in BayviewKit.Placed)if(go!=null&&go.transform.IsChildOf(quarryHolder)&&PlacementAudit.SettleOne(go))settled++;
-            yield return null;CarContact.SeatAll();yield return null;
-            // (One batch for the district, as the world's is one: parts batched alone leave single meshes unbatched.)
-            if(quarryHolder!=null&&StaticBatching)StaticBatchingUtility.Combine(quarryHolder.gameObject);yield return null;
-            var walls=new System.Collections.Generic.List<GameObject>();foreach(var parent in TrimmedWallParents)if(parent!=null)foreach(var r in parent.GetComponentsInChildren<MeshRenderer>())if(!r.isPartOfStaticBatch&&r.name.StartsWith("Corner walls"))walls.Add(r.gameObject);
-            if(walls.Count>0&&StaticBatching)StaticBatchingUtility.Combine(walls.ToArray(),root.gameObject);
-            Debug.Log($"LITTLE_ROAD_DISTRICT_SETTLE quarry-hills trimmed={trimmed} settled={settled} walls={walls.Count} ms={clock.ElapsedMilliseconds}");
-        }
+        // (Its settle pass is every district's: SettleDistrict, FarDistricts.cs.)
         System.Collections.IEnumerator QuarryHillsSceneryRoutine()
         {
             if(!QuarryHills.Enabled||!BayviewKit.Has("tree_round"))yield break;

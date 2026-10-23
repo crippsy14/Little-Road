@@ -76,12 +76,15 @@ namespace LittleRoad
             text.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");text.fontStyle=FontStyle.Bold;go.GetComponent<Renderer>().sharedMaterial=text.font.material;go.AddComponent<WorldText>();
         }
 
-        public void Build()
+        public Transform Root=>root;
+        public void Build()=>TrialWorld.RunNow(BuildRoutine());
+        // As a coroutine (Districts): at load it runs straight through; built in the background it yields between its parts.
+        public System.Collections.IEnumerator BuildRoutine()
         {
             Buildings=Refused=0;Spots.Clear();Parking.Clear();
             plinth=WorldLook.Kit("Vinelands granite plinth",new Color(.58f,.57f,.55f),WorldLook.Pattern.Stone,0,.1f,true);
-            AreaAudit.ExtraNature.Clear();River();   // (the restart, docs/85: zone by zone from here; the first build's town is retired)
-            Physics.SyncTransforms();new VinelandsVila(root).Build();   // (zone 1: the Largo and Vila Velha, docs/86)
+            AreaAudit.ExtraNature.Clear();River();yield return null;   // (the restart, docs/85: zone by zone from here; the first build's town is retired)
+            Physics.SyncTransforms();yield return new VinelandsVila(root).BuildRoutine();   // (zone 1: the Largo and Vila Velha, docs/86)
             Debug.Log($"LITTLE_ROAD_VINELANDS_TOWN buildings={Buildings} refused={Refused}");
         }
 

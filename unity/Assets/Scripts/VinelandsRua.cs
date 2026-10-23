@@ -9,7 +9,6 @@ namespace LittleRoad
     // under its planes); the Jardim da Cerca, the convent's walled garden. The rua kit is car-forge forge/world/kits/rua.py.
     public sealed partial class VinelandsVila
     {
-        void Zone2(){RuaDireita();Feira();Jardim();}
 
         // ---- Rua Direita: both sides from the Largo's north edge (n 30) to the Portela (n 520), fronts behind a 2.2 m pavement
         static readonly string[] RuaSigns={"TALHO","PEIXARIA","DROGARIA","BARBEARIA","RETROSARIA","PAPELARIA","SAPATARIA","FLORISTA","OURIVESARIA","PADARIA",

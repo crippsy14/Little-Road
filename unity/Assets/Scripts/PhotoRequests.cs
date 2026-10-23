@@ -31,8 +31,13 @@ namespace LittleRoad
                 All.Add(new Request{id=Ids[7],name="Slate Quay",where=()=>QuarryHills.QuayPoint(QuarryHills.QuayHalf-6,-QuarryHills.QuaySea+5,QuarryHills.QuayY+6),reach=160});
                 All.Add(new Request{id=Ids[8],name="The Blondin",where=()=>{var b=QuarryFloor.BlondinFloor;return new Vector3(b.x,ValleyField.Height(b.x,b.y)+18,b.y);},reach=220});
             }
-            // Bramblewick (--bramblewick, docs/82): St Michael's tower, The Plough, the duck pond, the dairy.
-            if(BramblewickVillage.Tower!=Vector3.zero) {
+            AddBramblewick();
+        }
+        // Bramblewick (--bramblewick, docs/82): St Michael's tower, The Plough, the duck pond, the dairy. A village built in the
+        // background adds them when it arrives (Districts); each sight once.
+        public static void AddBramblewick()
+        {
+            if(BramblewickVillage.Tower!=Vector3.zero&&!All.Exists(r=>r.id==Ids[9])) {
                 All.Add(new Request{id=Ids[9],name="St Michael's tower",where=()=>BramblewickVillage.Tower,reach=320});
                 All.Add(new Request{id=Ids[10],name="The Plough",where=()=>BramblewickVillage.PubFront,reach=120});
                 All.Add(new Request{id=Ids[11],name="The duck pond",where=()=>BramblewickVillage.PondAt,reach=110});

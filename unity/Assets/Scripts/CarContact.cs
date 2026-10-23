@@ -96,6 +96,17 @@ namespace LittleRoad
             }
             Debug.Log("LITTLE_ROAD_CARS_SEATED "+seated);return seated;
         }
+        // A background district's own standing cars (Districts): the rest of the world's were seated when they were made,
+        // and seating them again moves each a little (the lowest wheel's centimetre, the sink on twisted ground), 23 Oct.
+        public static int SeatUnder(Transform holder)
+        {
+            int seated=0;
+            foreach(var car in Cars()) {
+                if(!car.transform.IsChildOf(holder)||!IsStanding(car)||car.GetComponentsInChildren<Renderer>().Any(r=>r.isPartOfStaticBatch))continue;
+                if(Seat(car)){seated++;if(MaxGap(car)>WheelOffGap)Relocate(car);}
+            }
+            Debug.Log($"LITTLE_ROAD_CARS_SEATED {seated} under {holder.name}");return seated;
+        }
         public static IEnumerable<GameObject> Cars()
         {
             var seen=new HashSet<GameObject>();

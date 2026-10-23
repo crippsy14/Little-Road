@@ -11,7 +11,6 @@ namespace LittleRoad
     // supply shop, a row of co-op houses, tractors). The portela kit is car-forge forge/world/kits/portela.py.
     public sealed partial class VinelandsVila
     {
-        void Zone6(){Portela();Entroncamento();}
         // the arc length along a road nearest a frame point
         static float SNear(HillcrestRoute.Road road,Vector2 frame){var w=Vinelands.Centre+frame;float best=0,bd=float.MaxValue;for(float s=0;s<road.Length;s+=1){var q=road.At(s);float d=(new Vector2(q.x,q.z)-w).sqrMagnitude;if(d<bd){bd=d;best=s;}}return best;}
         // a building fronting a road at arc length s, on the side away from (side +1) or toward (-1) the road's right, set back

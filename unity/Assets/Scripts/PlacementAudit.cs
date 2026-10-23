@@ -154,7 +154,9 @@ namespace LittleRoad
         // (each unguarded bank: the road point, out across the road towards the drop, along the road, where the drop starts
         //  measured from the centreline, the road's name, the tarmac's half-width: BankBarriers walls them, docs/80 round 7)
         public static readonly List<(Vector3 at,Vector3 outward,Vector3 along,float dropAt,string road,float half)> BankSites=new();
-        public static string Edges(Circuit bayview=null)
+        // (`only`: the part of the world to audit, by road point; all of it when null. A background district's roads are
+        // audited once it has built, so its walls count as guards: Districts, BankBarriers.)
+        public static string Edges(Circuit bayview=null,System.Func<Vector3,bool> only=null)
         {
             Physics.SyncTransforms();var sb=new StringBuilder();int lips=0,checks=0;EdgeFindings.Clear();BankSites.Clear();
             float Top(Vector3 p){float best=float.MinValue;foreach(var h in Physics.RaycastAll(p+Vector3.up*4,Vector3.down,10))if(!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null&&!h.collider.CompareTag("Respawn"))best=Mathf.Max(best,h.point.y);return best==float.MinValue?float.NaN:best;}   // NaN: nothing solid (open water)
@@ -195,6 +197,7 @@ namespace LittleRoad
                 float run=0;
                 for(int i=1;i<line.Length-1;i+=2) {
                     run+=Vector3.Distance(line[i],line[i-1])+(i>1?Vector3.Distance(line[i-1],line[i-2]):0);
+                    if(only!=null&&!only(line[i]))continue;
                     var f=line[i+1]-line[i-1];f.y=0;f.Normalize();var r=Vector3.Cross(Vector3.up,f);
                     foreach(int side in new[]{-1,1}) {
                         // The edge: where the tarmac stops (the road's own half-width if it isn't tarmac here, a bridge deck).
@@ -220,7 +223,7 @@ namespace LittleRoad
                 }
                 // Road ends: straight on past the last point (loops have none).
                 if(Vector3.Distance(line[0],line[^1])>12)foreach(bool start in new[]{true,false}) {
-                    var e=start?line[0]:line[^1];var d=start?line[0]-line[1]:line[^1]-line[^2];d.y=0;d.Normalize();float prev=Top(e-d*.3f),worst=0;
+                    var e=start?line[0]:line[^1];if(only!=null&&!only(e))continue;var d=start?line[0]-line[1]:line[^1]-line[^2];d.y=0;d.Normalize();float prev=Top(e-d*.3f),worst=0;
                     for(float o=0;o<=4;o+=.1f){float h=Top(e+d*o);if(float.IsNaN(h))break;worst=Mathf.Max(worst,prev-h);prev=h;}
                     checks++;if(worst>.12f){lips++;EdgeFindings.Add((e,true));found.Add($"  {name} {(start?"start":"end")} lip {worst:0.00} m ({e.x:0},{e.z:0})");}
                 }

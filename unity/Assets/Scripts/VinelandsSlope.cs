@@ -12,7 +12,6 @@ namespace LittleRoad
     // floor at the crossing of the Calcada and the Estrada do Meio. The quinta kit is car-forge forge/world/kits/quinta.py.
     public sealed partial class VinelandsVila
     {
-        void Zone4(){Quintas();Casal();Slope();}
         static Vector3 FV(Vector2 f)=>F(f.x,f.y);
         // clear of the town, the roads, the buildings and the old town's ways
         bool Clear(Vector3 p,float pad,bool inTown=false)
@@ -77,7 +76,8 @@ namespace LittleRoad
         // ---- the slope, bench by bench: from the town's foot to the Seis Voltas (n -1000 to 700), every 1.5 m along the contour;
         // each bench's edges found by bisecting the built ground between the crest and the river
         public static int Plants,Olives,Scrub,WallMetres;
-        void Slope()
+        // (As a coroutine: a frame every 30 contour steps, every few olive rows and vine rows, when built in the background.)
+        System.Collections.IEnumerator SlopeRoutine()
         {
             Plants=Olives=Scrub=WallMetres=0;
             var leafOld=new Batch(root,"Old vines",WorldLook.Kit("Old vines",new Color(.30f,.42f,.17f),WorldLook.Pattern.Leaf,0,.25f,true));
@@ -154,19 +154,22 @@ namespace LittleRoad
                         case Vinelands.Kind.Olival:break;   // (the grove's own pass below: the slope above the Cais isn't all benched)
                     }
                 }
+                if(idx%30==29)yield return null;
             }
             // ---- the olive grove above the Cais: trees on a jittered 10 m grid, broom under some
             foreach(var (pname,pkind,poly) in Vinelands.Parcels) {
                 if(pkind!=Vinelands.Kind.Olival)continue;
-                for(float a=720;a<=995;a+=10)for(float n=-125;n<=265;n+=10) {
+                for(float a=720;a<=995;a+=10){for(float n=-125;n<=265;n+=10) {
                     var f=new Vector2(a+(Hash(a,n,45)-.5f)*6,n+(Hash(a,n,46)-.5f)*6);if(Vinelands.ParcelAt(f)?.kind!=Vinelands.Kind.Olival)continue;var p=FV(f);if(p.y<Vinelands.Water+1.5f||!Clear(p,2f,true))continue;
                     if(Hash(a,n,47)<.12f){(Hash(a,n,48)<.3f?broomGold:broom).Lump(p,1.4f,1.2f,.7f,Hash(a,n,49)*97);continue;}
                     if(Put("olive_tree",new Vector3(p.x,p.y-.05f,p.z),Hash(a,n,50)*360,null,null,true,.8f+.35f*Hash(a,n,51))!=null)Olives++;
-                }
+                }if(Mathf.RoundToInt(a/10)%3==0)yield return null;}
             }
             // ---- Vinha Nova: rows straight down the slope 2.6 m apart, trellised on posts every 6 m (the 1998 planting, no terraces)
             var nova=Vinelands.Parcels[4].poly;float nMin=float.MaxValue,nMax=float.MinValue,aMin=float.MaxValue,aMax=float.MinValue;foreach(var q in nova){nMin=Mathf.Min(nMin,q.y);nMax=Mathf.Max(nMax,q.y);aMin=Mathf.Min(aMin,q.x);aMax=Mathf.Max(aMax,q.x);}
+            int rows=0;
             for(float n=nMin+3;n<nMax-3;n+=2.6f) {
+                if(++rows%4==0)yield return null;
                 var run=new List<Vector3>();
                 void Flush()
                 {

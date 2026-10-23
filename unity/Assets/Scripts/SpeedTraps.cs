@@ -152,7 +152,7 @@ namespace LittleRoad
             }
             // (A trap in a district still building in the background goes up once it's built: its camera keeps clear of the
             // buildings, Districts.)
-            foreach(var trap in All){if(Districts.Waiting("quarry-hills")&&QuarryHills.Contains(trap.at.x,trap.at.z)){var later=trap;Districts.WhenBuilt("quarry-hills",()=>Build(later));continue;}Build(trap);}
+            foreach(var trap in All){var pending=Districts.PendingAt(trap.at);if(pending!=null){var later=trap;Districts.WhenBuilt(pending,()=>Build(later));continue;}Build(trap);}
             Debug.Log("LITTLE_ROAD_SPEED_TRAPS "+string.Join(" ",All.Select(t=>$"{t.id}@({t.at.x:0},{t.at.z:0}) marks {t.marks[0]}/{t.marks[1]}/{t.marks[2]} mph")));
         }
         static float Surface(Vector3 p){float best=float.NaN;foreach(var h in Physics.RaycastAll(p+Vector3.up*6,Vector3.down,14))if(h.collider.GetComponentInParent<RoadSurface>()!=null&&(float.IsNaN(best)||h.point.y>best))best=h.point.y;return float.IsNaN(best)?p.y+.03f:best;}

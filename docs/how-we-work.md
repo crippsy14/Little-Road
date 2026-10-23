@@ -75,9 +75,16 @@ A piece is done when it clears these, measured rather than eyeballed.
 
   A new district must not move ready-to-drive by more than 0.1 s.
 - **Same world.** A change that isn't meant to change the world keeps the world fingerprint and the town print
-  (`--world-fingerprint --no-static-batching`, `--town-print`). The old world's fingerprint `3f164ae90677e486` is checked
+  (`--world-fingerprint --no-static-batching --load-timing`, `--town-print <file>`; a batch run quits only with
+  `--load-timing` or a test mode). The old world's fingerprint `3f164ae90677e486` is checked
   with `--old-bayview --no-prop-forge --distant-mountains --no-bramblewick --no-vinelands --world-fingerprint --no-static-batching`.
-  A change that is meant to change the world records its new baseline.
+  A change that is meant to change the world records its new baseline. Baselines of 23 Oct: everything built at load
+  (`--no-background-districts`) `60927fe9eb17ba8f`; the default, with three background districts, `b66582872086e34d`. The two
+  differ only in settled poses (millimetres, the fourth decimal of a rotation) and one borderline bank barrier: compare the
+  files (`--world-fingerprint <file>`), not the hashes, and read the lines that differ. The town print's parked cars and
+  residents' yaws vary run to run; its posts, boards, traps, residents and activities must not.
+- **Test scripts and flags.** A PowerShell script that launches another with `powershell -File … -Flags a,b` flattens the array
+  into one token and the game sees neither flag: call test scripts in-process (`& script.ps1 -Flags @('a','b')`).
 - **Driving.** Roads are drivable or guarded (`--edge-audit`). Races finish with no new assisted resets.
 - **Releasable.** No editor-only dependencies at runtime, no assets of unknown licence, and the Unity plan's terms respected.
 

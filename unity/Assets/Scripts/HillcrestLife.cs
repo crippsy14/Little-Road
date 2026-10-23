@@ -102,10 +102,18 @@ namespace LittleRoad
             spots.AddRange(BramblewickVillage.Parking);   // (--bramblewick: by the green, outside The Plough, the vale's lay-bys, the dairy yard)
             spots.AddRange(VinelandsVila.Parking);   // (--vinelands: round the Largo's edge, docs/86)
             parkRng=new System.Random(41);Park(root,spots);
-            // (Quarry Hills built in the background: its cars park once it's there, carrying on the same draws: Districts.)
-            if(Districts.Waiting("quarry-hills"))Districts.WhenBuilt("quarry-hills",()=>Park(root,new List<(Vector3,float)>(QuarryFloor.Parking)));
+            // (A place built in the background: its cars park once it's there, carrying on the same draws, a few a frame: Districts.)
+            if(Districts.Waiting("quarry-hills"))Districts.WhenBuiltSteps("quarry-hills",()=>ParkSteps(root,QuarryFloor.Parking));
+            if(Districts.Waiting("bramblewick"))Districts.WhenBuiltSteps("bramblewick",()=>ParkSteps(root,BramblewickVillage.Parking));
+            if(Districts.Waiting("vinelands"))Districts.WhenBuiltSteps("vinelands",()=>ParkSteps(root,VinelandsVila.Parking));
         }
         System.Random parkRng;
+        // (Three spots a frame: Vinelands' cars parked at once took a 300 ms frame, 23 Oct.)
+        System.Collections.IEnumerator ParkSteps(Transform root,List<(Vector3 at,float yaw)> spots)
+        {
+            var all=new List<(Vector3 at,float yaw)>(spots);
+            for(int i=0;i<all.Count;i+=3){Park(root,all.GetRange(i,Mathf.Min(3,all.Count-i)));yield return null;}
+        }
         // (on a road's ribbon or junction, not its shoulder nor a square's paving: the car's centre or either side, 0.9 m out)
         static bool IsCarriageway(Collider c){if(c.GetComponent<RoadSurface>()==null||c.transform.parent==null||c.transform.parent.name!="Hillcrest roads")return false;var n=c.name;return !n.Contains("shoulder")&&!n.Contains("verge")&&!n.Contains("Shoulder");}
         static bool OnRoad(Vector3 p,Vector3 right)

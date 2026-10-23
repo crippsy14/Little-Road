@@ -489,6 +489,18 @@ The order of classes and systems (doc 45, 29 Sep). The order of places is in [wo
   the live world.
 - **Streaming:** woods and scattered pieces stream on a 250 m tile grid; districts build in the background after you're
   driving; baked data (height field, cliffs, racing lines, the map image) is cooked once per build and cached.
+- **Background districts (23 Oct):** every place further than 1.5 km from where the car starts is a background district,
+  queued nearest first (from Bayview: Bramblewick, Quarry Hills, Vinelands; `--no-far-districts` builds the two far places at
+  load as before, `--no-background-districts` everything). Each district owns its ground until it has built: rails, fingerposts,
+  speed traps and bank barriers there wait for it, and when it arrives it gets its own settle pass (rails trimmed, pieces
+  seated, streets dressed, banks barriered, static batching) and its residents, parked cars, keepsakes and photo sights. The
+  streets' dressing is seeded from each piece and the bank barriers are named by where they start, so a place comes out the
+  same whether built at load or later (the world fingerprint checks it: the same pieces, settled poses within millimetres).
+  A district seats only its own standing cars (seating the world's again moved them all a little). A race in the kept world
+  finishes only the districts its area touches; the rest carry on once the town is back. A district's runs' meshes are made
+  on every core, then handed over a few a frame (`Runs.FlushRoutine`); its residents, parked cars, dressing and static
+  batching come a few a frame too. Everything placed once per world (dressing, bank barriers) is skipped when the kept
+  world comes back (`PersistentWorld.Reused`).
 - **The world must not change** unless a change means to: the world fingerprint and town print guard it. Never rely on
   physics hit order.
 - **Frame budget:** drive benchmark p99 20 ms or less, no more than two frames over 33 ms, zero managed allocation per

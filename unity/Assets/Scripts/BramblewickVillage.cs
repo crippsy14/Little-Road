@@ -69,7 +69,10 @@ namespace LittleRoad
             footprints.Add((c2,half,yaw));Buildings++;return true;
         }
 
-        public void Build()
+        public Transform Root=>root;
+        public void Build()=>TrialWorld.RunNow(BuildRoutine());
+        // As a coroutine (Districts): at load it runs straight through; built in the background it yields between its parts.
+        public System.Collections.IEnumerator BuildRoutine()
         {
             Buildings=Plinths=Refused=0;Spots.Clear();Parking.Clear();Horseshoes.Clear();clock=System.Diagnostics.Stopwatch.StartNew();lapAt=0;
             plinth=WorldLook.Kit("Bramblewick plinth",new Color(.62f,.58f,.50f),WorldLook.Pattern.Stone,0,.1f,true);
@@ -101,10 +104,12 @@ namespace LittleRoad
             if(Building("pub",pub,Yaw(pub,road.At(sC)),T(0xf6f1e6,0x2f5d46,0x2f5d46,0x2f5d46),"THE PLOUGH")){PubFront=pub+Vector3.up*4;Spots["pub"]=(road.At(sC)+nS*(half+2.6f),Yaw(pub,road.At(sC))+180);}
             {var pb=road.At(sC+14)+nS*(half+1.4f);pb.y=H(pb.x,pb.z);Put("pillar_box",pb,Yaw(pb,road.At(sC+14)));
              var ph=road.At(sC-14)+nS*(half+2.2f);ph.y=H(ph.x,ph.z);Put("phone_box",ph,Yaw(ph,road.At(sC-14)));}
+            yield return null;
             // ---- the street: cottages either side, the green's and the pub's frontages left open
             // (a village, not a terrace: tight round the green, thinning out with distance, a field's gap now and then, its last
             //  cottages 230 m out; each set back and turned a little its own way, a hedge along its garden's front with a gap
             //  at the gate, an apple tree or two behind)
+            int cottages=0;
             foreach(int sideSign in new[]{1,-1}) {
                 float s=Mathf.Max(20,sC-230);
                 while(s<Mathf.Min(road.Length-20,sC+230)) {
@@ -116,13 +121,16 @@ namespace LittleRoad
                     var at=road.At(mid);var n=sideSign>0?N(mid):-N(mid);float setback=half+2.2f+2.6f+(float)rng.NextDouble()*(2+far*6);
                     var c=at+n*(setback+size.y*.5f);c.y=H(c.x,c.z);float yaw=Yaw(c,at)+((float)rng.NextDouble()-.5f)*10;
                     if(Building(id,c,yaw,Cottage()))Garden(road,id,c,yaw,n,mid,size,setback);
+                    if(++cottages%4==0)yield return null;
                     s+=size.x+3f+(float)rng.NextDouble()*(4+far*14);
                 }
             }
+            yield return null;
             // ---- lamps along the street, old cast iron, alternate sides every 38 m
             int k2=0;for(float s=sC-280;s<sC+290;s+=38,k2++){var n=k2%2==0?N(s):-N(s);var lp=road.At(s)+n*(half+1.3f);
                 float ls=s;for(int t=0;t<4;t++){bool near=false;foreach(var d in doors)if(Mathf.Abs(road.Nearest(d,out _)-ls)<setbackClear&&Vector3.Dot(d-road.At(ls),n)>0)near=true;if(!near)break;ls=s+(t+1)*3.5f;lp=road.At(ls)+n*(half+1.3f);}   // (not in front of a door, review BW1-08)
                lp.y=H(lp.x,lp.z);Put("lamp_post",lp,0,T(0xffffff,0x1d2b3a,0xffffff,0xffffff),null,false);}
+            yield return null;
             // ---- the backyard tuner: a barn behind the street's east end, its doors to the lane
             {float s=sC+170;var n=N(s);var barn=road.At(s)+n*(half+2.2f+3.2f+7f+12f);barn.y=H(barn.x,barn.z);
              if(Building("barn",barn,Yaw(barn,road.At(s)),T(0x7a8a8c,0xc0392b,0xc0392b,0x2f5d46),"TUNER")) {
@@ -145,13 +153,14 @@ namespace LittleRoad
              var dutch=road.At(s+26)+n*(half+12f+4.8f);dutch.y=H(dutch.x,dutch.z);Building("dutch_barn",dutch,Yaw(dutch,road.At(s+26)));
              var churn=road.At(s-14)+n*(half+1.6f);churn.y=H(churn.x,churn.z);Put("churn_stand",churn,Yaw(churn,road.At(s-14)));{var s0=road.At(s+38)+n*(half+5);s0.y=H(s0.x,s0.z);shoe[3]=s0;}   // (the yard in front of the Dutch barn)
              var field=road.At(s-30)+n*(half+60);field.y=H(field.x,field.z);herd=field;for(int i=0;i<9;i++)Cow(field+new Vector3((float)rng.NextDouble()*40-20,0,(float)rng.NextDouble()*40-20),field);}
+            yield return null;
             // ---- parked cars: two by the green, two outside The Plough, six lay-bys out in the vale, two in the dairy yard
             void Park(float s,Vector3 side,float off){if(s<20||s>road.Length-20)return;var p=road.At(s)+side*(half+off);p.y=H(p.x,p.z);Parking.Add((p,Yaw(road.At(s-1),road.At(s+1))));}
             Park(sC-30,N(sC-30),4f);Park(sC+26,N(sC+26),4f);Park(sC-5,-N(sC-5),4f);Park(sC+5,-N(sC+5),4f);   // (4 m off the edge: at 2.6-3 m they sat over the edge line, review BW1-01)
             foreach(float ds in new[]{-470f,-640f,-820f,-1000f,-1180f,-1350f})Park(sC+ds,N(sC+ds),3.8f);   // (out along the pass, where the vale's fields are)
             Park(sC+440,-N(sC+440),4f);Park(sC+447,-N(sC+447),4f);
-            Lap("village");Vale(road,sC,herd);
-            HumpbackBridge();Lap("bridge");Ford();Lap("ford");RaceDay();Lap("race day");
+            Lap("village");yield return null;yield return Vale(road,sC,herd);
+            HumpbackBridge();Lap("bridge");yield return null;Ford();Lap("ford");yield return null;yield return RaceDayRoutine();Lap("race day");
             // (the top of the pass: the road's highest point between the T and the village, 7 m off its north side)
             {float top=-1,best=float.MinValue;for(float s=60;s<sC-500;s+=10)if(road.At(s).y>best){best=road.At(s).y;top=s;}
              if(top>0){var s0=road.At(top)+N(top)*(half+7);s0.y=H(s0.x,s0.z);shoe[5]=s0;}}
@@ -166,7 +175,7 @@ namespace LittleRoad
         public static int Fields,Copses;
         // (each part timed: LITTLE_ROAD_LOAD_LAP bramblewick ...)
         System.Diagnostics.Stopwatch clock;long lapAt;void Lap(string part){Debug.Log($"LITTLE_ROAD_LOAD_LAP bramblewick {part} ms={clock.ElapsedMilliseconds-lapAt}");lapAt=clock.ElapsedMilliseconds;}
-        void Vale(HillcrestRoute.Road road,float sC,Vector3 cowField)
+        System.Collections.IEnumerator Vale(HillcrestRoute.Road road,float sC,Vector3 cowField)
         {
             var yaw=Yaw(road.At(sC-1),road.At(sC+1));var rot=Quaternion.Euler(0,yaw,0);var c0=new Vector3(Bramblewick.Centre.x,0,Bramblewick.Centre.y);
             var green=new Vector3(Bramblewick.Green.x,0,Bramblewick.Green.z);var herd=new Vector3(cowField.x,0,cowField.z);var orchard=c0+rot*new Vector3(-150,0,250);
@@ -189,7 +198,7 @@ namespace LittleRoad
             }
             int nx=xs.Count-1,nz=zs.Count-1;var kind=new int[nx,nz];
             for(int i=0;i<nx;i++)for(int j=0;j<nz;j++){kind[i,j]=CellKind(i,j);if(kind[i,j]==1&&rng.NextDouble()<.1)kind[i,j]=2;}
-            Lap("vale lattice");
+            Lap("vale lattice");yield return null;
             var crops=CropTrample.Material("Bramblewick",new Rect(Bramblewick.Centre.x-800,Bramblewick.Centre.y-800,1600,1600));
             var v=new List<Vector3>();var col=new List<Color>();var t=new List<int>();var lift=new List<Vector2>();var rowAt=new List<Vector2>();
             void Flush()
@@ -214,8 +223,9 @@ namespace LittleRoad
                 for(int k=0;k<4;k++){var inward=(c-corners[k]);inward.y=0;q[k]=corners[k]+inward.normalized*4.9f;}
                 if(rng.NextDouble()<.5)q=new[]{q[1],q[2],q[3],q[0]};   // (drilled the other way)
                 CropField.Canopy(v,col,t,lift,rowAt,q,a,b,h,Ground,CropField.Tone);if(v.Count>50000)Flush();
+                if(Fields%3==0)yield return null;
             }
-            Flush();Lap("vale crops");
+            Flush();Lap("vale crops");yield return null;
             // Hedges along every lattice line with a field on either side: one hedge to a boundary, continuous but for a
             // gateway in about half of them (with its gate in most), and where a road crosses.
             void Hedge(Vector3 a,Vector3 b,bool gateway)
@@ -234,11 +244,11 @@ namespace LittleRoad
                     if(shoe[4]==Vector3.zero&&Vector2.Distance(new(g.x,g.z),Bramblewick.Centre)>450){var s0=g+Vector3.Cross(Vector3.up,dir)*2.5f;s0.y=H(s0.x,s0.z);if(ValleyField.RoadDistance(s0.x,s0.z)>8)shoe[4]=s0;}}}
             }
             bool Field(int i,int j)=>i>=0&&j>=0&&i<nx&&j<nz&&kind[i,j]==1;
-            for(int i=0;i<=nx;i++)for(int j=0;j<=nz;j++) {
+            for(int i=0;i<=nx;i++){for(int j=0;j<=nz;j++) {
                 if(i<nx&&(Field(i,j)||Field(i,j-1)))Hedge(L[i,j],L[i+1,j],rng.NextDouble()<.5);   // (along x: between cells (i,j-1) and (i,j))
                 if(j<nz&&(Field(i,j)||Field(i-1,j)))Hedge(L[i,j],L[i,j+1],rng.NextDouble()<.5);   // (along z: between cells (i-1,j) and (i,j))
-            }
-            Lap("vale hedges");
+            }yield return null;}
+            Lap("vale hedges");yield return null;
             // Copses on the rough ground the fields leave, off the roads.
             Copses=0;
             for(int i=0;i<nx;i++)for(int j=0;j<nz;j++) {
@@ -246,7 +256,7 @@ namespace LittleRoad
                 int n=6+rng.Next(9);
                 for(int k=0;k<n;k++){var q=At(i,j,.15f+.7f*(float)rng.NextDouble(),.15f+.7f*(float)rng.NextDouble());if(ValleyField.RoadDistance(q.x,q.z)<10)continue;q.y=H(q.x,q.z)-.05f;
                     Put(rng.NextDouble()<.75?"tree_round":"tree_pine",q,(float)rng.NextDouble()*360,null,null,true,.9f+(float)rng.NextDouble()*.5f);}
-                Copses++;
+                Copses++;if(Copses%2==0)yield return null;
             }
             // The orchard: apple trees in rows on the north slope, 6 m apart.
             {var o=orchard;
