@@ -39,8 +39,9 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   - S opens when A is complete, and E when S is complete: Aurora's ten build-up races, then the Endurance against Duke
     Rolo and the credits.
   - The post-game follows the credits.
-- **Each class repeats one pattern** (7 Oct): its garage opens everywhere, its Good parts are on sale at once, Better and
-  Best arrive with class progress, a few specialities sit in named places, and a finale completes the class.
+- **Each class repeats one pattern** (7 Oct): its garage opens everywhere (B the Tuner Garage, later classes their own
+  counters and works garages at team HQs), its Good parts are on sale at once, Better and Best arrive with the stars won
+  in that class, a few specialities sit in named places, and a finale completes the class.
 - **Gating** (Richard, 30 Sep): a class opens only once it has races. Shops list only the open class and below, with no
   locked peek, and menus never name the next class. A story explaining unlocks ("achieve x and y") is a much later goal.
 - **Stars** (Richard, 7 Oct): every event has a star rating from 1 to 10 across the whole map. Class finales are 10★,
@@ -52,7 +53,8 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   - **Getting in:** unlocking B gives one free car, a choice of three starters, one per drivetrain (Tsubasa R FWD,
     Sakura S RWD, Kitsune GTI-R AWD), fitted with the seven Good Tuner parts.
   - **Kit conversions:** owned C cars convert to B kits for a fee (the money sink; not built yet). Only a B body takes
-    B parts.
+    B parts. This replaced buying a class platform for B. Whether A to E get a platform purchase or a free car plus kits
+    is decided when each class is reached (OPEN).
   - **Rep:** the total stars of the events you've won, each event counted once, so skill into harder races moves you
     faster. Rep unlocks the Better and Best parts (§5).
   - **The Tuner Championship** is the 10★ finale: three races, harder fields, slightly longer, with "tuner event"
@@ -136,8 +138,13 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   namesakes keep their prices, new cars are priced by star band). New saves start in the Forge Puddle, and old saves
   move to the namesakes. The Tuners, the Pit Stop's vehicles and the Regale keep their models until they have Forge
   designs. `--no-forge-roster` brings the old models back.
-- **Forge cars are build output**, synced from `tools/forge-cars.txt` by `build-dev.ps1`; car props (a jerry can, a hot
-  box) come from Prop Forge and never count towards the collision box.
+- **Forge cars are build output**, synced from `tools/forge-cars.txt` by `build-dev.ps1`.
+- **Car props** (Richard, 18 Oct: Prop Forge serves the cars too): a car's jerry can, hot box or hamper is a Prop Forge
+  object at the car's anchor. Versions are pinned, so a prop change never moves a car until it is bumped, re-checked and
+  seen. Swaps go car by car with a before and after sheet. A car prop keeps its real size (my call, Richard can overrule),
+  stays within about 1.5k triangles at LOD0, and never counts towards the collision box.
+- **Playful kits** (Richard, 6 Oct: "be playful and brave"): a box car in class S lapping a great circuit one day is in
+  the spirit. Some matte paints are an open idea.
 - **Review:** render sheets each round, scored against references; QC answers "is it broken?", Richard judges "is it good?"
   in game.
 
@@ -211,6 +218,8 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   counter at each Pit Stop's garage, free. Final drive 0.80–1.25 on every box; each gear on sport boxes and up; auto-tune
   presets for acceleration, balance or top speed. A GT-style gear chart, power and torque curve, and the car's numbers,
   with a timed test lap of the town's circuit. Tunes save per car and gearbox; rivals race their box's defaults.
+- **Loose surfaces** (3 Oct, after the outsider review): grip on loose slate and gravel sits 60% of the way from a
+  tyre's road grip to its gravel grip, for the physics and the AI alike, so gravel tyres matter in the rallycross.
 - **Aero and the top classes** (2 Oct, after Richard's first drive of the maximum build: "siiiiiick! The speed felt
   good"). He asked for a higher top speed for bigger tracks, no nose lift ("feel glued to the track"), and "remove the turbo
   noises all together".
@@ -259,6 +268,8 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   - Each car's parts sit in a window from a floor to what's unlocked by that race. The floor rises 0.1 of the open ladder
     per star, to 0.9 at 10★.
   - Class B tyres never drop to class C's.
+  - Bayview's first B race is the ground truth (Richard, 7 Oct): the worst B parts mixed with the best at the local
+    garage, raced against the free Tuner on Good parts.
   - Richard's direction: parts in a race mix from the lowest C tier to some of the local garage's; the further from the
     start, the more is unlocked and the harder the races; drive ratings stay consistent and only parts change.
   - `tools/field-table.py` shows the PP of every planned C and B field (stock starter PP 100, the free Tuner on Good
@@ -305,6 +316,8 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   (`tools/music/compose.py`). Each race theme has a last-lap lift stem that fades in over about 3 s. Music sits under the
   engines (race 0.45, free roam 0.6) with a 4 s crossfade between areas. Bayview is G major at 96 bpm (nylon guitar,
   marimba) and Hillcrest D major in 6/8 (steel guitar, accordion). Every new area needs its own themes.
+- **The engine sound test** (Richard asked for one, 30 Sep): Settings > Engine sound test, or `--sound-bench <engine>`:
+  idle, a pull to max revs, a hold on the limiter and the lift back to idle, through the game's own audio.
 - **Horn** (H / L3): the pitch follows the body; folk answer, traffic beeps back, sheep scatter, Bert's train whistles.
 
 ## 10 · Interface
@@ -317,8 +330,13 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   - a minimal HUD with progressive disclosure;
   - contrast of 4.5:1 or more, and large type.
 - **Driving HUD:** the speed dash bottom centre, a heading-up minimap bottom right that zooms out with speed, and the
-  "Talk to…" card above the dash. **No button hints on screen while driving**: the CONTROLS tab lists every action for
-  keyboard, Xbox and PlayStation. Credits and collectibles show as a toast when they change.
+  "Talk to…" card above the dash ("Slow down to talk to…" while moving). **No control hints on screen while driving**
+  (Richard, 29 Sep): the CONTROLS tab lists every action for keyboard, Xbox and PlayStation, and the prompts that do show
+  (talk cards, shops, menus) name the live bindings in the last device's glyphs. Credits and collectibles show as a
+  toast when they change.
+- **Talk badges:** people show a round talk badge in the world within about 38 m, dimmed behind scenery and pulsing for
+  the one in range. No floating names. Near someone, Cross talks rather than shifting.
+- **Saves resume where you parked**, and the pause map can warp you to the nearest Pit Stop you've visited.
 - **Challenges and objectives** (Richard, 5 Oct): a timed event gets a countdown like a race start; a challenge shows big,
   then "shrink[s] to the upper corner"; any challenge can be exited or restarted from the pause menu. With no challenge
   running, the quest card announces a new objective big for 2.4 s, then sits in the corner, fading while driving.
@@ -415,7 +433,8 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   from class C (Bramblewick's milk-float champion, Orchard End's apple-cart racer, Gwen, Dai and Mari at Quarry Hills).
 - **Teams** (one per class A, S and E): you and up to two found racers, managed in the garage's TEAM tab. Teammates are
   two of the 24 entrants with the same AI, and their parts are bought per car (a late-game money sink). No team orders at
-  first. XP from distance and results; levels 1–20.
+  first. XP from distance and results; levels 1–20. A suggested 50% share of a teammate's pay; small track familiarity
+  for the player's team only. OPEN: team orders (not before S, if at all), wet races in class S.
 - **Only show what's real:** a radar axis or stat appears only once its behaviour exists.
 
 ### Things to do (built)
