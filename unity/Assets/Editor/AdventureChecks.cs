@@ -50,7 +50,7 @@ public static class AdventureChecks
             var t=new AdventureStore(Path.Combine(folder,"tuner.json"));t.Change(p=>{p.podiums.AddRange(RaceCalendar.All.Where(e=>e.raceClass=="C").Select(e=>e.id));return true;});
             Check(!t.ClaimTunerStarter("hayate")&&t.ClaimTunerStarter("sakura")&&!t.ClaimTunerStarter("tsubasa")&&t.Data.bodyId=="sakura"&&t.Data.Loadout()["engine"]=="engine_b_twincam","The free Tuner: one of the three starters, once, with Good Tuner parts fitted");
             t.Change(p=>{p.credits=5000;return true;});
-            Check(t.Buy("engine_club")&&t.Data.bodies.Contains(CarBodies.Starter)&&t.SwitchBody(CarBodies.Starter)&&t.Data.Loadout()["engine"]=="engine_club"&&t.Data.Loadout()["tyres"]=="tyres_stock"&&!t.Fit("engine_b_twincam"),"Back on a class C body: Tuner parts come off for the best class C parts owned, and won't refit");
+            Check(t.Buy("engine_club")&&t.Data.bodies.Contains(CarBodies.StarterBody)&&t.SwitchBody(CarBodies.StarterBody)&&t.Data.Loadout()["engine"]=="engine_club"&&t.Data.Loadout()["tyres"]=="tyres_stock"&&!t.Fit("engine_b_twincam"),"Back on a class C body: Tuner parts come off for the best class C parts owned, and won't refit");
             Check(t.SwitchBody("sakura")&&t.Fit("engine_b_twincam")&&CarBodies.Class("sakura")=="B"&&CarBodies.Price("hayate")>0,"On a Tuner body, Tuner parts fit; Tuner bodies are on sale");
         }
         // Save slots (docs/50): the pre-slot save becomes slot 1's autosave; a new game, a save into another slot and

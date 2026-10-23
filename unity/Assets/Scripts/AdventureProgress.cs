@@ -74,8 +74,8 @@ namespace LittleRoad
         // Speed traps (SpeedTraps). Older saves have none.
         public List<TrapRecord> traps;
         public GearTune Tune(){var box=fitted?.Find(f=>f.slot=="transmission")?.id;return box==null?null:tunes?.Find(t=>t.transmission==box);}
-        public static AdventureProgress New()=>new AdventureProgress {version=1,bodyId=CarBodies.Starter,podiums=new List<string>(),wins=new List<string>(),discovered=new List<string>(),
-            owned=EquipmentCatalog.StockLoadout().Values.ToList(),collected=new List<string>(),bodies=new List<string>{CarBodies.Starter},
+        public static AdventureProgress New()=>new AdventureProgress {version=1,bodyId=CarBodies.StarterBody,podiums=new List<string>(),wins=new List<string>(),discovered=new List<string>(),
+            owned=EquipmentCatalog.StockLoadout().Values.ToList(),collected=new List<string>(),bodies=new List<string>{CarBodies.StarterBody},
             fitted=EquipmentCatalog.StockLoadout().Select(p=>new FittedPart{slot=p.Key,id=p.Value}).ToList()};
         public Dictionary<string,string> Loadout()=>fitted.ToDictionary(p=>p.slot,p=>p.id);
         public void Validate()
@@ -124,6 +124,9 @@ namespace LittleRoad
             // Saves from before body shops own exactly the body they drive. JsonUtility reads a
             // missing list as empty, not null.
             if(Data!=null&&(Data.bodies==null||Data.bodies.Count==0))Data.bodies=new List<string>{Data.bodyId};
+            // The Car Forge models (23 Oct): a body bought before them becomes its Forge namesake (the car you drive and every one
+            // you own; written back with the next save). --no-forge-roster leaves the save as it is.
+            if(Data!=null){Data.bodyId=CarBodies.Look(Data.bodyId);Data.bodies=Data.bodies.Select(CarBodies.Look).Distinct().ToList();}
             // Saves from before the class ladder have no podium record.
             if(Data!=null&&Data.podiums==null)Data.podiums=new List<string>();
             if(Data!=null&&Data.wins==null)Data.wins=new List<string>();

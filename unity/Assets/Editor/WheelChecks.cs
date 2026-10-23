@@ -12,6 +12,7 @@ public static class WheelChecks
     public static List<string> Run()
     {
         var checks=new List<string>();void Check(bool pass,string label){if(!pass)throw new Exception("Wheel check: "+label);checks.Add(label);}
+        // (the puddle and the compact are their Car Forge namesakes since 23 Oct: kei-car wheels, 0.27-0.30 m)
         foreach(var (body,radius) in new[]{("puddle",0f),("compact_v1",0f),("regale",.345f)}) {
             var car=TrialWorld.Car(body,Color.white);var rb=car.AddComponent<Rigidbody>();rb.isKinematic=true;
             car.AddComponent<BodyMotion>().Collect(rb);var wheels=new WheelVisuals(car);
@@ -20,7 +21,7 @@ public static class WheelChecks
             var before=meshes.Select(m=>m.transform.rotation).ToArray();wheels.Pose(90,0);
             float least=meshes.Select((m,i)=>Quaternion.Angle(before[i],m.transform.rotation)).Min();
             Check(least>85&&least<95,$"{body}: a quarter turn of the pivots turns every tyre a quarter turn (least {least:0.0} degrees)");
-            Check(radius<=0?wheels.Radius>.3f&&wheels.Radius<.5f:Mathf.Abs(wheels.Radius-radius)<.01f,$"{body}: wheels roll at their own radius ({wheels.Radius:0.000} m)");
+            Check(radius<=0?wheels.Radius>.25f&&wheels.Radius<.5f:Mathf.Abs(wheels.Radius-radius)<.01f,$"{body}: wheels roll at their own radius ({wheels.Radius:0.000} m)");
             UnityEngine.Object.DestroyImmediate(car);
         }
         return checks;
