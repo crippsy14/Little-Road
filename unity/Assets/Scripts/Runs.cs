@@ -314,7 +314,10 @@ namespace LittleRoad
         public static System.Collections.IEnumerator FlushRoutine(double budgetMs=6)
         {
             if(queued.Count==0)yield break;var sw=Stopwatch.StartNew();var jobs=queued.ToArray();queued.Clear();
-            foreach(var (L,_) in jobs)foreach(var it in L.items)for(int lod=0;lod<2;lod++)L.kit.ArraysOf(it.piece,lod);
+            // (the kits' arrays fetched on the main thread first, a frame between runs once the budget's gone: in one go they took a
+            //  43 ms frame for Hillcrest's district, --near-start)
+            var slice=Stopwatch.StartNew();
+            foreach(var (L,_) in jobs){foreach(var it in L.items)for(int lod=0;lod<2;lod++)L.kit.ArraysOf(it.piece,lod);if(slice.Elapsed.TotalMilliseconds>=budgetMs){yield return null;slice.Restart();}}
             var built=new List<ChunkData>[jobs.Length];
             var task=System.Threading.Tasks.Task.Run(()=>System.Threading.Tasks.Parallel.For(0,jobs.Length,i=>built[i]=Prepare(jobs[i].L)));
             while(!task.IsCompleted)yield return null;task.Wait();   // (Wait: a worker's exception surfaces here)

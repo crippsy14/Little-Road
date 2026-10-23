@@ -22,13 +22,18 @@ namespace LittleRoad
 
         public static WheatField Create(string name,Transform parent,Vector3 centre,Vector2 size,float yaw,System.Func<float,float,float> ground,int seed,float height=1.6f)
         {
-            var go=new GameObject(name);go.transform.SetParent(parent,false);var field=go.AddComponent<WheatField>();field.Build(centre,size,yaw,ground,seed,height);All.Add(field);return field;
+            WheatField field=null;TrialWorld.RunNow(CreateRoutine(name,parent,centre,size,yaw,ground,seed,height,f=>field=f));return field;
+        }
+        // As a coroutine (a background district, --near-start): a frame between chunks once 8 ms have gone; the draws are the same.
+        public static System.Collections.IEnumerator CreateRoutine(string name,Transform parent,Vector3 centre,Vector2 size,float yaw,System.Func<float,float,float> ground,int seed,float height=1.6f,System.Action<WheatField> made=null)
+        {
+            var go=new GameObject(name);go.transform.SetParent(parent,false);var field=go.AddComponent<WheatField>();yield return field.Build(centre,size,yaw,ground,seed,height);All.Add(field);made?.Invoke(field);
         }
         void OnDestroy()=>All.Remove(this);
         // Every stalk standing again (a fresh attempt at the Harvest).
         public void Regrow(){for(int i=0;i<pixels.Length;i++)pixels[i]=new Color32(0,128,128,255);flattened=0;dirty=true;}
 
-        void Build(Vector3 centre,Vector2 fieldSize,float yaw,System.Func<float,float,float> ground,int seed,float height)
+        System.Collections.IEnumerator Build(Vector3 centre,Vector2 fieldSize,float yaw,System.Func<float,float,float> ground,int seed,float height)
         {
             size=fieldSize;var rot=Quaternion.Euler(0,yaw,0);axisX=rot*Vector3.right;axisZ=rot*Vector3.forward;
             corner=centre-axisX*size.x*.5f-axisZ*size.y*.5f;corner.y=0;
@@ -43,7 +48,9 @@ namespace LittleRoad
             // Stubble and soil under the crop.
             Sheet("Wheat stubble",At,TrialWorld.Material("Wheat stubble",new Color(.66f,.53f,.30f),0,.08f),.04f,2);
             int chunks=0,tufts=0;
+            var slice=System.Diagnostics.Stopwatch.StartNew();
             for(float cx=0;cx<size.x-.01f;cx+=Chunk)for(float cz=0;cz<size.y-.01f;cz+=Chunk) {
+                if(slice.ElapsedMilliseconds>=8){yield return null;slice.Restart();}
                 float ex=Mathf.Min(size.x,cx+Chunk),ez=Mathf.Min(size.y,cz+Chunk);
                 var v=new List<Vector3>();var roots=new List<Vector3>();var col=new List<Color>();var t=new List<int>();
                 for(float x=cx+.28f;x<ex;x+=.56f)for(float z=cz+.28f;z<ez;z+=.56f) {
@@ -114,7 +121,7 @@ namespace LittleRoad
         void Update()
         {
             var car=Player;
-            if(car!=null&&car.body!=null&&Contains(car.transform.position,3)&&Mathf.Abs(car.speed)>.4f) {
+            if(chaff!=null&&car!=null&&car.body!=null&&Contains(car.transform.position,3)&&Mathf.Abs(car.speed)>.4f) {   // (chaff: made last, the field built over several frames in the background)
                 var f=car.transform.forward;int fresh=Press(car.transform.position+f*(Header>0?1.4f:0),f,car.speed>=0?f:-f,2.3f+(Header>0?1:0),1.2f+Header);
                 if(fresh>0) {
                     // Pushing through standing wheat: a little drag and a spray of chaff (a header cuts it, so less drag).

@@ -84,9 +84,13 @@ Quarry Hills 6.7 s, Bramblewick's green 6.1 s, Vinelands' Adega 7.9 s. Those are
   the deep sea floor (six crop rows set into a hillside fell 51 m to it, as the sea exists before a late district settles);
   the town's non-solid primitives lose their colliders at once, not at the frame's end (a district finished in one go met
   the square's paving disc and the garden paths still solid: no bollards round the fountain).
-- **Frames:** Hillcrest's busiest piece 109 ms (the raceway's buildings; the castle 91, a Via Crest house row 86, the hill
-  slopes 74, the countryside 67): six more frames over 50 ms than the default's 17. Still to split. The worst frames
-  are still Quarry Hills' and Vinelands' (to 160 ms).
+- **Frames (split 23 Oct, night):** the town's slow parts (the castle, the lower town, the house rows, pavements and
+  parapets, the raceway, the countryside, the farm and its wheat field, the hill slopes, the patchwork fields) yield once 8 ms
+  of work has gone, and the runs' flush fetches its kits' arrays a few ms a frame. Hillcrest's busiest piece 109 → 44 ms;
+  its frames over 50 ms 6 → 0-1. The default build is unchanged (`b66582872086e34d`), and a second fingerprint taken after
+  the districts have built in the background as in play (`--fingerprint-late`) is the same with and without the flag
+  (`7d8006e4486d813e` by default). Bramblewick, building next while the valley's tiles stream in, has 4-5 frames over 50 ms
+  against 1 by default; the worst are still Quarry Hills' and Vinelands' own (to 160 ms).
 - **Known:** the headland's sea rocks (part of the trees step) appear a second or two after you start; a build's first
   start from a new place audits the bank sites for that set of pending districts (17.4 s from Hillcrest's square, 10.8 s
   from Vinelands, by default too); the warm-up skips Hillcrest's views when it's still to come.

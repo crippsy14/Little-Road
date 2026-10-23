@@ -53,7 +53,7 @@ namespace LittleRoad
             // world: the kept world came back with its dressing and barriers, and was given them again on every return, 23 Oct.)
             if(PropForge.Enabled&&CoastalLandscape.WorldRoot!=null&&!PersistentWorld.Reused){Physics.SyncTransforms();PropForgeDressing.Build(CoastalLandscape.WorldRoot);Mark("dressing");BankBarriers.Build(CoastalLandscape.WorldRoot,world.track,Districts.Pending?(System.Func<Vector3,bool>)Districts.Built:null,Districts.PendingScope);Mark("bank-barriers");Debug.Log("LITTLE_ROAD_GROUND_FIT "+GroundFit.Summary);}
             // (--world-fingerprint: the built world, every streamed tile included, before the town's life and cars are added.)
-            if(RaceTrial.Has("--world-fingerprint")){WorldTiles.Complete();yield return null;Debug.Log("LITTLE_ROAD_WORLD_FINGERPRINT "+CoastalLandscape.Fingerprint());}   // (a frame: deferred destroys land)
+            if(RaceTrial.Has("--world-fingerprint")&&!RaceTrial.Has("--fingerprint-late")){WorldTiles.Complete();yield return null;Debug.Log("LITTLE_ROAD_WORLD_FINGERPRINT "+CoastalLandscape.Fingerprint());}   // (a frame: deferred destroys land)
             // (Tests and audits see the whole world at once; --world-tiles-test watches it stream.)
             if(Testing&&!RaceTrial.Has("--world-tiles-test"))WorldTiles.Complete();
             Debug.Log($"LITTLE_ROAD_WORLD_TILES ready deferred={WorldTiles.Deferred} pending={WorldTiles.Pending} spawned={BayviewKit.Spawned}");
@@ -143,12 +143,16 @@ namespace LittleRoad
             Debug.Log($"LITTLE_ROAD_SCENE_SWITCH ready t={Time.realtimeSinceStartup:0.00} mode=town world={(PersistentWorld.Current!=null&&PersistentWorld.Current.Reuses>0?"reused":"built")}");CarContact.SeatAll(); // every standing car onto its four wheels (docs/57, 2.5)
             Debug.Log("LITTLE_ROAD_ADVENTURE_READY save="+Store.path+" quest="+Store.Data.questStage+" credits="+Store.Data.credits+" "+RaceTrial.LoadTime);LoadingScreen.Ready();
             if(RaceTrial.Has("--town-print")){yield return TownPrint();yield break;}
+            // (--world-fingerprint --fingerprint-late: the world once the background districts have arrived as in play, a few ms
+            //  a frame, not finished at once: what the game builds, frames passing between a district's parts)
+            if(RaceTrial.Has("--fingerprint-late")){while(Districts.Pending)yield return null;WorldTiles.Complete();yield return null;Debug.Log("LITTLE_ROAD_WORLD_FINGERPRINT "+CoastalLandscape.Fingerprint());Application.Quit(0);yield break;}
             // --load-timing: measure the load (LITTLE_ROAD_LOAD_STEP lines) and quit (W1 world tiles).
             if(RaceTrial.Has("--load-timing")){yield return new WaitForSeconds(2);
                 // (--until-districts: on until every background district has arrived, then the slowest whole frames on the way)
                 if(RaceTrial.Has("--until-districts")) {
                     float from=Time.realtimeSinceStartup;var slow=new List<(float ms,string when)>();int frames=0;string was=Districts.Now+" / "+CoastalLandscape.LastLap;
                     while(Districts.Pending&&Time.realtimeSinceStartup-from<120){yield return null;frames++;slow.Add((Time.unscaledDeltaTime*1000,was));was=Districts.Now+" / "+CoastalLandscape.LastLap;}
+                    var byDistrict=string.Join(" ",slow.Where(s=>s.ms>50).GroupBy(s=>s.when.Split(' ')[0]).OrderByDescending(g=>g.Count()).Select(g=>$"{g.Key}={g.Count()}"));Debug.Log("LITTLE_ROAD_DISTRICTS_OVER50 "+byDistrict);
                     slow.Sort((a,b)=>b.ms.CompareTo(a.ms));int over=slow.Count(s=>s.ms>50);
                     Debug.Log($"LITTLE_ROAD_DISTRICTS_DONE seconds={Time.realtimeSinceStartup-from:0.0} frames={frames} over50ms={over} pending={Districts.Pending} slowest: {string.Join("; ",slow.Take(8).Select(s=>$"{s.ms:0} ({s.when})"))}");
                 }

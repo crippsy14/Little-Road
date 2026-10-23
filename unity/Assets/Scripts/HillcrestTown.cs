@@ -88,9 +88,9 @@ namespace LittleRoad
             // (the slow parts yield inside too: a background district's frames, 50 ms at most)
             static System.Func<System.Collections.IEnumerator> Do(System.Action part)=>()=>Once(part);
             static System.Collections.IEnumerator Once(System.Action part){part();yield break;}
-            foreach(var (name,part) in new (string,System.Func<System.Collections.IEnumerator>)[]{("ReserveZipLanding",Do(ReserveZipLanding)),("MarketSquare",Do(MarketSquare)),("Castle",Do(Castle)),("LowerTown",Do(LowerTown)),
-                ("Station",Do(Station)),("Streets",StreetsRoutine),("SquareRim",Do(SquareRim)),("Vista",Do(Vista)),("Lookout",Do(Lookout)),("Raceway",Do(Raceway)),("Countryside",Do(Countryside)),("HillSlopes",Do(HillSlopes)),
-                ("Patchwork",Do(Patchwork)),("ZipLineBuild",Do(ZipLineBuild)),("TunnelFrame",Do(TunnelFrame)),("Gardens",Do(Gardens))})
+            foreach(var (name,part) in new (string,System.Func<System.Collections.IEnumerator>)[]{("ReserveZipLanding",Do(ReserveZipLanding)),("MarketSquare",Do(MarketSquare)),("Castle",CastleRoutine),("LowerTown",LowerTownRoutine),
+                ("Station",Do(Station)),("Streets",StreetsRoutine),("SquareRim",Do(SquareRim)),("Vista",Do(Vista)),("Lookout",Do(Lookout)),("Raceway",RacewayRoutine),("Countryside",CountrysideRoutine),("HillSlopes",HillSlopesRoutine),
+                ("Patchwork",PatchworkRoutine),("ZipLineBuild",Do(ZipLineBuild)),("TunnelFrame",Do(TunnelFrame)),("Gardens",Do(Gardens))})
                 {yield return part();CoastalLandscape.Lap("town "+name);yield return null;}
             if(footingBoxes.Count>0){QuarryFloor.Combine("Hillside footings",footingBoxes,plinth,root,false);footingBoxes.Clear();}
             Debug.Log($"LITTLE_ROAD_HILLCREST buildings={buildings} plinths={plinths} buried={buried} footings={footings} overlaps={overlaps} spots={Spots.Count}");
@@ -169,10 +169,14 @@ namespace LittleRoad
         static readonly string[] ShopNames={"BAKERY","GELATO","FLORIST","BOOKS","TOYS","BARBER","PASTA","CHEESE","TAILOR","CHEMIST","MUSIC","CAMERAS","SWEETS","BIKES","HATS","WINE","OLIVES","KITES","PIZZA","SOAP"};
         int shopName;
         // Fills one side of a road with a row of houses facing it, between runs [from,to].
-        void Row(HillcrestRoute.Road road,int side,float from,float to,float setback=12.2f,float gapChance=.14f)
+        // About 8 ms of work done since the last yield (a background district's frames: the slow parts yield inside, BuildRoutine).
+        readonly System.Diagnostics.Stopwatch slice=System.Diagnostics.Stopwatch.StartNew();
+        bool Due(){if(slice.ElapsedMilliseconds<8)return false;slice.Restart();return true;}
+        System.Collections.IEnumerator RowRoutine(HillcrestRoute.Road road,int side,float from,float to,float setback=12.2f,float gapChance=.14f)
         {
             float s=from;string last=null;
             while(s<to) {
+                if(Due())yield return null;
                 // Terraces (plain, shop, arcade, bay window, four-storey palazzetto, low cottage, painted gable) mostly; villas, tower houses and cottages between.
                 double roll=rng.NextDouble();
                 string id=roll<.62?new[]{"terrace_a","terrace_a","terrace_b","terrace_b","terrace_c","terrace_d","terrace_d","terrace_e","terrace_f","terrace_g"}[rng.Next(10)]:
@@ -213,7 +217,7 @@ namespace LittleRoad
             Ground(rng.NextDouble()<.5?"tree_cypress":"olive_tree",p.x,p.z,(float)rng.NextDouble()*360,null,null,.9f+(float)rng.NextDouble()*.3f);
         }
         // Pavement strips either side of a street, broken where another road crosses.
-        void Pavements(HillcrestRoute.Road road,float from,float to)
+        System.Collections.IEnumerator PavementsRoutine(HillcrestRoute.Road road,float from,float to)
         {
             foreach(int side in new[]{-1,1}) {
                 var run=new List<Vector3>();
@@ -224,6 +228,7 @@ namespace LittleRoad
                         var post=end+outward*.85f+d.normalized*.2f;post.y=H(post.x,post.z);Box("Pavement end post",post+Vector3.up*.45f,new Vector3(.5f,1.1f,.5f),Quaternion.LookRotation(d),plinth,true);}}
                     run.Clear();}
                 for(float s=from;s<=to;s+=2) {
+                    if(Due())yield return null;
                     Vector3 p=road.At(s)+road.Right(s)*side*(road.width*.5f+1.15f);
                     bool clear=true;foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,p.x,p.z,out _)<other.width*.5f+2.4f){clear=false;break;}
                     // (Street review, 5 Oct: at a junction the strip's square end stood past the rounded kerb, in the road.)
@@ -338,7 +343,7 @@ namespace LittleRoad
             var r=go.GetComponent<MeshRenderer>();r.sharedMaterial=buntingMaterial;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;return go;
         }
         // ---------------------------------------------------------------- castle
-        void Castle()
+        System.Collections.IEnumerator CastleRoutine()
         {
             var c=HillcrestRoute.CastleCourt;const float R=38;const float gateTheta=172f;
             reserved.Add((new(c.x,c.z),52));
@@ -348,11 +353,12 @@ namespace LittleRoad
             var gate=CastleGate();Put("castle_gatehouse",gate.at,gate.yaw,red,"HILLCREST CASTLE");
             var towers=new List<float>();for(int k=0;k<7;k++)towers.Add(gateTheta+26+k*(360-52)/6f);
             int[] pennants={0xff4d5e,0x3a7bd5,0xffb400,0x2e9e5b,0xff7ac8,0x1f8a70,0xff4d5e};
-            for(int k=0;k<towers.Count;k++){var p=At(towers[k],R);p.y=Mathf.Min(p.y,H(p.x,p.z))-.3f;Put("castle_tower",p,towers[k],T(0xffffff,0,pennants[k],0));}
+            for(int k=0;k<towers.Count;k++){if(Due())yield return null;var p=At(towers[k],R);p.y=Mathf.Min(p.y,H(p.x,p.z))-.3f;Put("castle_tower",p,towers[k],T(0xffffff,0,pennants[k],0));}
             // The north-west run (towers 2-3) holds the Zip Tower, flanked by short walls: ZipLine.Survey
             // found the clearest steep line from it (11 m under a hanging car, 46 m of drop).
             const int zipRun=2;
             for(int k=0;k<towers.Count-1;k++) {
+                if(Due())yield return null;
                 float mid=(towers[k]+towers[k+1])*.5f,half=(towers[k+1]-towers[k])*.5f*Mathf.Deg2Rad;float chord=2*R*Mathf.Sin(half)-7;var centre=At(mid,R*Mathf.Cos(half))+Vector3.down*.1f;
                 CurtainRuns[k]=mid;
                 if(grand&&k==zipRun) {
@@ -366,9 +372,10 @@ namespace LittleRoad
             foreach(int sgn in new[]{-1,1}){float a=gateTheta+sgn*17.5f;var w=Put("castle_wall",At(a,R*Mathf.Cos(8.5f*Mathf.Deg2Rad))+Vector3.down*.1f,a,red);w.transform.localScale=new Vector3(.2f,1,1);}
             if(grand) {
                 // The donjon (west) fronts the gate; the palazzo (east) turns its loggia to the valley.
-                var donjon=At(265,13)+Vector3.down*.05f;Put("castle_donjon",donjon,Yaw(donjon,At(gateTheta,R)),red);
+                var donjon=At(265,13)+Vector3.down*.05f;Put("castle_donjon",donjon,Yaw(donjon,At(gateTheta,R)),red);if(Due())yield return null;
                 Put("castle_palace",At(95,25.5f)+Vector3.down*.05f,95,T(0xe3a83b,0x2f6b3f,0xd8343f,0x3b5f8a));
                 // Cobbled courtyard with a grip trigger, like the market square.
+                if(Due())yield return null;
                 var disc=GameObject.CreatePrimitive(PrimitiveType.Cylinder);disc.name="Castle courtyard paving";disc.transform.SetParent(root);NoCollider(disc);
                 disc.transform.position=c+Vector3.up*.03f;disc.transform.localScale=new Vector3(74,.02f,74);disc.GetComponent<Renderer>().sharedMaterial=plinth;
                 var grip=new GameObject("Castle courtyard grip",typeof(BoxCollider),typeof(RoadSurface));grip.transform.SetParent(root);grip.transform.position=c;
@@ -460,7 +467,7 @@ namespace LittleRoad
             new ZipLine(ZipTop.transform,station.transform,trolley.transform,root,steel);
         }
         // ---------------------------------------------------------------- lower town
-        void LowerTown()
+        System.Collections.IEnumerator LowerTownRoutine()
         {
             var quay=HillcrestRoute.Quay;var main=HillcrestRoute.Mainline;
             float Run(float x){float best=0,bd=float.MaxValue;for(float s=0;s<quay.Length;s+=1){float d=Mathf.Abs(quay.At(s).x-x);if(d<bd){bd=d;best=s;}}return best;}
@@ -478,14 +485,17 @@ namespace LittleRoad
                 var motors=Front(30,-1,"motors",out float my);Building("motors",motors,my,T(0xf2e2c0,0x1d6fa8,0xffd23f,0x1d6fa8),"HILLCREST MOTORS",true);
                 Spots["motors"]=(motors+Quaternion.Euler(0,my,0)*new Vector3(-9.5f,0,6.5f),my+90);
             }
+            if(Due())yield return null;
             var hotel=Front(200,-1,"hotel",out float hy);Building("hotel",hotel,hy,T(0xfff0c8,0xd9534f,0xff4d5e,0xd9534f),"GRAND HOTEL",true);
             var cafe=Front(160,-1,"cafe",out float cy);Building("cafe",cafe+Quaternion.Euler(0,cy,0)*Vector3.back*2.5f,cy,T(0xcfe0f5,0x3a7bd5,0x3a7bd5,0x3a7bd5),"RIVERSIDE",true);
+            if(Due())yield return null;
             var mill=Front(318,-1,"mill",out float mly);Building("mill",mill,mly,T(0xfff0c8,0x9a5b3c,0xff4d5e,0x9a5b3c),null,true);
+            if(Due())yield return null;
             var post=Front(-40,1,"post_office",out float py);Building("post_office",post,py,T(0xffe3a3,0xd9534f,0xff4d5e,0xd9534f),"POST",true);
             Spots["postvan"]=(post+Quaternion.Euler(0,py,0)*new Vector3(7.2f,0,5.6f),py+90);
             // The rest of both sides: rows of houses and shops.
-            Row(quay,1,Run(-80),quay.Length-6);Row(quay,-1,Run(-80),quay.Length-6,12.2f,.2f);
-            Pavements(quay,6,quay.Length-6);Lamps(quay,8,quay.Length-8,22);
+            yield return null;yield return RowRoutine(quay,1,Run(-80),quay.Length-6);yield return null;yield return RowRoutine(quay,-1,Run(-80),quay.Length-6,12.2f,.2f);yield return null;
+            yield return PavementsRoutine(quay,6,quay.Length-6);yield return null;Lamps(quay,8,quay.Length-8,22);
             for(float x=-60;x<420;x+=64)StreetBunting(quay,Run(x));
             // Riverside promenade: benches and trees looking over the water.
             var river=HillcrestRoute.River;
@@ -541,10 +551,10 @@ namespace LittleRoad
         System.Collections.IEnumerator StreetsRoutine()
         {
             var crest=HillcrestRoute.Crest;
-            Row(crest,1,14,crest.Length-60);yield return null;Row(crest,-1,14,crest.Length-60,12.2f,.22f);yield return null;
-            Pavements(crest,4,crest.Length-50);yield return null;Lamps(crest,10,crest.Length-40,26);yield return null;
+            yield return RowRoutine(crest,1,14,crest.Length-60);yield return null;yield return RowRoutine(crest,-1,14,crest.Length-60,12.2f,.22f);yield return null;
+            yield return PavementsRoutine(crest,4,crest.Length-50);yield return null;Lamps(crest,10,crest.Length-40,26);yield return null;
             for(float s=60;s<crest.Length-60;s+=90)StreetBunting(crest,s);yield return null;
-            Parapets(crest,14,crest.Length-30);
+            yield return ParapetsRoutine(crest,14,crest.Length-30);
         }
         // A low stone parapet along the downhill side of a hill street, where the ground beyond the pavement falls away
         // and nothing else stands (the edge audit found 128 open drops along Via Crest's outer side, 2 Oct). Gaps are
@@ -576,7 +586,7 @@ namespace LittleRoad
             }
             Debug.Log("LITTLE_ROAD_SQUARE_RIM pieces="+pieces);
         }
-        void Parapets(HillcrestRoute.Road road,float from,float to)
+        System.Collections.IEnumerator ParapetsRoutine(HillcrestRoute.Road road,float from,float to)
         {
             var stone=WorldLook.Kit("Hillcrest parapet",Toy.Hex(0xc2b08e),WorldLook.Pattern.Stone,0,.12f,true);
             var cap=TrialWorld.Material("Parapet cap",Toy.Hex(0xefe6d2),0,.25f);
@@ -601,6 +611,7 @@ namespace LittleRoad
             spans.Add((-1,from,to,false));spans.Add((1,from,to,false));
             var done=new HashSet<(int,int)>();
             foreach(var (side,a0,b0,gap) in spans)for(float s=a0;s<b0;s+=step) {
+                if(Due())yield return null;
                 if(done.Contains((side,Mathf.RoundToInt(s/step))))continue;
                 if(!Open(s,side,gap)||!Open(Mathf.Min(s+step,b0),side,gap))continue;
                 done.Add((side,Mathf.RoundToInt(s/step)));
@@ -642,16 +653,18 @@ namespace LittleRoad
             // Clear of both tables (it used to sit 2 m from one, so the resident's car parked through it).
             Spots["lookout"]=(l+side*3+face*1,Yaw(l,falls)+90);if(PropForge.Enabled)Debug.Log($"LITTLE_ROAD_SPOT lookout {l} face {face}");
         }
-        void Raceway()
+        void Raceway()=>TrialWorld.RunNow(RacewayRoutine());
+        System.Collections.IEnumerator RacewayRoutine()
         {
             var circuit=HillcrestRoute.Circuit;var pad=HillcrestRoute.Paddock;reserved.Add((new(pad.x,pad.z),60));
             int i0=HillcrestRoute.Index(circuit,new Vector3(-420,0,-1083));Vector3 a=circuit[i0],f=circuit[(i0+4)%circuit.Length]-circuit[(i0+circuit.Length-4)%circuit.Length];f.y=0;f.Normalize();
             var right=Vector3.Cross(Vector3.up,f);var north=right.z>0?right:-right;
             // Grandstand on the north side facing the straight; pit garages further along.
-            var stand=a+north*21;stand.y=H(stand.x,stand.z)-.05f;Put("grandstand",stand,Yaw(stand,a),T(0xffffff,0x1d6fa8,0xffd23f,0x1d6fa8),"HILLCREST RACEWAY");
+            var stand=a+north*21;stand.y=H(stand.x,stand.z)-.05f;Put("grandstand",stand,Yaw(stand,a),T(0xffffff,0x1d6fa8,0xffd23f,0x1d6fa8),"HILLCREST RACEWAY");if(Due())yield return null;
             // Pit row: four team garages, hospitality deck, race control tower and timing pylon.
             if(BayviewKit.Has("pit_garages")){var p=a+f*-76+north*23;p.y=H(p.x,p.z)-.05f;Put("pit_garages",p,Yaw(p,p-north),T(0xffffff,0x1d6fa8,0xffd23f,0x1d6fa8),"bay1=ROSSO|bay2=AZZURRO|bay3=VERDE|bay4=GIALLO|control=RACE CONTROL|paddockback=TEAM PADDOCK");}
             else for(int k=0;k<3;k++){var p=a+f*(-60-k*16)+north*22;p.y=H(p.x,p.z)-.05f;Put("motors",p,Yaw(p,p-north),T(new[]{0xff4d5e,0x3a7bd5,0x2e9e5b}[k],0xffffff,0xffd23f,0x1d6fa8),"PIT "+(k+1));}
+            if(Due())yield return null;
             foreach(float d in new[]{-30f,-10f,10f,30f,50f}){var p=a+f*d+north*14.5f;p.y=H(p.x,p.z);Put("flag_pole",p,0,T(0xffffff,new[]{0xff4d5e,0x3a7bd5,0xffb400}[(int)(d+30)/20%3],0xffffff,0));}
             Spots["raceway"]=(pad+new Vector3(4,0,-6),90);
             // Paddock: tarmac under the pit garages and the drivers' car park, bays for the cars.
@@ -665,6 +678,7 @@ namespace LittleRoad
                 int rejectedNear=0;void FlushCorner(){rejectedNear=0;if(corner.Count>0&&!TyreBarriers.Lay(corner,root,"Raceway tyres"))for(int k=0;k<corner.Count;k++)Put("tyre_wall",corner[k],cornerYaw[k],null,null,1);corner.Clear();cornerYaw.Clear();}
                 int n=circuit.Length;float since=99;string[] brands={"HILLCREST MOTORS","BELLA VISTA","GRAND HOTEL","GELATO","VALLEY V6","CAFFE LUNA","SILVER FALLS","HILLCREST DELI","TWIN TURBO","BAKERY"};int brand=0,board=0;
                 for(int i=0;i<n;i+=3) {
+                    if(Due())yield return null;
                     Vector3 p=circuit[i],back=circuit[(i+n-12)%n],ahead=circuit[(i+12)%n];Vector3 tan=ahead-back;tan.y=0;tan.Normalize();var r=Vector3.Cross(Vector3.up,tan);
                     float turn=Vector3.SignedAngle(new Vector3(p.x-back.x,0,p.z-back.z),new Vector3(ahead.x-p.x,0,ahead.z-p.z),Vector3.up);since+=4.5f;
                     if(PropForge.Enabled&&Mathf.Abs(turn)<=4)FlushCorner();
@@ -682,17 +696,18 @@ namespace LittleRoad
             var access=HillcrestRoute.RacewayAccess;float s=access.Length-70;Put("town_gate",access.At(s)+Vector3.down*.02f,Yaw(access.At(s+2),access.At(s-2)),T(0xffffff,0,0,0),"RACEWAY");
         }
         // ---------------------------------------------------------------- countryside
-        void Countryside()
+        System.Collections.IEnumerator CountrysideRoutine()
         {
             // Vineyards on the town hill's southern skirt and around Vine Hill.
-            for(float x=110;x<320;x+=13)for(float z=-1360;z>-1440;z-=3.4f)Vine(x,z);reserved.Add((new(215,-1400),70));
-            var vine=new Vector2(-565,-1330);for(float x=vine.x-70;x<vine.x+70;x+=13)for(float z=vine.y-60;z<vine.y+60;z+=3.4f)if(Vector2.Distance(new(x,z),vine)<66)Vine(x,z);reserved.Add((vine,72));
+            for(float x=110;x<320;x+=13){if(Due())yield return null;for(float z=-1360;z>-1440;z-=3.4f)Vine(x,z);}reserved.Add((new(215,-1400),70));
+            var vine=new Vector2(-565,-1330);for(float x=vine.x-70;x<vine.x+70;x+=13){if(Due())yield return null;for(float z=vine.y-60;z<vine.y+60;z+=3.4f)if(Vector2.Distance(new(x,z),vine)<66)Vine(x,z);}reserved.Add((vine,72));
             // All the valley's farming is one estate now (lavender, sunflowers, hay, wheat).
-            Estate();
+            yield return null;yield return EstateRoutine();yield return null;
             // An olive grove west of the lower town.
-            for(float x=-260;x<-120;x+=9)for(float z=-980;z>-1050;z-=9)if(FieldClear(x,z,5))Ground("olive_tree",x+(float)rng.NextDouble()*2,z,(float)rng.NextDouble()*360,null,null,.9f);
+            for(float x=-260;x<-120;x+=9){if(Due())yield return null;for(float z=-980;z>-1050;z-=9)if(FieldClear(x,z,5))Ground("olive_tree",x+(float)rng.NextDouble()*2,z,(float)rng.NextDouble()*360,null,null,.9f);}
             // Wind turbines along the southern ridge crest (rotors face the valley).
             for(float x=-760;x<=1060;x+=150) {
+                if(Due())yield return null;
                 float bestZ=-1700,best=-99;for(float z=-1580;z>-1960;z-=10){float h=H(x,z);if(h>best){best=h;bestZ=z;}}
                 Put("wind_turbine",new Vector3(x,best-.5f,bestZ),0,null,null,1,true,BayviewKit.AnimatedRoot);
             }
@@ -703,7 +718,7 @@ namespace LittleRoad
         // drive through and flatten; sunflower and lavender plots; a ploughed field and a hay
         // meadow. A gate over the lane from the station names it.
         public static readonly Vector2 WheatLocal=new(20,-8),WheatSize=new(130,86);
-        void Estate()
+        System.Collections.IEnumerator EstateRoutine()
         {
             float yaw=HillcrestRoute.FarmYaw;var rot=Quaternion.Euler(0,yaw,0);
             reserved.Add((HillcrestRoute.FarmCentre,HillcrestRoute.FarmOuter-15));
@@ -737,14 +752,14 @@ namespace LittleRoad
             dome.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Silo dome red",Toy.Hex(0xd94040),.1f,.4f);NoCollider(dome);}
             Kit("tractor",-70,52,55);Kit("tractor",-86,48,-30,null,null,.95f);
             foreach(var (x,z,y) in new[]{(-50f,64f,.65f),(-48.7f,64f,.65f),(-51.3f,64f,.65f),(-49.35f,64f,1.9f),(-50.65f,64f,1.9f),(-50f,64f,3.1f)}) {var b=Kit("hay_bale",x,z,0);b.transform.position+=Vector3.up*(y-.65f);}
-            Fence(new(-100,46),new(-52,46),new Vector2(-94,-80));Fence(new(-52,46),new(-52,78));
+            Fence(new(-100,46),new(-52,46),new Vector2(-94,-80));Fence(new(-52,46),new(-52,78));if(Due())yield return null;
             // Farmer Giles waits by the yard: a resident now, with the farm's challenges (FarmChallenges, doc 64).
             Spots["farm"]=(F(-60,58),yaw+200);
             // The wheat: fenced, with gaps on the yard side and the lane side to drive in.
             var wc=HillcrestRoute.Farm(WheatLocal.x,WheatLocal.y);float x0=WheatLocal.x-WheatSize.x*.5f,x1=WheatLocal.x+WheatSize.x*.5f,z0=WheatLocal.y-WheatSize.y*.5f,z1=WheatLocal.y+WheatSize.y*.5f;
-            WheatField.Create("Golden Acre wheat",holder,wc,WheatSize,yaw,H,331);
+            CoastalLandscape.Lap("estate yard");yield return null;yield return WheatField.CreateRoutine("Golden Acre wheat",holder,wc,WheatSize,yaw,H,331);CoastalLandscape.Lap("estate wheat");yield return null;
             Fence(new(x0-1.5f,z0-1.5f),new(x1+1.5f,z0-1.5f),new Vector2(10,30));Fence(new(x0-1.5f,z1+1.5f),new(x1+1.5f,z1+1.5f),new Vector2(-30,-10),new Vector2(50,70));
-            Fence(new(x0-1.5f,z0-1.5f),new(x0-1.5f,z1+1.5f),new Vector2(-18,2));Fence(new(x1+1.5f,z0-1.5f),new(x1+1.5f,z1+1.5f),new Vector2(-18,2));
+            Fence(new(x0-1.5f,z0-1.5f),new(x0-1.5f,z1+1.5f),new Vector2(-18,2));Fence(new(x1+1.5f,z0-1.5f),new(x1+1.5f,z1+1.5f),new Vector2(-18,2));if(Due())yield return null;
             // Scarecrow in the middle (not solid: drive past it, or through it).
             var sc=F(WheatLocal.x+6,WheatLocal.y+4);var wood=WorldLook.Kit("Scarecrow wood",new Color(.45f,.32f,.2f),WorldLook.Pattern.Wood,0,.1f,true);
             Box("Scarecrow post",sc+Vector3.up*1.6f,new Vector3(.14f,3.2f,.14f),rot,wood,false).transform.SetParent(holder);
@@ -760,17 +775,17 @@ namespace LittleRoad
                 for(int r=0;r<rows;r++)for(int c=-1;c<=1;c++)Kit(id,cx+c*12.2f,cz-rows*1.2f+r*2.4f,0,null,null,1,false);
                 Fence(new(cx-19,cz-rows*1.2f-2),new(cx+19,cz-rows*1.2f-2),new Vector2(cx-3,cx+3));Fence(new(cx-19,cz+rows*1.2f+1),new(cx+19,cz+rows*1.2f+1));
             }
-            if(BayviewKit.Has("sunflower_row"))Plot("sunflower_row",-98,10,14);
-            if(BayviewKit.Has("lavender_row"))Plot("lavender_row",-98,-36,14);
+            if(Due())yield return null;if(BayviewKit.Has("sunflower_row"))Plot("sunflower_row",-98,10,14);
+            if(Due())yield return null;if(BayviewKit.Has("lavender_row"))Plot("lavender_row",-98,-36,14);
             // Ploughed field south of the wheat: dark ridges on turned soil.
-            Slab("Ploughed field",WheatLocal.x,-72,130,.04f,24,soil);
+            if(Due())yield return null;Slab("Ploughed field",WheatLocal.x,-72,130,.04f,24,soil);
             for(float z=-83;z<=-61;z+=1.6f)Slab("Plough ridge",WheatLocal.x,z,129,.2f,.7f,soilDark,.02f);
             Fence(new(x0-1.5f,-85.5f),new(x1+1.5f,-85.5f));
             // Hay meadow north of the wheat: mown stripes and rows of round bales.
             for(float z=40;z<=76;z+=6)Slab("Mown stripe",WheatLocal.x+8,z,112,.02f,3,mown,.02f);
             // (The meadow's round bales made way for the orchard: Apple Shake, doc 64.) A few bales at its west end.
             for(int c=0;c<4;c++)Kit("hay_bale",-40+(c%2)*2.6f,74-c*1.6f,(c*37)%90);
-            int apples=Orchard.Build(holder,(x,z)=>F(x,z),yaw);Debug.Log("LITTLE_ROAD_ORCHARD trees="+apples);
+            CoastalLandscape.Lap("estate fields");yield return null;int apples=Orchard.Build(holder,(x,z)=>F(x,z),yaw);CoastalLandscape.Lap("estate orchard");Debug.Log("LITTLE_ROAD_ORCHARD trees="+apples);
             Debug.Log("LITTLE_ROAD_FARM estate=Golden Acre wheat="+WheatSize.x+"x"+WheatSize.y);
         }
         // Olive trees, cypresses and the odd cottage on the slopes between the spiral's loops.
@@ -779,7 +794,7 @@ namespace LittleRoad
         // downhill side), an olive grove, or meadow with cypresses. Everything keeps clear of roads, the
         // square and every building already placed (BayviewKit footprints). The old version checked
         // Reserved(), which reserves the whole hill, so nothing was ever planted and the slopes were bare.
-        void HillSlopes()
+        System.Collections.IEnumerator HillSlopesRoutine()
         {
             var c=HillcrestRoute.HillCentre;int pieces=0;int existing=BayviewKit.Footprints.Count; // buildings, not our own rows
             bool Clear(Vector3 p,Vector3 size,float yaw)
@@ -811,6 +826,7 @@ namespace LittleRoad
                 string use=roll<.38?"vines":roll<.52?"lavender":roll<.78?"olives":"meadow";
                 float a0=sector*15f,a1=a0+15;int terrace=0;
                 for(float r=56;r<192;r+=use=="olives"?7:use=="meadow"?9:3f,terrace++) {
+                    if(Due())yield return null;
                     float step=(use=="olives"?7:use=="meadow"?11:12.6f)/(r*Mathf.Deg2Rad);
                     for(float a=a0+step*.5f;a<a1;a+=step) {
                         var p=At(r,a+(use=="olives"?(float)(rng.NextDouble()-.5)*step*.4f:0));
@@ -868,7 +884,7 @@ namespace LittleRoad
             if(RaceTrial.Has("--gate-log")&&hedges%15==1)Debug.Log($"LITTLE_ROAD_HEDGE {line[0].x:0.0},{line[0].y:0.0},{line[0].z:0.0} to {line[^1].x:0.0},{line[^1].z:0.0}");
             Runs.Draw(L,root);
         }
-        void Patchwork()
+        System.Collections.IEnumerator PatchworkRoutine()
         {
             var palettes=new[]{(new Color(.95f,.80f,.36f),new Color(.86f,.68f,.28f)),(new Color(.66f,.46f,.30f),new Color(.55f,.37f,.24f)),(new Color(.52f,.74f,.30f),new Color(.44f,.64f,.26f)),
                 (new Color(.70f,.58f,.90f),new Color(.47f,.62f,.36f)),(new Color(.99f,.86f,.22f),new Color(.42f,.62f,.26f)),(new Color(.80f,.86f,.42f),new Color(.66f,.76f,.34f))};
@@ -884,6 +900,7 @@ namespace LittleRoad
             }
             // Fields share the farm's grid and axis (as real field systems do), in two sizes.
             for(float gx=-700;gx<1000;gx+=74)for(float gz=-690;gz>-1520;gz-=62) {
+                if(Due())yield return null;
                 float x=gx,z=gz;bool big=rng.NextDouble()<.5;float w=big?60:42,d=big?44:34;
                 if(Vector2.Distance(new(x,z),HillcrestRoute.HillCentre)<215||!FieldClear(x,z,Mathf.Max(w,d)*.5f)||!FootprintClear(x,z,w,d))continue;
                 if(rng.NextDouble()<.25)continue;
