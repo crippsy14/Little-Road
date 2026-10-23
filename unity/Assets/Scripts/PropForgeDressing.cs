@@ -42,7 +42,7 @@ namespace LittleRoad
             if(root==null){root=new GameObject("Prop Forge dressing").transform;root.SetParent(parent,false);}
             int before=Placed;
             if(BayviewKit.Has("litter_bin")) {
-                var mine=new List<GameObject>();foreach(var g in BayviewKit.Placed)if(g!=null&&(g.transform.IsChildOf(holder)||also!=null&&also(g)))mine.Add(g);   // (a copy: dressing adds to the list)
+                var mine=new List<GameObject>();foreach(var g in BayviewKit.Placed)if(g!=null&&(holder!=null&&g.transform.IsChildOf(holder)||also!=null&&also(g)))mine.Add(g);   // (a copy: dressing adds to the list; holder null: `also` alone)
                 for(int i=0;i<mine.Count;i++){Dress(mine[i]);if(i%perFrame==perFrame-1)yield return null;}
             }
             done(Placed-before);

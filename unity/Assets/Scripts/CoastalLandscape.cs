@@ -498,7 +498,14 @@ namespace LittleRoad
                 BayviewKit.Spawn("windmill",hill,200,BayviewKit.AnimatedRoot,new BayviewKit.Tint(Color.white,Toy.Hex(0x3a7bd5),Toy.Hex(0xff4d5e),Toy.Hex(0x3a7bd5)));
             }
             if(island&&!NewBayview.On)new BayviewCountryside(this,track,root).Build();Step("countryside");
-            Physics.SyncTransforms();ValleyRoads();ValleyWater();Step("valley-roads-water");Next(.6f,"Laying the railway and Hillcrest");yield return null;
+            // (--near-start: Hillcrest's valley in the background from an island-side start, and the far places' roads before it,
+            //  stages 1 and 2: NearStart)
+            bool vinelandsHere=Vinelands.Enabled&&RaceArea.Near(Vinelands.Centre,200);
+            bool laterHillcrest=ValleyDetail&&Districts.Enabled&&WorldTiles.Streams&&!RaceArea.Active&&NearStart.DeferHillcrest(WorldTiles.Focus,(!QuarryHills.Enabled||deferQuarry)&&(!Bramblewick.Enabled||DeferFar(Bramblewick.Centre))&&(!vinelandsHere||DeferFar(Vinelands.Centre)));
+            farRoads=laterHillcrest?new System.Collections.Generic.List<System.Action>():null;
+            Physics.SyncTransforms();ValleyRoads();ValleyWater();
+            if(farRoads!=null&&farRoads.Count>0)Districts.Defer("far-roads",FarRoadsRoutine(),SettleFarRoads,NearStart.FarRoadsGround(),NearStart.OnFarRoads,-1);else farRoads=null;
+            Step("valley-roads-water");Next(.6f,"Laying the railway and Hillcrest");yield return null;
             // The town, railway and woods sit behind the headland ridge, out of sight of the Bayview
             // circuit: Bayview races skip them (ValleyDetail false) and keep their frame cost.
             // (A race leaves Hillcrest's town and railway out unless they're in its area: RaceArea.)
@@ -506,12 +513,10 @@ namespace LittleRoad
             if(ValleyDetail){if(hillcrest)Railway();Step("railway");Physics.SyncTransforms();
                 // (--near-start, stage 1: Hillcrest's valley layer in the background from an island-side start, the places that
                 //  share its ground after it: NearStart)
-                bool vinelandsHere=Vinelands.Enabled&&RaceArea.Near(Vinelands.Centre,200);
-                bool laterHillcrest=Districts.Enabled&&WorldTiles.Streams&&!RaceArea.Active&&NearStart.DeferHillcrest(WorldTiles.Focus,(!QuarryHills.Enabled||deferQuarry)&&(!Bramblewick.Enabled||DeferFar(Bramblewick.Centre))&&(!vinelandsHere||DeferFar(Vinelands.Centre)));
                 string after=laterHillcrest?"hillcrest":null;
                 if(laterHillcrest) {
                     hillcrestTyres=TyreBarriers.Laid+TyreBarriers.Refused;PropForgeDressing.Later=p=>OnHillcrestGround(p)&&Districts.Waiting("hillcrest");
-                    Districts.Defer("hillcrest",HillcrestRoutine(),()=>SettleDistrict("hillcrest",()=>hillcrestHolder,g=>OnHillcrestGround(g.transform.position)),NearStart.HillcrestGround,OnHillcrestGround,NearStart.Away(NearStart.HillcrestGround,WorldTiles.Focus));Step("hillcrest-town");
+                    Districts.Defer("hillcrest",HillcrestRoutine(),()=>SettleDistrict("hillcrest",()=>hillcrestHolder,g=>OnHillcrestGround(g.transform.position)),NearStart.HillcrestGround,OnHillcrestGround,NearStart.Away(NearStart.HillcrestGround,WorldTiles.Focus),Districts.Waiting("far-roads")?"far-roads":null);Step("hillcrest-town");
                 }
                 else{new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");}
                 // Quarry Hills far from where the car starts is built after the town is ready (Districts, docs/72).

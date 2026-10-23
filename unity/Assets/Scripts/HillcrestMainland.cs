@@ -223,6 +223,9 @@ namespace LittleRoad
                 groundCalls=null;groundValues=null;groundReplay=null;
             }
         }
+        // Which place each road line belongs to ("hillcrest" for the valley's seven): a place built later draws its roads with it
+        // (--near-start, NearStart.FarRoad).
+        public static readonly Dictionary<string,string> PlaceOf=new();
         static Road[] BuildRoadLines(System.Diagnostics.Stopwatch clock)
         {
             var list=new List<Road>{
@@ -230,12 +233,12 @@ namespace LittleRoad
             Make("Raceway road",Dense(RacewayControl,2),7.5f,6,18),Make("Falls road",Dense(FallsControl,2),7,5,16),Make("Station road",Dense(StationControl,2),7,5,16),
             Make("Farm lane",Dense(FarmLaneControl(),2),6.5f,5,16)};
             // Quarry Hills' roads follow Hillcrest's seven (docs/59): stamped, filled, planted round and bridged the same way.
-            long hillcrest=clock.ElapsedMilliseconds;
-            if(QuarryHills.Enabled)list.AddRange(QuarryHills.Roads(list[3].line));
+            long hillcrest=clock.ElapsedMilliseconds;PlaceOf.Clear();void Owned(string place){foreach(var r in list)PlaceOf.TryAdd(r.name,place);}Owned("hillcrest");
+            if(QuarryHills.Enabled)list.AddRange(QuarryHills.Roads(list[3].line));Owned("quarry-hills");
             long quarry=clock.ElapsedMilliseconds;
-            if(Bramblewick.Enabled)list.AddRange(Bramblewick.Roads(list[6].line));   // (Valley Road South, off the farm lane: docs/82)
+            if(Bramblewick.Enabled)list.AddRange(Bramblewick.Roads(list[6].line));Owned("bramblewick");   // (Valley Road South, off the farm lane: docs/82)
             long bramblewick=clock.ElapsedMilliseconds;
-            if(Vinelands.Enabled)list.AddRange(Vinelands.Roads(list.Find(r=>r.name==Bramblewick.RoadName).line[^1]));   // (on from Bramblewick's gate: docs/85)
+            if(Vinelands.Enabled)list.AddRange(Vinelands.Roads(list.Find(r=>r.name==Bramblewick.RoadName).line[^1]));Owned("vinelands");   // (on from Bramblewick's gate: docs/85)
             Debug.Log($"LITTLE_ROAD_ROAD_LINES roads={list.Count} hillcrest_ms={hillcrest} quarry_ms={quarry-hillcrest} bramblewick_ms={bramblewick-quarry} vinelands_ms={clock.ElapsedMilliseconds-bramblewick}");
             return list.ToArray();
         }

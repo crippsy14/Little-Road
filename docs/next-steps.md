@@ -6,6 +6,11 @@ Add new status at the top of "Latest" in a line or two, and move anything that b
 
 ## Latest
 
+- **23 Oct (late night): near start, Hillcrest's frames and stage 2** ([brief-near-start.md](brief-near-start.md),
+  `--near-start`, off): Hillcrest's background build split (its busiest piece 109 → 44 ms, frames over 50 ms 6 → 0-1), and the
+  far places' roads drawn in the background before it. Ready from Bayview **2.9 s**; the same world, checked at once and
+  after a background build as in play (`--fingerprint-late`). Next: stage 3 (terrain chunks by distance) or 4 (Bayview's
+  island as a district, for starts elsewhere: 5-8 s now).
 - **23 Oct (night): build near the start, stage 1** ([brief-near-start.md](brief-near-start.md), behind `--near-start`,
   off): from Bayview, Hillcrest's valley layer (town and trees) builds in the background, the places that share its ground
   after it. Ready **3.2–3.3 s** against 4.7–6.0 s the same hour; Hillcrest arrives 1.8 s after you can drive; the same world
@@ -64,10 +69,9 @@ pace), `--distant-mountains`, `--turbo-sound`/`--hybrid-sound`, `--scale-test` (
 
 ## Next three pieces
 
-1. **Build near the start** ([brief-near-start.md](brief-near-start.md)): stage 1 is in behind `--near-start` (3.2–3.3 s
-   from Bayview). Next, split Hillcrest's slow parts so no background frame passes 50 ms, then stage 2 (each place's roads
-   with it), 3 (terrain chunks by distance), 4 (Bayview's island as a district, for starts elsewhere) and 5 (the town
-   set-up), then default on and the play copy. Also the open Quarry Hills audit line (a car not on the ground, from commits
+1. **Build near the start** ([brief-near-start.md](brief-near-start.md)): stages 1-2 are in behind `--near-start` (2.9 s
+   from Bayview, Hillcrest's frames under 50 ms). Next stage 3 (terrain chunks by distance), 4 (Bayview's island as a
+   district, for starts elsewhere: 5-8 s now) and 5 (the town set-up), then default on and the play copy. Also the open Quarry Hills audit line (a car not on the ground, from commits
    since 21 Oct), and the background districts' busiest frames (Quarry Hills' kettle street 190 ms, Vinelands' parts 180 ms;
    the bar is 50 ms).
 2. **Vinelands leftovers:** the planting top-up and the small junction seams and lips.
@@ -96,8 +100,10 @@ pace), `--distant-mountains`, `--turbo-sound`/`--hybrid-sound`, `--scale-test` (
 
 ## Known issues
 
-- Start-up time: 4.7–6.5 s by default (the machine's load moves it), 3.2–3.3 s with `--near-start` from Bayview; starts
+- Start-up time: 4.7–6.5 s by default (the machine's load moves it), 2.9 s with `--near-start` from Bayview; starts
   elsewhere 5-8 s.
+- An intermittent native crash in the first-launch warm-up (Unity player, no managed stack): once in ~15 first launches on
+  23 Oct (with `--near-start --no-quarry-hills --no-bramblewick --no-vinelands`); crash reports from 2, 3 and 5 Oct too.
 - A build's first start from a place it hasn't started from before audits the bank sites for that set of pending
   districts: 17.4 s from Hillcrest's square, 10.8 s from Vinelands (seconds, cached after).
 - The Ponte Nova's bank barrier (4514, -3350) is found on some builds' first launch and not others (22 or 21 Vinelands

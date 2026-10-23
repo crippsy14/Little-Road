@@ -149,6 +149,16 @@ public static class WorldStreamingChecks
             foreach(var (name,c) in new[]{("Quarry Hills",QuarryHills.Square),("Bramblewick",Bramblewick.Centre),("Vinelands",Vinelands.Centre)})
                 Require(NearStart.OutsideHillcrest(new Vector3(c.x,0,c.y)),$"{name}'s centre is inside the near ring of Hillcrest's ground");
             checks.Add($"Near start: Hillcrest's ground holds its {landmarks.Length} landmarks; a Bayview start ({away:0} m out) defers it on the boosted budget, a start in the valley doesn't");
+            // Stage 2: every road line has a place; Hillcrest's own are drawn at load; each far road's line is on the far roads' ground.
+            int far=0;NearStart.FarRoadsGround();
+            foreach(var r in HillcrestRoute.All()) {
+                Require(HillcrestRoute.PlaceOf.ContainsKey(r.name),$"road {r.name} has no place");
+                if(!NearStart.FarRoad(r.name))continue;far++;
+                foreach(var p in r.line)Require(NearStart.OnFarRoads(p),$"far road {r.name} at {p} is off the far roads' ground");
+            }
+            foreach(var near in new[]{HillcrestRoute.Mainline,HillcrestRoute.Quay,HillcrestRoute.Crest,HillcrestRoute.RacewayAccess,HillcrestRoute.Falls,HillcrestRoute.StationSpur,HillcrestRoute.FarmLane})Require(!NearStart.FarRoad(near.name),$"{near.name} would wait for the far roads");
+            if(Bramblewick.Enabled)Require(NearStart.FarRoad(Bramblewick.RoadName),"Valley Road South isn't a far road");
+            checks.Add($"Near start: {far} far roads (drawn with their district from an island-side start) on their ground; Hillcrest's seven drawn at load");
         }
         return checks;
     }

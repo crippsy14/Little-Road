@@ -91,6 +91,15 @@ Quarry Hills 6.7 s, Bramblewick's green 6.1 s, Vinelands' Adega 7.9 s. Those are
   the districts have built in the background as in play (`--fingerprint-late`) is the same with and without the flag
   (`7d8006e4486d813e` by default). Bramblewick, building next while the valley's tiles stream in, has 4-5 frames over 50 ms
   against 1 by default; the worst are still Quarry Hills' and Vinelands' own (to 160 ms).
+**Stage 2 built 23 Oct (night), same flag.** From an island-side start the far places' roads (Quarry Hills', Bramblewick's,
+Vinelands': 27 lines) and every junction one of them meets are drawn in the background, pass by pass in ValleyRoads'
+order (ribbons and paint, guardrails, bridges, shoulders, junction surfaces and kerbs, mouths), as their own district
+`far-roads`, before Hillcrest (so the town still finds them there, as at load). Its ground is every 25 m cell within 40 m of
+their lines: rails, fingerposts, traps and bank barriers there wait for it. Ready from Bayview **2.88-2.91 s** (stage 1:
+3.2-3.3 s; default 6.0 s that hour); the roads step at load 631 → 271 ms; the far roads take 0.5 s in the background, busiest
+piece 42 ms. Fingerprints: identical to stage 1's at once and late (`b88f926fda848dbe`), the default unchanged; town print
+the same (the lookout car and Vinelands' bus resident vary run to run by default too). Other starts unchanged.
+
 - **Known:** the headland's sea rocks (part of the trees step) appear a second or two after you start; a build's first
   start from a new place audits the bank sites for that set of pending districts (17.4 s from Hillcrest's square, 10.8 s
   from Vinelands, by default too); the warm-up skips Hillcrest's views when it's still to come.

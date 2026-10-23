@@ -71,6 +71,8 @@ namespace LittleRoad
             residents["cafe"]=NewBayview.On?NewBayview.Cafe:new Vector3(-40.5f,0,-101.8f);residents["paint"]=NewBayview.On?NewBayview.Paint:new Vector3(3.5f,0,-102.2f);
             if(NewBayview.On){residentYaw["cafe"]=NewBayview.CafeYaw;residentYaw["paint"]=NewBayview.PaintYaw;}
             // Hillcrest's valley built in the background (--near-start: NearStart): its residents, signs and stamps when it arrives.
+            // (and the far places' roads before it, stage 2: the fingerposts at their junctions outside every place's ground)
+            if(Districts.Waiting("far-roads"))Districts.WhenBuiltSteps("far-roads",FarRoadsArrived);
             hillcrestLater=Districts.Waiting("hillcrest");if(hillcrestLater)Districts.WhenBuiltSteps("hillcrest",HillcrestArrived);else HillcrestResidents();
             // Bramblewick and Vinelands, built in the background when you start far from them (Districts, FarDistricts): their
             // residents, fingerposts, keepsakes and photo sights come when each arrives (FarPlaceArrived); otherwise now.
@@ -708,6 +710,10 @@ namespace LittleRoad
             for(int i=0;i<Collectibles.Horseshoes;i++){string id=Collectibles.Horseshoe(i);if(finds.ContainsKey(id))continue;var p=BramblewickVillage.Horseshoes[i]+Vector3.up*1.2f;MapRegions.Keepsakes[id]=(p,MapRegions.HorseshoePlace(i));if(Store.Data.collected.Contains(id))continue;finds[id]=Keepsake(id,p,3,i);}
         }
         bool hillcrestLater;
+        IEnumerator FarRoadsArrived()
+        {
+            if(wayHolder!=null)Wayfinding.Fingerposts(wayHolder,CoastalLandscape.Network,wayPlaces,p=>Districts.Completes("far-roads",p));yield return null;
+        }
         void HillcrestResidents()
         {
             if(HillcrestTown.Spots.Count>0){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}

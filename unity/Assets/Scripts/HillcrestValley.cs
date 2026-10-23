@@ -358,23 +358,28 @@ namespace LittleRoad
             Causeway(main,north,holder);
             Tunnel(main,north,south);
             Guardrails(main.line,main.width,holder,System.Array.FindIndex(main.line,p=>p.z<HillcrestRoute.PortalSouth.z-6),true);
-            foreach(var r in net.roads) {
-                if(r==mainRoad)continue;
+            // (--near-start: the far places' roads, and every junction one of them meets, are drawn after the town is ready, pass by
+            //  pass in this order, before Hillcrest's valley: NearStart. Off, Far draws at once.)
+            void Far(bool far,System.Action draw){if(far&&farRoads!=null)farRoads.Add(draw);else draw();}
+            bool FarNode(RoadNetwork.Node n){foreach(var a in n.arms)if(a.road!=null&&NearStart.FarRoad(a.road.name))return true;return false;}
+            void DrawRoad(RoadNetwork.Road r)
+            {
                 // Free ends (the road just stops) get their gravel ramps and leave 3 m of paint off; junction ends meet the surface.
                 // Quarry Hills' haul road and Kettle Falls road are gravel: they grip like dirt (no RoadSurface) and carry no paint.
                 // (Vinelands' quinta tracks, zone 4: schist-brown earth, gravel's grip)
-                if(Vinelands.Track(r.name)){var g=Ribbon(r.name,r.trimmed,r.width,r.lift,holder,vineTrack??=WorldLook.Kit("Schist farm track",new Color(.56f,.47f,.37f),WorldLook.Pattern.Rock,0,.12f,true),true,false,r.start==null,r.end==null);Object.DestroyImmediate(g.GetComponent<RoadSurface>());continue;}
-                if(QuarryHills.Gravel(r.name)){var g=Ribbon(r.name,r.trimmed,r.width,r.lift,holder,quarryGravel??=WorldLook.Kit("Slate gravel road",new Color(.50f,.49f,.47f),WorldLook.Pattern.Rock,0,.12f,true),true,false,r.start==null,r.end==null);Object.DestroyImmediate(g.GetComponent<RoadSurface>());continue;}
+                if(Vinelands.Track(r.name)){var g=Ribbon(r.name,r.trimmed,r.width,r.lift,holder,vineTrack??=WorldLook.Kit("Schist farm track",new Color(.56f,.47f,.37f),WorldLook.Pattern.Rock,0,.12f,true),true,false,r.start==null,r.end==null);Object.DestroyImmediate(g.GetComponent<RoadSurface>());return;}
+                if(QuarryHills.Gravel(r.name)){var g=Ribbon(r.name,r.trimmed,r.width,r.lift,holder,quarryGravel??=WorldLook.Kit("Slate gravel road",new Color(.50f,.49f,.47f),WorldLook.Pattern.Rock,0,.12f,true),true,false,r.start==null,r.end==null);Object.DestroyImmediate(g.GetComponent<RoadSurface>());return;}
                 // (Quarry Hills' streets bend and change grade within a vertex or two: 1 m segments keep the ribbon's quads flat,
                 // where a 2 m quad across a bend folded into a 10 cm crease - the area audit's Terrace Row seam.)
                 Ribbon(r.name,QuarryHills.Owns(r.name)?Subdivide(r.trimmed,1):r.trimmed,r.width,r.lift,holder,asphaltMainland,true,false,r.start==null,r.end==null);
                 Stripes(r.trimmed,r.width,r.start==null?3:0,r.end==null?(r==crestRoad?6:3):0,holder,r.noCentre);
             }
+            foreach(var r in net.roads)if(r!=mainRoad)Far(NearStart.FarRoad(r.name),()=>DrawRoad(r));
             Lap("roads ribbons");
             foreach(var (line,width) in new[]{(valleyRoad,valleyWidth),(stationRoad,stationWidth)})Guardrails(line,width,holder,0,true);
-            if(QuarryHills.Enabled)foreach(var name in new[]{QuarryHills.QuarryRoadName,QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.HaulRoadName,QuarryHills.KettleRoadName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName}){var q=HillcrestRoute.Find(name);Guardrails(q.line,q.width,holder,0,true,null,name==QuarryHills.QuarryRoadName);}
+            if(QuarryHills.Enabled)Far(true,()=>{foreach(var name in new[]{QuarryHills.QuarryRoadName,QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.HaulRoadName,QuarryHills.KettleRoadName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName}){var q=HillcrestRoute.Find(name);Guardrails(q.line,q.width,holder,0,true,null,name==QuarryHills.QuarryRoadName);}});
             Guardrails(crest.line,crest.width,holder,0); // (in town Via Crest has stone parapets instead: HillcrestTown.Parapets)
-            Lap("roads guardrails");foreach(var road in HillcrestRoute.All())RiverBridges(road,holder);Lap("roads bridges");
+            Lap("roads guardrails");foreach(var road in HillcrestRoute.All())Far(NearStart.FarRoad(road.name),()=>RiverBridges(road,holder));Lap("roads bridges");
             // Drivable gravel shoulders where the road runs on the ground (not on the causeway, in the tunnel or over the river).
             var gravel=WorldLook.Kit("Road verge gravel",new Color(.58f,.54f,.46f),WorldLook.Pattern.Rock,0,.1f,true);
             Shoulders(main.line,main.width*.5f,.03f,HillcrestRoute.PortalSouthRun+4,false,holder,gravel);
@@ -388,16 +393,17 @@ namespace LittleRoad
             float RoadTop(Vector3 q){float top=float.NaN;foreach(var hit in Physics.RaycastAll(new Vector3(q.x,20,q.z),Vector3.down,60))if(hit.collider.GetComponent<RoadSurface>()!=null&&!(hit.point.y<=top))top=hit.point.y;return top;}   // (the highest: RaycastAll's order is arbitrary)
             Shoulders(main.line,main.width*.5f,.03f,0,false,holder,gravel,"Road shoulder",quayEnd,q=>SurfacePoint(q,out var hit,false)?hit.point.y:-30,RoadTop);
             Shoulders(valleyRoad,valleyWidth*.5f,.024f,0,false,holder,gravel);
-            if(Bramblewick.Enabled)foreach(var name in new[]{Bramblewick.RoadName,Bramblewick.LaneName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
-            if(Vinelands.Enabled)foreach(var name in new[]{Vinelands.EntryName,Vinelands.RiverRoadName,Vinelands.RuaDireitaName,Vinelands.CaisRoadName,Vinelands.MiranteName,Vinelands.ValeRoadName,Vinelands.FeiraName,Vinelands.MeioName,Vinelands.ClimbName,Vinelands.AmendoeirasName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}
-            if(Vinelands.Enabled){foreach(var cn in new[]{Vinelands.CircuitName,Vinelands.ExtName,Vinelands.CorvoName,Vinelands.OutraName}){var cr=HillcrestRoute.Find(cn);Shoulders(cr.line,cr.width*.5f,.022f,0,false,holder,gravel);}var pn=HillcrestRoute.Find(Vinelands.PonteName);Shoulders(pn.line,pn.width*.5f,.022f,0,false,holder,gravel);foreach(var tn in new[]{Vinelands.PombalTrack,Vinelands.LajesTrack,Vinelands.FojoTrack}){var tr=HillcrestRoute.Find(tn);Shoulders(tr.line,tr.width*.5f,.022f,0,false,holder,gravel);}}   // (Ponte Nova: its approaches' shoulders; over the river its parapets, docs/88)
-            if(QuarryHills.Enabled)foreach(var name in new[]{QuarryHills.QuarryRoadName,QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.HaulRoadName,QuarryHills.KettleRoadName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName}){var q=HillcrestRoute.Find(name);Shoulders(q.line,q.width*.5f,.02f,0,false,holder,gravel);}Shoulders(stationRoad,stationWidth*.5f,.018f,0,false,holder,gravel);Shoulders(crest.line,crest.width*.5f,.018f,0,false,holder,gravel);
-            foreach(var n in net.nodes)if(n.arms.Count>1){JunctionSurface(n,holder);if(!n.HasExternal&&!VinelandsVila.Paved(n.at))KerbShoulders(n,holder,gravel);}
+            if(Bramblewick.Enabled)Far(true,()=>{foreach(var name in new[]{Bramblewick.RoadName,Bramblewick.LaneName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}});
+            if(Vinelands.Enabled)Far(true,()=>{foreach(var name in new[]{Vinelands.EntryName,Vinelands.RiverRoadName,Vinelands.RuaDireitaName,Vinelands.CaisRoadName,Vinelands.MiranteName,Vinelands.ValeRoadName,Vinelands.FeiraName,Vinelands.MeioName,Vinelands.ClimbName,Vinelands.AmendoeirasName}){var vr=HillcrestRoute.Find(name);Shoulders(vr.line,vr.width*.5f,.022f,0,false,holder,gravel);Guardrails(vr.line,vr.width,holder,0,true);}});
+            if(Vinelands.Enabled)Far(true,()=>{foreach(var cn in new[]{Vinelands.CircuitName,Vinelands.ExtName,Vinelands.CorvoName,Vinelands.OutraName}){var cr=HillcrestRoute.Find(cn);Shoulders(cr.line,cr.width*.5f,.022f,0,false,holder,gravel);}var pn=HillcrestRoute.Find(Vinelands.PonteName);Shoulders(pn.line,pn.width*.5f,.022f,0,false,holder,gravel);foreach(var tn in new[]{Vinelands.PombalTrack,Vinelands.LajesTrack,Vinelands.FojoTrack}){var tr=HillcrestRoute.Find(tn);Shoulders(tr.line,tr.width*.5f,.022f,0,false,holder,gravel);}});   // (Ponte Nova: its approaches' shoulders; over the river its parapets, docs/88)
+            if(QuarryHills.Enabled)Far(true,()=>{foreach(var name in new[]{QuarryHills.QuarryRoadName,QuarryHills.HighStreetName,QuarryHills.QuayLaneName,QuarryHills.HaulRoadName,QuarryHills.KettleRoadName,QuarryHills.ChapelStreetName,QuarryHills.TerraceRowName}){var q=HillcrestRoute.Find(name);Shoulders(q.line,q.width*.5f,.02f,0,false,holder,gravel);}});
+            Shoulders(stationRoad,stationWidth*.5f,.018f,0,false,holder,gravel);Shoulders(crest.line,crest.width*.5f,.018f,0,false,holder,gravel);
+            foreach(var n in net.nodes)if(n.arms.Count>1)Far(FarNode(n),()=>{JunctionSurface(n,holder);if(!n.HasExternal&&!VinelandsVila.Paved(n.at))KerbShoulders(n,holder,gravel);});
             // Quarry Hills' junctions: shoulders across each mouth (the gap between a road's own shoulder and the kerb ramps
             // left a 16 cm step) and low stone walls where a corner's ground stands well above or below the road.
-            if(QuarryHills.Enabled){Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&QuarryHills.Contains(n.at.x,n.at.z))MouthShoulders(n,holder,gravel);}
+            if(QuarryHills.Enabled)Far(true,()=>{Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&QuarryHills.Contains(n.at.x,n.at.z))MouthShoulders(n,holder,gravel);});
             // (--bramblewick: the same across Valley Road South's T off the farm lane: the audit's two lips there)
-            if(Bramblewick.Enabled){Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&(Vector3.Distance(n.at,Bramblewick.Tee)<30||Bramblewick.Contains(n.at.x,n.at.z)||Vinelands.Contains(n.at.x,n.at.z)&&!VinelandsVila.Paved(n.at)))MouthShoulders(n,holder,gravel);}   // (and Church Lane's two Ts: the audit's lips there)
+            if(Bramblewick.Enabled)Far(true,()=>{Physics.SyncTransforms();foreach(var n in net.nodes)if(n.arms.Count>1&&!n.HasExternal&&(Vector3.Distance(n.at,Bramblewick.Tee)<30||Bramblewick.Contains(n.at.x,n.at.z)||Vinelands.Contains(n.at.x,n.at.z)&&!VinelandsVila.Paved(n.at)))MouthShoulders(n,holder,gravel);});   // (and Church Lane's two Ts: the audit's lips there)
             Lap("roads shoulders and junctions");RacewayCircuit(holder);Lap("roads raceway");
         }
         // Hillcrest Raceway: 16 m asphalt with runoff, edge paint, corner kerbs, start line and gantry.
