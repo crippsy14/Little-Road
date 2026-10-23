@@ -1,5 +1,19 @@
 # Next steps (3 October 2026)
 
+**23 October, afternoon: Car Forge models everywhere ([doc 95](95-forge-models-everywhere.md)).** This answers
+Richard's four reports from the play copy.
+- **The world:** every older class C body in the world now shows as its Car Forge namesake (`CarBodies.Look`, in
+  `TrialWorld.Car`). That covers fields, traffic, parked cars and residents. The roster's own characters (the Chippy, the
+  Gold Top, the Ladders and others) now drive and park in the towns.
+- **The player's cars:** the body shops sell the Forge range (43 cars at Hillcrest, 11 gravel cars at Quarry Hills),
+  and new saves start in the Forge Puddle. Old saves move to the namesakes when they load.
+- **The shop preview** is smooth: it renders every frame, the world is hidden behind the shop, and one preview stage
+  serves every car. The shop frame went from 24.3 ms to 7.3 ms, and the car is drawn on 150 of 150 frames instead of 37.
+- **My garage:** a new screen at every garage bay for browsing and driving the models you own.
+- **Opt-out:** `--no-forge-roster` brings back the old models.
+- **Tests:** checks 4,539/4,539; smoke passed; Valley Cup 24/24 with no resets.
+- **Still open:** the class B Tuners keep their old models until the B roster is redone.
+
 **22 October, late: racing AI pace review ([doc 94](94-racing-ai-pace-review.md)); racecraft v3 behind `--racecraft-v3`.**
 - The review found the driving core near its ceiling (full-ability drivers only 2% quicker; more corner grip pace-neutral and
   risky) and the race itself the cost: a 24-car field finishes about 10% behind its solo pace, the order is the grid order,

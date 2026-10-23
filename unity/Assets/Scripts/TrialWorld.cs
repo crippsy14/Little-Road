@@ -149,6 +149,9 @@ namespace LittleRoad
             "CarbonFibre","GoldTrim","CaliperRed","CanopyGlass","CharcoalTrim","Primer","Rust"};
         public static GameObject Car(string asset,Color paint)
         {
+            // (an older class C body comes as its Car Forge namesake, and the car is named after the model it shows, so its
+            //  collision box is that model's: CarBodies.Look)
+            asset=CarBodies.Look(asset);
             var root=new GameObject(asset);
             var materials=new System.Collections.Generic.Dictionary<string,Material>();
             var visual=CarVisual(root,asset,paint,materials);

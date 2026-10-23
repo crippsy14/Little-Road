@@ -34,13 +34,13 @@ namespace LittleRoad
         void TalkFolk(ValleyLife.Folk f){var c=f.car!=null?f.car.GetComponent<NpcChatter>():null;if(c!=null)c.LastSaid=Time.time;ShowFolk(f);}
         void ShowFolk(ValleyLife.Folk f)=>Show(f.name+" / "+f.title,string.Join("\n\n",f.lines.Distinct()),new(){new("Back to the road",Close)});
         public static readonly Color[] Paints=PaintCatalog.Colors();
-        PaintShop paintShop;BodyShop bodyShop;SpeechBubbles bubbles;
+        PaintShop paintShop;BodyShop bodyShop;GarageScreen garage;SpeechBubbles bubbles;
         AdventureStore Store=>AdventureSession.Store;
         bool reviewing,wasLookingBehind;Vector3 chaseLag; // forward camera trail, car-local
         IEnumerator Start()
         {
             ui=gameObject.AddComponent<AdventureUI>();browser=gameObject.AddComponent<PartsBrowser>();racePreview=gameObject.AddComponent<RacePreviewUI>();tuning=gameObject.AddComponent<TuningScreen>();testDrive=gameObject.AddComponent<TestDrive>();
-            paintShop=gameObject.AddComponent<PaintShop>();bodyShop=gameObject.AddComponent<BodyShop>();bubbles=gameObject.AddComponent<SpeechBubbles>();
+            paintShop=gameObject.AddComponent<PaintShop>();bodyShop=gameObject.AddComponent<BodyShop>();garage=gameObject.AddComponent<GarageScreen>();bubbles=gameObject.AddComponent<SpeechBubbles>();
             // The title screen (save slots) once per launch, before the world builds.
             TitleScreen title=null;if(TitleScreen.Wanted){title=gameObject.AddComponent<TitleScreen>();yield return title.Run();}
             try{AdventureSession.Load();}catch(Exception e){ui.Show("Your save needs attention",e.Message+"\nThe existing save has been left intact.",new List<AdventureUI.Choice>{new("Quit",()=>Application.Quit())});yield break;}
@@ -89,7 +89,7 @@ namespace LittleRoad
             player=car.AddComponent<RoadCar>();player.Setup(world,0,EquipmentCatalog.Stats(Store.Data.Loadout(),Store.Data.Tune()),false,1709,"owned equipment");world.cars.Add(player);world.running=true;FrameProbe.Attach(player.transform);Grazer.Car=player.transform;
             if(QuarryHills.Enabled&&QuarryHillsTown.Spots.Count>0&&!quarryLater)QuarryFestival.Build(transform,Store.Data,player);CameraShake.Reset();CameraShake.Watch(player);
             playerHorn=Horn.Attach(car,Horn.PitchFor(Store.Data.bodyId),player:true);
-            player.Bumped+=(other,speed)=>{if(speed>1f&&!ui.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen)other.GetComponentInParent<NpcChatter>()?.TrySay(bubbles);};
+            player.Bumped+=(other,speed)=>{if(speed>1f&&!ui.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen&&!garage.IsOpen)other.GetComponentInParent<NpcChatter>()?.TrySay(bubbles);};
             // (Bayview's loop traffic: on in the game since 20 Oct, Richard; not in test runs, which stay as they were; --no-ambient-traffic)
             if(RaceTrial.Has("--ambient-traffic")||!Testing&&!RaceTrial.Has("--no-ambient-traffic"))AmbientTraffic();
             Mark("player");if(!RaceTrial.Has("--no-valley-life"))gameObject.AddComponent<ValleyLife>().Setup(player);Mark("valley-life");
@@ -853,26 +853,46 @@ namespace LittleRoad
         // speech bubble on Rowan's car. Captures go to --trial-captures.
         // --body-shop-review (own throwaway save): Lina's body shop, a purchase, then Gio's garage
         // bay swapping the live car to it. Captures each step; exits 0 only if the swap happened.
+        // (23 Oct: the Car Forge range, frame timing of the open shop and the garage with vsync off, BODY_SHOP_FRAMES and
+        //  GARAGE_FRAMES, and the garage screen: b5 the bay's menu, b6 the garage, b7 after driving the new car from it.)
         IEnumerator BodyShopReview()
         {
-            string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);
-            Store.Change(p=>{p.credits=Math.Max(p.credits,3000);return true;});
+            string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);bool forge=CarBodies.RosterEnabled;
+            string pick=forge?"forge_kestrel":"comet",last=forge?"forge_zenith":"zenith";
+            Store.Change(p=>{p.credits=Math.Max(p.credits,6000);
+                foreach(var b in forge?new[]{"forge_gelato","forge_stock_banger","forge_l_plate","forge_woody"}:new[]{"gelato","pebble"})if(!p.bodies.Contains(b))p.bodies.Add(b);return true;});
             var lina=residents["hcbody"];Place(lina+Vector3.forward*6);player.body.rotation=Quaternion.Euler(0,residentYaw["hcbody"]+180,0);yield return new WaitForSeconds(1.2f);
             ui.Capture(Path.Combine(folder,"b0-forecourt.png"));
+            yield return FrameTimes("TOWN_FRAMES",()=>0);
             Interact("hcbody");yield return new WaitForSeconds(.4f);ui.Capture(Path.Combine(folder,"b1-lina.png"));
             OpenBodyShop();yield return new WaitForSeconds(.9f);ui.Capture(Path.Combine(folder,"b2-shop.png"));
-            var target=GameObject.Find("BODY comet");EventSystem.current.SetSelectedGameObject(target);yield return new WaitForSeconds(1.0f);
-            ui.Capture(Path.Combine(folder,"b3-comet.png"));
+            yield return FrameTimes("BODY_SHOP_FRAMES",()=>bodyShop.Renders);
+            var end=GameObject.Find("BODY "+last);if(end!=null){EventSystem.current.SetSelectedGameObject(end);yield return new WaitForSeconds(1.0f);ui.Capture(Path.Combine(folder,"b3-scrolled.png"));}
+            var target=GameObject.Find("BODY "+pick);EventSystem.current.SetSelectedGameObject(target);yield return new WaitForSeconds(1.0f);
+            ui.Capture(Path.Combine(folder,"b3-"+pick+".png"));
             target.GetComponent<UnityEngine.UI.Button>().onClick.Invoke();yield return new WaitForSeconds(.5f);
             ui.Capture(Path.Combine(folder,"b4-bought.png"));
             bodyShop.Leave();Close();yield return new WaitForSeconds(.3f);
             Place(residents["motors"]+Vector3.forward*6);yield return new WaitForSeconds(.5f);
-            Interact("motors");yield return new WaitForSeconds(.3f);ui.InvokeChoice("Swap body");yield return new WaitForSeconds(.3f);
-            ui.Capture(Path.Combine(folder,"b5-swap-menu.png"));ui.InvokeChoice("Swap to · Comet");yield return new WaitForSeconds(.4f);Close();
+            Interact("motors");yield return new WaitForSeconds(.3f);ui.Capture(Path.Combine(folder,"b5-bay-menu.png"));ui.InvokeChoice("My garage");yield return new WaitForSeconds(1.5f);
+            ui.Capture(Path.Combine(folder,"b6-garage.png"));
+            yield return FrameTimes("GARAGE_FRAMES",()=>garage.Renders);
+            var card=GameObject.Find("GARAGE "+pick);EventSystem.current.SetSelectedGameObject(card);yield return new WaitForSeconds(.8f);
+            card.GetComponent<UnityEngine.UI.Button>().onClick.Invoke();yield return new WaitForSeconds(.5f);ui.Capture(Path.Combine(folder,"b7-garage-driving.png"));
+            garage.Leave();Close();
             cameraView.transform.position=player.transform.position+new Vector3(-4,2.2f,6);cameraView.transform.LookAt(player.transform.position+Vector3.up*.8f);yield return new WaitForSeconds(.6f);
-            ui.Capture(Path.Combine(folder,"b6-swapped.png"));
-            bool swapped=Store.Data.bodyId=="comet"&&player.name=="comet";
+            ui.Capture(Path.Combine(folder,"b8-swapped.png"));
+            bool swapped=Store.Data.bodyId==pick&&player.name==pick;
             Debug.Log("BODY_SHOP_REVIEW swapped="+swapped+" body="+Store.Data.bodyId+" owned="+string.Join(",",Store.Data.bodies)+" credits="+Store.Data.credits);Application.Quit(swapped?0:2);
+        }
+        // Frame times over 150 frames with vsync and the frame cap off (the screen's own cost), and how many preview renders.
+        IEnumerator FrameTimes(string label,Func<int> renders)
+        {
+            int vsync=QualitySettings.vSyncCount,cap=Application.targetFrameRate;QualitySettings.vSyncCount=0;Application.targetFrameRate=-1;
+            yield return null;var ms=new List<float>();int r0=renders();
+            for(int i=0;i<150;i++){yield return null;ms.Add(Time.unscaledDeltaTime*1000);}
+            QualitySettings.vSyncCount=vsync;Application.targetFrameRate=cap;ms.Sort();
+            Debug.Log($"{label} frames=150 avg={ms.Average():F2}ms p50={ms[75]:F2}ms p95={ms[142]:F2}ms worst={ms[149]:F2}ms renders={renders()-r0}");
         }
         // --tuner-garage-review (own throwaway save, docs/67): class B opened (the class C podiums), then at Gio's garage bay:
         // the free-Tuner choice, the garage after taking the Sakura, the Tuner body shop, the car, the Tuner races, the parts
@@ -918,7 +938,7 @@ namespace LittleRoad
             if(photo!=null&&(photo.Active||photo.LastCloseFrame==Time.frameCount))return;
             if(pause!=null&&(pause.IsOpen||pause.LastCloseFrame==Time.frameCount)){if(player!=null)player.controlsBlocked=pause.IsOpen||riding||ui.IsOpen;return;}
             if(tuning.IsOpen||tuning.LastCloseFrame==Time.frameCount||testDrive.Active)return;
-            if(player==null||reviewing||browser.IsOpen||racePreview.IsOpen||paintShop.IsOpen||bodyShop.IsOpen||racePreview.LastCloseFrame==Time.frameCount||browser.LastCloseFrame==Time.frameCount||paintShop.LastCloseFrame==Time.frameCount||bodyShop.LastCloseFrame==Time.frameCount)return;
+            if(player==null||reviewing||browser.IsOpen||racePreview.IsOpen||paintShop.IsOpen||bodyShop.IsOpen||garage.IsOpen||racePreview.LastCloseFrame==Time.frameCount||browser.LastCloseFrame==Time.frameCount||paintShop.LastCloseFrame==Time.frameCount||bodyShop.LastCloseFrame==Time.frameCount||garage.LastCloseFrame==Time.frameCount)return;
             var k=Keyboard.current;var pad=Gamepad.current;
             // Esc / Start pause; in a conversation Esc / B go back one level (the menu's own Back choice).
             bool esc=k?.escapeKey.wasPressedThisFrame==true,start=pad?.startButton.wasPressedThisFrame==true,east=pad?.buttonEast.wasPressedThisFrame==true;
@@ -1228,7 +1248,7 @@ namespace LittleRoad
             // Leaving the pause hub always hands the car back (Update may already have run this frame, so
             // it can't be left to Update: that race left the car blocked after closing the hub).
             if(paused!=wasPaused){wasPaused=paused;ui.SetHudVisible(!paused);if(!paused&&player!=null)player.controlsBlocked=riding||ui.IsOpen||(minimap!=null&&minimap.FullOpen);}
-            minimap?.SetShown(GraphicsOptions.MinimapShown&&!reviewing&&!paused&&photo?.Active!=true&&!ui.IsOpen&&!browser.IsOpen&&!tuning.IsOpen&&!racePreview.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen);
+            minimap?.SetShown(GraphicsOptions.MinimapShown&&!reviewing&&!paused&&photo?.Active!=true&&!ui.IsOpen&&!browser.IsOpen&&!tuning.IsOpen&&!racePreview.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen&&!garage.IsOpen);
             if(!reviewing&&player!=null&&cameraView!=null&&photo?.Active!=true)CameraPose(false);
             // The finish beacon (Richard, 1 Oct: you had to guess where the finish was).
             // (The castle's: 6 m from the court's centre towards the gate, on open paving clear of the donjon, its 10 m ring
@@ -1418,7 +1438,7 @@ namespace LittleRoad
             if(stage>=3)AddTunerGarage(choices,"Mara",Mara);
             choices.Add(new("Fit parts",()=>OpenParts("bayview",PartsBrowser.Mode.Fit,Mara)));
             choices.Add(new("Tune gearbox",()=>OpenTuning("bayview",Mara)));
-            if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Mara)));
+            choices.Add(new(GarageChoice,()=>SwapBody(Mara)));
             choices.Add(new("Back to the road",Close));
             Show("Mara / Pit Stop Garage",stage==0?"Pip needs a parcel at the lighthouse. Take the coast road and look for the red lantern cap. I'll have 350 credits for you when you return.":stage==1?"Pip is by the lighthouse on the far side of the loop. There are postcards beside the road if you take a detour.":stage==2?"Pip sent word! The parcel arrived safely. Here's something towards making this car your own.":"A good car becomes your own, one improvement at a time. What shall we work on?",choices);
         }
@@ -1426,7 +1446,7 @@ namespace LittleRoad
         {
             var choices=new List<AdventureUI.Choice>{new("Race the Valley Cup · C",()=>PreviewRace("hillcrest",Gio)),new("Tuner races",()=>TunerRaces("hillcrest",Gio)),new("Fit parts",()=>OpenParts("hillcrest",PartsBrowser.Mode.Fit,Gio)),new("Tune gearbox",()=>OpenTuning("hillcrest",Gio))};
             AddTunerGarage(choices,"Gio",Gio);
-            if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Gio)));
+            choices.Add(new(GarageChoice,()=>SwapBody(Gio)));
             choices.Add(new("Back to the road",Close));
             Show("Gio / Pit Stop Garage","Benvenuto to the Pit Stop! Sign up for the Valley Cup right here, fit anything you own, or swap to another of your bodies. Rosa next door sells the parts, Lina the new rides.",choices);
         }
@@ -1443,17 +1463,16 @@ namespace LittleRoad
             ui.Close();ui.SetVisible(false);player.controlsBlocked=true;
             bodyShop.Open(Store,fitter=="Huw"?"quarry":"hillcrest",()=>Notify("New body in the garage bay · swap to it with "+fitter),()=>{ui.SetVisible(true);back();});
         }
-        // Garage bay: swap between owned bodies (free, looks only), live on the car.
+        // Garage bay: your models (GarageScreen, 23 Oct; it was a list of names): look through them and drive any (free,
+        // looks only), live on the car. A swap down a class refits its parts (Store.SwitchBody), so the tuning follows.
+        string GarageChoice=>$"My garage · {Store.Data.bodies.Count} model{(Store.Data.bodies.Count==1?"":"s")}";
         void SwapBody(Action back)
         {
-            var choices=new List<AdventureUI.Choice>();
-            foreach(string id in Store.Data.bodies) {
-                string b=id;bool driving=b==Store.Data.bodyId;
-                choices.Add(new((driving?"Driving · ":"Swap to · ")+CarBodies.Name(b),()=>Attempt(()=>{
-                    if(Store.SwitchBody(b)){player.ReplaceBody(b,Paints[Store.Data.paintIndex]);Notify("Fresh look · "+CarBodies.Name(b));}SwapBody(back);}),!driving));
-            }
-            choices.Add(new("Back",back));
-            Show("Garage bay / your bodies","Every body drives the same: your fitted parts decide the pace. Pick the look.",choices);
+            ui.Close();ui.SetVisible(false);player.controlsBlocked=true;
+            garage.Open(Store,b=>{
+                if(!Store.SwitchBody(b))return false;
+                player.ReplaceBody(b,Paints[Store.Data.paintIndex]);ApplyEquipment();Notify("Fresh look · "+CarBodies.Name(b));return true;},
+                ()=>{ui.SetVisible(true);back();});
         }
         void Fern()=>Show("Fern / Bella Vista","Best view in the valley! That's the castle up top, the raceway down by the lake and the wind farm on the far ridge. Vito runs the Valley Cup at the raceway: fast cars, big prizes.",
             new(){new("Back to the road",Close)});
@@ -1600,7 +1619,7 @@ namespace LittleRoad
             // (Richard, 4 Oct: the town's race at its garage, as Mara and Gio offer theirs.)
             var choices=new List<AdventureUI.Choice>{new("Race the Quarry Hills Rallycross · C",()=>PreviewRace("quarry",Huw)),new("Tuner races",()=>TunerRaces("quarry",Huw)),new("Fit parts",()=>OpenParts("quarry",PartsBrowser.Mode.Fit,Huw)),new("Tune gearbox",()=>OpenTuning("hillcrest",Huw))};
             AddTunerGarage(choices,"Huw",Huw);
-            if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Huw)));
+            choices.Add(new(GarageChoice,()=>SwapBody(Huw)));
             choices.Add(new("Back to the road",Close));
             Show("Huw / Pit Stop Garage","Croeso i'r Pit Stop! Sign up for the Rallycross down on the quarry floor right here, or bring her in: I'll fit anything you own, set up the gearbox, or swap to another of your bodies. Bethan sells the parts next door, Nia the new rides.",choices);
         }
@@ -1639,7 +1658,7 @@ namespace LittleRoad
         {
             var choices=new List<AdventureUI.Choice>{new("Fit parts",()=>OpenParts("vinelands",PartsBrowser.Mode.Fit,Armando)),new("Tune gearbox",()=>OpenTuning("hillcrest",Armando))};
             AddTunerGarage(choices,"Sr. Armando",Armando);
-            if(Store.Data.bodies.Count>1)choices.Add(new("Swap body ("+Store.Data.bodies.Count+" owned)",()=>SwapBody(Armando)));
+            choices.Add(new(GarageChoice,()=>SwapBody(Armando)));
             choices.Add(new("Back to the road",Close));
             Show("Sr. Armando / Pit Stop Garage","Bem-vindo! Rua Direita's garage since my father's day. Bring her in: I'll fit anything you own, set up the gearbox, or swap to another of your bodies. Ines sells the parts next door, Catia does the bodies and the paint. The pumps are self-service, mind.",choices);
         }
@@ -1920,7 +1939,7 @@ namespace LittleRoad
         void ApplyEquipment()
         {
             player.tuning=EquipmentCatalog.Stats(Store.Data.Loadout(),Store.Data.Tune());player.body.mass=850*player.tuning.mass;
-            foreach(var renderer in player.GetComponentsInChildren<Renderer>())foreach(var material in renderer.sharedMaterials)if(material.name.Contains("BodyPaint"))material.color=Paints[Store.Data.paintIndex];
+            ForgeLivery.Repaint(player.gameObject,player.name,Paints[Store.Data.paintIndex]);
         }
         // (In front of a resident: on the new Bayview, out from where they face; elsewhere 5 m north, as the old island was laid out.)
         Vector3 Front(string id,float m)=>residents[id]+(NewBayview.On&&residentYaw.TryGetValue(id,out var y)?Quaternion.Euler(0,y,0)*Vector3.forward:Vector3.forward)*m;

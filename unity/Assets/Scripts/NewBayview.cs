@@ -407,7 +407,8 @@ namespace LittleRoad
                 foreach(float s in new[]{TownFrom+2,TownTo-2}){var at=track.At(s);var r=track.Right(s);r.y=0;r.Normalize();var q=at-r*10.2f;q.y=Height(q.x,q.z,track);Put("flower_bed",q,Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg);}
             }
             // parked cars on the forecourt, west of the Pit Stop, noses to the road
-            string[] bodies={"pebble","marlow","bramble","heron","pebble"};Color[] paints={Toy.Hex(0xff7ac8),Toy.Hex(0x5ec8ff),Toy.Hex(0x3ee6a4),Toy.Hex(0xffb400),Toy.Hex(0xe2493a)};int parked=0;
+            // (with the Forge roster, the seaside's chip van and ice cream van park here too)
+            string[] bodies=CarBodies.RosterEnabled?new[]{"pebble","marlow","chippy","heron","gelato"}:new[]{"pebble","marlow","bramble","heron","pebble"};Color[] paints={Toy.Hex(0xff7ac8),Toy.Hex(0x5ec8ff),Toy.Hex(0x3ee6a4),Toy.Hex(0xffb400),Toy.Hex(0xe2493a)};int parked=0;
             for(int i=0;i<bodies.Length;i++) {
                 var car=TrialWorld.Car(bodies[i],paints[i]);if(car==null)continue;car.name="Parked "+bodies[i];car.transform.SetParent(root,true);
                 car.transform.SetPositionAndRotation(new Vector3(36+i*3.3f,FrontY+.05f,-14),Quaternion.Euler(0,180,0));CarContact.Seat(car);parked++;

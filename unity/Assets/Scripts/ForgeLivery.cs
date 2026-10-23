@@ -76,6 +76,19 @@ namespace LittleRoad
                         if(x>=0&&y>=0&&x<Size&&y<Size)px[y*Size+x]=ink;}}
         }
 
+        // A repaint (the paint shop, the garage's preview): a Forge body's livery is composed again in the new paint (tinting
+        // the old one only darkened it); any other body takes the colour. The old livery texture is freed.
+        public static void Repaint(GameObject car,string asset,Color paint)
+        {
+            var d=Enabled?CarBodies.Forged(asset):null;string style=d?.livery??"stripes";Texture2D tex=null;
+            var old=new System.Collections.Generic.HashSet<Texture>();
+            foreach(var r in car.GetComponentsInChildren<Renderer>(true))foreach(var m in r.sharedMaterials){
+                if(m==null||!m.name.Contains("BodyPaint"))continue;
+                if(d==null||style=="plain"){m.color=paint;continue;}
+                var was=m.GetTexture("_BaseMap");if(was!=null&&was.name=="ForgeLivery")old.Add(was);
+                tex??=Compose(paint,new Color(.95f,.94f,.9f),Number(asset),style);m.SetTexture("_BaseMap",tex);m.color=Color.white;}
+            foreach(var t in old)if(t!=tex)Object.Destroy(t);
+        }
         // Puts a composed livery on every body-paint material of a car (not its second colour). Returns how many.
         // (plain: the paint as it is, no texture)
         public static int Apply(GameObject car,Color paint,Color stripe,int number,string style="stripes")

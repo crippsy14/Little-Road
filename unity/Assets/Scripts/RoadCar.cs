@@ -279,6 +279,7 @@ namespace LittleRoad
         // mass and tuning stay, so only standard-envelope bodies (every one a body shop sells) qualify.
         public void ReplaceBody(string asset,Color paint)
         {
+            asset=CarBodies.Look(asset);
             if(!CarBodies.UsesStandardEnvelope(asset)||GetComponent<StandardEnvelope>()==null)throw new InvalidOperationException("Only standard-envelope bodies swap in place: "+asset);
             string current=name;var donor=TrialWorld.Car(asset,paint);
             var old=new System.Collections.Generic.List<Transform>();foreach(Transform child in transform)if(child.name==current||child.name.StartsWith(current+"_lod"))old.Add(child);

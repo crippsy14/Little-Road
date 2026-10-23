@@ -50,8 +50,10 @@ namespace LittleRoad
             var data=camera.GetUniversalAdditionalCameraData();data.renderPostProcessing=false;data.renderShadows=false;data.volumeLayerMask=0;
             AddLight(new Vector3(-3,4,3),new Color(.82f,.92f,1),140*lightScale);
             AddLight(new Vector3(3,2,-2),new Color(1,.82f,.60f),95*lightScale);
-            Selected=Texture(720,406);Car=Texture(900,500);Orbit=Texture(744,392);
-            foreach(var part in catalogue) {
+            // (a car-only stage, the body shop's and the garage's, needs no part views: two 4x MSAA textures fewer)
+            var list=new List<EquipmentCatalog.Part>(catalogue);
+            Selected=list.Count>0?Texture(720,406):Texture(8,8);Car=Texture(900,500);Orbit=list.Count>0?Texture(744,392):Texture(8,8);
+            foreach(var part in list) {
                 var prefab=Resources.Load<GameObject>("Parts/"+part.id);if(prefab==null&&part.slot=="engine")prefab=Resources.Load<GameObject>("Parts/engine_club");
                 var model=prefab==null?PartDisplayModels.Create(part,root.transform,materials,displayMeshes):UnityEngine.Object.Instantiate(prefab,root.transform);model.name=part.id;
                 if(prefab!=null)foreach(var renderer in model.GetComponentsInChildren<Renderer>()) {
@@ -71,8 +73,16 @@ namespace LittleRoad
                 orbitIds.Add(part.id);orbitScales.Add(model.transform.localScale);
                 var image=Texture(360,302);cards.Add(part.id,image);Render(model,image,145);model.SetActive(false);
             }
+            var car=carModel=MakeCar(body,paint);
+            platform=GameObject.CreatePrimitive(PrimitiveType.Cylinder);platform.name="Display turntable";platform.transform.SetParent(root.transform,false);platform.layer=Layer;
+            platform.transform.localScale=new Vector3(3.75f,.06f,3.75f);platform.transform.localPosition=new Vector3(0,-.10f,0);UnityEngine.Object.Destroy(platform.GetComponent<Collider>());
+            var deck=TrialWorld.Material("Showroom turntable",useShowroom?new Color(.045f,.065f,.074f):new Color(.20f,.40f,.40f),.35f,.4f);materials.Add(deck);platform.GetComponent<Renderer>().sharedMaterial=deck;
+            if(useShowroom)this.showroom=CarShowroom.Create(root.transform,materials,displayMeshes);
+            Render(car,Car,35);car.SetActive(false);platform.SetActive(false);
+        }
+        GameObject MakeCar(string body,Color paint)
+        {
             var car=TrialWorld.Car(body,paint);car.transform.SetParent(root.transform,false);
-            carModel=car;
             foreach(var renderer in car.GetComponentsInChildren<Renderer>())foreach(var material in renderer.sharedMaterials)
                 if(!materials.Contains(material))materials.Add(material);
             // Full detail, chosen directly: the LOD group sometimes left the car hidden in a one-off render
@@ -80,12 +90,32 @@ namespace LittleRoad
             var lod=car.GetComponent<LODGroup>();
             if(lod!=null){var levels=lod.GetLODs();lod.enabled=false;
                 for(int l=0;l<levels.Length;l++)foreach(var r in levels[l].renderers)if(r!=null)r.enabled=l==0;}
-            Prepare(car);
-            platform=GameObject.CreatePrimitive(PrimitiveType.Cylinder);platform.name="Display turntable";platform.transform.SetParent(root.transform,false);platform.layer=Layer;
-            platform.transform.localScale=new Vector3(3.75f,.06f,3.75f);platform.transform.localPosition=new Vector3(0,-.10f,0);UnityEngine.Object.Destroy(platform.GetComponent<Collider>());
-            var deck=TrialWorld.Material("Showroom turntable",useShowroom?new Color(.045f,.065f,.074f):new Color(.20f,.40f,.40f),.35f,.4f);materials.Add(deck);platform.GetComponent<Renderer>().sharedMaterial=deck;
-            if(useShowroom)this.showroom=CarShowroom.Create(root.transform,materials,displayMeshes);
-            Render(car,Car,35);car.SetActive(false);platform.SetActive(false);
+            Prepare(car);return car;
+        }
+        // A car leaves the stage with its own materials and its livery texture.
+        void DropCar(GameObject car)
+        {
+            var own=new HashSet<Material>();foreach(var r in car.GetComponentsInChildren<Renderer>(true))foreach(var m in r.sharedMaterials)if(m!=null)own.Add(m);
+            foreach(var m in own){var tex=m.HasProperty("_BaseMap")?m.GetTexture("_BaseMap"):null;if(tex!=null&&tex.name=="ForgeLivery")liveries.Add(tex);materials.Remove(m);UnityEngine.Object.Destroy(m);}
+            foreach(var t in liveries)UnityEngine.Object.Destroy(t);liveries.Clear();
+            models.Remove(car);radii.Remove(car);renderersOf.Remove(car);car.SetActive(false);UnityEngine.Object.Destroy(car);
+        }
+        readonly HashSet<Texture> liveries=new();
+        // The body shop's and the garage's browsing: another body on the same turntable (the stage and its textures stay;
+        // a new stage per car made three 4x MSAA textures every time the focus moved).
+        public void SetCar(string body,Color paint,float yaw=35)
+        {
+            DropCar(carModel);carModel=MakeCar(body,paint);carModel.SetActive(false);carAngle=yaw;Render(carModel,Car,carAngle);
+        }
+        // A still of a body on the turntable, for a card: rendered once into its own small texture (no MSAA or depth of its
+        // own: it resolves from one shared 4x target), freed with the stage.
+        RenderTexture still;
+        public RenderTexture Still(string body,Color paint,int width,int height,float yaw=35)
+        {
+            if(still==null||still.width!=width||still.height!=height){if(still!=null){textures.Remove(still);still.Release();UnityEngine.Object.Destroy(still);}still=Texture(width,height);}
+            var car=MakeCar(body,paint);Render(car,still,yaw,.66f);   // (framed closer: a card is small)
+            var image=new RenderTexture(width,height,0,RenderTextureFormat.ARGB32){name="Garage card"};image.Create();textures.Add(image);Graphics.Blit(still,image);
+            DropCar(car);return image;
         }
         // Tier colour for a part's painted pieces: stock grey-teal, then teal, then red within a Bayview
         // slot by price; Hillcrest's valley parts in amber.
@@ -110,22 +140,24 @@ namespace LittleRoad
             models.Add(model);model.transform.localPosition=Vector3.zero;
             foreach(var child in model.GetComponentsInChildren<Transform>(true))child.gameObject.layer=Layer;
             foreach(var collider in model.GetComponentsInChildren<Collider>(true)){collider.enabled=false;UnityEngine.Object.Destroy(collider);}
-            var renderers=model.GetComponentsInChildren<Renderer>();Bounds bounds=renderers[0].bounds;
+            var renderers=model.GetComponentsInChildren<Renderer>();Bounds bounds=renderers[0].bounds;renderersOf[model]=renderers;
             foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);radii[model]=bounds.extents.magnitude;
         }
-        void Render(GameObject model,RenderTexture texture,float yaw)
+        readonly Dictionary<GameObject,Renderer[]> renderersOf=new();
+        void Render(GameObject model,RenderTexture texture,float yaw,float fit=.82f)
         {
             bool reveal=useShowroom&&model==carModel;
             if(showroom!=null)showroom.SetActive(reveal);
             camera.backgroundColor=reveal?new Color(.015f,.023f,.03f,1):partBackground;
             if(platform!=null)platform.SetActive(model==carModel);
             model.SetActive(true);model.transform.localRotation=Quaternion.Euler(0,yaw,0);
-            var renderers=model.GetComponentsInChildren<Renderer>();Bounds bounds=renderers[0].bounds;
+            // (the renderers found once, in Prepare: the turntable renders every frame now)
+            var renderers=renderersOf.TryGetValue(model,out var known)?known:model.GetComponentsInChildren<Renderer>();Bounds bounds=renderers[0].bounds;
             foreach(var renderer in renderers)if(renderer.enabled)bounds.Encapsulate(renderer.bounds);
             camera.transform.position=bounds.center+new Vector3(0,1.2f,3).normalized*10;camera.transform.LookAt(bounds.center);
             // Fit every transformed corner, including tall intake pipes, in the
             // camera basis. A stable scale across rotation avoids visual pumping.
-            camera.orthographicSize=radii[model]*.82f;camera.aspect=(float)texture.width/texture.height;
+            camera.orthographicSize=radii[model]*fit;camera.aspect=(float)texture.width/texture.height;
             RenderCamera(texture);model.SetActive(false);if(platform!=null)platform.SetActive(false);if(showroom!=null)showroom.SetActive(false);
         }
         void RenderCamera(RenderTexture texture)
@@ -149,8 +181,7 @@ namespace LittleRoad
         // Paint shop preview: recolour the showroom car's body panels and re-render it.
         public void Repaint(Color paint)
         {
-            foreach(var renderer in carModel.GetComponentsInChildren<Renderer>(true))foreach(var material in renderer.sharedMaterials)
-                if(material!=null&&material.name.Contains("BodyPaint"))material.color=paint;
+            ForgeLivery.Repaint(carModel,carModel.name,paint);
             Render(carModel,Car,carAngle);
         }
         public void RenderOrbit(float degrees)
@@ -170,6 +201,8 @@ namespace LittleRoad
         {
             if(root!=null)root.SetActive(false);
             if(camera!=null)camera.targetTexture=null;foreach(var texture in textures){if(texture==null)continue;texture.Release();UnityEngine.Object.Destroy(texture);}
+            foreach(var material in materials)if(material!=null&&material.HasProperty("_BaseMap")&&material.GetTexture("_BaseMap") is Texture t&&t.name=="ForgeLivery")liveries.Add(t);
+            foreach(var t in liveries)UnityEngine.Object.Destroy(t);
             foreach(var material in materials)UnityEngine.Object.Destroy(material);foreach(var mesh in displayMeshes)UnityEngine.Object.Destroy(mesh);UnityEngine.Object.Destroy(root);
         }
     }
