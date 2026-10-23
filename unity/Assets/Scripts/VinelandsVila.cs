@@ -71,7 +71,10 @@ namespace LittleRoad
         {
             Houses=Refused=0;Spots.Clear();Parking.Clear();yards.Clear();Yards=0;
             plinth=WorldLook.Kit("Vila granite plinth",new Color(.6f,.59f,.56f),WorldLook.Pattern.Stone,0,.1f,true);
-            Largo();Lanes();Patios();Escadinhas();Zone2();Zone3();Zone5();Zone6();Zone7();Zone8();Zone4();Quintais();Details();Adro();Parked();   // (zone 2, VinelandsRua.cs: before the yards, so they fill behind its houses too)
+            // (each part timed: the place took 29 s of a 46 s start-up on 23 Oct)
+            var clock=System.Diagnostics.Stopwatch.StartNew();void Lap(string part,System.Action a){long t=clock.ElapsedMilliseconds;a();Debug.Log($"LITTLE_ROAD_LOAD_LAP vinelands {part} ms={clock.ElapsedMilliseconds-t}");}
+            Lap("largo",Largo);Lap("lanes",Lanes);Lap("patios",Patios);Lap("escadinhas",Escadinhas);Lap("zone2",Zone2);Lap("zone3",Zone3);Lap("zone5",Zone5);Lap("zone6",Zone6);Lap("zone7",Zone7);Lap("zone8",Zone8);Lap("zone4",Zone4);
+            Lap("quintais",Quintais);Lap("details",Details);Lap("adro",Adro);Lap("parked",Parked);   // (zone 2, VinelandsRua.cs: before the yards, so they fill behind its houses too)
             Debug.Log($"LITTLE_ROAD_VINELANDS_VILA houses={Houses} refused={Refused} yards={Yards} parking={Parking.Count}");
         }
 
@@ -175,13 +178,26 @@ namespace LittleRoad
         }
         int walls;
         // on a lane, a stair, a square or within a road's verge (the whole old town's ways, known before any row is built)
-        List<(Vector3[] line,float half)> ways;
+        List<(Vector3[] line,float half)> ways;readonly Dictionary<(int x,int y),List<(Vector2 v,float half)>> wayGrid=new();
+        static (int x,int y) WayCell(Vector2 p)=>(Mathf.FloorToInt(p.x/8),Mathf.FloorToInt(p.y/8));   // (8 m: wider than any lane's half)
+        // the buildings by 16 m cell, each in every cell within its size and 10 m of it (the widest pad asked), indexed as they come
+        readonly Dictionary<(int x,int y),List<int>> footGrid=new();int footIndexed;static readonly List<int> NoFeet=new();
+        List<int> FootprintsNear(Vector2 q)
+        {
+            for(;footIndexed<footprints.Count;footIndexed++){var o=footprints[footIndexed];float r=o.half.magnitude+10;
+                for(int x=Mathf.FloorToInt((o.c.x-r)/16);x<=Mathf.FloorToInt((o.c.x+r)/16);x++)for(int y=Mathf.FloorToInt((o.c.y-r)/16);y<=Mathf.FloorToInt((o.c.y+r)/16);y++){if(!footGrid.TryGetValue((x,y),out var l))footGrid[(x,y)]=l=new();l.Add(footIndexed);}}
+            return footGrid.TryGetValue((Mathf.FloorToInt(q.x/16),Mathf.FloorToInt(q.y/16)),out var near)?near:NoFeet;
+        }
+        bool InFootprint(Vector2 q,float pad){foreach(int i in FootprintsNear(q)){var o=footprints[i];var l=Quaternion.Euler(0,-o.yaw,0)*new Vector3(q.x-o.c.x,0,q.y-o.c.y);if(Mathf.Abs(l.x)<o.half.x+pad&&Mathf.Abs(l.z)<o.half.y+pad)return true;}return false;}
+        // (both through spatial grids: every building and every lane point for each of some 400 000 vine and scrub spots took 23 s
+        // of the start-up, 23 Oct)
         bool OnWay(Vector3 q)
         {
             if(ValleyField.RoadDistance(q.x,q.z)<4.5f)return true;
-            {var p2=new Vector2(q.x,q.z);foreach(var o in footprints){var l=Quaternion.Euler(0,-o.yaw,0)*new Vector3(p2.x-o.c.x,0,p2.y-o.c.y);if(Mathf.Abs(l.x)<o.half.x+.3f&&Mathf.Abs(l.z)<o.half.y+.3f)return true;}}
-            if(ways==null){ways=new();foreach(var (_,w,pts) in LaneDefs)ways.Add((Dense(pts,1.5f),w*.5f+.6f));foreach(var pts in Stairs)ways.Add((Dense(pts,1.5f),1.8f));}
-            var p=new Vector2(q.x,q.z);foreach(var (line,half) in ways)foreach(var v in line)if((new Vector2(v.x,v.z)-p).sqrMagnitude<half*half)return true;
+            var p=new Vector2(q.x,q.z);if(InFootprint(p,.3f))return true;
+            if(ways==null){ways=new();foreach(var (_,w,pts) in LaneDefs)ways.Add((Dense(pts,1.5f),w*.5f+.6f));foreach(var pts in Stairs)ways.Add((Dense(pts,1.5f),1.8f));
+                foreach(var (line,half) in ways)foreach(var v in line){var k=WayCell(new Vector2(v.x,v.z));if(!wayGrid.TryGetValue(k,out var l))wayGrid[k]=l=new();l.Add((new Vector2(v.x,v.z),half));}}
+            var c=WayCell(p);for(int i=-1;i<=1;i++)for(int j=-1;j<=1;j++)if(wayGrid.TryGetValue((c.x+i,c.y+j),out var l))foreach(var (v,half) in l)if((v-p).sqrMagnitude<half*half)return true;
             var f=p-Vinelands.Centre;foreach(var (mn,mx) in Squares)if(f.x>mn.x&&f.x<mx.x&&f.y>mn.y&&f.y<mx.y)return true;
             return false;
         }
@@ -238,7 +254,7 @@ namespace LittleRoad
             bool Free(Vector3 p)
             {
                 if(ValleyField.RoadDistance(p.x,p.z)<5f)return false;var q=new Vector2(p.x,p.z);
-                foreach(var o in footprints)if(Inside(q,o.c,o.half,o.yaw,.4f))return false;
+                if(InFootprint(q,.4f))return false;
                 foreach(var o in claimed)if(Inside(q,o.c,o.half,o.yaw,.1f))return false;
                 foreach(var (line,half) in paths)foreach(var v in line)if((new Vector2(v.x,v.z)-q).sqrMagnitude<half*half)return false;
                 var f=q-Vinelands.Centre;foreach(var (mn,mx) in Squares)if(f.x>mn.x-1&&f.x<mx.x+1&&f.y>mn.y-1&&f.y<mx.y+1)return false;

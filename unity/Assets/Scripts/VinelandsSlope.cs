@@ -18,10 +18,9 @@ namespace LittleRoad
         bool Clear(Vector3 p,float pad,bool inTown=false)
         {
             if(ValleyField.RoadDistance(p.x,p.z)<pad+4f||OnWay(p))return false;
-            if(CoastalLandscape.Network!=null&&CoastalLandscape.Network.OnJunction(p,pad+3f))return false;   // (the circuit's Ts reach 50 m from their roads' lines: a bush stood in the Palheiro's middle)
+            if(CoastalLandscape.Network!=null&&ValleyField.RoadDistance(p.x,p.z)<60&&CoastalLandscape.Network.OnJunction(p,pad+3f))return false;   // (the surfaces lie within 60 m of their roads)   // (the circuit's Ts reach 50 m from their roads' lines: a bush stood in the Palheiro's middle)
             var f=new Vector2(p.x,p.z)-Vinelands.Centre;if(!inTown&&Vinelands.InTown(f)>.3f)return false;
-            var q=new Vector2(p.x,p.z);foreach(var o in footprints){var l=Quaternion.Euler(0,-o.yaw,0)*new Vector3(q.x-o.c.x,0,q.y-o.c.y);if(Mathf.Abs(l.x)<o.half.x+pad&&Mathf.Abs(l.z)<o.half.y+pad)return false;}
-            return true;
+            return !InFootprint(new Vector2(p.x,p.z),pad);
         }
         static float Frac(float x)=>x-Mathf.Floor(x);
         static float Hash(float a,float b,int salt){float h=Mathf.Sin(a*12.9898f+b*78.233f+salt*37.719f)*43758.5453f;return h-Mathf.Floor(h);}
