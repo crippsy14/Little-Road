@@ -488,7 +488,9 @@ The order of classes and systems (doc 45, 29 Sep). The order of places is in [wo
   time "is not acceptable"; the map will grow to 20 × 20 km). The free-roam world persists across races; races start in
   the live world.
 - **Streaming:** woods and scattered pieces stream on a 250 m tile grid; districts build in the background after you're
-  driving; baked data (height field, cliffs, racing lines, the map image) is cooked once per build and cached.
+  driving; baked data (the valley's height field and tint, the island's heights, the road lines' ground samples, cliffs,
+  racing lines, bank sites, the map image) is cooked once per build and cached, and a cooked world must fingerprint the
+  same as `--no-world-cache`.
 - **Background districts (23 Oct):** every place further than 1.5 km from where the car starts is a background district,
   queued nearest first (from Bayview: Bramblewick, Quarry Hills, Vinelands; `--no-far-districts` builds the two far places at
   load as before, `--no-background-districts` everything). Each district owns its ground until it has built: rails, fingerposts,

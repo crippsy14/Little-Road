@@ -193,16 +193,50 @@ namespace LittleRoad
         static Vector3[] Concat(Vector3[] a,Vector3[] b){var c=new Vector3[a.Length+b.Length];a.CopyTo(c,0);b.CopyTo(c,a.Length);return c;}
         public static Vector3[] Circuit=>circuit??=DenseClosed(RacewayCircuitControl,1.5f);
         public static Road[] All()=>roads??=BuildRoads();
+        // The road lines' ground (23 Oct): each QuarryHills.Profile while the lines are built samples the natural ground every
+        // 2 m along its line (163 ms in all, Vinelands' 116). The samples are cooked (WorldCache "road-ground": the number of
+        // calls, each call's length, then the samples) and replayed in call order; a call whose length differs from the
+        // recording turns the replay off, and that launch samples, and saves, afresh.
+        static List<int> groundCalls;static List<float> groundValues;static float[] groundReplay;static int groundCall,groundAt;
+        internal static void SampleGround(Vector3[] line,float[] y,System.Func<float,float,float> ground)
+        {
+            int n=line.Length;bool replayed=false;
+            if(groundCalls!=null&&groundReplay!=null) {
+                int calls=(int)groundReplay[0];
+                if(groundCall<calls&&(int)groundReplay[1+groundCall]==n&&groundAt+n<=groundReplay.Length){System.Array.Copy(groundReplay,groundAt,y,0,n);groundAt+=n;groundCall++;replayed=true;}
+                else groundReplay=null;
+            }
+            if(!replayed)for(int i=0;i<n;i++)y[i]=ground(line[i].x,line[i].z);
+            if(groundCalls!=null){groundCalls.Add(n);groundValues.AddRange(y);}
+        }
         static Road[] BuildRoads()
+        {
+            var clock=System.Diagnostics.Stopwatch.StartNew();
+            groundCalls=new List<int>();groundValues=new List<float>();groundReplay=WorldCache.TryReadAll("road-ground");
+            if(groundReplay!=null&&(groundReplay.Length<1||groundReplay.Length<1+(int)groundReplay[0]))groundReplay=null;
+            groundCall=0;groundAt=groundReplay==null?0:1+(int)groundReplay[0];
+            try{return BuildRoadLines(clock);}
+            finally {
+                bool cooked=groundReplay!=null&&groundCall==(int)groundReplay[0]&&groundAt==groundReplay.Length;
+                if(!cooked){var file=new float[1+groundCalls.Count+groundValues.Count];file[0]=groundCalls.Count;for(int i=0;i<groundCalls.Count;i++)file[1+i]=groundCalls[i];groundValues.CopyTo(file,1+groundCalls.Count);WorldCache.Write("road-ground",file);}
+                Debug.Log($"LITTLE_ROAD_ROAD_GROUND {(cooked?"cached":"sampled")} calls={groundCalls.Count} samples={groundValues.Count} ms={clock.ElapsedMilliseconds}");
+                groundCalls=null;groundValues=null;groundReplay=null;
+            }
+        }
+        static Road[] BuildRoadLines(System.Diagnostics.Stopwatch clock)
         {
             var list=new List<Road>{
             Make("Hillcrest mainline",Dense(MainlineControl,2),8.5f,6,22),Make("Quay road",Dense(QuayControl,2),8,6,20),Make("Via Crest",Dense(CrestControl(),2),7.5f,6,20),
             Make("Raceway road",Dense(RacewayControl,2),7.5f,6,18),Make("Falls road",Dense(FallsControl,2),7,5,16),Make("Station road",Dense(StationControl,2),7,5,16),
             Make("Farm lane",Dense(FarmLaneControl(),2),6.5f,5,16)};
             // Quarry Hills' roads follow Hillcrest's seven (docs/59): stamped, filled, planted round and bridged the same way.
+            long hillcrest=clock.ElapsedMilliseconds;
             if(QuarryHills.Enabled)list.AddRange(QuarryHills.Roads(list[3].line));
+            long quarry=clock.ElapsedMilliseconds;
             if(Bramblewick.Enabled)list.AddRange(Bramblewick.Roads(list[6].line));   // (Valley Road South, off the farm lane: docs/82)
+            long bramblewick=clock.ElapsedMilliseconds;
             if(Vinelands.Enabled)list.AddRange(Vinelands.Roads(list.Find(r=>r.name==Bramblewick.RoadName).line[^1]));   // (on from Bramblewick's gate: docs/85)
+            Debug.Log($"LITTLE_ROAD_ROAD_LINES roads={list.Count} hillcrest_ms={hillcrest} quarry_ms={quarry-hillcrest} bramblewick_ms={bramblewick-quarry} vinelands_ms={clock.ElapsedMilliseconds-bramblewick}");
             return list.ToArray();
         }
         public static Road Find(string name){foreach(var r in All())if(r.name==name)return r;return null;}

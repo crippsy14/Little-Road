@@ -31,7 +31,13 @@ namespace LittleRoad
         static float Hash(int a,int b,int c){unchecked{uint h=(uint)(a*73856093)^(uint)(b*19349663)^(uint)(c*83492791);h^=h>>13;h*=0x5bd1e995;h^=h>>15;return (h&0xffffff)/16777216f;}}
         static Texture2D MacroTint()
         {
-            const int nx=768,nz=548;var tex=new Texture2D(nx,nz,TextureFormat.RGBAHalf,true,true){name="Valley macro tint",wrapMode=TextureWrapMode.Clamp};var px=new Color[nx*nz];
+            const int nx=768,nz=548;var tex=new Texture2D(nx,nz,TextureFormat.RGBAHalf,true,true){name="Valley macro tint",wrapMode=TextureWrapMode.Clamp};
+            // Cooked (WorldCache, 23 Oct): the texture's own data, every mip, copied straight in and uploaded (158 ms with the
+            // maths, the pixels' conversion and the mips).
+            var clock=System.Diagnostics.Stopwatch.StartNew();var data=tex.GetRawTextureData<float>();var store=new float[data.Length];
+            string Sum(){if(!RaceTrial.Has("--load-timing"))return "";ulong h=1469598103934665603;foreach(var f in store)h=(h^(uint)System.BitConverter.SingleToInt32Bits(f))*1099511628211;return $" checksum={h:x16}";}
+            if(WorldCache.TryRead("valley-tint",store)){data.CopyFrom(store);tex.Apply(false);Debug.Log($"LITTLE_ROAD_VALLEY_TINT cached ms={clock.ElapsedMilliseconds}{Sum()}");return tex;}
+            var px=new Color[nx*nz];
             var mid=(WorldLook.ToyGrassLight+WorldLook.ToyGrassDeep)*.5f;
             Color Crop(float r,float g,float b)=>new(r/mid.r,g/mid.g,b/mid.b,1);
             // Fresh pasture, deep meadow, hay stubble, ripe barley, sage ley, lavender, young wheat, fallow.
@@ -76,7 +82,8 @@ namespace LittleRoad
                 c.a=Mathf.Lerp(1,Mathf.Clamp01(edge/8),fields*(1-forest)*Mathf.Clamp01(fade));
                 px[j*nx+i]=c;
             }});
-            tex.SetPixels(px);tex.Apply(true);return tex;
+            tex.SetPixels(px);tex.Apply(true);
+            tex.GetRawTextureData<float>().CopyTo(store);WorldCache.Write("valley-tint",store);Debug.Log($"LITTLE_ROAD_VALLEY_TINT made ms={clock.ElapsedMilliseconds}{Sum()}");return tex;
         }
         void Mainland()
         {

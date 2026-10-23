@@ -43,6 +43,15 @@ namespace LittleRoad
                 Touch(path);return true;
             } catch(Exception e){Debug.LogWarning($"LITTLE_ROAD_WORLD_CACHE {name} unreadable: {e.Message}");return false;}
         }
+        // A cooked file of any length (a recording whose size isn't known before it's read), or null.
+        public static float[] TryReadAll(string name)
+        {
+            string path=PathFor(name);if(path==null||!File.Exists(path))return null;
+            try {
+                var bytes=File.ReadAllBytes(path);if(bytes.Length%4!=0)return null;
+                var a=new float[bytes.Length/4];Buffer.BlockCopy(bytes,0,a,0,bytes.Length);Touch(path);return a;
+            } catch(Exception e){Debug.LogWarning($"LITTLE_ROAD_WORLD_CACHE {name} unreadable: {e.Message}");return null;}
+        }
         public static void Write(string name,params float[][] arrays)
         {
             string path=PathFor(name);if(path==null)return;

@@ -204,9 +204,12 @@ namespace LittleRoad
             int nx=LandNX,nz=LandNZ;const float step=LandStep;
             var vertices=new Vector3[nx*nz];var uv=new Vector2[vertices.Length];var groups=new List<int>[4];for(int i=0;i<4;i++)groups[i]=new();
             // Rows in parallel (docs/72): Height is pure maths once its one lazy value (the farm pad) is set.
-            Height(BayviewCountryside.Farm.x,BayviewCountryside.Farm.z);
-            System.Threading.Tasks.Parallel.For(0,nz,z=>{for(int x=0;x<nx;x++){int i=z*nx+x;float wx=(x-(nx-1)*.5f)*step,wz=(z-(nz-1)*.5f)*step;vertices[i]=new Vector3(wx,Height(wx,wz),wz);uv[i]=new Vector2(wx,wz)*.2f;}});
-            Lap("land heights");landGrid=vertices;
+            Height(BayviewCountryside.Farm.x,BayviewCountryside.Farm.z);Lap("land first height");
+            // The heights are cooked (WorldCache): the same for a build, its world flags and the circuit (476 ms, 23 Oct).
+            var heights=new float[vertices.Length];string cache="land-heights-"+TrackKey().ToString("x16");bool cooked=WorldCache.TryRead(cache,heights);
+            System.Threading.Tasks.Parallel.For(0,nz,z=>{for(int x=0;x<nx;x++){int i=z*nx+x;float wx=(x-(nx-1)*.5f)*step,wz=(z-(nz-1)*.5f)*step;if(!cooked)heights[i]=Height(wx,wz);vertices[i]=new Vector3(wx,heights[i],wz);uv[i]=new Vector2(wx,wz)*.2f;}});
+            if(!cooked)WorldCache.Write(cache,heights);
+            Lap(cooked?"land heights cached":"land heights");landGrid=vertices;
             void Triangle(int a,int b,int c) {
                 Vector3 normal=Vector3.Cross(vertices[b]-vertices[a],vertices[c]-vertices[a]).normalized;
                 Vector3 middle=(vertices[a]+vertices[b]+vertices[c])/3;
@@ -479,7 +482,7 @@ namespace LittleRoad
         public void Build()=>TrialWorld.RunNow(BuildRoutine());
         public System.Collections.IEnumerator BuildRoutine()
         {
-            WorldTiles.Begin(ValleyDetail);Districts.Begin();Runs.Batching=!RaceTrial.Has("--no-run-batching");WorldRoot=root;   // (the runs' meshes made together, on every core, before the settle pass: Runs.Flush; --no-run-batching draws each as it comes)stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.FootprintOwners.Clear();GroundFit.Reset();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;
+            WorldTiles.Begin(ValleyDetail);Districts.Begin();Runs.Batching=!RaceTrial.Has("--no-run-batching");WorldRoot=root;stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.FootprintOwners.Clear();GroundFit.Reset();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;   // (Runs.Batching: the runs' meshes made together, on every core, before the settle pass: Runs.Flush; --no-run-batching draws each as it comes)
             // (A race far from Bayview builds none of the island: RaceArea. Its heights stay analytic for everything else.)
             bool island=Island;
             if(island)LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;

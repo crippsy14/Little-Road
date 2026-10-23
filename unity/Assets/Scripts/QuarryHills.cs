@@ -283,7 +283,7 @@ namespace LittleRoad
         {
             var c=new List<Vector3>{new(start.x,0,start.z)};foreach(var v in via)c.Add(new Vector3(v.x,0,v.y));c.Add(new Vector3(end.x,0,end.z));
             var line=HillcrestRoute.Dense(c.ToArray(),2);int n=line.Length;var y=new float[n];
-            for(int i=0;i<n;i++)y[i]=Mathf.Max(ValleyField.Natural(line[i].x,line[i].z),-9.2f);
+            HillcrestRoute.SampleGround(line,y,(x,z)=>Mathf.Max(ValleyField.Natural(x,z),-9.2f));   // (cooked while the road lines are built)
             float y0=float.IsNaN(start.y)?y[0]:start.y,y1=float.IsNaN(end.y)?y[n-1]:end.y;
             // Smooth (moving average).
             int half=Mathf.Max(1,Mathf.RoundToInt(smooth/2));var sum=new double[n+1];for(int i=0;i<n;i++)sum[i+1]=sum[i]+y[i];

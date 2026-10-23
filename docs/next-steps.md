@@ -6,6 +6,11 @@ Add new status at the top of "Latest" in a line or two, and move anything that b
 
 ## Latest
 
+- **23 Oct (evening): start-up 7.24 s → 6.52 s** (two second launches: 6.53, 6.51). Three more things are cooked in the
+  world cache: the island's heights (476 → 15 ms), the road lines' ground samples (201 → 99 ms; Vinelands' were 116 ms), and
+  the valley's tint texture with its mips (128 → 11 ms, the same checksum). Each build fingerprints the same cooked and with
+  `--no-world-cache`. Also fixed: since 67f2efb a comment had swallowed the world build's reset (footprints, placed pieces,
+  ground fit, bunting, the first load step), so a rebuilt world kept the last build's footprints.
 - **23 Oct: start-up 13.0 s → 7.2 s** (ready to drive, a build's second launch; budget 3.5 s). Bramblewick and Vinelands
   now build in the background after Quarry Hills, as districts ([design.md](design.md) §13; `--no-far-districts`), each
   dressed, barriered and settled when it arrives; a race in the kept world finishes only the districts its area touches.
@@ -54,9 +59,10 @@ pace), `--distant-mountains`, `--turbo-sound`/`--hybrid-sound`, `--scale-test` (
 
 ## Next three pieces
 
-1. **Start-up from 7.2 s to the 3.5 s budget:** cache the island heights and the road lines in the world cache, prepare the
-   runs' meshes as they are solved, then Hillcrest's town as a district (it is 0.9 km from the start, under the 1.5 km rule) or
-   the far terrain chunks with their districts. Also the open Quarry Hills audit line (a car not on the ground, from commits
+1. **Start-up from 6.5 s to the 3.5 s budget:** prepare the runs' meshes as they are solved (the flush is 0.52 s), then
+   Hillcrest's town as a district (0.89 s; it is 0.9 km from the start, under the 1.5 km rule) or the far terrain chunks
+   with their districts (0.47 s). Also left: the roads' shoulders and junctions (0.38 s), settle-planting (0.62 s), the island
+   collider's cook (0.14 s) and the first loading frame (~0.2 s before the island starts). Also the open Quarry Hills audit line (a car not on the ground, from commits
    since 21 Oct), and the background districts' busiest frames (Quarry Hills' kettle street 190 ms, Vinelands' parts 180 ms;
    the bar is 50 ms).
 2. **Vinelands leftovers:** the planting top-up and the small junction seams and lips.
@@ -85,7 +91,10 @@ pace), `--distant-mountains`, `--turbo-sound`/`--hybrid-sound`, `--scale-test` (
 
 ## Known issues
 
-- Start-up time (above: 7.2 s against 3.5 s). Workshop engine feedback at dusk near the Bayview garage (bug #1, cause unknown).
+- Start-up time (above: 6.5 s against 3.5 s).
+- The Ponte Nova's bank barrier (4514, -3350) is found on some builds' first launch and not others (22 or 21 Vinelands
+  bank sites, cached per build): the edge audit counts anything solid as a guard, and a moving thing near the bridge's
+  edge (likely a resident's idling car, which isn't a `RoadCar`) can hide the drop. Fix: the audit skips anything that moves. Workshop engine feedback at dusk near the Bayview garage (bug #1, cause unknown).
 - The editor check `CarLinesChecks` fails a build when the machine is busy (the stock C racing-line bake must take under
   2 s; it took 2077 ms with test runs going): build again.
 - An early race (before the background districts have built, about the first 15 s) completes the districts its area
