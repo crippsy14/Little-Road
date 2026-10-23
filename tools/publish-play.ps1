@@ -13,7 +13,8 @@ $from=[IO.Path]::GetFullPath($(if($From){$From}else{Join-Path $root '../little-r
 $to=[IO.Path]::GetFullPath($(if($To){$To}else{Join-Path $root '../little-road-play'}))
 $exe='Little Road Unity.exe'
 if(-not (Test-Path (Join-Path $from $exe))){throw "No dev build at $from"}
-if(Get-Process 'Little Road Unity' -ErrorAction SilentlyContinue){throw 'Close the game first (it is running).'}
+# Only a game running from the play copy blocks replacing it (test runs from a dev build can carry on, as in build-dev).
+if(Get-Process 'Little Road Unity' -ErrorAction SilentlyContinue|Where-Object{-not $_.Path -or $_.Path.StartsWith($to,[StringComparison]::OrdinalIgnoreCase)}){throw 'Close the game first (it is running).'}
 robocopy $from $to /MIR /NFL /NDL /NJH /NJS /NP | Out-Null
 if($LASTEXITCODE -ge 8){throw "Copy failed (robocopy $LASTEXITCODE)"}
 $git='-c',"safe.directory=$($root -replace '\\','/')"
