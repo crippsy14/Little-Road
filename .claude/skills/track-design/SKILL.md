@@ -7,7 +7,7 @@ description: How to design or critique a race track or circuit for Little Road (
 
 Richard's rule: real tracks give direction, not 1:1 references. Never copy or name a real circuit's corners. Name every corner after the place it runs through (farm, church, brook, quarry, harbour).
 
-The research behind this skill was done on 20 Oct 2026. The worked example is *Bramblewick Lanes* (docs/82): the report and the scripts were in that session's scratchpad, `track/expert-design.md`.
+The research behind this skill was done on 20 Oct 2026. The worked example is *Bramblewick Lanes* (docs/world.md §3; its build rounds are in git, docs/82 at 35a4d35): the report and the scripts were in that session's scratchpad, `track/expert-design.md`.
 
 ## 1. What makes a track great
 
@@ -236,7 +236,7 @@ Failure modes:
 
 ## 6. Lessons from building Bramblewick Lanes (20 Oct)
 
-These are what the first track built with this skill taught; docs/82 has the full rounds.
+These are what the first track built with this skill taught; docs/world.md §2 "Tracks" has the standing rules.
 
 - **Lay the lap in a stable frame.** Use the chord between the two junctions, not a frame from a point on a curving street, or the whole lap rotates and a straight vanishes. Solve two near-perpendicular straights linearly so the lap closes exactly.
 - **Fillet the junction corners generously.** R 24 at the T junctions; R 11 was undriveable.

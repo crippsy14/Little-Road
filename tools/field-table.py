@@ -1,4 +1,4 @@
-"""The race-field reference (docs/70): the parts and PP of the class C and B field at every planned race.
+"""The race-field reference (docs/design.md §8): the parts and PP of the class C and B field at every planned race.
 
     python tools/field-table.py            # both tables as Markdown (per race, then the part windows per star level)
     python tools/field-table.py races      # only the per-race table

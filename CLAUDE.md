@@ -1,12 +1,15 @@
 # Little Road — notes for Claude
 
-Unity 6000.6.1f1 / C# / URP racing-adventure prototype. Start with `README.md` (layout, build and test commands) and `docs/45-roadmap-and-feature-spec.md` (plan of record).
+Unity 6000.6.1f1 / C# / URP racing-adventure prototype. Start with `README.md` (layout, build) and `docs/README.md`.
 
-## Current work
-How we work (since 13 Oct): `docs/73-how-we-work.md`. Claude plans, builds and judges each piece of work against its bars; Richard approves briefs and playtests. Bug reports (snaps and chat) go in `docs/bug-inbox.md`.
-Plan of record: `docs/45-roadmap-and-feature-spec.md`. It sets the order of work in Phases 0–5 (foundations; class C campaign; B; A with teams, fuel, tyres and pits; S; E), and the parts ladder is in `docs/44-parts-tiers-and-progression.md`. The campaign is at least 12 hours and open-ended. Latest status is in `docs/next-steps.md`.
-The world and campaign design (the Glasswater continent, places, races, story, build order W0–W4, design principles) is `docs/58-world-and-campaign-design.md`; `--scale-test` builds the generated continent (`ContinentPlan`, `ContinentGenerator`, `ScaleTest`).
-Racing AI v2 (`RacerDriverPolicy`, the six-ability design; `docs/46-racing-ai-v2-design.md`) is the racing driver; its racecraft (lane commitment, committed overtakes) is v3 since 23 Oct (`docs/94-racing-ai-pace-review.md`; `--no-racecraft-v3` races without it). The first AI and its study code were retired on 13 Oct (docs/74); they and their design notes are in git history (commit 88131e7 and before). Use `tools/run-pace-parallel.ps1` for keep/reject races (six at once; results are deterministic) and `tools/summarize-racer.py` to compare.
+## The docs: five living records (since 23 Oct)
+- `docs/design.md`: every game decision, direction and design rule (classes, career, races, cars, parts, economy, driving, AI, sound, UI, look, characters, the plan of record).
+- `docs/world.md`: the Glasswater continent, the campaign and story, the build order, the standards for new places and tracks, and each built place.
+- `docs/next-steps.md`: latest status, the next three pieces, what waits on Richard, known issues.
+- `docs/how-we-work.md`: roles, the cycle, the bars, keep/reject, regression, agents, tools, git.
+- `docs/bug-inbox.md`: snaps and chat reports.
+- When a decision changes, edit the record where it lives; don't add a doc that supersedes another. A working brief (`docs/brief-<name>.md`) is folded into the records and deleted when its piece lands. Old numbered docs (`docs/47` etc., still cited in code comments) are mapped in `docs/README.md` and kept in git at 35a4d35.
+- Claude plans, builds and judges each piece of work against its bars; Richard approves briefs and playtests, and has given Claude design freedom (20 Oct). The racing driver is Racing AI v2 (`RacerDriverPolicy`) with racecraft v3 (`--no-racecraft-v3` races without it). `--scale-test` builds the generated continent.
 
 ## Working rules
 - Windows PC; use PowerShell from the project root. Close the Unity editor before batch builds.
@@ -21,7 +24,7 @@ Racing AI v2 (`RacerDriverPolicy`, the six-ability design; `docs/46-racing-ai-v2
 - Commit and push as you see fit to Richard's own repos (crippsy14/*: this game, Car Forge); any other repo only when Richard asks (Richard, 17 Oct).
 
 ## Look (colour and lighting)
-- Follow `docs/art-direction.md` ("toy shapes, real light"). All light, grade, cloud and colour-limit numbers live in `unity/Assets/Scripts/WorldLook.cs`; `WorldLookChecks` fails the build if they drift.
+- Follow the art direction in `docs/design.md` §11 ("toy shapes, real light"). All light, grade, cloud and colour-limit numbers live in `unity/Assets/Scripts/WorldLook.cs`; `WorldLookChecks` fails the build if they drift.
 - Create materials with `TrialWorld.Material` (it grades colours) and terrain with `WorldLook.Terrain`. Don't hand-set `_Stylise` or saturated colours; custom shaders need `_LIGHT_COOKIES` support for cloud shadows.
 
 ## Files and clean-up

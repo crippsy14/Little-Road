@@ -1,4 +1,4 @@
-"""The planned world (docs/58, layout B "Glasswater"), from docs/data/world-plan.json (tools/world-plan-extract.py).
+"""The planned world (docs/world.md, layout B "Glasswater"), from docs/data/world-plan.json (tools/world-plan-extract.py).
 
     python tools/world-plan.py                  # summary: places and races per class
     python tools/world-plan.py class B          # every place of a class: kind, distance, features, races, tracks
@@ -7,7 +7,7 @@
     python tools/world-plan.py places           # every place, nearest Bayview first
 
 Race counts follow the blueprint: a main town runs one race per class on each of its tracks, plus one more in the
-town's own class; villages, the secret and the Grand Tours list their own. Planned stars (docs/67) come from
+town's own class; villages, the secret and the Grand Tours list their own. Planned stars come from
 docs/data/race-stars.json.
 """
 import json, sys
@@ -42,7 +42,7 @@ def catalogue():
 
 def summary():
     rows = catalogue(); total = {c: sum(r['races'].get(c, 0) for r in rows if r['layout'] != 'post-game') for c in CLASSES}
-    print('Planned world: layout B, Glasswater (docs/58). Blueprint: ' + DATA['source'].split(' ')[0])
+    print('Planned world: layout B, Glasswater (docs/world.md). Blueprint: ' + DATA['source'].split(' ')[0])
     for c in CLASSES:
         home = [p['name'] for p in sorted(P.values(), key=lambda p: p['km_from_bayview']) if p['cls'] == c]
         print(f"\nClass {c}: {total[c]} races before the credits; home places ({len(home)}): {', '.join(home)}")

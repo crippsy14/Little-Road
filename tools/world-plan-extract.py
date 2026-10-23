@@ -1,6 +1,6 @@
 """Extract the planned world (layout B, "Glasswater") from the world blueprint artifact's page into docs/data/world-plan.json.
 
-The blueprint (https://claude.ai/artifact/L9zDqLxe29UbkXcLHmfPrb, docs/58) holds its data as JavaScript object literals.
+The blueprint (https://claude.ai/artifact/L9zDqLxe29UbkXcLHmfPrb, docs/world.md) holds its data as JavaScript object literals.
 Save the page first (Artifact read with path index.html), then:
     python tools/world-plan-extract.py <saved index.html>
 The JSON is the repo's copy of the plan: tools/world-plan.py and the world-plan skill read it.
@@ -59,7 +59,7 @@ def main(page):
         p['id'] = pid
         p['km_from_bayview'] = round(math.hypot(p['x'] - BAY[0], p['y'] - (BAY[1] - .15)), 1)
         p['kind'] = 'hub' if p.get('hub') else 'island' if p.get('island') else 'secret' if p.get('secret') else 'village' if p.get('village') else 'main'
-    data = {'source': 'https://claude.ai/artifact/L9zDqLxe29UbkXcLHmfPrb (layout B, Glasswater; docs/58)',
+    data = {'source': 'https://claude.ai/artifact/L9zDqLxe29UbkXcLHmfPrb (layout B, Glasswater; docs/world.md)',
             'note': 'Kilometres on the 20 x 20 km sheet, x east and y north; Bayview island near (6.0, 18.98). Main towns race their tracks (club layout for C and B, pro for A, S and E): one race per class on each layout, plus one more in the town\'s own class. Villages, the secret and the tours list their own races.',
             'places': places, 'tracks': tracks, 'tours': tours}
     out = ROOT / 'docs/data/world-plan.json'; out.parent.mkdir(parents=True, exist_ok=True)
