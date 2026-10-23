@@ -9,7 +9,8 @@
   A modest gain; the flag is off by default and uncommitted.
 - 23 October: the Hillcrest loop (studies 260-261) tried more attacking (worse), giving up blocked attacks sooner (fewer
   passes) and closer following (same gain, 60% more contacts); round two stayed the version. The full sweep (study 262)
-  passes keep/reject: 144/144, no resets, -0.8%, passes 44 -> 74, contacts level. Off by default; Richard's call to make it on.
+  passes keep/reject: 144/144, no resets, -0.8%, passes 44 -> 74, contacts level. Richard: "merge it in and make it the
+  default"; the default since the 23 Oct build (`--no-racecraft-v3` races without it), merged into main.
 
 **21 October: Bramblewick is part of the game, and the hybrid prototype is under way.**
 - **Bramblewick** ([doc 82](82-bramblewick.md)) is on by default in player builds; `--no-bramblewick` leaves it out. This

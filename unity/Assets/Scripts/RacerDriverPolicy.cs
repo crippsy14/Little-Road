@@ -82,7 +82,8 @@ namespace LittleRoad
         static readonly bool TrafficCornerMargin=RaceTrial.Has("--traffic-corner-margin")||FieldRecipe.On&&!RaceTrial.Has("--no-traffic-corner-margin");
         const float TrafficCornerCap=.92f;
         static readonly float CornerScale=Scale("--racer-corner-scale"),BrakeScale=Scale("--racer-brake-scale"),ReactionScale=Scale("--racer-reaction-scale"),GapScale=Scale("--racer-gap-scale"),LeaderBrakeScale=Scale("--racer-leader-brake-scale");
-        // Racecraft v3 (docs/94, 22 Oct; --racecraft-v3, off by default). Study 256: in a 24-car field the finishing order
+        // Racecraft v3 (docs/94, 22 Oct). The default since 23 Oct (Richard: "merge it in and make it the default"; study 262:
+        // 144/144, no resets, -0.8%, passes 44 -> 74, contacts level); --no-racecraft-v3 races without it. Study 256: in a 24-car field the finishing order
         // was the grid order (5-11 passes a race from 120-190 attacks; a 10% faster club car from the back passed one car),
         // because the lane target moved 3-6 m nearly every second (380-670 reversals a race), so no move completed, and an
         // attack sat beside its target until the 9 s timeout or the door closed at the apex (70% of aborts). Traffic bound
@@ -94,7 +95,7 @@ namespace LittleRoad
         //           cool-down rather than Patience's;
         //   gap     the target of an attack is followed on a shorter reaction and gap, and not at all once we are beside it
         //           (the close guard still brakes for bodies).
-        public static readonly bool RacecraftV3=RaceTrial.Has("--racecraft-v3");
+        public static readonly bool RacecraftV3=!RaceTrial.Has("--no-racecraft-v3");
         static bool Dropped(string part){var args=Environment.GetCommandLineArgs();for(int i=0;i+1<args.Length;i++)if(args[i]=="--racecraft-v3-without"&&args[i+1]==part)return true;return false;}
         public static readonly bool V3Commit=RacecraftV3&&!Dropped("commit"),V3Attack=RacecraftV3&&!Dropped("attack"),V3Gap=RacecraftV3&&!Dropped("gap");
         // A lane change is a move of LaneShift or more from the shift held at the last accepted change (so a lane can't be

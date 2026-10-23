@@ -229,9 +229,10 @@ Cedar and Bayview, seeds 1709–1711) reproduces study 259 to the tenth of a sec
 | Contacts, soft / hard | 54 / 2 | 52 / 3 |
 
 With Hillcrest −1.0% (study 260), Bramblewick −0.1% and safe (study 258), and −1.6% for a full-ability field (study 259), it
-**passes the keep/reject rule** on every track raced. It is off by default pending Richard's call; `--no-racecraft-v3` would be
-the escape hatch once it is on. What a player would see: fewer cars weaving across the road, fewer pull-outs that go nowhere,
-twice the completed passes and more side-by-side racing, a field about 1% quicker; solo pace and the skill spread unchanged.
+**passes the keep/reject rule** on every track raced. **Richard, 23 Oct: "merge it in and make it the default."** Racecraft v3 is
+the default from the build of 23 Oct; `--no-racecraft-v3` races without it (the keep/reject arms above are that flag's "off"). What
+a player sees: fewer cars weaving across the road, fewer pull-outs that go nowhere, twice the completed passes and more
+side-by-side racing, a field about 1% quicker; solo pace and the skill spread unchanged.
 
 What the two days taught, plainly:
 

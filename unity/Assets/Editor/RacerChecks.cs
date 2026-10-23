@@ -62,9 +62,9 @@ public static class RacerChecks
         Check(!RacerDriverPolicy.CanReachSide(10,8,25)&&RacerDriverPolicy.CanReachSide(10,120,25)&&RacerDriverPolicy.CanReachSide(1,0,25),
             "Pass reach guard: no 10 m dive a third of a second before braking; fine with the braking point five seconds away");
 
-        // Racecraft v3 (docs/94): off by default; lane commitment moves at once for a blocked lane or a big gain, after the
-        // dwell for a clear gain, and never for a marginal one.
-        Check(!RacerDriverPolicy.RacecraftV3&&!RacerDriverPolicy.V3Commit&&!RacerDriverPolicy.V3Attack&&!RacerDriverPolicy.V3Gap,"Racecraft v3 is off by default (--racecraft-v3)");
+        // Racecraft v3 (docs/94): the default since 23 Oct (--no-racecraft-v3 races without it); lane commitment moves at once for
+        // a blocked lane or a big gain, after the dwell for a clear gain, and never for a marginal one.
+        Check(RacerDriverPolicy.RacecraftV3&&RacerDriverPolicy.V3Commit&&RacerDriverPolicy.V3Attack&&RacerDriverPolicy.V3Gap,"Racecraft v3 is on by default (--no-racecraft-v3 to race without it)");
         Check(RacerDriverPolicy.AcceptLaneChange(0,0,true)&&RacerDriverPolicy.AcceptLaneChange(RacerDriverPolicy.LaneBigGain,0,false)
             &&!RacerDriverPolicy.AcceptLaneChange(RacerDriverPolicy.LaneGain+.5f,RacerDriverPolicy.LaneDwell*.5f,false)&&RacerDriverPolicy.AcceptLaneChange(RacerDriverPolicy.LaneGain+.5f,RacerDriverPolicy.LaneDwell,false)
             &&!RacerDriverPolicy.AcceptLaneChange(RacerDriverPolicy.LaneGain*.5f,60,false)&&RacerDriverPolicy.LaneShift>=1&&RacerDriverPolicy.LaneDwell>=.5f,
