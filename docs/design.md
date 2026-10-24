@@ -160,6 +160,12 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   - **Round one (the Puddle audit):** 24 of 99 pass. The proportions were already in band, so the gap is form and
     identity (slab sides, a strip-and-grid face, props instead of body signatures). 31 of the 74 fails are engine gaps, in
     lamps, grilles, bumpers, arches and the base.
+  - **The Puddle rebuilt (24 Oct):** a hand design to its brief, the starter car in game. The engine gaps were closed
+    as opt-in Forge features: face parts, pill tail lamps, capped wheels, bumpers with plates, base lettering and
+    more (car-forge docs/log.md).
+    - **Round 8:** 88 of 100 pass; the blind reader calls it "cheerful" and "smiling".
+    - **Richard's call (24 Oct):** the face "looked like a murderer", so the eyes are subtler and the grin smaller.
+    - **Not yet created:** the brief's signature (the sit) doesn't lead within its own bands, a question for Richard.
 
 ## 5 · Parts
 

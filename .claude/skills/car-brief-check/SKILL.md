@@ -59,7 +59,8 @@ Each "Seen in" name in the brief maps onto a picture:
 | roster | `python tools/game_sheet.py designs/roster/<id>.yaml <neighbours…> --out out/briefs/<id>/check-<N>/roster.png`, and `.\forge.ps1 roster` for look-alike scores |
 | blind | the blind read (step 2) |
 
-If a requirement needs a closer look than the pack gives, take one with `.\forge.ps1 shot <design> --at x,y,z --r 0.15
+`base.png` is drawn in curvature colours: in studio light the underside is black, and flat-lit relief (an embossed
+name) vanishes. If a requirement needs a closer look than the pack gives, take one with `.\forge.ps1 shot <design> --at x,y,z --r 0.15
 --view <v> --out out/briefs/<id>/check-<N>/extra-<name>.png`, and cite it.
 
 A car that isn't from the Forge (a legacy model, a hand-made mesh) gets the same set of views by whatever renderer
@@ -67,7 +68,10 @@ made it. The verdicts follow the same rules.
 
 ### Step 2: the blind read (a cheap agent, before you read your own verdicts)
 
-Spawn one agent with `model: "haiku"` (or `"sonnet"` for a hero car); see the agent-usage-cost memory. Give it only
+Spawn one agent with `model: "sonnet"` for a hero car (a starter, a flagship, a car the player owns), else `"haiku"`;
+see the agent-usage-cost memory. (The Puddle, 24 Oct: haiku read the hero sheet's small faces as "dopey" and "dull",
+and sonnet read the same car as "cheerful" and "smiling". Keep one reader model across a car's rounds once it is
+chosen.) Give it only
 `hero.png`, `silhouette.png` and `chase.png`: no brief, no name, no concept line. Ask it to answer in a few words each:
 
 1. What kind of vehicle is this, and what era does it feel like?
@@ -97,7 +101,9 @@ For every FAIL, give the cause:
 - **ENGINE GAP:** Car Forge can't build it yet. Name the missing capability and where in the engine it would go. Each
   ENGINE GAP becomes a Forge work item (step 6). The brief stays as written.
 - **BRIEF CONFLICT:** two requirements contradict each other, or one can't be checked. Fix the brief in a separate,
-  logged step, never in this round.
+  logged step, never in this round. A conflict about the car's design intent (its signature, its face) goes to
+  Richard. Don't settle it by loosening a band yourself. An internal contradiction, such as a part one requirement asks
+  to be plated and another's list forbids, may be fixed with the reason logged.
 
 ### Step 4: the second check (only when every row passes)
 

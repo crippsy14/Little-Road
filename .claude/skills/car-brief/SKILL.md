@@ -319,6 +319,21 @@ The anti-goals: what would make this car a failure, each one written as a requir
 - "It is not a stock hatch with a prop on top: with all props removed, the body alone is still recognisably this car
   in clay."
 
+### Lessons from the first brief (the Puddle, 24 Oct)
+- **Bands must leave room for the signature.**
+  - The Puddle's signature (the sit) had to lead the blind read, but its own bands capped it: rake at most 4°,
+    haunches at most 8 cm, the rear wheel at most 1.18 x the front.
+  - In eight rounds every reader found the face unique instead.
+  - Set the signature's bands from the size it needs to read, or make the signature the boldest thing in the brief.
+- **Check requirements against each other:**
+  - a raked car's two bumper tops are at different heights, so one rubbing strip can't meet both;
+  - a "nothing else is plated" list must name every part other requirements ask to be plated.
+- **Kind, not menacing:**
+  - Richard saw "a murderer" in huge staring eyes over a five-bar grin;
+  - bars across a smile read as teeth;
+  - big eyes stay friendly when they nestle into the body and have soft brows, not when they bulge above it;
+  - add an NT requirement against menace whenever a car has a face.
+
 ## 6. Before calling the brief done
 
 - [ ] Every section is present, and every requirement has an ID and a "Seen in".
