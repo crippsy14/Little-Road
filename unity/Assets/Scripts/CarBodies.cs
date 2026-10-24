@@ -167,6 +167,7 @@ namespace LittleRoad
         static readonly System.Collections.Generic.Dictionary<string,(string name,string what,string signature)> ForgeInfo=new(){
             ["forge_puddle"]=("Puddle","the starter: an eager little hatch that sits up like a puppy waiting for a walk","big round eyes and a contented smile"),
             ["forge_snoozer"]=("Snoozer","a sleepy old family saloon that never quite wakes up","a sway-backed body and heavy-lidded lamps"),
+            ["forge_toastie"]=("Toastie","the village baker's little van, its roof a fresh golden loaf","a loaf for a roof, scored three times"),
             ["forge_tubby"]=("Tubby","a cast-iron roll-top bath on a go-kart chassis: a special, won on the water","a bath on wheels")};
         public static string About(string id)=>id!=null&&ForgeInfo.TryGetValue(id,out var f)?f.what:null;
         public static string Signature(string id)=>id!=null&&ForgeInfo.TryGetValue(id,out var f)?f.signature:null;
@@ -196,7 +197,7 @@ namespace LittleRoad
         static Offer[] forgeSale;
         static Offer[] ForgeSale=>forgeSale??=ForgeRange.Where(o=>o.shop=="tuner"||Forged(o.id)?.band!=null).ToArray();
         static readonly Offer[] ForgeRange={
-            new("forge_snoozer","hillcrest",450),
+            new("forge_snoozer","hillcrest",450),new("forge_toastie","hillcrest",420),
             new("tsubasa","tuner",6000),new("kitsune","tuner",6500),new("sakura","tuner",7000),new("chibi","tuner",5500),new("kogarashi","tuner",6000),new("hachi","tuner",6500),new("tanuki","tuner",6000),new("kiri","tuner",6500),new("midori","tuner",7500),new("hibari","tuner",7500),new("yoru","tuner",8000),new("tsuki","tuner",8000),new("taiyo","tuner",8500),new("kaze","tuner",9000),new("raijin","tuner",9500),new("fubuki","tuner",9500),new("kumo","tuner",10000),new("nagare","tuner",9000),new("kage","tuner",9500),new("arashi","tuner",10000),new("hoshi","tuner",11000),new("hayate","tuner",12000),new("shiro","tuner",14000),new("sabaku","tuner",10000),new("yama","tuner",10500),new("tora","tuner",10000),new("kaminari","tuner",11000)};
         // The older models' range (--no-forge-roster).
         static readonly Offer[] OldSale={

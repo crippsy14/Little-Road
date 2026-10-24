@@ -150,7 +150,7 @@ namespace LittleRoad
         // a name with no rule renders the default charcoal).
         public static readonly string[] CarMaterialKeys={"RimGunmetal","RimBronze","RimWhite","RimBlack","PaintedSteel","StripeColour","BodyPaint","Glass","Rubber","Alloy",
             "Headlamp","TailLight","ReverseLight","RearReflector","BumperInsert","Amber","Plate","PanelSeam","BrakeMetal","Cloth","Cream","Livery","Wood",
-            "CarbonFibre","GoldTrim","CaliperRed","CanopyGlass","CharcoalTrim","Primer","Rust","EnamelBlue"};
+            "CarbonFibre","GoldTrim","CaliperRed","CanopyGlass","CharcoalTrim","Primer","Rust","EnamelBlue","Rosy","Crust","CrustDark"};
         public static GameObject Car(string asset,Color paint)
         {
             // (an older class C body comes as its Car Forge namesake, and the car is named after the model it shows, so its
@@ -169,7 +169,7 @@ namespace LittleRoad
             }
             if(CarBodies.UsesStandardEnvelope(asset))root.AddComponent<StandardEnvelope>();
             // --livery: Car Forge bodies wear a composed livery in their livery space (ForgeLivery).
-            if(ForgeLivery.Enabled&&CarBodies.Forged(asset)!=null)ForgeLivery.Apply(root,paint,new Color(.95f,.94f,.9f),ForgeLivery.Number(asset),CarBodies.Forged(asset).livery??"stripes");
+            if(ForgeLivery.Enabled&&CarBodies.Forged(asset)!=null)ForgeLivery.Apply(root,paint,new Color(.95f,.94f,.9f),ForgeLivery.Number(asset),CarBodies.Forged(asset).livery??"plain");
             // (and its paint layers over the livery: graded rust, dirt, fade, tones; ForgeLayers, 24 Oct)
             ForgeLayers.Apply(root,asset,paint);
             root.AddComponent<VehicleLights>().Initialize();return root;
@@ -222,6 +222,10 @@ namespace LittleRoad
                         name.Contains("Primer")?new Color(.50f,.51f,.50f):name.Contains("Rust")?new Color(.36f,.16f,.07f):
                         // (a blue enamel tap cap: the Tubby, a special, 24 Oct)
                         name.Contains("EnamelBlue")?new Color(.09f,.20f,.62f):
+                        // (a face's rosy cheeks: the Toastie, 24 Oct)
+                        name.Contains("Rosy")?new Color(.86f,.42f,.42f):
+                        // (a baked crust: the loaves on the Toastie's rack)
+                        name.Contains("CrustDark")?new Color(.26f,.13f,.05f):name.Contains("Crust")?new Color(.70f,.42f,.17f):
                         // The Regale (Duke Rolo's prototype, docs/53): a painted livery, carbon, gold, red calipers, smoked canopy.
                         name.Contains("LiveryMap")?Color.white:name.Contains("CarbonFibre")?new Color(.03f,.033f,.036f):
                         name.Contains("GoldTrim")?new Color(.83f,.62f,.24f):name.Contains("CaliperRed")?new Color(.72f,.08f,.06f):

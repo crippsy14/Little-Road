@@ -80,7 +80,7 @@ namespace LittleRoad
         // the old one only darkened it); any other body takes the colour. The old livery texture is freed.
         public static void Repaint(GameObject car,string asset,Color paint)
         {
-            var d=Enabled?CarBodies.Forged(asset):null;string style=d?.livery??"stripes";Texture2D tex=null;
+            var d=Enabled?CarBodies.Forged(asset):null;string style=d?.livery??"plain";Texture2D tex=null;   // (plain unless the design asks: not race cars, Richard 24 Oct)
             var old=new System.Collections.Generic.HashSet<Texture>();
             foreach(var r in car.GetComponentsInChildren<Renderer>(true))foreach(var m in r.sharedMaterials){
                 if(m==null||!m.name.Contains("BodyPaint"))continue;
