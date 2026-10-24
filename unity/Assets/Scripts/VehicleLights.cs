@@ -42,24 +42,29 @@ namespace LittleRoad
             // Forward input while backing also decelerates the car.
             bool braking=command<-.05f&&signedSpeed>.1f||command>.05f&&signedSpeed<-.1f;
             bool reversing=signedSpeed<-.1f||command<-.05f&&signedSpeed<=.1f;
-            SetState(braking,reversing);
+            SetState(braking,reversing,true);
         }
-        public void SetState(bool braking,bool reversing)
+        // `driven`: a car on the move runs its tail lamps after dark (a dim red glow); a parked one's stay dark.
+        // (Richard's snap, 24 Oct: "brake lights aren't bright enough to be visible". The Forge lenses are small, so
+        //  braking glows hard enough to bloom, and harder still at night, as a real brake lamp outshines its tail lamp.)
+        public void SetState(bool braking,bool reversing,bool driven=false)
         {
-            if(initialized&&Braking==braking&&Reversing==reversing)return;
-            initialized=true;
+            float night=driven?NightLights.Night:0;
+            if(initialized&&Braking==braking&&Reversing==reversing&&Mathf.Abs(night-litNight)<.02f)return;
+            initialized=true;litNight=night;
             Braking=braking;Reversing=reversing;
             foreach(var material in brake) {
                 // (a Car Forge tail lens is tinted glass: it keeps its see-through tint, brightening under braking)
                 var off=material.name.Contains("LampGlass")?TrialWorld.LampGlassColour(material.name):new Color(.42f,.015f,.008f);
                 material.SetColor("_BaseColor",braking?new Color(.95f,.018f,.008f,off.a):off);
-                material.SetColor("_EmissionColor",braking?new Color(2.5f,.006f,.002f):Color.black);
+                material.SetColor("_EmissionColor",braking?new Color(6f,.03f,.01f)*(1+night):night>.01f?new Color(1.4f,.01f,.004f)*night:Color.black);
             }
             foreach(var material in reverse) {
                 material.SetColor("_BaseColor",reversing?Color.white:new Color(.65f,.70f,.72f));
-                material.SetColor("_EmissionColor",reversing?new Color(2.4f,2.4f,2.4f):Color.black);
+                material.SetColor("_EmissionColor",reversing?new Color(4f,4f,4f):Color.black);
             }
         }
+        float litNight;
         void OnDisable()=>SetState(false,false);
     }
 }

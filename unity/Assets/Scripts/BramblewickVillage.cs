@@ -9,7 +9,7 @@ namespace LittleRoad
     // Vinelands gate with its cows in the field. Pieces from Car Forge's village, farm and cows kits.
     public sealed partial class BramblewickVillage
     {
-        readonly Transform root;readonly System.Random rng=new(8240);
+        Transform root;readonly System.Random rng=new(8240);   // (not readonly: the race day's own pieces are built under their holder, BramblewickCircuit)
         readonly List<(Vector2 c,Vector2 half,float yaw)> footprints=new();
         Material plinth;
         public static int Buildings,Plinths,Refused;
@@ -296,6 +296,7 @@ namespace LittleRoad
             p.GetComponent<Renderer>().sharedMaterial=TrialWorld.Material("Depth post white",new Color(.95f,.95f,.92f),0,.3f);p.tag="Respawn";
             foreach(int dir in new[]{-1,1})foreach(float back in new[]{45f,100f}){float sb=s0+dir*back;var fb=lane.Forward(sb)*dir;fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);var b=lane.At(sb)+rb*(half+1.7f);if(ValleyField.RoadDistance(b.x,b.z)<half+1.2f)continue;b.y=H(b.x,b.z);RoadSign(b,fb,back>60?"FORD AHEAD":"FORD");}
             var splash=new GameObject("Ford splash").AddComponent<FordSplash>();splash.transform.SetParent(root);splash.Setup(lane.At(s0),lane.Forward(s0),6.5f,half+.4f);
+            Water.AddFord(lane.At(s0),lane.Forward(s0),6.5f,half+.7f,.12f);   // (it holds a car back and takes some grip: Water)
             Spots["ford"]=(lane.At(s0)+rightF*(half+6),Yaw(lane.At(s0)+rightF*(half+6),lane.At(s0)));
         }
         // The humpback bridge on Church Lane (the lanes circuit's crest over the brook): stone parapets along both edges of
@@ -357,6 +358,9 @@ namespace LittleRoad
         void Cow(Vector3 p,Vector3 field)
         {
             if(!PropKit.Has("cows"))return;p.y=H(p.x,p.z);
+            // (No animals in a world of cars, Richard 24 Oct; --animals for them. Its three draws are still taken, so the
+            //  village's random stream, and everything placed after the herd, stays where it was.)
+            if(!Grazer.Animals){rng.NextDouble();rng.Next(4);rng.Next(3);return;}
             var cow=new GameObject("Cow");cow.transform.SetParent(root);cow.transform.SetPositionAndRotation(p,Quaternion.Euler(0,(float)rng.NextDouble()*360,0));
             var kit=PropKit.Load("cows");int v=rng.Next(4),h=rng.Next(3);
             var body=new GameObject("Body",typeof(MeshFilter),typeof(MeshRenderer));body.transform.SetParent(cow.transform,false);

@@ -11,7 +11,14 @@ namespace LittleRoad
     // Cells beyond reach are dropped. Off in batch mode (nothing renders) and with --no-grass.
     public sealed class GrassField:MonoBehaviour
     {
-        public const float Radius=44,Cell=8;const int PerCell=260;
+        public const float Cell=8;const int PerCell=260;
+        // How far out the grass reaches (fading over its last 12 m): 72 m with the grass option on High, 52 m on Low.
+        // (Richard's snap, 24 Oct: "grass pops in too close ... especially on higher graphics settings, so it doesn't have a
+        //  Truman Show effect". It was 44 m on every setting; --grass-radius <m> to compare.)
+        static float? asked;
+        public static float Radius{get{
+            asked??=float.TryParse(RaceTrial.Arg("--grass-radius"),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float r)?r:0;
+            return asked>0?asked.Value:GraphicsOptions.GrassDensity>=1?72:52;}}
         // Cells fill a few candidates at a time within this budget per frame. Filling up to four whole cells
         // in one frame (1,000+ rays and placement checks) was a 20-40 ms hitch every ~8 m at driving speed
         // (drive benchmark db4). The random sequence per cell is unchanged, so the grass lands identically.
@@ -125,6 +132,7 @@ namespace LittleRoad
         void Update()
         {
             if(view==null||material==null)return;
+            float radius=Radius;if(material.GetFloat("_Radius")!=radius)material.SetFloat("_Radius",radius);   // (the grass option can change in play)
             Vector3 eye=view.transform.position;var centre=new Vector2Int(Mathf.FloorToInt(eye.x/Cell),Mathf.FloorToInt(eye.z/Cell));int reach=Mathf.CeilToInt(Radius/Cell);
             // Drop cells well out of reach.
             List<Vector2Int> stale=null;foreach(var key in cells.Keys)if(Mathf.Abs(key.x-centre.x)>reach+2||Mathf.Abs(key.y-centre.y)>reach+2)(stale??=new()).Add(key);

@@ -124,18 +124,22 @@ namespace LittleRoad
             // (4 Oct: a flat 46 m slab stood up to 0.8 m clear of the ground where the junction cut is low, with benches and
             // stalls on its top and nothing under them.) The flags drape the ground on a 2 m grid, 3 cm up.
             {const int n=23;var v=new List<Vector3>();var tri=new List<int>();
-                for(int j=0;j<=n;j++)for(int i=0;i<=n;i++){float x=c.x-23+i*2,z=c.z-23+j*2;v.Add(new Vector3(x,H(x,z)+(ValleyField.RoadDistance(x,z)<5.5f?-.15f:.03f),z));} // (tucked under the junction's road surface)
+                for(int j=0;j<=n;j++)for(int i=0;i<=n;i++){float x=c.x-23+i*2,z=c.z-23+j*2;v.Add(new Vector3(x,H(x,z)+(ValleyField.RoadDistance(x,z)<5.5f?-.15f:.08f),z));} // (tucked under the junction's road surface; 8 cm up elsewhere, as at 3 cm the ground's own triangles showed through as green slivers: Richard's snap, 24 Oct)
                 for(int j=0;j<n;j++)for(int i=0;i<n;i++){int a=j*(n+1)+i;tri.AddRange(new[]{a,a+n+1,a+1,a+1,a+n+1,a+n+2});}
                 var mesh=new Mesh{name="Square paving"};mesh.SetVertices(v);mesh.SetTriangles(tri,0);mesh.RecalculateNormals();
                 if(mesh.normals[0].y<0){for(int t=0;t<tri.Count;t+=3)(tri[t+1],tri[t+2])=(tri[t+2],tri[t+1]);mesh.SetTriangles(tri,0);mesh.RecalculateNormals();}
                 var pave=new GameObject("Square paving",typeof(MeshFilter),typeof(MeshRenderer));pave.transform.SetParent(root);pave.GetComponent<MeshFilter>().sharedMesh=mesh;pave.GetComponent<MeshRenderer>().sharedMaterial=paving;}
             Take(new Vector2(c.x,c.z),new Vector2(25,25),0);
             Vector3 Corner(float bearing,float r){float a=bearing*Mathf.Deg2Rad;var p=c+new Vector3(Mathf.Sin(a)*r,0,Mathf.Cos(a)*r);p.y=QuarryHills.SquareY;return p;}
-            // The roads come in roughly from the four quarters: the landmarks stand on the diagonals, facing in.
-            var inst=Corner(135,36);Building("town_hall",inst,Yaw(inst,c),T(0x8c9095,0xf4f1ea,0xc0392b,0x1f3a93,0x40464d),"INSTITUTE",true);
-            var chapel=Corner(225,34);Building("church",chapel,Yaw(chapel,c),T(0x969089,0xf4f1ea,0x2e86c1,0x229954,0x4b5158),"CAPEL BETHEL",true);
-            var caban=Corner(315,30);Building("cafe",caban,Yaw(caban,c),T(0xe9e3d3,0xc0392b,0xc0392b,0xc0392b,0x4b5158),"CABAN",true);Spots["caban"]=(Corner(315,21),Yaw(caban,c)+90);
-            var shop=Corner(45,30);Building("terrace_b",shop,Yaw(shop,c),T(0xf0dc9a,0x1f3a93,0x2e86c1,0x1f3a93,0x565c63),"SIOP Y GORNEL",true); // (not "SIOP": it read as STOP at the junction)
+            // The roads come in roughly from the four quarters: the landmarks stand on the diagonals, facing in, each with its
+            // floor at the ground in front of it, where it meets the square's paving (Richard's snap, 24 Oct: at the square's
+            // own level Caban stood 1.5 m over the paving, its terrace bed hanging over a car parked beneath it). Its back cuts
+            // into the ground rising behind, as the terraces' do.
+            Vector3 Front(Vector3 p){var f=c-p;f.y=0;var q=p+f.normalized*9;p.y=H(q.x,q.z);return p;}
+            var inst=Front(Corner(135,36));Building("town_hall",inst,Yaw(inst,c),T(0x8c9095,0xf4f1ea,0xc0392b,0x1f3a93,0x40464d),"INSTITUTE",true);
+            var chapel=Front(Corner(225,34));Building("church",chapel,Yaw(chapel,c),T(0x969089,0xf4f1ea,0x2e86c1,0x229954,0x4b5158),"CAPEL BETHEL",true);
+            var caban=Front(Corner(315,30));Building("cafe",caban,Yaw(caban,c),T(0xe9e3d3,0xc0392b,0xc0392b,0xc0392b,0x4b5158),"CABAN",true);Spots["caban"]=(Corner(315,15),Yaw(caban,c)+90);   // (Megan parks on the square in front of it: at 21 m out her car stood in the café's terrace, Richard's snap 24 Oct)
+            var shop=Front(Corner(45,30));Building("terrace_b",shop,Yaw(shop,c),T(0xf0dc9a,0x1f3a93,0x2e86c1,0x1f3a93,0x565c63),"SIOP Y GORNEL",true); // (not "SIOP": it read as STOP at the junction)
             Spots["institute"]=(inst,Yaw(inst,c));Spots["chapel"]=(chapel,Yaw(chapel,c));
             // Each landmark's neighbours: a short run of terraces either side, so the square is enclosed.
             foreach(var (b,r) in new[]{(135f,36f),(225f,34f),(315f,30f),(45f,30f)})
@@ -148,13 +152,20 @@ namespace LittleRoad
             // (The paving now drapes the ground, so everything stands on the ground: street review, 4 Oct, a bench sank into the
             // old flat slab to its back slats and the map board lay face-up in it.)
             Vector3 OnGround(Vector3 p){p.y=H(p.x,p.z);return p;}
-            Put("fountain",OnGround(c)+Vector3.down*.02f,0);
-            int k=0;foreach(float b in new[]{60f,120f,240f,300f}){var p=OnGround(Corner(b,11));Put("market_stall",p,Yaw(p,c),T(0xffffff,0,new[]{0xc0392b,0x229954,0xf1c40f,0x2e86c1}[k++%4],0,0x4b5158));}
-            foreach(float b in new[]{90f,180f,270f,0f}){var p=OnGround(Corner(b+40,17));Put("bench",p,Yaw(p,c)+180);}
+            // (Richard's snaps, 24 Oct: "Market square is cluttered with things all over the road. please remove it all", and a
+            // lamp in the road by Caban. The square is the town's crossroads: the fountain, its bollards and phone box, the
+            // market stalls with their boards and planters, and the flags all stood in the carriageway. They're gone; a bench or
+            // a lamp stands only off the road, 6.5 m or more from any road's middle. --market-square for the old square.)
+            bool old=RaceTrial.Has("--market-square");bool OffRoad(Vector3 p)=>old||ValleyField.RoadDistance(p.x,p.z)>=6.5f;
+            if(old) {
+                Put("fountain",OnGround(c)+Vector3.down*.02f,0);
+                int k=0;foreach(float b in new[]{60f,120f,240f,300f}){var p=OnGround(Corner(b,11));Put("market_stall",p,Yaw(p,c),T(0xffffff,0,new[]{0xc0392b,0x229954,0xf1c40f,0x2e86c1}[k++%4],0,0x4b5158));}
+            }
+            foreach(float b in new[]{90f,180f,270f,0f}){var p=OnGround(Corner(b+40,17));if(OffRoad(p))Put("bench",p,Yaw(p,c)+180);}
             // Y Ddraig Goch either side of a white-and-green pole (street review, 4 Oct: plain stripes didn't read as Welsh).
-            foreach(float x in new[]{-4f,0f,4f}){var p=OnGround(Corner(180,6)+new Vector3(x,0,0));if(x!=0&&BayviewKit.Has("flag_wales"))Put("flag_wales",p,0);else Put("flag_pole",p,0,T(0xffffff,x==0?0xc0392b:0x229954,x==0?0xffffff:0xc0392b,0,0xffffff));}
+            if(old)foreach(float x in new[]{-4f,0f,4f}){var p=OnGround(Corner(180,6)+new Vector3(x,0,0));if(x!=0&&BayviewKit.Has("flag_wales"))Put("flag_wales",p,0);else Put("flag_pole",p,0,T(0xffffff,x==0?0xc0392b:0x229954,x==0?0xffffff:0xc0392b,0,0xffffff));}
             var ring=new List<Vector3>();
-            foreach(float b in new[]{20f,70f,110f,160f,200f,250f,290f,340f}){var p=Corner(b,21);p.y=H(p.x,p.z);if(Put("lamp_post",p,0,T(0xffffff,0x1f3a93,0xffffff,0xffffff,0xffffff),null,1,false)!=null){lamps++;streetLamps.Add(p);ring.Add(p);}}
+            foreach(float b in new[]{20f,70f,110f,160f,200f,250f,290f,340f}){var p=Corner(b,21);p.y=H(p.x,p.z);if(OffRoad(p)&&Put("lamp_post",p,0,T(0xffffff,0x1f3a93,0xffffff,0xffffff,0xffffff),null,1,false)!=null){lamps++;streetLamps.Add(p);ring.Add(p);}}
             // Round the square lamp to lamp, and two runs across it.
             for(int i=0;i<ring.Count;i++)HillcrestTown.BuntingLine(root,ring[i]+Vector3.up*4.4f,ring[(i+1)%ring.Count]+Vector3.up*4.4f,.9f);
             if(ring.Count==8)foreach(int i in new[]{1,3})HillcrestTown.BuntingLine(root,ring[i]+Vector3.up*4.4f,ring[i+4]+Vector3.up*4.4f,2.2f);
@@ -241,7 +252,25 @@ namespace LittleRoad
             var p=road.At(s)+road.Right(s)*side*(road.width*.5f+Pave-.8f);p.y=road.At(s).y;
             foreach(var other in HillcrestRoute.All())if(other!=road&&HillcrestRoute.Distance(other.line,p.x,p.z,out _)<other.width*.5f+6)return;
             if(Vector2.Distance(new(p.x,p.z),QuarryHills.Square)<30||Vector2.Distance(new(p.x,p.z),new(QuarryHills.PitStopSite.at.x,QuarryHills.PitStopSite.at.z))<30)return;
-            Put("bench",p,Quaternion.LookRotation(-road.Right(s)*side).eulerAngles.y,null,null,1,false);GardenProps.Add(p);
+            SitOn(Put("bench",p,Quaternion.LookRotation(-road.Right(s)*side).eulerAngles.y,null,null,1,false));GardenProps.Add(p);
+        }
+        // A bench seated on what is under its feet: the pavement, which rises from the kerb to the garden wall, not the
+        // road's height at the kerb (Richard's snap, 24 Oct: "most benches in the town go into the ground as they aren't on the
+        // correct axis relative to the ground"). The ground fit tilts pieces to the land only, and a pavement is a structure to it.
+        static void SitOn(GameObject bench)
+        {
+            if(bench==null)return;var t=bench.transform;float yaw=t.eulerAngles.y;var r=Quaternion.Euler(0,yaw,0);var feet=new Vector3[4];int found=0;
+            foreach(var (x,z) in new[]{(-.8f,-.3f),(.8f,-.3f),(-.8f,.3f),(.8f,.3f)}) {
+                var q=t.position+r*new Vector3(x,0,z);float top=float.MinValue;
+                foreach(var hit in Physics.RaycastAll(q+Vector3.up*2,Vector3.down,4,~0,QueryTriggerInteraction.Ignore))
+                    if(!hit.transform.IsChildOf(t)&&hit.collider.attachedRigidbody==null&&hit.collider.GetComponentInParent<VehicleLights>()==null)top=Mathf.Max(top,hit.point.y);
+                if(top>float.MinValue){q.y=top;feet[found++]=q;}
+            }
+            if(found<4)return;
+            // On the feet's plane (10 degrees of tilt at most), at their mean height.
+            var n=Vector3.Cross((feet[3]+feet[2])-(feet[1]+feet[0]),(feet[1]+feet[3])-(feet[0]+feet[2])).normalized;if(n.y<0)n=-n;
+            var tilt=Quaternion.FromToRotation(Vector3.up,n);if(Quaternion.Angle(Quaternion.identity,tilt)>10)tilt=Quaternion.identity;
+            var c=(feet[0]+feet[1]+feet[2]+feet[3])*.25f;t.SetPositionAndRotation(new Vector3(t.position.x,c.y,t.position.z),tilt*r);
         }
         float RowCentre(HillcrestRoute.Road road,float depth)=>road.width*.5f+Pave+Garden+depth*.5f;
         // (Yields after each house when built in the background: Districts.)

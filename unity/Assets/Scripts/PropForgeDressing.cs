@@ -150,7 +150,9 @@ namespace LittleRoad
         static bool Try(string id,Vector3 at,float yaw,float room,BayviewKit.Tint tint=null)
         {
             if(Road(at)<1.5f){No(id+":road");return false;}
-            float top=float.MinValue;foreach(var hit in Physics.RaycastAll(new Vector3(at.x,at.y+40,at.z),Vector3.down,80))if(!hit.collider.isTrigger&&hit.collider.attachedRigidbody==null)top=Mathf.Max(top,hit.point.y);
+            // (Not a car's roof either: Richard's snap, 24 Oct, a planter outside Caban stood on a parked resident's car, whose
+            //  collider has no rigidbody. A parked car is something in the way, as the overlap test below finds.)
+            float top=float.MinValue;foreach(var hit in Physics.RaycastAll(new Vector3(at.x,at.y+40,at.z),Vector3.down,80))if(!hit.collider.isTrigger&&hit.collider.attachedRigidbody==null&&hit.collider.GetComponentInParent<VehicleLights>()==null)top=Mathf.Max(top,hit.point.y);
             if(top==float.MinValue)top=Ground.Surface(at.x,at.z);
             if(Mathf.Abs(top-at.y)>4){No(id+":height");return false;}   // (a roof, a cliff: not the street it was meant for)
             var spot=new Vector3(at.x,top,at.z);var box=new Bounds(spot+Vector3.up*(.15f+1f),new Vector3(room*2,2f,room*2));   // (room: half its width; a box 2 m tall from just above the ground)

@@ -169,7 +169,7 @@ namespace LittleRoad
                 var v=probe.Split(',').Select(s=>float.Parse(s,System.Globalization.CultureInfo.InvariantCulture)).ToArray();
                 Vector3 a=new(v[0],0,v[1]),b=new(v[2],0,v[3]);float length=Vector3.Distance(a,b);sb.AppendLine("line "+probe);
                 for(float s=0;s<=length;s+=.25f) {
-                    var p=Vector3.Lerp(a,b,s/length);var hits=Physics.RaycastAll(p+Vector3.up*60,Vector3.down,120).Where(h=>!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null).OrderByDescending(h=>h.point.y).ToArray();
+                    var p=Vector3.Lerp(a,b,s/length);var hits=Physics.RaycastAll(p+Vector3.up*400,Vector3.down,800).Where(   /* (from 400 m: Quarry Hills' roads stand above 60 m) */h=>!h.collider.isTrigger&&h.collider.GetComponentInParent<RoadCar>()==null).OrderByDescending(h=>h.point.y).ToArray();
                     sb.AppendLine($"{s,6:0.00} ({p.x:0.00},{p.z:0.00}) "+string.Join(" | ",hits.Take(3).Select(h=>$"{h.point.y:0.000} {h.collider.name}{(h.collider.GetComponentInParent<RoadSurface>()!=null?" [road]":"")} n.y={h.normal.y:0.00}")));
                 }}
                 File.WriteAllText(Path.Combine(folder,"probe-line.txt"),sb.ToString());Application.Quit(0);yield break;
@@ -232,6 +232,11 @@ namespace LittleRoad
                 Vector3 V(string text){var s=text.Split(',');float F(string x)=>float.Parse(x,System.Globalization.CultureInfo.InvariantCulture);float x0=F(s[0]),z0=F(s[2]);
                     float y=s[1].StartsWith("g")?Ground.Surface(x0,z0)+(s[1].Length>1?F(s[1].Substring(1)):0):F(s[1]); /* ("g" alone: on the ground) */return new Vector3(x0,y,z0);}
                 player.body.isKinematic=true;player.body.position+=Vector3.down*30;
+                // (--hide "a,b": renderers whose name or parent's name holds any of these are switched off, to find what draws
+                //  something in a photo by taking it away)
+                if(!string.IsNullOrEmpty(RaceTrial.Arg("--hide"))){var names=RaceTrial.Arg("--hide").Split(',');int hidden=0;
+                    foreach(var r in FindObjectsByType<Renderer>(FindObjectsSortMode.None)){string own=r.name+"/"+(r.transform.parent!=null?r.transform.parent.name:"");foreach(var n in names)if(own.Contains(n)){r.enabled=false;hidden++;break;}}
+                    Debug.Log($"LITTLE_ROAD_VIEW_HIDE {RaceTrial.Arg("--hide")} renderers={hidden}");}
                 foreach(var shot in RaceTrial.Arg("--view-shots").Split(';')) {
                     var name=shot.Split(':');
                     // ("name:@Road name,s,left|right|along": the street review's own view at s metres along that road, so one of

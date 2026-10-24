@@ -503,7 +503,7 @@ namespace LittleRoad
             // Quarry Hills' junctions: within 24 m of each, the ground stays 0.2 m under the lowest road near it (the corridors
             // follow whichever road is nearest, so a junction's surface, which blends its roads' heights, could be buried).
             // (and Vinelands' junctions off the town, docs/89: the river road's north T, Casal do Meio and the quinta tracks' starts)
-            var junctionPoints=new List<(Vector3 at,float under)>();if(QuarryHills.Enabled)foreach(var q in QuarryHills.JunctionPoints())junctionPoints.Add((q,.2f));if(Vinelands.Enabled)foreach(var q in Vinelands.JunctionPads)junctionPoints.Add((q,.05f));   // (Vinelands' 5 cm: at 20 cm a free end's curb showed)
+            var junctionPoints=new List<(Vector3 at,float under)>();if(QuarryHills.Enabled)foreach(var q in QuarryHills.JunctionPoints())junctionPoints.Add((q,q==QuarryHills.TeeOnRaceway?.45f:.2f));   // (the raceway T, on a slope, fans 0.22 m under its roads' line: the ground showed through it, Richard's snaps 24 Oct)if(Vinelands.Enabled)foreach(var q in Vinelands.JunctionPads)junctionPoints.Add((q,.05f));   // (Vinelands' 5 cm: at 20 cm a free end's curb showed)
             foreach(var (node,under) in junctionPoints) {
                 int i0=Mathf.Max(0,(int)((node.x-24-X0)/Cell)),i1=Mathf.Min(NX-1,(int)((node.x+24-X0)/Cell)+1),j0=Mathf.Max(0,(int)((node.z-24-Z0)/Cell)),j1=Mathf.Min(NZ-1,(int)((node.z+24-Z0)/Cell)+1);
                 var near=new List<HillcrestRoute.Road>();foreach(var road in HillcrestRoute.All())if(HillcrestRoute.Distance(road.line,node.x,node.z,out _)<40)near.Add(road);
@@ -521,9 +521,10 @@ namespace LittleRoad
             // (--vinelands, docs/88: the river's channel again under Ponte Nova, where its road's corridor filled it as a causeway)
             if(Vinelands.Enabled&&Vinelands.Ponte!=null){var pl=Vinelands.Ponte;for(int s=0;s<pl.Length-1;s++)Segment(pl[s],pl[s+1],34,(k,d,t)=>{int i=k%NX,j=k/NX;float x=X0+i*Cell,a=x-Vinelands.Centre.x;if(a<1000||a>1104)return;   // (between the abutments only: the approaches keep their fill)
                 float nat=Natural(x,Z0+j*Cell);if(nat<Vinelands.Water+.5f)h[k]=Mathf.Min(h[k],nat);});}
-            // River bed (after roads: bridges span it).
+            // River bed (after roads: bridges span it). 0.9 m under the water, a depth a car wades through slowly (Water): at
+            // 2.6 m it drove along the bottom under the surface (Richard's snap, 24 Oct: "water is just a floating asset in the sky").
             var river=HillcrestRoute.River.line;
-            for(int s=0;s<river.Length-1;s++){Vector3 p=river[s],q=river[s+1];Segment(p,q,36,(k,d,t)=>{float bed=Mathf.Lerp(p.y,q.y,t)-2.6f;h[k]=Mathf.Min(h[k],Mathf.Lerp(bed,h[k],Blend(8,30,d)));});}
+            for(int s=0;s<river.Length-1;s++){Vector3 p=river[s],q=river[s+1];Segment(p,q,36,(k,d,t)=>{float bed=Mathf.Lerp(p.y,q.y,t)-.9f;h[k]=Mathf.Min(h[k],Mathf.Lerp(bed,h[k],Blend(8,30,d)));});}
             // Gorge below the falls: two light blur passes take the 2.5 m grid's zig-zag off the
             // carved walls' top edges without changing the gorge's shape.
             int gi0=(int)((540-X0)/Cell),gi1=(int)((790-X0)/Cell),gj0=(int)((-720-Z0)/Cell),gj1=NZ-2;

@@ -526,8 +526,10 @@ namespace LittleRoad
             Ground("flag_pole",centre.x-9,centre.z-9,0,T(0xffffff,0x3a7bd5,0xff4d5e,0));
             // Forecourt: paved from the station road to the booking hall, bays for the waiting cars.
             var tarmac=TrialWorld.Material("Forecourt tarmac",new Color(.34f,.36f,.39f),0,.2f);var paint=TrialWorld.Material("Bay paint",new Color(.96f,.95f,.9f),0,.3f);
-            Apron("Station forecourt",new Vector3(430,0,-1032),new Vector2(22,36),0,tarmac);
-            for(int k=0;k<4;k++)Bay(new Vector3(418.25f+k*5.5f,0,-1022),Vector3.forward,5,paint);
+            // (Richard's snap, 24 Oct: "car park seems to go under the road". The Farm lane leaves the yard at x 420-425 and the
+            //  forecourt's west side and first bay lay under it, a waiting car in the lane: the forecourt now starts east of it.)
+            Apron("Station forecourt",new Vector3(433.5f,0,-1034),new Vector2(15,32),0,tarmac);
+            for(int k=0;k<3;k++)Bay(new Vector3(427.5f+k*5.5f,0,-1022),Vector3.forward,5,paint);
         }
         // A paved surface draped on the ground: drivable, tarmac grip.
         void Apron(string name,Vector3 centre,Vector2 size,float yaw,Material material)
@@ -693,7 +695,17 @@ namespace LittleRoad
                 }
                 FlushCorner();
             }
-            var access=HillcrestRoute.RacewayAccess;float s=access.Length-70;Put("town_gate",access.At(s)+Vector3.down*.02f,Yaw(access.At(s+2),access.At(s-2)),T(0xffffff,0,0,0),"RACEWAY");
+            // (Richard's snaps, 24 Oct: "position of the arch is in the road so you hit it", "floating assets for the arch and the
+            //  plant pots". At 70 m before the paddock it stood on the T where the Quarry Hills road joins, a pier in that road's
+            //  mouth. Now it's 32 m on, on the raceway's own approach, its pots on the ground either side.)
+            var access=HillcrestRoute.RacewayAccess;float s=access.Length-38;GroundPots(Put("town_gate",access.At(s)+Vector3.down*.02f,Yaw(access.At(s+2),access.At(s-2)),T(0xffffff,0,0,0),"RACEWAY"));
+        }
+        // A town gate's potted cypresses (7.6 m out from the road's middle) set down on the ground under them: the arch stands at
+        // the road's height, and the verge beside it can fall away.
+        public static void GroundPots(GameObject gate)
+        {
+            if(gate==null)return;float y0=gate.transform.position.y;
+            foreach(var t in gate.GetComponentsInChildren<Transform>(true))if(t.name.StartsWith("Gate pot")||t.name.StartsWith("Pot cypress")){var p=t.position;p.y+=LittleRoad.Ground.Surface(p.x,p.z)-y0;t.position=p;}
         }
         // ---------------------------------------------------------------- countryside
         System.Collections.IEnumerator CountrysideRoutine()
@@ -931,7 +943,11 @@ namespace LittleRoad
                 float Top(Vector3 p)=>Mathf.Max(H(p.x,p.z),H(p.x+1.2f,p.z),H(p.x-1.2f,p.z),H(p.x,p.z+1.2f),H(p.x,p.z-1.2f))+.08f;
                 Color Tone(Color c,Vector3 p)=>WorldLook.Surface(c*(.9f+.2f*Mathf.PerlinNoise(p.x*.13f,p.z*.13f)));
                 // (--prop-forge's world: wheat, barley, rapeseed and young crop stand as a canopy the car ploughs through, CropField)
-                if(PropForge.Enabled&&CropField.Height(kind)>0){CropField.Canopy(v,col,t,lift,rowAt,new Vector3(x,0,z),rot,w,d,a,b,CropField.Height(kind),Top,CropField.Tone);if(v.Count>50000)Flush();continue;}
+                // (Richard's snap, 24 Oct: "fields float". A canopy stood on the highest ground 1.2 m round each point, so on a slope
+                //  its foot was up to half a metre clear of the downhill side; it follows the ground under it now, the crop's own
+                //  height hiding the terrain's small bumps between its points.)
+                float Foot(Vector3 p)=>H(p.x,p.z)+.03f;
+                if(PropForge.Enabled&&CropField.Height(kind)>0){CropField.Canopy(v,col,t,lift,rowAt,new Vector3(x,0,z),rot,w,d,a,b,CropField.Height(kind),Foot,CropField.Tone);if(v.Count>50000)Flush();continue;}
                 var furrow=b*(kind==1?.9f:.78f);int sheet=v.Count;
                 for(int iz=0;iz<=rows;iz++)for(int cell=0;cell<=cells;cell++) {
                     var p=new Vector3(x,0,z)+rot*new Vector3(-w/2+cell*w/cells,0,-d/2+iz*spacing);p.y=Top(p);v.Add(p);col.Add(Tone(furrow,p));lift.Add(Vector2.up);

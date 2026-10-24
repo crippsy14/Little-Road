@@ -69,6 +69,14 @@ namespace LittleRoad
             bool NearJunction(Vector3 p,float d){foreach(var j in junctions)if(Vector2.Distance(new(p.x,p.z),new(j.x,j.z))<d)return true;return false;}
             var white=Mat("Lanes paint",new Color(.96f,.96f,.92f));var red=Mat("Lanes kerb red",new Color(.84f,.2f,.17f));var dark=Mat("Lanes chequer",new Color(.1f,.1f,.12f));
 
+            // Race day only (Richard's snaps, 24 Oct: "race assets need removing when the race isn't happening", "all of them"):
+            // the start, the kerbs, the bale walls, the spectators and the corner and distance boards are built under their own
+            // holder, shown only while a race is on (RaceOnly). The lane's landmarks, hedge banks, milestones and brook are the
+            // village's own, every day. (The holder takes the village root's place while those parts are built; --race-dressing
+            // shows it in free roam as before.)
+            var village=root;var raceDay=new GameObject("Lanes race day").transform;raceDay.SetParent(village,false);
+            village.gameObject.AddComponent<RaceOnly>().show=raceDay.gameObject;
+            root=raceDay;
             // ---- the start: chequers, grid boxes, gantry
             {
                 var s0=track.At(0);var fw=track.Forward(0);fw.y=0;fw.Normalize();var r0=Vector3.Cross(Vector3.up,fw);
@@ -147,6 +155,7 @@ namespace LittleRoad
                 foreach(float x in new[]{-9f,9f}){var fp=bank+f*x;if(ValleyField.RoadDistance(fp.x,fp.z)<half+4)continue;fp.y=H(fp.x,fp.z);Put("flag_pole",fp,0,T(0xffffff,0xffd23f,0x2f5d46,0),null,true);}
             }
             Spectators("Green Apex",8,true);Spectators("Dairy T",5,false);Spectators("Humpback Bridge",4,false);Spectators("Beacon Apex",5,false);
+            root=village;
             // (Ted the marshal stands on the Beacon's bank, by his flag)
             if(Bramblewick.Marks.TryGetValue("Beacon Apex",out var be)){var bp=new Vector3(be.x,0,be.y);float sb=track.Nearest(bp,out _);var fb=track.Forward(sb);fb.y=0;fb.Normalize();var rb=Vector3.Cross(Vector3.up,fb);
                 var f0=track.Forward(sb-8);var f1=track.Forward(sb+8);f0.y=f1.y=0;int outside=Vector3.SignedAngle(f0,f1,Vector3.up)>0?-1:1;var ted=track.At(sb)+rb*outside*(half+9)-fb*14;ted.y=H(ted.x,ted.z);Spots["marshal"]=(ted,Yaw(ted,track.At(sb)));}
@@ -240,11 +249,16 @@ namespace LittleRoad
                 }
             }
 
+            root=raceDay;
             // ---- a board at each corner, 25 m before it on the outside, with the corner's name
+            // (Richard's snap, 24 Oct: "sign posts all seem to go onto the road". The board, up to 5 m wide, was centred 1.7 m
+            //  past the lane's edge, so half of it hung over the road and its inner post stood in it: now its inner edge is 1 m
+            //  clear of the lane.)
             foreach(var name in new[]{"Brook Esses","Barn Corner","Rookery","Hedge Gap","Rim Corner","Beacon","Gallows","Church Hill","Green Hairpin","Orchard","Cider Press","Long Meadow","Mill Bend","Humpback Bridge"}) {
                 if(!Bramblewick.Marks.TryGetValue(name,out var m2))continue;float sc=track.Nearest(new Vector3(m2.x,0,m2.y),out _)-40;
                 var f=track.Forward(sc);f.y=0;f.Normalize();var right=Vector3.Cross(Vector3.up,f);var f1=track.Forward(sc+35);f1.y=0;int outside=Vector3.SignedAngle(f,f1,Vector3.up)>0?-1:1;
-                var p=track.At(sc)+right*outside*(half+1.7f);if(ValleyField.RoadDistance(p.x,p.z)<half+1.2f)continue;p.y=H(p.x,p.z);
+                float clear=1+(name.Length*.36f+1)*.5f;
+                var p=track.At(sc)+right*outside*(half+clear);if(ValleyField.RoadDistance(p.x,p.z)<half+clear-.5f)continue;p.y=H(p.x,p.z);
                 RoadSign(p,track.Forward(sc),name.ToUpperInvariant());Boards++;   // (facing the driver coming up to it, big, green with cream words: the review saw one from behind, LR1-03, and couldn't read the small ones, LR2)
             }
             // ---- 100 and 50 boards before the heavy stops (LR1-07): white boards on posts, black numbers, on the outside
@@ -260,6 +274,7 @@ namespace LittleRoad
                     Words(dist.ToString(),p+Vector3.up*1.45f-f*.04f,Quaternion.LookRotation(f),.05f,new Color(.08f,.08f,.1f));Boards++;
                 }
             }
+            root=village;raceDay.gameObject.SetActive(RaceOnly.Showing);
             // ---- milestones every 400 m (a quarter mile): white-painted stones on the verge, the miles home to the village, the
             // old West Country lanes' furniture (the verges read bare between corners, LR4-05). Not solid: they're in the run-off.
             var stoneWhite=Mat("Milestone white",new Color(.93f,.92f,.88f));

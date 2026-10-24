@@ -49,8 +49,10 @@ namespace LittleRoad
             // (with --prop-forge, the field and farmyard walls are Prop Forge's dry-stone runs, in slate: bent along the
             //  roads, following the ground, with piers at their ends; docs/78)
             if(PropForge.Enabled){var slate=new Dictionary<string,string>{{"drystone","drystone_slate"},{"drystone_pier","drystone_slate_pier"}};
-                for(int i=0;i<ForgeRuns.Count;i++){var L=Runs.Solve(new RunSpec{name=$"quarry wall {i}",kit="dry_stone",seed=$"quarry-{i}",along=ForgeRuns[i].ToArray(),restyle=slate});Runs.Draw(L,root);WallMetres+=(int)L.length;}
-                ForgeRuns.Clear();}
+                // (a run's field gates are openings cut in it, framed by the wall's own gate piers)
+                for(int i=0;i<ForgeRuns.Count;i++){var gs=RunGates.TryGetValue(i,out var g)&&g.Count>0?g:null;
+                    var L=Runs.Solve(new RunSpec{name=$"quarry wall {i}",kit="dry_stone",seed=$"quarry-{i}",along=ForgeRuns[i].ToArray(),restyle=slate,cut=gs==null?null:p=>InGateway(p,gs)});Runs.Draw(L,root);WallMetres+=(int)L.length;}
+                ForgeRuns.Clear();RunGates.Clear();}
             QuarryFloor.Combine("Telegraph wires",lines,TrialWorld.Material("Wire",new Color(.12f,.12f,.13f),.3f,.4f),root,false);
             QuarryFloor.Combine("Field gates",gates,TrialWorld.Material("Gate paint",new Color(.92f,.92f,.88f),0,.3f),root,true);
             QuarryFloor.Combine("Gate posts",posts,WorldLook.Kit("Gate post stone",new Color(.45f,.45f,.46f),WorldLook.Pattern.Stone,0,.1f,true),root,true);
@@ -130,8 +132,8 @@ namespace LittleRoad
                 Debug.Log($"LITTLE_ROAD_FARM {name} slope={bs:0.00} at={best}");
                 if(bs>.32f)continue;Farm(best,name);
             }
-            // Flocks on the open hills and the moor (away from the farms too).
-            for(int i=0;i<60000&&Sheep<520;i++){float x=QuarryHills.West+300+R()*(QuarryHills.SeamX-QuarryHills.West-500),z=QuarryHills.South+400+R()*2700;
+            // Flocks on the open hills and the moor (away from the farms too). (Only with --animals: Grazer.Animals.)
+            for(int i=0;i<60000&&Sheep<520&&Grazer.Animals;i++){float x=QuarryHills.West+300+R()*(QuarryHills.SeamX-QuarryHills.West-500),z=QuarryHills.South+400+R()*2700;
                 float h=H(x,z);if(h<6||h>230||!Open(x,z,12)||Slope(x,z,6)>.45f)continue;
                 if(Vector2.Distance(new(x,z),QuarryHills.Square)<420||R()>.25f)continue;Flock(new Vector3(x,h,z),4+rng.Next(9));}
         }
@@ -142,19 +144,22 @@ namespace LittleRoad
             Put("barn",P(18,-6)+Vector3.down*.04f,yaw+90,T(0x8a8478,0x3b4047,0x3b4047,0x3b4047,0x4b5158));
             Put("tractor",P(8,-14),yaw+40,T(0xc0392b,0x222222,0x222222,0x222222));
             for(int i=0;i<6;i++)Put("hay_bale",P(26+(i%3)*1.4f,6+(i/3)*1.4f),yaw);
-            // A farmyard wall round the yard and a lane to the nearest road.
+            // A farmyard wall round the yard (and, with --farm-lanes, a lane to the nearest road).
             if(PropForge.Enabled){var ring=new List<Vector3>();for(float a=24;a<=360;a+=6){var p=at+Quaternion.Euler(0,a,0)*Vector3.forward*28;ring.Add(G(p.x,p.z));}ForgeRuns.Add(ring);}
             else for(float a=0;a<360;a+=12){float r=28;var p=at+Quaternion.Euler(0,a,0)*Vector3.forward*r;var q=at+Quaternion.Euler(0,a+12,0)*Vector3.forward*r;if(a<24)continue;Wall(G(p.x,p.z),G(q.x,q.z));}
             // (Street review, 5 Oct: a farm near town ran its lane to Chapel Street, straight through the back gardens and over
             // a yard wall.) The lane meets the nearest road outside the built-up town (its rows stop 520 m from the square).
-            Vector3 road=default;float rd=float.MaxValue;foreach(var r in HillcrestRoute.All()){if(!QuarryHills.Owns(r.name))continue;
+            // (Richard's snaps, 24 Oct: "random path that looks awful is entering the road and going through wall. It also
+            //  floats all the way down", "please remove". A straight strip laid over the hills, 20 cm above the highest ground
+            //  near it, ignoring the roadside walls: gone until a lane can be laid as a road is. --farm-lanes for the old ones.)
+            Vector3 road=default;float rd=float.MaxValue;if(RaceTrial.Has("--farm-lanes"))foreach(var r in HillcrestRoute.All()){if(!QuarryHills.Owns(r.name))continue;
                 for(float s=0;s<r.Length;s+=4){var q=r.At(s);if(Vector2.Distance(new(q.x,q.z),QuarryHills.Square)<540)continue;float d=Vector2.Distance(new(q.x,q.z),new(at.x,at.z));if(d<rd){rd=d;road=q;}}}
             if(rd<float.MaxValue) {
                 Lane(at+rot*Vector3.forward*26,road);
                 // A few sheep loose in the lane (docs/60): they amble off when a car comes, and scatter for the horn.
                 var mid=Vector3.Lerp(at+rot*Vector3.forward*26,road,.55f);mid.y=H(mid.x,mid.z);LaneFlock(mid,3+rng.Next(3));
             }
-            for(int k=0;k<3;k++){float a=R()*Mathf.PI*2,r=60+R()*140;var f=new Vector3(at.x+Mathf.Cos(a)*r,0,at.z+Mathf.Sin(a)*r);f.y=H(f.x,f.z);if(Open(f.x,f.z,10)&&Slope(f.x,f.z,6)<.4f)Flock(f,7+rng.Next(10));}
+            for(int k=0;k<3&&Grazer.Animals;k++){float a=R()*Mathf.PI*2,r=60+R()*140;var f=new Vector3(at.x+Mathf.Cos(a)*r,0,at.z+Mathf.Sin(a)*r);f.y=H(f.x,f.z);if(Open(f.x,f.z,10)&&Slope(f.x,f.z,6)<.4f)Flock(f,7+rng.Next(10));}
             QuarryHillsTown.Spots["farm "+name]=(P(-8,10),yaw);
         }
         static Mesh sheepBody,sheepHead,sheepLeg;static Material wool,face;
@@ -235,35 +240,55 @@ namespace LittleRoad
         {
             foreach(var road in HillcrestRoute.All()) {
                 if(!QuarryHills.Owns(road.name)||QuarryHills.Gravel(road.name)&&road.name==QuarryHills.HaulRoadName)continue;
-                float pole=0;Vector3? lastPole=null;
+                Poles(road);
                 foreach(int side in new[]{-1,1}) {
-                    Vector3? prev=null;float sinceGate=40+R()*60;
-                    // Each stretch is laid once it ends, and only when 8 m or longer, with a pier at each end (street review,
-                    // 4 Oct: walls 2-4 m long stopped and started along Kettle Falls road).
-                    var run=new List<Vector3>();
-                    void Lay(){if(run.Count>=5){if(PropForge.Enabled)ForgeRuns.Add(new List<Vector3>(run));else{for(int i=1;i<run.Count;i++)Wall(run[i-1],run[i]);Pier(run[0]);Pier(run[^1]);}}run.Clear();}
-                    for(float s=10;s<road.Length-10;s+=2) {
-                        var c=road.At(s);var right=road.Right(s)*side;var p=c+right*(road.width*.5f+4.5f);
-                        // Not in town (the terraces have their own yards), by the river, near junctions or another road, or the quarry.
-                        bool ok=Vector2.Distance(new(p.x,p.z),QuarryHills.Square)>520&&Open(p.x,p.z,road.width*.5f+3.5f)&&HillcrestRoute.Distance(HillcrestRoute.River.line,p.x,p.z,out _)>30&&Mathf.Abs(H(p.x,p.z)-c.y)<1.6f;
-                        // (Street review, 4 Oct: on a cutting bank a wall stood halfway up the slope, holding nothing back.) Only on
-                        // ground that's roughly level across the wall's line.
-                        if(ok){var i0=c+right*(road.width*.5f+3.2f);var o0=c+right*(road.width*.5f+5.8f);ok=Mathf.Abs(H(i0.x,i0.z)-H(o0.x,o0.z))<.9f;}
-                        foreach(var node in QuarryHills.JunctionPoints())if(Vector3.Distance(new(p.x,0,p.z),new(node.x,0,node.z))<30)ok=false;
-                        var g=G(p.x,p.z);
-                        if(ok&&prev.HasValue){sinceGate-=2;if(sinceGate<=0&&run.Count>=5){Lay();Gate(prev.Value,g,road.Forward(s));sinceGate=90+R()*80;prev=null;s+=4;continue;}if(run.Count==0)run.Add(prev.Value);run.Add(g);}
-                        else Lay();
-                        prev=ok?g:null;
-                        // Telegraph poles along the left side every 45 m, with wires between them.
-                        if(side<0&&ok&&(pole-=2)<=0){var tp=c+right*(road.width*.5f+6.5f);tp.y=H(tp.x,tp.z);var obj=Put("telegraph_pole",tp,Quaternion.LookRotation(road.Forward(s)).eulerAngles.y+90);
-                            if(obj!=null){if(lastPole.HasValue&&Vector3.Distance(lastPole.Value,tp)<60){var a=lastPole.Value+Vector3.up*7.2f;var b=tp+Vector3.up*7.2f;var d=b-a;lines.Add(Matrix4x4.TRS((a+b)*.5f+Vector3.down*.3f,Quaternion.LookRotation(d),new Vector3(.04f,.04f,d.magnitude)));}lastPole=tp;}pole=45;}
+                    // The wall's line, sampled every 2 m: where a wall may stand at all (`allowed`: not in town, where the terraces
+                    // have their own yards, by the river, near a junction or on another road) and where the ground suits one (level
+                    // with the road, and roughly level across the wall's line: street review, 4 Oct, a wall halfway up a cutting bank).
+                    // (`Open` here allows 2.5 m to the nearest road's middle, not 3.5: the wall stands 4.5 m out from its own road's,
+                    //  and the distance is read off a coarse grid, so a 1 m margin flickered and broke the wall every few metres.)
+                    int n=Mathf.Max(0,Mathf.FloorToInt((road.Length-20)/2)+1);var at=new Vector3[n];var hard=new bool[n];var allowed=new bool[n];var ok=new bool[n];
+                    for(int i=0;i<n;i++) {
+                        float s=10+2*i;var c=road.At(s);var right=road.Right(s)*side;var p=c+right*(road.width*.5f+4.5f);at[i]=G(p.x,p.z);
+                        hard[i]=Vector2.Distance(new(p.x,p.z),QuarryHills.Square)>520&&HillcrestRoute.Distance(HillcrestRoute.River.line,p.x,p.z,out _)>30;
+                        foreach(var node in QuarryHills.JunctionPoints())if(Vector3.Distance(new(p.x,0,p.z),new(node.x,0,node.z))<30)hard[i]=false;
+                        allowed[i]=hard[i]&&Open(p.x,p.z,road.width*.5f+2.5f);
+                        if(!allowed[i])continue;
+                        var i0=c+right*(road.width*.5f+3.2f);var o0=c+right*(road.width*.5f+5.8f);
+                        ok[i]=Mathf.Abs(H(p.x,p.z)-c.y)<1.6f&&Mathf.Abs(H(i0.x,i0.z)-H(o0.x,o0.z))<.9f;
+                    }
+                    // (Richard's snaps, 24 Oct: "walls have random gaps in them all the way. They should all be joined". Each 2 m
+                    //  sample tested the ground on its own, so a bump or a dip anywhere broke the wall in two, with a pier each side.)
+                    // Where only the ground fails, for up to 20 m between two good stretches, the wall carries on across; and across
+                    // any break of 8 m or less outside the town, the river's banks and the junctions.
+                    for(int i=0;i<n;) {
+                        if(ok[i]){i++;continue;}int j=i;while(j<n&&!ok[j])j++;
+                        bool bridge=i>0&&j<n&&j-i<=10;bool shortGap=j-i<=4;for(int k=i;k<j&&bridge;k++)if(!allowed[k]&&!(shortGap&&hard[k]))bridge=false;
+                        if(bridge)for(int k=i;k<j;k++)ok[k]=true;i=j;
+                    }
+                    // Each unbroken stretch is one wall (8 m or longer, a pier at each end: street review, 4 Oct); a field gate every
+                    // 90-170 m, in an opening its own width that the wall's gate piers frame, wall on both sides.
+                    var run=new List<Vector3>();var gatesHere=new List<Vector3>();float sinceGate=40+R()*60;
+                    void Lay()
+                    {
+                        if(run.Count>=5) {
+                            if(PropForge.Enabled){RunGates[ForgeRuns.Count]=new List<Vector3>(gatesHere);ForgeRuns.Add(new List<Vector3>(run));}
+                            else{for(int i=1;i<run.Count;i++)if(!InGateway((run[i-1]+run[i])*.5f,gatesHere))Wall(run[i-1],run[i]);Pier(run[0]);Pier(run[^1]);}
+                        }
+                        run.Clear();gatesHere.Clear();
+                    }
+                    for(int i=0;i<n;i++) {
+                        if(!ok[i]){Lay();continue;}
+                        run.Add(at[i]);sinceGate-=2;
+                        bool room=run.Count>=5&&i+4<n;for(int k=1;k<=4&&room;k++)if(!ok[i+k])room=false;
+                        if(sinceGate<=0&&room){gatesHere.Add(at[i]);Gate(at[i],at[i+1]-at[i-1]);sinceGate=90+R()*80;}
                     }
                     Lay();
                 }
             }
             // The welcome gate on Quarry Road where the town begins, and Slate Quay's at the bottom of Quay Lane.
-            var q=HillcrestRoute.Find(QuarryHills.QuarryRoadName);float gs=q.Length-560;Put("town_gate",q.At(gs)+Vector3.down*.02f,Quaternion.LookRotation(q.Forward(gs)).eulerAngles.y,T(0xffffff,0,0xc0392b,0),"CROESO I QUARRY HILLS");
-            var ql=HillcrestRoute.Find(QuarryHills.QuayLaneName);float qs=ql.Length-40;Put("town_gate",ql.At(qs)+Vector3.down*.02f,Quaternion.LookRotation(ql.Forward(qs)).eulerAngles.y,T(0xffffff,0,0x1f3a93,0),"SLATE QUAY");
+            var q=HillcrestRoute.Find(QuarryHills.QuarryRoadName);float gs=q.Length-560;HillcrestTown.GroundPots(Put("town_gate",q.At(gs)+Vector3.down*.02f,Quaternion.LookRotation(q.Forward(gs)).eulerAngles.y,T(0xffffff,0,0xc0392b,0),"CROESO I QUARRY HILLS"));
+            var ql=HillcrestRoute.Find(QuarryHills.QuayLaneName);float qs=ql.Length-40;HillcrestTown.GroundPots(Put("town_gate",ql.At(qs)+Vector3.down*.02f,Quaternion.LookRotation(ql.Forward(qs)).eulerAngles.y,T(0xffffff,0,0x1f3a93,0),"SLATE QUAY"));
         }
         // A squared end pier, a little taller than the wall, where a stretch stops.
         static void Pier(Vector3 p){walls.Add(Matrix4x4.TRS(p+Vector3.up*.45f,Quaternion.identity,new Vector3(.95f,1.9f,.95f)));caps.Add(Matrix4x4.TRS(p+Vector3.up*1.45f,Quaternion.identity,new Vector3(1.1f,.18f,1.1f)));}
@@ -276,14 +301,41 @@ namespace LittleRoad
             walls.Add(Matrix4x4.TRS(m+Vector3.up*(h*.5f-.25f),rot,new Vector3(.7f,h+.5f,len+.05f)));
             caps.Add(Matrix4x4.TRS(m+Vector3.up*(h-.12f),rot,new Vector3(.5f,.28f,len+.02f)));WallMetres+=(int)len;
         }
-        // A field gate across a gap: two stone posts and a white five-bar gate.
-        static void Gate(Vector3 a,Vector3 b,Vector3 along)
+        // A field gate across its opening in the wall (`along`: the wall's line). With Prop Forge, the farm kit's five-bar gate,
+        // hung to swing open when a car drives into it (SwingGate); the wall's own gate piers stand either side of it.
+        // Without, two stone posts and a white five-bar gate.
+        public const float Gateway=SwingGate.Width+.9f;   // (the opening: the gate, and half a pier's width either side)
+        static readonly Dictionary<int,List<Vector3>> RunGates=new();   // (each Prop Forge wall run's gate centres)
+        static bool InGateway(Vector3 p,List<Vector3> centres){foreach(var g in centres)if(new Vector2(p.x-g.x,p.z-g.z).sqrMagnitude<Gateway*Gateway*.25f)return true;return false;}
+        static void Gate(Vector3 centre,Vector3 along)
         {
-            // (with --prop-forge: Prop Forge's five-bar gate on its own posts, centred in the gap the walls leave)
-            if(PropForge.Enabled){var dd=along;dd.y=0;var at=a+dd.normalized*3;at.y=H(at.x,at.z);Put("field_gate",at,Quaternion.LookRotation(dd).eulerAngles.y+90);if(RaceTrial.Has("--gate-log"))Debug.Log($"LITTLE_ROAD_FIELD_GATE {at.x:0.0},{at.y:0.0},{at.z:0.0} along {dd.x:0.00},{dd.z:0.00}");return;}
-            var d=b-a;d.y=0;if(d.sqrMagnitude<.5f)return;var rot=Quaternion.LookRotation(d);var m=(a+b)*.5f;float w=d.magnitude;
+            along.y=0;if(along.sqrMagnitude<.01f)return;along.Normalize();
+            if(PropForge.Enabled){var at=centre;at.y=H(at.x,at.z);var gate=Put("field_gate",at,Quaternion.LookRotation(along).eulerAngles.y+90,null,null,1,false,BayviewKit.AnimatedRoot);SwingGate.Hang(gate);
+                if(RaceTrial.Has("--gate-log"))Debug.Log($"LITTLE_ROAD_FIELD_GATE {at.x:0.0},{at.y:0.0},{at.z:0.0} along {along.x:0.00},{along.z:0.00}");return;}
+            var a=centre-along*SwingGate.Width*.5f;var b=centre+along*SwingGate.Width*.5f;a.y=H(a.x,a.z);b.y=H(b.x,b.z);
+            var rot=Quaternion.LookRotation(along);var m=(a+b)*.5f;float w=SwingGate.Width;
             posts.Add(Matrix4x4.TRS(a+Vector3.up*.65f,rot,new Vector3(.45f,1.6f,.45f)));posts.Add(Matrix4x4.TRS(b+Vector3.up*.65f,rot,new Vector3(.45f,1.6f,.45f)));
             for(int k=0;k<5;k++)gates.Add(Matrix4x4.TRS(m+Vector3.up*(.25f+k*.24f),rot,new Vector3(.06f,.08f,w-.5f)));
+        }
+        // Telegraph poles along the road's left side every 45 m, wired pole to pole (Richard's snaps, 24 Oct: "electricity
+        // poles stop in the middle of nowhere", "pole isn't joined to the next"). A pole stood only where a wall could, so every
+        // break in the wall broke the line. Now a pole stands wherever there's open ground for it, 6.5 m off the road or, failing
+        // that, 4.5 or 9 m; the line only ends in town, at the river or where the road meets another.
+        static void Poles(HillcrestRoute.Road road)
+        {
+            Vector3? last=null;float since=45;
+            for(float s=10;s<road.Length-10;s+=2) {
+                since+=2;if(since<45)continue;
+                var c=road.At(s);var left=-road.Right(s);Vector3? spot=null;
+                foreach(float off in new[]{6.5f,4.5f,9f}) {
+                    var tp=c+left*(road.width*.5f+off);
+                    if(Vector2.Distance(new(tp.x,tp.z),QuarryHills.Square)>520&&Open(tp.x,tp.z,road.width*.5f+off-1)&&HillcrestRoute.Distance(HillcrestRoute.River.line,tp.x,tp.z,out _)>14){tp.y=H(tp.x,tp.z);spot=tp;break;}
+                }
+                if(spot==null){if(last.HasValue&&Vector2.Distance(new(last.Value.x,last.Value.z),new(c.x,c.z))>70)last=null;continue;}
+                var obj=Put("telegraph_pole",spot.Value,Quaternion.LookRotation(road.Forward(s)).eulerAngles.y+90);if(obj==null)return;
+                if(last.HasValue&&Vector3.Distance(last.Value,spot.Value)<75){var a=last.Value+Vector3.up*7.2f;var b=spot.Value+Vector3.up*7.2f;var d=b-a;lines.Add(Matrix4x4.TRS((a+b)*.5f+Vector3.down*.3f,Quaternion.LookRotation(d),new Vector3(.04f,.04f,d.magnitude)));}
+                last=spot;since=0;
+            }
         }
         // ---------------------------------------------------------------- in town: phone and post boxes, the chapel's graveyard
         static void TownBits()
@@ -322,6 +374,11 @@ namespace LittleRoad
             away=Quaternion.Euler(0,Random.Range(-35f,35f),0)*away.normalized;target=transform.position+away*Random.Range(9f,15f);trot=Random.Range(2.2f,3f);wait=Random.Range(6f,12f);
         }
         public static readonly List<Grazer> All=new();   // (Ambience counts the sheep near you)
+        // No animals in a world of cars (Richard, 24 Oct: "Animals all look bad, lets remove them all from all areas. We are in
+        // a car world so anything not car related isn't canon"). The builders place none; any other place's animal (Bayview's
+        // farm sheep) is taken away as it wakes. --animals brings them back.
+        public static bool Animals=>RaceTrial.Has("--animals");
+        void Awake(){if(!Animals)Destroy(gameObject);}
         void OnEnable()=>All.Add(this);
         void OnDisable()=>All.Remove(this);
         public void Setup(Vector3 field,float r){home=field;radius=r;target=transform.position;wait=Random.Range(1f,8f);head=transform.Find("Head");headPhase=Random.value*6;}

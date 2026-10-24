@@ -224,6 +224,10 @@ namespace LittleRoad
             if(autonomous&&!finished&&race.elapsed>0){float dt=Time.fixedDeltaTime;if(throttle<-.05f)BrakeSeconds+=dt;else if(throttle<.9f&&speed>3)LiftSeconds+=dt;if(speed<2)StoppedSeconds+=dt;}
             steerState=Mathf.MoveTowards(steerState,steering,tuning.response*Time.fixedDeltaTime);
             float grip=Mathf.Abs(offset)<race.track.Half||(race.freeRoam&&OnRoadSurface())?tuning.roadGrip:tuning.dirtGrip;grip*=DriveModel.AeroGrip(tuning,speed);Grip=grip;
+            // In water (Water.cs): the tyres lose grip with its depth, and the car throws spray (the ford has its own).
+            waterWet=0;
+            if(race.freeRoam||Water.InRaces){waterDepth=Water.Depth(body.position,out bool ford);waterWet=Water.Wet(waterDepth);
+                if(waterWet>0){grip*=1-.4f*waterWet;Grip=grip;if(!ford)Water.Splash(this,waterDepth,body.position.y+waterDepth);}}
             float yawRequest=steerState*tuning.yaw*Mathf.Clamp01(Mathf.Abs(speed)/3)*Mathf.Sign(speed==0?1:speed);
             float engineAccel=-1;
             if(tuning.drivetrain!=null) {
@@ -244,6 +248,13 @@ namespace LittleRoad
             // Diagnostic (elevated circuits): racing time with no drive, brake or cornering force applied.
             if(!supported&&race.elapsed>0&&!finished)UnsupportedSeconds+=Time.fixedDeltaTime;
             if(supported)body.AddForce(driveForward*acceleration,ForceMode.Acceleration);
+            // The water holds the car back: more the deeper and the faster (at half a metre deep it crawls on at walking pace
+            // under full throttle). Under water (Water.Flooding) it floods: after 2.5 s there it's put back on the nearest road.
+            if(waterWet>0) {
+                var v=body.linearVelocity;v.y=0;bool under=waterDepth>Water.Flooding;
+                body.AddForce(-v*Mathf.Min(3,.6f+.08f*v.magnitude)*waterWet*(under?3:1),ForceMode.Acceleration);
+                flooded=under?flooded+Time.fixedDeltaTime:0;if(flooded>2.5f&&race.freeRoam){flooded=0;TryRecover();}
+            } else flooded=0;
             // Downforce (S and E platforms; docs/47, 54): a push into the road with the square of the speed, so the crests
             // that threw the maximum build into the air at 60-75 m/s keep it planted. Near the road only (1.5 m).
             if(tuning.downforce>0&&(ground==null||ground.hasSupport&&ground.clearance<1.5f))
@@ -382,6 +393,8 @@ namespace LittleRoad
                 nextGateProgress+=race.track.length/12;
             }
         }
+        float waterDepth,waterWet,flooded;
+        public float WaterDepth=>waterWet>0?waterDepth:0;
         readonly RaycastHit[] surfaceHits=new RaycastHit[6];
         // Free roam: tarmac off the Bayview loop (causeway, country roads) is marked with RoadSurface.
         // A race on a loose surface (the Quarry Hills Rallycross): dust and gravel noise for every car on the circuit.

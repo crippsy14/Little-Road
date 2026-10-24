@@ -534,21 +534,27 @@ namespace LittleRoad
             ground??=q=>ValleyField.Height(q.x,q.z);
             const float span=1.8f;int n=line.Length;var run=new float[n];for(int i=1;i<n;i++)run[i]=run[i-1]+Vector3.Distance(line[i],line[i-1]);
             foreach(int side in new[]{-1,1}) {
-                var v=new List<Vector3>();var t=new List<int>();int prev=-1;
+                // (Each stretch's first and last sections are tucked 0.25 m down, so it rises out of whatever it starts on rather
+                //  than ending in an edge: Richard's snap, 24 Oct, the Kettle Falls road's shoulder began 21 cm above the High
+                //  Street junction's mouth shoulder, and a wheel crossing it there hit a lip that threw the car.)
+                var v=new List<Vector3>();var t=new List<int>();int prev=-1;var ends=new List<int>();bool broken=false;
                 for(int k=0;k<=(closed?n:n-1);k++) {
-                    int i=k%n;if(!closed&&(run[i]<from||run[i]>to)){prev=-1;continue;}
+                    int i=k%n;if(!closed&&(run[i]<from||run[i]>to)){if(prev>=0)ends.Add(prev);prev=-1;continue;}
                     Vector3 f=closed?line[(i+1)%n]-line[(i+n-1)%n]:line[Mathf.Min(n-1,i+1)]-line[Mathf.Max(0,i-1)];f.y=0;f.Normalize();var r=Vector3.Cross(Vector3.up,f)*side;
                     var inner=line[i]+r*halfWidth+Vector3.up*(lift-.004f);var outer=line[i]+r*(halfWidth+span);float g=ground(outer);
                     if(roadTop!=null){float top=roadTop(line[i]+r*(halfWidth-.2f));if(!float.IsNaN(top))inner.y=top-.004f;}
                     // Junctions grow their own ramps round their kerbs (KerbShoulders): stop where this one would run onto
                     // a junction's surface or start on its kerb.
                     bool ok=g>inner.y-.9f&&g<inner.y+1.2f&&!RiverBelow(outer)&&!OnJunction(outer,.6f)&&!OnJunction(inner,.3f)&&!VinelandsVila.Paved(outer)&&!VinelandsVila.Paved(inner);   // (no gravel verge in a paved square: Vinelands' Largo, docs/86)
-                    if(!ok){prev=-1;continue;}
+                    if(!ok){if(prev>=0)ends.Add(prev);prev=-1;broken=true;continue;}
                     outer.y=g-.02f;int s0=v.Count;v.Add(inner);v.Add(outer);
                     if(prev>=0){if(side>0)t.AddRange(new[]{prev,s0,prev+1,prev+1,s0,s0+1});else t.AddRange(new[]{prev,prev+1,s0,prev+1,s0+1,s0});}
+                    else ends.Add(s0);
                     prev=s0;
                 }
+                if(prev>=0)ends.Add(prev);
                 if(t.Count==0)continue;
+                if(!closed||broken)foreach(int e in ends){v[e]+=Vector3.down*.25f;v[e+1]+=Vector3.down*.25f;}   // (an unbroken loop has no ends)
                 var mesh=new Mesh{name=name,indexFormat=v.Count>65000?IndexFormat.UInt32:IndexFormat.UInt16};mesh.SetVertices(v);mesh.SetTriangles(t,0);mesh.RecalculateNormals();
                 var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(parent);
                 go.GetComponent<MeshFilter>().sharedMesh=mesh;var mr=go.GetComponent<MeshRenderer>();mr.sharedMaterial=material;mr.shadowCastingMode=ShadowCastingMode.Off;go.GetComponent<MeshCollider>().sharedMesh=mesh;

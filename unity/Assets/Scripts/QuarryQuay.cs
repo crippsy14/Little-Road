@@ -77,7 +77,10 @@ namespace LittleRoad
             for(float u=-86;u<86;) {
                 string id=new[]{"terrace_a","terrace_b","terrace_d","terrace_f","terrace_g"}[rng.Next(5)];float w=5.4f;
                 var c=P(u+w*.5f,QuarryHills.QuayLand+3+4+3.5f,0);float g=ValleyField.Height(c.x,c.z);c.y=g+.02f;
-                if(ValleyField.RoadDistance(c.x,c.z)>9&&Mathf.Abs(ValleyField.Height(c.x+inland.x*4,c.z+inland.z*4)-g)<4) {
+                // (and ground under its four corners, none more than 0.8 m below its floor: Richard's snaps, 24 Oct, houses over
+                //  the bank where Quay Lane cuts down beside the row hung out over the cutting)
+                bool Grounded(){foreach(float a in new[]{-w*.5f,w*.5f})foreach(float b in new[]{-4.5f,4.5f}){var q=c+along*a+inland*b;if(ValleyField.Height(q.x,q.z)<g-.8f)return false;}return true;}
+                if(ValleyField.RoadDistance(c.x,c.z)>9&&Mathf.Abs(ValleyField.Height(c.x+inland.x*4,c.z+inland.z*4)-g)<4&&Grounded()) {
                     string sign=id=="terrace_b"?names[name++%names.Length]:null;
                     Put(id,c,seaYaw,RandomStone(rng),sign,root);
                 }
