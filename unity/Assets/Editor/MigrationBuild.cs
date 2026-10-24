@@ -73,6 +73,12 @@ public static class MigrationBuild
         var lampMaterial=AssetDatabase.LoadAssetAtPath<Material>(lampReference);
         if(lampMaterial==null){lampMaterial=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(lampMaterial,lampReference);}
         lampMaterial.EnableKeyword("_EMISSION");lampMaterial.SetColor("_EmissionColor",Color.red);EditorUtility.SetDirty(lampMaterial);
+        // (paint layers, ForgeLayers: body paint with a metal and gloss map; builds strip the keyword's variant unless a kept
+        //  material enables it)
+        const string layersReference="Assets/Resources/ShaderReferences/VehiclePaintLayers.mat";
+        var layersMaterial=AssetDatabase.LoadAssetAtPath<Material>(layersReference);
+        if(layersMaterial==null){layersMaterial=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(layersMaterial,layersReference);}
+        if(!layersMaterial.IsKeywordEnabled("_METALLICSPECGLOSSMAP")){layersMaterial.EnableKeyword("_METALLICSPECGLOSSMAP");EditorUtility.SetDirty(layersMaterial);AssetDatabase.SaveAssets();}
         const string glassReference="Assets/Resources/ShaderReferences/VehicleGlass.mat";
         var glassMaterial=AssetDatabase.LoadAssetAtPath<Material>(glassReference);
         if(glassMaterial==null){glassMaterial=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(glassMaterial,glassReference);}
@@ -125,6 +131,7 @@ public static class MigrationBuild
         var root=Path.GetFullPath(Path.Combine(Application.dataPath,"../../"));
         evidence.checks.AddRange(VehicleLightChecks.Run());
         evidence.checks.AddRange(ForgeLiveryChecks.Run());
+        evidence.checks.AddRange(ForgeLayersChecks.Run());
         evidence.checks.AddRange(StopLookChecks.Run());
         evidence.checks.AddRange(ForgeRosterChecks.Run());
         evidence.checks.AddRange(PropForgeChecks.Run());

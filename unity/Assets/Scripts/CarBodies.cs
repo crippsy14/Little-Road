@@ -78,6 +78,9 @@ namespace LittleRoad
         [System.Serializable] public sealed class ForgeData{public string id;public float shoulder,length,wheelFront,wheelRear,trackFront,trackRear,top,camber;public float[] landmarks;public string livery;
             // (its paint type, TrialWorld.PaintFinish; files from before 24 Oct have none: solid)
             public string finish;
+            // (its paint layers' colours, ForgeLayers; the masks are Cars/<id>_layers. JsonUtility fills a missing one with
+            //  an empty object: ForgeLayers.Of checks it is really there)
+            public ForgeLayers.Data layers;
             // (a roster car's place in fields, from its concept in car-forge: its star band, its surface, quick-looking)
             public int[] band;public string surface;public bool quick;
             // (and its class: C, or B for the class B roster, docs/roster-b-design.md; files from before 17 Oct have none: C)

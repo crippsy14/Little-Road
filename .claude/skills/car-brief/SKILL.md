@@ -347,6 +347,13 @@ the check calls it an ENGINE GAP, and the engine grows.
     requirement names the field, so the check can read it in the design as well as the renders.
   - Trim finishes are one fixed look per material name; textures (vinyl grain, wood grain) are engine gaps until the
     engine and game support them.
+- **Wear is painted, not panelled** (Richard, 24 Oct):
+  - **Rust, dirt, mud and sun fade:** write them as graded layers with a source (the sills, the arches' edges, a lower
+    door, round the bonnet lid, the seams, the top surfaces), a dark core inside a stain, and broken edges. These are
+    car-forge `paint.layers`.
+  - **Dents:** write an impact with a direction: a crease along the blow, a buckled edge, chipped paint (`wear.dents`
+    in forge/dents.py).
+  - **Never** recolour a whole panel for wear: it reads as a replacement part.
 
 ### GD: Game distance
 The three things that must read from the chase camera at race distance, where lamp detail is a few pixels: for

@@ -88,6 +88,7 @@ namespace LittleRoad
                 var was=m.GetTexture("_BaseMap");if(was!=null&&was.name=="ForgeLivery")old.Add(was);
                 tex??=Compose(paint,new Color(.95f,.94f,.9f),Number(asset),style);m.SetTexture("_BaseMap",tex);m.color=Color.white;}
             foreach(var t in old)if(t!=tex)Object.Destroy(t);
+            ForgeLayers.Apply(car,asset,paint);   // (the paint layers over the new paint)
         }
         // Puts a composed livery on every body-paint material of a car (not its second colour). Returns how many.
         // (plain: the paint as it is, no texture)

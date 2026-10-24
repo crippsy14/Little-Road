@@ -182,6 +182,14 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
       patina). The body file carries it, and the game sets the paint's metal and gloss by it (`TrialWorld.PaintFinish`;
       faded and patina also tint the race colour). So a faded banger stays faded in any race's paint.
     - Trim finishes are still one fixed look per material name; textures (vinyl or wood grain) are still to come.
+  - **Paint layers and impact dents (Richard, 24 Oct: "really go AAA in detail"; whole-panel rust "just looks like a
+    replacement part"):**
+    - A design's `paint.layers` paints graded masks over the body, by artistic rules: rust, dirt, mud, sun fade, edge
+      wear, two-tone bands and fades, and pinstripes (car-forge `docs/brief-paint-layers.md`).
+    - The Forge bakes the masks into the livery atlas (`<car>_layers`). The game composes the colour and a gloss map
+      from the race paint, the livery and the masks (`ForgeLayers`), so a rusty car is rusty in any colour.
+    - Dents are impacts pressed into the finished surface: an irregular rim, a crease along the blow, a buckled edge
+      and chipped paint (car-forge `forge/dents.py`).
   - **The roster cleared (Richard, 24 Oct: "Remove all cars excluding the three bar none ... a roster that we are
     proud of"):**
     - The game's only models are the Puddle, the Snoozer and the Tubby (`CarBodies.Forge`).

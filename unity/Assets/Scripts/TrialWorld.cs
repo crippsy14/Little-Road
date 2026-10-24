@@ -170,6 +170,8 @@ namespace LittleRoad
             if(CarBodies.UsesStandardEnvelope(asset))root.AddComponent<StandardEnvelope>();
             // --livery: Car Forge bodies wear a composed livery in their livery space (ForgeLivery).
             if(ForgeLivery.Enabled&&CarBodies.Forged(asset)!=null)ForgeLivery.Apply(root,paint,new Color(.95f,.94f,.9f),ForgeLivery.Number(asset),CarBodies.Forged(asset).livery??"stripes");
+            // (and its paint layers over the livery: graded rust, dirt, fade, tones; ForgeLayers, 24 Oct)
+            ForgeLayers.Apply(root,asset,paint);
             root.AddComponent<VehicleLights>().Initialize();return root;
         }
         // The paint types (car-forge paint.FINISHES, written to the body file): metal and gloss for each, and a faded paint

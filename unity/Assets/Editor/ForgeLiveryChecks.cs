@@ -62,7 +62,7 @@ public static class ForgeLiveryChecks
             var car=TrialWorld.Car(id,paint);
             try {
                 foreach(var r in car.GetComponentsInChildren<Renderer>(true))foreach(var m in r.sharedMaterials)
-                    if(m!=null&&m.name.Contains("BodyPaint")&&m.GetTexture("_BaseMap")!=null)throw new InvalidOperationException("Livery applied without --livery: "+id);
+                    if(m!=null&&m.name.Contains("BodyPaint")&&m.GetTexture("_BaseMap")!=null&&m.GetTexture("_BaseMap").name!=ForgeLayers.AlbedoName)throw new InvalidOperationException("Livery applied without --livery: "+id);   // (a body's paint layers are its own: ForgeLayers)
                 int n=ForgeLivery.Apply(car,paint,stripe,ForgeLivery.Number(id));
                 bool stripeKept=true;
                 foreach(var r in car.GetComponentsInChildren<Renderer>(true))foreach(var m in r.sharedMaterials)
