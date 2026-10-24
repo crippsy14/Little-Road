@@ -242,15 +242,26 @@ Window outlines must be true to the kind of car, never bands of a grid.
   mouth (grille or bumper).
 
 ### TA: The tail
-- **Tail lamps:**
-  - outline;
-  - how they wrap round the corner;
-  - **the chamber pattern**, drawn as a small grid. For example:
-    ```
-    [ red stop/tail (ribbed) | amber | clear reverse ]
-    ```
-  - each chamber's inner texture (ribs, honeycomb, prisms, plated pillows);
-  - the dark surround.
+**The tail lamps are designed, never defaulted** (Richard, 24 Oct: "On every model it just feels like three lights next
+to or on top of each other. Lights are very very rarely like that and we are missing a golden opportunity to bring
+these to life"). Every brief designs its own tail lamps as carefully as its face. Three equal chambers in a row or a
+stack, or three round lamps, is the old engine default: never write it. Real tail lamps are wedges, slashes, bands,
+boomerangs, L-shapes, fins, clusters, ribbed blocks and full-width strips.
+- **The idea:** one sentence on what the lamps are and why they suit this car, tied to its character, era or
+  signature: "two forward-leaning slashes joined by a smoked band, echoing the bolt badge".
+- **The outline:** the shape itself (wedge, parallelogram, L, boomerang, teardrop, fin, band, a cluster of shapes),
+  with its angles, its size against the tail (fractions of its width and height), where it sits, and how it meets the
+  body (flush, in a pod, wrapping round the corner, standing proud on a fin).
+- **The organisation, drawn** as a small sketch in a code block, one lamp from behind, inboard on the left: every
+  chamber's shape and where it sits. Chambers are shapes too (slices, triangles, steps, bands), not equal boxes.
+- **Each chamber:** its job (stop/tail, indicator, reverse, reflector, fog) and colour (red, amber, clear, smoked), and
+  its optic: horizontal or vertical ribs, honeycomb, prisms, louvres, a plated pillow, a plain lens over a visible bulb.
+- **The pair together:** separate, or joined across the tail (a full-width band, a smoked panel, a bar carrying the
+  script or the plate).
+- **The surround:** its colour and finish (black, smoked, plated, body colour) and its width.
+- Write at least three TA requirements on the lamps alone: the outline, the organisation, and the optics.
+- The front lamps deserve the same thought (FA): a shape and an inner pattern, not just "round".
+
 - **The rest:**
   - the plate and its lamp;
   - exhaust: count, shape, bore;
@@ -392,6 +403,8 @@ The anti-goals: what would make this car a failure, each one written as a requir
 - [ ] No brand names, no toy-line names, no "like <roster car>". Search the text for them.
 - [ ] Every requirement could fail: reread each and ask "what would a FAIL look like?"
 - [ ] There is a measures block, and its bands fit the tier (§2).
+- [ ] The tail lamps are designed: an idea, an outline, a drawn organisation of shaped chambers with their optics, and
+      how the pair works together. Not three equal chambers or three round lamps.
 - [ ] The exaggeration is at least 25 per cent; the signature is a body form and shows in a black silhouette.
 - [ ] The NT section names the failures this car is most likely to have.
 - [ ] Nothing was softened because "the Forge can't do that".

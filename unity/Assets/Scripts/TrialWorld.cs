@@ -18,7 +18,7 @@ namespace LittleRoad
         // Car Forge lamp lenses (LampGlass): clear glass over a lamp's reflector and bulb, so the lamp reads in depth.
         // Tail and indicator lenses are tinted glass (LampGlassTailLight, LampGlassAmber); a TailLight lens is also one
         // of VehicleLights' brake materials, so the whole lens glows under braking.
-        public static Color LampGlassColour(string name)=>name.Contains("TailLight")?new Color(.72f,.03f,.02f,.55f):name.Contains("Amber")?new Color(1,.42f,.04f,.5f):new Color(.9f,.93f,.96f,.14f);
+        public static Color LampGlassColour(string name)=>name.Contains("Smoke")?new Color(.2f,.03f,.025f,.82f):name.Contains("TailLight")?new Color(.72f,.03f,.02f,.55f):name.Contains("Amber")?new Color(1,.42f,.04f,.5f):new Color(.9f,.93f,.96f,.14f);
         public static void ConfigureLampGlass(Material material){ConfigureMasterGlass(material);material.color=LampGlassColour(material.name);material.SetFloat("_Smoothness",.95f);}
         public static void ConfigureMasterGlass(Material material)
         {
