@@ -470,7 +470,8 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   3. a graybox behind a flag, with its automated test and measured tiers;
   4. a playtest and a keep-or-reject;
   5. then art and polish.
-- **The first one** builds the shared harness the skill describes (`--activity-test`, the `LITTLE_ROAD_ACTIVITY` line,
+- **The first one: Ballroom Curling** (Richard, 24 Oct, from the final two of the bracket in `docs/brief-activities.md`;
+  the runner-up was Slate Sumo). Its brief is `docs/brief-ballroom-curling.md`. It also builds the shared harness the skill describes (`--activity-test`, the `LITTLE_ROAD_ACTIVITY` line,
   tier records) and a RECORDS tab for minigames.
 - **Side income is zero until they come:** about 12,800 credits of one-time pay went with the retirement (traps 3,300,
   photos 1,900, the school 1,860, keepsakes 1,550, the climbs 1,050, the farm 1,000, the rest about 2,200).
