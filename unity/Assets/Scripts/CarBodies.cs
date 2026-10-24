@@ -165,7 +165,7 @@ namespace LittleRoad
         public static string StarterBody=>RosterEnabled?ForgeStarter:Starter;
         // Each roster car's name, what it is, and its signature (car-forge designs/roster/*.yaml, the concept's first lines).
         static readonly System.Collections.Generic.Dictionary<string,(string name,string what,string signature)> ForgeInfo=new(){
-            ["forge_puddle"]=("Puddle","the starter: an eager little hatch that sits up like a puppy waiting for a walk","big round eyes and a contented smile"),
+            ["forge_puddle"]=("Puddle","the starter: a little raindrop of a car in yellow wellington-boot bumpers","a raindrop shape, round in front and tapering to a point"),
             ["forge_snoozer"]=("Snoozer","a sleepy old family saloon that never quite wakes up","a sway-backed body and heavy-lidded lamps"),
             ["forge_toastie"]=("Toastie","the village baker's little van, its roof a fresh golden loaf","a loaf for a roof, scored three times"),
             ["forge_tubby"]=("Tubby","a cast-iron roll-top bath on a go-kart chassis: a special, won on the water","a bath on wheels")};

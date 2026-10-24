@@ -150,7 +150,7 @@ namespace LittleRoad
         // a name with no rule renders the default charcoal).
         public static readonly string[] CarMaterialKeys={"RimGunmetal","RimBronze","RimWhite","RimBlack","PaintedSteel","StripeColour","BodyPaint","Glass","Rubber","Alloy",
             "Headlamp","TailLight","ReverseLight","RearReflector","BumperInsert","Amber","Plate","PanelSeam","BrakeMetal","Cloth","Cream","Livery","Wood",
-            "CarbonFibre","GoldTrim","CaliperRed","CanopyGlass","CharcoalTrim","Primer","Rust","EnamelBlue","Rosy","Crust","CrustDark"};
+            "CarbonFibre","GoldTrim","CaliperRed","CanopyGlass","CharcoalTrim","Primer","Rust","EnamelBlue","Rosy","Crust","CrustDark","Wellie"};
         public static GameObject Car(string asset,Color paint)
         {
             // (an older class C body comes as its Car Forge namesake, and the car is named after the model it shows, so its
@@ -225,7 +225,9 @@ namespace LittleRoad
                         // (a face's rosy cheeks: the Toastie, 24 Oct)
                         name.Contains("Rosy")?new Color(.86f,.42f,.42f):
                         // (a baked crust: the loaves on the Toastie's rack)
-                        name.Contains("CrustDark")?new Color(.26f,.13f,.05f):name.Contains("Crust")?new Color(.70f,.42f,.17f):
+                        name.Contains("CrustDark")?new Color(.26f,.13f,.05f):
+                        // (yellow boot rubber: the Puddle's bumpers)
+                        name.Contains("Wellie")?new Color(.95f,.76f,.12f):name.Contains("Crust")?new Color(.70f,.42f,.17f):
                         // The Regale (Duke Rolo's prototype, docs/53): a painted livery, carbon, gold, red calipers, smoked canopy.
                         name.Contains("LiveryMap")?Color.white:name.Contains("CarbonFibre")?new Color(.03f,.033f,.036f):
                         name.Contains("GoldTrim")?new Color(.83f,.62f,.24f):name.Contains("CaliperRed")?new Color(.72f,.08f,.06f):
@@ -238,7 +240,7 @@ namespace LittleRoad
                     float metal=rim?.85f:rimPainted?.35f:name.Contains("PaintedSteel")?.3f:chrome?.9f:gold?.85f:alloySurface?.7f:name.Contains("BrakeMetal")?.55f:name.Contains("CarbonFibre")?.25f:paintSurface||livery?.05f:0;
                     float smooth=rim||rimPainted?.32f:name.Contains("PaintedSteel")?.45f:name.Contains("StripeColour")?.35f:chrome?.8f:gold?.66f:livery?.74f:name.Contains("CanopyGlass")?.9f:name.Contains("CarbonFibre")?.55f:alloySurface?.42f:paintSurface?.56f:name.Contains("Rubber")?.15f:
                         name.Contains("Headlamp")||name.Contains("TailLight")||name.Contains("ReverseLight")||name.Contains("Amber")?.6f:
-                        name.Contains("Rust")?.1f:name.Contains("Primer")?.18f:.25f;
+                        name.Contains("Rust")?.1f:name.Contains("Primer")?.18f:name.Contains("Wellie")?.2f:.25f;
                     // (a Car Forge body's paint type, from its body file: the car-brief skill's MF section, 24 Oct)
                     if(paintSurface)PaintFinish(CarBodies.Forged(asset.Replace("_lod1","").Replace("_lod2",""))?.finish,ref c,ref metal,ref smooth);
                     converted[i]=Material(name,c,metal,smooth,!paintSurface&&!livery);

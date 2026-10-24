@@ -31,6 +31,8 @@ public static class ForgeLayersChecks
         Check(dirt.grayscale<paint.grayscale&&sd<.2f,"Paint layers: dirt is darker and duller");
         var tone=T(none,new Color32(255,0,0,0),out _,out _);
         Check(Mathf.Abs(tone.b-.7f)<.01f,"Paint layers: a full tone mask is the tone's colour");
+        float mw=.05f,sw=.56f;var wet=ForgeLayers.Texel(paint,ref mw,ref sw,none,none,new Color32(255,0,0,0),d);
+        Check(wet.grayscale<paint.grayscale&&sw>.85f,"Paint layers: a raindrop is darker and glassy");
         var rustOverTone=T(new Color32(255,0,0,0),new Color32(255,0,0,0),out _,out _);
         Check(Mathf.Abs(rustOverTone.r-rust.r)<.02f,"Paint layers: rust lies over a tone, as the order says (tones first, rust last)");
         // every installed Forge body that names layers has its masks, and a car of it wears them
@@ -51,8 +53,9 @@ public static class ForgeLayersChecks
                     $"Paint layers: a {id} wears its composed paint and gloss map on every body-paint material ({ma.Count})");
                 Check(ma[0].GetTexture("_BaseMap")==mb[0].GetTexture("_BaseMap"),$"Paint layers: two {id}s in one paint share one composed texture");
                 var tex=(Texture2D)ma[0].GetTexture("_BaseMap");var px=tex.GetPixels32();
-                int dark=px.Count(p=>p.r<110&&p.g<70);
-                Check(dark>px.Length/2000,$"Paint layers: the {id}'s composed paint holds its layers ({dark} dark texels of {px.Length})");
+                // (any layer: texels visibly off the plain paint, rust, a tone or a raindrop alike)
+                Color32 pc=paint;int off=px.Count(p=>System.Math.Abs(p.r-pc.r)+System.Math.Abs(p.g-pc.g)+System.Math.Abs(p.b-pc.b)>40);
+                Check(off>px.Length/5000,$"Paint layers: the {id}'s composed paint holds its layers ({off} texels off the paint of {px.Length})");
             } finally{UnityEngine.Object.DestroyImmediate(a);UnityEngine.Object.DestroyImmediate(b);}
         }
         return checks;

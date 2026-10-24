@@ -13,7 +13,7 @@ namespace LittleRoad
     {
         [System.Serializable] public sealed class Data{public float[] stain,core,dirt,mud,fade,edge,tone1,tone2,stripe;public bool edgeMetal;
             public bool Valid=>stain!=null&&stain.Length==3;}
-        sealed class Masks{public int size;public Color32[] wear,tone;}
+        sealed class Masks{public int size;public Color32[] wear,tone,extra;}
         static readonly Dictionary<string,Masks> masks=new();
         static readonly Dictionary<string,(Texture2D albedo,Texture2D gloss)> composed=new();
         public const string AlbedoName="ForgeLayers",GlossName="ForgeLayersGloss";
@@ -22,11 +22,12 @@ namespace LittleRoad
         {
             if(masks.TryGetValue(asset,out var m))return m;
             var ta=Resources.Load<TextAsset>("Cars/"+asset+"_layers");m=null;
-            if(ta!=null&&ta.bytes.Length>12&&ta.bytes[0]=='F'&&ta.bytes[1]=='L'&&ta.bytes[2]=='Y'&&ta.bytes[3]=='1') {
-                var b=ta.bytes;int o=4;var outs=new Color32[2][];int size=0;
-                for(int k=0;k<2;k++){int n=System.BitConverter.ToInt32(b,o);o+=4;var png=new byte[n];System.Array.Copy(b,o,png,0,n);o+=n;
+            // (FLY1: wear and tone; FLY2: and extra, the wet layer)
+            if(ta!=null&&ta.bytes.Length>12&&ta.bytes[0]=='F'&&ta.bytes[1]=='L'&&ta.bytes[2]=='Y'&&(ta.bytes[3]=='1'||ta.bytes[3]=='2')) {
+                var b=ta.bytes;int o=4;int count=ta.bytes[3]=='2'?3:2;var outs=new Color32[3][];int size=0;
+                for(int k=0;k<count;k++){int n=System.BitConverter.ToInt32(b,o);o+=4;var png=new byte[n];System.Array.Copy(b,o,png,0,n);o+=n;
                     var t=new Texture2D(2,2,TextureFormat.RGBA32,false,true);t.LoadImage(png);size=t.width;outs[k]=t.GetPixels32();Free(t);}
-                m=new Masks{size=size,wear=outs[0],tone=outs[1]};
+                m=new Masks{size=size,wear=outs[0],tone=outs[1],extra=outs[2]};
             }
             masks[asset]=m;return m;
         }
@@ -37,7 +38,8 @@ namespace LittleRoad
         static Color C(float[] v)=>v!=null&&v.Length==3?new Color(v[0],v[1],v[2]):Color.white;
         static float Smooth(float e0,float e1,float x){float t=Mathf.Clamp01((x-e0)/(e1-e0));return t*t*(3-2*t);}
         // One texel's colour, metal and smoothness: forge/paint_layers.py compose(), line for line.
-        public static Color Texel(Color c,ref float metal,ref float smooth,Color32 wear,Color32 tone,Data d)
+        public static Color Texel(Color c,ref float metal,ref float smooth,Color32 wear,Color32 tone,Data d)=>Texel(c,ref metal,ref smooth,wear,tone,new Color32(0,0,0,0),d);
+        public static Color Texel(Color c,ref float metal,ref float smooth,Color32 wear,Color32 tone,Color32 extra,Data d)
         {
             float r=wear.r/255f,dirt=wear.g/255f,fade=wear.b/255f,edge=wear.a/255f,t1=tone.r/255f,t2=tone.g/255f,mud=tone.b/255f,st=tone.a/255f;
             c=Color.Lerp(c,C(d.tone1),t1);c=Color.Lerp(c,C(d.tone2),t2);c=Color.Lerp(c,C(d.stripe),st);
@@ -48,6 +50,7 @@ namespace LittleRoad
             float bloom=Smooth(0,.5f,r),core=Smooth(.45f,.85f,r);
             c=Color.Lerp(c,C(d.stain),bloom*.75f);c=Color.Lerp(c,C(d.core),core);
             smooth+=(.08f-smooth)*Mathf.Max(bloom*.6f,core);metal*=1-core;
+            float wet=extra.r/255f;c=Color.Lerp(c,.72f*c,wet);smooth+=(.92f-smooth)*wet;   // (raindrops: darker, glassy)
             c.a=1;return c;
         }
         // The composed pair for a body in a paint over a livery (or none), cached: every car of that body and paint shares it.
@@ -66,7 +69,7 @@ namespace LittleRoad
                     Color c=lv!=null?(Color)lv[(y*ls/n)*ls+x*ls/n]:paint;
                     // (the livery was composed in the paint as it was; the finish's colour shift applies over it too)
                     if(lv!=null){float a0=.05f,s0=.56f;TrialWorld.PaintFinish(finish,ref c,ref a0,ref s0);}
-                    float mt=metal0,sm=smooth0;c=Texel(c,ref mt,ref sm,m.wear[i],m.tone[i],d);
+                    float mt=metal0,sm=smooth0;c=Texel(c,ref mt,ref sm,m.wear[i],m.tone[i],m.extra!=null?m.extra[i]:new Color32(0,0,0,0),d);
                     px[i]=c;gl[i]=new Color32((byte)(255*Mathf.Clamp01(mt)),0,0,(byte)(255*Mathf.Clamp01(sm)));}});
             var albedo=new Texture2D(n,n,TextureFormat.RGBA32,true){name=AlbedoName,wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Trilinear,anisoLevel=4};
             albedo.SetPixels32(px);albedo.Apply(true);
