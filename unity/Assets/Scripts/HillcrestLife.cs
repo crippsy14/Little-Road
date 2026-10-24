@@ -317,7 +317,6 @@ namespace LittleRoad
         }
         void Birds(Transform root)
         {
-            if(!Grazer.Animals)return;   // (no animals in a world of cars: Richard, 24 Oct)
             var flocks=new List<(Vector3,float,Color)>{(new Vector3(200,72,-1110),26f,Toy.Hex(0x3d3a4a)),(new Vector3(150,24,-870),40f,Color.white),(new Vector3(-392,26,-1250),55f,Color.white),(HillcrestRoute.FallsHead+Vector3.up*28,30f,Color.white),(HillcrestRoute.Square+Vector3.up*22,20f,Toy.Hex(0x3d3a4a))};
             // Quarry Hills: choughs over the pit, gulls over Slate Quay, jackdaws round the chapel.
             if(QuarryHills.Enabled){flocks.Add((new Vector3(QuarryHills.Pit.x,QuarryHills.FloorY+70,QuarryHills.Pit.y),60f,Toy.Hex(0x2b2b33)));flocks.Add((QuarryHills.QuayPoint(0,-20,QuarryHills.QuayY+22),35f,Color.white));
@@ -358,18 +357,6 @@ namespace LittleRoad
             var renderers=GetComponentsInChildren<Renderer>();var bounds=renderers[0].bounds;foreach(var x in renderers)bounds.Encapsulate(x.bounds);
             box=gameObject.AddComponent<BoxCollider>();box.center=bounds.center-transform.position;box.size=bounds.size;gameObject.tag="Respawn";
             all.Add(this);Place(0);horn=Horn.Attach(gameObject,Random.Range(.88f,1.18f));
-            wheels=new WheelVisuals(gameObject);lights=GetComponent<VehicleLights>();
-        }
-        // Its wheels roll and steer with the road, and its brake lamps light as it slows (Richard's snap, 24 Oct:
-        // the cars glided along with their wheels standing still).
-        WheelVisuals wheels;VehicleLights lights;float spin;
-        void Roll(float target,float dt)
-        {
-            if(wheels==null)return;
-            spin=(spin+speed/wheels.Radius*Mathf.Rad2Deg*dt)%360;
-            var ahead=(road.At(s+dir*6)-road.At(s+dir*2)).normalized;
-            wheels.Pose(spin,Mathf.Clamp(Vector3.SignedAngle(Heading,ahead,Vector3.up)*2.5f,-25,25));
-            lights?.SetState(speed>.5f&&target<speed-.3f,false,true);
         }
         Horn horn;bool tooted;
         public void TootBack(){if(horn!=null&&!horn.Busy)horn.Toot(.1f,.09f,.14f,0);}
@@ -408,7 +395,7 @@ namespace LittleRoad
             s+=dir*speed*dt;
             if(dir>0&&s>=to){s=to;dir=-1;}else if(dir<0&&s<=from){s=from;dir=1;}
             laneNow=Mathf.MoveTowards(laneNow,dir*(lane+pull),1.4f*dt);
-            Place(dt);Roll(target,dt);
+            Place(dt);
         }
     }
 
@@ -607,7 +594,7 @@ namespace LittleRoad
             "BAYVIEW"=>"Home island · Harbour town","HEADLAND TUNNEL"=>"Mind the echo!","THE CAUSEWAY"=>"To the mainland","HILLCREST"=>"Market town on the hill",
             "HILLCREST CASTLE"=>"Views for miles","SILVER FALLS"=>"Hold on to your hat","HILLCREST RACEWAY"=>"Home of the Valley Cup","VALLEY VIEWPOINT"=>"Say cheese!",
             "QUARRY HILLS"=>"Croeso · The town the mountain built","SLATE QUAY"=>"Where the slate trains end","THE QUARRY FLOOR"=>"Rally school · Quarry Sprint",
-            "THE GALLERIES"=>"Twelve benches of slate","THE MOOR"=>"Heather, stone and sky","QUARRY HILLS COUNTRY"=>"Hill farms and dry-stone walls",_=>"The mainland · Beyond the headland"};
+            "THE GALLERIES"=>"Twelve benches of slate","THE MOOR"=>"Heather, sheep and sky","QUARRY HILLS COUNTRY"=>"Hill farms and dry-stone walls",_=>"The mainland · Beyond the headland"};
         public void Setup(Transform playerCar){car=playerCar;current=Area(car.position);}
         void Update()
         {
