@@ -464,6 +464,29 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   skill (`.claude/skills/activity-design`). Seven gates every idea must pass, eight scored criteria, the verbs that
   aren't A to B, rewards within the economy, measured tiers and an automated test per activity. Draft for Richard's
   review.
+- **The built activities against the bar** (24 Oct; proposed, for Richard's decision). Scores are out of 40.
+  - **Keep, with rework:**
+    - **Rally school** (35): drop or replace lesson 6, a timed lap (A to B); measure the medal times.
+    - **Tip Leap** (33): give it a giver; restart at the run-up in 3 s or less instead of riding the Blondin back; scale
+      the marks by class.
+    - **Harvest** (30): scale the marks by class or lock it to class C; measure the marks.
+    - **Apple Shake** (28): rework into a real shake. A tap drops apples, a hard hit fells the tree and costs you.
+  - **Retire** (all fail G1, timed routes): Beat the Train, Castle Climb (Normal and Hard), Gallery Climb, Quarry Sprint
+    and Shadow the Duke (parked).
+    - Their places and characters stay: Bert's train, the castle, the galleries and the rallycross loop.
+    - That takes 2,500 credits of one-time pay out, which the sweep must replace.
+  - **Rework into a new activity:** the Blast Run (a race against the shot) becomes "clear the haul road", pushing the
+    shot's boulders off in a set time. That's the herd/push verb, with Dai and the blast kept.
+  - **Outside the bar: features and collections, kept.**
+    - Speed traps: marks per class. They're computed from class C parts, so B and above trivialise them.
+    - Photo requests and keepsakes: hide keepsakes by clue (the find verb) rather than as floating cards; the
+      horseshoes need their paint.
+    - The zip rides and the Blondin (transport), Rally Day and choir night (ambience), and the gadget hop (test only).
+  - **Found on the way:**
+    - The Gallery Climb's first run over par forfeits its prize (moot if it's retired).
+    - RECORDS shows only the traps, the train and photos.
+    - The Hillcrest board credits Wren with photo requests (Pip gives them).
+    - Pip has 19 sights, not six.
 - Ideas he liked, kept for that sweep: the rugby conversion kick at Quarry Hills ("a fun physics game"), Heavy Haul ("a fun
   one-off"), the Barrel Race at Vinelands ("Fun physics toy!"), and the old-roadster cellar secret ("a good opportunity to
   get a cool model after performing the task required").
