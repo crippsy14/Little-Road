@@ -125,7 +125,7 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   - Caricature, don't scale: wheels 10–20% larger, crushed roofs, short overhangs, two or three signature features.
   - The silhouette signals speed: bangers tall and boxy on small wheels; each class lower, more wedged, on bigger wheels.
     Halo cars get the loudest feature (wing, fins, canopy).
-  - Tomica-style diecast detail: real panel gaps and arches (never painted lines), crisp edges, flush lamps.
+  - Diecast-toy detail: real panel gaps and arches (never painted lines), crisp edges, flush lamps.
   - Original: invented makers; change at least three of nose, glasshouse, tail, arches and lamps from any one donor.
   - Readable at 40 px; the body stays close to its collision box.
   - Measured bars: distinct silhouettes, seamless surfaces, livery-ready, in budget, original.
@@ -147,6 +147,19 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   the spirit. Some matte paints are an open idea.
 - **Review:** render sheets each round, scored against references; QC answers "is it broken?", Richard judges "is it good?"
   in game.
+- **Car briefs** (Richard, 24 Oct: the Forge C cars "still aren't as good as the previous versions"):
+  - **The brief:** every car is (re)made from a brief (the car-brief skill, kept in `car-forge/briefs/<class>/<id>.md`).
+    It is a brave, exhaustive description of the car as a toy, from its silhouette and volumes down to each lamp's
+    chamber pattern, written as 60–100 pass/fail requirements.
+  - **Created means every requirement passes:** a car counts as created only then (the car-brief-check skill: an
+    evidence pack, measured bands, a blind read and a second check).
+  - **No brands:** no real makers, no toy lines, and no other roster car as the template, because brand references
+    pigeonholed the cars.
+  - **The Forge serves the brief:** when it can't build a requirement, that is an ENGINE GAP to fix in the Forge, never
+    a reason to soften the brief.
+  - **Round one (the Puddle audit):** 24 of 99 pass. The proportions were already in band, so the gap is form and
+    identity (slab sides, a strip-and-grid face, props instead of body signatures). 31 of the 74 fails are engine gaps, in
+    lamps, grilles, bumpers, arches and the base.
 
 ## 5 · Parts
 
