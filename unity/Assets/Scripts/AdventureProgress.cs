@@ -120,7 +120,7 @@ namespace LittleRoad
             if(Data!=null&&(Data.bodies==null||Data.bodies.Count==0))Data.bodies=new List<string>{Data.bodyId};
             // The Car Forge models (23 Oct): a body bought before them becomes its Forge namesake (the car you drive and every one
             // you own; written back with the next save). --no-forge-roster leaves the save as it is.
-            if(Data!=null){Data.bodyId=CarBodies.Look(Data.bodyId);Data.bodies=Data.bodies.Select(CarBodies.Look).Distinct().ToList();}
+            if(Data!=null){Data.bodyId=CarBodies.Namesake(Data.bodyId);Data.bodies=Data.bodies.Select(CarBodies.Namesake).Distinct().ToList();}
             // A roster car removed and replaced in its slot (CarBodies.Replaced): its owner has the replacement instead.
             string Now(string b)=>b!=null&&CarBodies.Replaced.TryGetValue(b,out var r)?r:b;
             if(Data!=null){Data.bodyId=Now(Data.bodyId);Data.bodies=Data.bodies.Select(Now).Distinct().ToList();}
@@ -228,7 +228,7 @@ namespace LittleRoad
         // Car Forge test drive (--forge-drive <id>; Richard, 16 Oct: "spin up the game with it loaded as the player car"): a
         // blank save of its own, made new each launch, driving that Forge body. It writes only its own file, so the real
         // slots never see it; without the flag no Forge body can be owned.
-        public static string ForgeDrive=>RaceTrial.Has("--forge-drive")?RaceTrial.Arg("--forge-drive","forge_kestrel"):null;
+        public static string ForgeDrive=>RaceTrial.Has("--forge-drive")?RaceTrial.Arg("--forge-drive","forge_snoozer"):null;
         public static string ForgeDrivePath=>Path.Combine(SaveSlots.Folder,"little-road-forge-drive.json");
         public static void Load()
         {

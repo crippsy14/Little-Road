@@ -20,16 +20,21 @@ public static class ContactChecks
         // Standing cars sit on their four wheels (docs/57, 2.5): one dropped upright 0.4 m above an 8 degree slope, across
         // it at 35 degrees, is lowered and tilted until every wheel touches.
         var slope=GameObject.CreatePrimitive(PrimitiveType.Cube);slope.name="Check slope";slope.transform.position=new Vector3(500,-.5f,500);slope.transform.localScale=new Vector3(40,1,40);slope.transform.rotation=Quaternion.Euler(8,0,0);
-        var parked=TrialWorld.Car("beetle",Color.white);
+        // (every installed model since 24 Oct, when the roster was cleared: the Beetle before)
         try {
-            parked.transform.SetPositionAndRotation(new Vector3(500,1.2f,500),Quaternion.Euler(0,35,0));Physics.SyncTransforms();
-            bool seated=CarContact.Seat(parked);var gaps=CarContact.Gaps(parked);
-            Check(seated&&gaps.Count>=4&&gaps.Count%4==0&&gaps.All(g=>g.gap>-.03f&&g.gap<.06f),$"A standing car on an 8 degree slope is seated on all four wheels (gaps {string.Join(" ",gaps.Select(g=>g.gap.ToString("0.00")))} m)");
-        } finally {UnityEngine.Object.DestroyImmediate(parked);UnityEngine.Object.DestroyImmediate(slope);}
+            foreach(var body in CarBodies.Forge) {
+                var parked=TrialWorld.Car(body,Color.white);
+                try {
+                    parked.transform.SetPositionAndRotation(new Vector3(500,1.2f,500),Quaternion.Euler(0,35,0));Physics.SyncTransforms();
+                    bool seated=CarContact.Seat(parked);var gaps=CarContact.Gaps(parked);
+                    Check(seated&&gaps.Count>=4&&gaps.Count%4==0&&gaps.All(g=>g.gap>-.03f&&g.gap<.06f),$"A standing {body} on an 8 degree slope is seated on all four wheels (gaps {string.Join(" ",gaps.Select(g=>g.gap.ToString("0.00")))} m)");
+                } finally {UnityEngine.Object.DestroyImmediate(parked);}
+            }
+        } finally {UnityEngine.Object.DestroyImmediate(slope);}
         // Every body's physics box against its tyres: the box's bottom must sit at the tyres' lowest point (within 2 cm),
         // or the car rides on the box above (or below) the road. Logged per body for the report.
         var lines=new List<string>();int off=0;
-        foreach(var asset in new[]{CarBodies.Starter,"compact_v1"}.Concat(CarBodies.Family).Concat(CarBodies.Sporty).Concat(CarBodies.Townsfolk).Distinct()) {
+        foreach(var asset in CarBodies.Forge) {   // (the installed models since 24 Oct; every other body shows as one of them)
             var probe=TrialWorld.Car(asset,Color.white);
             try {
                 var (centre,size)=RoadCar.CollisionBox(probe);float boxBottom=centre.y-size.y*.5f;

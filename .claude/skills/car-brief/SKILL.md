@@ -342,8 +342,10 @@ the check calls it an ENGINE GAP, and the engine grows.
 - **What exists today:**
   - The Forge names a material per face; the game gives each name one colour, metalness and smoothness
     (TrialWorld.Car).
-  - Body paint is one semi-gloss in every car, coloured by the race.
-  - Finishes per car (metallic, matte, faded, pearl) and textures (vinyl grain, wood grain) are engine gaps until the
+  - The paint's type is built (24 Oct): `paint.finish: solid | metallic | pearl | candy | satin | matte | faded |
+    patina` in the design; the game sets metal and gloss by it in any race colour (`TrialWorld.PaintFinish`). Its MF
+    requirement names the field, so the check can read it in the design as well as the renders.
+  - Trim finishes are one fixed look per material name; textures (vinyl grain, wood grain) are engine gaps until the
     engine and game support them.
 
 ### GD: Game distance

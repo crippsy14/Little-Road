@@ -169,7 +169,8 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
       **Richard (24 Oct): "Looks good as is!"** The face stands as its signature.
   - **The first cars from scratch (24 Oct):**
     - **The Patchwork is removed.** Its identity was all paint, and it was the taxi's twin.
-    - **The Snoozer takes its slot:** a sleepy old saloon, sway-backed, with heavy-lidded lamps. It has the Patchwork's
+    - **The Snoozer takes its slot:** a sleepy old saloon with heavy-lidded lamps and a gently hollowed roof (Richard,
+      24 Oct: a deep sag "just looks like the model is bugged", so the face is the exaggeration). It has the Patchwork's
       shop place, fields and parked cars, and a save that owned the Patchwork has the Snoozer
       (`CarBodies.Replaced`).
     - **The Tubby is a special,** never sold or raced in fields (`CarBodies.Prizes`; Richard: "a real fun addition for
@@ -177,9 +178,21 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
     - **Where both stand:** both are in the game, mid-check. Their logs are in car-forge `briefs/`.
   - **Materials and finishes (Richard, 24 Oct):**
     - Briefs now name every surface's finish: the paint's type (gloss, metallic, pearl, matte, faded) and each trim's.
-    - Today the Forge only names materials, and the game gives each name one fixed look, with every car's body paint
-      one semi-gloss.
-    - Per-car finishes are the engine and game work to come.
+    - **Paint types are built:** a design names `paint.finish` (solid, metallic, pearl, candy, satin, matte, faded or
+      patina). The body file carries it, and the game sets the paint's metal and gloss by it (`TrialWorld.PaintFinish`;
+      faded and patina also tint the race colour). So a faded banger stays faded in any race's paint.
+    - Trim finishes are still one fixed look per material name; textures (vinyl or wood grain) are still to come.
+  - **The roster cleared (Richard, 24 Oct: "Remove all cars excluding the three bar none ... a roster that we are
+    proud of"):**
+    - The game's only models are the Puddle, the Snoozer and the Tubby (`CarBodies.Forge`).
+    - Every other model was deleted: the hand-made cars, the old Forge roster, the Tuners, the Pit Stop's vehicles and
+      the Regale.
+    - Every body id still works and shows as a stand-in, the Puddle or the Snoozer, the same one each time
+      (`CarBodies.Look`/`StandIn`). A save keeps its own ids (`CarBodies.Namesake`).
+    - Fields race what is installed. A surface with no car of its own borrows the class's cars. Richard starts a new
+      save once the roster is rebuilt.
+    - The roster is rebuilt car by car, each from a brief to created. Only a created car gets a structure golden in
+      Car Forge. The QC's golden images are retired: they slowed the loop and only guarded test shapes.
 
 ## 5 · Parts
 

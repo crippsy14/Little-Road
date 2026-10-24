@@ -2,20 +2,9 @@
 # committed: ../car-forge/tools/sync_game.py exports and installs what changed into unity/Assets/Resources/Cars as
 # forge_<design>, and tools/build-dev.ps1 runs it before every build (Richard, 17 Oct: "think end product").
 
-# the engine's stress designs (CarBodies.Forge, --forge-lineup)
-designs/tests/closed_defaults.yaml
-designs/tests/closed_hatch.yaml
-designs/tests/closed_4x4.yaml
-designs/tests/closed_van.yaml
-designs/tests/closed_pickup.yaml
-designs/tests/open_roadster.yaml
-designs/tests/canopy_prototype.yaml
-designs/tests/three_wheeler.yaml
-designs/tests/closed_supercar.yaml
-designs/tests/closed_rally.yaml
-designs/tests/closed_gt.yaml
-
-# the class C roster (docs/roster-c-design.md in car-forge), the Kestrel among them
+# the class C roster: since 24 Oct only the cars built to their car briefs (the Puddle, the Snoozer); every other model
+# was removed to rebuild the roster car by car (Richard: "a roster that we are proud of"). The engine's stress designs
+# (designs/tests) are its own test fixtures, not game cars.
 designs/roster/*.yaml
 
 # (class B: removed 18 Oct at Richard's request, to be redone with his direction from the start)

@@ -597,9 +597,9 @@ namespace LittleRoad
         IEnumerator BodyShopReview()
         {
             string folder=RaceTrial.Arg("--trial-captures");Directory.CreateDirectory(folder);bool forge=CarBodies.RosterEnabled;
-            string pick=forge?"forge_kestrel":"comet",last=forge?"forge_zenith":"zenith";
+            string pick=forge?"forge_snoozer":"comet",last=forge?"forge_snoozer":"zenith";
             Store.Change(p=>{p.credits=Math.Max(p.credits,6000);
-                foreach(var b in forge?new[]{"forge_gelato","forge_stock_banger","forge_l_plate","forge_woody"}:new[]{"gelato","pebble"})if(!p.bodies.Contains(b))p.bodies.Add(b);return true;});
+                foreach(var b in forge?new[]{"forge_tubby"}:new[]{"gelato","pebble"})if(!p.bodies.Contains(b))p.bodies.Add(b);return true;});
             var lina=residents["hcbody"];Place(lina+Vector3.forward*6);player.body.rotation=Quaternion.Euler(0,residentYaw["hcbody"]+180,0);yield return new WaitForSeconds(1.2f);
             ui.Capture(Path.Combine(folder,"b0-forecourt.png"));
             yield return FrameTimes("TOWN_FRAMES",()=>0);

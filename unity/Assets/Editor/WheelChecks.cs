@@ -12,8 +12,8 @@ public static class WheelChecks
     public static List<string> Run()
     {
         var checks=new List<string>();void Check(bool pass,string label){if(!pass)throw new Exception("Wheel check: "+label);checks.Add(label);}
-        // (the puddle and the compact are their Car Forge namesakes since 23 Oct: kei-car wheels, 0.27-0.30 m)
-        foreach(var (body,radius) in new[]{("puddle",0f),("compact_v1",0f),("regale",.345f)}) {
+        // (every installed model: the Car Forge cars since 24 Oct, the Regale's 0.345 m wheels before; toy wheels, 0.25-0.5 m)
+        foreach(var (body,radius) in CarBodies.Forge.Select(b=>(b,0f))) {
             var car=TrialWorld.Car(body,Color.white);var rb=car.AddComponent<Rigidbody>();rb.isKinematic=true;
             car.AddComponent<BodyMotion>().Collect(rb);var wheels=new WheelVisuals(car);
             var meshes=wheels.pivots.Select(p=>p.GetComponentInChildren<Renderer>()).ToArray();

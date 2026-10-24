@@ -218,7 +218,7 @@ namespace LittleRoad
             }
             for(int slot=0;slot<23;slot++) {
                 string prev=slot>0?field[slot-1]:null;
-                if(slot==0&&topC&&!gravel&&cls=="C"){field[0]=CarBodies.RosterFlagship;used[field[0]]=1;continue;}
+                if(slot==0&&topC&&!gravel&&cls=="C"&&CarBodies.Forged(CarBodies.RosterFlagship)!=null){field[0]=CarBodies.RosterFlagship;used[field[0]]=1;continue;}
                 field[slot]=slot<=6?Pick(prev,q,m,b):slot>=21?Pick(prev,b,m,q):Pick(prev,m,b,q);
             }
             return field;

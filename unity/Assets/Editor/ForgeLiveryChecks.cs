@@ -39,8 +39,19 @@ public static class ForgeLiveryChecks
         // (--forge-drive: a Forge body as the player's car, in a blank save of its own; off, no save may hold one of the engine's
         //  test designs. The roster's cars are the body shops' range since 23 Oct, so a save may own them.)
         Check(AdventureSession.ForgeDrive!=null||!CarBodies.Ownable("forge_closed_hatch"),"The Forge engine's test designs can't be owned without --forge-drive");
-        Check(CarBodies.Ownable("forge_kestrel")&&CarBodies.Ownable(CarBodies.ForgeStarter),"The Forge roster's cars can be owned (the body shops sell them)");
+        Check(CarBodies.Ownable("forge_snoozer")&&CarBodies.Ownable(CarBodies.ForgeStarter),"The Forge roster's cars can be owned (the body shops sell them)");
         Check(System.IO.Path.GetFileName(AdventureSession.ForgeDrivePath)=="little-road-forge-drive.json"&&AdventureSession.ForgeDrivePath!=SaveSlots.LivePath,"The Forge test drive saves to its own file, never a slot");
+        // (paint types, 24 Oct: each body file names a known one or none, and they differ: a matte paint is duller than a
+        //  solid one, a metallic one more metal, a faded one paler)
+        {
+            Color c0=new Color(.8f,.2f,.1f);float m0=.05f,s0=.56f;
+            Color cm=c0;float mm=m0,sm=s0;TrialWorld.PaintFinish("matte",ref cm,ref mm,ref sm);
+            Color cx=c0;float mx=m0,sx=s0;TrialWorld.PaintFinish("metallic",ref cx,ref mx,ref sx);
+            Color cf=c0;float mf=m0,sf=s0;TrialWorld.PaintFinish("faded",ref cf,ref mf,ref sf);
+            Color cs=c0;float ms=m0,ss=s0;TrialWorld.PaintFinish("solid",ref cs,ref ms,ref ss);
+            Check(sm<s0&&mx>m0&&cf.grayscale>c0.grayscale&&cs==c0&&ms==m0&&ss==s0,"Paint types: matte duller, metallic more metal, faded paler, solid unchanged");
+            foreach(var id in CarBodies.Forge){var f=CarBodies.Forged(id)?.finish;Check(f==null||Array.IndexOf(TrialWorld.PaintFinishes,f)>=0,$"Paint type of {id} is a known one ({f??"none"})");}
+        }
         foreach(var id in CarBodies.Forge) {
             var model=Resources.Load<GameObject>("Cars/"+id);Check(model!=null,"Forge body model: "+id);
             int painted=0,outside=0;

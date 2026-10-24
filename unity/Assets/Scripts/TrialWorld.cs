@@ -172,6 +172,21 @@ namespace LittleRoad
             if(ForgeLivery.Enabled&&CarBodies.Forged(asset)!=null)ForgeLivery.Apply(root,paint,new Color(.95f,.94f,.9f),ForgeLivery.Number(asset),CarBodies.Forged(asset).livery??"stripes");
             root.AddComponent<VehicleLights>().Initialize();return root;
         }
+        // The paint types (car-forge paint.FINISHES, written to the body file): metal and gloss for each, and a faded paint
+        // bleached towards a dusty white (a rival's race colour on a faded car looks sun-bleached too). Solid is the default.
+        public static readonly string[] PaintFinishes={"solid","metallic","pearl","candy","satin","matte","faded","patina"};
+        public static void PaintFinish(string finish,ref Color c,ref float metal,ref float smooth)
+        {
+            switch(finish) {
+                case "metallic":metal=.45f;smooth=.72f;break;
+                case "pearl":metal=.3f;smooth=.8f;c=Color.Lerp(c,Color.white,.08f);break;
+                case "candy":metal=.2f;smooth=.88f;break;
+                case "satin":metal=.05f;smooth=.38f;break;
+                case "matte":metal=0;smooth=.12f;break;
+                case "faded":metal=0;smooth=.22f;c=Color.Lerp(c,new Color(.86f,.82f,.72f),.3f);break;
+                case "patina":metal=0;smooth=.16f;c=Color.Lerp(c,new Color(.42f,.30f,.20f),.18f);break;
+            }
+        }
         static GameObject CarVisual(GameObject root,string asset,Color paint,System.Collections.Generic.Dictionary<string,Material> materials)
         {
             var source=Resources.Load<GameObject>("Cars/"+asset);
@@ -218,6 +233,8 @@ namespace LittleRoad
                     float smooth=rim||rimPainted?.32f:name.Contains("PaintedSteel")?.45f:name.Contains("StripeColour")?.35f:chrome?.8f:gold?.66f:livery?.74f:name.Contains("CanopyGlass")?.9f:name.Contains("CarbonFibre")?.55f:alloySurface?.42f:paintSurface?.56f:name.Contains("Rubber")?.15f:
                         name.Contains("Headlamp")||name.Contains("TailLight")||name.Contains("ReverseLight")||name.Contains("Amber")?.6f:
                         name.Contains("Rust")?.1f:name.Contains("Primer")?.18f:.25f;
+                    // (a Car Forge body's paint type, from its body file: the car-brief skill's MF section, 24 Oct)
+                    if(paintSurface)PaintFinish(CarBodies.Forged(asset.Replace("_lod1","").Replace("_lod2",""))?.finish,ref c,ref metal,ref smooth);
                     converted[i]=Material(name,c,metal,smooth,!paintSurface&&!livery);
                     // The livery texture sits beside the model: Cars/<body>_livery (its colours are graded when painted).
                     if(livery){var art=Resources.Load<Texture2D>("Cars/"+asset.Replace("_lod1","").Replace("_lod2","")+"_livery");if(art!=null)converted[i].SetTexture("_BaseMap",art);}

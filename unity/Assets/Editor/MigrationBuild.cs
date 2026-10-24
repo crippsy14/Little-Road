@@ -90,16 +90,16 @@ public static class MigrationBuild
         Check(corner<straight && yaw<1,"Turning and poor grip restrict usable power",evidence);
         var circuit=new Circuit();Check(circuit.length>600 && Circuit.Width==16,"Wide continuous circuit: "+circuit.length.ToString("0.0")+"m x16m",evidence);
         for(float d=0;d<circuit.length;d+=31) {float near=circuit.Nearest(circuit.At(d),out float offset);Check(Mathf.Abs(offset)<.01f&&Mathf.Abs(near-d)<.05f,"Track projection "+d,evidence);}
-        var imported=new List<string>{"little_car","compact_v1","compact_v1_lod1","compact_v1_lod2"};
-        var generated=new List<string>(CarBodies.Family);generated.AddRange(CarBodies.Sporty);generated.Add(CarBodies.Flagship);generated.Add(CarBodies.Starter);generated.AddRange(CarBodies.Townsfolk);generated.AddRange(CarBodies.Teasers);
-        foreach(string body in generated)imported.AddRange(new[]{body,body+"_lod1",body+"_lod2"});
+        // (since 24 Oct the game's only models are the Car Forge cars built to their briefs: CarBodies.Forge)
+        var imported=new List<string>();
+        foreach(string body in CarBodies.Forge)imported.AddRange(new[]{body,body+"_lod1",body+"_lod2"});
         foreach(string name in imported) {
             var model=Resources.Load<GameObject>("Cars/"+name);Check(model!=null,"Imported "+name,evidence);
             var instance=UnityEngine.Object.Instantiate(model);Bounds bounds=new Bounds();bool first=true;int verts=0;
             foreach(var r in instance.GetComponentsInChildren<Renderer>()){if(first){bounds=r.bounds;first=false;}else bounds.Encapsulate(r.bounds);}
             foreach(var f in instance.GetComponentsInChildren<MeshFilter>())verts+=f.sharedMesh.vertexCount;
             evidence.models.Add(name+" bounds="+bounds.size+" center="+bounds.center+" verts="+verts);
-            string bodyId=name.Replace("_lod1","").Replace("_lod2","");bool longBody=Array.IndexOf(CarBodies.Townsfolk,bodyId)>=0;
+            string bodyId=name.Replace("_lod1","").Replace("_lod2","");bool longBody=Array.IndexOf(CarBodies.Townsfolk,bodyId)>=0||Array.IndexOf(CarBodies.Prizes,bodyId)>=0;
             // (Teasers of the top classes are true-to-type: the Regale is a 5 m Le Mans prototype, never raced yet.)
             float maxLength=Array.IndexOf(CarBodies.Teasers,bodyId)>=0?5.2f:longBody?4.8f:4;
             Check(bounds.size.x>1.5f&&bounds.size.x<2.5f&&bounds.size.z>2.5f&&bounds.size.z<maxLength,"Metre scale and upright "+name,evidence);
@@ -167,7 +167,6 @@ public static class MigrationBuild
         evidence.checks.AddRange(HybridChecks.Run());
         evidence.checks.AddRange(VinelandsChecks.Run());
         evidence.checks.AddRange(RoadNetworkChecks.Run());
-        evidence.checks.AddRange(PrototypeChecks.Run());
         evidence.checks.AddRange(WheelChecks.Run());
         evidence.checks.AddRange(DukeChallengeChecks.Run());
         evidence.checks.AddRange(SoundChecks.Run());

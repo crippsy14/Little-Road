@@ -25,12 +25,14 @@ namespace LittleRoad
             return best;
         }
         static Transform[] Wheels(GameObject car)=>car.GetComponentsInChildren<Transform>(true).Where(t=>WheelVisuals.IsPivot(t.name)).ToArray();
+        // A wheel's own rolling radius: its pivot's height in the car (the model stands on its tyres at the root). Not the
+        // four wheels' mean: the Puddle's rear wheels are bigger than its front ones (24 Oct).
+        static float Radius(GameObject car,Transform wheel)=>Mathf.Clamp(car.transform.InverseTransformPoint(wheel.position).y,.15f,.6f);
         // Each wheel's contact point and the gap to the ground under it (positive: in the air; negative: sunk).
         public static List<(Vector3 contact,float gap)> Gaps(GameObject car)
         {
             var list=new List<(Vector3,float)>();var wheels=Wheels(car);if(wheels.Length<3)return list;
-            float radius=new WheelVisuals(car).Radius;
-            foreach(var w in wheels){var c=w.position-car.transform.up*radius;float g=Ground(c,car);if(g>float.MinValue)list.Add((c,c.y-g));}
+            foreach(var w in wheels){var c=w.position-car.transform.up*Radius(car,w);float g=Ground(c,car);if(g>float.MinValue)list.Add((c,c.y-g));}
             return list;
         }
         public static bool IsStanding(GameObject car)
@@ -41,7 +43,7 @@ namespace LittleRoad
         // Lower and tilt a standing car so its four wheels sit on the ground under them.
         public static bool Seat(GameObject car)
         {
-            var wheels=Wheels(car);if(wheels.Length<4)return false;float radius=new WheelVisuals(car).Radius;
+            var wheels=Wheels(car);if(wheels.Length<4)return false;
             Physics.SyncTransforms();
             var t=car.transform;var fwd=t.forward;fwd.y=0;if(fwd.sqrMagnitude<1e-4f)return false;fwd.Normalize();
             // Ground under each wheel's footprint with the car level: fit a plane (front/back and left/right slopes).
@@ -59,7 +61,7 @@ namespace LittleRoad
             t.rotation=Quaternion.LookRotation(Vector3.ProjectOnPlane(fwd,up).normalized,up);
             // Then drop or raise it so the lowest-sitting wheel touches (no wheel sinks; the rest sit within a few cm).
             Physics.SyncTransforms();float lift=float.MaxValue;
-            foreach(var w in wheels){var c=w.position-t.up*radius;float g=Ground(c,car);if(g>float.MinValue)lift=Mathf.Min(lift,c.y-g);}
+            foreach(var w in wheels){var c=w.position-t.up*Radius(car,w);float g=Ground(c,car);if(g>float.MinValue)lift=Mathf.Min(lift,c.y-g);}
             if(lift==float.MaxValue)return false;
             t.position-=Vector3.up*(lift-.01f);Physics.SyncTransforms();
             // On ground twisted under it (a plane through four wheels can't touch all four), one wheel can stay well up: sit

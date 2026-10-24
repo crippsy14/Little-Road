@@ -200,7 +200,9 @@ public static class PropForgeChecks
             Check(jk.file.kind=="object"&&jk.file.pieces.Length==1&&Mathf.Abs(can.y-.47f)<.01f,$"Library: the jerry can reads as an object, 0.47 m tall ({can.x:0.000} x {can.y:0.000} x {can.z:0.000} m)");
             var canSpec=RunRange.Bales().First(b=>b.kit=="jerry_can");var quay=Objects.Place(canSpec.name,canSpec.kit,canSpec.spots,canSpec.name);
             Check(quay.placed.Count==6&&quay.failures.Count==0,$"Library: six cans stand on the range's quay, level with the ground{(quay.failures.Count>0?": "+string.Join("; ",quay.failures):"")}");
-            var cob=Resources.Load<GameObject>("Cars/forge_cob");Check(cob!=null,"Library: the Cob (forge_cob, the can's car user) is installed");
+            // (the Cob carried the can until the roster was cleared, 24 Oct; the car side runs again once a car carries one)
+            var cob=Resources.Load<GameObject>("Cars/forge_cob");if(cob==null)checks.Add("Library: no installed car carries the can since 24 Oct (Car Forge's own tests check a car's can)");
+            else {
             var mf=cob.GetComponentsInChildren<MeshFilter>(true).First(f=>f.name.StartsWith("Body"));var mesh=mf.sharedMesh;var mats=mf.GetComponent<MeshRenderer>().sharedMaterials;
             var v=mesh.vertices;float reach=v.Max(p=>Mathf.Abs(p.z));var pts=new List<Vector3>();   // (at either end, red: the calipers sit at the axles, well inside)
             for(int sm=0;sm<mesh.subMeshCount;sm++){if(sm>=mats.Length||mats[sm]==null||!mats[sm].name.StartsWith("CaliperRed"))continue;
@@ -212,6 +214,7 @@ public static class PropForgeChecks
             Check(pts.Count>0&&Mathf.Abs(onCar.x-painted.x)<.01f&&Mathf.Abs(onCar.y-painted.y)<.01f&&Mathf.Abs(onCar.z-painted.z)<.01f,
                 $"Library: the can on the Cob's tail is the can on the quay, at world size (its paint {onCar.x:0.000} x {onCar.y:0.000} x {onCar.z:0.000} m on the car, {painted.x:0.000} x {painted.y:0.000} x {painted.z:0.000} on the quay)"+
                 (pts.Count>0?"":$" [no can found: {mf.name} bounds {mesh.bounds}, materials {string.Join(",",mats.Select(m=>m==null?"-":m.name))}, scale {mf.transform.lossyScale}]"));
+            }
         } finally { Ground.Reset(); }
         return checks;
     }
