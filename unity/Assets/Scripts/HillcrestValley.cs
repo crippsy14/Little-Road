@@ -79,7 +79,10 @@ namespace LittleRoad
                 c=Color.Lerp(c,woodland,forest*.92f);
                 c*=Mathf.Lerp(.9f,1.07f,Mathf.PerlinNoise(x*.035f+1,z*.035f+2));
                 float fade=Mathf.Min(Mathf.Min(i,nx-1-i),Mathf.Min(j,nz-1-j))/(nx*.03f);c=Color.Lerp(Color.white,c,Mathf.Clamp01(fade));
-                c.a=Mathf.Lerp(1,Mathf.Clamp01(edge/8),fields*(1-forest)*Mathf.Clamp01(fade));
+                // (The hedge is drawn where this distance is under ~1.7 m. Blending it towards 1 by the field weight, as it was,
+                //  moved that line wherever the weight wandered on gentle slopes, and the hedges came out as ragged dark-green
+                //  pools that read as water: Richard's snaps, 24 Oct, bug inbox #39. A parcel has its hedges or hasn't.)
+                c.a=fields*(1-forest)*Mathf.Clamp01(fade)>.6f?Mathf.Clamp01(edge/8):1;
                 px[j*nx+i]=c;
             }});
             tex.SetPixels(px);tex.Apply(true);

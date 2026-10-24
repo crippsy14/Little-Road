@@ -140,6 +140,9 @@ Shader "LittleRoad/CoastalTerrain"
                 float hedgeA=SAMPLE_TEXTURE2D_LOD(_MacroTint,sampler_MacroTint,macroUV,0).a;
                 float hedgeD=hedgeA*8,hedgeW=1.7+(midB-.5)*.8+(broad-.95)*6,hedgeAA=max(fwidth(hedgeD),.05);
                 half hedge=saturate((hedgeW-hedgeD)/(2*hedgeAA)+.5)*saturate(1.6*hedgeW/(hedgeW+hedgeAA))*step(hedgeA,.99)*step(.06,frac(p.x*.013+p.z*.017+midA*.3));
+                // (Painted hedgerows are for the patchwork seen from afar: within ~110 m, where a flat band never reads as a
+                //  hedge, they fade out, and the planted hedges carry the fields' edges near the road.)
+                hedge*=smoothstep(50,110,distance(p,_WorldSpaceCameraPos));
                 half3 hedgeColour=half3(.09,.2,.08)*lerp(.8,1.25,fine);
                 toyTurf=lerp(toyTurf,hedgeColour,hedge);turf=lerp(turf,hedgeColour,hedge);
                 // Pasture patches: lusher darker hollows, paler dry knolls, warmer sunlit faces.
