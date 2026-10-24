@@ -164,13 +164,18 @@ namespace LittleRoad
         }
 
         // ---- stage 2: the harbour and the town
-        public static void BuildTown(Circuit track)
+        // The harbour town's root (a district built later seats and batches what's under it: --near-start stage 4).
+        public static Transform TownRoot{get;private set;}
+        public static void BuildTown(Circuit track)=>TrialWorld.RunNow(BuildTownRoutine(track));
+        // (As a coroutine: Bayview's island built later, a frame between its parts.)
+        public static System.Collections.IEnumerator BuildTownRoutine(Circuit track)
         {
-            var root=new GameObject("New Bayview harbour and town").transform;
+            var root=new GameObject("New Bayview harbour and town").transform;TownRoot=root;
             var granite=WorldLook.Kit("Harbour granite",new Color(.56f,.55f,.52f),WorldLook.Pattern.Stone,0,.1f,true,1.6f);
             // the harbour: a wall along the bay's shore, both faces of each arm, a rounded head on each
             Wall(root,NewBayviewPlan.Harbour,0,granite);
             foreach(var arm in new[]{NewBayviewPlan.WestArm,NewBayviewPlan.QuayArm}){Wall(root,arm,4.6f,granite);Wall(root,arm,-4.6f,granite);Head(root,arm,granite);}
+            CoastalLandscape.Lap("bayview harbour walls");yield return null;
             // railings along the quay's edge (the shore), lamps on the quay side of the road, benches looking out to sea
             var blue=new BayviewKit.Tint(Color.white,Toy.Hex(0x1d4f8a),Color.white,Color.white);
             Along(NewBayviewPlan.Harbour,6,1.2f,(at,yaw)=>BayviewKit.Spawn("promenade_rail",at,yaw,root,blue));
@@ -180,6 +185,7 @@ namespace LittleRoad
                 BayviewKit.Spawn("lamp_post",lamp,face,root,blue);
                 var bench=at+r*11.5f+f*5;bench.y=FrontY;BayviewKit.Spawn("bench",bench,face+180,root);
             }
+            CoastalLandscape.Lap("bayview front");yield return null;
             // the town row: shops and terraces round the harbour front, each its own bold colour (Cornish and Scottish
             // harbour paint: docs/79), fronts to the road and the water
             var row=new (string id,float w,float d,int wall,int shutter,int awning,int door,string sign)[]{
@@ -201,9 +207,11 @@ namespace LittleRoad
                 if(b.id=="cafe"){Cafe=at-r*9.5f;CafeYaw=yaw;}if(b.sign=="BAYVIEW PAINTS"){Paint=at-r*9.5f;PaintYaw=yaw;}
                 s0+=b.w+.15f;
             }
+            CoastalLandscape.Lap("bayview town row");yield return null;
             // (then terraces to the arc's end, cycling the terrace types through the harbour paints)
             int[] walls={0xe8735a,0x4a7fc0,0xf0c24a,0x7fc28e,0xd96a8c,0x5fb3c2,0xf29a3a,0xe8b8c8,0x6fb0a0,0xf7f0e2};string[] kinds={"terrace_e","terrace_b","terrace_f","terrace_a","terrace_g","terrace_c","terrace_d"};
             for(int e=0;;e++) {
+                if(Due())yield return null;
                 float s=s0+2.7f;if(s+2.7f>TownTo)break;
                 var at=track.At(s);var r=track.Right(s);var pos=at-r*15.5f;pos.y=at.y+.12f;float yaw=Mathf.Atan2(r.x,r.z)*Mathf.Rad2Deg;
                 var tint=new BayviewKit.Tint(Toy.Hex(walls[e%walls.Length]),e%3==0?Toy.Hex(0x1d4f8a):Color.white,Toy.Hex(e%2==0?0xff4d5e:0xffd23f),Toy.Hex(e%2==0?0x1d4f8a:0xd94040));
@@ -211,8 +219,8 @@ namespace LittleRoad
                 BayviewKit.Spawn(kinds[e%kinds.Length],pos,yaw,root,tint);s0+=5.55f;
             }
             Cafe.y=Paint.y=FrontY;
-            Paving(root,track);
-            Landmarks(root,track);
+            yield return null;Paving(root,track);yield return null;
+            yield return Landmarks(root,track);
             Debug.Log($"LITTLE_ROAD_NEW_BAYVIEW_TOWN buildings={k} arc={TownFrom:0}-{s0:0}");
         }
 
@@ -232,7 +240,7 @@ namespace LittleRoad
             return true;
         }
         static Vector3 TowerSpot=>new(NewBayviewPlan.ClockTower.x,FrontY,NewBayviewPlan.ClockTower.y);
-        static void Landmarks(Transform root,Circuit track)
+        static System.Collections.IEnumerator Landmarks(Transform root,Circuit track)
         {
             if(BayviewKit.Has("clock_tower")) {
                 var t=TowerSpot;var a=track.At(track.Nearest(t,out _));var d=a-t;BayviewKit.Spawn("clock_tower",t,Mathf.Atan2(d.x,d.z)*Mathf.Rad2Deg,root);
@@ -240,8 +248,10 @@ namespace LittleRoad
             // (across the west arm, 70% down its first leg, its doors and slipway to the open sea)
             var arm=NewBayviewPlan.WestArm;var dir=(arm[1]-arm[0]).normalized;var at=arm[0]+(arm[1]-arm[0])*.7f;var o=new Vector2(dir.y,-dir.x);
             if(BayviewKit.Has("lifeboat_station"))BayviewKit.Spawn("lifeboat_station",new Vector3(at.x,FrontY,at.y),Mathf.Atan2(o.x,o.y)*Mathf.Rad2Deg,root);
-            Pier(root,track);
-            HarbourLife(root,track);TownWall(root,track);Furnish(root,track);RoadsideWalls(root,track);BendFurniture(root,track);HillFarm(root,track);CliffRocks(root,track);
+            static void Lap(string part)=>CoastalLandscape.Lap("bayview "+part);
+            Lap("landmarks");yield return null;Pier(root,track);Lap("pier");yield return null;
+            HarbourLife(root,track);Lap("harbour life");yield return null;TownWall(root,track);Lap("town wall");yield return null;Furnish(root,track);Lap("furnish");yield return null;yield return RoadsideWalls(root,track);Lap("roadside walls");yield return null;
+            BendFurniture(root,track);Lap("bends");yield return null;HillFarm(root,track);Lap("farm");yield return null;CliffRocks(root,track);Lap("cliff rocks");
             Debug.Log($"LITTLE_ROAD_NEW_BAYVIEW_LANDMARKS tower={TowerSpot} lifeboat=({at.x:0},{at.y:0}) lighthouse={LighthouseAt(track)}");
         }
         // The pleasure pier: timber boards on piles from the east beach out over the sea, rails both sides, a wide head
@@ -528,7 +538,10 @@ namespace LittleRoad
         // 0.4 m or more in all), which a car that ran wide couldn't climb back from. Short gaps close up; the quay (its
         // railings guard it), the lanes off the loop and the causeway link stay open.
         static readonly List<Vector3> WallLine=new();   // (where the roadside walls run: the bends' tyre walls keep off them)
-        static void RoadsideWalls(Transform root,Circuit track)
+        // About 8 ms of work since the last yield (the island built later, --near-start: its slow parts yield inside).
+        static readonly System.Diagnostics.Stopwatch slice=System.Diagnostics.Stopwatch.StartNew();
+        static bool Due(){if(slice.ElapsedMilliseconds<8)return false;slice.Restart();return true;}
+        static System.Collections.IEnumerator RoadsideWalls(Transform root,Circuit track)
         {
             // (just past the shoulder: a drop that starts at its edge must have the wall within 1 m of it)
             WallLine.Clear();const float Out=12.2f;var gravel=GravelPoints(track);var lt=LighthouseAt(track);int walls=0;float metres=0;
@@ -574,6 +587,7 @@ namespace LittleRoad
                     run=null;gap=0;
                 }
                 for(float s=0;s<track.length;s+=2) {
+                    if(Due())yield return null;
                     var at=track.At(s);var r=track.Right(s);r.y=0;r.Normalize();var dir=r*side;var p=at+dir*Out;p.y=Height(p.x,p.z,track);
                     if(Open(p)){Flush();continue;}
                     if(Steep(at,dir)){run??=new List<Vector3>();run.Add(p);gap=0;}

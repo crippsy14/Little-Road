@@ -100,6 +100,34 @@ their lines: rails, fingerposts, traps and bank barriers there wait for it. Read
 piece 42 ms. Fingerprints: identical to stage 1's at once and late (`b88f926fda848dbe`), the default unchanged; town print
 the same (the lookout car and Vinelands' bus resident vary run to run by default too). Other starts unchanged.
 
+**Stage 4 built 24 Oct, same flag.** From a start more than 300 m from Bayview's island (±280 x ±262 m), what stands on it is
+built as the district `island`, first in the queue: the planting and the tower mill, the sea railway and Bayview Halt
+(their runs flushed, rails trimmed and pieces settled as the load's settle pass did), the ground cover, then TrialWorld's
+part (the circuit's surfaces and support, the Pit Stop, New Bayview's town, a frame between its parts, its runs drawn as
+laid); then its standing cars seated, everything on its ground dressed, its banks barriered. Its land and collider stay at
+load (the causeway's piers and the Halt quay's shoulders stand on them). Bayview's residents, Pip's lighthouse, its board
+and fingerposts and its loop traffic arrive with it (BayviewArrived); scene roots it makes go under the kept world
+(`NearStart.Kept`). Quiet machine, alternating, second launches:
+
+| Start | `--near-start` | default |
+|---|---|---|
+| Bayview | 2.92-3.02 s | 4.69-4.84 s |
+| Hillcrest's square | 4.16-4.31 s | 4.87-5.09 s |
+| Quarry Hills | 6.10-6.12 s | 6.79-6.93 s |
+| Bramblewick's green | 5.46-5.50 s | 6.07-6.16 s |
+| Vinelands' Adega | 7.26-7.46 s | 7.91-8.08 s |
+
+Fingerprints from a Hillcrest start the same with and without the flag, at once and late (`d172e57e109edb33`,
+`b5b7c3eedb065962`; millimetres of settling aside); Bayview's unchanged. Town print the same (one parked car that varies by
+default). The island arrives about 1.2 s after you can drive; its busiest piece 56 ms (a terrace's first spawn), the first
+traffic car 70 ms. Found on the way: at load the tower mill is spawned before the kit's animated root exists, so it counts
+as animated and isn't placed; built later it would be, so its entries are taken back out (NearStart.IslandRoutine).
+
+**Fixed (24 Oct):** the reach guard from stage 1 ran in every build, flag or not, and Vinelands' ground (a broad circle that
+reaches Bramblewick's green) made it finish Vinelands in one 3 s frame right after a Bramblewick start. It and the new
+start-on check (`Districts.CompleteAt`: a refused saved spot puts the car at Bayview after the world was planned round the
+spot) now watch only `--near-start`'s own districts (`guarded`), whose grounds are tight. The play copy was never affected.
+
 - **Known:** the headland's sea rocks (part of the trees step) appear a second or two after you start; a build's first
   start from a new place audits the bank sites for that set of pending districts (17.4 s from Hillcrest's square, 10.8 s
   from Vinelands, by default too); the warm-up skips Hillcrest's views when it's still to come.

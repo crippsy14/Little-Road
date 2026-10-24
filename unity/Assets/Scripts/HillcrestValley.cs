@@ -1098,7 +1098,7 @@ namespace LittleRoad
         // ---------------------------------------------------------------- railway
         // Ballast, rails and sleepers; stone viaduct piers wherever the line runs above the
         // ground; a tunnel mouth where it disappears into the ridge.
-        void Railway(){Railway(HillcrestRoute.Rail,"HILLCREST LINE");Railway(HillcrestRoute.SeaRail,"HILLCREST LINE");BayviewHalt();}
+        void Railway(){Railway(HillcrestRoute.Rail,"HILLCREST LINE");if(!IslandLater){Railway(HillcrestRoute.SeaRail,"HILLCREST LINE");BayviewHalt();}}   // (the sea railway and the Halt stand on the island: built with it, --near-start stage 4)
         void Railway(HillcrestRoute.Road rail,string portalName)
         {
             var holder=new GameObject(rail.name).transform;holder.SetParent(root);var line=rail.line;

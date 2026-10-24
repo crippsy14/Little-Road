@@ -26,7 +26,7 @@ namespace LittleRoad
         // Districts nearer the start than this are built at load as before.
         public const float NearStart=1500;
         enum State{Queued,Building,Settling,Done}
-        sealed class District{public string name,after;public IEnumerator build;public Func<IEnumerator> settle;public Rect covers;public Func<Vector3,bool> contains;public float distance;public State state;}
+        sealed class District{public string name,after;public IEnumerator build;public Func<IEnumerator> settle;public Rect covers;public Func<Vector3,bool> contains;public float distance;public State state;public bool guarded;}
         // Where the player's car is (AdventureGame), for the reach guard (--near-start, docs/brief-near-start.md): a district's
         // budget goes from 3 to 12 ms a frame once the car is within BoostDistance of its ground, and it's finished at once
         // (one hitch, logged) if the car gets within ReachDistance before it has arrived.
@@ -64,11 +64,13 @@ namespace LittleRoad
         // Build `district` later: `build` is its builder as a coroutine, `settle` its settle pass (a coroutine too), `covers`
         // its ground for the tile streamer, `contains` its ground for what's placed by what stands there (the rect itself if
         // null), `distance` from where the car starts (the nearest builds first), `after` a district it must follow whatever the
-        // distances (one whose ground or data it shares: the build order at load).
-        public static void Defer(string district,IEnumerator build,Func<IEnumerator> settle,Rect covers,Func<Vector3,bool> contains=null,float distance=0,string after=null)
+        // distances (one whose ground or data it shares: the build order at load), `guarded`: the reach guard and CompleteAt watch
+        // it (--near-start's own districts, whose grounds are tight; the far places' grounds are broad claims, Vinelands' circle
+        // reaching Bramblewick's green, and they keep the 1.5 km rule alone).
+        public static void Defer(string district,IEnumerator build,Func<IEnumerator> settle,Rect covers,Func<Vector3,bool> contains=null,float distance=0,string after=null,bool guarded=false)
         {
             var rect=covers;contains??=p=>rect.Contains(new Vector2(p.x,p.z));
-            var d=new District{name=district,build=build,settle=settle,covers=covers,contains=contains,distance=distance,after=after};
+            var d=new District{name=district,build=build,settle=settle,covers=covers,contains=contains,distance=distance,after=after,guarded=guarded};
             int i=0;while(i<all.Count&&all[i].distance<=distance)i++;
             if(after!=null){int first=all.FindIndex(o=>o.name==after);if(first>=i)i=first+1;}
             all.Insert(i,d);
@@ -98,6 +100,12 @@ namespace LittleRoad
             foreach(var d in all.ToArray()){if(d.state==State.Done||only!=null&&!only(d.covers))continue;names.Add(d.name);Finish(d);}
             if(only==null){Ensure();while(Pending)Step(stack,double.MaxValue);}
             if(names.Count>0)Debug.Log($"LITTLE_ROAD_DISTRICT completed {string.Join(",",names)} at once ms={clock.ElapsedMilliseconds}{(only!=null&&Pending?" (the rest later)":"")}");
+        }
+        // Where the car really starts: every district whose ground it is on, or within the reach guard of, finished now (a saved
+        // spot refused as no longer clear puts the car at Bayview's forecourt, after the world was planned round the spot).
+        public static void CompleteAt(Vector3 p)
+        {
+            foreach(var d in all.ToArray()){if(d.state==State.Done||!d.guarded||!d.contains(p)&&Away(d.covers,p)>=ReachDistance)continue;var clock=System.Diagnostics.Stopwatch.StartNew();Finish(d);Debug.Log($"LITTLE_ROAD_DISTRICT start-on {d.name}: finished at once ms={clock.ElapsedMilliseconds}");}
         }
         // One district to the end of its settle pass: a queued one on its own, the one building now where it stands (one step at
         // a time, so the next in the queue isn't started).
@@ -158,7 +166,7 @@ namespace LittleRoad
             {
                 Districts.Ensure();double budget=3;
                 if(Car?.Invoke() is Vector3 car)foreach(var d in all.ToArray()) {
-                    if(d.state==State.Done)continue;float away=Away(d.covers,car);
+                    if(d.state==State.Done||!d.guarded)continue;float away=Away(d.covers,car);
                     if(away<ReachDistance){var clock=System.Diagnostics.Stopwatch.StartNew();Finish(d);Debug.Log($"LITTLE_ROAD_DISTRICT reached {d.name} away={away:0} m: finished at once ms={clock.ElapsedMilliseconds}");}
                     else if(away<BoostDistance)budget=12;
                 }

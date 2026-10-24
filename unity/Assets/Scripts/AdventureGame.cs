@@ -65,11 +65,9 @@ namespace LittleRoad
             if(RaceTrial.Arg("--list-renderers-near") is string rn&&rn.Contains(",")){var a=rn.Split(',');float G(int i)=>float.Parse(a[i],System.Globalization.CultureInfo.InvariantCulture);var c=new Vector3(G(0),0,G(1));
                 foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)){var b=r.bounds;var q=b.ClosestPoint(new Vector3(c.x,b.center.y,c.z));if(Vector2.Distance(new(q.x,q.z),new(c.x,c.z))<G(2)&&b.size.magnitude<400)
                     Debug.Log($"LITTLE_ROAD_RNEAR {r.name} parent {(r.transform.parent!=null?r.transform.parent.name:"-")} bounds {b.min}..{b.max} collider {(r.GetComponent<Collider>()!=null?r.GetComponent<Collider>().GetType().Name:"none")} mat {(r.sharedMaterial!=null?r.sharedMaterial.name:"-")}");}}
-            residents["garage"]=new Vector3(-62,0,-100);
-            // Pit Stop bay hosts (Bayview: garage + parts). Hillcrest's arrive through HillcrestTown.Spots.
-            foreach(var (id,key) in new[]{("garage","bayview/garage"),("parts","bayview/parts")})if(PitStop.Hosts.TryGetValue(key,out var host)){residents[id]=host.at;residentYaw[id]=host.yaw;}
-            residents["cafe"]=NewBayview.On?NewBayview.Cafe:new Vector3(-40.5f,0,-101.8f);residents["paint"]=NewBayview.On?NewBayview.Paint:new Vector3(3.5f,0,-102.2f);
-            if(NewBayview.On){residentYaw["cafe"]=NewBayview.CafeYaw;residentYaw["paint"]=NewBayview.PaintYaw;}
+            // Bayview's island built later (--near-start stage 4, from a start away from it): its residents, lighthouse, board and
+            // loop traffic when it arrives (BayviewArrived).
+            islandLater=Districts.Waiting("island");if(islandLater)Districts.WhenBuiltSteps("island",BayviewArrived);else BayviewResidents();
             // Hillcrest's valley built in the background (--near-start: NearStart): its residents, signs and stamps when it arrives.
             // (and the far places' roads before it, stage 2: the fingerposts at their junctions outside every place's ground)
             if(Districts.Waiting("far-roads"))Districts.WhenBuiltSteps("far-roads",FarRoadsArrived);
@@ -80,7 +78,7 @@ namespace LittleRoad
             // Quarry Hills built in the background (Districts): what needs it is set up when it arrives.
             quarryLater=Districts.Waiting("quarry-hills");if(quarryLater)Districts.WhenBuiltSteps("quarry-hills",QuarryHillsArrived);
             if(!quarryLater)QuarryHillsResidents();
-            residents["post"]=NewBayview.On?NewBayview.PostSpot(world.track):world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
+            if(!islandLater)residents["post"]=PostSpot();
             CreatePlaces();Mark("places");BuildWayfinding();Mark("wayfinding");
             if(AdventureSession.MaxBuildTest&&!AdventureSession.TestPlaced){AdventureSession.TestPlaced=true;FaceDuke();}
             var car=TrialWorld.Car(Store.Data.bodyId,Paints[Store.Data.paintIndex]);car.transform.SetPositionAndRotation(NewBayview.On?NewBayview.Spawn:new Vector3(-63,.15f,-94),Quaternion.Euler(0,90,0));
@@ -88,13 +86,14 @@ namespace LittleRoad
             // Otherwise carry on from where you were (Richard, 3 Oct): the saved spot, if it's still clear ground in this world.
             else if(!Testing&&Store.Data.spot!=null&&Store.Data.spot.Length==4){var s=Store.Data.spot;var at=new Vector3(s[0],s[1],s[2]);
                 if(ClearSpot(ref at)){car.transform.SetPositionAndRotation(at+Vector3.up*.2f,Quaternion.Euler(0,s[3],0));resumed=true;}else Debug.Log("LITTLE_ROAD_RESUME refused "+at);}
+            if(NearStart.Enabled)Districts.CompleteAt(car.transform.position);   // (where the car really starts is built, whatever the plan was)
             player=car.AddComponent<RoadCar>();player.Setup(world,0,EquipmentCatalog.Stats(Store.Data.Loadout(),Store.Data.Tune()),false,1709,"owned equipment");world.cars.Add(player);world.running=true;FrameProbe.Attach(player.transform);Grazer.Car=player.transform;
             Districts.Car=()=>player!=null?player.transform.position:(Vector3?)null;   // (the reach guard: a district the car reaches is finished at once)
             if(QuarryHills.Enabled&&QuarryHillsTown.Spots.Count>0&&!quarryLater)QuarryFestival.Build(transform,Store.Data,player);CameraShake.Reset();CameraShake.Watch(player);
             playerHorn=Horn.Attach(car,Horn.PitchFor(Store.Data.bodyId),player:true);
             player.Bumped+=(other,speed)=>{if(speed>1f&&!ui.IsOpen&&!paintShop.IsOpen&&!bodyShop.IsOpen&&!garage.IsOpen)other.GetComponentInParent<NpcChatter>()?.TrySay(bubbles);};
             // (Bayview's loop traffic: on in the game since 20 Oct, Richard; not in test runs, which stay as they were; --no-ambient-traffic)
-            if(RaceTrial.Has("--ambient-traffic")||!Testing&&!RaceTrial.Has("--no-ambient-traffic"))AmbientTraffic();
+            if((RaceTrial.Has("--ambient-traffic")||!Testing&&!RaceTrial.Has("--no-ambient-traffic"))&&!islandLater)AmbientTraffic();   // (the island later: BayviewArrived)
             Mark("player");if(!RaceTrial.Has("--no-valley-life"))gameObject.AddComponent<ValleyLife>().Setup(player);Mark("valley-life");
             // Fireworks over Bayview harbour at night (docs/51).
             var fireworks=gameObject.AddComponent<Fireworks>();fireworks.Setup();fireworks.Announce=Notify;
@@ -228,9 +227,7 @@ namespace LittleRoad
         void BuildWayfinding()
         {
             Wayfinding.Clear();var holder=new GameObject("Wayfinding").transform;
-            // (Bayview's loop isn't tagged as road: measured from its centreline, 8 m to the edge.)
-            Wayfinding.PlaceBoard(holder,"Bayview",residents["cafe"],p=>{float d=world.track.Nearest(new Vector3(p.x,0,p.z),out _);var on=world.track.At(d);var way=new Vector3(on.x-p.x,0,on.z-p.z);
-                return (way.magnitude-8,way.normalized);});
+            if(!islandLater)BayviewBoard(holder);   // (still building: BayviewArrived)
             if(HillcrestTown.Spots.Count==0&&!hillcrestLater)return;
             if(!hillcrestLater)Wayfinding.PlaceBoard(holder,"Hillcrest",HillcrestRoute.Square);   // (still building: HillcrestArrived)
             var places=new List<(string,Vector3)>{("Bayview",HillcrestRoute.Mainline.line[0]),("Hillcrest",HillcrestRoute.Square),("Hillcrest Castle",HillcrestRoute.CastleCourt),("Raceway",HillcrestRoute.Paddock),
@@ -248,6 +245,9 @@ namespace LittleRoad
             Wayfinding.Fingerposts(holder,CoastalLandscape.Network,places,Districts.Pending?(System.Func<Vector3,bool>)Districts.Built:null);
         }
         Transform wayHolder;List<(string,Vector3)> wayPlaces;
+        // (Bayview's loop isn't tagged as road: measured from its centreline, 8 m to the edge.)
+        void BayviewBoard(Transform holder)=>Wayfinding.PlaceBoard(holder,"Bayview",residents["cafe"],p=>{float d=world.track.Nearest(new Vector3(p.x,0,p.z),out _);var on=world.track.At(d);var way=new Vector3(on.x-p.x,0,on.z-p.z);
+            return (way.magnitude-8,way.normalized);});
         void QuarryHillsWayfinding()
         {
             if(wayHolder==null||!QuarryHills.Enabled)return;
@@ -709,14 +709,37 @@ namespace LittleRoad
             if(BramblewickVillage.Horseshoes.Count!=Collectibles.Horseshoes)return;
             for(int i=0;i<Collectibles.Horseshoes;i++){string id=Collectibles.Horseshoe(i);if(finds.ContainsKey(id))continue;var p=BramblewickVillage.Horseshoes[i]+Vector3.up*1.2f;MapRegions.Keepsakes[id]=(p,MapRegions.HorseshoePlace(i));if(Store.Data.collected.Contains(id))continue;finds[id]=Keepsake(id,p,3,i);}
         }
-        bool hillcrestLater;
+        bool hillcrestLater,islandLater;
+        // Bayview's garage, parts counter, cafe and paint shop (the Pit Stop's hosts, the town's shops).
+        void BayviewResidents()
+        {
+            residents["garage"]=new Vector3(-62,0,-100);
+            // Pit Stop bay hosts (Bayview: garage + parts). Hillcrest's arrive through HillcrestTown.Spots.
+            foreach(var (id,key) in new[]{("garage","bayview/garage"),("parts","bayview/parts")})if(PitStop.Hosts.TryGetValue(key,out var host)){residents[id]=host.at;residentYaw[id]=host.yaw;}
+            residents["cafe"]=NewBayview.On?NewBayview.Cafe:new Vector3(-40.5f,0,-101.8f);residents["paint"]=NewBayview.On?NewBayview.Paint:new Vector3(3.5f,0,-102.2f);
+            if(NewBayview.On){residentYaw["cafe"]=NewBayview.CafeYaw;residentYaw["paint"]=NewBayview.PaintYaw;}
+        }
+        Vector3 PostSpot()=>NewBayview.On?NewBayview.PostSpot(world.track):world.track.At(world.track.length*.46f)-world.track.Right(world.track.length*.46f)*16;
+        // Bayview's island built later (--near-start stage 4): its residents (the Halt's with them), Pip's lighthouse, its board
+        // and junction fingerposts, its loop traffic and its standing cars, as at load.
+        IEnumerator BayviewArrived()
+        {
+            var before=new HashSet<string>(residents.Keys);BayviewResidents();if(HillcrestTown.Spots.Count>0){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}
+            residents["post"]=PostSpot();var added=residents.Keys.Where(k=>!before.Contains(k)).ToList();
+            yield return PlaceResidentsSteps(added);
+            Lighthouse();CoastalLandscape.Lap("bayview lighthouse");yield return null;
+            if(wayHolder!=null){BayviewBoard(wayHolder);Wayfinding.Fingerposts(wayHolder,CoastalLandscape.Network,wayPlaces,p=>Districts.Completes("island",p));}CoastalLandscape.Lap("bayview signs");yield return null;
+            if(RaceTrial.Has("--ambient-traffic")||!Testing&&!RaceTrial.Has("--no-ambient-traffic"))yield return AmbientTrafficSteps();CoastalLandscape.Lap("bayview traffic");
+            islandLater=false;yield return null;
+            Debug.Log($"LITTLE_ROAD_DISTRICT arrived island residents={added.Count}");
+        }
         IEnumerator FarRoadsArrived()
         {
             if(wayHolder!=null)Wayfinding.Fingerposts(wayHolder,CoastalLandscape.Network,wayPlaces,p=>Districts.Completes("far-roads",p));yield return null;
         }
         void HillcrestResidents()
         {
-            if(HillcrestTown.Spots.Count>0){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}
+            if(HillcrestTown.Spots.Count>0&&!islandLater){residents["bayhalt"]=CoastalLandscape.HaltResident;residentYaw["bayhalt"]=270;}   // (the Halt stands on the island: BayviewArrived)
             foreach(var id in new[]{"motors","hcparts","hcbody","hillcafe","raceway","station","castle","vista","lookout","farm"})if(HillcrestTown.Spots.TryGetValue(id,out var spot)){residents[id]=spot.at;residentYaw[id]=spot.yaw;}
         }
         // Hillcrest's valley has been built in the background (--near-start): its residents, its board and junction
@@ -795,6 +818,13 @@ namespace LittleRoad
         }
         void CreatePlacesAfterResidents()
         {
+            if(!islandLater)Lighthouse();   // (still building: BayviewArrived)
+            if(!hillcrestLater)HillcrestStamps();   // (still building: HillcrestArrived)
+            OtherKeepsakes();
+        }
+        // Pip's lighthouse on its point behind her, its beacon and lane, and the photo requests' tower.
+        void Lighthouse()
+        {
             var post=residents["post"];var stone=new Color(.91f,.83f,.65f);var red=new Color(.71f,.26f,.18f);
             // Keep the landmark behind its resident, away from the nearest
             // carriageway; a world-Z offset can move it into a curved road.
@@ -815,8 +845,6 @@ namespace LittleRoad
             Vector3 outward=(post-a).normalized;
             Vector3 laneStart=a+outward*12,laneEnd=post+outward*2.5f,delta=laneEnd-laneStart;
             var spur=Block("Lighthouse lane",(laneStart+laneEnd)*.5f+Vector3.up*.043f,new Vector3(6,.04f,delta.magnitude),new Color(.66f,.62f,.46f));spur.transform.rotation=Quaternion.LookRotation(delta);
-            if(!hillcrestLater)HillcrestStamps();   // (still building: HillcrestArrived)
-            OtherKeepsakes();
         }
         // Hillcrest's stamps, once the town is there.
         void HillcrestStamps()
@@ -906,10 +934,13 @@ namespace LittleRoad
         }
         // On in the game (20 Oct; --no-ambient-traffic, not in tests): a few family cars cruising the loop on stock kit, using
         // the finished-car planner (gentle cruise, no gates). The player stays cars[0].
-        void AmbientTraffic()
+        void AmbientTraffic()=>TrialWorld.RunNow(AmbientTrafficSteps());
+        // (A car a frame when Bayview's island arrives in the background: four at once took a 144 ms frame, --near-start.)
+        IEnumerator AmbientTrafficSteps()
         {
             string[] bodies={"pebble","tallboy","picnic","dover"};Color[] paints={Toy.Hex(0xff7ac8),Toy.Hex(0x5ec8ff),Toy.Hex(0xffd23f),Toy.Hex(0x3ee6a4)};
             for(int i=0;i<bodies.Length;i++) {
+                if(i>0)yield return null;
                 float d=world.track.length*(.18f+i*.21f);
                 var go=TrialWorld.Car(bodies[i],paints[i]);go.name="Traffic "+bodies[i];
                 go.transform.SetPositionAndRotation(world.track.At(d)+world.track.Right(d)*2.5f+Vector3.up*.15f,Quaternion.LookRotation(world.track.Forward(d)));

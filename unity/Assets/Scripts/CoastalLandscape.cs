@@ -396,14 +396,18 @@ namespace LittleRoad
             }
             var mesh=new Mesh{name="Irregular cypress crown",vertices=vertices,triangles=triangles.ToArray()};mesh.RecalculateNormals();MeshObject("Cypress crown",mesh,new[]{leaf});
         }
-        void Planting()
+        void Planting()=>TrialWorld.RunNow(PlantingRoutine());
+        // (As a coroutine: Bayview's island built later, --near-start stage 4, yields every 8 ms or so; the draws are the same.)
+        System.Collections.IEnumerator PlantingRoutine()
         {
             var vegetation=new CoastalVegetation();
             // Shared leaf meshes use GPU instancing and can exceed 65k vertices.
             // Keep them outside the terrain's static-combine hierarchy.
             var vegetationRoot=new GameObject("Bayview shared foliage / unbatched").transform;
             var rng=new System.Random(7341);bool kitTrees=BayviewKit.Has("tree_round");
+            var slice=System.Diagnostics.Stopwatch.StartNew();bool Due(){if(slice.ElapsedMilliseconds<8)return false;slice.Restart();return true;}
             for(int i=0;i<640;i++) {
+                if(Due())yield return null;
                 float x=(float)rng.NextDouble()*310-155,z=(float)rng.NextDouble()*235-118;var p=new Vector3(x,0,z);
                 float d=track.Nearest(p,out float lateral),distance=FlatDistance(p,track.At(d));
                 if(distance<18||VillageDistance(p)<7||FlatDistance(p,post)<24||BayviewCountryside.Reserved(p)||NearCauseway(p))continue;
@@ -432,6 +436,7 @@ namespace LittleRoad
                 else vegetation.Plant(vegetationRoot,p,scale,species,i%3);
             }
             for(float d=15;d<track.length;d+=8) {
+                if(Due())yield return null;
                 if(Mathf.Abs(d-bridgeDistance)<31)continue;
                 foreach(int side in new[]{-1,1}) {
                     Vector3 p=track.At(d)+track.Right(d)*side*(17+(float)rng.NextDouble()*6);
@@ -443,7 +448,7 @@ namespace LittleRoad
                 }
             }
             int shrubs=0;
-            for(float d=5;d<track.length;d+=3.4f)foreach(int side in new[]{-1,1})for(int attempt=0;attempt<3;attempt++) {
+            for(float d=5;d<track.length;d+=3.4f){if(Due())yield return null;foreach(int side in new[]{-1,1})for(int attempt=0;attempt<3;attempt++) {
                 float along=d+(float)rng.NextDouble()*4-2;
                 float offset=15.7f+(float)rng.NextDouble()*17;
                 Vector3 p=track.At(along)+track.Right(along)*side*offset;
@@ -463,7 +468,7 @@ namespace LittleRoad
                 p.y=low-.03f;
                 if(kitTrees)BayviewKit.Spawn("bush",p+Vector3.down*.05f,(float)rng.NextDouble()*360,vegetationRoot,solid:false,scale:scale*.8f);
                 else vegetation.PlantScrub(vegetationRoot,p,scale,shrubs%3,(float)rng.NextDouble()*360);shrubs++;
-            }
+            }}
             Debug.Log("LITTLE_ROAD_SCRUB patches="+shrubs);
         }
         Material iMaterial(float d)=>((int)d%3)==0?rock:lightRock;
@@ -485,14 +490,18 @@ namespace LittleRoad
             WorldTiles.Begin(ValleyDetail);Districts.Begin();Runs.Batching=!RaceTrial.Has("--no-run-batching");WorldRoot=root;PropForgeDressing.Later=null;stepClock=null;BayviewKit.Footprints.Clear();BayviewKit.FootprintOwners.Clear();GroundFit.Reset();BayviewKit.Placed.Clear();HillcrestTown.BuntingEnds.Clear();Step("start");Next(0,"Shaping the island");yield return null;   // (Runs.Batching: the runs' meshes made together, on every core, before the settle pass: Runs.Flush; --no-run-batching draws each as it comes)
             // (A race far from Bayview builds none of the island: RaceArea. Its heights stay analytic for everything else.)
             bool island=Island;
+            // (--near-start, stage 4: from a start away from it, what stands on Bayview's island is built later; its land at load: NearStart)
+            bool laterIsland=island&&NewBayview.On&&Districts.Enabled&&WorldTiles.Streams&&!RaceArea.Active&&NearStart.Enabled&&NearStart.OutsideIsland(WorldTiles.Focus);
+            IslandLater=laterIsland;IslandFinish=null;
+            if(laterIsland){Districts.Defer("island",NearStart.Kept(IslandRoutine()),SettleIsland,NearStart.IslandGround,NearStart.OnIsland,-2,guarded:true);PropForgeDressing.Later=p=>NearStart.OnIsland(p)&&Districts.Waiting("island");}
             if(island)LandMesh();Step("land");Next(.16f,"Raising the mainland");yield return null;
             Mainland();Step("mainland");Next(.33f,"Building the bridge");yield return null;
             if(!NewBayview.On){Bridge();Roadside();}else NewBayview.DrawGravel(root,track);masonry.Finish();Step("bridge-roadside-masonry");Next(.35f,"Carving the cliffs");yield return null;
             var cliffMaterial=TerrainMaterial("Weathered cliff limestone",new Color(.35f,.43f,.24f),new Color(.60f,.56f,.46f));cliffMaterial.SetFloat("_RockOnly",1);
             if(island&&!NewBayview.On)new CoastalCliffs(this,root,cliffMaterial).Build();Step("cliffs");   // (the new island has no CoastalCliffs: docs/79)
             Next(.53f,"Planting Bayview");yield return null;
-            if(island){Physics.SyncTransforms();BayviewCountryside.ChoosePlots(this);Planting();}Step("planting");
-            if(island&&NewBayview.On&&NewBayview.Windmill(Height))Step("tower-mill");   // (the new Bayview's own tower mill: docs/80)
+            if(island&&!laterIsland){Physics.SyncTransforms();BayviewCountryside.ChoosePlots(this);Planting();}Step("planting");
+            if(laterIsland){}else if(island&&NewBayview.On&&NewBayview.Windmill(Height))Step("tower-mill");   // (the new Bayview's own tower mill: docs/80)
             else if(island&&BayviewKit.Has("windmill")) {
                 var hill=NewBayview.On?new Vector3(NewBayviewPlan.Windmill.x,0,NewBayviewPlan.Windmill.y):new Vector3(-24,0,12);hill.y=Height(hill.x,hill.z)-.4f;
                 BayviewKit.Spawn("windmill",hill,200,BayviewKit.AnimatedRoot,new BayviewKit.Tint(Color.white,Toy.Hex(0x3a7bd5),Toy.Hex(0xff4d5e),Toy.Hex(0x3a7bd5)));
@@ -504,7 +513,7 @@ namespace LittleRoad
             bool laterHillcrest=ValleyDetail&&Districts.Enabled&&WorldTiles.Streams&&!RaceArea.Active&&NearStart.DeferHillcrest(WorldTiles.Focus,(!QuarryHills.Enabled||deferQuarry)&&(!Bramblewick.Enabled||DeferFar(Bramblewick.Centre))&&(!vinelandsHere||DeferFar(Vinelands.Centre)));
             farRoads=laterHillcrest?new System.Collections.Generic.List<System.Action>():null;
             Physics.SyncTransforms();ValleyRoads();ValleyWater();
-            if(farRoads!=null&&farRoads.Count>0)Districts.Defer("far-roads",FarRoadsRoutine(),SettleFarRoads,NearStart.FarRoadsGround(),NearStart.OnFarRoads,-1);else farRoads=null;
+            if(farRoads!=null&&farRoads.Count>0)Districts.Defer("far-roads",FarRoadsRoutine(),SettleFarRoads,NearStart.FarRoadsGround(),NearStart.OnFarRoads,-1,guarded:true);else farRoads=null;
             Step("valley-roads-water");Next(.6f,"Laying the railway and Hillcrest");yield return null;
             // The town, railway and woods sit behind the headland ridge, out of sight of the Bayview
             // circuit: Bayview races skip them (ValleyDetail false) and keep their frame cost.
@@ -515,8 +524,8 @@ namespace LittleRoad
                 //  share its ground after it: NearStart)
                 string after=laterHillcrest?"hillcrest":null;
                 if(laterHillcrest) {
-                    hillcrestTyres=TyreBarriers.Laid+TyreBarriers.Refused;PropForgeDressing.Later=p=>OnHillcrestGround(p)&&Districts.Waiting("hillcrest");
-                    Districts.Defer("hillcrest",HillcrestRoutine(),()=>SettleDistrict("hillcrest",()=>hillcrestHolder,g=>OnHillcrestGround(g.transform.position)),NearStart.HillcrestGround,OnHillcrestGround,NearStart.Away(NearStart.HillcrestGround,WorldTiles.Focus),Districts.Waiting("far-roads")?"far-roads":null);Step("hillcrest-town");
+                    hillcrestTyres=TyreBarriers.Laid+TyreBarriers.Refused;var islandLater=PropForgeDressing.Later;PropForgeDressing.Later=p=>OnHillcrestGround(p)&&Districts.Waiting("hillcrest")||islandLater!=null&&islandLater(p);
+                    Districts.Defer("hillcrest",HillcrestRoutine(),()=>SettleDistrict("hillcrest",()=>hillcrestHolder,g=>OnHillcrestGround(g.transform.position)),NearStart.HillcrestGround,OnHillcrestGround,NearStart.Away(NearStart.HillcrestGround,WorldTiles.Focus),Districts.Waiting("far-roads")?"far-roads":null,guarded:true);Step("hillcrest-town");
                 }
                 else{new HillcrestTown(this,root).Build();Step("hillcrest-town");Next(.72f,"Growing the woods");yield return null;MainlandTrees();Step("mainland-trees");}
                 // Quarry Hills far from where the car starts is built after the town is ready (Districts, docs/72).
@@ -533,7 +542,7 @@ namespace LittleRoad
             // chunks. Keep the large grass mesh and displaced sea independent.
             Physics.SyncTransforms();Lap("settle sync");PlacementAudit.Settle();Lap("settle pieces");CarContact.SeatAll();Lap("settle cars");Step("settle-planting");
             if(StaticBatching)StaticBatchingUtility.Combine(root.gameObject);Step("static-batching");
-            Sea();if(island)new CoastalGroundCover(this,track,root).Build();Step("sea-ground-cover");
+            Sea();if(island&&!laterIsland)new CoastalGroundCover(this,track,root).Build();Step("sea-ground-cover");
             WorldTiles.EndBuild();
             Runs.LogTimes();   // (where the runs' time goes: load timing)
             Debug.Log("LITTLE_ROAD_LANDSCAPE_READY bridgeDistance="+bridgeDistance+" sea="+SeaLevel+" deferred="+WorldTiles.Deferred);

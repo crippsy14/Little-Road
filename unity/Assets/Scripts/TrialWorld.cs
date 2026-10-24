@@ -109,7 +109,8 @@ namespace LittleRoad
             // Both road and shoulder have actual matching mesh surfaces across
             // the inlet. The bridge is not a road painted on an invisible island.
             // (The island's loop, its dressing and the village: not in a race far from Bayview, CoastalLandscape.Island.)
-            if(CoastalLandscape.Island){
+            System.Collections.IEnumerator Island()
+            {
             // (--new-bayview: two shoulders, not one sheet under the road: on a loop that climbs as it turns, a 24 m sheet's
             //  triangles stood through the 16 m asphalt in the hairpin)
             if(NewBayview.On)foreach(int side in new[]{-1,1})Ribbon(track,"Generous limestone runoff",side*10f,4f,.011f,sand);   // (from the asphalt's edge, not under it: R1-2)
@@ -120,9 +121,12 @@ namespace LittleRoad
             foreach(int side in new[]{-1,1})Ribbon(track,"Edge paint",side*7.7f,.16f,.037f,white);
             for(float d=0;d<track.length;d+=12) {
                 if(track.Curvature(d)>.012f)continue;var mark=Box("Grid guide",track.At(d)+Vector3.up*.04f,new Vector3(.12f,.015f,3),white);mark.transform.rotation=Quaternion.LookRotation(track.Forward(d));}
+            CoastalLandscape.Lap("island circuit");yield return null;
+            if(!NewBayview.On)VillageKit.Create();
+            else{if(BayviewKit.Has("pit_stop_2"))PitStop.Build("bayview",false,NewBayview.PitStopSite,NewBayview.PitStopYaw,null);CoastalLandscape.Lap("island pit stop");yield return null;yield return NewBayview.BuildTownRoutine(track);}   // (docs/79, stage 2)
             }
-            if(CoastalLandscape.Island&&!NewBayview.On)VillageKit.Create();
-            if(CoastalLandscape.Island&&NewBayview.On){if(BayviewKit.Has("pit_stop_2"))PitStop.Build("bayview",false,NewBayview.PitStopSite,NewBayview.PitStopYaw,null);NewBayview.BuildTown(track);}   // (docs/79, stage 2)
+            // (--near-start, stage 4: built with the island later, from a start away from it: CoastalLandscape.IslandLater)
+            if(CoastalLandscape.Island){if(CoastalLandscape.IslandLater){CoastalLandscape.IslandTyres=TyreBarriers.Laid+TyreBarriers.Refused;CoastalLandscape.IslandFinish=Island;}else RunNow(Island());}
             if(!racing&&!RaceArea.Active)PersistentWorld.Adopt(before);
             }
             // Bayview's race dressing: kerbs, the chequered line and the start gantry, made for the race on top of the

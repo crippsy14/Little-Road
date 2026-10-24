@@ -12,13 +12,17 @@ namespace LittleRoad
         int clumps;
         public CoastalGroundCover(CoastalLandscape surface,Circuit road,Transform root){land=surface;track=road;parent=root;}
         float Range(float a,float b)=>Mathf.Lerp(a,b,(float)random.NextDouble());
-        public void Build()
+        public void Build()=>TrialWorld.RunNow(BuildRoutine());
+        // (As a coroutine: the island built later, --near-start stage 4, yields every 8 ms or so; the draws are the same.)
+        public System.Collections.IEnumerator BuildRoutine()
         {
-            for(float d=3;d<track.length;d+=2.5f)foreach(int side in new[]{-1,1})for(int i=0;i<7;i++) {
+            var slice=System.Diagnostics.Stopwatch.StartNew();bool Due(){if(slice.ElapsedMilliseconds<8)return false;slice.Restart();return true;}
+            for(float d=3;d<track.length;d+=2.5f){if(Due())yield return null;foreach(int side in new[]{-1,1})for(int i=0;i<7;i++) {
                 float along=d+Range(-1.8f,1.8f),offset=Range(13.8f,21)*side;
                 Add(track.At(along)+track.Right(along)*offset,Range(.7f,1.2f));
-            }
+            }}
             for(int i=0;i<2600;i++) {
+                if(Due())yield return null;
                 var p=new Vector3(Range(-145,145),0,Range(-115,115));float d=track.Nearest(p,out _);
                 if(Vector3.Distance(p,track.At(d))>48)continue;Add(p,Range(.7f,1.5f));
             }

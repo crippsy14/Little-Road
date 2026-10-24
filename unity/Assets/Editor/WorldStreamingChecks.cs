@@ -159,6 +159,13 @@ public static class WorldStreamingChecks
             foreach(var near in new[]{HillcrestRoute.Mainline,HillcrestRoute.Quay,HillcrestRoute.Crest,HillcrestRoute.RacewayAccess,HillcrestRoute.Falls,HillcrestRoute.StationSpur,HillcrestRoute.FarmLane})Require(!NearStart.FarRoad(near.name),$"{near.name} would wait for the far roads");
             if(Bramblewick.Enabled)Require(NearStart.FarRoad(Bramblewick.RoadName),"Valley Road South isn't a far road");
             checks.Add($"Near start: {far} far roads (drawn with their district from an island-side start) on their ground; Hillcrest's seven drawn at load");
+            // Stage 4: Bayview's island holds what stands on it; starts at the other places leave it for later, one at the tunnel doesn't.
+            foreach(var (name,at) in new (string,Vector3)[]{("spawn",NewBayview.Spawn),("Halt",CoastalLandscape.HaltResident),("sea railway loop",new Vector3(HillcrestRoute.BayLoop.x,0,HillcrestRoute.BayLoop.y)),("Pit Stop",NewBayview.PitStopSite)})
+                Require(NearStart.OnIsland(at),$"Bayview's {name} {at} is off the island's ground");
+            foreach(var (name,c) in new[]{("Hillcrest",new Vector2(HillcrestRoute.Square.x,HillcrestRoute.Square.z)),("Quarry Hills",QuarryHills.Square),("Bramblewick",Bramblewick.Centre),("Vinelands",Vinelands.Centre)})
+                Require(NearStart.OutsideIsland(new Vector3(c.x,0,c.y)),$"a start at {name} would build the island at load");
+            Require(!NearStart.OutsideIsland(HillcrestRoute.PortalNorth),"a start at the tunnel's north portal would leave the island for later");
+            checks.Add("Near start: the island's ground holds Bayview's spawn, Halt, sea railway and Pit Stop; starts at the other four places leave it for later, one at the tunnel doesn't");
         }
         return checks;
     }
