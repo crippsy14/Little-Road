@@ -459,6 +459,11 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
 - Richard put the valley activities on hold on 30 Sep ("a better idea"; Claude's additions came instead). On 21 Oct he put
   all new activities on hold: the first towns' activities were underbaked, and he'll do a sweep with a new approach. Ideas
   go into each place's section "for the activities sweep" ([world.md](world.md) §3).
+- **The bar for the sweep** (Richard, 24 Oct: "Is it fun? Does it fit into the world? Is it measurable and, therefore,
+  testable? Confirm it's not just drive from A to B in some form. Does it contribute to the game?"): the activity-design
+  skill (`.claude/skills/activity-design`). Seven gates every idea must pass, eight scored criteria, the verbs that
+  aren't A to B, rewards within the economy, measured tiers and an automated test per activity. Draft for Richard's
+  review.
 - Ideas he liked, kept for that sweep: the rugby conversion kick at Quarry Hills ("a fun physics game"), Heavy Haul ("a fun
   one-off"), the Barrel Race at Vinelands ("Fun physics toy!"), and the old-roadster cellar secret ("a good opportunity to
   get a cool model after performing the task required").
