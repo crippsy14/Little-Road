@@ -256,7 +256,7 @@ old world unless asked.
   the pleasure pier with its helter-skelter off the east beach, the lifeboat station and slipway on the west arm.
 - **Town:** a 16-house harbour row from the Forge terrace generator, the Pit Stop (garage and parts), the harbour at work
   (granite stair to a pontoon, fishing boats, buoys, creels, fish market, beach huts, a hill farm with sheep).
-- **Residents:** Mara (garage), Pip (lighthouse; photo requests), Poppy (Bayview Halt).
+- **Residents:** Mara (garage), Pip (lighthouse), Poppy (Bayview Halt).
 - **OPEN:** people (cars) on the quay, a real beach (the east one is a steep sand bank), the dark retaining wall behind the
   row, bare cut slopes; sand run-off width is Richard's call.
 
@@ -265,8 +265,7 @@ old world unless asked.
   belfry, palazzo with loggia, drawbridge gatehouse) and the **Zip Tower** ride (160 m cable). The hill inside the spiral is
   terraced with vines, lavender, olives and dry-stone walls. Home of the old Continental main line and the Bayview Halt.
 - Remodelled with Prop Forge (20 Oct): terraces, civic buildings, the castle set, balustrades, dry-stone terrace walls.
-- **Races:** the Valley Cup on Hillcrest Raceway (C), the Castle Climb (time trial with Hard mode), Beat the Train;
-  class B Valley Tuners and Raceway Reverse. The Duke's Challenge is raced here. Planned: Hillcrest Raceway GP, a pro layout
+- **Races:** the Valley Cup on Hillcrest Raceway (C); class B Valley Tuners and Raceway Reverse. The Duke's Challenge is raced here. Planned: Hillcrest Raceway GP, a pro layout
   through the valley past the castle, Duke Rolo's home track.
 - **Residents:** Gio and Vito (garage), Rollo (the Regale parked at the castle), Orla, Farmer Giles (Golden Acre Farm).
 - **OPEN:** a floating vine row at (160.5, 36.3, −1040.2), one hidden sign, valley road-edge lips; castle interiors and
@@ -284,18 +283,18 @@ old world unless asked.
 - **Richard's answers, 3 Oct:** weather waits; the Blondin is the ride, the inclines are scenery; the rally school comes
   before local races and parts (gold in all six lessons unlocks the rally kit); the dumper is a fun one-off; Welsh names
   yes (Gwen, Dai, Mari, Huw, Bethan, Nia, Megan).
-- **Built:** Gwen's rally school (six lessons with bronze, silver and gold, and a Gran Turismo-style licence screen), the
-  Quarry Hills Rallycross (C, 1.5 km, 16 m wide, 3 laps, 24 off-roaders; Huw's garage), Slate Rallycross and Rallycross
-  Reverse (B), the Gallery Climb hill climb, the Quarry Sprint time trial, the Blondin ride, 12 slate carvings, the Blast
-  Run (race Dai up the haul road before the noon blast) and the Tip Leap, sheep, the rugby ground, the Great Wheel.
-- **Local parts** (Bethan's Grit & Gravel): gravel tyres and a gravel rack, behind `unlock: "rallyschool"`; class B rally
-  tyres there from 4★. Nia's body shop sells the off-road bodies.
+- **Built:** the Quarry Hills Rallycross (C, 1.5 km, 16 m wide, 3 laps, 24 off-roaders; Huw's garage), Slate Rallycross
+  and Rallycross Reverse (B), the rugby ground, the Great Wheel. Gwen's rally school, the Gallery Climb, the Quarry
+  Sprint, the Blondin, the slate carvings, the Blast Run, the Tip Leap and Rally Day were retired on 24 Oct with all the
+  activities ([design.md](design.md) §12); the sheep went with the animals.
+- **Local parts** (Bethan's Grit & Gravel): gravel tyres and a gravel rack, found at the shop (the rally school's unlock
+  went with it, 24 Oct); class B rally tyres there from 4★. Nia's body shop sells the off-road bodies.
 - **Planned (for the activities sweep):** the planned race layouts (Quarry Link C 3.1 km, Ridge Run B 3.4 km, Quarry Hills
   Stage A 6.5 km and its floodlit S night version, Galleries GP E 7.2 km); Glas Zip, Beat the Slate Train, Cavern Run,
   Heavy Haul, the drowned workings (a class B Dive-kit return), the Quarry Festival in the frenzy, and the rugby
   conversion kick (Richard, 7 Oct: "a fun physics game": push the ball over the bar, nobody tells the player).
-- **Recruits:** Gwen (all six golds and a win on the Quarry Hills Stage), Dai (beat him in the Blast Run), Mari (the slate
-  train race and all 12 carvings).
+- **Recruits:** Gwen, Mari and a third: their conditions are set again in the activities sweep (they were the rally
+  school's golds, the Blast Run and the carvings).
 
 ### Bramblewick (English West Country village; default since 21 Oct; `--no-bramblewick`)
 - "The lanes where the hedges meet overhead": a green with a duck pond, St Michael's church, the thatched pub The Plough,
@@ -305,7 +304,7 @@ old world unless asked.
   named for the village (Dairy T, Brook Esses through the ford, Barn Corner, Hedge Gap, Church Hill, Green Hairpin, Mill
   Bend, the humpback bridge kink). Jed offers it. Launch review: LAUNCH-READY.
 - **Residents:** Jed (backyard tuner), Maggie (The Plough), Reverend Clem, Peg (dairy), Ted the lanes marshal.
-- Six lucky horseshoes (a keepsake set), three speed traps, photo sights. Jed sells the City hybrid 1.5 (behind `--hybrid`).
+- Jed sells the City hybrid 1.5 (behind `--hybrid`).
 - **OPEN:** Jed's other rural parts (lane tyres, farm-track steering, cold-air engine, battery-delete shell: they wait on
   the parts slot decisions, [design.md](design.md) §5); the milk-float duel with Peg (needs the Forge milk float); the
   Coast Branch halt.

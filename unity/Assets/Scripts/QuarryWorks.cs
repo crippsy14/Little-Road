@@ -59,8 +59,7 @@ namespace LittleRoad
             var go=new GameObject("Spoil heap",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));go.transform.SetParent(root);
             go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;go.GetComponent<MeshCollider>().sharedMesh=mesh;Heaps++;
         }
-        // Standing rocks and boulders round the floor's edge (not on the circuit, the haul road, the Blondin, the school or
-        // the works), and a ring of nine standing stones on open moor north-west of town.
+        // Standing rocks and boulders round the floor's edge (not on the circuit, the haul road, the school or the works), and a ring of nine standing stones on open moor north-west of town.
         static void StandingRocks(Transform root)
         {
             var rng=new System.Random(4410);float R()=>(float)rng.NextDouble();string[] ids={"rock_stand_a","rock_stand_b","rock_stand_c","rock_stand_d","rock_stand_d"};
@@ -69,7 +68,7 @@ namespace LittleRoad
                 float f=1.02f+R()*.1f,ang=(a+R()*3)*Mathf.Deg2Rad;var p=new Vector2(c.x+Mathf.Cos(ang)*QuarryHills.FloorRX*f,c.y+Mathf.Sin(ang)*QuarryHills.FloorRZ*f);
                 string id=ids[rng.Next(ids.Length)];float scale=.8f+R()*.8f,yaw=R()*360;
                 if(HillcrestRoute.Distance(QuarryFloor.Loop,p.x,p.y,out _)<QuarryFloor.LoopWidth*.5f+12||ValleyField.RoadDistance(p.x,p.y)<10)continue;
-                if(Vector2.Distance(p,QuarryFloor.BlondinFloor)<30||Vector2.Distance(p,new Vector2(QuarryFloor.School.x,QuarryFloor.School.z))<40||InWorks(p))continue;
+                if(Vector2.Distance(p,new Vector2(QuarryFloor.School.x,QuarryFloor.School.z))<40||InWorks(p))continue;
                 var g=G(p);if(ValleyField.Normal(p.x,p.y).y<.75f)continue;
                 BayviewKit.Spawn(id,g+Vector3.down*.15f,yaw,root,null,null,true,scale);if(Rocks==0&&PropForge.Enabled)Debug.Log($"LITTLE_ROAD_SPOT rock_stand {g}");Rocks++;
                 // Rubble at its foot now and then.

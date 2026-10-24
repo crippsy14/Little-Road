@@ -79,7 +79,7 @@ namespace LittleRoad
             }
             // Quarry Hills' traffic (--quarry-hills): the town's streets, and Dai's dumper grinding up and down the haul road.
             if(QuarryHills.Enabled) {
-                string[] welsh={"Bore da! Mind the slate dust!","Iawn? Off to the Caban?","Wrong side of the road, butt!","Chapel's at six. Don't be late!","Seen the Blondin running? Lush.","Rain later. Always is.","Hwyl fawr! See you at the quay!"};
+                string[] welsh={"Bore da! Mind the slate dust!","Iawn? Off to the Caban?","Wrong side of the road, butt!","Chapel's at six. Don't be late!","Seen the tips at sunset? Lush.","Rain later. Always is.","Hwyl fawr! See you at the quay!"};
                 var quarryRoads=new List<(string road,float from,float back)>{(QuarryHills.QuarryRoadName,30,40),(QuarryHills.QuarryRoadName,30,40),(QuarryHills.HighStreetName,10,10),(QuarryHills.QuayLaneName,10,12),(QuarryHills.ChapelStreetName,8,8),(QuarryHills.TerraceRowName,8,8)};
                 for(int i=0;i<quarryRoads.Count;i++) {
                     var road=HillcrestRoute.Find(quarryRoads[i].road);float from=quarryRoads[i].from,to=road.Length-quarryRoads[i].back;Color paint=PaintCatalog.All[rng.Next(PaintCatalog.Standard)].color;
@@ -89,9 +89,9 @@ namespace LittleRoad
                 }
                 var haul=HillcrestRoute.Find(QuarryHills.HaulRoadName);var dumper=TrialWorld.Car("hauler",Toy.Hex(0xf1c40f));dumper.name="Emrys's dumper";dumper.transform.SetParent(root);
                 dumper.AddComponent<RoadCruiser>().Setup(haul,12,haul.Length-12,haul.Length*.5f,1,player);
-                // (Dai himself waits on the quarry floor for the Blast Run, doc 63: this is his mate Emrys.)
+                // (Emrys drives for Dai's Dumpers, on the floor's ad boards.)
                 var dai=dumper.AddComponent<NpcChatter>();dai.speaker="Emrys";dai.colour=Toy.Sun;dai.title="Quarry haulage";
-                dai.lines=new[]{"Twelve tonnes of slate on here, butt. Give way!","Haul road's mine till noon!","Brakes? Who needs brakes going UP?","Dai's down on the floor. Ask him about the Blast Run. If you dare."};
+                dai.lines=new[]{"Twelve tonnes of slate on here, butt. Give way!","Haul road's mine till noon!","Brakes? Who needs brakes going UP?","Dai's Dumpers, that's us. Mind the paintwork."};
             }
         }
         // Parked cars where people gather: paddock, square, station, viewpoints.
@@ -159,9 +159,9 @@ namespace LittleRoad
         static readonly string[] FolkNames={"Aggie","Bram","Cosmo","Delphine","Elio","Fenna","Gus","Hattie","Ignazio","Juno","Kip","Lottie","Marco","Nonna Rosa","Orla","Pietro","Queenie","Rocco","Sunny","Tilda",
             "Umberto","Vivi","Walt","Xena","Yusuf","Zola","Bea","Carlo","Dotty","Enzo","Flo","Gino","Hugo","Ines","Jojo","Kiki","Lulu","Mimi","Nico","Olga","Paolo","Ruby","Salvo","Tess","Ugo","Vera","Wendell","Yara","Zeno","Alba"};
         public static readonly string[] Gossip={
-            "Duke Rolo pays 300 credits to anyone who climbs to the castle in under 85 seconds. My record is... let's not talk about it.",
+            "Duke Rolo races anyone who dares round Vito's raceway. In that Regale of his! Nobody's beaten him in years.",
             "Gio's Valley V6 is the talk of the town. Pricey, but my cousin swears by it.",
-            "Someone hid a Hillcrest stamp near the balloon field. I saw a glint when the wind blew!",
+            "The balloon field's the best picnic spot in the valley, once the wind drops.",
             "The train comes out of the headland, over the falls viaduct and round the station loop. Stella knows the timetable.",
             "Mind the hairpin after the tunnel. Everyone overcooks it their first time. I did. Twice.",
             "I grow sunflowers out east. Taller than my roof rack!",
@@ -173,7 +173,7 @@ namespace LittleRoad
             "Try the gelato van in the square. Pistachio is the only correct answer.",
             "Vito's raceway is flat as a pancake, but the corners by the lake bite!",
             "Bayview? Tiny little island. Lovely lighthouse, mind.",
-            "There's a stamp tucked up in the vineyards south of town. Don't tell Stella I told you.",
+            "The vineyards south of town do a lovely red. Don't tell Stella I said so.",
             "Wren has been at the viewpoint since sunrise. Says she's 'taking it all in'.",
             "My tyres are Gio's hill grips. Stick like jam on toast.",
             "The castle keep has a flag you can see from the other side of the valley.",
@@ -606,7 +606,7 @@ namespace LittleRoad
         public static string Subtitle(string area)=>area switch{
             "BAYVIEW"=>"Home island · Harbour town","HEADLAND TUNNEL"=>"Mind the echo!","THE CAUSEWAY"=>"To the mainland","HILLCREST"=>"Market town on the hill",
             "HILLCREST CASTLE"=>"Views for miles","SILVER FALLS"=>"Hold on to your hat","HILLCREST RACEWAY"=>"Home of the Valley Cup","VALLEY VIEWPOINT"=>"Say cheese!",
-            "QUARRY HILLS"=>"Croeso · The town the mountain built","SLATE QUAY"=>"Where the slate trains end","THE QUARRY FLOOR"=>"Rally school · Quarry Sprint",
+            "QUARRY HILLS"=>"Croeso · The town the mountain built","SLATE QUAY"=>"Where the slate trains end","THE QUARRY FLOOR"=>"Rallycross · The works",
             "THE GALLERIES"=>"Twelve benches of slate","THE MOOR"=>"Heather, stone and sky","QUARRY HILLS COUNTRY"=>"Hill farms and dry-stone walls",_=>"The mainland · Beyond the headland"};
         public void Setup(Transform playerCar){car=playerCar;current=Area(car.position);}
         void Update()

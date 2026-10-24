@@ -164,8 +164,8 @@ namespace LittleRoad
         readonly float fs;Noise n;Biquad thump,rumble,rotor;float t=End,phase,shot=Shot,sirenEnd=SirenEnd;volatile bool fire;volatile float nextShot=Shot;
         public BlastSynth(float sampleRate,uint seed){fs=sampleRate;n=new Noise(seed*23+3);thump=Biquad.LowPass(fs,70,.9f);rumble=Biquad.LowPass(fs,260,.6f);rotor=Biquad.BandPass(fs,900,.7f);}
         public void Fire()=>Fire(Shot);
-        // The Blast Run (BlastRun): the shot `shotAt` seconds after the siren starts (15 s or more); the siren holds longer and
-        // still runs down 7 s before the shot.
+        // A longer charge: the shot `shotAt` seconds after the siren starts (15 s or more); the siren holds longer and still
+        // runs down 7 s before the shot.
         public void Fire(float shotAt){nextShot=Math.Max(15,shotAt);fire=true;}
         public bool Busy=>t<shot+10;
         public float Next()

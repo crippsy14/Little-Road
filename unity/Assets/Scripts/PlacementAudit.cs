@@ -134,7 +134,7 @@ namespace LittleRoad
                 foreach(int side in new[]{-1,1}){var track=new List<Vector3>();for(int i=0;i<line.Length;i++){var f=line[Mathf.Min(line.Length-1,i+1)]-line[Mathf.Max(0,i-1)];f.y=0;f.Normalize();track.Add(line[i]+Vector3.Cross(Vector3.up,f)*side*(road.width*.5f-1.1f));}Drive(road.name+(side<0?" (left track)":" (right track)"),track,false);}
             }
             Drive("Hillcrest Raceway",HillcrestRoute.Circuit,true);
-            if(QuarryHills.Enabled){Drive("Quarry Sprint",QuarryFloor.Loop,true);if(GalleryClimb.Path.Count>4)Drive("Gallery Climb",GalleryClimb.Path,false);}
+            if(QuarryHills.Enabled)Drive("Quarry Sprint",QuarryFloor.Loop,true);
             var net=CoastalLandscape.Network;
             if(net!=null)foreach(var node in net.nodes) {
                 if(node.arms.Count<2)continue;

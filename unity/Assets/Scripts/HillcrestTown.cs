@@ -765,7 +765,7 @@ namespace LittleRoad
             Kit("tractor",-70,52,55);Kit("tractor",-86,48,-30,null,null,.95f);
             foreach(var (x,z,y) in new[]{(-50f,64f,.65f),(-48.7f,64f,.65f),(-51.3f,64f,.65f),(-49.35f,64f,1.9f),(-50.65f,64f,1.9f),(-50f,64f,3.1f)}) {var b=Kit("hay_bale",x,z,0);b.transform.position+=Vector3.up*(y-.65f);}
             Fence(new(-100,46),new(-52,46),new Vector2(-94,-80));Fence(new(-52,46),new(-52,78));if(Due())yield return null;
-            // Farmer Giles waits by the yard: a resident now, with the farm's challenges (FarmChallenges, doc 64).
+            // Farmer Giles waits by the yard: a resident.
             Spots["farm"]=(F(-60,58),yaw+200);
             // The wheat: fenced, with gaps on the yard side and the lane side to drive in.
             var wc=HillcrestRoute.Farm(WheatLocal.x,WheatLocal.y);float x0=WheatLocal.x-WheatSize.x*.5f,x1=WheatLocal.x+WheatSize.x*.5f,z0=WheatLocal.y-WheatSize.y*.5f,z1=WheatLocal.y+WheatSize.y*.5f;
@@ -795,7 +795,7 @@ namespace LittleRoad
             Fence(new(x0-1.5f,-85.5f),new(x1+1.5f,-85.5f));
             // Hay meadow north of the wheat: mown stripes and rows of round bales.
             for(float z=40;z<=76;z+=6)Slab("Mown stripe",WheatLocal.x+8,z,112,.02f,3,mown,.02f);
-            // (The meadow's round bales made way for the orchard: Apple Shake, doc 64.) A few bales at its west end.
+            // (The meadow's round bales made way for the orchard, doc 64.) A few bales at its west end.
             for(int c=0;c<4;c++)Kit("hay_bale",-40+(c%2)*2.6f,74-c*1.6f,(c*37)%90);
             CoastalLandscape.Lap("estate fields");yield return null;int apples=Orchard.Build(holder,(x,z)=>F(x,z),yaw);CoastalLandscape.Lap("estate orchard");Debug.Log("LITTLE_ROAD_ORCHARD trees="+apples);
             Debug.Log("LITTLE_ROAD_FARM estate=Golden Acre wheat="+WheatSize.x+"x"+WheatSize.y);

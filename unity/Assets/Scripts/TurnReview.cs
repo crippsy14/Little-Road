@@ -51,17 +51,11 @@ namespace LittleRoad
         {
             float routeSpeed=float.TryParse(RaceTrial.Arg("--route-speed"),System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float rs)?rs:26;
             var route=HillcrestRoute.DriveToCastle();float gateAt=-1,squareAt=-1;var gate=HillcrestRoute.Mainline.At(HillcrestRoute.Mainline.Length-26);
-            // --climb-event: start on the climb's start line (the closure shuts the mainline behind it).
-            if(RaceTrial.Has("--climb-event"))route.RemoveRange(0,HillcrestRoute.Index(route.ToArray(),gate));
             // --climb-from <n>: start n points further up (past the quay hairpin, which this autopilot overshoots).
             if(int.TryParse(RaceTrial.Arg("--climb-from"),out int from))route.RemoveRange(0,Mathf.Clamp(from,0,route.Count-10));
             var start=route[0]+Vector3.up*(.05f-car.ContactBottom);var heading=(route[3]-route[0]);heading.y=0;
             car.body.position=start;car.body.rotation=Quaternion.LookRotation(heading);car.body.linearVelocity=car.body.angularVelocity=Vector3.zero;
             car.transform.SetPositionAndRotation(start,car.body.rotation);Physics.SyncTransforms();
-            // --climb-event [hard]: drive it with the Castle Climb closure (and obstacles) in place.
-            if(RaceTrial.Arg("--climb-event") is "normal" or "hard")gameObject.AddComponent<CastleClimb>().Begin(RaceTrial.Arg("--climb-event")=="hard",car.transform,null);
-            // Hard climb: steer into the free lane past each hay bale.
-            var bales=new List<Vector3>();foreach(var b in FindObjectsByType<Transform>(FindObjectsSortMode.None))if(b.name=="hay_bale"&&b.parent!=null&&b.parent.name=="Castle Climb event")bales.Add(b.position);
             int target=0;float t=0,roadSteps=0,steps=0,lowest=99;int recoveriesBefore=car.recoveries;
             var hits=new List<string>();car.Bumped+=(other,speed)=>{if(speed>2)hits.Add($"{other.name}@{car.body.position}");};
             float reverseUntil=-1;int reversals=0;
@@ -70,7 +64,6 @@ namespace LittleRoad
                 while(target<route.Count-1&&Vector3.Distance(Flat(c.body.position),Flat(route[target]))<10)target++;
                 // Keep to the middle of the right-hand lane (valley roads are 7-8.5 m wide), as traffic does.
                 var ahead=Flat(route[Mathf.Min(route.Count-1,target+1)]-route[target]).normalized;float lane=2.0f;var across=Vector3.Cross(Vector3.up,ahead);
-                float nearest=32;foreach(var b in bales){var d=Flat(b-c.body.position);float along=Vector3.Dot(d,ahead);if(along>-3&&along<nearest&&Mathf.Abs(Vector3.Dot(d,across))<9){nearest=along;lane=Vector3.Dot(Flat(b-route[target]),across)>0?-2.1f:2.1f;}}
                 var aim=route[target]+across*lane-c.body.position;aim.y=0;
                 // Speed plan from the tightest bend in the next ~30 m (heading change per 10 m -> radius).
                 float limit=routeSpeed; // --route-speed (drive benchmark: 20 m/s), default 26
@@ -87,7 +80,6 @@ namespace LittleRoad
             }
             car.commandSource=null;
             if(t>=400)foreach(var c in Physics.OverlapSphere(car.body.position,4.5f))if(!c.transform.IsChildOf(car.transform))hits.Add($"stuck near {c.name} at {c.transform.position} ({(c.transform.parent!=null?c.transform.parent.name:"")})");
-            foreach(var b in bales)hits.Add($"bale at {b}");
             string line=$"ROUTE_DRIVE arrived={t<400} seconds={t:0.0} gate={gateAt:0.0} square={squareAt:0.0} castleClimb={t-gateAt:0.0} roadGripShare={roadSteps/Mathf.Max(1,steps):0.00} reversals={reversals} recoveries={car.recoveries-recoveriesBefore} lowestY={lowest:0.0} final={car.body.position}";
             File.WriteAllText(Path.Combine(folder,"route-drive.txt"),line+"\n"+string.Join("\n",hits));Debug.Log(line);Application.Quit();
         }

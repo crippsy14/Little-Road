@@ -116,10 +116,8 @@ namespace LittleRoad
             // Moving traffic: the valley's cruisers and Bayview's loop traffic ("Traffic <body>").
             foreach(var c in RoadCruiser.All)if(c!=null)Of(c.transform.position).cruisers++;
             foreach(var car in Object.FindObjectsByType<RoadCar>(FindObjectsSortMode.None))if(car.name.StartsWith("Traffic "))Of(car.transform.position).cruisers++;
-            // Things to do: keepsakes, speed traps, photo sights, Pit Stops, event and story spots.
-            foreach(var k in MapRegions.Keepsakes.Values)Of(k.at).keepsakes++;
-            foreach(var t in SpeedTraps.All)Of(t.at).traps++;
-            foreach(var p in PhotoRequests.All){var at=p.where();if(at.HasValue)Of(at.Value).photos++;}
+            // Things to do: Pit Stops, event and story spots. (Keepsakes, speed traps and photo sights were retired on 24 Oct with
+            // every activity: their counts stay 0 until activities are rebuilt.)
             foreach(var s in PitStop.Sites.Values)Of(s).pitStops++;
             foreach(var s in HillcrestTown.Spots.Values)Of(s.at).spots++;
             foreach(var s in QuarryHillsTown.Spots.Values)Of(s.at).spots++;   // (Quarry Hills, --quarry-hills)

@@ -437,56 +437,43 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
   for the player's team only. OPEN: team orders (not before S, if at all), wet races in class S.
 - **Only show what's real:** a radar axis or stat appears only once its behaviour exists.
 
-### Things to do (built)
-- **Claude's additions** (Richard, 30 Sep: "go to town adding whatever you like to this game... have fun and be brave and
-  bold!"):
-  - **Speed traps:** seven cameras on the straightest roads, with star marks computed from the parts ladder.
-  - **Beat the Train:** race Bert's train between Bayview Halt and Hillcrest station.
-  - **Photo mode** (P / D-pad Up): five looks, depth of field and a postcard frame. Pip's photo requests pay for six sights.
-  - **Fireworks** over Bayview harbour once it's fully dark, every few minutes.
-  - **Glowing finish beacons**, and a RECORDS tab for all of these.
-- **Challenges:**
-  - the Castle Climb and its Hard mode (bales across alternate lanes);
-  - Farmer Giles's Harvest and Apple Shake;
-  - Quarry Hills' rally school (six licence lessons), the Gallery Climb, the Quarry Sprint, the Blast Run and the Tip Leap;
-  - the Zip Tower and Blondin rides.
-- **Collections:** a keepsake set per area (postcards, stamps, slate carvings, lucky horseshoes), each with its own
-  album. A full set pays a paint.
-- **Gadgets:** the slot, contract and button exist (a test hop); jet packs, wings and the Dive kit are planned.
-- **Rally Day and the Quarry Festival:** town routines, the choir night, Rally Day after a rallycross podium.
+### Things to do
+- **Kept:** photo mode (P / D-pad Up: five looks, depth of field and a postcard frame), fireworks over Bayview harbour
+  after dark, the Hillcrest Castle zipline (Richard: "more just navigation than an activity... to help skip the climb"),
+  the generic activity framework (HUD, countdown, pause restart and exit) for the minigames to come, and the gadget slot's
+  test hop.
+- **Retired, 24 Oct** (Richard: "retire _all_ activities we had and build a new set from the ground up with these new
+  rules... treating it as a true minigame with all the same focus we give everything else"; "I was personally treating
+  them like afterthoughts"):
+  - **Claude's additions:** the speed traps, Beat the Train, Pip's photo requests.
+  - **Challenges:** the Castle Climb and Hard; Farmer Giles's Harvest and Apple Shake; Quarry Hills' rally school, the
+    Gallery Climb, the Quarry Sprint, the Blast Run and the Tip Leap; the Blondin; Shadow the Duke.
+  - **Collections:** the four keepsake sets and their albums.
+  - **Town events:** Rally Day and choir night.
+- **What stayed of them:** the places and characters (Bert's train, the castle, Golden Acre's wheat and orchard as
+  scenery, the galleries, the rallycross loop). Giles, Gwen and Pip are residents with ordinary chat; Dai went with the
+  Blast Run.
+- **What changed:** the gravel tyres and rack are plain discoveries at Bethan's (they were the rally school's prize). The
+  paints the keepsake sets paid stay with the saves that earned them.
+- Their code is in git before the retirement commit, if a minigame wants a piece back.
 
-### Activities are on hold
-- Richard put the valley activities on hold on 30 Sep ("a better idea"; Claude's additions came instead). On 21 Oct he put
-  all new activities on hold: the first towns' activities were underbaked, and he'll do a sweep with a new approach. Ideas
-  go into each place's section "for the activities sweep" ([world.md](world.md) §3).
-- **The bar for the sweep** (Richard, 24 Oct: "Is it fun? Does it fit into the world? Is it measurable and, therefore,
-  testable? Confirm it's not just drive from A to B in some form. Does it contribute to the game?"): the activity-design
-  skill (`.claude/skills/activity-design`). Seven gates every idea must pass, eight scored criteria, the verbs that
-  aren't A to B, rewards within the economy, measured tiers and an automated test per activity. Draft for Richard's
-  review.
-- **The built activities against the bar** (24 Oct; proposed, for Richard's decision). Scores are out of 40.
-  - **Keep, with rework:**
-    - **Rally school** (35): drop or replace lesson 6, a timed lap (A to B); measure the medal times.
-    - **Tip Leap** (33): give it a giver; restart at the run-up in 3 s or less instead of riding the Blondin back; scale
-      the marks by class.
-    - **Harvest** (30): scale the marks by class or lock it to class C; measure the marks.
-    - **Apple Shake** (28): rework into a real shake. A tap drops apples, a hard hit fells the tree and costs you.
-  - **Retire** (all fail G1, timed routes): Beat the Train, Castle Climb (Normal and Hard), Gallery Climb, Quarry Sprint
-    and Shadow the Duke (parked).
-    - Their places and characters stay: Bert's train, the castle, the galleries and the rallycross loop.
-    - That takes 2,500 credits of one-time pay out, which the sweep must replace.
-  - **Rework into a new activity:** the Blast Run (a race against the shot) becomes "clear the haul road", pushing the
-    shot's boulders off in a set time. That's the herd/push verb, with Dai and the blast kept.
-  - **Outside the bar: features and collections, kept.**
-    - Speed traps: marks per class. They're computed from class C parts, so B and above trivialise them.
-    - Photo requests and keepsakes: hide keepsakes by clue (the find verb) rather than as floating cards; the
-      horseshoes need their paint.
-    - The zip rides and the Blondin (transport), Rally Day and choir night (ambience), and the gadget hop (test only).
-  - **Found on the way:**
-    - The Gallery Climb's first run over par forfeits its prize (moot if it's retired).
-    - RECORDS shows only the traps, the train and photos.
-    - The Hillcrest board credits Wren with photo requests (Pip gives them).
-    - Pip has 19 sights, not six.
+### Activities: one minigame at a time
+- **History:** the valley activities went on hold on 30 Sep ("a better idea"; Claude's additions came instead). On 21 Oct
+  all new activities went on hold: the first towns' were underbaked. On 24 Oct everything built was retired (above).
+- **The bar** (Richard, 24 Oct: "Is it fun? Does it fit into the world? Is it measurable and, therefore, testable?
+  Confirm it's not just drive from A to B in some form. Does it contribute to the game?"): the activity-design skill
+  (`.claude/skills/activity-design`). Seven gates every idea must pass, eight scored criteria, the verbs that aren't A to
+  B, rewards within the economy, measured tiers and an automated test per activity.
+- **The plan:** one activity at a time, each a true minigame with the focus a place or a track gets:
+  1. a brief;
+  2. Richard's yes;
+  3. a graybox behind a flag, with its automated test and measured tiers;
+  4. a playtest and a keep-or-reject;
+  5. then art and polish.
+- **The first one** builds the shared harness the skill describes (`--activity-test`, the `LITTLE_ROAD_ACTIVITY` line,
+  tier records) and a RECORDS tab for minigames.
+- **Side income is zero until they come:** about 12,800 credits of one-time pay went with the retirement (traps 3,300,
+  photos 1,900, the school 1,860, keepsakes 1,550, the climbs 1,050, the farm 1,000, the rest about 2,200).
 - Ideas he liked, kept for that sweep: the rugby conversion kick at Quarry Hills ("a fun physics game"), Heavy Haul ("a fun
   one-off"), the Barrel Race at Vinelands ("Fun physics toy!"), and the old-roadster cellar secret ("a good opportunity to
   get a cool model after performing the task required").

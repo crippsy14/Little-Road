@@ -91,8 +91,8 @@ namespace LittleRoad
                 }
             }
             CoastalLandscape.Lap("qhs river verges");yield return null;yield return SlateFaces(holder);int slate=slateCells;CoastalLandscape.Lap("qhs slate");yield return null;
-            Galleries(holder);CoastalLandscape.Lap("qhs galleries");yield return null;Physics.SyncTransforms();GalleryClimb.Build(holder);CoastalLandscape.Lap("qhs climb");yield return null;
-            TipLeap.Plan();TipLeap.Build(holder);CoastalLandscape.Lap("qhs tipleap");GalleryDressing(holder);CoastalLandscape.Lap("qhs dressing");yield return null;QuarryFloor.Build(holder);CoastalLandscape.Lap("qhs floor");yield return null;if(RaceArea.Near(QuarryHills.QuayCentre,250))QuarryQuay.Build(holder);
+            Galleries(holder);CoastalLandscape.Lap("qhs galleries");yield return null;Physics.SyncTransforms();
+            GalleryDressing(holder);CoastalLandscape.Lap("qhs dressing");yield return null;QuarryFloor.Build(holder);CoastalLandscape.Lap("qhs floor");yield return null;if(RaceArea.Near(QuarryHills.QuayCentre,250))QuarryQuay.Build(holder);
             Debug.Log($"LITTLE_ROAD_QUARRY_SCENERY trees={trees} tufts={tufts} slateCells={slate}");
         }
         // Worked slate: the galleries (benches and faces alike), the pit's walls above the water and the tips are all bare
@@ -209,7 +209,6 @@ namespace LittleRoad
             int B=QuarryHills.Benches;float W=QuarryHills.BenchWidth,H=QuarryHills.BenchHeight,F=QuarryHills.FloorY;
             string[] rocks={"rock_a","rock_b","rock_cluster"};int scree=0,birch=0;
             for(int k=0;k<B-1;k++)for(float a=axis-half+4;a<axis+half-4;a+=5+R()*9) {
-                if(GalleryClimb.Covers(a,k+1))continue;   // (the Gallery Climb's ramps and landings run here)
                 var dir=Dir(a);var at=QuarryHills.PitPoint(dir,(k+1)*W);float toe=(k+1)*W-QuarryHills.Wobble(at.x,at.z);
                 var p=QuarryHills.PitPoint(dir,toe-1.5f-R()*3);p.y=F+(k+1)*H-.2f;
                 string id=rocks[rng.Next(rocks.Length)];if(!BayviewKit.Has(id))continue;
@@ -220,7 +219,7 @@ namespace LittleRoad
             var rail=TrialWorld.Material("Incline rail",new Color(.22f,.2f,.2f),.3f,.4f);
             foreach(float off in new[]{-38f,34f}) {
                 var dir=Dir(axis+off);float Y(float e)=>F+H+2.4f+(e-7.7f)*H/W;
-                // (The west incline stops at bench 5: the Gallery Climb's Long Bench runs across above its head on bench 6.)
+                // (The west incline stops at bench 5: it was laid under the old Gallery Climb's Long Bench, on bench 6.)
                 float e0=11.7f,e1=(off<0?4:B-1)*W+9;Vector3 P(float e){var q=QuarryHills.PitPoint(dir,e);q.y=Y(e);return q;}
                 Vector3 a=P(e0),b=P(e1),along=(b-a);along.y=0;along.Normalize();var side=Vector3.Cross(Vector3.up,along);
                 // The embankment: a top along the incline, vertical sides 20 m deep (into the benches), vertical ends.

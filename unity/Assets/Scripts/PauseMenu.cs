@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace LittleRoad
 {
     // The pause hub (docs/ui-design.md): Esc / Start opens it over the dimmed, paused world. Tabs (LB/RB,
-    // Q/E or click): MAP, COLLECTION, CAR, SETTINGS. The same header (tabs, area, credits) and footer
+    // Q/E or click): MAP, CAR, CONTROLS, SETTINGS. The same header (tabs, area, credits) and footer
     // (button prompts) on every tab; B / Esc goes up one level, and only the top level closes the hub.
     public sealed class PauseMenu:MonoBehaviour
     {
@@ -24,13 +24,14 @@ namespace LittleRoad
             // The running challenge (ActivityHud, doc 64): its name, restart and exit; null when none is running.
             public Func<(string title,Action restart,Action exit)?> activity;
         }
-        static readonly string[] Tabs={"MAP","COLLECTION","CAR","RECORDS","CONTROLS","SETTINGS"};const int Settings=5;public const int SettingsTab=Settings;
+        // (24 Oct: COLLECTION and RECORDS went with the keepsakes and activities they showed.)
+        static readonly string[] Tabs={"MAP","CAR","CONTROLS","SETTINGS"};const int Settings=3;public const int SettingsTab=Settings;
         Context ctx;Canvas canvas;RectTransform root,body;Text areaText,creditText,footer,objectiveText;readonly List<(ToyShape pill,Text text)> tabPills=new();
         int tab;bool subPage;float openedAt;readonly Text[] tabGlyphs=new Text[2];
         public bool IsOpen{get;private set;}
         public int LastCloseFrame{get;private set;}=-1;
         // Map tab state.
-        RectTransform mapRect;RegionLayer regions;Minimap.MarkLayer mapMarks;RectTransform cursor;Vector2 cursorAt;MapRegions.Region hovered;Text regionName,regionBlurb;RectTransform countsHolder;
+        RectTransform mapRect;RegionLayer regions;Minimap.MarkLayer mapMarks;RectTransform cursor;Vector2 cursorAt;MapRegions.Region hovered;Text regionName,regionBlurb;
         PartPreviewStage stage;Material mapMaterial;
         const float MapSize=660;
 
@@ -78,7 +79,7 @@ namespace LittleRoad
             var sides=InputGlyphs.Name("tabs").Split('/');tabGlyphs[0].text=sides[0].Trim();tabGlyphs[1].text=sides[^1].Trim();
             var save=ctx.save();areaText.text=ctx.area().ToUpperInvariant();creditText.text=$"{save.credits:N0} CREDITS";
             string goal=ctx.objective();var act=ctx.activity?.Invoke();objectiveText.text=act is var (name,_,_)?"In progress: "+name+"  ·  Restart or exit it on the Map tab":string.IsNullOrEmpty(goal)?"":"Next: "+goal;
-            switch(tab){case 0:BuildMap();break;case 1:BuildCollection(save);break;case 2:BuildCar(save);break;case 3:BuildRecords(save);break;case 4:BuildControls();break;default:BuildSettings();break;}
+            switch(tab){case 0:BuildMap();break;case 1:BuildCar(save);break;case 2:BuildControls();break;default:BuildSettings();break;}
             footer.text=tab==0?InputGlyphs.Footer(true,true,"close")+"     Stick / mouse: look around":InputGlyphs.Footer(true,tab==Settings,"close");
         }
         // ---------------------------------------------------------------- MAP
@@ -97,7 +98,6 @@ namespace LittleRoad
             var panel=Toy.Card(body,"Region panel",new Vector2(760,420),new Vector2(400,110),Toy.White,34,6,8);
             regionName=Toy.Title(panel.transform,"Region name","",52,new Vector2(660,70),new Vector2(0,150),Toy.Sun,TextAnchor.MiddleCenter);
             regionBlurb=Toy.Label(panel.transform,"Region blurb","",24,new Vector2(660,40),new Vector2(0,92),Toy.Soft,TextAnchor.MiddleCenter,true);
-            countsHolder=Toy.Rect(panel.transform,"Counts",new Vector2(660,240),new Vector2(0,-60));
             var open=Toy.Candy(body,"Choice Open full map","Open the full map",null,new Vector2(560,76),new Vector2(400,-180),Toy.Blue,()=>ctx.minimap?.OpenFull(true));
             var running=ctx.activity?.Invoke();
             if(running is var (title,restart,exit)) {
@@ -135,85 +135,6 @@ namespace LittleRoad
         void ShowRegion(MapRegions.Region r)
         {
             regionName.text=r.name.ToUpperInvariant();regionBlurb.text=r.blurb+(r==MapRegions.At(ctx.car.position)?"  ·  you are here":"");
-            for(int i=countsHolder.childCount-1;i>=0;i--)Destroy(countsHolder.GetChild(i).gameObject);
-            var save=ctx.save();float y=100;int rows=0;
-            foreach(var (label,isKind,colour) in new (string,Func<string,bool>,Color)[]{("Postcards",Collectibles.IsPostcard,Toy.Pink),("Stamps",Collectibles.IsStamp,Toy.Gold),("Carvings",Collectibles.IsCarving,Toy.Hex(0x5d6b7a)),("Horseshoes",Collectibles.IsHorseshoe,Toy.Hex(0x8a6a3a))}) {
-                var ids=MapRegions.Keepsakes.Where(p=>isKind(p.Key)&&r.contains(p.Value.at.x,p.Value.at.z)).Select(p=>p.Key).ToList();if(ids.Count==0)continue;
-                int found=ids.Count(save.collected.Contains);rows++;
-                var icon=Toy.Card(countsHolder,label+" icon",new Vector2(60,76),new Vector2(-230,y),colour,8,4,4);icon.rectTransform.localRotation=Quaternion.Euler(0,0,-6);
-                Toy.Label(countsHolder,label+" name",label,34,new Vector2(300,50),new Vector2(-40,y),Toy.Navy,TextAnchor.MiddleLeft,true);
-                Toy.Label(countsHolder,label+" count",$"{found} / {ids.Count}",40,new Vector2(200,50),new Vector2(210,y),found==ids.Count?Toy.Hex(0x2e9e5b):Toy.Navy,TextAnchor.MiddleRight,true);
-                y-=110;
-            }
-            if(rows==0)Toy.Label(countsHolder,"None","Nothing to collect here.",30,new Vector2(600,50),new Vector2(0,60),Toy.Soft,TextAnchor.MiddleCenter,true);
-        }
-        // ---------------------------------------------------------------- COLLECTION
-        void BuildCollection(AdventureProgress save)
-        {
-            // With Quarry Hills' carvings there are three albums: the rows close up and the cards narrow to fit twelve.
-            // (A fourth album, Bramblewick's horseshoes, shares the postcards' row: the three rows keep their size.)
-            bool three=QuarryHills.Enabled,four=three&&BramblewickVillage.Horseshoes.Count==Collectibles.Horseshoes;
-            float y=three?300:285,step=three?245:310,cardH=three?160:200;
-            // (`left` and `width`: the album's share of its row; `next`: whether the next album starts a new row.)
-            void Album(string title,int count,Func<int,string> id,Func<int,string> place,Color colour,float left=-760,float width=1560,bool next=true)
-            {
-                float pitch=Mathf.Min(195,width/count),cardW=pitch-25;bool half=width<1000;
-                int found=Enumerable.Range(0,count).Count(i=>save.collected.Contains(id(i)));
-                Toy.Title(body,title+" title",$"{title}  {found}/{count}",half?34:40,new Vector2(1200,56),new Vector2(left+580,y),colour,TextAnchor.MiddleLeft);
-                // The full set's reward (a paint, docs/60).
-                int paint=PaintCatalog.RewardFor(id(0));
-                if(paint>=0)Toy.Label(body,title+" reward",half?$"Set: {PaintCatalog.All[paint].name} paint":found==count?$"Full set: {PaintCatalog.All[paint].name} paint earned":$"Full set reward: {PaintCatalog.All[paint].name} paint",half?20:24,new Vector2(560,40),new Vector2(left+width-300,y),found==count?Toy.Hex(0x2e9e5b):Toy.Soft,TextAnchor.MiddleRight,true);
-                for(int i=0;i<count;i++) {
-                    bool has=save.collected.Contains(id(i));float cx=left+i*pitch;
-                    var card=Toy.Card(body,title+" "+i,new Vector2(cardW,cardH),new Vector2(cx+cardW*.5f,y-40-cardH*.5f),has?colour:Toy.Silver,18,5,6);card.rectTransform.localRotation=Quaternion.Euler(0,0,(i%2==0?-2:2));
-                    Toy.Label(card.transform,"Mark",has?(i+1).ToString():"?",has?54:70,new Vector2(cardW,90),new Vector2(0,cardH*.13f),has?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true);
-                    var region=MapRegions.Keepsakes.TryGetValue(id(i),out var k)?MapRegions.At(k.at).name:"";
-                    Toy.Label(card.transform,"Place",has?place(i):cardW<110?region:"Somewhere in "+region,cardW<150?14:17,new Vector2(cardW-14,60),new Vector2(0,-cardH*.28f),has?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true);
-                }
-                if(next)y-=step;
-            }
-            if(four){Album("BAYVIEW POSTCARDS",Collectibles.Postcards,Collectibles.Postcard,MapRegions.PostcardPlace,Toy.Pink,-760,740,false);Album("BRAMBLEWICK HORSESHOES",Collectibles.Horseshoes,Collectibles.Horseshoe,MapRegions.HorseshoePlace,Toy.Hex(0x8a6a3a),40,760);}
-            else Album("BAYVIEW POSTCARDS",Collectibles.Postcards,Collectibles.Postcard,MapRegions.PostcardPlace,Toy.Pink);
-            Album("HILLCREST STAMPS",Collectibles.Stamps,Collectibles.Stamp,MapRegions.StampPlace,Toy.Gold);
-            if(three)Album("QUARRY HILLS CARVINGS",Collectibles.Carvings,Collectibles.Carving,MapRegions.CarvingPlace,Toy.Hex(0x5d6b7a));
-            // Badges: one-off achievements.
-            float bx=-620;
-            foreach(var (id,label) in new[]{(Collectibles.VisitHillcrest,"Reached Hillcrest"),(Collectibles.CastleTrial,"Castle Climb beaten"),(Collectibles.CastleTrialHard,"Hard Climb beaten")}) {
-                bool has=save.collected.Contains(id);var badge=Toy.Card(body,"Badge "+label,new Vector2(380,64),new Vector2(bx,three?-440:-335),has?Toy.Mint:Toy.Silver,32,5,5);
-                Toy.Label(badge.transform,"Badge text",(has?"✓ ":"")+label,24,new Vector2(360,64),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter,true);bx+=400;
-            }
-        }
-        // ---------------------------------------------------------------- RECORDS
-        // Speed traps (docs/51): a card per camera with its best speed and stars (the map's star marks).
-        void BuildRecords(AdventureProgress save)
-        {
-            int total=SpeedTraps.All.Sum(t=>SpeedTraps.Record(save,t.id)?.stars??0);
-            Toy.Title(body,"Traps title",$"SPEED TRAPS  {total}/{SpeedTraps.All.Count*3}",40,new Vector2(1200,56),new Vector2(-180,300),Toy.Orange,TextAnchor.MiddleLeft);
-            Toy.Label(body,"Traps note",$"Each star pays once: {SpeedTraps.Prizes[0]}, {SpeedTraps.Prizes[1]} and {SpeedTraps.Prizes[2]} credits. Faster parts reach the higher marks.",22,new Vector2(1500,34),new Vector2(-30,252),Toy.Soft,TextAnchor.MiddleLeft,true);
-            for(int i=0;i<SpeedTraps.All.Count;i++) {
-                var trap=SpeedTraps.All[i];var r=SpeedTraps.Record(save,trap.id);bool seen=r!=null;int stars=r?.stars??0;
-                int row=i/4,col=i%4;int inRow=row==0?Mathf.Min(4,SpeedTraps.All.Count):SpeedTraps.All.Count-4;float cx=(col-(inRow-1)*.5f)*380;float cy=125-row*200;
-                var card=Toy.Card(body,"Trap "+trap.id,new Vector2(350,184),new Vector2(cx,cy),seen?Toy.White:new Color(.9f,.91f,.95f),26,5,6);
-                Toy.Title(card.transform,"Trap name",trap.name.ToUpperInvariant(),28,new Vector2(320,40),new Vector2(0,64),stars>=3?Toy.Mint:Toy.Orange,TextAnchor.MiddleCenter);
-                Toy.Label(card.transform,"Trap area",MapRegions.At(trap.at).name,18,new Vector2(320,26),new Vector2(0,36),Toy.Soft,TextAnchor.MiddleCenter,true);
-                Toy.Title(card.transform,"Trap best",seen?$"{r.best:0} MPH":"NO RECORD",seen?40:28,new Vector2(320,54),new Vector2(0,0),seen?Toy.Sun:Toy.Silver,TextAnchor.MiddleCenter);
-                var marks=Toy.Rect(card.transform,"Stars",new Vector2(200,40),new Vector2(0,-40)).gameObject.AddComponent<Minimap.MarkLayer>();marks.raycastTarget=false;marks.Begin();
-                for(int s=0;s<3;s++)marks.Add(new Vector2((s-1)*50,0),s<stars?Toy.Gold:new Color(.8f,.82f,.88f),Minimap.Shape.Objective,17);marks.End();
-                Toy.Label(card.transform,"Trap marks",$"{Units.FromMph(trap.marks[0]):0} · {Units.FromMph(trap.marks[1]):0} · {Units.FromMph(trap.marks[2]):0} {Units.Label}",18,new Vector2(320,26),new Vector2(0,-72),Toy.Navy,TextAnchor.MiddleCenter,false);
-            }
-            // Beat the Train: best time each way.
-            float bx=-400;
-            foreach(bool toHillcrest in new[]{true,false}) {
-                var r=SpeedTraps.Record(save,TrainRace.Id(toHillcrest));bool won=r!=null&&r.stars>0;
-                var badge=Toy.Card(body,"Train record",new Vector2(760,60),new Vector2(bx,-230),won?Toy.Mint:Toy.Silver,36,5,5);
-                Toy.Label(badge.transform,"Train text",$"Beat the train to {(toHillcrest?"Hillcrest":"Bayview Halt")}  ·  "+(won?$"best {r.best:0.0} s":"not yet"),24,new Vector2(740,60),Vector2.zero,Toy.Navy,TextAnchor.MiddleCenter,true);bx+=800;
-            }
-            // Pip's photo requests: a chip per sight.
-            int taken=PhotoRequests.All.Count(p=>save.collected.Contains(p.id));
-            Toy.Label(body,"Photos title",$"PIP'S PHOTO REQUESTS  {taken}/{PhotoRequests.All.Count}",24,new Vector2(380,40),new Vector2(-640,-312),Toy.Pink,TextAnchor.MiddleLeft,true);
-            for(int p=0;p<PhotoRequests.All.Count;p++){var req=PhotoRequests.All[p];bool has=save.collected.Contains(req.id);
-                var chip=Toy.Card(body,"Photo "+req.id,new Vector2(184,48),new Vector2(-330+p*196,-312),has?Toy.Pink:Toy.Silver,24,4,4);
-                Toy.Label(chip.transform,"Photo text",(has?"✓ ":"")+req.name,18,new Vector2(176,48),Vector2.zero,has?Toy.White:Toy.Navy,TextAnchor.MiddleCenter,true);}
         }
         // ---------------------------------------------------------------- CAR
         void BuildCar(AdventureProgress save)

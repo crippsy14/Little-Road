@@ -22,11 +22,10 @@ namespace LittleRoad
         RectTransform dash;Text dashSpeed,dashDrive,dashUnit;GearDisplay dashGears;CanvasGroup objectiveFade,controlsFade;bool roaming;
         // Interaction prompt ("act" tier): button glyph + verb + name, role in the character's colour.
         ToyShape interaction,glyph;Text interactionTitle,interactionRole,glyphLetter;GameObject glyphCross;float interactionShown;string shownInteraction;InputGlyphs.Family shownFamily;
-        RaceResultScreen result;LicenceScreen licence;ToyToaster toaster;
+        RaceResultScreen result;ToyToaster toaster;
         readonly List<Button> buttons=new();
         static readonly Color[] ChoiceColours={Toy.Blue,Toy.Mint,Toy.Orange,Toy.Pink,Toy.Red,Toy.Sky};
-        public bool IsOpen=>(panel!=null&&panel.gameObject.activeSelf)||result!=null||licence!=null;
-        public LicenceScreen Licence=>licence;
+        public bool IsOpen=>(panel!=null&&panel.gameObject.activeSelf)||result!=null;
         public string DisplayedFinishTime=>result?.TimeLabel?.text;
         public RaceResultScreen Result=>result;
         void Awake()
@@ -206,25 +205,14 @@ namespace LittleRoad
             result=gameObject.AddComponent<RaceResultScreen>();result.Build(canvas.transform,summary,returnToTown,retry);
             StartCoroutine(SelectNextFrame(result.Choices[2]));
         }
-        // Gwen's rally licence (LicenceScreen): the test list, and the result card after each attempt.
-        public void ShowLicences(string school,IReadOnlyList<LicenceScreen.Test> tests,int[] prizes,int focus,Action<int> start,Action exit)
-        {
-            ClearChoices();panel.gameObject.SetActive(false);CloseResult();SetHudVisible(false);
-            licence=gameObject.AddComponent<LicenceScreen>();licence.BuildLicences(canvas.transform,school,tests,prizes,focus,start,exit);
-        }
-        public void ShowLicenceResult(LicenceScreen.Test test,int count,LicenceScreen.Attempt attempt,Action again,Action next,Action licences)
-        {
-            ClearChoices();panel.gameObject.SetActive(false);CloseResult();SetHudVisible(false);
-            licence=gameObject.AddComponent<LicenceScreen>();licence.BuildResult(canvas.transform,test,count,attempt,again,next,licences);
-        }
-        void CloseResult(){if(result!=null){result.Close();result=null;}if(licence!=null){licence.Close();licence=null;SetHudVisible(true);}}
+        void CloseResult(){if(result!=null){result.Close();result=null;}}
         IEnumerator SelectNextFrame(Button button){yield return null;if(button!=null&&IsOpen)EventSystem.current.SetSelectedGameObject(button.gameObject);}
         public void Close(){StopAllCoroutines();panel.gameObject.SetActive(false);CloseResult();EventSystem.current.SetSelectedGameObject(null);}
         // B / Esc: the menu's own Back choice ("Back", "Back to all parts", "Back to the road"); false if none.
-        public bool Back(){if(licence!=null){licence.Back();return true;}var b=buttons.Find(x=>x.interactable&&x.name.StartsWith("Choice Back"));if(b==null)return false;b.onClick.Invoke();return true;}
+        public bool Back(){var b=buttons.Find(x=>x.interactable&&x.name.StartsWith("Choice Back"));if(b==null)return false;b.onClick.Invoke();return true;}
         public bool InvokeChoice(string startsWith)
         {
-            var button=buttons.Find(b=>b.name.StartsWith("Choice "+startsWith)&&b.interactable)??result?.Choices.Find(b=>b.name.StartsWith("Choice "+startsWith)&&b.interactable)??licence?.Choices.Find(b=>b.name.StartsWith("Choice "+startsWith)&&b.interactable);if(button==null)return false;button.onClick.Invoke();return true;
+            var button=buttons.Find(b=>b.name.StartsWith("Choice "+startsWith)&&b.interactable)??result?.Choices.Find(b=>b.name.StartsWith("Choice "+startsWith)&&b.interactable);if(button==null)return false;button.onClick.Invoke();return true;
         }
     }
 }

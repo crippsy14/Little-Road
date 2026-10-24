@@ -8,8 +8,7 @@ namespace LittleRoad
     // sandbox for everything you've found. A part can also carry an unlock condition (Part.unlock) that "gatekeeps" it:
     // until it's met, its home shop shows it locked with the condition; it's found on the next visit after.
     //   unlock: "wins:5" (race wins), "podiums:B:3" (podiums at class B events), "class:A" (class A open),
-    //   "stars:B:7" (7 stars won in class B: the stars of the B events you've won, docs/67),
-    //   "rallyschool" (gold in all six of Gwen's lessons, Quarry Hills). Empty: none.
+    //   "stars:B:7" (7 stars won in class B: the stars of the B events you've won, docs/67). Empty: none.
     // Class gating still applies on top: only your open class and below are on sale (RaceCalendar.PartOpen).
     public static class PartDiscovery
     {
@@ -28,19 +27,18 @@ namespace LittleRoad
                 "podiums"=>f.Length==3&&int.TryParse(f[2],out int n)&&RaceCalendar.Podiums(s,f[1])>=n,
                 "class"=>f.Length==2&&RaceCalendar.Rank(RaceCalendar.Open(s))>=RaceCalendar.Rank(f[1]),
                 "stars"=>f.Length==3&&int.TryParse(f[2],out int st)&&RaceCalendar.StarsWon(s,f[1])>=st,
-                RallySchool.Unlock=>RallySchool.AllGold(s),
                 _=>false};
         }
         public static bool Valid(string unlock)
         {
             if(string.IsNullOrEmpty(unlock))return true;var f=unlock.Split(':');
-            return unlock==RallySchool.Unlock||f[0]=="wins"&&f.Length==2&&int.TryParse(f[1],out _)||f[0]=="podiums"&&f.Length==3&&RaceCalendar.Rank(f[1])>=0&&int.TryParse(f[2],out _)||f[0]=="class"&&f.Length==2&&RaceCalendar.Rank(f[1])>=0||f[0]=="stars"&&f.Length==3&&RaceCalendar.Rank(f[1])>=0&&int.TryParse(f[2],out _);
+            return f[0]=="wins"&&f.Length==2&&int.TryParse(f[1],out _)||f[0]=="podiums"&&f.Length==3&&RaceCalendar.Rank(f[1])>=0&&int.TryParse(f[2],out _)||f[0]=="class"&&f.Length==2&&RaceCalendar.Rank(f[1])>=0||f[0]=="stars"&&f.Length==3&&RaceCalendar.Rank(f[1])>=0&&int.TryParse(f[2],out _);
         }
         // The condition, said plainly ("Win 5 races", "3 podiums in class B", "Reach class A").
         public static string Need(string unlock)
         {
             if(string.IsNullOrEmpty(unlock))return "";var f=unlock.Split(':');
-            return f[0] switch{RallySchool.Unlock=>"Gold in all six rally school lessons","stars"=>$"{f[2]}★ won at class {f[1]} races","wins"=>$"Win {f[1]} race{(f[1]=="1"?"":"s")}","podiums"=>$"{f[2]} podium{(f[2]=="1"?"":"s")} at class {f[1]} races","class"=>$"Reach class {f[1]}",_=>unlock};
+            return f[0] switch{"stars"=>$"{f[2]}★ won at class {f[1]} races","wins"=>$"Win {f[1]} race{(f[1]=="1"?"":"s")}","podiums"=>$"{f[2]} podium{(f[2]=="1"?"":"s")} at class {f[1]} races","class"=>$"Reach class {f[1]}",_=>unlock};
         }
         // The next star count that unlocks a part of this class (-1: none left), for results screens and the garage.
         public static int NextStars(AdventureProgress s,string raceClass)

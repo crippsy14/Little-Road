@@ -83,52 +83,6 @@ namespace LittleRoad
                 sb.Insert(0,$"rejoin runs={runs} ok={passed}\n");File.WriteAllText(Path.Combine(folder,"rejoin-test.txt"),sb.ToString());Debug.Log("LITTLE_ROAD_REJOIN "+passed+"/"+runs);
                 Application.Quit(0);yield break;
             }
-            // --trap-test: the car drives through every speed trap (docs/51) from 150 m back along the road at full throttle,
-            // steering along it; each pass must be seen, logged and paid.
-            if(RaceTrial.Has("--trap-test")) {
-                var sb=new System.Text.StringBuilder();player.controlsBlocked=false;int seen=0;
-                var log=new List<string>();Application.LogCallback hook=(m,s,t)=>{if(m.StartsWith("LITTLE_ROAD_SPEED_TRAP "))log.Add(m);};Application.logMessageReceived+=hook;
-                foreach(var trap in SpeedTraps.All) {
-                    var path=trap.approach;int from=Mathf.Max(0,path.Count-60);var start=path[from];var dirIn=(path[Mathf.Min(path.Count-1,from+3)]-start);dirIn.y=0;float gy=start.y;foreach(var h in Physics.RaycastAll(start+Vector3.up*30,Vector3.down,60))if(h.collider.GetComponentInParent<RoadSurface>()!=null)gy=Mathf.Max(gy,h.point.y);
-                    player.body.isKinematic=true;player.body.position=new Vector3(start.x,gy+.3f,start.z);player.body.rotation=Quaternion.LookRotation(dirIn.normalized);player.body.isKinematic=false;
-                    player.body.linearVelocity=Vector3.zero;player.body.angularVelocity=Vector3.zero;player.speed=0;int before=log.Count;float t=0;
-                    int aim=from;
-                    player.commandSource=c=>{while(aim<path.Count-1&&Vector3.Distance(path[aim],c.body.position)<9)aim++;var to=(aim>=path.Count-1?path[^1]+(path[^1]-path[^2]).normalized*25:path[aim])-c.body.position;to.y=0;float angle=Vector3.SignedAngle(c.transform.forward,to,Vector3.up);return new Vector2(1,Mathf.Clamp(angle/25,-1,1));};
-                    while(t<25&&log.Count==before){yield return new WaitForFixedUpdate();t+=Time.fixedDeltaTime;}
-                    // (And straight on: 0.6 s later the car must still be going, not stopped by the camera's confetti.)
-                    float at=player.speed;for(float w=0;w<.6f;w+=Time.fixedDeltaTime)yield return new WaitForFixedUpdate();float after=player.speed;
-                    player.commandSource=null;bool ok=log.Count>before&&after>at*.8f;if(ok)seen++;
-                    sb.AppendLine($"{(ok?"ok  ":"FAIL")} {trap.id,-9} {(log.Count>before?log[^1]:"no pass logged")} after {t:0.0} s, {at*2.237f:0} mph then {after*2.237f:0} mph 0.6 s on (marks {trap.marks[0]}/{trap.marks[1]}/{trap.marks[2]})");
-                }
-                Application.logMessageReceived-=hook;
-                sb.Insert(0,$"traps={SpeedTraps.All.Count} seen={seen}\n");File.WriteAllText(Path.Combine(folder,"trap-test.txt"),sb.ToString());Application.Quit(0);yield break;
-            }
-            // --train-race-test [bayview]: Beat the Train with an autopilot on the road route at 95% of the speed profile the
-            // timetable assumes (docs/51); logs who won and by how much.
-            if(RaceTrial.Has("--train-race-test")) {
-                bool toHillcrest=RaceTrial.Arg("--train-race-test")!="bayview";var race=GetComponent<TrainRace>();var route=TrainRace.Route(toHillcrest);
-                var sb=new System.Text.StringBuilder();player.controlsBlocked=false;
-                var start=route[1];var into=route[5]-route[1];into.y=0;   // (on the road: the drop-off point faces the map board)
-                player.body.isKinematic=true;player.body.position=start+Vector3.up*.4f;player.body.rotation=Quaternion.LookRotation(into.normalized);player.body.isKinematic=false;player.body.linearVelocity=Vector3.zero;
-                var speeds=SpeedProfile.Speeds(route,player.tuning);int aim=1;
-                var log=new List<string>();Application.LogCallback hook=(m,s,t)=>{if(m.StartsWith("LITTLE_ROAD_TRAIN_RACE"))log.Add(m);};Application.logMessageReceived+=hook;
-                if(ValleyTrain.Instance!=null)ValleyTrain.Instance.Hold(toHillcrest?ValleyTrain.BayviewStop:ValleyTrain.HillcrestStop,6);
-                race.Begin(toHillcrest);
-                // Floored through the countdown: the car must stay put but rev (docs/51, Richard 1 Oct).
-                Vector3 held=player.body.position;float maxRpm=0,maxMove=0,moveAt=0,startT=Time.time;bool movedEarly=false,moveHold=false;
-                player.commandSource=c=>{
-                    if(race.Holding){if(c.gears!=null)maxRpm=Mathf.Max(maxRpm,c.gears.Rpm);var moved=c.body.position-held;moved.y=0;if(moved.magnitude>maxMove){maxMove=moved.magnitude;moveAt=Time.time-startT;moveHold=c.holdStill;}if(moved.magnitude>.3f)movedEarly=true;return new Vector2(1,0);}
-                    while(aim<route.Count-1&&Vector3.Distance(route[aim],c.body.position)<Mathf.Clamp(c.speed*.6f,6,14))aim++;
-                    var to=route[aim]-c.body.position;to.y=0;float angle=Vector3.SignedAngle(c.transform.forward,to,Vector3.up);
-                    float want=speeds[Mathf.Min(route.Count-1,aim+2)]*.95f;return new Vector2(DriveModel.PedalForSpeed(c.tuning,c.speed,want),Mathf.Clamp(angle/22,-1,1));};
-                yield return new WaitForSeconds(1.5f);{var g=race.Goal;var back=(player.body.position-g);back.y=0;back=back.normalized;var keep=cameraView.transform.position;var keepR=cameraView.transform.rotation;cameraView.transform.position=g+back*55+Vector3.up*14;cameraView.transform.LookAt(g+Vector3.up*6);yield return null;ui.Capture(Path.Combine(folder,"train-race-beacon.png"));cameraView.transform.SetPositionAndRotation(keep,keepR);}
-                float t=0,nextLog=0;while(race.Active&&t<600){yield return new WaitForFixedUpdate();t+=Time.fixedDeltaTime;if(t>=nextLog){nextLog+=10;sb.AppendLine($"  t {t:0} elapsed {race.Elapsed:0.0} at ({player.body.position.x:0},{player.body.position.z:0}) speed {player.speed:0.0} throttle {player.throttle:0.00} aim {aim} blocked {player.controlsBlocked} kinematic {player.body.isKinematic}");}}
-                player.commandSource=null;Application.logMessageReceived-=hook;
-                sb.AppendLine($"rating {CarPerformanceRating.Calculate(player.tuning)}  stock ideal {TrainRace.StockTime(toHillcrest):0.0} s");
-                sb.AppendLine($"countdown: {(movedEarly?"FAIL moved":"ok held still")} (most {maxMove:0.00} m at {moveAt:0.00} s, held {moveHold}), revved to {maxRpm:0} rpm");foreach(var l in log)sb.AppendLine(l);
-                sb.AppendLine($"ended at ({player.body.position.x:0},{player.body.position.z:0}) after {t:0.0} s");
-                File.WriteAllText(Path.Combine(folder,"train-race-test.txt"),sb.ToString());Application.Quit(0);yield break;
-            }
             // --fireworks-review (with --time night --fireworks-now): the harbour show from the Bayview promenade (docs/51).
             if(RaceTrial.Has("--fireworks-review")) {
                 cameraView.transform.position=new Vector3(-40,7,-118);cameraView.transform.LookAt(new Vector3(-30,62,-205));cameraView.fieldOfView=60;
@@ -143,24 +97,6 @@ namespace LittleRoad
                 yield return new WaitForSeconds(2);cameraView.transform.position=player.transform.position+new Vector3(-8,9,-12);cameraView.transform.LookAt(player.transform.position);
                 var game=GetComponent<AdventureGame>();game.TestHonk();yield return new WaitForSeconds(.6f);
                 ui.Capture(Path.Combine(folder,"horn-square.png"));Debug.Log("LITTLE_ROAD_HORN_TEST done");Application.Quit(0);yield break;
-            }
-            // --photo-requests-test: the camera at a natural vantage for each fixed sight of Pip's (docs/51); each must count.
-            if(RaceTrial.Has("--photo-requests-test")) {
-                var sb=new System.Text.StringBuilder();int ok=0,total=0;
-                var lighthouse=PhotoRequests.All[0].where().Value;
-                var shots=new List<(string id,Vector3 from,Vector3 look)>{
-                    ("photo_lighthouse",lighthouse+new Vector3(28,-5,20),lighthouse),
-                    ("photo_halt",new Vector3(66,3,-128),new Vector3(93,4,-142)),
-                    ("photo_castle",HillcrestRoute.Vista+Vector3.up*2,HillcrestRoute.CastleCourt+Vector3.up*10),
-                    ("photo_falls",HillcrestRoute.Lookout+Vector3.up*2,HillcrestRoute.FallsHead+Vector3.up*1.5f)};
-                var anyBalloon=FindAnyObjectByType<BalloonDrift>();if(anyBalloon!=null){var b=anyBalloon.transform.position+Vector3.up*8;shots.Add(("photo_balloons",b+new Vector3(-70,-30,-70),b));}
-                foreach(var (id,from,look) in shots) {
-                    cameraView.transform.position=from;cameraView.transform.LookAt(look);cameraView.fieldOfView=50;yield return null;
-                    var seen=PhotoRequests.Seen(cameraView);bool hit=seen.Exists(r=>r.id==id);total++;if(hit)ok++;
-                    sb.AppendLine($"{(hit?"ok  ":"FAIL")} {id,-17} from ({from.x:0},{from.y:0},{from.z:0}) {Vector3.Distance(from,look):0} m · sees {string.Join(", ",seen.ConvertAll(r=>r.id))}");
-                    ui.Capture(Path.Combine(folder,id+".png"));
-                }
-                sb.Insert(0,$"photo requests ok={ok}/{total}\n");File.WriteAllText(Path.Combine(folder,"photo-requests.txt"),sb.ToString());Application.Quit(0);yield break;
             }
             // --probe-line "x0,z0,x1,z1": every solid surface under a line, every 0.25 m (which collider, how high).
             if(RaceTrial.Has("--probe-line")) {

@@ -94,7 +94,7 @@ namespace LittleRoad
             4=>ControlRows(),
             3=>new(){
                 Row.For(DrivingOptions.Gears,"Manual: shift up and down yourself (Cross / Square, or remap them under CONTROLS)."),
-                Row.For(Units.Speed,"Speeds on the dash, speed traps and the parts shop."),
+                Row.For(Units.Speed,"Speeds on the dash and in the parts shop."),
                 Row.For(DrivingOptions.Vibration,"Controller rumble on knocks and off the tarmac.")},
             _=>new(){
                 Row.For(GraphicsOptions.Minimap,"The round map in the corner while driving (the pause map is always there)."),

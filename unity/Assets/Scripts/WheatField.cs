@@ -12,8 +12,6 @@ namespace LittleRoad
         public static readonly List<WheatField> All=new();
         // The adventure player's car (set by ValleyLife); only it tramples.
         public static RoadCar Player;
-        // The Harvest (FarmChallenges, doc 64): extra half-width cut by the harvester header on the player's bumper.
-        public static float Header;
         const float Texel=.4f,Chunk=20;
         Vector3 corner,axisX,axisZ;Vector2 size;int w,h;Texture2D trample;Color32[] pixels;bool dirty;int flattened;float chaffTimer;
         Chaff chaff;
@@ -122,10 +120,10 @@ namespace LittleRoad
         {
             var car=Player;
             if(chaff!=null&&car!=null&&car.body!=null&&Contains(car.transform.position,3)&&Mathf.Abs(car.speed)>.4f) {   // (chaff: made last, the field built over several frames in the background)
-                var f=car.transform.forward;int fresh=Press(car.transform.position+f*(Header>0?1.4f:0),f,car.speed>=0?f:-f,2.3f+(Header>0?1:0),1.2f+Header);
+                var f=car.transform.forward;int fresh=Press(car.transform.position,f,car.speed>=0?f:-f,2.3f,1.2f);
                 if(fresh>0) {
-                    // Pushing through standing wheat: a little drag and a spray of chaff (a header cuts it, so less drag).
-                    float drag=Mathf.Clamp01(fresh/(30f*(1+Header)))*.9f*Time.deltaTime;car.body.linearVelocity*=1-drag;
+                    // Pushing through standing wheat: a little drag and a spray of chaff.
+                    float drag=Mathf.Clamp01(fresh/30f)*.9f*Time.deltaTime;car.body.linearVelocity*=1-drag;
                     chaffTimer-=Time.deltaTime;
                     if(chaffTimer<=0){chaffTimer=.05f;var r=car.transform.right;foreach(int side in new[]{-1,1})chaff.Burst(car.transform.position+f*1.9f+r*side*1.1f+Vector3.up*1.1f,f*Mathf.Abs(car.speed)*.25f+r*side*1.4f);}
                 }

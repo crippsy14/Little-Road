@@ -15,7 +15,6 @@ namespace LittleRoad
         static readonly string[] Tips={
             "Every Pit Stop looks the same, so you can always find the garage.",
             "Bodies are looks only: your fitted parts decide the pace.",
-            "Hillcrest stamps hide around the valley. Stella collects them.",
             "Drive through the wheat at Golden Acre: it springs back.",
             "Rival kit stays fixed, so every upgrade you fit shows on the clock.",
             "Stuck? R or D-pad Down puts you back on the road.",

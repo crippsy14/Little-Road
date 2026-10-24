@@ -12,7 +12,7 @@ namespace LittleRoad
     public sealed class ZipLine
     {
         public static ZipLine Active;
-        // Every line in the world: the castle zipline (Active) and Quarry Hills' Blondin (--quarry-hills).
+        // Every line in the world: today only the castle zipline (Active; Quarry Hills' Blondin was retired on 24 Oct).
         public static readonly List<ZipLine> All=new();
         public string title="Hillcrest Castle Zipline";
         public const float Hang=2.7f;          // trolley (on the cable) to the car's ground contact
@@ -47,7 +47,7 @@ namespace LittleRoad
             BuildCable(span,parent,cable);
             Park(true);Active=this;All.Add(this);
         }
-        // A cableway whose bays lie under the rope itself (Quarry Hills' Blondin): the car is hoisted straight up on the fall
+        // A cableway whose bays lie under the rope itself (as Quarry Hills' Blondin was; none today): the car is hoisted straight up on the fall
         // rope to the main rope `pickTop` metres along the span from its top end, carried along it, and lowered into the
         // bay under the rope `pickBottom` metres short of the bottom end. The rope's own mesh is the caller's.
         public ZipLine(string title,Station top,Station bottom,List<Vector3> span,Transform trolley)

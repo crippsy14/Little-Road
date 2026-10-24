@@ -5,7 +5,8 @@ description: How to come up with, judge and build an activity for Little Road (a
 
 # Designing activities for Little Road
 
-Richard's rules (24 Oct, after the first towns' activities felt underbaked and were put on hold on 21 Oct):
+Richard's rules (24 Oct, after the first towns' activities felt underbaked and were put on hold on 21 Oct; the same day
+he retired every activity built so far, to rebuild them one at a time as true minigames):
 **1) Is it fun? 2) Does it fit the world? 3) Is it measurable, and so testable? 4) It is not "drive from A to B" in
 some form. 5) Does it contribute to the game: a part, a one-time payment, a model?** Activities up to now were too open
 ended, with no clear goal, and it showed. This skill turns those five into a bar with tests, adds the rest of what a good
@@ -14,6 +15,33 @@ activity needs, and gives a method.
 Races are not activities: use the track-design skill for them. Where places are and what the map plans is in the
 world-plan skill. The design records are `docs/design.md` §12 (characters, features and activities) and each place's
 section of `docs/world.md` §3, where ideas wait "for the activities sweep".
+
+## 0. Ideate wide before you judge
+
+The first version of this skill produced ten sound, small ideas, most of them its own examples dressed up (review in the
+24 Oct brief). Ideate before reading §2, and aim high: Richard, 24 Oct: "Be brave... think big... no limitation."
+
+- **Three sources for every batch, at least three ideas from each:**
+  1. **The place's own work:** what this town does all day (slate, wine, dairy, fishing, the castle's balls and banquets).
+  2. **A classic game or sport remade for cars:** curling, sumo, darts, golf, bowling, pinball, football, musical chairs,
+     tag, dominoes, snooker, Pac-Man, a quiz show, a game show.
+  3. **A car-world joke:** "in a world of cars, what is a ballroom / a pub skittle alley / a sumo stable / a wedding?"
+- **Throw away the first idea** that comes to mind for a place; it's the one anyone would have.
+- **Think event, not task:** a good minigame feels like a place with its own rules that you go to (Road Trip's football
+  pitch and casino), not one more thing to do in a field.
+- **Rivals over solitude:** contests between cars are the world's natural drama. Resident cars as contestants reuse the
+  racing AI.
+- Only then check the ideas against §2's verbs, for coverage and variety.
+
+### Where it happens: in the world or an event arena
+
+- **In the world:** a bounded arena in the place itself (a car park, the quarry floor, a beach). Best when the place's
+  look is the point. G7 applies: props only while it runs, no roads used.
+- **Event arena (teleport):** you go in through a door or a resident ("the ball's tonight, come up to the castle"), the
+  screen fades, and you're in a venue built for the minigame, then back out to the door when it's done. Best when the
+  minigame needs a space the world can't hold, or the venue is itself the spectacle: a ballroom, a stadium, a skittle
+  alley, a casino. It can break world scale and needn't be streamed; it uses the same car, physics and HUD. Every
+  venue needs a reason in the place's story.
 
 ## 1. The bar
 
@@ -32,7 +60,7 @@ Gate-passers are then **scored**; only the strongest are built.
 | G6 | **Clear in one sentence** | The card's goal line says what to do and how you win, in under 15 words ("Knock all twelve barrels into the cellar in 60 s"). | It needs a tutorial screen, or the goal can't be stated without "explore" or "try". |
 | G7 | **Leaves no trace** | Its props exist only while it runs, or are part of the place in their own right; nothing of it stands in a road, and it never blocks traffic or a race. | Props left in the world (cones, bales and boards in free roam were Richard's snaps of 24 Oct); it uses a road that races or traffic need. |
 
-### Scored (1-5 each; build at 30+ of 40, and never with a 1)
+### Scored (1-5 each; build at 38+ of 50, and never with a 1)
 
 | # | Criterion | 1 | 5 |
 |---|---|---|---|
@@ -44,6 +72,14 @@ Gate-passers are then **scored**; only the strongest are built.
 | S6 | **Story** | No one asks you. | A resident gives it with a line in character; it ties into the place's story or the campaign; you'd tell someone what happened. |
 | S7 | **Variety** | Same verb as another activity in this place or the next. | A verb no nearby activity uses (§2). |
 | S8 | **Cost** | New systems, art and physics all at once. | Built from existing kits, physics and UI, with at most one new mechanic. |
+| S9 | **Spectacle** | Nothing you'd show anyone. | There's a clip you'd share: a cannon shot clearing the house, a sumo car toppling off the ring, the ball sailing over the bar. |
+| S10 | **Structure** | One challenge, three tiers, done. | A real minigame: rounds, rivals or a ladder of opponents, levels or courses, a boss, so it lasts and builds. |
+
+**Secrets** (the find verb: the old roadster in the cellar) are judged on their own track, without S3 and S10: the
+quality of the clues, the moment of the find, and the prize. A secret is a one-off by design.
+
+**A signature prize:** every minigame has a prize of its own (a paint, a livery, a body, a sidegrade part or a title
+on your licence), as well as its tier money. That's what you remember it by.
 
 **Class-proof** is a check, not a score: an activity is either locked to one class (and its targets set for that class's
 cars), or its targets scale by class. A time or distance that an E car trivialises is a defect (design §1: design for
@@ -64,7 +100,7 @@ Pick the verb first, then dress it in the place. Each place should spread its ac
 | **Tag / pursue (arena)** | Touch, follow or evade a resident car inside a bounded area | tag with the quarry dumpers on the pit floor; keep within 5 m of the Duke's chauffeur round the castle courtyard for 60 s |
 | **Find / secret** | Read clues in the world and find something | the old-roadster cellar secret (Richard: "a good opportunity to get a cool model after performing the task required"); a hidden car from a postcard's view |
 | **Timing** | Act in a window | under the swing bridge before it closes; across the level crossing between trains (scored by margin, inside the crossing area) |
-| **Observe / capture** | Frame a shot | Pip's photo requests (built) |
+| **Observe / capture** | Frame a shot | photo mode stays; Pip's old photo requests were retired with the rest |
 | **Build / stack** | Place objects to a shape | stack crates with a forklift gadget (when gadgets come) |
 
 Red flags in a pitch: "deliver", "get to", "before the ... arrives", "escape", "follow the route", "checkpoint". If one
@@ -109,14 +145,17 @@ with the sweep's first activity, so every later one plugs into it. Each activity
 2. **Brief** each idea on the one-page template (§6). Write the goal sentence first: if it won't come, the idea isn't
    ready.
 3. **Gate** it (G1-G7). Rewrite or reject; record rejections and why, in the place's section.
-4. **Score** it (S1-S8) and check variety against the place and its neighbours. Build only 30+ of 40.
+4. **Score** it (S1-S10) and check variety against the place and its neighbours. Build only 38+ of 50. To choose
+   between strong ideas, run a seeded bracket: each match is decided by first-minute fun, bravery, belonging to Little
+   Road, and whether it can be built well.
 5. **Prototype** a graybox behind an off-by-default `--activity-<id>` flag with its editor check and automated test.
    Measure the reference runs and set the tiers.
 6. **Playtest** with Richard; keep or reject, and record the result in `docs/design.md` §12 and the place's section.
 7. **Finish** (art, dialogue, reward wiring) only after it's kept. Then turn the flag on by default.
 
-The sweep's first job is to put every built activity (design §12, "Things to do") through §1, and keep, rework or retire
-each one.
+Everything built before was retired on 24 Oct (design §12): activities are now built **one at a time**, each a true
+minigame given the focus a place or a track gets, from brief to Richard's yes to graybox to playtest to polish. The first
+one also builds the shared harness (§4) and a RECORDS tab for minigames.
 
 ## 6. The brief (one page)
 
@@ -134,8 +173,11 @@ Reward:          (per tier, §3)
 Props:           (what spawns, where, and that it all goes when it ends)
 Builds on:       (existing systems and kits; the one new mechanic, if any)
 Test:            (--activity-test plan, editor check)
+Arena:           (in the world, or an event venue: how you go in and come out)
+Rounds/rivals:   (the structure: rounds, opponents, ladder, levels, boss)
+Signature prize: (its own paint / livery / body / part / title)
 Gates:           G1 ... G7 pass/fail, with a line each
-Scores:          S1 ... S8, total /40
+Scores:          S1 ... S10, total /50
 ```
 
 ## 7. Failure modes (what made the first activities underbaked)
@@ -148,3 +190,6 @@ Scores:          S1 ... S8, total /40
 - **Generic:** it could be in any town. Scores low on S5.
 - **Untestable:** only a human can say whether it works, so it breaks silently. Fails G4.
 - **Not class-proof:** trivial in a fast car, impossible in a slow one.
+- **Small and solitary** (the skill's own first batch, 24 Oct): one car doing one thing in a field, three tiers, done.
+  Sound, and forgettable. Low on S9 and S10.
+- **Anchored on the examples:** ideas copied from §2's example column. Ideate from §0's three sources first.

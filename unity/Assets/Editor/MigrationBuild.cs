@@ -159,7 +159,7 @@ public static class MigrationBuild
         evidence.checks.AddRange(OptionsChecks.Run());
         evidence.checks.AddRange(GadgetChecks.Run());
         evidence.checks.AddRange(ScaleTestChecks.Run());
-        evidence.checks.AddRange(QuarryHillsChecks.Run());evidence.checks.AddRange(ActivityChecks.Run());
+        evidence.checks.AddRange(QuarryHillsChecks.Run());
         evidence.checks.AddRange(PartDiscoveryChecks.Run());
         evidence.checks.AddRange(InterfaceChecks.Run());
         evidence.checks.AddRange(RacerChecks.Run());
@@ -168,7 +168,6 @@ public static class MigrationBuild
         evidence.checks.AddRange(VinelandsChecks.Run());
         evidence.checks.AddRange(RoadNetworkChecks.Run());
         evidence.checks.AddRange(PrototypeChecks.Run());
-        evidence.checks.AddRange(DukeDriveChecks.Run());
         evidence.checks.AddRange(WheelChecks.Run());
         evidence.checks.AddRange(DukeChallengeChecks.Run());
         evidence.checks.AddRange(SoundChecks.Run());

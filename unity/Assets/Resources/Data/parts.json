@@ -1138,8 +1138,7 @@
       "tier": "C",
       "shop": "quarry",
       "road": 7.5,
-      "dirt": 15,
-      "unlock": "rallyschool"
+      "dirt": 15
     },
     {
       "id": "tyres_b_sport",
@@ -1531,8 +1530,7 @@
       "tier": "C",
       "shop": "quarry",
       "response": 7.2,
-      "yaw": 1.34,
-      "unlock": "rallyschool"
+      "yaw": 1.34
     },
     {
       "id": "steering_b_quick",

@@ -19,7 +19,7 @@ public static class AdventureChecks
         store=new AdventureStore(store.path);Check(store.Data.questStage==1,"Accepted delivery survives reload");
         Check(store.Deliver()&&!store.Deliver()&&store.ClaimDelivery()&&!store.ClaimDelivery(),"Hand-in and delivery reward are idempotent");
         Check(store.Data.credits==350,"Delivery preserves original 350-credit reward");
-        Check(store.Collect("postcard_0")&&!store.Collect("postcard_0")&&store.Collect("postcard_1"),"Postcards award only once per stable ID");
+        Check(store.ClaimTrial(Collectibles.VisitHillcrest,100)&&!store.ClaimTrial(Collectibles.VisitHillcrest,100),"A one-off prize pays only once per stable ID");
         Check(store.Buy("engine_workshop")&&store.Data.credits==0&&!store.Buy("engine_workshop"),"Part ownership charges exactly once");
         Check(store.Data.Loadout()["engine"]=="engine_stock"&&store.Fit("engine_workshop"),"Buying and fitting are separate operations");
         store=new AdventureStore(store.path);
@@ -61,38 +61,14 @@ public static class AdventureChecks
                 File.Copy(store.path,SaveSlots.Legacy);SaveSlots.Migrate();
                 Check(File.Exists(SaveSlots.Auto(1))&&SaveSlots.Current==1&&SaveSlots.Read(SaveSlots.Auto(1)).summary.StartsWith("Class B")&&SaveSlots.Read(SaveSlots.Auto(1)).summary.Contains("CR"),"Save slots: the old save becomes slot 1's autosave");
                 SaveSlots.NewGame(2);Check(SaveSlots.Current==2&&new AdventureStore(SaveSlots.LivePath).Data.credits==0&&!File.Exists(SaveSlots.Manual(2)),"Save slots: a new game starts fresh in its own slot");
-                var live=new AdventureStore(SaveSlots.LivePath);live.Collect("postcard_2");SaveSlots.SaveTo(live,2);
+                var live=new AdventureStore(SaveSlots.LivePath);live.Change(p=>{p.credits+=50;return true;});SaveSlots.SaveTo(live,2);
                 Check(new AdventureStore(SaveSlots.Manual(2)).Data.credits==50,"Save slots: Save writes the slot's saved game");
                 SaveSlots.SaveTo(live,3);Check(SaveSlots.Current==3&&File.Exists(SaveSlots.Manual(3))&&File.Exists(SaveSlots.Auto(3))&&SaveSlots.Newest()==3,"Save slots: saving into another slot moves the game there");
-                live=new AdventureStore(SaveSlots.Auto(2));live.Collect("postcard_3");SaveSlots.Load(2,true);
+                live=new AdventureStore(SaveSlots.Auto(2));live.Change(p=>{p.credits+=50;return true;});SaveSlots.Load(2,true);
                 Check(SaveSlots.Current==2&&new AdventureStore(SaveSlots.Auto(2)).Data.credits==50&&File.Exists(SaveSlots.Auto(2)+".bak"),"Save slots: loading a saved game restores it over the autosave, keeping a backup");
                 SaveSlots.NewGame(1);Check(new AdventureStore(SaveSlots.Auto(1)).Data.credits==0&&File.Exists(SaveSlots.Auto(1)+".bak"),"Save slots: starting over keeps the old game as a backup");
             }
             finally{SaveSlots.Folder=null;}
-        }
-        // Speed traps (docs/51): seven cameras on straight road, marks rising from what the stock car can reach to
-        // what the best Class C kit can; a record keeps the best and pays each star once.
-        {
-            var traps=SpeedTraps.Plan(new Circuit());
-            Check(traps.Select(t=>t.id).SequenceEqual(SpeedTraps.ActiveIds),$"Speed traps: all {SpeedTraps.ActiveIds.Length} cameras placed ({string.Join(", ",traps.Select(t=>$"{t.id} {t.marks[0]}/{t.marks[1]}/{t.marks[2]}"))} mph)");
-            Check(traps.All(t=>t.marks[0]>=35&&t.marks[0]<t.marks[1]&&t.marks[1]<t.marks[2]&&t.marks[2]<=160),"Speed traps: marks rise from the stock car's reach to the best Class C kit's");
-            var trapStore=new AdventureStore(Path.Combine(folder,"traps.json"));int c0=trapStore.Data.credits;
-            int paid=trapStore.RecordTrap("quay",60,2,SpeedTraps.Prizes);int again=trapStore.RecordTrap("quay",58,2,SpeedTraps.Prizes);int third=trapStore.RecordTrap("quay",80,3,SpeedTraps.Prizes);
-            trapStore=new AdventureStore(trapStore.path);var rec=SpeedTraps.Record(trapStore.Data,"quay");
-            Check(paid==SpeedTraps.Prizes[0]+SpeedTraps.Prizes[1]&&again==0&&third==SpeedTraps.Prizes[2]&&rec.best==80&&rec.stars==3&&trapStore.Data.credits==c0+SpeedTraps.Prizes.Sum(),"Speed traps: each star pays once and the best speed is kept");
-            bool bad=false;try{trapStore.Change(p=>{p.traps.Add(new TrapRecord{id="moon",best=1,stars=1});return true;});}catch(InvalidDataException){bad=true;}
-            Check(bad,"Speed traps: an unknown trap in a save is rejected");
-        }
-        // Beat the Train (docs/51): the road route joins the two forecourts; the stock car's ideal time is sane; a win
-        // pays once and keeps the lowest time.
-        {
-            var route=TrainRace.Route(true);float length=SpeedProfile.Length(route),stock=TrainRace.StockTime(true),back=TrainRace.StockTime(false);
-            Check(length>1200&&length<5000&&Vector3.Distance(route[0],CoastalLandscape.HaltArrival)<1&&Vector3.Distance(route[^1],HillcrestRoute.StationYard)<8,$"Beat the Train: road route {length:0} m from Bayview Halt to Hillcrest station");
-            Check(stock>60&&stock<600&&back>60&&back<600,$"Beat the Train: stock car's ideal {stock:0} s there, {back:0} s back");
-            var raceStore=new AdventureStore(Path.Combine(folder,"train.json"));int c0=raceStore.Data.credits;
-            int first=raceStore.RecordTime("train-hillcrest",150,TrainRace.Prize),slower=raceStore.RecordTime("train-hillcrest",160,TrainRace.Prize),faster=raceStore.RecordTime("train-hillcrest",140,TrainRace.Prize);
-            raceStore=new AdventureStore(raceStore.path);var r=SpeedTraps.Record(raceStore.Data,"train-hillcrest");
-            Check(first==TrainRace.Prize&&slower==0&&faster==0&&r.best==140&&raceStore.Data.credits==c0+TrainRace.Prize,"Beat the Train: the first win pays once; the best time is the lowest");
         }
         store.Change(p=>{p.podiums.Clear();return true;});
         string before=File.ReadAllText(store.path);bool rejected=false;
@@ -105,25 +81,23 @@ public static class AdventureChecks
         try{new AdventureStore(broken);}catch(Exception){rejected=true;}
         Check(rejected&&File.ReadAllText(broken)=="{\"version\":99}","Unsupported save is rejected without overwrite");
         Check(File.Exists(store.path+".bak"),"Atomic replacement retains previous save backup");
-        // Collectibles registry: every id the world can hand out is one Validate accepts, and nothing else.
-        var keeps=new AdventureStore(Path.Combine(folder,"collectibles.json"));bool allKept=true;
-        for(int i=0;i<Collectibles.Postcards;i++)allKept&=keeps.Collect(Collectibles.Postcard(i));
-        for(int i=0;i<Collectibles.Stamps;i++)allKept&=keeps.Collect(Collectibles.Stamp(i));
-        allKept&=keeps.ClaimTrial(Collectibles.VisitHillcrest,0)&&keeps.ClaimTrial(Collectibles.CastleTrial,300);
+        // Collectibles registry: every id the game hands out, and every retired one an older save holds (the keepsakes and
+        // activities retired on 24 Oct), is one Validate accepts, and nothing else; the retired activities' records still load.
+        var keeps=new AdventureStore(Path.Combine(folder,"collectibles.json"));
+        bool allKept=keeps.ClaimTrial(Collectibles.VisitHillcrest,0)&&keeps.Change(p=>{p.collected.AddRange(new[]{"postcard_0","stamp_7","carving_11","horseshoe_5","trial_castle","trial_blast_run","photo_lighthouse"});
+            p.traps=new List<TrapRecord>{new TrapRecord{id="quay",best=80,stars=3},new TrapRecord{id="lesson_5",best=90,stars=2}};return true;});
         keeps=new AdventureStore(keeps.path);
-        Check(allKept&&keeps.Data.collected.Count==Collectibles.Postcards+Collectibles.Stamps+2,"Every registered collectible can be collected and survives reload");
-        int refused=0;foreach(string id in new[]{"postcard_"+Collectibles.Postcards,"stamp_"+Collectibles.Stamps,"stamp_-1","stamp_+1","mystery"})
-            try{keeps.Collect(id);}catch(InvalidDataException){refused++;}
-        Check(refused==5&&keeps.Data.collected.Count==Collectibles.Postcards+Collectibles.Stamps+2,"Unregistered collectible ids are refused and change nothing");
+        Check(allKept&&keeps.Data.collected.Count==8&&keeps.Data.traps.Count==2,"Older saves' retired keepsakes, prizes and activity records still load");
+        int refused=0;foreach(string id in new[]{"postcard_5","stamp_8","stamp_-1","stamp_+1","mystery"})
+            try{keeps.ClaimTrial(id,0);}catch(InvalidDataException){refused++;}
+        Check(refused==5&&keeps.Data.collected.Count==8,"Unregistered collectible ids are refused and change nothing");
         var paints=new AdventureStore(Path.Combine(folder,"paint.json"));
         Check(!paints.Repaint(5,150)&&paints.Data.paintIndex==0,"Repaint refused without credits");
         paints.Change(p=>{p.credits=400;return true;});
         Check(!paints.Repaint(0,150)&&paints.Repaint(5,150)&&paints.Data.credits==250&&!paints.Repaint(5,150),"Repaint charges once and refuses the current colour");
         paints=new AdventureStore(paints.path);Check(paints.Data.paintIndex==5&&paints.Data.credits==250,"Repaint persists across reload");
-        Check(PaintCatalog.Standard==16&&PaintCatalog.All.Length==PaintCatalog.Standard+PaintCatalog.Rewards.Length&&PaintCatalog.All[0].color==new Color(.08f,.56f,.49f),"Paint catalogue keeps the original first colours for old saves");
-        // Keepsake set rewards (docs/60): the set's paint is locked until every keepsake in it is found.
-        Check(!paints.Repaint(PaintCatalog.Standard,0)&&PaintCatalog.LockedBy(paints.Data,PaintCatalog.Standard)=="Bayview postcards","A set reward paint is locked until its set is complete");
-        Check(PaintCatalog.RewardFor(Collectibles.Carving(3))==18&&PaintCatalog.RewardFor(Collectibles.Stamp(0))==17&&PaintCatalog.RewardFor("duke_beaten")==-1,"Each keepsake set has its own reward paint");
+        Check(PaintCatalog.Standard==16&&PaintCatalog.All.Length==PaintCatalog.Standard+3&&PaintCatalog.All[0].color==new Color(.08f,.56f,.49f),"Paint catalogue keeps the original first colours, and the retired set rewards, for old saves");
+        Check(!paints.Repaint(PaintCatalog.Standard,0),"The retired keepsake sets' reward paints are no longer sold");
         // World tiles (W1): far decoration waits on its tile with its spot reserved; near decoration builds at once; Complete builds the rest.
         int built=0;WorldTiles.Plan(Vector3.zero);WorldTiles.Begin(true);
         WorldTiles.Place(new Vector3(100,0,0),0,()=>built++);WorldTiles.Place(new Vector3(2000,0,600),1.5f,()=>built++);

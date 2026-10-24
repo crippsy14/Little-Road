@@ -8,27 +8,21 @@ using UnityEngine.SceneManagement;
 namespace LittleRoad
 {
     [Serializable] public sealed class FittedPart {public string slot,id;}
-    // Every collectible id a save may hold. The world spawns from here and Validate checks
-    // against it, so a new postcard, stamp or trial cannot pass one and fail the other.
+    // Every collectible id a save may hold. Validate checks against it, so a new trial cannot be handed out and then fail
+    // the save.
     public static class Collectibles
     {
-        public const int Postcards=5,Stamps=8,Carvings=12,Horseshoes=6;
-        public const string VisitHillcrest="visit_hillcrest",CastleTrial="trial_castle",CastleTrialHard="trial_castle_hard",QuarrySprint="trial_quarry_sprint";
+        public const string VisitHillcrest="visit_hillcrest";
         // Beating Duke Rolo in the Duke's Challenge (docs/54): the Regale and the prize, once.
         public const string DukeBeaten="duke_beaten";
-        // Beating Dai out of the blast zone in the Blast Run (BlastRun, doc 63): his prize, once.
-        public const string BlastRunWin="trial_blast_run";
-        public static string Postcard(int i)=>"postcard_"+i;
-        public static string Stamp(int i)=>"stamp_"+i;
-        // Quarry Hills' slate carvings (docs/59; --quarry-hills).
-        public static string Carving(int i)=>"carving_"+i;
-        public static bool IsCarving(string id)=>Indexed(id,"carving_",Carvings);
-        // Bramblewick's lucky horseshoes (docs/82; --bramblewick).
-        public static string Horseshoe(int i)=>"horseshoe_"+i;
-        public static bool IsHorseshoe(string id)=>Indexed(id,"horseshoe_",Horseshoes);
-        public static bool IsPostcard(string id)=>Indexed(id,"postcard_",Postcards);
-        public static bool IsStamp(string id)=>Indexed(id,"stamp_",Stamps);
-        public static bool Known(string id)=>IsPostcard(id)||IsStamp(id)||IsCarving(id)||IsHorseshoe(id)||id==VisitHillcrest||id==CastleTrial||id==CastleTrialHard||id==QuarrySprint||id==DukeBeaten||id==BlastRunWin||PhotoRequests.Known(id);
+        // The retired activities' and keepsakes' ids (24 Oct: all to be rebuilt, one at a time): nothing hands them out now,
+        // but older saves hold them, so they still validate. (Postcards, stamps, carvings, horseshoes, the Castle Climbs, the
+        // Quarry Sprint, the Blast Run and Pip's photo requests.)
+        static readonly string[] Retired={"trial_castle","trial_castle_hard","trial_quarry_sprint","trial_blast_run",
+            "photo_lighthouse","photo_halt","photo_castle","photo_falls","photo_train","photo_balloons","photo_galleries","photo_slatequay","photo_blondin",
+            "photo_bw_church","photo_bw_plough","photo_bw_pond","photo_bw_dairy","photo_bw_hairpin","photo_bw_beacon","photo_bw_rookery","photo_bw_cider","photo_bw_meadow","photo_bw_hedgegap"};
+        static bool Old(string id)=>Indexed(id,"postcard_",5)||Indexed(id,"stamp_",8)||Indexed(id,"carving_",12)||Indexed(id,"horseshoe_",6)||Array.IndexOf(Retired,id)>=0;
+        public static bool Known(string id)=>id==VisitHillcrest||id==DukeBeaten||Old(id);
         static bool Indexed(string id,string prefix,int count)
         {
             if(id==null||!id.StartsWith(prefix,StringComparison.Ordinal))return false;
@@ -44,8 +38,8 @@ namespace LittleRoad
         public const float FinalMin=.8f,FinalMax=1.25f,GearMin=.85f,GearMax=1.15f;
         public bool Valid=>!string.IsNullOrEmpty(transmission)&&final>=FinalMin&&final<=FinalMax&&(gears==null||gears.Length<=8&&gears.All(g=>g>=GearMin&&g<=GearMax));
     }
-    // A speed trap's record (SpeedTraps): the best speed through it (mph) and the stars already paid. Beat the Train
-    // (TrainRace) keeps its best time (s) the same way, stars 1 once won.
+    // A retired activity's record (speed traps, the train, the lessons and the rest, retired 24 Oct): its best and its stars.
+    // Older saves hold them; nothing reads them now.
     [Serializable] public sealed class TrapRecord {public string id;public float best;public int stars;}
     [Serializable] public sealed class AdventureProgress
     {
@@ -71,7 +65,7 @@ namespace LittleRoad
         public List<GearTune> tunes;
         // Where the car was when last saved (x, y, z, yaw): the game resumes there. Older saves have none (empty).
         public float[] spot;
-        // Speed traps (SpeedTraps). Older saves have none.
+        // The retired activities' records (TrapRecord): kept so the saves that hold them still load.
         public List<TrapRecord> traps;
         public GearTune Tune(){var box=fitted?.Find(f=>f.slot=="transmission")?.id;return box==null?null:tunes?.Find(t=>t.transmission==box);}
         public static AdventureProgress New()=>new AdventureProgress {version=1,bodyId=CarBodies.StarterBody,podiums=new List<string>(),wins=new List<string>(),discovered=new List<string>(),
@@ -80,7 +74,7 @@ namespace LittleRoad
         public Dictionary<string,string> Loadout()=>fitted.ToDictionary(p=>p.slot,p=>p.id);
         public void Validate()
         {
-            if(traps!=null&&(traps.Any(t=>t==null||!(SpeedTraps.Known(t.id)||TrainRace.Known(t.id)||DukeDrive.Known(t.id)||RallySchool.Known(t.id)||GalleryClimb.Known(t.id)||BlastRun.Known(t.id)||TipLeap.Known(t.id)||FarmChallenges.Known(t.id))||t.stars<0||t.stars>3||t.best<0||t.best>500)||traps.Select(t=>t.id).Distinct().Count()!=traps.Count))throw new InvalidDataException("A speed trap record is invalid or repeated.");
+            if(traps!=null&&(traps.Any(t=>t==null||t.stars<0||t.stars>3||t.best<0||t.best>500)||traps.Select(t=>t.id).Distinct().Count()!=traps.Count))throw new InvalidDataException("An activity record is invalid or repeated.");
             if(spot!=null&&spot.Length!=0&&(spot.Length!=4||spot.Any(v=>float.IsNaN(v)||float.IsInfinity(v))||Mathf.Abs(spot[0])>20000||Mathf.Abs(spot[2])>20000||Mathf.Abs(spot[1])>2000))throw new InvalidDataException("The saved position is invalid.");
             if(tunes!=null&&(tunes.Any(t=>t==null||!t.Valid)||tunes.Select(t=>t.transmission).Distinct().Count()!=tunes.Count))throw new InvalidDataException("A gearbox tune is invalid or repeated.");
             if(version!=1||credits<0||credits>10000000||questStage<0||questStage>3||paintIndex<0||paintIndex>=PaintCatalog.All.Length||
@@ -150,9 +144,8 @@ namespace LittleRoad
         public bool ClaimDelivery()=>Change(p=>{if(p.questStage!=2)return false;p.questStage=3;p.credits+=350;return true;});
         // One-off time-trial prize (the id joins `collected`, so it pays once).
         public bool ClaimTrial(string id,int prize)=>Change(p=>{if(p.collected.Contains(id)||prize<0)return false;p.collected.Add(id);p.credits+=prize;return true;});
-        public bool Collect(string id)=>Change(p=>{if(p.collected.Contains(id))return false;p.collected.Add(id);p.credits+=50;return true;});
         // Paid repaint at Bayview Paints: charges once; the current colour or a short wallet is refused.
-        public bool Repaint(int index,int price)=>Change(p=>{if(index==p.paintIndex||index<0||index>=PaintCatalog.All.Length||price<0||p.credits<price||PaintCatalog.LockedBy(p,index)!=null)return false;p.credits-=price;p.paintIndex=index;return true;});
+        public bool Repaint(int index,int price)=>Change(p=>{if(index==p.paintIndex||index<0||index>=PaintCatalog.Standard||price<0||p.credits<price)return false;p.credits-=price;p.paintIndex=index;return true;});
         // Body shop: buy a body once; switching bodies (garage bay) is free and changes looks only.
         public bool BuyBody(string id)=>Change(p=>{int price=CarBodies.Price(id);if(price<0||p.bodies.Contains(id)||p.credits<price)return false;p.credits-=price;p.bodies.Add(id);return true;});
         // Swapping to a body of a lower class refits each slot above its class with your best owned part it can take
@@ -183,40 +176,6 @@ namespace LittleRoad
             var box=p.Loadout()["transmission"];if(tune!=null&&(tune.transmission!=box||!tune.Valid))return false;
             p.tunes??=new List<GearTune>();p.tunes.RemoveAll(t=>t.transmission==box);if(tune!=null)p.tunes.Add(tune);return true;});
         public bool Fit(string id)=>Change(p=>{var part=EquipmentCatalog.Get(id);if(!p.owned.Contains(id)||!BodyTakes(p,part))return false;var item=p.fitted.Find(f=>f.slot==part.slot);if(item.id==id)return false;item.id=id;return true;});
-        // Speed trap: keeps the best speed, pays each newly reached star once (prizes by star). Returns credits paid.
-        public int RecordTrap(string id,float mph,int stars,int[] prizes)
-        {
-            int paid=0;
-            Change(p=>{
-                p.traps??=new List<TrapRecord>();var r=p.traps.Find(t=>t.id==id);if(r==null){r=new TrapRecord{id=id};p.traps.Add(r);}
-                bool better=mph>r.best+.05f;int earned=0;for(int s=r.stars;s<stars&&s<prizes.Length;s++)earned+=prizes[s];
-                if(!better&&earned==0)return false;
-                if(better)r.best=Mathf.Round(mph*10)/10;if(stars>r.stars)r.stars=stars;p.credits+=earned;paid=earned;return true;});
-            return paid;
-        }
-        // A timed win (Beat the Train): keeps the best (lowest) time, pays the prize the first time. Returns credits paid.
-        public int RecordTime(string id,float seconds,int prize)
-        {
-            int paid=0;
-            Change(p=>{
-                p.traps??=new List<TrapRecord>();var r=p.traps.Find(t=>t.id==id);if(r==null){r=new TrapRecord{id=id};p.traps.Add(r);}
-                bool better=r.best<=0||seconds<r.best-.05f;int earned=r.stars<1?prize:0;
-                if(!better&&earned==0)return false;
-                if(better)r.best=Mathf.Round(seconds*10)/10;r.stars=1;p.credits+=earned;paid=earned;return true;});
-            return paid;
-        }
-        // A rally school lesson (RallySchool): keeps the best (lowest) time and the best medal (stars 1-3), paying each newly
-        // reached medal's prize once. Returns credits paid.
-        public int RecordLesson(string id,float seconds,int medal,int[] prizes)
-        {
-            int paid=0;
-            Change(p=>{
-                p.traps??=new List<TrapRecord>();var r=p.traps.Find(t=>t.id==id);if(r==null){r=new TrapRecord{id=id};p.traps.Add(r);}
-                bool better=r.best<=0||seconds<r.best-.05f;int earned=0;for(int s=r.stars;s<medal&&s<prizes.Length;s++)earned+=prizes[s];
-                if(!better&&earned==0)return false;
-                if(better)r.best=Mathf.Round(seconds*10)/10;if(medal>r.stars)r.stars=medal;p.credits+=earned;paid=earned;return true;});
-            return paid;
-        }
         public int BeginRace(){Change(p=>{p.raceSerial++;return true;});return Data.raceSerial;}
         // The Duke's Challenge (docs/54): settled once by serial like any race. The first win pays DukePrize and gives
         // you the Regale; later wins count as wins; a loss costs nothing.

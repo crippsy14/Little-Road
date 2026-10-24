@@ -59,8 +59,9 @@ namespace LittleRoad
             yield return PressKey(Key.RightBracket);Check(browser.Slot=="turbo","] moves right along the category tabs");yield return PressKey(Key.LeftBracket);Check(browser.Slot=="engine","[ moves left");
             yield return Pad(GamepadButton.East);Check(!browser.IsOpen&&ui.IsOpen,"B returns to Sid without road input leaking");
             Check(JsonUtility.ToJson(store.Data)==original&&File.Exists(store.path)==hadFile&&(!hadFile||File.ReadAllText(store.path)==originalDisk),"Browsing and backing out preserve inventory and save bytes");
-            // Earn the real early-game budget through the store's reward transactions.
-            store.AcceptDelivery();store.Deliver();store.ClaimDelivery();store.Collect("postcard_0");store.Collect("postcard_1");
+            // Earn the real early-game budget through the store's reward transactions (and the 100 credits two postcards paid
+            // before the keepsakes were retired, 24 Oct).
+            store.AcceptDelivery();store.Deliver();store.ClaimDelivery();store.Change(p=>{p.credits+=100;return true;});
             open(PartsBrowser.Mode.Shop);yield return new WaitForSeconds(.4f);Check(browser.SelectedId=="engine_workshop","Selection survives back and reopen");
             Capture("03-affordable");float stockPower=car.tuning.power;
             yield return Pad(GamepadButton.South);

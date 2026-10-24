@@ -5,7 +5,7 @@ using LittleRoad;
 using UnityEngine;
 
 // Quarry Hills (docs/59), behind --quarry-hills: the landform's numbers (galleries, the pit lake, the tips, Slate
-// Quay's apron) and the quarry floor's layout (the Quarry Sprint loop, the rally school, the Blondin), from the pure
+// Quay's apron) and the quarry floor's layout (the Quarry Sprint loop, the rally school), from the pure
 // shape functions, so a change that breaks the design fails the build.
 public static class QuarryHillsChecks
 {
@@ -41,47 +41,31 @@ public static class QuarryHillsChecks
         Check(loop.All(p=>QuarryHills.FloorQ(p.x,p.z)<.95f),"The whole loop lies on the level quarry floor");
         Check(loop.All(p=>{QuarryHills.PitMetric(p.x,p.z,out float q,out _,out _);return q>1.1f;}),"The loop keeps clear of the pit's edge");
         Check(QuarryHills.FloorQ(QuarryFloor.School.x,QuarryFloor.School.z)<.9f&&loop.All(p=>Vector2.Distance(new(p.x,p.z),new(QuarryFloor.School.x,QuarryFloor.School.z))>40),"The rally school stands on the floor, 40 m or more from the loop");
-        Check(QuarryHills.FloorQ(QuarryFloor.BlondinFloor.x,QuarryFloor.BlondinFloor.y)<1&&QuarryHills.TipSurface(QuarryFloor.BlondinTip.x,QuarryFloor.BlondinTip.y)>QuarryHills.Tips[0].top-6,
-            "The Blondin runs from the quarry floor to the top of the big tip");
         Check(QuarryHills.Owns(QuarryHills.ChapelStreetName)&&QuarryHills.Owns(QuarryHills.TerraceRowName)&&QuarryHills.Gravel(QuarryHills.HaulRoadName)&&!QuarryHills.Gravel(QuarryHills.HighStreetName),
             "Quarry Hills owns its streets (back streets included); the haul road is gravel and the High Street tarmac");
-        // Gwen's rally school: six lessons with medal times in order, ids the save accepts, and the rally parts locked behind it.
-        Check(RallySchool.Lessons.Length==6&&RallySchool.Lessons.All(l=>l.gold<l.silver&&l.silver<l.bronze&&RallySchool.Known(l.id))&&!RallySchool.Known("lesson_6"),
-            "Six rally lessons, each with gold faster than silver faster than bronze");
         // A quarry race builds only its area (4 Oct): the floor, the school and the town, not Hillcrest.
         RaceArea.Set(QuarryFloor.Loop,450);bool area=RaceArea.Active&&RaceArea.Near(QuarryFloor.School)&&RaceArea.Near(QuarryHills.Square,350)&&!RaceArea.Near(HillcrestRoute.Square,500);RaceArea.Clear();
         Check(area&&!RaceArea.Active,"The quarry race's area holds the floor, the rally school and the town, and leaves Hillcrest out");
         // The Pit Stop's own vehicles (4 Oct): known bodies with measured sizes.
         Check(CarBodies.PitStop.All(id=>CarBodies.IsKnown(id)&&CarBodies.Length(id)>3&&CarBodies.ShoulderWidth(id)>2),"The Pit Stop's recovery truck, parts van and panel truck are known bodies with sizes");
-        // The rally licence screen (4 Oct): times read as a stopwatch, one tile per lesson.
-        Check(LicenceScreen.Clock(9.14f)=="9.1 s"&&LicenceScreen.Clock(86)=="1:26.0","Licence times read 9.1 s and 1:26.0");
         // The working quarry (4 Oct): every machine spot and route point on the floor, clear of the rallycross and the school.
         Check(QuarryWorks.LayoutPoints().All(p=>QuarryHills.FloorQ(p.x,p.y)<.95f&&HillcrestRoute.Distance(loop,p.x,p.y,out _)>QuarryFloor.LoopWidth*.5f+10&&Vector2.Distance(p,new(QuarryFloor.School.x,QuarryFloor.School.z))>40),
             "The quarry's machines work on the floor, 10 m or more off the circuit and 40 m from the rally school");
         // (Class B's rally tyres also live here, found once 4 stars are won at Tuner races: docs/67.)
         var gravel=EquipmentCatalog.All.parts.Where(p=>p.shop=="quarry"&&p.tier=="C").ToList();
         Check(EquipmentCatalog.All.parts.Where(p=>p.shop=="quarry"&&p.tier=="B").All(p=>p.unlock=="stars:B:4"),"Class B's rally tyres at Grit & Gravel wait for 4 Tuner stars");
-        Check(gravel.Count==2&&gravel.All(p=>p.unlock==RallySchool.Unlock&&p.tier=="C")&&PartDiscovery.Valid(RallySchool.Unlock),$"Grit & Gravel's own rally kit ({string.Join(", ",gravel.Select(p=>p.name))}) waits for gold in every lesson");
-        var school=new AdventureProgress{traps=new List<TrapRecord>()};
-        Check(!RallySchool.AllGold(school)&&!PartDiscovery.Met(school,RallySchool.Unlock),"With no lessons done the rally kit stays locked");
-        for(int i=0;i<6;i++)school.traps.Add(new TrapRecord{id=RallySchool.Lessons[i].id,best=RallySchool.Lessons[i].gold-1,stars=3});
-        Check(RallySchool.AllGold(school)&&PartDiscovery.Met(school,RallySchool.Unlock),"Gold in all six lessons releases it");
+        // (24 Oct: the rally school's lessons were retired, so the kit is simply found at the shop.)
+        Check(gravel.Count==2&&gravel.All(p=>string.IsNullOrEmpty(p.unlock)),$"Grit & Gravel's own rally kit ({string.Join(", ",gravel.Select(p=>p.name))}) is found at the shop, with no condition");
         var tyres=EquipmentCatalog.Get("tyres_c_gravel");
         Check(tyres.dirt>EquipmentCatalog.All.parts.Where(p=>p.slot=="tyres"&&p.tier=="C"&&p.id!=tyres.id).Max(p=>p.dirt),"The gravel tyres have the best loose-ground grip in class C");
         // The rallycross is loose: gravel tyres out-grip road tyres there, road tyres lose grip (docs/60).
         var kit=EquipmentCatalog.TestLoadout("street");kit["tyres"]="tyres_stock";var stock=EquipmentCatalog.Stats(kit);kit["tyres"]="tyres_rally";var rally=EquipmentCatalog.Stats(kit);
         Check(stock.Loose().roadGrip<stock.roadGrip&&rally.Loose().roadGrip>stock.Loose().roadGrip*1.8f,"On loose slate rally tyres grip about twice as hard as stock road tyres");
-        // Town routines (QuarryFestival): half past seven in the evening is choir night, the Caban's shut and the quarry quiet.
-        float hour=TimeOfDay.Hour;TimeOfDay.Hour=19.5f;bool evening=QuarryFestival.ChoirHours&&!QuarryFestival.CabanOpen&&!QuarryFestival.WorkingHours;
-        TimeOfDay.Hour=10;bool morning=!QuarryFestival.ChoirHours&&QuarryFestival.CabanOpen&&QuarryFestival.WorkingHours;TimeOfDay.Hour=hour;
-        Check(evening&&morning,"Quarry Hills keeps its hours: choir in the evening, Caban and blasting by day");
-        // The Blast Run (doc 63): the siren wails, falls quiet 7 s before the shot, and the shot lands when asked.
+        // The quarry's blasting (doc 63): on a long charge the siren wails, falls quiet 7 s before the shot, and the shot lands when asked.
         {
             const float fs=2000;var synth=new BlastSynth(fs,11);synth.Fire(30);float siren=0,hush=0,shot=0;
             for(int i=0;i<fs*42;i++){float t=i/fs,x=Mathf.Abs(synth.Next());if(t>8&&t<20)siren=Mathf.Max(siren,x);else if(t>23.5f&&t<29.9f)hush=Mathf.Max(hush,x);else if(t>30&&t<30.5f)shot=Mathf.Max(shot,x);}
-            Check(siren>.1f&&hush<.01f&&shot>.5f,$"The Blast Run's siren wails ({siren:0.00}), falls quiet ({hush:0.000}), and the shot lands at 30 s ({shot:0.00})");
-            Check(Collectibles.Known(Collectibles.BlastRunWin)&&BlastRun.Known(BlastRun.Id),"The Blast Run's prize and record are known to save validation");
-            Check(BlastRun.ShotFactor>BlastRun.DaiFactor&&BlastRun.DaiFactor>1.1f,"Dai is slower than the stock car's ideal, and the shot later than Dai");
+            Check(siren>.1f&&hush<.01f&&shot>.5f,$"A long blast's siren wails ({siren:0.00}), falls quiet ({hush:0.000}), and the shot lands at 30 s ({shot:0.00})");
         }
         return checks;
     }
