@@ -128,7 +128,7 @@ namespace LittleRoad
             foreach(float x in new[]{0f,-.9f,.9f}){var q=p+right*x;foreach(var h in Physics.RaycastAll(q+Vector3.up*3,Vector3.down,8,~0,QueryTriggerInteraction.Ignore))if(IsCarriageway(h.collider))return true;}
             return false;
         }
-        static readonly string[] ParkBodies=CarBodies.WithForge(new[]{"marlow","heron","picnic","doodle","otter","bramble","pebble","tallboy","dover","kipper","sprint","roadster"},"rattler","patchwork","woody","sunday_best","l_plate","stock_banger","shedbuilt");
+        static readonly string[] ParkBodies=CarBodies.WithForge(new[]{"marlow","heron","picnic","doodle","otter","bramble","pebble","tallboy","dover","kipper","sprint","roadster"},"rattler","snoozer","woody","sunday_best","l_plate","stock_banger","shedbuilt");
         void Park(Transform root,List<(Vector3 at,float yaw)> spots)
         {
             var rng=parkRng;var bodies=ParkBodies;

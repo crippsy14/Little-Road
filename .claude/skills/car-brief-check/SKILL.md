@@ -85,6 +85,15 @@ Save its answers word for word in the round's report. The brief's `blind` requir
 when the reader's own words match the brief's type, expression and signature. A synonym counts; a guess you have to
 argue for does not. A blind reader who names a signature the brief didn't intend is useful too: note it.
 
+### Materials and finishes (the MF section)
+The pack's renders show colour and a rough gloss, but not every finish. Judge a finish from the paint, turntable and
+hero views:
+- a metallic shows a sparkle or a tight, bright highlight;
+- a matte or faded paint shows no clear highlight;
+- chrome shows mirror-bright.
+Where a finish can't be told apart from another in the renders, or the engine can't make it, it FAILS with the cause
+ENGINE GAP, naming the finish: the engine (and the game's material rules) grow to meet it.
+
 ### Step 3: every requirement, one by one
 
 Go through the brief in order and give every ID one row:

@@ -19,3 +19,6 @@ designs/tests/closed_gt.yaml
 designs/roster/*.yaml
 
 # (class B: removed 18 Oct at Richard's request, to be redone with his direction from the start)
+
+# special models: never sold or raced in fields, only won (CarBodies.Prizes; the Tubby, Richard 24 Oct)
+designs/special/*.yaml

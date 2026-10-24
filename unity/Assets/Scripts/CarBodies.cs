@@ -13,6 +13,12 @@ namespace LittleRoad
         public static readonly string[] Owned={Starter,"compact_v1"};
         // Placeholder bodies removed on 2026-09-28; older saves drop them on load.
         public static readonly string[] Retired={"coupe_car","utility_car","formula_car"};
+        // Roster cars removed and replaced in their slot (24 Oct: the Patchwork, whose identity was all paint, by the Tubby,
+        // built from scratch to its brief); a save that owns or drives one has the replacement instead.
+        public static readonly System.Collections.Generic.Dictionary<string,string> Replaced=new(){["forge_patchwork"]="forge_snoozer"};
+        // Special models: never sold or raced in fields, only won (Richard, 24 Oct: the Tubby, a bath on wheels, is the prize
+        // of a water-based activity to come). A save may own one once it is won.
+        public static readonly string[] Prizes={"forge_tubby"};
         // Street-spec field: family cars and saloons.
         public static readonly string[] Family={"pebble","tallboy","marlow","dover","heron","bramble","picnic","kipper","doodle","otter"};
         // Club-spec field: mass-produced sporty bodies.
@@ -174,13 +180,12 @@ namespace LittleRoad
             ["forge_osprey"]=("Osprey","a rally estate with a roof box and long-range lamps","the roof box"),
             ["forge_otter"]=("Otter fastback","a fastback family coupe, sleek in a sensible way","its long sloping back"),
             ["forge_otter_gt"]=("Otter GT","the Otter fastback in warm trim: stripes, a scoop, a wing, slotted wheels","twin stripes down a long fastback"),
-            ["forge_patchwork"]=("Patchwork","a saloon of three colours, every panel from a different scrapyard","no two panels match"),
             ["forge_pebble"]=("Pebble","a round city car, all wheels and windows","a body like a pebble on a beach"),
             ["forge_picnic"]=("Picnic","a people carrier with a picnic hamper on the roof rack","the wicker hamper on top"),
             ["forge_pocket"]=("Pocket compact","a tiny two-door city runabout","the shortest car on the grid"),
             ["forge_postvan"]=("Post van","a red post van","post-box red with a black roof"),
             ["forge_pronto"]=("Pronto","a pizza delivery microcar with a hot box on the back","the hot box"),
-            ["forge_puddle"]=("Puddle","the starter: a humble little hatch with a cheerful face, everyone's first love","big round eyes and a little chrome grin"),
+            ["forge_puddle"]=("Puddle","the starter: an eager little hatch that sits up like a puppy waiting for a walk","big round eyes and a contented smile"),
             ["forge_rally"]=("Rally saloon","the rally saloon in full stage kit","four spot lamps and a roof spare"),
             ["forge_rattler"]=("Rattler","a rusty estate: a primer door, a bungeed tailgate, one hubcap missing","a primer-grey door on a faded green estate"),
             ["forge_ritz"]=("Ritz tourer","a grand old tourer with a long bonnet, polished to a shine","its long chrome-nosed bonnet"),
@@ -193,6 +198,8 @@ namespace LittleRoad
             ["forge_sunday_best"]=("Sunday Best","grandad's saloon: immaculate, chrome, a tow ball","the shine"),
             ["forge_tallboy"]=("Tallboy","a tall, narrow kei wagon, nearly as high as it is long","its height"),
             ["forge_taxi"]=("Bayview taxi","a black-cab-style town taxi","the TAXI sign on its roof"),
+            ["forge_snoozer"]=("Snoozer","a sleepy old family saloon that never quite wakes up","a sway-backed body and heavy-lidded lamps"),
+            ["forge_tubby"]=("Tubby","a cast-iron roll-top bath on a go-kart chassis: a special, won on the water","a bath on wheels"),
             ["forge_tumbler"]=("Tumbler jeep","an open jeep with a roll bar","the roll bar over the open seats"),
             ["forge_woody"]=("Woody","a wood-panelled estate","the wooden sides"),
             ["forge_wren"]=("Wren","a three-wheeler delivery van","one wheel at the front"),
@@ -225,7 +232,7 @@ namespace LittleRoad
         static Offer[] forgeSale;
         static Offer[] ForgeSale=>forgeSale??=ForgeRange.Where(o=>o.shop=="tuner"||Forged(o.id)?.band!=null).ToArray();
         static readonly Offer[] ForgeRange={
-            new("forge_pocket","hillcrest",400),new("forge_rattler","hillcrest",400),new("forge_pebble","hillcrest",450),new("forge_patchwork","hillcrest",450),
+            new("forge_pocket","hillcrest",400),new("forge_rattler","hillcrest",400),new("forge_pebble","hillcrest",450),new("forge_snoozer","hillcrest",450),
             new("forge_bubble","hillcrest",500),new("forge_gold_top","hillcrest",500),new("forge_l_plate","hillcrest",500),new("forge_pronto","hillcrest",550),
             new("forge_tallboy","hillcrest",550),new("forge_marlow","hillcrest",600),new("forge_wren","hillcrest",600),new("forge_ladders","hillcrest",600),
             new("forge_beetle","hillcrest",650),new("forge_dover","hillcrest",700),new("forge_postvan","hillcrest",700),new("forge_chippy","hillcrest",750),
@@ -256,7 +263,7 @@ namespace LittleRoad
         public static bool Sellable(string id)=>Price(id)>=0;
         // Bodies a save may hold: the starter and the compact plus everything sold.
         // (The Regale only by beating the Duke: AdventureProgress.Validate checks the trophy.)
-        public static bool Ownable(string id)=>Array.IndexOf(Owned,id)>=0||id==ForgeStarter||Sellable(id)||id==Prototype||(Array.IndexOf(Forge,id)>=0&&AdventureSession.ForgeDrive!=null);
+        public static bool Ownable(string id)=>Array.IndexOf(Owned,id)>=0||id==ForgeStarter||Sellable(id)||id==Prototype||Array.IndexOf(Prizes,id)>=0||(Array.IndexOf(Forge,id)>=0&&AdventureSession.ForgeDrive!=null);
         // Deterministic draw from a deck: every model appears before any repeats,
         // and each race seed shuffles the order.
         public static string[] Deal(string[] models,int count,int seed)

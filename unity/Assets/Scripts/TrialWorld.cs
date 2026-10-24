@@ -150,7 +150,7 @@ namespace LittleRoad
         // a name with no rule renders the default charcoal).
         public static readonly string[] CarMaterialKeys={"RimGunmetal","RimBronze","RimWhite","RimBlack","PaintedSteel","StripeColour","BodyPaint","Glass","Rubber","Alloy",
             "Headlamp","TailLight","ReverseLight","RearReflector","BumperInsert","Amber","Plate","PanelSeam","BrakeMetal","Cloth","Cream","Livery","Wood",
-            "CarbonFibre","GoldTrim","CaliperRed","CanopyGlass","CharcoalTrim","Primer","Rust"};
+            "CarbonFibre","GoldTrim","CaliperRed","CanopyGlass","CharcoalTrim","Primer","Rust","EnamelBlue"};
         public static GameObject Car(string asset,Color paint)
         {
             // (an older class C body comes as its Car Forge namesake, and the car is named after the model it shows, so its
@@ -203,6 +203,8 @@ namespace LittleRoad
                         name.Contains("Wood")?new Color(.45f,.27f,.13f):
                         // (Car Forge's wear, 17 Oct: a panel in grey primer or rust, forge/wear.py)
                         name.Contains("Primer")?new Color(.50f,.51f,.50f):name.Contains("Rust")?new Color(.36f,.16f,.07f):
+                        // (a blue enamel tap cap: the Tubby, a special, 24 Oct)
+                        name.Contains("EnamelBlue")?new Color(.09f,.20f,.62f):
                         // The Regale (Duke Rolo's prototype, docs/53): a painted livery, carbon, gold, red calipers, smoked canopy.
                         name.Contains("LiveryMap")?Color.white:name.Contains("CarbonFibre")?new Color(.03f,.033f,.036f):
                         name.Contains("GoldTrim")?new Color(.83f,.62f,.24f):name.Contains("CaliperRed")?new Color(.72f,.08f,.06f):

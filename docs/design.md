@@ -166,6 +166,20 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
     - **Round 8:** 88 of 100 pass; the blind reader calls it "cheerful" and "smiling".
     - **Richard's call (24 Oct):** the face "looked like a murderer", so the eyes are subtler and the grin smaller.
     - **Not yet created:** the brief's signature (the sit) doesn't lead within its own bands, a question for Richard.
+      **Richard (24 Oct): "Looks good as is!"** The face stands as its signature.
+  - **The first cars from scratch (24 Oct):**
+    - **The Patchwork is removed.** Its identity was all paint, and it was the taxi's twin.
+    - **The Snoozer takes its slot:** a sleepy old saloon, sway-backed, with heavy-lidded lamps. It has the Patchwork's
+      shop place, fields and parked cars, and a save that owned the Patchwork has the Snoozer
+      (`CarBodies.Replaced`).
+    - **The Tubby is a special,** never sold or raced in fields (`CarBodies.Prizes`; Richard: "a real fun addition for
+      winning some form of water based activity later"). It is a cast-iron roll-top bath on a go-kart chassis.
+    - **Where both stand:** both are in the game, mid-check. Their logs are in car-forge `briefs/`.
+  - **Materials and finishes (Richard, 24 Oct):**
+    - Briefs now name every surface's finish: the paint's type (gloss, metallic, pearl, matte, faded) and each trim's.
+    - Today the Forge only names materials, and the game gives each name one fixed look, with every car's body paint
+      one semi-gloss.
+    - Per-car finishes are the engine and game work to come.
 
 ## 5 · Parts
 
@@ -477,6 +491,9 @@ are in [world.md](world.md), process and tools in [how-we-work.md](how-we-work.m
 - Their code is in git before the retirement commit, if a minigame wants a piece back.
 
 ### Activities: one minigame at a time
+- **A prize waiting for its activity:** the Tubby, a bath on wheels (a special model, `CarBodies.Prizes`), is the
+  reward of a water-based activity still to be designed (Richard, 24 Oct).
+
 - **History:** the valley activities went on hold on 30 Sep ("a better idea"; Claude's additions came instead). On 21 Oct
   all new activities went on hold: the first towns' were underbaked. On 24 Oct everything built was retired (above).
 - **The bar** (Richard, 24 Oct: "Is it fun? Does it fit into the world? Is it measurable and, therefore, testable?

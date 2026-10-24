@@ -121,6 +121,9 @@ namespace LittleRoad
             // The Car Forge models (23 Oct): a body bought before them becomes its Forge namesake (the car you drive and every one
             // you own; written back with the next save). --no-forge-roster leaves the save as it is.
             if(Data!=null){Data.bodyId=CarBodies.Look(Data.bodyId);Data.bodies=Data.bodies.Select(CarBodies.Look).Distinct().ToList();}
+            // A roster car removed and replaced in its slot (CarBodies.Replaced): its owner has the replacement instead.
+            string Now(string b)=>b!=null&&CarBodies.Replaced.TryGetValue(b,out var r)?r:b;
+            if(Data!=null){Data.bodyId=Now(Data.bodyId);Data.bodies=Data.bodies.Select(Now).Distinct().ToList();}
             // Saves from before the class ladder have no podium record.
             if(Data!=null&&Data.podiums==null)Data.podiums=new List<string>();
             if(Data!=null&&Data.wins==null)Data.wins=new List<string>();

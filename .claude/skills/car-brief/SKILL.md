@@ -304,6 +304,48 @@ Which idioms from §4 this car uses, and where:
 - the wear, if any, panel by panel.
 The car must still read in a rival's paint from the race's list.
 
+### MF: Materials and finishes (Richard, 24 Oct: "support for different materials and types of paint")
+Colour alone is half of a material. Name every surface's **finish** too: how it takes the light. A brief never leaves
+a finish to the engine's default. Write it for the car that should exist; if the Forge or the game can't make it yet,
+the check calls it an ENGINE GAP, and the engine grows.
+- **The paint's type:**
+  - solid gloss: a toy's deep enamel;
+  - metallic: flake that sparkles in the highlight;
+  - pearl: a colour shift at the edges;
+  - candy: deep and tinted;
+  - satin;
+  - matte;
+  - faded or chalky: sun-bleached, a banger's;
+  - patina: worn through at the edges.
+  Say it keeps its type in a rival's colour: a metallic car is metallic in every race's paint.
+- **Each trim's own finish:**
+  - bright chrome;
+  - brushed or satin alloy;
+  - gold or brass;
+  - gloss black;
+  - satin black;
+  - matte rubber;
+  - enamel (a colour, glossy);
+  - vinyl (a roof, a seat);
+  - fabric (a soft top, a seat);
+  - wood (varnished or raw);
+  - plastic (lens, trim);
+  - rust;
+  - primer.
+- **Contrast:**
+  - which finish sits against which, so value and gloss do half the work of definition (brief-master-modeller §9);
+  - a car's identity never rests on a finish alone, since rivals repaint;
+  - but a finish can make a car's character: a faded banger, a gleaming Sunday car.
+- **Each finish is a requirement that can fail:**
+  - "The body paint is faded: chalky, with no clear highlight, in the paint and turntable views";
+  - "The roof is a black vinyl, textured, duller than the paint, ending at a chrome drip rail".
+- **What exists today:**
+  - The Forge names a material per face; the game gives each name one colour, metalness and smoothness
+    (TrialWorld.Car).
+  - Body paint is one semi-gloss in every car, coloured by the race.
+  - Finishes per car (metallic, matte, faded, pearl) and textures (vinyl grain, wood grain) are engine gaps until the
+    engine and game support them.
+
 ### GD: Game distance
 The three things that must read from the chase camera at race distance, where lamp detail is a few pixels: for
 example "the tall white roof sign, the yellow-and-black stripe, the fat rear wheels".
